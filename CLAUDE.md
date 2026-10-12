@@ -9,11 +9,11 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   Only a type that is used exclusively inside one other class may be nested or declared in that class's file.
   (`SA1402` is a warning in `.editorconfig`; `SA1649` is not enabled because it crashes on records.)
 - Namespaces follow the folders: `Data`, `Entities`, `Models`, `Runtime`, `ViewModels`, `Views`.
-  The root namespace is the name of the project: `Siniskalc`, `Siniskalc.Core`, `Siniskalc.Wpf`.
-- **Code that knows no game lives in `Siniskalc.Core` (no UI) or `Siniskalc.Wpf` (WPF).** Neither names a Heroes of Might and Magic type, and neither references the application project; a game's values and collaborators are passed in.
+  The root namespace is the name of the project: `Siniskalc` (the exe), `Siniskalc.Homm3`, `Siniskalc.Core`, `Siniskalc.Wpf`.
+- **Code that knows no game lives in `Siniskalc.Core` (no UI) or `Siniskalc.Wpf` (WPF).** Neither names a Heroes of Might and Magic type, and neither references a game's project; a game's values and collaborators are passed in.
   A new project for another game references them.
-  Add a type to the application project when it needs a HoMM3 layout, rule or entity.
-- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Tests`); a test goes with the project of the class it tests.
+  Add a type to the game's project (`Siniskalc.Homm3`) when it needs a HoMM3 layout, rule or entity. The exe `Siniskalc` is only the host that builds the components and starts the window.
+- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Homm3.Tests`); a test goes with the project of the class it tests.
 - A view model is called `...ViewModel` (also when it is a node of a tree: `NavNodeViewModel`).
 
 ## Layers

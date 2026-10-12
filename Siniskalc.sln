@@ -9,7 +9,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.globalconfig = .globalconfig
+		docs\ERROR_MODEL.md = docs\ERROR_MODEL.md
 		docs\FUTURE_IMPROVEMENTS.md = docs\FUTURE_IMPROVEMENTS.md
+		docs\HOMM2_PLAN.md = docs\HOMM2_PLAN.md
+		docs\HOMM2_SAVE_FORMAT.md = docs\HOMM2_SAVE_FORMAT.md
 		docs\KNOWLEDGE_BASE.md = docs\KNOWLEDGE_BASE.md
 		docs\LOCATING_HOMM3_ENTITIES.md = docs\LOCATING_HOMM3_ENTITIES.md
 		README.md = README.md
@@ -21,9 +24,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpZipLib.GZip", "SharpZi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siniskalc.Tests", "Tests\Siniskalc.Tests\Siniskalc.Tests.csproj", "{78C666B9-900F-4B1D-ADF0-F7425D5968EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siniskalc.Homm3.Tests", "Tests\Siniskalc.Homm3.Tests\Siniskalc.Homm3.Tests.csproj", "{78C666B9-900F-4B1D-ADF0-F7425D5968EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siniskalc.Core", "Siniskalc.Core\Siniskalc.Core.csproj", "{3A664B94-D468-4129-B1EE-15F25438D26F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siniskalc.Homm3", "Siniskalc.Homm3\Siniskalc.Homm3.csproj", "{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siniskalc.Wpf", "Siniskalc.Wpf\Siniskalc.Wpf.csproj", "{9B7DDD64-FA0A-47B9-987B-C8114F6AAE3B}"
 EndProject
@@ -101,6 +106,18 @@ Global
 		{9B7DDD64-FA0A-47B9-987B-C8114F6AAE3B}.Release|x64.Build.0 = Release|Any CPU
 		{9B7DDD64-FA0A-47B9-987B-C8114F6AAE3B}.Release|x86.ActiveCfg = Release|Any CPU
 		{9B7DDD64-FA0A-47B9-987B-C8114F6AAE3B}.Release|x86.Build.0 = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Debug|x86.Build.0 = Debug|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|x64.Build.0 = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C1D0A7E-3B42-4F6A-9E57-8D2A61B04C13}.Release|x86.Build.0 = Release|Any CPU
 		{A72C67F6-DEA0-47B4-BD82-6EE21A8A5402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A72C67F6-DEA0-47B4-BD82-6EE21A8A5402}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A72C67F6-DEA0-47B4-BD82-6EE21A8A5402}.Debug|x64.ActiveCfg = Debug|Any CPU

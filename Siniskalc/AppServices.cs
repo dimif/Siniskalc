@@ -5,10 +5,11 @@
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
-    using Siniskalc.Data;
-    using Siniskalc.Models;
-    using Siniskalc.Runtime;
-    using Siniskalc.ViewModels;
+    using Siniskalc.Homm3;
+    using Siniskalc.Homm3.Data;
+    using Siniskalc.Homm3.Models;
+    using Siniskalc.Homm3.Runtime;
+    using Siniskalc.Homm3.ViewModels;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
 

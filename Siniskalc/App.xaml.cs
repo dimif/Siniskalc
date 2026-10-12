@@ -3,8 +3,8 @@ namespace Siniskalc
     using System;
     using System.Windows;
     using System.Windows.Threading;
+    using Siniskalc.Homm3.Views;
     using Siniskalc.Wpf.Views;
-    using Siniskalc.Views;
 
     /// <summary>
     /// Interaction logic for App.xaml

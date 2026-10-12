@@ -11,12 +11,15 @@ It also reads and writes the compressed savefile, makes the numbered backups, an
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer.
 It also holds the colours and styles every page shares.
 
-**`Siniskalc`** is the application for Heroes of Might and Magic III (.NET 8, Windows).
-It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, and the pages that edit them.
-It also builds all the components once, in `AppServices`.
+**`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
+It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them and the main window.
+
+**`Siniskalc`** is the exe, the host that starts the window.
+It holds `App` and `AppServices`, the composition root that builds all the components once.
+Only the HoMM3 module exists today; the host becomes game-neutral when the second game arrives (see `HOMM2_PLAN.md`).
 
 ```
-Siniskalc/
+Siniskalc.Homm3/
   Data/           Reading and writing savefile bytes: loaders, chunks, (de)serializers, edit sessions
   Entities/       Game vocabulary: artifacts, creatures, spells, skills, factions, buildings, ...
   Models/         Immutable views of what is in a save: heroes, players, castles, game setup
@@ -24,17 +27,18 @@ Siniskalc/
   ViewModels/     MVVM view models and the navigation tree
   Views/          XAML pages (one page per kind of edit)
   Resources/      Icons (the styles that only heroes need are in Views/Generic.xaml)
+Siniskalc/        The exe: App and AppServices (the composition root)
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota) and hero dumps used by the tests.
 docs/             Architecture, how things are located in a savefile, knowledge base, user guide, plans.
 ```
 
-Dependencies point one way: `Siniskalc` references `Siniskalc.Wpf` and `Siniskalc.Core`, and `Siniskalc.Wpf` references `Siniskalc.Core`.
+Dependencies point one way: `Siniskalc` references `Siniskalc.Homm3`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Homm3` references `Siniskalc.Wpf` and `Siniskalc.Core`; and `Siniskalc.Wpf` references `Siniskalc.Core`.
 Nothing in Core or WPF should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and the HoMM3 side wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChanges`, `Homm3Enumeration`).
 A second game gets a project of its own that references the same two libraries.
 
-Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests` and `Siniskalc.Tests` (the real savegames).
+Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests` and `Siniskalc.Homm3.Tests` (the real savegames).
 
 ## Layers
 

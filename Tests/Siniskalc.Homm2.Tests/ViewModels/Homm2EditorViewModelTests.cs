@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
+    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;
 
     [TestFixture]
@@ -226,6 +227,61 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).PrimarySkills.Attack, Is.EqualTo(20));
             Assert.That(page.HasPendingChanges, Is.True);
         }
+
+        [Test]
+        public void TheArmyOfAHeroIsEditedThroughItsSlotsAndTheFinder()
+        {
+            var hero = this.HeroWithRoom();
+            this.editor.ShowHero(hero);
+            var army = ((Homm2HeroViewModel)this.editor.CurrentPage!).ArmyEditor;
+            var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(hero).Army;
+            var free = army.CreatureSlots.First(s => !s.HasCreature);
+
+            free.SelectedCreature = "Titan";
+            free.CreatureAmount = 7;
+
+            Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.Titan, 7)));
+            Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "Town", "Level", "Growth" }));
+
+            army.Finder.AddAmount = 12;
+            army.Finder.Choose(army.Finder.Items.Cast<object>().OfType<Homm2CreatureChoiceViewModel>().Single(c => c.Name == "Peasant"));
+            Assert.That(model().Slots.OfType<Homm2ArmySlot>(), Has.Member(new Homm2ArmySlot(Homm2Creature.Peasant, 12)));
+
+            army.MoveSlot(free.SlotNumber, 1);
+            Assert.That(model().Slots[free.SlotNumber + 1]?.Creature, Is.EqualTo(Homm2Creature.Titan));
+
+            army.ClearSlot(free.SlotNumber + 1);
+            Assert.That(model().Slots[free.SlotNumber + 1], Is.Null);
+        }
+
+        [Test]
+        public void TheGarrisonOfACastleIsAnArmyToo()
+        {
+            var castle = this.editor.CurrentGame!.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Homm2Color.Blue);
+            this.editor.ShowCastle(castle.Index);
+            var garrison = ((Homm2CastleViewModel)this.editor.CurrentPage!).GarrisonEditor;
+
+            garrison.SendToSlot(Homm2Creature.Paladin, 1, 10);
+
+            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(castle.Index).Garrison.Slots[0], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.Paladin, 10)));
+            Assert.That(garrison.CreatureSlots[0].SelectedCreature, Is.EqualTo("Paladin"));
+        }
+
+        [Test]
+        public void ANewStackIsNeverEmptyAndNeverMoreThanTheGameHolds()
+        {
+            var hero = this.HeroWithRoom();
+            this.editor.ShowHero(hero);
+            var slot = ((Homm2HeroViewModel)this.editor.CurrentPage!).ArmyEditor.CreatureSlots.First(s => !s.HasCreature);
+
+            slot.SelectedCreature = "Peasant";
+            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(hero).Army.Slots[slot.SlotNumber]!.Count, Is.EqualTo(1).Or.GreaterThan(0));
+
+            slot.CreatureAmount = 1_000_000;
+            Assert.That(this.editor.CurrentGame.History.Current.Heroes().GetModel(hero).Army.Slots[slot.SlotNumber]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));
+        }
+
+        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).HeroId;
 
         private static IEnumerable<string> Titles(Homm2NavNodeViewModel player, string group) =>
             (player.Children.FirstOrDefault(c => c.Title == group)?.Children.Select(c => c.Title) ?? []).Order();

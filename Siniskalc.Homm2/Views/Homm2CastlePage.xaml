@@ -84,14 +84,9 @@
                 </WrapPanel>
 
                 <!-- Creatures -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Garrison"/>
-                            <ItemsControl ItemsSource="{Binding Garrison}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
-                        </StackPanel>
-                    </Border>
-                </WrapPanel>
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
+                    <wpf:ArmyEditorView DataContext="{Binding GarrisonEditor}"/>
+                </StackPanel>
 
                 <!-- Mage Guild -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">

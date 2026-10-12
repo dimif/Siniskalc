@@ -21,7 +21,6 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> facts;
         private IReadOnlyList<Homm2FactRow> skills = [];
-        private IReadOnlyList<Homm2FactRow> army = [];
         private IReadOnlyList<Homm2FactRow> spells = [];
         private IReadOnlyList<Homm2FactRow> artifacts = [];
         private string castleName = string.Empty;
@@ -47,6 +46,10 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Row("Spell points", Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, 1, h => h.SpellPoints, (h, v) => h with { SpellPoints = (int)v }),
                 this.Row("Movement", Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep, h => h.MovementLeft, (h, v) => h with { MovementLeft = v }, () => $"of {this.hero.MaxMovement:N0} a day"),
             ];
+            this.ArmyEditor = new Homm2ArmyViewModel(
+                game.GameVersion,
+                () => this.session.Current.Army,
+                edit => this.session.Update(h => h with { Army = edit(h.Army) }));
             this.RestoreMovementCommand = new DelegateCommand(_ => this.session.Update(h => h with { MovementLeft = h.MaxMovement }), _ => this.hero.MovementLeft != this.hero.MaxMovement);
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
@@ -87,15 +90,16 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<Homm2FactRow> Skills => this.skills;
 
-        public IReadOnlyList<Homm2FactRow> Army => this.army;
+        /// <summary>
+        /// Gets the army of the hero: its slots and the finder of creatures.
+        /// </summary>
+        public Homm2ArmyViewModel ArmyEditor { get; }
 
         public IReadOnlyList<Homm2FactRow> Spells => this.spells;
 
         public IReadOnlyList<Homm2FactRow> Artifacts => this.artifacts;
 
         public bool HasSkills => this.hero.SecondarySkills.Count > 0;
-
-        public bool HasArmy => this.hero.Army.Slots.Any(s => s != null);
 
         public bool HasSpellBook => this.hero.HasSpellBook;
 
@@ -118,11 +122,7 @@ namespace Siniskalc.Homm2.ViewModels
                 .Select(e => new Homm2FactRow(e.Skill.Name, e.Level.ToString()))
                 .ToList();
 
-            this.army = hero.Army.Slots
-                .Select((slot, i) => slot == null
-                    ? new Homm2FactRow($"Slot {i + 1}", "empty")
-                    : new Homm2FactRow($"Slot {i + 1}", slot.Creature.Name, $"× {slot.Count:N0}"))
-                .ToList();
+            this.ArmyEditor?.Refresh();
 
             this.spells = hero.Spells.Spells
                 .Select(s => new Homm2FactRow(s.Name, $"{s.SpellPoints} spell points"))

@@ -77,7 +77,7 @@ namespace Siniskalc.Homm2
             /// The most the editor gives a player. The savegame holds 32 bits, but the game's screens are not made for more than this.
             /// </summary>
             public const long MaxGold = 999_999;
-            public const long MaxOther = 99_999;
+            public const long MaxOther = 999;
             public const long GoldStep = 1000;
             public const long OtherStep = 1;
 

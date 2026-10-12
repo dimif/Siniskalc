@@ -24,7 +24,6 @@ namespace Siniskalc.Homm2.ViewModels
         private IReadOnlyList<Homm2FactRow> facts = [];
         private IReadOnlyList<Homm2FactRow> buildings = [];
         private IReadOnlyList<Homm2FactRow> dwellings = [];
-        private IReadOnlyList<Homm2FactRow> garrison = [];
         private IReadOnlyList<Homm2FactRow> guild = [];
         private string visitingHeroName = string.Empty;
 
@@ -33,6 +32,11 @@ namespace Siniskalc.Homm2.ViewModels
         {
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
+            var session = game.History.CreateCastleSession(castleIndex);
+            this.GarrisonEditor = new Homm2ArmyViewModel(
+                game.GameVersion,
+                () => session.Current.Garrison,
+                edit => session.Update(c => c with { Garrison = edit(c.Garrison) }));
             this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHero!.Value), _ => this.castle?.VisitingHero != null);
             this.Refresh();
         }
@@ -65,7 +69,10 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<Homm2FactRow> Dwellings => this.dwellings;
 
-        public IReadOnlyList<Homm2FactRow> Garrison => this.garrison;
+        /// <summary>
+        /// Gets the army that defends the castle when no hero is in it: its slots and the finder of creatures.
+        /// </summary>
+        public Homm2ArmyViewModel GarrisonEditor { get; }
 
         public IReadOnlyList<Homm2FactRow> Guild => this.guild;
 
@@ -107,11 +114,7 @@ namespace Siniskalc.Homm2.ViewModels
                 })
                 .ToList();
 
-            this.garrison = castle.Garrison.Slots
-                .Select((slot, i) => slot == null
-                    ? new Homm2FactRow($"Slot {i + 1}", "empty")
-                    : new Homm2FactRow($"Slot {i + 1}", slot.Creature.Name, $"× {slot.Count:N0}"))
-                .ToList();
+            this.GarrisonEditor?.Refresh();
 
             this.guild = Enumerable.Range(1, castle.MageGuildLevel)
                 .Select(level => new Homm2FactRow(

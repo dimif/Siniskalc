@@ -95,14 +95,9 @@
                 </WrapPanel>
 
                 <!-- Creatures -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Army"/>
-                            <ItemsControl ItemsSource="{Binding Army}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
-                        </StackPanel>
-                    </Border>
-                </WrapPanel>
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
+                    <wpf:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
+                </StackPanel>
 
                 <!-- Spells -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">

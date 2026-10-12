@@ -13,6 +13,7 @@ TestData/<Version>/<Series folder>/<series>_<NN>_<what changed>.GM1
 ```
 
 - **`Roe`, `Sod`, `Hota`** hold the saves of that game version.
+  **`Homm2`** holds Heroes of Might and Magic II saves (`.GM1`, and `.GX1` for Price of Loyalty), one folder per map. They are read by `Siniskalc.Homm2.Tests` only: the HoMM3 tests parse every `*.GM?` under `TestData`, so the Homm2 saves are not linked into `Siniskalc.Tests`. HoMM2 only lists savegames of at most 8 characters before the extension, so each Homm2 folder's README also gives the name the game used.
   `Heroes` holds raw hero chunks (`.bin`), not savegames.
 - **A series is a run of saves made one after the other** in one game, each differing from the one before by one thing.
   A series with many saves gets its own folder (`Hota/Rampart`, `Hota/Bulwark`); a short one may stay in the version folder (`Hota/castles_00_baseline`).
@@ -24,7 +25,7 @@ TestData/<Version>/<Series folder>/<series>_<NN>_<what changed>.GM1
 
 - **Lower-case snake_case**: letters, digits and single underscores.
   No spaces, no capitals, no leading or trailing underscore.
-- **The extension is the game's own, in capitals**: `.GM1` (Roe, Sod, Hota), `.GM2` (hotseat), `.GM3`.
+- **The extension is the game's own, in capitals**: `.GM1` (Roe, Sod, Hota, HoMM2), `.GM2` (hotseat), `.GM3`, `.GX1` (HoMM2 Price of Loyalty).
   Raw chunks are `.bin`.
 - **The prefix is the series.** In a series folder it is the folder name in snake_case (`OtherFactions` is `other_factions`, `SleepGarrisonVisiting` is `sleep_garrison_visiting`); in `Roe`, `Sod` and `Hota` it is the name of the series.
   The prefix may contain digits only inside a word (`m5w4d6`); a number that orders the saves is always the two digits that follow the prefix.

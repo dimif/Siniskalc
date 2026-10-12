@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>Siniskalc</AssemblyName>
+    <RootNamespace>Siniskalc</RootNamespace>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Siniskalc.Core\Siniskalc.Core.csproj" />
+    <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\VS2026\DownloadDocument.png" />
+    <Resource Include="Resources\VS2026\Exit.png" />
+    <Resource Include="Resources\VS2026\OpenFile.png" />
+    <Resource Include="Resources\VS2026\Redo.png" />
+    <Resource Include="Resources\VS2026\Refresh.png" />
+    <Resource Include="Resources\VS2026\Save.png" />
+    <Resource Include="Resources\VS2026\Undo.png" />
+    <None Include="..\.globalconfig" Link=".globalconfig" />
+    <None Include="Resources\VS2026\Visual Studio Image Library EULA.rtf" />
+  </ItemGroup>
+
+</Project>

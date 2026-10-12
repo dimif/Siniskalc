@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Siniskalc.Views.ArtifactSlotPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Siniskalc.Views"
+             x:Name="root"
+             mc:Ignorable="d" d:DesignWidth="320">
+    <!-- A button that shows the artifact in a slot. Clicking it opens a popup with a finder of the artifacts that fit.
+         DataContext is an ArtifactSlotViewModel. Pointing at the button shows what the artifact does, on the page's info card. -->
+    <Grid>
+        <Button x:Name="button" Height="26" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Padding="8,3" Command="{Binding OpenCommand}"
+                AutomationProperties.Name="{Binding Label}" ToolTip="Click to pick an artifact">
+            <TextBlock Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"/>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding DataContext.ShowArtifactInfoCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding ArtifactName}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding DataContext.ClearArtifactInfoCommand, RelativeSource={RelativeSource AncestorType=Page}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Button>
+        <Popup IsOpen="{Binding IsOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=button}" Placement="Bottom"
+               StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade" Opened="PopupOpened">
+            <Border Width="{Binding PopupWidth, ElementName=root}"
+                    Margin="0,2,8,8" Padding="10" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="4">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.3"/>
+                </Border.Effect>
+                <wpf:FinderView DataContext="{Binding Finder}" ListMaxHeight="320"/>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

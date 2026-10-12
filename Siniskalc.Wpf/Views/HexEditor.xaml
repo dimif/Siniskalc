@@ -1,0 +1,129 @@
+<UserControl x:Class="Siniskalc.Wpf.Views.HexEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="1100">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1" Padding="8,5">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Button Style="{StaticResource AppToolBarButtonStyle}" Content="Refresh" Click="RefreshClick" Padding="12,4"/>
+                    <Button Style="{StaticResource AppToolBarButtonStyle}" Content="Export" Click="ExportClick" Padding="12,4"/>
+                </StackPanel>
+                <TextBlock Name="changedText" DockPanel.Dock="Right" Margin="12,0,4,0" VerticalAlignment="Center"
+                           Foreground="{DynamicResource MutedBrush}" Text="No bytes changed"/>
+                <TextBlock Name="titleText" Margin="14,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis" Text="-"/>
+            </DockPanel>
+        </Border>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="statusAddress" Text="Addr: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusChar" Text="Char: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusStringChar" Text="String[0]: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusU8" Text="u8: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusU16" Text="u16: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusU32" Text="u32: -"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusSelected" Text="Selected: 0" ToolTip="How many bytes are selected"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="statusRegion" Text="Field: -"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- Known fields sit under the grid and use its whole width: the legend runs along the top, the fields flow into as many columns as fit. -->
+        <Border DockPanel.Dock="Bottom"
+                Height="230"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="{DynamicResource LineBrush}"
+                BorderThickness="0,1,0,0">
+            <DockPanel Margin="8">
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                    <TextBlock DockPanel.Dock="Left" Margin="0,0,12,0" FontWeight="SemiBold" Text="Known fields"/>
+                    <TextBlock DockPanel.Dock="Right" Margin="12,0,0,0" Foreground="{DynamicResource MutedBrush}"
+                               Text="Click a field to select its bytes. Bold bytes with an orange line differ from the loaded save."/>
+                    <ItemsControl Name="legend">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,10,2">
+                                    <Border Width="12" Height="12" Background="{Binding Swatch}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"/>
+                                    <TextBlock Margin="4,0,0,0" Text="{Binding Label}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DockPanel>
+
+                <!-- One scrollbar for all columns. Each top level field is a small tree of its own, so the columns can be as many as fit. -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl Name="regionList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TreeView Width="330" Margin="0,0,12,0" BorderThickness="0" Background="Transparent" ItemsSource="{Binding}"
+                                          ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="TreeViewItem">
+                                            <EventSetter Event="Selected" Handler="RegionSelected"/>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                    <TreeView.ItemTemplate>
+                                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="12" Height="12" Margin="0,0,6,0" Background="{Binding Swatch}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"/>
+                                                <TextBlock Text="{Binding Label}"/>
+                                                <TextBlock Margin="6,0,0,0" Foreground="{DynamicResource MutedBrush}" Text="{Binding Range}"/>
+                                            </StackPanel>
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <DataGrid Name="bytesGrid"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserResizeRows="False"
+                  CanUserSortColumns="False"
+                  SelectionMode="Extended"
+                  SelectionUnit="CellOrRowHeader"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="All"
+                  RowHeaderWidth="0"
+                  SelectedCellsChanged="BytesGridSelectedCellsChanged"
+                  CurrentCellChanged="BytesGridCurrentCellChanged"
+                  BeginningEdit="BytesGridBeginningEdit"
+                  CellEditEnding="BytesGridCellEditEnding"/>
+    </DockPanel>
+</UserControl>

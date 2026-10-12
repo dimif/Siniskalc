@@ -1,0 +1,348 @@
+<Page x:Class="Siniskalc.Views.CastlePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Siniskalc.Views"
+      xmlns:vm="clr-namespace:Siniskalc.ViewModels"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="CastlePage">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <!-- A panel of a tab: hidden unless the tab with its number is the picked one. -->
+        <Style x:Key="TabPanelBase" TargetType="FrameworkElement">
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+        <Style x:Key="TabPanel0" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="0">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabPanel1" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="1">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabPanel2" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="2">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabPanel3" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="3">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TabPanel4" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="4">
+                    <Setter Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
+        <Style x:Key="CardsScrollerStyle" TargetType="ScrollViewer">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="4">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- A hero in the castle, on the title row: its role, and its name, which opens the hero. -->
+        <DataTemplate x:Key="CastleHeroTemplate" DataType="{x:Type vm:CastleHeroRowViewModel}">
+            <StackPanel Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Bottom">
+                <TextBlock VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding Role, StringFormat={}{0}:}"/>
+                <Button Style="{StaticResource LinkButtonStyle}" Margin="6,0,0,0" VerticalAlignment="Bottom" FontSize="14" Command="{Binding OpenCommand}" Content="{Binding Name}"
+                        ToolTip="Open this hero"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- A creature level: the dwelling that serves it with its state, and the creatures waiting in it on the right. -->
+        <DataTemplate x:Key="DwellingRowTemplate" DataType="{x:Type vm:DwellingRowViewModel}">
+            <DockPanel Margin="0,3">
+                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" Value="{Binding Count}" Minimum="0" Maximum="{Binding Maximum}"
+                               ToolTip="How many creatures wait in this dwelling">
+                    <wpf:Stepper.Style>
+                        <Style TargetType="wpf:Stepper">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CanEdit}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </wpf:Stepper.Style>
+                </wpf:Stepper>
+                <TextBlock DockPanel.Dock="Left" Width="22" Foreground="{StaticResource MutedBrush}" Text="{Binding Level}"/>
+                <StackPanel>
+                    <TextBlock x:Name="dwelling" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding CreatureNames}"/>
+                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0" Text="{Binding State}"/>
+                </StackPanel>
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsBuilt}" Value="True">
+                    <Setter TargetName="dwelling" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    <Setter TargetName="dwelling" Property="FontWeight" Value="SemiBold"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- A spell level of the mage guild and how many spells it holds. -->
+        <DataTemplate x:Key="MageGuildLevelTemplate" DataType="{x:Type vm:MageGuildLevelRowViewModel}">
+            <StackPanel Margin="0,3">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Margin="12,0,0,0" x:Name="spells" Foreground="{StaticResource MutedBrush}" Text="{Binding SpellsText}"/>
+                    <TextBlock x:Name="level" Foreground="{StaticResource MutedBrush}" Text="{Binding Level, StringFormat='Level {0}'}"/>
+                </DockPanel>
+                <ItemsControl Margin="0,2,0,0" ItemsSource="{Binding Slots}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:MageGuildSpellSlotViewModel}">
+                            <ComboBox Margin="0,0,6,4" MinWidth="130" FontSize="11" ItemsSource="{Binding Choices}" DisplayMemberPath="Name" SelectedItem="{Binding Spell}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsBuilt}" Value="True">
+                    <Setter TargetName="level" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    <Setter TargetName="level" Property="FontWeight" Value="SemiBold"/>
+                    <Setter TargetName="spells" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- A building: a tick when it is built, its name, and under it what it needs or a note when that is missing. -->
+        <DataTemplate x:Key="BuildingRowTemplate" DataType="{x:Type vm:BuildingRowViewModel}">
+            <DockPanel Margin="0,3" x:Name="row">
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChild}" Value="True">
+                                <Setter Property="Margin" Value="22,3,0,3"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+                <TextBlock DockPanel.Dock="Right" Margin="12,0,0,0" Foreground="{StaticResource MutedBrush}" Text="{Binding Creatures}"/>
+                <Button DockPanel.Dock="Right" Margin="12,0,0,0" VerticalAlignment="Top" Command="{Binding ToggleAllowedCommand}"
+                        Content="{Binding AllowText}" ToolTip="{Binding AllowToolTip}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource LinkButtonStyle}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CanSetAllowed}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <CheckBox DockPanel.Dock="Left" Width="24" Margin="0,2,0,0" VerticalAlignment="Top" IsChecked="{Binding IsChecked}" IsEnabled="{Binding CanToggle}"
+                          ToolTip="{Binding ToggleToolTip}" ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="{Binding Name}"/>
+                <StackPanel>
+                    <TextBlock x:Name="name" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding Name}"/>
+                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,0" TextWrapping="Wrap" Text="{Binding Requirements}"/>
+                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Warning}"/>
+                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" Text="{Binding Note}"/>
+                </StackPanel>
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsDisabled}" Value="True">
+                    <Setter TargetName="row" Property="Opacity" Value="0.5"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsBuilt}" Value="True">
+                    <Setter TargetName="name" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    <Setter TargetName="name" Property="FontWeight" Value="SemiBold"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BuildingGroupTemplate" DataType="{x:Type vm:BuildingGroupViewModel}">
+            <Border Style="{StaticResource CardStyle}" Width="330">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8">
+                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding Summary}"/>
+                        <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="{Binding Title}"/>
+                    </DockPanel>
+                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource BuildingRowTemplate}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="16,14,16,4">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Width="14" Height="14" Margin="0,0,10,0" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
+                <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14">
+                    <Run Text="{Binding FactionText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding OwnerText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding PositionText, Mode=OneWay}"/>
+                </TextBlock>
+                <Border Margin="12,0,0,4" Padding="6,1" VerticalAlignment="Bottom" CornerRadius="9" Background="{StaticResource AccentSoftBrush}"
+                        ToolTip="This town has changes that are not saved yet">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
+                </Border>
+                <Button Margin="6,0,0,4" VerticalAlignment="Bottom" Content="Reset" Command="{Binding ResetCommand}"
+                        ToolTip="Put everything in this town (owner, garrison, buildings, creatures and Mage Guild) back to what the savegame had">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="FontWeight" Value="Normal"/>
+                        <Setter Property="Padding" Value="5,0"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <!-- The heroes in the castle, read only: moving a hero in or out of a castle changes the hero, the player and the castle together. -->
+                <ItemsControl Margin="24,0,0,3" VerticalAlignment="Bottom" ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource CastleHeroTemplate}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource FieldNoteStyle}">
+                <Run Text="{Binding StatusText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding ShipyardText, Mode=OneWay}"/>
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <TextBlock Text="Owner" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
+                <ComboBox Width="130" Margin="8,0,0,0" ItemsSource="{Binding OwnerChoices}" SelectedItem="{Binding SelectedOwner}"
+                          ToolTip="Who owns the town"/>
+            </StackPanel>
+            <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- The pages of a castle, as tabs. -->
+        <ListBox Grid.Row="1" x:Name="tabs" SelectionMode="Single" SelectedIndex="0"
+                 Margin="16,0" BorderThickness="0,0,0,1" BorderBrush="{StaticResource LineBrush}" Background="Transparent"
+                 ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <wpf:NavButton Text="Buildings"/>
+            <wpf:NavButton Text="Garrison"/>
+            <wpf:NavButton Text="Available creatures"/>
+            <wpf:NavButton Text="Mage guild"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+        </ListBox>
+
+        <!-- Hex -->
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
+
+        <ScrollViewer Grid.Row="2" Style="{StaticResource CardsScrollerStyle}" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <Grid Margin="8,4,8,16">
+                <!-- Buildings -->
+                <StackPanel Style="{StaticResource TabPanel0}">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <CheckBox VerticalAlignment="Center" Content="Can build this turn" IsChecked="{Binding CanBuildThisTurn}"
+                                  ToolTip="Whether a building can still be built in this town today. The game allows one building per town per day."/>
+                        <TextBlock Margin="16,0,0,0" VerticalAlignment="Center" Style="{StaticResource FieldNoteStyle}" Text="{Binding BuildingsSummary}"/>
+                    </StackPanel>
+                    <ItemsControl Margin="-6,0,0,0" ItemsSource="{Binding BuildingGroups}" ItemTemplate="{StaticResource BuildingGroupTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <TextBlock Margin="0,16,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                               Text="Buildings not allowed by the map are marked and dimmed."/>
+                </StackPanel>
+
+                <!-- Garrison: the same army editor as the creatures of a hero. -->
+                <StackPanel Style="{StaticResource TabPanel1}">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8" Visibility="{Binding HasGarrisonedHero, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Style="{StaticResource LinkButtonStyle}" VerticalAlignment="Center" Command="{Binding OpenGarrisonedHeroCommand}"
+                                Content="{Binding GarrisonedHeroName}" ToolTip="Open this hero"/>
+                        <TextBlock Margin="4,0,0,0" VerticalAlignment="Center" Style="{StaticResource FieldNoteStyle}" Text="is garrisoned here"/>
+                    </StackPanel>
+                    <local:ArmyEditor DataContext="{Binding GarrisonEditor}"/>
+                </StackPanel>
+
+                <!-- Available creatures -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+                    <Border Style="{StaticResource CardStyle}" Width="330">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding DwellingsSummary}"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="Available creatures"/>
+                            </DockPanel>
+                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingRowTemplate}"/>
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+
+                <!-- Mage guild -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
+                    <Border Style="{StaticResource CardStyle}" Width="330">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding MageGuildSummary}"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="Mage guild"/>
+                            </DockPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock Text="Level" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
+                                <ComboBox Width="80" Margin="8,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding MageGuildLevelChoices}" SelectedItem="{Binding SelectedMageGuildLevel}"
+                                          ToolTip="Builds the Mage Guild up to this level, or removes the levels above it"/>
+                            </DockPanel>
+                            <ItemsControl ItemsSource="{Binding MageGuildLevels}" ItemTemplate="{StaticResource MageGuildLevelTemplate}"/>                            
+                        </StackPanel>
+                    </Border>
+                </WrapPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

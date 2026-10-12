@@ -1,0 +1,180 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Siniskalc\Siniskalc.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\TestData\Heroes\*.bin" Link="TestData\Heroes\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\empire_of_the_world_01_m5w4d6.GM1" Link="TestData\Hota\empire_of_the_world_01_m5w4d6.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\empire_of_the_world_02_m5w4d6_purple_gifts_red.GM1" Link="TestData\Hota\empire_of_the_world_02_m5w4d6_purple_gifts_red.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\players_human_red.GM1" Link="TestData\Hota\players_human_red.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\players_human_tan.GM1" Link="TestData\Hota\players_human_tan.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\tan_not_parsing.GM1" Link="TestData\Hota\tan_not_parsing.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\cannot_edit_town_spells.GM1" Link="TestData\Hota\cannot_edit_town_spells.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\players_human_red_and_tan.GM2" Link="TestData\Hota\players_human_red_and_tan.GM2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\castles_00_baseline.GM1" Link="TestData\Hota\castles_00_baseline.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\map_difficulty_edited_to_expert.GM1" Link="TestData\Hota\map_difficulty_edited_to_expert.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\castles_01_blacksmith_garrison_tumlac_to_blue.GM1" Link="TestData\Hota\castles_01_blacksmith_garrison_tumlac_to_blue.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\castles_02_cloud_temple.GM1" Link="TestData\Hota\castles_02_cloud_temple.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_baseline.GM1" Link="TestData\Hota\Cove\cove_inland_baseline.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_pub.GM1" Link="TestData\Hota\Cove\cove_inland_pub.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_nest.GM1" Link="TestData\Hota\Cove\cove_inland_nest.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_upg_nymph_waterfall.GM1" Link="TestData\Hota\Cove\cove_inland_upg_nymph_waterfall.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_upg_shack.GM1" Link="TestData\Hota\Cove\cove_inland_upg_shack.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_all_cheat.GM1" Link="TestData\Hota\Cove\cove_inland_all_cheat.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_nix_fort.GM1" Link="TestData\Hota\Cove\cove_inland_nix_fort.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_tower_of_the_seas.GM1" Link="TestData\Hota\Cove\cove_inland_tower_of_the_seas.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_roost.GM1" Link="TestData\Hota\Cove\cove_inland_roost.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_thieves_guild.GM1" Link="TestData\Hota\Cove\cove_inland_thieves_guild.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_blacksmith.GM1" Link="TestData\Hota\Cove\cove_inland_blacksmith.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_frigate.GM1" Link="TestData\Hota\Cove\cove_inland_frigate.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_marketplace.GM1" Link="TestData\Hota\Cove\cove_inland_marketplace.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_grotto.GM1" Link="TestData\Hota\Cove\cove_inland_grotto.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_without_maelstrom.GM1" Link="TestData\Hota\Cove\cove_inland_without_maelstrom.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_inland_maelstrom.GM1" Link="TestData\Hota\Cove\cove_inland_maelstrom.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\neutral_cove_and_factory_castles.GM1" Link="TestData\Hota\Cove\neutral_cove_and_factory_castles.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_01_before_shipyard.GM1" Link="TestData\Hota\Cove\cove_coastal_01_before_shipyard.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_02_shipyard.GM1" Link="TestData\Hota\Cove\cove_coastal_02_shipyard.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_03_shack.GM1" Link="TestData\Hota\Cove\cove_coastal_03_shack.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_04_pub.GM1" Link="TestData\Hota\Cove\cove_coastal_04_pub.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_05_visiting_hero.GM1" Link="TestData\Hota\Cove\cove_coastal_05_visiting_hero.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Cove\cove_coastal_06_garrisoned_hero.GM1" Link="TestData\Hota\Cove\cove_coastal_06_garrisoned_hero.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Arts\*.GM1" Link="TestData\Hota\Arts\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Factory\*.GM1" Link="TestData\Hota\Factory\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Rampart\*.GM1" Link="TestData\Hota\Rampart\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Bulwark\*.GM1" Link="TestData\Hota\Bulwark\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\OtherFactions\*.GM1" Link="TestData\Hota\OtherFactions\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\SleepGarrisonVisiting\*.GM1" Link="TestData\Hota\SleepGarrisonVisiting\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Sod\*.GM1" Link="TestData\Sod\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Sod\Hotseat\*.GM2" Link="TestData\Sod\Hotseat\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Roe\*.GM1" Link="TestData\Roe\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\bios_standard.GM1" Link="TestData\Hota\bios_standard.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\bios_custom.GM1" Link="TestData\Hota\bios_custom.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\new_day_01_m5w4d7.GM1" Link="TestData\Hota\new_day_01_m5w4d7.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\new_day_02_m6w1d1.GM1" Link="TestData\Hota\new_day_02_m6w1d1.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\new_day_03_m6w1d2.GM1" Link="TestData\Hota\new_day_03_m6w1d2.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+</Project>

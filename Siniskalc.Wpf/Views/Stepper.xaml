@@ -1,0 +1,28 @@
+<UserControl x:Class="Siniskalc.Wpf.Views.Stepper"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="28" d:DesignWidth="140"
+             Focusable="False">
+    <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="3" Background="White" SnapsToDevicePixels="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="box" Grid.Column="0" BorderThickness="0" Width="Auto" Margin="0" Padding="6,3"
+                     HorizontalContentAlignment="Right" VerticalContentAlignment="Center"
+                     FontFamily="Consolas" FontSize="13" InputScope="Default"
+                     LostFocus="BoxLostFocus" PreviewKeyDown="BoxPreviewKeyDown" GotKeyboardFocus="BoxGotKeyboardFocus"/>
+            <RepeatButton x:Name="down" Grid.Column="1" Content="−" Width="24" BorderThickness="1,0,0,0" BorderBrush="{StaticResource LineBrush}"
+                          Background="{StaticResource PanelBrush}" Foreground="{StaticResource MutedBrush}" Focusable="False" Click="DownClick"
+                          ToolTip="Decrease (hold Shift to step by ten)" AutomationProperties.Name="Decrease"/>
+            <RepeatButton x:Name="up" Grid.Column="2" Content="+" Width="24" BorderThickness="1,0,0,0" BorderBrush="{StaticResource LineBrush}"
+                          Background="{StaticResource PanelBrush}" Foreground="{StaticResource MutedBrush}" Focusable="False" Click="UpClick"
+                          ToolTip="Increase (hold Shift to step by ten)" AutomationProperties.Name="Increase"/>
+        </Grid>
+    </Border>
+</UserControl>

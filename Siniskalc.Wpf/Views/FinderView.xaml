@@ -1,0 +1,66 @@
+<UserControl x:Class="Siniskalc.Wpf.Views.FinderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:Siniskalc.Wpf.ViewModels"
+             xmlns:local="clr-namespace:Siniskalc.Wpf.Views"
+             x:Name="root"
+             mc:Ignorable="d" d:DesignWidth="760">
+    <!-- A search box, drop-down filters and a grouped list of rows. DataContext is a FinderViewModel, which says which columns there are. -->
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="{Binding Title}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource CardHeadingStyle}">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+            <local:SearchBox Width="260" Margin="0,0,16,0"
+                             Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}" Placeholder="{Binding SearchPlaceholder}" ToolTip="{Binding SearchHint}"/>
+            <ContentPresenter Content="{Binding ToolbarContent, ElementName=root}" VerticalAlignment="Center"/>
+        </WrapPanel>
+
+        <TextBlock DockPanel.Dock="Top" Margin="0,0,0,8" Style="{StaticResource MutedTextStyle}" TextWrapping="Wrap" Text="{Binding Summary}"/>
+
+        <Grid x:Name="header" DockPanel.Dock="Top" Margin="8,0,24,2"/>
+
+        <TextBlock x:Name="footer" DockPanel.Dock="Bottom" Margin="0,8,0,0" Text="{Binding Footer}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource MutedTextStyle}">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <ListBox x:Name="list" ItemsSource="{Binding Items}" MaxHeight="{Binding ListMaxHeight, ElementName=root}" Background="Transparent"
+                 BorderThickness="0,1,0,0" BorderBrush="{StaticResource LineBrush}"
+                 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 MouseDoubleClick="ListDoubleClick" ContextMenuOpening="ListContextMenuOpening">
+            <ListBox.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,10,0,2" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListBox.GroupStyle>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Focusable" Value="False"/>
+                    <Setter Property="Padding" Value="4,1"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </DockPanel>
+</UserControl>

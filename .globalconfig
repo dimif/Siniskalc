@@ -1,0 +1,10 @@
+is_global = true
+
+# StyleCop: the file header rule is not used in this repository.
+dotnet_diagnostic.SA1633.severity = none
+
+# IDE0003: Remove qualification. `this.` is used on purpose.
+dotnet_diagnostic.IDE0003.severity = none
+
+# SA1615: Element return value should be documented. Not required here.
+dotnet_diagnostic.SA1615.severity = none

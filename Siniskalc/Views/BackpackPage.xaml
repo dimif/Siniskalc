@@ -1,0 +1,65 @@
+﻿<Page x:Class="Siniskalc.Views.BackpackPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Siniskalc.Views"
+      mc:Ignorable="d"
+      d:DesignHeight="450"
+      d:DesignWidth="800"
+      Title="BackpackPage">
+
+    <ScrollViewer>
+        <StackPanel>
+            <GroupBox Header="Backpack">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TabControl Grid.Row="0">
+                        <TabItem Header="1-32">
+                            <ItemsControl ItemsSource="{Binding Slots1To32}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4" Rows="8" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="4">
+                                            <Label Content="{Binding SlotLabel}" />
+                                            <local:ArtifactSlotPicker DataContext="{Binding Picker}" Width="170" HorizontalAlignment="Left" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+                        <TabItem Header="33-64">
+                            <ItemsControl ItemsSource="{Binding Slots33To64}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4" Rows="8" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="4">
+                                            <Label Content="{Binding SlotLabel}" />
+                                            <local:ArtifactSlotPicker DataContext="{Binding Picker}" Width="170" HorizontalAlignment="Left" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+                    </TabControl>
+                    <local:ArtifactInfoView Grid.Row="1" Margin="0,8,0,0" HorizontalAlignment="Stretch" />
+                </Grid>
+            </GroupBox>
+            <Border Style="{StaticResource CardStyle}">
+                <wpf:FinderView DataContext="{Binding Finder}"/>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

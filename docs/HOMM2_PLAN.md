@@ -74,11 +74,11 @@ The user copies them to the save folder of HoMM2, loads each and ticks the READM
 - an edit loads but shows something else: the model or the layout of that field is wrong;
 - all load and show what was written: the format is safe to edit, and Phase 6 can go ahead.
 
-## Phase 5: read-only viewer
+## Phase 5: read-only viewer (in progress)
 
-- Done: `Homm2Module` is registered in the host, so detection, the recent files and the window title work for both games; the hex viewer works (`Homm2SaveRegionProvider`); the first view shows the map, the date and the players.
-- Left: the pages of the player (resources, incomes, castles, heroes), the hero (everything above, read-only) and the castle (buildings, dwellings, garrison), with the hex tab of each (`HexEditor` byte edit targets for the three records).
-- Navigation tree for HoMM2: players, then their heroes and castles.
+- Done: `Homm2Module` is registered in the host, so detection, the recent files and the window title work for both games; the hex viewer works (`Homm2SaveRegionProvider`).
+- Done: the UX follows the HoMM3 editor. `Homm2EditorView` has the search box and the navigation tree (`Homm2NavigationTree`: game, a node per player with its "Heroes" and "Towns" groups, "Neutral" for what nobody owns; nodes show the race and level, the hero that is in a town, a dot for unsaved edits), and a frame with the page of what is picked. Pages (each a `Homm2PageViewModel` with tabs, an "edited" mark and a Reset pill): the overview (map, scenario, players that open their page), the player (Resources with the daily income, Heroes with the tavern, Towns), the hero (General, Skills, Creatures, Spells, Artifacts) and the castle (General, Buildings with dwellings, Creatures, Mage Guild). Heroes and towns link to each other.
+- Left: the hex tab of each page (byte edit targets for the three records), `IsValidSavegameName` for the 8-character names, the game-neutral navigation tree (the HoMM3 and HoMM2 trees are two copies; the HoMM3 one was left unchanged).
 
 ## Phase 6: editing (heroes and resources)
 

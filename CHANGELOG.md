@@ -5,7 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
-- **Heroes of Might and Magic II** (work in progress): the new project `Siniskalc.Homm2` reads and writes the savegames of the base game (`.GM1`) and of the Price of Loyalty (`.GX1`): heroes, players and castles, with undo and pending changes. The application opens them next to the HoMM3 ones: the shell picks the game from the file and the window title follows it. For now the editor shows an overview (map, date, players); the pages that edit them come next. The format is in `docs/HOMM2_SAVE_FORMAT.md` (2026-10-12).
+- **Heroes of Might and Magic II** (work in progress): the new project `Siniskalc.Homm2` reads and writes the savegames of the base game (`.GM1`) and of the Price of Loyalty (`.GX1`): heroes, players and castles, with undo and pending changes. The application opens them next to the HoMM3 ones: the shell picks the game from the file and the window title follows it. The editor has the same layout as the HoMM3 one (navigation tree of players, heroes and towns, tabs, "edited" marks and Reset); for now its pages only show the savegame, the editing comes next. The format is in `docs/HOMM2_SAVE_FORMAT.md` (2026-10-12).
 - `RawSavefileCodec` in `Siniskalc.Core` reads and writes a savegame that is not compressed.
 
 - The HoMM3 code moved from the exe into the library `Siniskalc.Homm3` (namespaces `Siniskalc.Homm3.*`), and its tests into `Siniskalc.Homm3.Tests`; the exe `Siniskalc` keeps `App` and `AppServices`. No change in behaviour (2026-10-12).

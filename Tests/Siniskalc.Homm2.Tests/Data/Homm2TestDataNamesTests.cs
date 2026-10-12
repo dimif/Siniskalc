@@ -18,7 +18,12 @@ namespace Siniskalc.Homm2.Tests.Data
         [GeneratedRegex("^(?<series>[a-z][a-z0-9_]*?)_(?<number>[0-9]{2})(?<branch>[a-z]?)(_|$)")]
         private static partial Regex Numbered();
 
-        private static IEnumerable<string> Files() => Directory.GetFiles(Path.Combine("TestData", "Homm2"), "*.*", SearchOption.AllDirectories);
+        // The saves of the write test (Homm2EditedSaves) are generated into out/, are not in the repository, and are named for the game's 8 character limit.
+        private static IEnumerable<string> Files() => Directory.GetFiles(Path.Combine("TestData", "Homm2"), "*.*", SearchOption.AllDirectories).Where(f => !IsGenerated(f));
+
+        private static IEnumerable<string> Folders() => Directory.GetDirectories(Path.Combine("TestData", "Homm2"), "*", SearchOption.AllDirectories).Where(d => !IsGenerated(d));
+
+        private static bool IsGenerated(string path) => path.Split(Path.DirectorySeparatorChar).Contains("out");
 
         [Test]
         public void EverySavefileIsNamedInLowerCaseSnakeCase()
@@ -39,7 +44,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void EveryFolderIsNamedInPascalCase()
         {
-            var bad = Directory.GetDirectories(Path.Combine("TestData", "Homm2"), "*", SearchOption.AllDirectories).Where(d => !PascalCase().IsMatch(Path.GetFileName(d))).ToList();
+            var bad = Folders().Where(d => !PascalCase().IsMatch(Path.GetFileName(d))).ToList();
 
             Assert.That(bad, Is.Empty);
         }
@@ -61,7 +66,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void EverySaveOfASeriesIsNumberedAndTheSeriesFolderHoldsOnlyItsSaves()
         {
-            foreach (var folder in Directory.GetDirectories(Path.Combine("TestData", "Homm2")))
+            foreach (var folder in Directory.GetDirectories(Path.Combine("TestData", "Homm2")).Where(d => !IsGenerated(d)))
             {
                 var saves = Directory.GetFiles(folder);
 

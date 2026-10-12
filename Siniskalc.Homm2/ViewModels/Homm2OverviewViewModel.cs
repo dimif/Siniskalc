@@ -18,14 +18,13 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private readonly Homm2Game game;
 
-        public Homm2OverviewViewModel(Homm2Game game)
+        public Homm2OverviewViewModel(Homm2Game game, Action<Homm2Color> openPlayer)
         {
             this.game = game;
+            this.OpenPlayerCommand = new DelegateCommand(color => openPlayer((Homm2Color)color!));
             this.game.History.Changed += this.OnHistoryChanged;
             this.Refresh();
         }
-
-        public void Dispose() => this.game.History.Changed -= this.OnHistoryChanged;
 
         public string MapName => this.game.Map.Name;
 
@@ -36,6 +35,11 @@ namespace Siniskalc.Homm2.ViewModels
         public string Version => this.game.GameVersion == Homm2GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
 
         public string Date => this.game.Date.ToString();
+
+        /// <summary>
+        /// Gets the command that shows the page of a player; its parameter is the colour of the player.
+        /// </summary>
+        public System.Windows.Input.ICommand OpenPlayerCommand { get; }
 
         public IReadOnlyList<Homm2PlayerSummary> Players { get; private set; } = [];
 
@@ -60,6 +64,8 @@ namespace Siniskalc.Homm2.ViewModels
                 .ToList();
             this.RaisePropertyChanged(nameof(this.Players));
         }
+
+        public void Dispose() => this.game.History.Changed -= this.OnHistoryChanged;
 
         private static string StatusOf(Homm2PlayerModel player) => player.IsOut
             ? "out of the game"

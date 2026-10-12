@@ -1,9 +1,8 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Windows.Input;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -14,29 +13,17 @@
     /// Learned spells are the hero's spell book, and can be edited. Available spells come from artifacts; the game
     /// works them out, so they are only shown.
     /// </summary>
-    public sealed class SpellsViewModel : PageViewModelBase
+    public sealed class SpellsViewModel : SpellsViewModelBase<SpellRowViewModel>
     {
         private readonly Func<SpellBook> getSpellBook;
         private readonly Action<Func<SpellBook, SpellBook>> update;
-        private readonly List<SpellRowViewModel> rows;
-        private bool isRefreshing;
 
         public SpellsViewModel(GameVersion gameVersion, Func<SpellBook> getSpellBook, Action<Func<SpellBook, SpellBook>> update)
-            : base("Spells")
+            : base(learned => CreateRows(gameVersion, learned))
         {
             this.getSpellBook = getSpellBook;
             this.update = update;
-
-            // Spells are listed by school, and inside a school by level.
-            this.rows = Spell.All
-                .Where(s => s.IsAvailableIn(gameVersion))
-                .Select(s => new SpellRowViewModel(s, this.OnLearnedChanged))
-                .OrderBy(r => r.Spell.School).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
-                .ToList();
-            this.Finder = new SpellFinderViewModel(this.rows);
-
-            this.LearnAllCommand = new DelegateCommand(_ => this.SetLearned(true), _ => this.HasSpellBook);
-            this.ForgetAllCommand = new DelegateCommand(_ => this.SetLearned(false), _ => this.HasSpellBook);
+            this.Finder = new SpellFinderViewModel(this.Rows);
 
             this.Refresh();
         }
@@ -44,81 +31,38 @@
         /// <summary>
         /// Gets the list of spells, grouped by school and narrowed by its search text and level.
         /// </summary>
-        public SpellFinderViewModel Finder { get; }
-
-        public ICommand LearnAllCommand { get; }
-
-        public ICommand ForgetAllCommand { get; }
-
-        /// <summary>
-        /// Gets or sets whether the hero carries a spell book. Without one, learned spells have no effect.
-        /// </summary>
-        public bool HasSpellBook
-        {
-            get => this.getSpellBook().HasSpellBook;
-            set
-            {
-                if (!this.isRefreshing && value != this.HasSpellBook)
-                {
-                    this.update(book => book.WithHasSpellBook(value));
-                }
-            }
-        }
+        public override SpellFinderViewModel Finder { get; }
 
         /// <summary>
         /// Gets whether the spell book can be added or taken away. It cannot while an artifact such as Titan's Thunder gives the hero one.
         /// </summary>
-        public bool CanChangeSpellBook => !this.getSpellBook().IsSpellBookGranted;
+        public override bool CanChangeSpellBook => !this.getSpellBook().IsSpellBookGranted;
 
-        /// <summary>
-        /// Shows the hero's spells again. Call after they changed.
-        /// </summary>
-        public void Refresh()
+        public override string SpellBookNote => "Without a spell book the hero cannot cast the learned spells. An artifact such as Titan's Thunder gives one.";
+
+        protected override bool ReadHasSpellBook() => this.getSpellBook().HasSpellBook;
+
+        protected override void WriteHasSpellBook(bool value) => this.update(book => book.WithHasSpellBook(value));
+
+        protected override void ShowRow(SpellRowViewModel row)
         {
             var book = this.getSpellBook();
-
-            this.isRefreshing = true;
-            try
-            {
-                foreach (var row in this.rows)
-                {
-                    row.Show(book.IsLearned(row.Spell), book.IsAvailable(row.Spell), book.Source(row.Spell));
-                }
-
-                this.RaiseAllPropertiesChanged();
-            }
-            finally
-            {
-                this.isRefreshing = false;
-            }
-
-            this.Finder.Refresh();
+            row.Show(book.IsLearned(row.Spell), book.IsAvailable(row.Spell), book.Source(row.Spell));
         }
 
-        private void OnLearnedChanged(Spell spell, bool learned)
+        protected override void SetLearned(IReadOnlyList<SpellRowViewModel> rows, bool learned)
         {
-            if (this.isRefreshing)
-            {
-                return;
-            }
-
-            // Ticking a selected spell does the same to every spell that is selected (and shown).
-            var spells = new List<Spell> { spell };
-            if (this.rows.Any(r => r.Spell == spell && r.IsSelected))
-            {
-                spells.AddRange(this.Finder.Items.Cast<SpellRowViewModel>().Where(r => r.IsSelected && r.Spell != spell).Select(r => r.Spell));
-            }
-
+            var spells = rows.Select(r => r.Spell).ToList();
             this.update(book => book.WithLearned(spells, learned));
         }
 
         /// <summary>
-        /// Learns or forgets the spells the list shows, so a filter narrows what "all" means.
+        /// Lists spells by school, and inside a school by level.
         /// </summary>
-        private void SetLearned(bool learned)
-        {
-            var spells = this.Finder.Items.Cast<SpellRowViewModel>().Select(r => r.Spell).ToList();
-            this.update(book => book.WithLearned(spells, learned));
-        }
+        private static IReadOnlyList<SpellRowViewModel> CreateRows(GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => Spell.All
+            .Where(s => s.IsAvailableIn(gameVersion))
+            .Select(s => new SpellRowViewModel(s, learned))
+            .OrderBy(r => r.Spell.School).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
+            .ToList();
     }
 }

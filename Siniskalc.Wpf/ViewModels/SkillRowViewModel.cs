@@ -1,8 +1,7 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Windows.Input;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One skill in the list of every secondary skill: its level, and whether the hero screen shows it.
@@ -10,7 +9,7 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class SkillRowViewModel : AbstractViewModelBase
     {
         private readonly Action<string, string> onLevelChosen;
-        private string levelName = SkillLevelNames.None;
+        private string levelName = SkillLevelText.None;
         private int slot = -1;
         private bool canShow;
 
@@ -47,7 +46,7 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
-        public bool HasSkill => this.levelName != SkillLevelNames.None;
+        public bool HasSkill => this.levelName != SkillLevelText.None;
 
         public bool IsInSlot => this.slot >= 0;
 

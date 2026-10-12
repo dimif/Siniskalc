@@ -62,5 +62,21 @@ namespace Siniskalc.Homm2.Tests.Models
 
             Assert.That(maximus.WithArtifact(Homm2Artifact.IceCloak).WithArtifact(Homm2Artifact.AmmoCart).PrimarySkills, Is.EqualTo(maximus.PrimarySkills));
         }
+
+        [Test]
+        public void SecondarySkillsCanBeSwappedReplacedAndRemovedBySlot()
+        {
+            var skills = new Homm2SecondarySkills(
+            [
+                new Homm2SkillEntry(Homm2SecondarySkill.Archery, Homm2SkillLevel.Basic),
+                new Homm2SkillEntry(Homm2SecondarySkill.Wisdom, Homm2SkillLevel.Expert),
+                new Homm2SkillEntry(Homm2SecondarySkill.Luck, Homm2SkillLevel.Advanced),
+            ]);
+
+            Assert.That(skills.Swap(0, 2).Entries.Select(e => e.Skill), Is.EqualTo(new[] { Homm2SecondarySkill.Luck, Homm2SecondarySkill.Wisdom, Homm2SecondarySkill.Archery }));
+            Assert.That(skills.WithoutSlot(1).Entries.Select(e => e.Skill), Is.EqualTo(new[] { Homm2SecondarySkill.Archery, Homm2SecondarySkill.Luck }));
+            Assert.That(skills.WithSkillInSlot(1, Homm2SecondarySkill.Mysticism).Entries[1], Is.EqualTo(new Homm2SkillEntry(Homm2SecondarySkill.Mysticism, Homm2SkillLevel.Expert)));
+            Assert.That(skills.WithSkillInSlot(1, Homm2SecondarySkill.Luck), Is.EqualTo(skills), "a skill the hero has already is not put twice");
+        }
     }
 }

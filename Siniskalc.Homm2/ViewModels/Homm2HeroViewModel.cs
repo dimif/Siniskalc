@@ -20,8 +20,6 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Homm2HeroEditSession session;
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> facts;
-        private IReadOnlyList<Homm2FactRow> skills = [];
-        private IReadOnlyList<Homm2FactRow> spells = [];
         private IReadOnlyList<Homm2FactRow> artifacts = [];
         private string castleName = string.Empty;
         private int castleIndex = -1;
@@ -50,6 +48,14 @@ namespace Siniskalc.Homm2.ViewModels
                 game.GameVersion,
                 () => this.session.Current.Army,
                 edit => this.session.Update(h => h with { Army = edit(h.Army) }));
+            this.SkillsEditor = new Homm2SecondarySkillsViewModel(
+                game.GameVersion,
+                () => this.session.Current.SecondarySkills,
+                edit => this.session.Update(h => h with { SecondarySkills = edit(h.SecondarySkills) }));
+            this.SpellsEditor = new Homm2SpellsViewModel(
+                game.GameVersion,
+                () => this.session.Current,
+                edit => this.session.Update(edit));
             this.RestoreMovementCommand = new DelegateCommand(_ => this.session.Update(h => h with { MovementLeft = h.MaxMovement }), _ => this.hero.MovementLeft != this.hero.MaxMovement);
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
@@ -88,22 +94,24 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<AmountRowViewModel> Facts => this.facts;
 
-        public IReadOnlyList<Homm2FactRow> Skills => this.skills;
+        /// <summary>
+        /// Gets the secondary skills of the hero: the slots of the hero screen and the list of every skill.
+        /// </summary>
+        public Homm2SecondarySkillsViewModel SkillsEditor { get; }
 
         /// <summary>
         /// Gets the army of the hero: its slots and the finder of creatures.
         /// </summary>
         public Homm2ArmyViewModel ArmyEditor { get; }
 
-        public IReadOnlyList<Homm2FactRow> Spells => this.spells;
+        /// <summary>
+        /// Gets the spells of the hero: the spell book and the list of every spell.
+        /// </summary>
+        public Homm2SpellsViewModel SpellsEditor { get; }
 
         public IReadOnlyList<Homm2FactRow> Artifacts => this.artifacts;
 
-        public bool HasSkills => this.hero.SecondarySkills.Count > 0;
-
         public bool HasSpellBook => this.hero.HasSpellBook;
-
-        public bool HasSpells => this.hero.Spells.Count > 0;
 
         public bool HasArtifacts => this.hero.Artifacts.Slots.Any(a => a != null);
 
@@ -118,15 +126,9 @@ namespace Siniskalc.Homm2.ViewModels
                 row.Refresh();
             }
 
-            this.skills = hero.SecondarySkills.Entries
-                .Select(e => new Homm2FactRow(e.Skill.Name, e.Level.ToString()))
-                .ToList();
-
             this.ArmyEditor?.Refresh();
-
-            this.spells = hero.Spells.Spells
-                .Select(s => new Homm2FactRow(s.Name, $"{s.SpellPoints} spell points"))
-                .ToList();
+            this.SkillsEditor?.Refresh();
+            this.SpellsEditor?.Refresh();
 
             this.artifacts = hero.Artifacts.Slots
                 .Where(a => a != null)

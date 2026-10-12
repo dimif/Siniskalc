@@ -1,9 +1,8 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Linq;
     using System.Windows.Input;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One of the slots the hero screen shows a secondary skill in. A slot is either filled or free.
@@ -13,7 +12,7 @@
         private readonly Action<int, string> onSkillChosen;
         private readonly Action<int, string> onLevelChosen;
         private string? skillName;
-        private string levelName = SkillLevelNames.Basic;
+        private string levelName = SkillLevelText.Basic;
         private bool canMoveUp;
         private bool canMoveDown;
 
@@ -90,7 +89,7 @@
         /// <summary>
         /// Gets three flags, one per level step, for the row of pips.
         /// </summary>
-        public bool[] Pips => [.. Enumerable.Range(1, 3).Select(step => this.IsFilled && SkillLevelNames.ToNumber(this.levelName) >= step)];
+        public bool[] Pips => [.. Enumerable.Range(1, 3).Select(step => this.IsFilled && SkillLevelText.ToNumber(this.levelName) >= step)];
 
         /// <summary>
         /// Shows the slot without reporting a change.
@@ -98,7 +97,7 @@
         public void Show(string? skillName, string levelName, bool canMoveUp, bool canMoveDown)
         {
             this.skillName = skillName;
-            this.levelName = levelName ?? SkillLevelNames.Basic;
+            this.levelName = levelName ?? SkillLevelText.Basic;
             this.canMoveUp = canMoveUp;
             this.canMoveDown = canMoveDown;
 

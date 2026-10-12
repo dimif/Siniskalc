@@ -84,15 +84,9 @@
                 </WrapPanel>
 
                 <!-- Skills -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel1}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Secondary skills"/>
-                            <ItemsControl ItemsSource="{Binding Skills}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
-                            <TextBlock Style="{StaticResource Homm2EmptyNoteStyle}" Tag="{Binding HasSkills}" Text="This hero has no secondary skills"/>
-                        </StackPanel>
-                    </Border>
-                </WrapPanel>
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel1}">
+                    <wpf:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
+                </StackPanel>
 
                 <!-- Creatures -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
@@ -100,16 +94,9 @@
                 </StackPanel>
 
                 <!-- Spells -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Spell book"/>
-                            <ItemsControl ItemsSource="{Binding Spells}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
-                            <TextBlock Style="{StaticResource Homm2EmptyNoteStyle}" Tag="{Binding HasSpells}" Text="This hero knows no spells"/>
-                            <TextBlock Style="{StaticResource Homm2EmptyNoteStyle}" Tag="{Binding HasSpellBook}" Text="The hero has no Magic Book, so it cannot cast spells"/>
-                        </StackPanel>
-                    </Border>
-                </WrapPanel>
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">
+                    <wpf:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
+                </StackPanel>
 
                 <!-- Artifacts -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel4}">

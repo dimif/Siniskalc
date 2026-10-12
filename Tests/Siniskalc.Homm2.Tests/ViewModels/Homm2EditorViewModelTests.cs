@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;
+    using Siniskalc.Wpf.ViewModels;
 
     [TestFixture]
     internal sealed class Homm2EditorViewModelTests
@@ -279,6 +280,71 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             slot.CreatureAmount = 1_000_000;
             Assert.That(this.editor.CurrentGame.History.Current.Heroes().GetModel(hero).Army.Slots[slot.SlotNumber]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));
+        }
+
+        [Test]
+        public void TheSecondarySkillsOfAHeroAreEditedInSlotsAndInTheList()
+        {
+            this.editor.ShowHero(7);
+            var skills = ((Homm2HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
+            var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills;
+            var before = model().Count;
+            Assert.That(skills.SlotSummary, Is.EqualTo($"{before} of 8 slots used"));
+
+            var wisdom = skills.AllSkills.First(r => r.LevelName == SkillLevelText.None);
+            var skill = Homm2SecondarySkill.All.Single(s => s.Name == wisdom.Name);
+            wisdom.LevelName = SkillLevelText.Advanced;
+            Assert.That(model().LevelOf(skill), Is.EqualTo(Homm2SkillLevel.Advanced));
+            Assert.That(model().Count, Is.EqualTo(before + 1), "a new skill is learned last");
+
+            var slot = skills.Slots[before];
+            Assert.That(slot.SkillName, Is.EqualTo(skill.Name));
+            slot.LevelName = SkillLevelText.Expert;
+            Assert.That(model().LevelOf(skill), Is.EqualTo(Homm2SkillLevel.Expert));
+
+            skills.MoveSkill(before, -1);
+            Assert.That(model().Entries[before - 1].Skill, Is.EqualTo(skill));
+
+            wisdom.LevelName = SkillLevelText.None;
+            Assert.That(model().LevelOf(skill), Is.EqualTo(Homm2SkillLevel.None));
+            Assert.That(model().Count, Is.EqualTo(before));
+        }
+
+        [Test]
+        public void ASkillCannotBeLearnedWhenAllEightSlotsAreTaken()
+        {
+            this.editor.ShowHero(7);
+            var skills = ((Homm2HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
+            foreach (var row in skills.AllSkills.Where(r => r.LevelName == SkillLevelText.None).Take(8))
+            {
+                row.LevelName = SkillLevelText.Basic;
+            }
+
+            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills.Count, Is.EqualTo(8));
+            Assert.That(skills.AllSkills.Count(r => r.LevelName != SkillLevelText.None), Is.EqualTo(8), "the list shows what the hero has");
+        }
+
+        [Test]
+        public void TheSpellBookAndTheSpellsOfAHeroAreEditedOnItsSpellsPage()
+        {
+            this.editor.ShowHero(7);
+            var spells = ((Homm2HeroViewModel)this.editor.CurrentPage!).SpellsEditor;
+            var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
+            Assert.That(spells.HasSpellBook, Is.True, "Maximus bought the book in save 10");
+
+            spells.LearnAllCommand.Execute(null);
+            Assert.That(model().Spells.Count, Is.EqualTo(Homm2Spell.All.Count));
+
+            spells.Finder.Filter = "fire";
+            spells.ForgetAllCommand.Execute(null);
+            Assert.That(model().Spells.Contains(Homm2Spell.Fireball), Is.False);
+            Assert.That(model().Spells.Contains(Homm2Spell.Cure), Is.True, "only the spells the list shows are forgotten");
+
+            spells.HasSpellBook = false;
+            Assert.That(model().HasSpellBook, Is.False);
+            Assert.That(model().Spells.Contains(Homm2Spell.Cure), Is.True, "the spells stay marked without the book, as in the game");
+            spells.HasSpellBook = true;
+            Assert.That(model().HasSpellBook, Is.True);
         }
 
         private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).HeroId;

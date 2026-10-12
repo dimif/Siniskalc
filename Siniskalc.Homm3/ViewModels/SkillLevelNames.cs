@@ -2,29 +2,30 @@
 {
     using System.Collections.Generic;
     using Siniskalc.Homm3.Entities;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The names of skill levels as the game shows them. The entity calls them beginner, intermediate and expert.
     /// </summary>
     public static class SkillLevelNames
     {
-        public const string None = "None";
+        public const string None = SkillLevelText.None;
 
-        public const string Basic = "Basic";
+        public const string Basic = SkillLevelText.Basic;
 
-        public const string Advanced = "Advanced";
+        public const string Advanced = SkillLevelText.Advanced;
 
-        public const string Expert = "Expert";
+        public const string Expert = SkillLevelText.Expert;
 
         /// <summary>
         /// Gets the names to pick a level from, for a skill the hero may not have.
         /// </summary>
-        public static IReadOnlyList<string> WithNone { get; } = [None, Basic, Advanced, Expert];
+        public static IReadOnlyList<string> WithNone => SkillLevelText.WithNone;
 
         /// <summary>
         /// Gets the names to pick a level from, for a skill the hero has.
         /// </summary>
-        public static IReadOnlyList<string> WithoutNone { get; } = [Basic, Advanced, Expert];
+        public static IReadOnlyList<string> WithoutNone => SkillLevelText.WithoutNone;
 
         public static string FromLevel(SkillLevel? level) => level switch
         {

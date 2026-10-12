@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System;
+    using System.Linq;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -52,6 +53,47 @@ namespace Siniskalc.Homm2.Models
         public bool HasSpellBook => this.Artifacts.HasMagicBook;
 
         /// <summary>
+        /// Returns the hero with <paramref name="artifact"/> in <paramref name="slot"/> (or the slot emptied for <c>null</c>). The
+        /// savegame keeps the primary skills with the bonuses of the artifacts in them, so what the artifact that leaves the slot gave
+        /// is taken off and what the new one gives is added, as the game does when a hero is given an artifact. A skill stays between 0 and 255.
+        /// </summary>
+        public Homm2HeroModel WithArtifact(int slot, Homm2Artifact? artifact)
+        {
+            var old = this.Artifacts.Slots[slot];
+            var skills = this.PrimarySkills;
+            if (old != null)
+            {
+                skills = Shift(skills, Homm2ArtifactBonuses.Of(old), -1);
+            }
+
+            if (artifact != null)
+            {
+                skills = Shift(skills, Homm2ArtifactBonuses.Of(artifact), 1);
+            }
+
+            return this with { Artifacts = this.Artifacts.WithSlot(slot, artifact), PrimarySkills = skills };
+        }
+
+        /// <summary>
+        /// Returns the hero with <paramref name="artifact"/> in its first free slot, and its skills changed by what the artifact gives.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The hero has no free artifact slot.</exception>
+        public Homm2HeroModel WithArtifact(Homm2Artifact artifact)
+        {
+            var free = Array.IndexOf(this.Artifacts.Slots.ToArray(), null);
+            return free < 0 ? throw new InvalidOperationException("Every artifact slot is taken.") : this.WithArtifact(free, artifact);
+        }
+
+        /// <summary>
+        /// Returns the hero without <paramref name="artifact"/> (nothing changes when it does not carry it), and its skills changed by what the artifact gave.
+        /// </summary>
+        public Homm2HeroModel WithoutArtifact(Homm2Artifact artifact)
+        {
+            var slot = Array.IndexOf(this.Artifacts.Slots.ToArray(), artifact);
+            return slot < 0 ? this : this.WithArtifact(slot, null);
+        }
+
+        /// <summary>
         /// Returns the hero with the Magic Book in its first free slot (nothing changes when it has it already).
         /// </summary>
         /// <exception cref="InvalidOperationException">The hero has no free artifact slot.</exception>
@@ -61,5 +103,13 @@ namespace Siniskalc.Homm2.Models
         /// Returns the hero without the Magic Book. The spells it had stay marked, as they do in the game.
         /// </summary>
         public Homm2HeroModel WithoutSpellBook() => this with { Artifacts = this.Artifacts.Remove(Homm2Artifact.MagicBook) };
+
+        private static Homm2PrimarySkills Shift(Homm2PrimarySkills skills, Homm2PrimarySkills bonus, int sign) => new(
+            Limit(skills.Attack + (sign * bonus.Attack)),
+            Limit(skills.Defense + (sign * bonus.Defense)),
+            Limit(skills.SpellPower + (sign * bonus.SpellPower)),
+            Limit(skills.Knowledge + (sign * bonus.Knowledge)));
+
+        private static int Limit(int skill) => (int)Math.Clamp(skill, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
     }
 }

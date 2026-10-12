@@ -54,10 +54,8 @@ namespace Siniskalc.Homm2.Tests
                         .With(Homm2SecondarySkill.Luck, Homm2SkillLevel.Basic)
                         .With(Homm2SecondarySkill.Estates, Homm2SkillLevel.Basic),
                 })),
-                Make("E06ARTI", 10, "Maximus's artifacts", "Maximus (who has the spell book) also carries the Ultimate Sword of Dominion, the Thunder Mace of Dominion, the Ice Cloak, the Evercold Icicle and the Ammo Cart.", game => Hero(game, 7, h => h with
-                {
-                    Artifacts = h.Artifacts.Add(Homm2Artifact.UltimateSwordOfDominion).Add(Homm2Artifact.ThunderMaceOfDominion).Add(Homm2Artifact.IceCloak).Add(Homm2Artifact.EvercoldIcicle).Add(Homm2Artifact.AmmoCart),
-                })),
+                Make("E06ARTI", 10, "Maximus's artifacts", "Maximus (who has the spell book) also carries the Ultimate Sword of Dominion, the Thunder Mace of Dominion, the Ice Cloak, the Evercold Icicle and the Ammo Cart, and his attack is 15 (2 and the 12 and 1 of the two weapons; the game keeps the bonuses in the skills).", game => Hero(game, 7, h => h
+                    .WithArtifact(Homm2Artifact.UltimateSwordOfDominion).WithArtifact(Homm2Artifact.ThunderMaceOfDominion).WithArtifact(Homm2Artifact.IceCloak).WithArtifact(Homm2Artifact.EvercoldIcicle).WithArtifact(Homm2Artifact.AmmoCart))),
                 Make("E07BOOK", 1, "A spell book and every spell for Maximus", "Maximus has a spell book with all 65 spells (the save starts without a book).", game => Hero(game, 7, h => h.WithSpellBook() with { Spells = new Homm2SpellBook(Homm2Spell.All) })),
                 Make("E08LEVEL", 5, "Maximus's level, experience and movement", "Maximus is level 10 with 14,700 experience, and has all his movement points (1,000) although he has none left in the original.", game => Hero(game, 7, h => h with { Level = 10, Experience = 14_700, MovementLeft = h.MaxMovement })),
                 Make("E09CAST", 5, "Xabran's buildings and creatures", "Xabran has the dwellings 3 and 4 built on top of the first two (hut, archery range, blacksmith, armory), a tavern, a statue and a well, and 20 creatures wait in each dwelling that is built.", game => Castle(game, 3, c => c with
@@ -78,14 +76,13 @@ namespace Siniskalc.Homm2.Tests
                     Castle(game, 2, c => c with { Owner = Homm2Color.Blue });
                     Player(game, 0, p => p with { CastleIds = Homm2Numbers.Of(3, 2) });
                 }),
-                Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills, secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
+                Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills (15 each, the sword included), secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
                 {
                     Player(game, 0, p => p with { Resources = new Homm2Resources(500, 500, 500, 500, 500, 500, 50_000) });
-                    Hero(game, 7, h => h with
+                    Hero(game, 7, h => h.WithArtifact(Homm2Artifact.UltimateSwordOfDominion).WithArtifact(Homm2Artifact.IceCloak) with
                     {
                         PrimarySkills = new Homm2PrimarySkills(15, 15, 15, 15),
                         Army = new Homm2Army([new Homm2ArmySlot(Homm2Creature.BlackDragon, 7), new Homm2ArmySlot(Homm2Creature.Titan, 3), null, null, null]),
-                        Artifacts = h.Artifacts.Add(Homm2Artifact.UltimateSwordOfDominion).Add(Homm2Artifact.IceCloak),
                         SecondarySkills = h.SecondarySkills.With(Homm2SecondarySkill.Wisdom, Homm2SkillLevel.Expert),
                     });
                     Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new Homm2ArmySlot(Homm2Creature.Paladin, 10)) });

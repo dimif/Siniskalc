@@ -22,19 +22,8 @@
             [PlayerColor.Pink] = "#D96AA7",
         };
 
-        private static readonly IReadOnlyDictionary<Resource, string> ResourceColors = new Dictionary<Resource, string>
-        {
-            [Resource.Gold] = "#B8902A",
-            [Resource.Wood] = "#6B4A2B",
-            [Resource.Mercury] = "#6D7A8C",
-            [Resource.Ore] = "#4E5560",
-            [Resource.Sulfur] = "#A59A22",
-            [Resource.Crystal] = "#A0356A",
-            [Resource.Gems] = "#2B8A78",
-        };
-
         public static string Of(PlayerColor? player) => player == null ? NoPlayer : PlayerColors[player.Value];
 
-        public static string Of(Resource resource) => ResourceColors[resource];
+        public static string Of(Resource resource) => Siniskalc.Wpf.ViewModels.ResourcePalette.Of(resource.ToString());
     }
 }

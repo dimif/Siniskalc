@@ -134,13 +134,13 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(node.HasChanges, Is.True);
             Assert.That(this.editor.NavigationNodes[0].HasChanges, Is.True, "the nodes above the hero are marked");
             Assert.That(page.HasPendingChanges, Is.True);
-            Assert.That(page.Facts.Single(f => f.Label == "Experience").Value, Is.EqualTo((experience + 1000).ToString("N0")));
+            Assert.That(page.Facts.Single(f => f.Name == "Experience").Value, Is.EqualTo(experience + 1000));
 
             page.ResetCommand.Execute(null);
 
             Assert.That(node.HasChanges, Is.False);
             Assert.That(page.HasPendingChanges, Is.False);
-            Assert.That(page.Facts.Single(f => f.Label == "Experience").Value, Is.EqualTo(experience.ToString("N0")));
+            Assert.That(page.Facts.Single(f => f.Name == "Experience").Value, Is.EqualTo(experience));
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);
-            Assert.That(player.Resources.Select(r => r.Label), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
+            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
         }
 
         [Test]
@@ -176,6 +176,55 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel((int)Homm2Color.Green).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
             Assert.That(green.Resources.Select(r => r.Note), Is.All.Empty);
             Assert.That(blue.Resources.Select(r => r.Note), Has.Some.Not.Empty);
+        }
+
+        [Test]
+        public void EditingAResourceOnThePlayersPageChangesTheSavegameAndMarksTheRow()
+        {
+            this.editor.ShowPlayer(Homm2Color.Blue);
+            var page = (Homm2PlayerViewModel)this.editor.CurrentPage!;
+            var gold = page.Resources.Single(r => r.Name == "Gold");
+            var before = gold.Value;
+
+            gold.Value = before + 5_000;
+
+            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel((int)Homm2Color.Blue).Resources.Gold, Is.EqualTo(before + 5_000));
+            Assert.That(gold.IsChanged, Is.True);
+            Assert.That(gold.DeltaText, Is.EqualTo("+5,000 from save"));
+            Assert.That(page.HasPendingChanges, Is.True);
+
+            gold.Value = 99_999_999;
+            Assert.That(gold.Value, Is.EqualTo(Constants.Player.MaxGold), "the value is kept within the limit");
+
+            page.ResetCommand.Execute(null);
+            Assert.That(gold.Value, Is.EqualTo(before));
+            Assert.That(gold.IsChanged, Is.False);
+        }
+
+        [Test]
+        public void TheQuickAddButtonsAddToTheResourcesAndStopAtTheLimit()
+        {
+            var page = new Homm2PlayerViewModel(this.editor.CurrentGame!, Homm2Color.Blue, _ => { }, _ => { });
+            var gold = page.Resources.Single(r => r.Name == "Gold").Value;
+            var wood = page.Resources.Single(r => r.Name == "Wood").Value;
+
+            page.SetRichCommand.Execute(null);
+            page.SetAllResourcesCommand.Execute(null);
+
+            Assert.That(page.Resources.Single(r => r.Name == "Gold").Value, Is.EqualTo(gold + 100_000));
+            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + 99));
+        }
+
+        [Test]
+        public void EditingAHeroSkillOnItsPageChangesTheHero()
+        {
+            this.editor.ShowHero(7);
+            var page = (Homm2HeroViewModel)this.editor.CurrentPage!;
+
+            page.PrimarySkills.Single(r => r.Name == "Attack").Value = 20;
+
+            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).PrimarySkills.Attack, Is.EqualTo(20));
+            Assert.That(page.HasPendingChanges, Is.True);
         }
 
         private static IEnumerable<string> Titles(Homm2NavNodeViewModel player, string group) =>

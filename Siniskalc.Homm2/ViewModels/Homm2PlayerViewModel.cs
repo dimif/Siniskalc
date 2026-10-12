@@ -22,7 +22,8 @@ namespace Siniskalc.Homm2.ViewModels
 
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
-        private IReadOnlyList<Homm2FactRow> resources = [];
+        private readonly IReadOnlyList<AmountRowViewModel> resources;
+        private readonly Homm2PlayerEditSession session;
         private IReadOnlyList<Homm2LinkViewModel> heroes = [];
         private IReadOnlyList<Homm2LinkViewModel> castles = [];
         private IReadOnlyList<Homm2FactRow> tavern = [];
@@ -34,6 +35,10 @@ namespace Siniskalc.Homm2.ViewModels
             this.Color = color;
             this.openHero = openHero;
             this.openCastle = openCastle;
+            this.session = game.History.CreatePlayerSession((int)color);
+            this.resources = ResourceOrder.Select(this.CreateRow).ToList();
+            this.SetAllResourcesCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name != nameof(Homm2Resource.Gold)), Constants.Player.AllResourcesIncrease));
+            this.SetRichCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name == nameof(Homm2Resource.Gold)), Constants.Player.GoldIncrease));
             this.Refresh();
         }
 
@@ -48,7 +53,20 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public string Status => this.status;
 
-        public IReadOnlyList<Homm2FactRow> Resources => this.resources;
+        /// <summary>
+        /// Gets the resources, gold first, each editable.
+        /// </summary>
+        public IReadOnlyList<AmountRowViewModel> Resources => this.resources;
+
+        /// <summary>
+        /// Gets the command that adds 99 of every resource but gold.
+        /// </summary>
+        public ICommand SetAllResourcesCommand { get; }
+
+        /// <summary>
+        /// Gets the command that adds 100,000 gold.
+        /// </summary>
+        public ICommand SetRichCommand { get; }
 
         public IReadOnlyList<Homm2LinkViewModel> Heroes => this.heroes;
 
@@ -70,11 +88,10 @@ namespace Siniskalc.Homm2.ViewModels
                 ? "Out of the game"
                 : player.DaysLeft is { } days ? $"{days} days left to own a castle" : string.Empty;
 
-            // The game keeps no income for a player that was put out: what the table holds is a counter that walks over the resources
-            // (1 wood, then 1 mercury, then 1 ore, on the days after Green was put out in the Broken Alliance saves 22 to 24).
-            this.resources = ResourceOrder
-                .Select(r => new Homm2FactRow(r.ToString(), player.Resources[r].ToString("N0"), !player.IsOut && player.Income[r] > 0 ? $"+{player.Income[r]:N0} a day" : string.Empty))
-                .ToList();
+            foreach (var row in this.resources)
+            {
+                row.Refresh();
+            }
 
             this.heroes = allHeroes
                 .Where(h => h.Owner == this.Color)
@@ -93,6 +110,38 @@ namespace Siniskalc.Homm2.ViewModels
                 new Homm2FactRow("First hero", TavernHero(allHeroes, player.Tavern.First)),
                 new Homm2FactRow("Second hero", TavernHero(allHeroes, player.Tavern.Second)),
             ];
+        }
+
+        private AmountRowViewModel CreateRow(Homm2Resource resource)
+        {
+            var gold = resource == Homm2Resource.Gold;
+            return new AmountRowViewModel(
+                resource.ToString(),
+                Homm2Palette.Of(resource),
+                Constants.Player.MinResource,
+                gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
+                gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,
+                () => this.session.Current.Resources[resource],
+                () => this.Game.History.Original.Players().GetModel((int)this.Color).Resources[resource],
+                amount => this.session.Update(player => player with { Resources = player.Resources.With(resource, amount) }),
+                () => this.IncomeNote(resource));
+        }
+
+        // The game keeps no income for a player that was put out: what the table holds is a counter that walks over the resources
+        // (1 wood, then 1 mercury, then 1 ore, on the days after Green was put out in the Broken Alliance saves 22 to 24).
+        private string IncomeNote(Homm2Resource resource)
+        {
+            var player = this.session.Current;
+            return !player.IsOut && player.Income[resource] > 0 ? $"+{player.Income[resource]:N0} a day" : string.Empty;
+        }
+
+        private void Add(IEnumerable<AmountRowViewModel> rows, int amount)
+        {
+            var kinds = rows.Select(r => Enum.Parse<Homm2Resource>(r.Name)).ToList();
+            this.session.Update(player => player with
+            {
+                Resources = kinds.Aggregate(player.Resources, (resources, kind) => resources.With(kind, Math.Min(resources[kind] + amount, kind == Homm2Resource.Gold ? Constants.Player.MaxGold : Constants.Player.MaxOther))),
+            });
         }
 
         private static string TavernHero(IReadOnlyList<Homm2HeroModel> heroes, int? id) =>

@@ -4,18 +4,6 @@
       xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
       xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
       Title="Player">
-    <Page.Resources>
-        <!-- A resource card: its name, the amount and what the player earns each day. -->
-        <DataTemplate x:Key="ResourceTemplate" DataType="{x:Type vm:Homm2FactRow}">
-            <Border Style="{StaticResource CardStyle}" Width="210">
-                <StackPanel>
-                    <TextBlock FontWeight="SemiBold" Text="{Binding Label}"/>
-                    <TextBlock Margin="0,6,0,0" Style="{StaticResource TotalValueStyle}" Text="{Binding Value}"/>
-                    <TextBlock Margin="0,2,0,0" Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="{Binding Note}"/>
-                </StackPanel>
-            </Border>
-        </DataTemplate>
-    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -53,13 +41,27 @@
             <Grid Margin="8,4,8,16">
                 <!-- Resources -->
                 <StackPanel Style="{StaticResource Homm2TabPanel0}">
-                    <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource ResourceTemplate}">
+                    <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource AmountCardTemplate}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
+
+                    <Border Margin="0,12,0,0" HorizontalAlignment="Left" Padding="6" CornerRadius="16" Background="{StaticResource PanelBrush}"
+                            BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Margin="10,0,10,0" Text="Quick add"/>
+                            <Button Style="{StaticResource PillButtonStyle}" Command="{Binding SetAllResourcesCommand}" Content="All +99"
+                                    ToolTip="Add 99 of wood, mercury, ore, sulfur, crystal and gems; gold is left alone"/>
+                            <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Command="{Binding SetRichCommand}" Content="Gold +100k"
+                                    ToolTip="Add 100,000 gold"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Margin="0,16,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                               Text="Amounts are limited to 999,999 gold and 99,999 of each other resource. Hold Shift while pressing + or − to step by ten. The income is worked out by the game at the start of each day."/>
                 </StackPanel>
 
                 <!-- Heroes -->

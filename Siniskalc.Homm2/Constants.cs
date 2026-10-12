@@ -47,6 +47,7 @@ namespace Siniskalc.Homm2
 
             public const long MinExperience = 0;
             public const long MaxExperience = 2_000_000_000;
+            public const long ExperienceStep = 100;
 
             public const long MinPrimarySkill = 0;
             public const long MaxPrimarySkill = 255;
@@ -56,6 +57,7 @@ namespace Siniskalc.Homm2
 
             public const long MinMovementPoints = 0;
             public const long MaxMovementPoints = 99_999;
+            public const long MovementStep = 100;
         }
 
         /// <summary>
@@ -70,6 +72,20 @@ namespace Siniskalc.Homm2
 
             public const long MinResource = 0;
             public const long MaxResource = 2_000_000_000;
+
+            /// <summary>
+            /// The most the editor gives a player. The savegame holds 32 bits, but the game's screens are not made for more than this.
+            /// </summary>
+            public const long MaxGold = 999_999;
+            public const long MaxOther = 99_999;
+            public const long GoldStep = 1000;
+            public const long OtherStep = 1;
+
+            /// <summary>
+            /// What the "All +99" and "Gold +100k" buttons add.
+            /// </summary>
+            public const int AllResourcesIncrease = 99;
+            public const int GoldIncrease = 100_000;
         }
 
         /// <summary>

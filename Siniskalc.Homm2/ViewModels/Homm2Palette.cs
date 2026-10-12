@@ -20,6 +20,8 @@ namespace Siniskalc.Homm2.ViewModels
             [Homm2Color.Purple] = "#7B4BA8",
         };
 
+        public static string Of(Homm2Resource resource) => Siniskalc.Wpf.ViewModels.ResourcePalette.Of(resource.ToString());
+
         public static string Of(Homm2Color? player) => player is { } color && PlayerColors.TryGetValue(color, out var hex) ? hex : NoPlayer;
     }
 }

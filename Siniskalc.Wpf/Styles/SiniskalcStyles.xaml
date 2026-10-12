@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Siniskalc.Wpf.Views">
+    xmlns:local="clr-namespace:Siniskalc.Wpf.Views"
+    xmlns:vm="clr-namespace:Siniskalc.Wpf.ViewModels">
 
     <!-- Colours. A cool grey with a brass accent; the accent marks everything that has been edited. -->
     <SolidColorBrush x:Key="PanelBrush" Color="#F3F4F7"/>
@@ -328,5 +329,45 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- A number of a model as a card: its name, a stepper, and how far it is from the savegame (resources). The card turns brass-edged while it differs. -->
+    <DataTemplate x:Key="AmountCardTemplate" DataType="{x:Type vm:AmountRowViewModel}">
+        <Border Width="210">
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChanged}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel>
+                <TextBlock Margin="0,0,0,8" FontWeight="SemiBold" Text="{Binding Name}"/>
+                <local:Stepper HorizontalAlignment="Stretch" Value="{Binding Value}" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Step="{Binding Step}"/>
+                <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="{Binding DeltaText}"/>
+                <TextBlock Style="{StaticResource FieldNoteStyle}" Text="{Binding Note}"/>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <!-- A number of a model as a line of a card: the name on the left, a stepper on the right, and a note under it. -->
+    <DataTemplate x:Key="AmountFieldTemplate" DataType="{x:Type vm:AmountRowViewModel}">
+        <Grid Margin="0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource FieldLabelStyle}" Text="{Binding Name}"/>
+            <local:Stepper Grid.Column="1" Width="150" Value="{Binding Value}" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Step="{Binding Step}"/>
+            <TextBlock Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="{Binding DeltaText}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource FieldNoteStyle}" Text="{Binding Note}"/>
+        </Grid>
+    </DataTemplate>
 
 </ResourceDictionary>

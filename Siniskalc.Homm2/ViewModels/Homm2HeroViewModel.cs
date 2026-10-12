@@ -17,8 +17,9 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private readonly Action<int> openCastle;
         private Homm2HeroModel hero = null!;
-        private IReadOnlyList<Homm2FactRow> primarySkills = [];
-        private IReadOnlyList<Homm2FactRow> facts = [];
+        private readonly Homm2HeroEditSession session;
+        private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
+        private readonly IReadOnlyList<AmountRowViewModel> facts;
         private IReadOnlyList<Homm2FactRow> skills = [];
         private IReadOnlyList<Homm2FactRow> army = [];
         private IReadOnlyList<Homm2FactRow> spells = [];
@@ -31,6 +32,22 @@ namespace Siniskalc.Homm2.ViewModels
         {
             this.HeroId = heroId;
             this.openCastle = openCastle;
+            this.session = game.History.CreateHeroSession(heroId);
+            this.primarySkills =
+            [
+                this.Row("Attack", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Attack, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Attack = (int)v } }),
+                this.Row("Defense", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Defense, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Defense = (int)v } }),
+                this.Row("Spell power", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.SpellPower, (h, v) => h with { PrimarySkills = h.PrimarySkills with { SpellPower = (int)v } }),
+                this.Row("Knowledge", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Knowledge, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Knowledge = (int)v } }),
+            ];
+            this.facts =
+            [
+                this.Row("Level", Constants.Hero.MinLevel, Constants.Hero.MaxLevel, 1, h => h.Level, (h, v) => h with { Level = (int)v }),
+                this.Row("Experience", Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep, h => h.Experience, (h, v) => h with { Experience = v }),
+                this.Row("Spell points", Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, 1, h => h.SpellPoints, (h, v) => h with { SpellPoints = (int)v }),
+                this.Row("Movement", Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep, h => h.MovementLeft, (h, v) => h with { MovementLeft = v }, () => $"of {this.hero.MaxMovement:N0} a day"),
+            ];
+            this.RestoreMovementCommand = new DelegateCommand(_ => this.session.Update(h => h with { MovementLeft = h.MaxMovement }), _ => this.hero.MovementLeft != this.hero.MaxMovement);
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
         }
@@ -59,9 +76,14 @@ namespace Siniskalc.Homm2.ViewModels
 
         public ICommand OpenCastleCommand { get; }
 
-        public IReadOnlyList<Homm2FactRow> PrimarySkills => this.primarySkills;
+        /// <summary>
+        /// Gets the command that gives the hero all the movement points of a day.
+        /// </summary>
+        public ICommand RestoreMovementCommand { get; }
 
-        public IReadOnlyList<Homm2FactRow> Facts => this.facts;
+        public IReadOnlyList<AmountRowViewModel> PrimarySkills => this.primarySkills;
+
+        public IReadOnlyList<AmountRowViewModel> Facts => this.facts;
 
         public IReadOnlyList<Homm2FactRow> Skills => this.skills;
 
@@ -87,21 +109,10 @@ namespace Siniskalc.Homm2.ViewModels
             var hero = document.Heroes().GetModel(this.HeroId);
             this.hero = hero;
 
-            this.primarySkills =
-            [
-                new Homm2FactRow("Attack", hero.PrimarySkills.Attack.ToString()),
-                new Homm2FactRow("Defense", hero.PrimarySkills.Defense.ToString()),
-                new Homm2FactRow("Spell power", hero.PrimarySkills.SpellPower.ToString()),
-                new Homm2FactRow("Knowledge", hero.PrimarySkills.Knowledge.ToString()),
-            ];
-
-            this.facts =
-            [
-                new Homm2FactRow("Level", hero.Level.ToString()),
-                new Homm2FactRow("Experience", hero.Experience.ToString("N0")),
-                new Homm2FactRow("Spell points", hero.SpellPoints.ToString("N0")),
-                new Homm2FactRow("Movement", hero.MovementLeft.ToString("N0"), $"of {hero.MaxMovement:N0} a day"),
-            ];
+            foreach (var row in this.primarySkills.Concat(this.facts))
+            {
+                row.Refresh();
+            }
 
             this.skills = hero.SecondarySkills.Entries
                 .Select(e => new Homm2FactRow(e.Skill.Name, e.Level.ToString()))
@@ -126,5 +137,16 @@ namespace Siniskalc.Homm2.ViewModels
             this.castleIndex = castle?.Index ?? -1;
             this.castleName = castle?.Name ?? string.Empty;
         }
+
+        private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<Homm2HeroModel, long> get, Func<Homm2HeroModel, long, Homm2HeroModel> set, Func<string>? note = null) => new(
+            name,
+            Homm2Palette.Of(this.hero?.Owner),
+            minimum,
+            maximum,
+            step,
+            () => get(this.session.Current),
+            () => get(this.Game.History.Original.Heroes().GetModel(this.HeroId)),
+            value => this.session.Update(h => set(h, value)),
+            note);
     }
 }

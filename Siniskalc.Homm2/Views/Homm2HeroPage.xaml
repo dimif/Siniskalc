@@ -64,13 +64,17 @@
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Primary skills"/>
-                            <ItemsControl ItemsSource="{Binding PrimarySkills}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
+                            <ItemsControl ItemsSource="{Binding PrimarySkills}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                       Text="The game keeps the skills with the bonuses of the artifacts in them, and moves them with the artifact."/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hero"/>
-                            <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
+                            <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
+                            <Button Margin="120,4,0,0" HorizontalAlignment="Left" Style="{StaticResource PillButtonStyle}" Content="Full movement" Command="{Binding RestoreMovementCommand}"
+                                    ToolTip="Give the hero all the movement points of a day"/>
                             <StackPanel Orientation="Horizontal" Margin="0,3">
                                 <TextBlock Width="130" Foreground="{StaticResource MutedBrush}" Text="Serves"/>
                                 <TextBlock FontWeight="SemiBold" Text="{Binding OwnerText}"/>

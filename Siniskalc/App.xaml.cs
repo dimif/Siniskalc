@@ -3,7 +3,6 @@ namespace Siniskalc
     using System;
     using System.Windows;
     using System.Windows.Threading;
-    using Siniskalc.Homm3.Views;
     using Siniskalc.Wpf.Views;
 
     /// <summary>
@@ -20,10 +19,10 @@ namespace Siniskalc
 
             var services = new AppServices();
             this.messages = services.Messages;
-            this.MainWindow = new MainWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Messages, services.FileCommands);
+            this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands);
             this.MainWindow.Show();
 
-            this.MainWindow.DataContext = services.CreateMainViewModel();
+            this.MainWindow.DataContext = services.CreateShellViewModel();
         }
 
         /// <summary>

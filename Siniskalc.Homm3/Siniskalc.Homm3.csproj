@@ -21,15 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\VS2026\DownloadDocument.png" />
-    <Resource Include="Resources\VS2026\Exit.png" />
-    <Resource Include="Resources\VS2026\OpenFile.png" />
-    <Resource Include="Resources\VS2026\Redo.png" />
-    <Resource Include="Resources\VS2026\Refresh.png" />
-    <Resource Include="Resources\VS2026\Save.png" />
-    <Resource Include="Resources\VS2026\Undo.png" />
     <None Include="..\.globalconfig" Link=".globalconfig" />
-    <None Include="Resources\VS2026\Visual Studio Image Library EULA.rtf" />
   </ItemGroup>
 
 </Project>

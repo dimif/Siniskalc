@@ -113,7 +113,7 @@ Bug reports, savegames that break the editor and pull requests are welcome. Open
 * [Editing heroes in memory](http://heroescommunity.com/viewthread.php3?TID=18817) on Heroes Community, and [HoMM3: Hex editing issue](https://www.gog.com/forum/heroes_of_might_and_magic_series/homm3_hex_editing_issue) on the GOG forum, for early savefile findings.
 * [HoMM3 Wiki](https://heroes.thelazy.net/index.php/Main_Page) for game information.
   The creature AI and Fight values come from its [AI/Fight Value](https://heroes.thelazy.net/index.php/AI/Fight_Value) page, last fetched on 2026-10-09.
-* [Visual Studio Image Library](https://www.microsoft.com/en-us/download/details.aspx?id=35825) (Visual Studio 2026 edition) for the menu and toolbar icons in `Siniskalc.Homm3/Resources/VS2026`.
+* [Visual Studio Image Library](https://www.microsoft.com/en-us/download/details.aspx?id=35825) (Visual Studio 2026 edition) for the menu and toolbar icons in `Siniskalc.Wpf/Resources/VS2026`.
   These are © Microsoft and are **not** covered by this project's MIT license; they are used under the Microsoft Visual Studio Image Library license (see [Third-party notices](#third-party-notices)).
   And [Exhumed](http://www.iconarchive.com/artist/3xhumed.html) for the original application icon.
 * [Claude](https://claude.com/claude-code) by Anthropic, for the hilarious app.icon and a lot of the heavy lifting in the UI, parsing of towns/player data and writing tests.
@@ -127,7 +127,7 @@ Released under the [MIT License](LICENSE), with the exception of the Microsoft i
 
 ### Third-party notices
 
-The icons in [`Siniskalc.Homm3/Resources/VS2026`](Siniskalc.Homm3/Resources/VS2026) come from the Microsoft Visual Studio 2026 Image Library and remain the property of Microsoft.
-They are licensed under the [Visual Studio Image Library EULA](Siniskalc.Homm3/Resources/VS2026/Visual%20Studio%20Image%20Library%20EULA.rtf), not the MIT license.
+The icons in [`Siniskalc.Wpf/Resources/VS2026`](Siniskalc.Wpf/Resources/VS2026) come from the Microsoft Visual Studio 2026 Image Library and remain the property of Microsoft.
+They are licensed under the [Visual Studio Image Library EULA](Siniskalc.Wpf/Resources/VS2026/Visual%20Studio%20Image%20Library%20EULA.rtf), not the MIT license.
 They may only be used in applications developed with the Visual Studio family of products, and anyone redistributing this application, or the icons in it, must agree to terms that protect the images at least as much as that EULA.
 If you fork this project, do not reuse the icons outside the terms of that license.

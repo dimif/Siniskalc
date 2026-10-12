@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
+    xmlns:views="clr-namespace:Siniskalc.Homm2.Views">
+
+    <!-- What the shell shows for the HoMM2 editor. -->
+    <DataTemplate DataType="{x:Type vm:Homm2EditorViewModel}">
+        <views:Homm2EditorView/>
+    </DataTemplate>
+</ResourceDictionary>

@@ -59,20 +59,30 @@ namespace Siniskalc.Homm3.Tests
         /// <summary>
         /// Returns the main window showing <paramref name="viewModel"/>, with a launcher that opens nothing and messages that show nothing.
         /// </summary>
-        public static MainWindow CreateMainWindow(MainViewModel viewModel, IMessageService? messages = null)
+        public static ShellWindow CreateShellWindow(ShellViewModel shell, IMessageService? messages = null)
         {
             var recentFiles = CreateRecentFiles();
             var shownMessages = messages ?? new RecordingMessageService();
             var files = new SavegameFileCommands(recentFiles, new ScriptedFileDialogs(), shownMessages);
-            return new MainWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), Services.About, shownMessages, files) { DataContext = viewModel };
+            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), Services.About, Services.Help, shownMessages, files) { DataContext = shell };
         }
+
+        /// <summary>
+        /// Returns the shell of the application as the user has it, with the editor of every game it can edit.
+        /// </summary>
+        public static ShellViewModel CreateShell() => Services.CreateShellViewModel();
+
+        /// <summary>
+        /// Returns a shell whose HoMM3 editor is <paramref name="editor"/>, so a test can load a game into the editor and look at the window.
+        /// </summary>
+        public static ShellViewModel CreateShell(Homm3EditorViewModel editor) => new([new Homm3Module(() => editor)], Services.Settings, AppInfo.Name);
 
         /// <summary>
         /// Writes <paramref name="castle"/> to <paramref name="chunk"/>.
         /// </summary>
         public static CastleChunk SerializeCastle(CastleChunk chunk, CastleModel castle) => CastleSerializer.Serialize(chunk, castle);
 
-        public static MainViewModel CreateMainViewModel() => Services.CreateMainViewModel();
+        public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateHomm3Editor();
 
         public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints, Services.ByteEditTargets);
     }

@@ -1,45 +1,38 @@
-﻿namespace Siniskalc.Homm3.Views
+namespace Siniskalc.Wpf.Views
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
-    using System.IO;
-    using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Input;
-    using Siniskalc;
     using Siniskalc.Core.Runtime;
-    using Siniskalc.Homm3.Runtime;
-    using Siniskalc.Homm3.ViewModels;
     using Siniskalc.Wpf.ViewModels;
-    using Siniskalc.Wpf.Views;
 
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// The window of the application: the menus, the toolbar, the status bar and the panel of pending changes around the editor of the
+    /// game that is open. It knows no game; the editor is shown through the data template of its type.
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ShellWindow : Window
     {
-        private readonly Dictionary<object, Page> heroPages = new();
         private readonly IUrlLauncher urlLauncher;
         private readonly AboutInfo about;
+        private readonly HelpLinks help;
         private readonly IMessageService messages;
         private readonly SavegameFileCommands files;
 
-        public MainWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, IMessageService messages, SavegameFileCommands files)
+        public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files)
         {
             this.messages = messages;
             this.files = files;
             this.urlLauncher = urlLauncher;
             this.about = about;
+            this.help = help;
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
-            recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(main => this.files.OpenRecent(main, path)));
+            recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.DataContextChanged += this.OnDataContextChanged;
         }
 
-        private MainViewModel? ViewModel => this.DataContext as MainViewModel;
+        private ShellViewModel? ViewModel => this.DataContext as ShellViewModel;
 
         private bool IsGameLoaded => this.ViewModel?.IsGameLoaded ?? false;
 
@@ -57,33 +50,6 @@
             if (this.ViewModel != null)
             {
                 this.ViewModel.IsPendingChangesOpen = false;
-            }
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.OldValue is MainViewModel oldViewModel)
-            {
-                oldViewModel.PropertyChanged -= this.OnViewModelPropertyChanged;
-            }
-
-            if (e.NewValue is MainViewModel newViewModel)
-            {
-                newViewModel.PropertyChanged += this.OnViewModelPropertyChanged;
-                this.ShowCurrentPage();
-            }
-        }
-
-        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainViewModel.CurrentGame))
-            {
-                // The pages are of the heroes of the game that was open.
-                this.heroPages.Clear();
-            }
-            else if (e.PropertyName == nameof(MainViewModel.CurrentPage))
-            {
-                this.ShowCurrentPage();
             }
         }
 
@@ -152,12 +118,12 @@
 
         private void ViewSaveHexCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.ViewModel?.CurrentGame == null)
+            if (this.ViewModel is not { IsGameLoaded: true } viewModel)
             {
                 return;
             }
 
-            var dump = this.ViewModel.CreateSaveHexDump;
+            var dump = viewModel.CreateSaveHexDump;
             this.files.Run(() => new SaveHexWindow(dump) { Owner = this }.Show(), "View save hex", "show the savefile bytes");
         }
 
@@ -166,16 +132,16 @@
             this.ShowStatus(this.WithViewModel(this.files.LoadBytes));
         }
 
-        private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(Constants.App.UserGuideUrl);
+        private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.UserGuideUrl);
 
-        private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(Constants.App.IssuesUrl);
+        private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.IssuesUrl);
 
         private void AboutCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             new AboutWindow(new AboutViewModel(this.about, this.urlLauncher)) { Owner = this }.ShowDialog();
         }
 
-        private T? WithViewModel<T>(Func<MainViewModel, T> action)
+        private T? WithViewModel<T>(Func<ShellViewModel, T> action)
         {
             return this.ViewModel is { } viewModel ? action(viewModel) : default;
         }
@@ -201,48 +167,6 @@
         private void Exit(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        /// <summary>
-        /// Shows the page of what is picked in the navigation tree: the overview, a player or a hero. Each keeps its page,
-        /// so the tab a hero was on is kept.
-        /// </summary>
-        private void ShowCurrentPage()
-        {
-            var current = this.ViewModel?.CurrentPage;
-
-            if (current == null)
-            {
-                this.heroFrame.Content = null;
-            }
-            else
-            {
-                if (!this.heroPages.TryGetValue(current, out var page))
-                {
-                    page = current switch
-                    {
-                        HeroViewModel hero => new HeroPage(hero),
-                        PlayerViewModel player => new PlayerPage(player),
-                        CastleViewModel castle => new CastlePage(castle),
-                        OverviewViewModel overview => new OverviewPage(overview),
-                        _ => throw new InvalidOperationException($"No page for {current.GetType().Name}."),
-                    };
-                    this.heroPages[current] = page;
-                }
-
-                if (!ReferenceEquals(this.heroFrame.Content, page))
-                {
-                    this.heroFrame.Navigate(page);
-
-                    // Pages are not visited in order, so there is nothing to go back to.
-                    while (this.heroFrame.CanGoBack)
-                    {
-                        this.heroFrame.RemoveBackEntry();
-                    }
-                }
-            }
-
-            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

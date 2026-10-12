@@ -14,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         private static CastleViewModel Show(string folder, string save, string castle)
         {
             var path = Path.Combine("TestData", "Hota", folder, save + ".GM1");
-            var main = TestServices.CreateMainViewModel();
+            var main = TestServices.CreateHomm3Editor();
             main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
             main.ShowCastle(main.LoadedGame().History.Current.Castles().FindByName(castle));
             return main.CurrentPageOf<CastleViewModel>();
@@ -89,7 +89,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void TheUpgradedGrowthBuildingsAreNotListedBecauseTheyAreNoBuildingsOfTheGame(string castle)
         {
             var path = Path.Combine("TestData", "Roe", "roe_42_tazar_garrisoned.GM1");
-            var main = TestServices.CreateMainViewModel();
+            var main = TestServices.CreateHomm3Editor();
             main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
             main.ShowCastle(main.LoadedGame().History.Current.Castles().FindByName(castle));
             var page = main.CurrentPageOf<CastleViewModel>();

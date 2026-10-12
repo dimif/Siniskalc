@@ -84,7 +84,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheCastlesOfTheNavigationTreeShowTheCapitolAndTheGrailAndFollowEdits()
         {
-            var main = TestServices.CreateMainViewModel();
+            var main = TestServices.CreateHomm3Editor();
             var path = Path.Combine("TestData", "Sod", "conflux_34_grail.GM1");
             main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
             var nodes = main.NavigationNodes.Descendants().Where(n => n.Kind == NavNodeKind.Castle).ToList();

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Siniskalc.Core\Siniskalc.Core.csproj" />
+    <ProjectReference Include="..\Siniskalc.Homm2\Siniskalc.Homm2.csproj" />
     <ProjectReference Include="..\Siniskalc.Homm3\Siniskalc.Homm3.csproj" />
     <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
   </ItemGroup>

@@ -12,12 +12,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     {
         private static readonly string SavePath = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
 
-        private MainViewModel main = null!;
+        private Homm3EditorViewModel main = null!;
 
         [SetUp]
         public void LoadGame()
         {
-            this.main = TestServices.CreateMainViewModel();
+            this.main = TestServices.CreateHomm3Editor();
             this.main.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
         }
 

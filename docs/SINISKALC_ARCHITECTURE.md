@@ -6,17 +6,21 @@
 It turns a savefile into a list of byte chunks and keeps them in an immutable document with undo and redo.
 An edit goes through an edit session that deserializes a chunk, applies the change and serializes it back, so only the bytes that changed are patched on save and the rest of the file is left as it was.
 It also reads and writes the compressed savefile, makes the numbered backups, and stores the user's settings and recent files.
+It defines what the application shell needs from a game: `IGameModule` (how its savefiles are recognised and picked, and how to make its editor) and `IGameEditor` (loading, saving, undo and redo, the pending changes, the bytes to save).
 
 **`Siniskalc.Wpf`** (net8.0-windows) is the reusable user interface, and it knows no game either.
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer.
-It also holds the colours and styles every page shares.
+It also holds the colours and styles every page shares, and the shell of the application: `ShellWindow` (menus, toolbar, status bar, the panel of pending changes and the menu icons), `ShellViewModel` and `SavegameFileCommands`.
+The shell picks the game of the file the user opens, and shows the game's editor through the data template of the editor's type.
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
-It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them and the main window.
+It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).
+
+**`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Homm2Game`, the parser and `Homm2Module`) and `ViewModels` and `Views` (for now an overview of the savegame). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
 
 **`Siniskalc`** is the exe, the host that starts the window.
-It holds `App` and `AppServices`, the composition root that builds all the components once.
-Only the HoMM3 module exists today; the host becomes game-neutral when the second game arrives (see `HOMM2_PLAN.md`).
+It holds `App` and `AppServices`, the composition root that builds all the components once and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), and `AppInfo` (the name and the web addresses).
+A game's data templates are merged in `App.xaml`.
 
 ```
 Siniskalc.Homm3/
@@ -26,7 +30,7 @@ Siniskalc.Homm3/
   Runtime/        Loading and holding the open game
   ViewModels/     MVVM view models and the navigation tree
   Views/          XAML pages (one page per kind of edit)
-  Resources/      Icons (the styles that only heroes need are in Views/Generic.xaml)
+  Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
 Siniskalc/        The exe: App and AppServices (the composition root)
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
@@ -34,9 +38,9 @@ TestData/         Sample savegames (Roe, Sod, Hota) and hero dumps used by the t
 docs/             Architecture, how things are located in a savefile, knowledge base, user guide, plans.
 ```
 
-Dependencies point one way: `Siniskalc` references `Siniskalc.Homm3`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Homm3` references `Siniskalc.Wpf` and `Siniskalc.Core`; and `Siniskalc.Wpf` references `Siniskalc.Core`.
+Dependencies point one way: `Siniskalc` references `Siniskalc.Homm3`, `Siniskalc.Homm2`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Homm3` and `Siniskalc.Homm2` each reference `Siniskalc.Wpf` and `Siniskalc.Core`; and `Siniskalc.Wpf` references `Siniskalc.Core`.
 Nothing in Core or WPF should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and the HoMM3 side wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChanges`, `Homm3Enumeration`).
-A second game gets a project of its own that references the same two libraries.
+A game gets a project of its own that references the same two libraries; HoMM2 is the second.
 
 Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests` and `Siniskalc.Homm3.Tests` (the real savegames).
 
@@ -116,14 +120,14 @@ A hero with a biography has its header and biography in front of the chunk, so t
 The viewer makes its lines when the grid asks for them (`HexRowList`), because a savefile is about a million bytes; the editor builds a `DataTable` and is for single chunks.
 Making the viewer editable would need a byte edit target for the bytes that no chunk covers, and undo for them.
 
-The hex tabs and the Advanced menu are only shown in advanced mode (`MainViewModel.IsAdvancedMode`).
+The hex tabs and the Advanced menu are only shown in advanced mode (`ShellViewModel.IsAdvancedMode`).
 The Hex `NavButton` of each page binds its `Visibility` to it, and a `NavButton` that gets hidden while it is the selected tab selects the first tab.
 
 ## Settings and backups
 
 `SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on) and `AdvancedMode` (default off) never overwrite each other.
 A setting missing from the file keeps its default.
-`AppServices` builds one store and hands it to `RecentFilesStore`, `NumberedSavefileBackup` and `MainViewModel`; tests give `AppServices` a settings file of their own.
+`AppServices` builds one store and hands it to `RecentFilesStore`, `NumberedSavefileBackup` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
 
 `GameService.SaveGame` calls `ISavefileBackup.Backup(path)` before it writes.
 `NumberedSavefileBackup` copies the file to `name.bak`, or `name.bak<N>` with N one above the highest copy in the folder, and never overwrites a copy; it does nothing while `BackupOnSave` is off.

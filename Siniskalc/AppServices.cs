@@ -5,7 +5,9 @@
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
-    using Siniskalc.Homm3;
+    using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Homm3.Runtime;
@@ -81,6 +83,30 @@
             this.FileDialogs = new WpfFileDialogs();
             this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
             this.About = CreateAboutInfo();
+            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
+            this.Homm3 = new Homm3Module(this.CreateHomm3Editor);
+
+            var homm2Locator = new Homm2SaveLayoutLocator();
+            this.Homm2GameService = new Homm2GameService(
+                new Homm2SavegameParser(
+                    homm2Locator,
+                    new Homm2BytesLoader(),
+                    new Homm2HeaderReader(),
+                    new Homm2SaveDocumentFactory(
+                        new Homm2HeroDeserializer(),
+                        new SafeHomm2HeroSerializer(),
+                        new Homm2HeroDiffer(),
+                        new Homm2PlayerDeserializer(),
+                        new SafeHomm2PlayerSerializer(),
+                        new Homm2PlayerDiffer(),
+                        new Homm2CastleDeserializer(),
+                        new SafeHomm2CastleSerializer(),
+                        new Homm2CastleDiffer(),
+                        this.BytesPatcher)),
+                new RawSavefileCodec(),
+                this.Backup);
+            this.Homm2SaveRegionProvider = new Homm2SaveRegionProvider(homm2Locator);
+            this.Homm2 = new Homm2Module(homm2Locator, this.CreateHomm2Editor);
         }
 
         public IGameService GameService { get; }
@@ -133,18 +159,47 @@
 
         public AboutInfo About { get; }
 
-        public MainViewModel CreateMainViewModel() => new(this.GameService, this.EffectLines, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, this.Settings);
+        public HelpLinks Help { get; }
+
+        /// <summary>
+        /// Gets the game module of Heroes of Might and Magic III.
+        /// </summary>
+        public IGameModule Homm3 { get; }
+
+        public IHomm2GameService Homm2GameService { get; }
+
+        public ISaveRegionProvider Homm2SaveRegionProvider { get; }
+
+        /// <summary>
+        /// Gets the game module of Heroes of Might and Magic II.
+        /// </summary>
+        public IGameModule Homm2 { get; }
+
+        /// <summary>
+        /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
+        /// </summary>
+        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets);
+
+        /// <summary>
+        /// Makes the shell of the application, with every game it can edit.
+        /// </summary>
+        public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);
+
+        /// <summary>
+        /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
+        /// </summary>
+        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider);
 
         private static AboutInfo CreateAboutInfo()
         {
             var version = typeof(AppServices).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
             var plus = version.IndexOf('+');
             return new AboutInfo(
-                Constants.App.Name,
+                AppInfo.Name,
                 plus < 0 ? version : version[..plus],
                 "A savegame editor for Heroes of Might and Magic III.",
-                Constants.App.RepositoryUrl,
-                Constants.App.ReleasesUrl,
+                AppInfo.RepositoryUrl,
+                AppInfo.ReleasesUrl,
                 "Copyright (c) 2026 Dimitri Fadda. Released under the MIT License.",
                 [
                     "Heroes of Might and Magic is a trademark of Ubisoft. This project is not affiliated with or endorsed by Ubisoft.",

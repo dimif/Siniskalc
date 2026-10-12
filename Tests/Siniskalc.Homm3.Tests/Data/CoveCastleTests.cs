@@ -215,7 +215,7 @@ namespace Siniskalc.Homm3.Tests.Data
             foreach (var (file, role) in new[] { ("cove_coastal_05_visiting_hero", "Visiting"), ("cove_coastal_06_garrisoned_hero", "Garrisoned") })
             {
                 var path = Path.Combine("TestData", "Hota", "Cove", file + ".GM1");
-                var main = TestServices.CreateMainViewModel();
+                var main = TestServices.CreateHomm3Editor();
                 main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
 
                 main.ShowCastle(main.LoadedGame().History.Current.Castles().FindByName("Cove Castle"));

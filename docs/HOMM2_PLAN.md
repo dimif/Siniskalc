@@ -33,32 +33,32 @@ Goal: the same application, the same tests, the code in a library.
 Done with `git mv` (the moves show as renames, so `git log --follow` keeps the history), a build after each step, and the full suite at the end. Not committed yet: the whole move is staged as one change for the user to commit.
 Other tools and people edit this tree at the same time, so it is done on the feature branch and the tree should be quiet while it runs.
 
-## Phase 2: a thin host
+## Phase 2: a thin host (done)
 
-Today `MainViewModel` (667 lines), `NavigationTree` and `MainWindow` know heroes, castles and players. A second game needs a shell that does not.
+`MainViewModel` (667 lines), the navigation tree and `MainWindow` knew heroes, castles and players, and a second game needs a shell that does not. As built:
 
-Proposed split (to be confirmed after reading `MainWindow.xaml`, which is a spike of about a day):
+- **`Siniskalc.Core`**: `IGameEditor` (what the shell needs from the editor of one game: load, reload, save, the history with undo, redo, the pending changes and their revert, the bytes to save, the hex dump, `File`, `Name`) and `IGameModule` (`Name`, the file patterns for open and save, `Recognizes(path, head bytes)`, `CreateEditor()`).
+- **`Siniskalc.Wpf`**: `ShellViewModel` (the open game's editor, the preferences, the pending changes panel, the open and save filters, `LoadGame(path)` that asks each module to recognise the file and loads it in that game's editor, keeping what is open when the load fails), `SavegameFileCommands` (generic now), `ShellWindow` (menus, toolbar, status bar, pending changes panel, the menu icons) and `HelpLinks`. The editor is shown by a `ContentControl` through the data template of its type.
+- **`Siniskalc.Homm3`**: `MainViewModel` became `Homm3EditorViewModel : IGameEditor` (without the preferences and the pending changes panel, which are the shell's); the navigation tree and the page frame became `Homm3EditorView`; `Homm3Module` recognises the gzip magic; the data template of the editor is in `Views/Generic.xaml`.
+- **The exe**: `AppServices` lists the modules and makes the shell (`CreateShellViewModel`, `CreateHomm3Editor`), `AppInfo` holds the name and the web addresses, `App` shows a `ShellWindow`; `App.xaml` merges the shared styles and the game's templates.
+- **Tests**: the 1,841 HoMM3 tests pass unchanged apart from the renames (`MainViewModel` to `Homm3EditorViewModel`, `CreateMainWindow` to `CreateShellWindow`, the shell's `IsAdvancedMode` and `IsPendingChangesOpen`); `ShellViewModelTests` (17) test the shell with fake games in `Siniskalc.Wpf.Tests`.
 
-- In `Siniskalc.Core` (no UI): `IGameModule` with `Name`, the file extensions, `bool Recognizes(byte[] head)` and `IGameEditor Open(path/bytes)`. `ISavefileCodec` already has the gzip implementation; HoMM2 adds an identity codec.
-- In `Siniskalc.Wpf`: a `ShellViewModel` that holds what is not game-specific: open, reload, save, save as, recent files, undo, redo, pending changes with revert, backup on save, advanced mode, about. It talks to the open game through `IGameEditor` (the history, the file, the page to show, the navigation nodes, the hex dump).
-- In `Siniskalc.Homm3`: what remains of `MainViewModel` becomes `Homm3Editor : IGameEditor`; the navigation tree stays HoMM3-shaped for now (a generic node when HoMM2 needs one, see FUTURE_IMPROVEMENTS).
-- In the exe: the window, the list of modules (`Homm3Module`, `Homm2Module`), detection by content (gzip magic = HoMM3; `0x5C000000` at offset 8, or `FFFFFFFF` first and then the same at 12 = HoMM2), and the `DataTemplate`s of each module merged as resource dictionaries so the content area picks the page by the type of the editor.
+Not done on purpose, left for when HoMM2 needs them: a game-neutral navigation tree (the HoMM3 one stays in its editor view); the module's `IsValidSavegameName` rule for the 8-character names (Phase 5, with the save dialog); registering a module's data templates in code instead of `App.xaml`.
 
-Risks: `MainWindow` binds directly to HoMM3 properties (`Heroes`, `HeroFilter`, `SelectedHeroViewModel`), so the window may have to split in two (a shell, and the HoMM3 editor view). If it is bigger than expected, stop after Phase 2a (the interface and the shell, with HoMM3 as the only module) before any HoMM2 code, and re-plan.
-Gate: HoMM3 tests unchanged and passing, and a new `Siniskalc.Wpf.Tests` set for the shell with a fake game.
+## Phase 3: `Siniskalc.Homm2` data layer (done)
 
-## Phase 3: `Siniskalc.Homm2` data layer (no UI)
+New projects `Siniskalc.Homm2` and `Siniskalc.Homm2.Tests`; the exe references the new library. As built:
 
-New projects `Siniskalc.Homm2` and `Siniskalc.Homm2.Tests`; the exe references the new library.
+1. **Locating.** `Homm2SaveLayoutLocator` detects the base game's `.GM1` and the Price of Loyalty's `.GX1` (marker, shift 5, hero stride 236 or 250) and gives a `Homm2SaveLayout` with the date and the starts of the tables of players, heroes and castles. The tables are checked (every hero and every castle holds its own number), so a savegame that does not match is refused (`UnsupportedSavefileException`) and never misread. The same class recognises a file from its first 16 bytes (the shell uses that to pick the game).
+2. **Layouts.** `Homm2HeaderLayout`, `Homm2PlayerLayout`, `Homm2HeroLayout`, `Homm2CastleLayout`; the sizes and limits are in `Constants`.
+3. **Chunks and collections.** `Homm2ChunkKinds`, `Homm2HeroChunk`, `Homm2PlayerChunk`, `Homm2CastleChunk` (54 heroes, 6 players, 72 castle records, contiguous), their collections, `Homm2BytesLoader`, `Homm2SaveDocumentFactory`, edit sessions and pending changes.
+4. **Reading and writing separate** (`Homm2HeroDeserializer` and `SafeHomm2HeroSerializer`; the same for players and castles), sharing `Homm2Bytes`. A byte the editor does not know reads as the first known value (or `null`) and is left alone until the model changes it. Names, the header, the facing and the 14 extra bytes of the Price of Loyalty are never written.
+5. **Models**: `Homm2HeroModel`, `Homm2PlayerModel`, `Homm2CastleModel` with value types that compare by content (`Homm2Army`, `Homm2Artifacts`, `Homm2SecondarySkills`, `Homm2SpellBook`, `Homm2Numbers`, `Homm2Resources`), `Homm2GameDate`, `Homm2MapHeader`.
+6. **Reducers**: `WithSpellBook` and `WithoutSpellBook`. Not done yet: keeping the experience and the level in step (the game's experience table is not verified: Kalindra is level 14 with 28,037 experience), the maximum movement (derived by the game) and the rule that a town without a castle cannot build.
+7. **Entities** (`Homm2Creature` with 66 creatures, `Homm2Spell` with 65, `Homm2Artifact` with 99, `Homm2SecondarySkill` with 14, `Homm2Race`, `Homm2Color`, `Homm2Resource`, the building flags): tables made from the open source engine fheroes2 (read only, GPL-2.0, no code copied) and checked against the saves: the creature codes of the Peasant, the Archer and the Black Dragon, the spells of the Mage Guild, the artifacts that were picked up, the weekly growth of a castle. Names are plain strings for now (`.resx` is left for when the UI is localised).
+8. **Tests** (86): every save is located, loaded and written back byte for byte; the values of every README row are checked; edits change only their bytes; unknown values survive; the 14 extra bytes survive; pending changes revert one by one; the names of the saves follow the rules; the shell opens both games.
 
-1. **Locating.** `Homm2SaveHeaderLocator`: detects `.GM1` versus `.GX1` (marker, shift 5), gives the offsets of the player table, the hero table (stride 236 or 250) and the castle table. Offsets are derived, not hard-coded to one map, and validated: the hero table starts with `Lord Kilburn`, the castle table follows 0x36 bytes after the hero table. When validation fails the loader says the file is unsupported (`UnsupportedSavefileException`), it never guesses. TODO:LOG at every fallback.
-2. **Layouts.** `Homm2HeroOffsets`, `Homm2CastleLayout`, `Homm2PlayerLayout` (offsets from HOMM2_SAVE_FORMAT.md), with the version-dependent stride.
-3. **Chunks and collections.** `Homm2ChunkKinds` (`Hero`, `Castle`, `Player`) using `ChunkKind`; `HeroChunk` etc. with the byte parts, `ChunkCollection` of each; a `Homm2BytesLoader` per kind; the document factory (the single place besides `AppServices` that builds version-dependent objects).
-4. **Reading and writing separate**, as everywhere (`Homm2HeroDeserializer`, `SafeHomm2HeroSerializer`; same for players and castles). A byte the editor does not know reads as the first known value and is left alone while the model still holds the stand-in: unknown creature ID, unknown artifact ID, owner `0xFF` as `null`.
-5. **Models** (immutable, reducers): `Homm2HeroModel` (name, ID, owner, position, spell points, movement, experience, level, primary skills, secondary skills with learn order, army of 5, artifacts of 14, spells), `Homm2PlayerModel` (resources, daily incomes, castles, heroes, elimination countdown, tavern heroes), `Homm2CastleModel` (owner, race, position, garrison, building mask, dwellings, available creatures, mage guild pool). `Homm2GameDate`.
-6. **Rules in reducers**: a hero with the Magic Book gets its spells recognised (book = artifact 81, spells = flags), a spell granted by the guild; the experience and level are kept in step; max movement is derived from the army and warned about, not written; a town without a castle accepts no other building.
-7. **Entities** (`Homm2Creature`, `Homm2Spell`, `Homm2Artifact`, `Homm2Skill`, `Homm2HeroClass`, `Homm2Building`): one checked table each, with the source in a comment. Sources: fheroes2 (GPL-2.0, read only; the repo is MIT so no code or table structure is copied), cross-checked against the HoMM wiki and against the IDs that the saves proved. `.resx` for names, as `CLAUDE.md` asks.
-8. **Tests**: every save of the two series parses and gives the values of the README rows (resources, hero stats, army, artifacts, spells, castle buildings, elimination countdown); a round trip (deserialize then serialize) is byte-identical on every save; edits change only the intended bytes.
+Also done ahead of Phase 5, because the title of the window had to follow the game: `Homm2Module`, `Homm2EditorViewModel` (an `IGameEditor`) and a first view, `Homm2EditorView`, that shows the map, the date and the players. `AppServices` lists both games, and the window title becomes "Siniskalc - Heroes of Might and Magic II" when a savegame of that game is open.
 
 ## Phase 4: the write test with the game (early, before the UI)
 
@@ -67,8 +67,8 @@ This is the real check that nothing in the file (a checksum, a length) rejects a
 
 ## Phase 5: read-only viewer
 
-- `Homm2Module` registered in the host; recent files and detection work for both games.
-- Pages: overview (date, players), player (resources, incomes, castles, heroes), hero (everything above, read-only), castle (buildings, dwellings, garrison), and the hex viewer with `ByteRegion`s from the layouts (`Homm2SaveRegionProvider`).
+- Done: `Homm2Module` is registered in the host, so detection, the recent files and the window title work for both games; the hex viewer works (`Homm2SaveRegionProvider`); the first view shows the map, the date and the players.
+- Left: the pages of the player (resources, incomes, castles, heroes), the hero (everything above, read-only) and the castle (buildings, dwellings, garrison), with the hex tab of each (`HexEditor` byte edit targets for the three records).
 - Navigation tree for HoMM2: players, then their heroes and castles.
 
 ## Phase 6: editing (heroes and resources)

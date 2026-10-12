@@ -14,13 +14,13 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     [Apartment(ApartmentState.STA)]
     internal sealed class CastleGarrisonedHeroTests
     {
-        private MainViewModel main = null!;
+        private Homm3EditorViewModel main = null!;
 
         [SetUp]
         public void LoadGame()
         {
             var path = Path.Combine("TestData", "Roe", "roe_61_inferno_garrison_and_visiting.GM1");
-            this.main = TestServices.CreateMainViewModel();
+            this.main = TestServices.CreateHomm3Editor();
             this.main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
         }
 

@@ -18,7 +18,7 @@ There is no logging yet: every place that should log is marked `// TODO:LOG <lev
 
 - **A value the editor does not know never stops a load.** Deserializers read it as a stand-in (or as nothing) and the serializer keeps the original byte (see `CLAUDE.md`).
   These are the places marked `TODO:LOG`.
-- **Parsing only slices bytes; the models are read when a page needs them.** `MainViewModel.SetGame` builds what reads the new game (the overview, the owners) before it lets go of the open game, so a game that cannot be shown leaves the open one as it was.
+- **Parsing only slices bytes; the models are read when a page needs them.** `Homm3EditorViewModel.SetGame` builds what reads the new game (the overview, the owners) before it lets go of the open game, so a game that cannot be shown leaves the open one as it was.
 - **A save is all or nothing.** `GameService.SaveGame` works out the bytes, makes the backup, then `GzipSavefileCodec.Write` writes a `.saving` file and moves it over the savefile.
   Only after that is the game tied to the file (`Game.SavedTo`) and marked saved.
   If any step throws, the savefile, `Game.File` and the pending changes are as they were.
@@ -32,4 +32,4 @@ There is no logging yet: every place that should log is marked `// TODO:LOG <lev
 ## Games without a file
 
 `Game.File` is the file a game is tied to: where it was loaded from or last saved to, and `null` for a game loaded from a dump.
-Reload needs it (`MainViewModel.CanReload`); `Game.Name` is what to call the game either way.
+Reload needs it (`Homm3EditorViewModel.CanReload`, which the shell mirrors); `Game.Name` is what to call the game either way.

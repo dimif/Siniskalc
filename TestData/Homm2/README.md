@@ -2,7 +2,7 @@
 
 Heroes of Might and Magic II (`.GM1` base game, `.GX1` Price of Loyalty).
 They are not read by the HoMM3 tests: **do not copy them into `Tests/Siniskalc.Tests`** (its tests parse every `*.GM?` under `TestData` as a HoMM3 save).
-They belong to `Siniskalc.Homm2.Tests` (see `docs/HOMM2_PLAN.md`).
+They belong to `Siniskalc.Homm2.Tests`, whose project file copies them (see `docs/HOMM2_PLAN.md`); `Homm2TestDataNamesTests` checks their names.
 
 | Folder | What it is |
 |---|---|

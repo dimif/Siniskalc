@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.IO;
@@ -14,8 +14,6 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class SavegameFileCommands
     {
-        private const string SavegameOpenFilter = "HoMM3 Savegames |*.CGM;*.GM*";
-        private const string SavegameSaveFilter = "HoMM3 Savegames |*.*GM;*.GM*";
         private const string BytesFilter = "Binary dump|*.bin|All files|*.*";
 
         private readonly RecentFilesStore recentFiles;
@@ -49,16 +47,16 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Asks for a savegame and loads it.
         /// </summary>
-        public string? Open(MainViewModel main)
+        public string? Open(ShellViewModel shell)
         {
-            var path = this.dialogs.PickFileToOpen(SavegameOpenFilter);
-            return path == null ? null : this.LoadFile(main, path);
+            var path = this.dialogs.PickFileToOpen(shell.OpenFilter);
+            return path == null ? null : this.LoadFile(shell, path);
         }
 
         /// <summary>
         /// Loads a savegame from the list of recent files. A file that is gone is taken off the list.
         /// </summary>
-        public string? OpenRecent(MainViewModel main, string path)
+        public string? OpenRecent(ShellViewModel shell, string path)
         {
             if (!File.Exists(path))
             {
@@ -67,34 +65,34 @@ namespace Siniskalc.Homm3.ViewModels
                 return null;
             }
 
-            return this.LoadFile(main, path);
+            return this.LoadFile(shell, path);
         }
 
         /// <summary>
         /// Reads the game again from its file, discarding the edits.
         /// </summary>
-        public bool Reload(MainViewModel main) => this.Run(main.ReloadGame, "Reload Game Error", "reload game");
+        public bool Reload(ShellViewModel shell) => this.Run(shell.ReloadGame, "Reload Game Error", "reload game");
 
         /// <summary>
         /// Saves over the file the game has (it is backed up first), or asks for one when the game has none.
         /// </summary>
-        public string? Save(MainViewModel main)
+        public string? Save(ShellViewModel shell)
         {
-            if (!main.HasFile)
+            if (!shell.HasFile)
             {
-                return this.SaveAs(main);
+                return this.SaveAs(shell);
             }
 
-            return this.Run(main.SaveGame, "Save Game Error", "save game") ? main.CurrentGame?.File : null;
+            return this.Run(shell.SaveGame, "Save Game Error", "save game") ? shell.File : null;
         }
 
         /// <summary>
         /// Asks for a file and saves the game there.
         /// </summary>
-        public string? SaveAs(MainViewModel main)
+        public string? SaveAs(ShellViewModel shell)
         {
-            var path = this.dialogs.PickFileToSave(SavegameSaveFilter);
-            if (path == null || !this.Run(() => main.SaveGame(path), "Save Game Error", "save game"))
+            var path = this.dialogs.PickFileToSave(shell.SaveFilter);
+            if (path == null || !this.Run(() => shell.SaveGame(path), "Save Game Error", "save game"))
             {
                 return null;
             }
@@ -106,15 +104,14 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Asks for a file and writes the bytes the savegame would have to it, without compression.
         /// </summary>
-        public async Task<string?> ExportBytesAsync(MainViewModel main)
+        public async Task<string?> ExportBytesAsync(ShellViewModel shell)
         {
-            var game = main.CurrentGame;
-            if (game == null)
+            if (!shell.IsGameLoaded)
             {
                 return null;
             }
 
-            var name = string.IsNullOrWhiteSpace(game.Name) ? "game" : Path.GetFileNameWithoutExtension(game.Name);
+            var name = string.IsNullOrWhiteSpace(shell.Name) ? "game" : Path.GetFileNameWithoutExtension(shell.Name);
             var path = this.dialogs.PickFileToSave(BytesFilter, $"{name}.bin", ".bin");
             if (path == null)
             {
@@ -123,7 +120,7 @@ namespace Siniskalc.Homm3.ViewModels
 
             try
             {
-                await File.WriteAllBytesAsync(path, game.GetBytesToSave());
+                await File.WriteAllBytesAsync(path, shell.GetBytesToSave());
                 return path;
             }
             catch (Exception ex)
@@ -136,35 +133,35 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Asks for a file of bytes written by <see cref="ExportBytesAsync"/> and loads it as a game.
         /// </summary>
-        public string? LoadBytes(MainViewModel main)
+        public string? LoadBytes(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToOpen(BytesFilter);
 
             // Reading the file is part of the load: bytes that cannot be read are told the same way as bytes that cannot be understood.
-            return path != null && this.Run(() => main.LoadGameFromBytes(File.ReadAllBytes(path), path), "Load save from bytes", "load save from bytes") ? path : null;
+            return path != null && this.Run(() => shell.LoadGameFromBytes(File.ReadAllBytes(path), path), "Load save from bytes", "load save from bytes") ? path : null;
         }
 
         /// <summary>
         /// Returns whether the editor may close: nothing is unsaved, or the user saved it or chose to throw it away.
         /// </summary>
-        public bool ConfirmClose(MainViewModel main)
+        public bool ConfirmClose(ShellViewModel shell)
         {
-            if (!main.HasPendingChanges)
+            if (!shell.HasPendingChanges)
             {
                 return true;
             }
 
             return this.messages.AskYesNoCancel("Unsaved changes", "You have unsaved changes. Save before closing?") switch
             {
-                MessageAnswer.Yes => this.Save(main) != null,
+                MessageAnswer.Yes => this.Save(shell) != null,
                 MessageAnswer.No => true,
                 _ => false,
             };
         }
 
-        private string? LoadFile(MainViewModel main, string path)
+        private string? LoadFile(ShellViewModel shell, string path)
         {
-            if (!this.Run(() => main.LoadGame(path), "Load Game Error", "load game"))
+            if (!this.Run(() => shell.LoadGame(path), "Load Game Error", "load game"))
             {
                 return null;
             }

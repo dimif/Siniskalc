@@ -32,10 +32,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             {
                 EnsureApplication();
 
-                var viewModel = TestServices.CreateMainViewModel();
+                var viewModel = TestServices.CreateHomm3Editor();
+
+                var shell = TestServices.CreateShell(viewModel);
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
-                viewModel.IsAdvancedMode = true;
-                var window = TestServices.CreateMainWindow(viewModel);
+                shell.IsAdvancedMode = true;
+                var window = TestServices.CreateShellWindow(shell);
                 window.Show();
 
                 try
@@ -43,14 +45,14 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Assert.That(viewModel.NavigationNodes, Is.Not.Empty);
 
                     // The overview, then a player's page with an edit, before the hero pages.
-                    var frame = (Frame)window.FindName("heroFrame");
+                    var frame = window.HeroFrame();
                     Pump();
                     Assert.That(frame.Content, Is.InstanceOf<OverviewPage>());
                     viewModel.PlayerNodes().Single(n => n.Title == "Purple").IsSelected = true;
                     Pump();
                     Assert.That(frame.Content, Is.InstanceOf<PlayerPage>());
                     (viewModel.CurrentPageOf<PlayerViewModel>()).Resources[0].Value = 12345;
-                    viewModel.IsPendingChangesOpen = true;
+                    shell.IsPendingChangesOpen = true;
                     Pump();
                     Assert.That(viewModel.PendingChanges.Single().Path, Is.EqualTo("Purple › Resources"));
 
@@ -67,7 +69,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Assert.That(viewModel.SearchAndAddHero("Christian"), Is.True);
                     Pump();
 
-                    var heroFrame = (Frame)window.FindName("heroFrame");
+                    var heroFrame = window.HeroFrame();
                     var heroPage = (HeroPage)heroFrame.Content;
                     var tabs = (ListBox)heroPage.FindName("sidebar");
 
@@ -81,7 +83,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     var hero = viewModel.SelectedHero();
                     hero.ArmyViewModel.CreatureSlots[0].SelectedCreature = "Angel";
                     hero.GeneralInfoViewModel.Attack = 33;
-                    viewModel.IsPendingChangesOpen = true;
+                    shell.IsPendingChangesOpen = true;
                     Pump();
 
                     Assert.That(viewModel.PendingChanges, Is.Not.Empty);
@@ -99,7 +101,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             }
             finally
             {
-                TestServices.CreateMainViewModel().IsAdvancedMode = false;
+                TestServices.CreateShell().IsAdvancedMode = false;
                 PresentationTraceSources.DataBindingSource.Listeners.Remove(errors);
             }
 
@@ -118,29 +120,31 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             {
                 EnsureApplication();
 
-                var viewModel = TestServices.CreateMainViewModel();
-                viewModel.IsAdvancedMode = false;
+                var viewModel = TestServices.CreateHomm3Editor();
+
+                var shell = TestServices.CreateShell(viewModel);
+                shell.IsAdvancedMode = false;
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
-                var window = TestServices.CreateMainWindow(viewModel);
+                var window = TestServices.CreateShellWindow(shell);
                 window.Show();
 
                 try
                 {
-                    var frame = (Frame)window.FindName("heroFrame");
+                    var frame = window.HeroFrame();
                     viewModel.PlayerNodes().Single(n => n.Title == "Purple").IsSelected = true;
                     Pump();
                     var tabs = (ListBox)((PlayerPage)frame.Content).FindName("tabs");
                     var hexTab = tabs.Items.OfType<NavButton>().Single(t => t.Text == "Hex");
                     Assert.That(hexTab.Visibility, Is.EqualTo(Visibility.Collapsed));
 
-                    viewModel.IsAdvancedMode = true;
+                    shell.IsAdvancedMode = true;
                     Pump();
                     Assert.That(hexTab.Visibility, Is.EqualTo(Visibility.Visible));
 
                     // Switching it off while the hex tab is the one shown goes back to the first tab.
                     tabs.SelectedItem = hexTab;
                     Pump();
-                    viewModel.IsAdvancedMode = false;
+                    shell.IsAdvancedMode = false;
                     Pump();
                     Assert.That(tabs.SelectedIndex, Is.EqualTo(0));
                     Assert.That(viewModel.CurrentPageOf<PlayerViewModel>().SelectedTab, Is.EqualTo(0));
@@ -171,14 +175,15 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 EnsureApplication();
 
                 var path = Path.Combine("TestData", "Hota", "castles_01_blacksmith_garrison_tumlac_to_blue.GM1");
-                var viewModel = TestServices.CreateMainViewModel();
+                var viewModel = TestServices.CreateHomm3Editor();
+                var shell = TestServices.CreateShell(viewModel);
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
-                var window = TestServices.CreateMainWindow(viewModel);
+                var window = TestServices.CreateShellWindow(shell);
                 window.Show();
 
                 try
                 {
-                    var frame = (Frame)window.FindName("heroFrame");
+                    var frame = window.HeroFrame();
                     Pump();
                     Assert.That(frame.Content, Is.InstanceOf<OverviewPage>());
 
@@ -217,7 +222,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             {
                 EnsureApplication();
 
-                var viewModel = TestServices.CreateMainViewModel();
+                var viewModel = TestServices.CreateHomm3Editor();
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
                 viewModel.SearchAndAddHero("Christian");
                 viewModel.SelectedHero().GeneralInfoViewModel.Attack = 33;
@@ -272,14 +277,15 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 EnsureApplication();
 
                 var path = Path.Combine("TestData", "Roe", "roe_61_inferno_garrison_and_visiting.GM1");
-                var viewModel = TestServices.CreateMainViewModel();
+                var viewModel = TestServices.CreateHomm3Editor();
+                var shell = TestServices.CreateShell(viewModel);
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
-                var window = TestServices.CreateMainWindow(viewModel);
+                var window = TestServices.CreateShellWindow(shell);
                 window.Show();
 
                 try
                 {
-                    var frame = (Frame)window.FindName("heroFrame");
+                    var frame = window.HeroFrame();
                     Pump();
                     Assert.That(frame.Content, Is.InstanceOf<OverviewPage>());
 
@@ -335,14 +341,15 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             EnsureApplication();
 
             var path = Path.Combine("TestData", "Hota", "cannot_edit_town_spells.GM1");
-            var viewModel = TestServices.CreateMainViewModel();
+            var viewModel = TestServices.CreateHomm3Editor();
+            var shell = TestServices.CreateShell(viewModel);
             viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
-            var window = TestServices.CreateMainWindow(viewModel);
+            var window = TestServices.CreateShellWindow(shell);
             window.Show();
 
             try
             {
-                var frame = (Frame)window.FindName("heroFrame");
+                var frame = window.HeroFrame();
                 Pump();
                 var castle = viewModel.NavigationNodes.Descendants().First(c => c.Kind == NavNodeKind.Castle);
                 castle.IsSelected = true;

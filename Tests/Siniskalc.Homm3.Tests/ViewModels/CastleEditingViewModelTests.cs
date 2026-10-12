@@ -20,14 +20,14 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     [Apartment(ApartmentState.STA)]
     internal sealed class CastleEditingViewModelTests
     {
-        private MainViewModel main = null!;
+        private Homm3EditorViewModel main = null!;
         private string path = null!;
 
         [SetUp]
         public void LoadGame()
         {
             this.path = Siniskalc.Homm3.Tests.Data.CastleSamples.Folder("Bulwark").Single(p => p.EndsWith("bulwark_24_nothing__fair.GM1"));
-            this.main = TestServices.CreateMainViewModel();
+            this.main = TestServices.CreateHomm3Editor();
             this.main.LoadGameFromBytes(TestServices.SavefileCodec.Read(this.path), this.path);
         }
 
@@ -219,12 +219,13 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             try
             {
                 EnsureApplication();
-                var window = TestServices.CreateMainWindow(this.main);
+                var shell = TestServices.CreateShell(this.main);
+                var window = TestServices.CreateShellWindow(shell);
                 window.Show();
 
                 try
                 {
-                    var frame = (Frame)window.FindName("heroFrame");
+                    var frame = window.HeroFrame();
                     Pump();
 
                     foreach (var node in this.main.NavigationNodes.Descendants().Where(c => c.Kind == NavNodeKind.Castle && (c.Title == "Still Water" || c.Title == "Jotunngard")).ToList())
@@ -255,7 +256,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                         }
                     }
 
-                    this.main.IsPendingChangesOpen = true;
+                    shell.IsPendingChangesOpen = true;
                     Pump();
                     Assert.That(this.main.PendingChanges, Is.Not.Empty);
                     this.main.RevertAll();

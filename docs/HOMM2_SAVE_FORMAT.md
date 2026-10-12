@@ -49,7 +49,7 @@ Offsets below are for Blue; add `n * 0xCF` for colour n (Blue 0, Green 1, Red 2,
 
 | Offset (Blue) | Size | Meaning |
 |---|---|---|
-| 0x2BB, 0x2BD, 0x2BF | u16 x 3 | **date**: day of the week (1..7), week (1..4), month (1..; save 22 is day 2, week 1, month 2: after day 7 of week 4 the month increments). Saves 1..5 are day 1, save 6 day 2, saves 7-10 day 3, save 11 day 5, save 12 ("new week") is day 1, week 2 - **confirmed**. Global, not per player |
+| 0x2BB, 0x2BD, 0x2BF | u8 x 3 (the byte between each is 0; the last is the byte in front of the table of players) | **date**: day of the week (1..7), week (1..4), month (1..; save 22 is day 2, week 1, month 2: after day 7 of week 4 the month increments). Saves 1..5 are day 1, save 6 day 2, saves 7-10 day 3, save 11 day 5, save 12 ("new week") is day 1, week 2 - **confirmed**. Global, not per player |
 | 0x2C2 | u8 | number of heroes the player owns (1 -> 2 when Sir Gallant was hired) - confirmed |
 | 0x2C3 | u8 | **selected hero ID**, 0xFF when none (the UI selection: it becomes 0xFF when a castle is selected) - likely |
 | 0x2C5 | 5 x u8 | the heroes the player owns, as hero IDs, 0xFF for empty (Maximus 7, then Gallant 1 after the hire) - confirmed |

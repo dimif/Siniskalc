@@ -5,9 +5,8 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 ## Project structure
 
-- **Make the exe a thin host.** The HoMM3 code is in `Siniskalc.Homm3` now (done); `MainWindow`, `MainViewModel` and `AppServices` are still HoMM3-shaped.
-  Split them into a shell that picks the game from the savefile and a HoMM3 editor (Phase 2 of `HOMM2_PLAN.md`).
-  Only then is it clear which hero, castle and creature types the two games share; expect to fork more than to share.
+- **Game modules** (done): the HoMM3 code is in `Siniskalc.Homm3` and the exe is a thin host with a shell (`IGameModule`, `IGameEditor`, `ShellViewModel`, `ShellWindow`); see `docs/HOMM2_PLAN.md`.
+  Which hero, castle and creature types the two games share is still open; expect to fork more than to share.
 - `NavNodeViewModel` and `NavigationTree` are HoMM3-shaped (hero, player and castle indexes).
   Make a generic node when the second game has a tree of its own.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.

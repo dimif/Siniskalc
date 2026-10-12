@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using System.Windows.Input;
 

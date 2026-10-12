@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Data;
@@ -13,10 +12,11 @@
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// Root ViewModel that manages the application state.
-    /// Orchestrates game loading, hero management, and hero selection.
+    /// The editor of Heroes of Might and Magic III: the open savegame, its navigation tree and the pages (hero, player, castle,
+    /// overview) it shows. Orchestrates game loading, hero management, and hero selection. The application shell
+    /// (<see cref="ShellViewModel"/>) works with it through <see cref="IGameEditor"/>.
     /// </summary>
-    public class MainViewModel : AbstractViewModelBase
+    public class Homm3EditorViewModel : AbstractViewModelBase, IGameEditor
     {
         private readonly IGameService gameService;
 
@@ -29,8 +29,6 @@
         private readonly ISaveRegionProvider saveRegions;
 
         private readonly IByteEditTargetFactory byteEditTargets;
-
-        private readonly SettingsStore settings;
 
         private readonly Dictionary<int, PlayerViewModel> players = new Dictionary<int, PlayerViewModel>();
 
@@ -47,13 +45,10 @@
 
         private string heroFilter = string.Empty;
 
-        private bool isPendingChangesOpen;
-
         private Game? currentGame;
 
-        public MainViewModel(IGameService gameService, EffectLineProvider effectLines, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, SettingsStore settings)
+        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets)
         {
-            this.settings = settings;
             this.gameService = gameService;
             this.effectLines = effectLines;
             this.castleBuildMessages = castleBuildMessages;
@@ -62,40 +57,6 @@
             this.byteEditTargets = byteEditTargets;
             this.navigation = new NavigationTree(this.OnNodeSelected);
             this.Heroes = new ObservableCollection<HeroViewModel>();
-            this.RevertChangeCommand = new DelegateCommand(p => this.RevertChange((PendingChange?)p), p => p is PendingChange);
-            this.RevertAllCommand = new DelegateCommand(_ => this.RevertAll(), _ => this.HasPendingChanges);
-        }
-
-        /// <summary>
-        /// Gets or sets whether a copy of a savefile is kept before it is saved over. Kept in the settings of the user.
-        /// </summary>
-        public bool BackupOnSave
-        {
-            get => this.settings.BackupOnSave;
-            set
-            {
-                if (this.settings.BackupOnSave != value)
-                {
-                    this.settings.BackupOnSave = value;
-                    this.RaisePropertyChanged(nameof(this.BackupOnSave));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets whether the Advanced menu and the hex tabs are shown. Kept in the settings of the user.
-        /// </summary>
-        public bool IsAdvancedMode
-        {
-            get => this.settings.AdvancedMode;
-            set
-            {
-                if (this.settings.AdvancedMode != value)
-                {
-                    this.settings.AdvancedMode = value;
-                    this.RaisePropertyChanged(nameof(this.IsAdvancedMode));
-                }
-            }
         }
 
         /// <summary>
@@ -168,26 +129,6 @@
         }
 
         /// <summary>
-        /// Gets or sets whether the pending changes panel is shown.
-        /// </summary>
-        public bool IsPendingChangesOpen
-        {
-            get => this.isPendingChangesOpen;
-            set
-            {
-                if (this.isPendingChangesOpen != value)
-                {
-                    this.isPendingChangesOpen = value;
-                    this.RaisePropertyChanged(nameof(this.IsPendingChangesOpen));
-                }
-            }
-        }
-
-        public ICommand RevertChangeCommand { get; private set; }
-
-        public ICommand RevertAllCommand { get; private set; }
-
-        /// <summary>
         /// Gets the currently loaded Game model.
         /// </summary>
         public Game? CurrentGame => this.currentGame;
@@ -196,6 +137,16 @@
         /// Gets a value indicating whether a game is currently loaded.
         /// </summary>
         public bool IsGameLoaded => this.currentGame != null;
+
+        /// <summary>
+        /// Gets the file the game is tied to: where it was loaded from or last saved to, or <c>null</c> when it has none.
+        /// </summary>
+        public string? File => this.currentGame?.File;
+
+        /// <summary>
+        /// Gets what to call the game: its file, or the name it was given when loaded from bytes.
+        /// </summary>
+        public string? Name => this.currentGame?.Name;
 
         /// <summary>
         /// Gets what has been edited since the savefile was loaded. Updated after every edit, undo and redo.
@@ -452,6 +403,20 @@
             }
 
             this.gameService.SaveGame(this.currentGame, filePath);
+            this.RaiseFileChanged();
+        }
+
+        /// <summary>
+        /// Returns the bytes the savefile would have, uncompressed, with every edit applied.
+        /// </summary>
+        public byte[] GetBytesToSave()
+        {
+            if (this.currentGame == null)
+            {
+                throw new InvalidOperationException("No game is currently loaded");
+            }
+
+            return this.currentGame.GetBytesToSave();
         }
 
         /// <summary>
@@ -502,9 +467,18 @@
 
             this.RaisePropertyChanged(nameof(this.CurrentGame));
             this.RaisePropertyChanged(nameof(this.IsGameLoaded));
+            this.RaiseFileChanged();
             this.PendingChanges.Clear();
             this.OnHistoryChanged(this, EventArgs.Empty);
             this.SetCurrentPage(this.overview);
+        }
+
+        private void RaiseFileChanged()
+        {
+            this.RaisePropertyChanged(nameof(this.File));
+            this.RaisePropertyChanged(nameof(this.Name));
+            this.RaisePropertyChanged(nameof(this.HasFile));
+            this.RaisePropertyChanged(nameof(this.CanReload));
         }
 
         private void SearchAndSelectHero(int heroIndex)
@@ -660,8 +634,6 @@
             {
                 this.navigation.RefreshCastleMarks(this.currentGame);
             }
-
-            (this.RevertAllCommand as DelegateCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

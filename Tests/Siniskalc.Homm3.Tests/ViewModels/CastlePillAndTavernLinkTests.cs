@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         private static PlayerViewModel Red(Game game, List<int> opened, List<int>? castlesOpened = null)
         {
             var session = game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red));
-            return new PlayerViewModel(session, TestServices.ByteEditTargets, openHero: opened.Add, openCastle: (castlesOpened ?? []).Add);
+            return new PlayerViewModel(session, TestServices.ByteEditTargets, TestServices.BanishingText, openHero: opened.Add, openCastle: (castlesOpened ?? []).Add);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var game = Load("Roe", "roe_61_inferno_garrison_and_visiting");
             var opened = new List<int>();
-            var overview = new OverviewViewModel(game, opened.Add, _ => { });
+            var overview = new OverviewViewModel(game, TestServices.BanishingText, opened.Add, _ => { });
 
             var red = overview.Players.Single(p => p.Name == "Red");
 

@@ -14,13 +14,15 @@
     public sealed class OverviewViewModel : AbstractViewModelBase
     {
         private readonly Game game;
+        private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
         private readonly Action<int> openPlayer;
         private readonly Action<int>? openCastle;
 
-        public OverviewViewModel(Game game, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
+        public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
         {
             this.game = game;
+            this.banishingText = banishingText;
             this.openHero = openHero;
             this.openPlayer = openPlayer;
             this.openCastle = openCastle;
@@ -120,7 +122,8 @@
             foreach (var color in colors)
             {
                 var playerIndex = this.game.History.Current.Players().FindByColor(color);
-                var resources = playerIndex < 0 ? null : this.game.History.CreatePlayerSession(playerIndex).Current.Resources;
+                var player = playerIndex < 0 ? null : this.game.History.CreatePlayerSession(playerIndex).Current;
+                var resources = player?.Resources;
                 var heroes = summaries
                     .Where(s => s.Owner == color)
                     .OrderBy(s => s.Name)
@@ -132,7 +135,7 @@
                     .OrderBy(c => c.Model.Name)
                     .Select(c => new CastleLinkViewModel(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index)), CastleHeroRowViewModel.For(c.Model, this.game.History.Current.Heroes(), this.openHero)))
                     .ToList();
-                this.Players.Add(new PlayerCardViewModel(color, resources, heroes, open, this.game.GetControl(color), this.game.CurrentPlayer == color, ownCastles));
+                this.Players.Add(new PlayerCardViewModel(color, resources, heroes, open, this.game.GetControl(color), this.game.CurrentPlayer == color, ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 
             var unowned = summaries.Count(s => s.Owner == null);

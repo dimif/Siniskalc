@@ -55,6 +55,13 @@
         public const int SelectedTown = 24;
 
         /// <summary>
+        /// Where the days left before the player is banished for owning no town are: FF while the player owns a town, 7 the day the last town
+        /// is lost, one less each day, and 0 once the player is out of the game. Found by comparing saves of a player who lost his last town,
+        /// regained one, lost it again and was banished (<c>TestData/Hota/Banishing</c>).
+        /// </summary>
+        public const int DaysLeft = 22;
+
+        /// <summary>
         /// Resources are consecutive 32-bit integers in the order of <see cref="Resource"/>.
         /// </summary>
         public const int ResourcesOffset = HeadLength;

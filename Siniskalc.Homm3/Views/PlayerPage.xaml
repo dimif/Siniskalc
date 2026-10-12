@@ -193,6 +193,9 @@
             <Ellipse Width="14" Height="14" Margin="0,0,10,0" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
             <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="SemiBold"/>
             <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding ControlText}"/>
+            <Border Style="{StaticResource BanishingPillStyle}" Margin="12,0,0,4" VerticalAlignment="Bottom">
+                <TextBlock Text="{Binding BanishingText}"/>
+            </Border>
             <Border Margin="12,0,0,4" Padding="6,1" VerticalAlignment="Bottom" CornerRadius="9" Background="{StaticResource AccentSoftBrush}"
                     ToolTip="This player has changes that are not saved yet">
                 <Border.Style>
@@ -234,7 +237,7 @@
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <wpf:NavButton Text="Resources"/>
+            <wpf:NavButton Text="General"/>
             <wpf:NavButton Text="Heroes"/>
             <wpf:NavButton Text="Towns"/>
             <wpf:NavButton Text="Obelisks" Visibility="{Binding Obelisks.HasObelisks, Converter={StaticResource BoolToVisibilityTab}}"/>
@@ -246,7 +249,7 @@
 
         <ScrollViewer Grid.Row="2" Style="{StaticResource CardsScrollerStyle}" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <Grid Margin="8,4,8,16">
-                <!-- Resources -->
+                <!-- General: the resources, and the countdown to banishing of a player with no town -->
                 <StackPanel Style="{StaticResource TabPanel0}">
                     <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource ResourceTemplate}">
                         <ItemsControl.ItemsPanel>
@@ -267,6 +270,49 @@
                         </StackPanel>
                     </Border>
         
+                    <!-- Only a player who owns no town has days left; the buttons of a banished player are disabled. -->
+                    <Border Margin="0,12,0,0" HorizontalAlignment="Left" Width="440">
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasBanishing}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0,0,0,8" Text="Banishing"
+                                       ToolTip="A player who owns no town is banished when the days run out. Giving the player a town stops the countdown."/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource MutedBrush}" Text="Days left"/>
+                                <ItemsControl ItemsSource="{Binding DayChoices}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type vm:DaysLeftChoiceViewModel}">
+                                            <Button Margin="0,0,6,0" MinWidth="34" Command="{Binding SelectCommand}" Content="{Binding Days}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                                <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
                     <TextBlock Margin="0,16,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
                                Text="Amounts are limited to 999,999 for each resource, and 999,999,999 for gold. Hold Shift while pressing + or − to step by ten."/>
 

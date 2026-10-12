@@ -19,6 +19,7 @@ namespace Siniskalc.Homm3.ViewModels
         private bool isCapital;
         private string grailText = string.Empty;
         private string garrisonedHeroName = string.Empty;
+        private string banishingText = string.Empty;
 
         public NavNodeViewModel(string title, string subtitle, string colorHex, int heroIndex = -1, Action<NavNodeViewModel>? onSelected = null, NavNodeKind? kind = null, int playerIndex = -1, int castleIndex = -1, int tab = 0)
         {
@@ -129,6 +130,28 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the garrisoned hero as it follows the faction, such as " · Nymus", or nothing.
         /// </summary>
         public string GarrisonedHeroSuffix => this.HasGarrisonedHero ? $" · {this.garrisonedHeroName}" : string.Empty;
+
+        /// <summary>
+        /// Gets or sets the text of a player who owns no town, such as "6 days left" or "banished", or nothing; shown after the subtitle.
+        /// </summary>
+        public string BanishingText
+        {
+            get => this.banishingText;
+            set
+            {
+                if (this.banishingText != value)
+                {
+                    this.banishingText = value;
+                    this.RaisePropertyChanged(nameof(this.BanishingText));
+                    this.RaisePropertyChanged(nameof(this.BanishingSuffix));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the banishing text as it follows the subtitle, such as " · 6 days left", or nothing.
+        /// </summary>
+        public string BanishingSuffix => this.banishingText.Length > 0 ? $" · {this.banishingText}" : string.Empty;
 
         public bool HasGarrisonedHero => this.garrisonedHeroName.Length > 0;
 

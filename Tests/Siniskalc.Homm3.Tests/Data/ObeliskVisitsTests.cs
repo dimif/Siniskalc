@@ -118,7 +118,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ThePageOfAPlayerShowsAndEditsItsObelisks()
         {
             var game = Load("roe_74_tazar_obelisk_4");
-            using var player = new PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets);
+            using var player = new PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText);
             var obelisks = player.Obelisks;
 
             Assert.That(obelisks.HasObelisks, Is.True);
@@ -142,7 +142,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ThePageOfAPlayerOfASavefileWithoutObelisksHidesTheCard()
         {
             var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"));
-            using var player = new PlayerViewModel(game.History.CreatePlayerSession(0), TestServices.ByteEditTargets);
+            using var player = new PlayerViewModel(game.History.CreatePlayerSession(0), TestServices.ByteEditTargets, TestServices.BanishingText);
 
             Assert.That(player.Obelisks.HasObelisks, Is.False);
             Assert.That(player.Obelisks.Obelisks, Is.Empty);
@@ -152,8 +152,8 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheOverviewNamesTheNumberOfObelisksAfterTheDifficultyAndNothingWithoutThem()
         {
-            var with = new OverviewViewModel(Load("roe_74_tazar_obelisk_4"), _ => { }, _ => { });
-            var without = new OverviewViewModel(TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1")), _ => { }, _ => { });
+            var with = new OverviewViewModel(Load("roe_74_tazar_obelisk_4"), TestServices.BanishingText, _ => { }, _ => { });
+            var without = new OverviewViewModel(TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1")), TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(with.Summary, Does.EndWith("· 5 obelisks"));
             Assert.That(without.Summary, Does.Not.Contain("obelisk"));

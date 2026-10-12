@@ -109,6 +109,56 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
+        public void ThePageOfAPlayerWithNoTownShowsTheBanishingCardAndPillWithoutBindingErrors()
+        {
+            var errors = new BindingErrorListener();
+            PresentationTraceSources.Refresh();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(errors);
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            var save = Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), "banishing_06_blue_6_days_left.GM?").Single();
+
+            try
+            {
+                EnsureApplication();
+
+                var viewModel = TestServices.CreateHomm3Editor();
+                var shell = TestServices.CreateShell(viewModel);
+                viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(save), save);
+                var window = TestServices.CreateShellWindow(shell);
+                window.Show();
+
+                try
+                {
+                    var frame = window.HeroFrame();
+                    Pump();
+                    Assert.That(frame.Content, Is.InstanceOf<OverviewPage>());
+
+                    viewModel.PlayerNodes().Single(n => n.Title == "Blue").IsSelected = true;
+                    Pump();
+                    Assert.That(frame.Content, Is.InstanceOf<PlayerPage>());
+                    var page = viewModel.CurrentPageOf<PlayerViewModel>();
+                    page.DayChoices.Single(c => c.Days == 3).SelectCommand.Execute(null);
+                    Pump();
+                    Assert.That(page.BanishingText, Is.EqualTo("No towns: 3 days left"));
+
+                    viewModel.PlayerNodes().Single(n => n.Title == "Red").IsSelected = true;
+                    Pump();
+                    Assert.That(viewModel.CurrentPageOf<PlayerViewModel>().HasBanishing, Is.False);
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+            finally
+            {
+                PresentationTraceSources.DataBindingSource.Listeners.Remove(errors);
+            }
+
+            Assert.That(errors.Messages, Is.Empty, string.Join(Environment.NewLine, errors.Messages));
+        }
+
+        [Test]
         public void TheHexTabsAreOnlyThereInAdvancedMode()
         {
             var errors = new BindingErrorListener();

@@ -117,7 +117,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var game = Load("roe_67_damacon_defeated");
             var session = game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(Siniskalc.Homm3.Entities.PlayerColor.Red));
-            using var view = new PlayerViewModel(session, TestServices.ByteEditTargets);
+            using var view = new PlayerViewModel(session, TestServices.ByteEditTargets, TestServices.BanishingText);
             var first = view.TavernPlaces[0];
             var second = view.TavernPlaces[1];
 

@@ -9,6 +9,25 @@
         <ResourceDictionary Source="pack://application:,,,/Siniskalc.Wpf;component/Styles/SiniskalcStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <!-- The pill of a player who owns no town ("No towns: 6 days left", "Banished"), on the player's page and card. The data context has HasBanishing and IsBanished. -->
+    <Style x:Key="BanishingPillStyle" TargetType="Border">
+        <Setter Property="Padding" Value="8,1"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+        <Setter Property="TextElement.Foreground" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="TextElement.FontSize" Value="12"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HasBanishing}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsBanished}" Value="True">
+                <Setter Property="Background" Value="#F6D5D5"/>
+                <Setter Property="TextElement.Foreground" Value="#9B2226"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- A tile that lights up in the accent colour when it is on or ticked: war machines, adventure spells, obelisks, visited buildings. -->
     <ControlTemplate x:Key="TileTemplate" TargetType="ToggleButton">
         <Border x:Name="tile" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="4"

@@ -11,7 +11,16 @@
     {
         public PlayerModel Deserialize(PlayerChunk chunk)
         {
-            return new PlayerModel(this.DeserializeColor(chunk), this.DeserializeResources(chunk), this.DeserializeTavern(chunk));
+            return new PlayerModel(this.DeserializeColor(chunk), this.DeserializeResources(chunk), this.DeserializeTavern(chunk), this.DeserializeDaysLeft(chunk));
+        }
+
+        /// <summary>
+        /// Reads the days left before banishing. A player who owns a town has FF, which reads as none, and so does a byte that holds more than the game counts.
+        /// </summary>
+        public int? DeserializeDaysLeft(PlayerChunk chunk)
+        {
+            var days = chunk.GetByteAt(PlayerLayout.DaysLeft);
+            return days <= Constants.Player.MaxDaysLeft ? days : null;
         }
 
         public TavernHeroes DeserializeTavern(PlayerChunk chunk)

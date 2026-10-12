@@ -21,6 +21,7 @@
         private readonly IGameService gameService;
 
         private readonly EffectLineProvider effectLines;
+        private readonly BanishingTextProvider banishingText;
         private readonly CastleBuildMessageProvider castleBuildMessages;
         private readonly ISpellPointsCalculator spellPoints;
 
@@ -47,15 +48,16 @@
 
         private Game? currentGame;
 
-        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets)
+        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets)
         {
             this.gameService = gameService;
             this.effectLines = effectLines;
+            this.banishingText = banishingText;
             this.castleBuildMessages = castleBuildMessages;
             this.spellPoints = spellPoints;
             this.saveRegions = saveRegions;
             this.byteEditTargets = byteEditTargets;
-            this.navigation = new NavigationTree(this.OnNodeSelected);
+            this.navigation = new NavigationTree(this.OnNodeSelected, banishingText);
             this.Heroes = new ObservableCollection<HeroViewModel>();
         }
 
@@ -265,6 +267,7 @@
                 player = new PlayerViewModel(
                     this.currentGame.History.CreatePlayerSession(playerIndex),
                     this.byteEditTargets,
+                    this.banishingText,
                     this.currentGame.GetControl(color),
                     this.currentGame.CurrentPlayer == color,
                     this.SearchAndSelectHero,
@@ -433,7 +436,7 @@
         {
             // What reads the new game (and so can fail on a savefile that is odd) is built before anything of the open game is let go,
             // so a game that cannot be shown leaves the one that is open as it was.
-            var newOverview = new OverviewViewModel(game, index => this.SearchAndSelectHero(index), index => this.ShowPlayer(index), this.ShowCastle);
+            var newOverview = new OverviewViewModel(game, this.banishingText, index => this.SearchAndSelectHero(index), index => this.ShowPlayer(index), this.ShowCastle);
             var newOwners = OwnersOf(game);
 
             this.ClearHeroes();
@@ -633,6 +636,7 @@
             if (this.currentGame != null)
             {
                 this.navigation.RefreshCastleMarks(this.currentGame);
+                this.navigation.RefreshPlayerMarks(this.currentGame);
             }
         }
     }

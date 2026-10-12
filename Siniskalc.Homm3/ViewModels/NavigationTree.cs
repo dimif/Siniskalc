@@ -17,6 +17,7 @@
     public sealed class NavigationTree
     {
         private readonly Action<NavNodeViewModel> onSelected;
+        private readonly BanishingTextProvider banishingText;
         private readonly Dictionary<int, NavNodeViewModel> heroNodes = [];
         private readonly Dictionary<int, NavNodeViewModel> playerNodes = [];
         private readonly Dictionary<(int Player, int Tab), NavNodeViewModel> playerTabNodes = [];
@@ -24,9 +25,11 @@
         private string filter = string.Empty;
 
         /// <param name="onSelected">Called with the node when the user picks one.</param>
-        public NavigationTree(Action<NavNodeViewModel> onSelected)
+        /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
+        public NavigationTree(Action<NavNodeViewModel> onSelected, BanishingTextProvider banishingText)
         {
             this.onSelected = onSelected;
+            this.banishingText = banishingText;
         }
 
         /// <summary>
@@ -149,6 +152,17 @@
             }
         }
 
+        /// <summary>
+        /// Shows the days left of the players with no town as they are in <paramref name="game"/> now, after an edit or an undo.
+        /// </summary>
+        public void RefreshPlayerMarks(Game game)
+        {
+            foreach (var (index, node) in this.playerNodes)
+            {
+                node.BanishingText = this.banishingText.Nav(game.History.Current.Players().GetModel(index));
+            }
+        }
+
         public void MarkChanges(IEnumerable<PendingChange> changes)
         {
             var changed = changes.Select(c => (c.Kind, c.Index)).ToHashSet();
@@ -230,6 +244,7 @@
             };
             if (playerIndex >= 0)
             {
+                node.BanishingText = this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex));
                 this.playerNodes[playerIndex] = node;
                 this.playerTabNodes[(playerIndex, 0)] = node;
             }

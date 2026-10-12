@@ -152,6 +152,13 @@ namespace Siniskalc.Homm3
             /// </summary>
             public const int MinHeroId = 0;
             public const int MaxHeroId = 254;
+
+            /// <summary>
+            /// The days a player with no town has left before being banished: 7 the day the last town is lost, 0 once banished.
+            /// A player who owns a town has none (FF in the savefile).
+            /// </summary>
+            public const int MinDaysLeft = 0;
+            public const int MaxDaysLeft = 7;
         }
 
         /// <summary>

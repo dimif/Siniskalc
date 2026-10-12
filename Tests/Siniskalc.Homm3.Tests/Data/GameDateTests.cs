@@ -73,7 +73,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheDateIsFormattedLikeTheAdventureMap()
         {
-            var overview = new OverviewViewModel(Load("empire_of_the_world_01_m5w4d6"), _ => { }, _ => { });
+            var overview = new OverviewViewModel(Load("empire_of_the_world_01_m5w4d6"), TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(overview.DateText, Is.EqualTo("Month 5, Week 4, Day 6"));
         }

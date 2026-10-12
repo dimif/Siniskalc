@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var regions = TestServices.PlayerRegions.GetRegions(PlayerLayout.HornOfTheAbyss, PlayerLayout.HornOfTheAbyss.ColorOffset);
 
-            Assert.That(regions.Select(r => r.Name), Is.EqualTo(new[] { "Hero count", "Selected hero", "Hero ids", "Tavern heroes", "Town count", "Selected town", "Resources", "Marker" }));
+            Assert.That(regions.Select(r => r.Name), Is.EqualTo(new[] { "Hero count", "Selected hero", "Hero ids", "Tavern heroes", "Days left", "Town count", "Selected town", "Resources", "Marker" }));
         }
 
         [Test]

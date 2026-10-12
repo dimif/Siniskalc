@@ -25,7 +25,8 @@ Nothing is written until you choose **File > Save**.
 Pages:
 
 - **Game overview**: map and game setup read from the save (difficulty, date, who controls each player).
-- **Player**: the seven resources, the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
+- **Player**: the seven resources (tab **General**), the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
+  A player who owns no town has a "No towns: n days left" pill beside the name, in the overview and in the navigation tree, and a Banishing card on the General tab with the buttons 7 to 1 to change the days left. A player who has been banished stays in the game as he is and cannot be edited.
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
 - **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings.
 

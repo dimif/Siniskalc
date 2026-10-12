@@ -10,11 +10,31 @@
     public sealed class SafePlayerSerializer : IPlayerSerializer
     {
         /// <summary>
-        /// Returns <paramref name="chunk"/> with the player's resources and tavern heroes written into it. Everything else is left as it was.
+        /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes and days left before banishing written into it. Everything else is left as it was.
         /// </summary>
         public PlayerChunk Serialize(PlayerChunk chunk, PlayerModel player)
         {
-            return SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern);
+            return SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft);
+        }
+
+        private static PlayerChunk SerializeDaysLeft(PlayerChunk chunk, int? daysLeft)
+        {
+            var current = chunk.GetByteAt(PlayerLayout.DaysLeft);
+            if (daysLeft is not { } days)
+            {
+                // A byte that is no count of days reads as none, so it is left alone while the model has none.
+                return current > Constants.Player.MaxDaysLeft ? chunk : chunk.WithBytes(WithByte(chunk, PlayerLayout.DaysLeft, Constants.ByteOff));
+            }
+
+            RangeGuard.ThrowIfOutOfRange(days, Constants.Player.MinDaysLeft, Constants.Player.MaxDaysLeft, nameof(daysLeft));
+            return current == days ? chunk : chunk.WithBytes(WithByte(chunk, PlayerLayout.DaysLeft, (byte)days));
+        }
+
+        private static byte[] WithByte(PlayerChunk chunk, int index, byte value)
+        {
+            var bytes = chunk.ToArray();
+            bytes[index] = value;
+            return bytes;
         }
 
         private static PlayerChunk SerializeTavern(PlayerChunk chunk, TavernHeroes tavern)

@@ -38,6 +38,7 @@ namespace Siniskalc.Homm3.Data
                 new(heroIdsName, PlayerLayout.HeroIds, PlayerLayout.HeroIdPlaces, ByteRegionKind.Identity, null, "The ids of the heroes of the player, one byte each; FF for a place that is empty", heroIdParts),
                 new(tavernName, PlayerLayout.TavernHeroes, PlayerLayout.TavernHeroPlaces, ByteRegionKind.Identity, null, "The ids of the two heroes the tavern offers; FF when it has none for a place", tavernParts),
                 new("Town count", PlayerLayout.TownCount, 1, ByteRegionKind.Identity, null, "How many towns the player has"),
+                new("Days left", PlayerLayout.DaysLeft, 1, ByteRegionKind.Identity, null, "The days before the player is banished for owning no town: FF while the player owns one, 7 the day the last is lost, one less each day, 0 once banished"),
                 new("Selected town", PlayerLayout.SelectedTown, 1, ByteRegionKind.Identity, null, "The index of the town selected on the adventure map, in the savefile's table of towns; FF when none is"),
                 new(resourcesName, PlayerLayout.ResourcesOffset, resourceParts.Count * PlayerLayout.ResourceSize, ByteRegionKind.Resources, null, "One 32-bit integer per resource", resourceParts),
                 new("Marker", layout.MarkerOffset, layout.Marker.Length, ByteRegionKind.Other, null, "The same in every player; it is what the loader looks for to find the table of players"),

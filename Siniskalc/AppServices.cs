@@ -76,6 +76,7 @@
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.EffectLines = new EffectLineProvider();
+            this.BanishingText = new BanishingTextProvider();
             this.CastleBuildMessages = new CastleBuildMessageProvider();
             this.SpellPoints = new SpellPointsCalculator();
             this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
@@ -145,6 +146,8 @@
 
         public EffectLineProvider EffectLines { get; }
 
+        public BanishingTextProvider BanishingText { get; }
+
         public CastleBuildMessageProvider CastleBuildMessages { get; }
 
         public ISpellPointsCalculator SpellPoints { get; }
@@ -178,7 +181,7 @@
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
-        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets);
+        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets);
 
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.

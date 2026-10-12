@@ -148,6 +148,9 @@
     <None Include="..\..\TestData\Hota\SleepGarrisonVisiting\*.GM1" Link="TestData\Hota\SleepGarrisonVisiting\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\TestData\Hota\Banishing\*.GM?" Link="TestData\Hota\Banishing\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\TestData\Sod\*.GM1" Link="TestData\Sod\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

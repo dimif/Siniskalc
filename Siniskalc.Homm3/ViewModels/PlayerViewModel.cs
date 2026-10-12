@@ -18,15 +18,17 @@
     {
         private readonly PlayerEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly BanishingTextProvider banishingText;
         private readonly Action<int>? openHero;
         private readonly Action<int>? openCastle;
         private int selectedTab;
 
-        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
+        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
             : base(session.Current.Color.ToString())
         {
             this.session = session;
             this.byteEditTargets = byteEditTargets;
+            this.banishingText = banishingText;
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
@@ -40,6 +42,10 @@
                 .ToList();
             this.SetAllResourcesCommand = new DelegateCommand(_ => this.AddResources(this.Resources.Where(r => !r.IsGold), Constants.Resources.AllResourcesIncrease));
             this.SetRichCommand = new DelegateCommand(_ => this.AddResources(this.Resources.Where(r => r.IsGold), Constants.Resources.GoldIncrease));
+            this.DayChoices = Enumerable.Range(Constants.Player.MinDaysLeft + 1, Constants.Player.MaxDaysLeft - Constants.Player.MinDaysLeft)
+                .Reverse()
+                .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
+                .ToList();
             this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.Original), _ => this.HasPendingChanges);
             this.Obelisks = new ObeliskVisitsViewModel(session.History, session.Current.Color);
             this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
@@ -75,7 +81,7 @@
         public IReadOnlyList<ResourceRowViewModel> Resources { get; }
 
         /// <summary>
-        /// Gets or sets the tab shown: 0 for the resources, 1 for the heroes, 2 for the towns, 3 for the obelisks, 4 for the hex editor.
+        /// Gets or sets the tab shown: 0 for the general tab (resources and banishing), 1 for the heroes, 2 for the towns, 3 for the obelisks, 4 for the hex editor.
         /// </summary>
         public int SelectedTab
         {
@@ -113,6 +119,28 @@
         public IReadOnlyList<CastleLinkViewModel> Castles { get; private set; } = [];
 
         public bool HasCastles => this.Castles.Count > 0;
+
+        /// <summary>
+        /// Gets the days left before the player is banished, or null while the player owns a town.
+        /// </summary>
+        public int? DaysLeft => this.session.Current.DaysLeft;
+
+        /// <summary>
+        /// Gets whether the Banishing card is shown: the player owns no town. A banished player is shown, but cannot be edited.
+        /// </summary>
+        public bool HasBanishing => this.DaysLeft != null;
+
+        public bool IsBanished => this.session.Current.IsBanished;
+
+        /// <summary>
+        /// Gets the pill beside the name of a player who owns no town, such as "No towns: 6 days left" or "Banished".
+        /// </summary>
+        public string BanishingText => this.banishingText.Pill(this.session.Current);
+
+        /// <summary>
+        /// Gets the days the player can be given, 7 down to 1.
+        /// </summary>
+        public IReadOnlyList<DaysLeftChoiceViewModel> DayChoices { get; }
 
         public ICommand SetAllResourcesCommand { get; }
 
@@ -156,6 +184,7 @@
 
             this.UpdateIsDirty();
             this.RefreshOwned();
+            this.RefreshBanishing();
             this.Obelisks.Refresh();
             foreach (var place in this.TavernPlaces)
             {
@@ -218,6 +247,18 @@
             this.RaisePropertyChanged(nameof(this.HasHeroes));
             this.RaisePropertyChanged(nameof(this.Castles));
             this.RaisePropertyChanged(nameof(this.HasCastles));
+        }
+
+        private void RefreshBanishing()
+        {
+            this.RaisePropertyChanged(nameof(this.DaysLeft));
+            this.RaisePropertyChanged(nameof(this.HasBanishing));
+            this.RaisePropertyChanged(nameof(this.IsBanished));
+            this.RaisePropertyChanged(nameof(this.BanishingText));
+            foreach (var choice in this.DayChoices)
+            {
+                choice.Refresh();
+            }
         }
 
         private void UpdateIsDirty()

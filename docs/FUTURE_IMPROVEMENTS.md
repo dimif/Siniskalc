@@ -28,6 +28,8 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
    The Grail flag beside the date (`7F xx 02 yy`) is the same.
 7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known.
    The tavern has table about 250 bytes before the date that changes when a hero is defeated, so it's probably that one.
-8. **The elimination counter**: a HoMM3 player who owns no town is eliminated after 7 days.
-   HoMM2 stores the days left in the player record (`0xFF` while a castle is owned, then 7, 6, ... and 0 when the player is out; see `docs/HOMM2_SAVE_FORMAT.md`), so HoMM3 probably keeps one too.
-   Find it with saves from the day the last town is lost and each day after, and see whether the editor should show or reset it (for example, after giving a town back to a player who is about to be eliminated).
+8. **Banishing, what is left** (the counter itself is found: byte 22 of the player struct, shown on the player page and editable; see `docs/KNOWLEDGE_BASE.md`, "Players").
+   - Check in the game that a lower or higher number of days makes the game banish the player earlier or later.
+   - The other bytes banishing changes are not decoded: the hero chunk of the player (owner `FF`, army emptied), a counter and an 8-byte record near the end of the save, and header bytes near 1313, 1356 and 12492.
+     Until they are, a banished player (0) is read-only and no one can be banished or revived by the editor.
+   - The list of the indices of a player's towns that starts at byte 25 is not read.

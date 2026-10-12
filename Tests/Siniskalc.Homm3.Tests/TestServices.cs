@@ -52,6 +52,8 @@ namespace Siniskalc.Homm3.Tests
 
         public static EffectLineProvider EffectLines => Services.EffectLines;
 
+        public static BanishingTextProvider BanishingText => Services.BanishingText;
+
         public static CastleBuildMessageProvider CastleBuildMessages => Services.CastleBuildMessages;
 
         public static ISpellPointsCalculator SpellPoints => Services.SpellPoints;

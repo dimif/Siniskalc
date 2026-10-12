@@ -54,7 +54,13 @@ From the start of the chunk:
 - 0: number of heroes of the player. 1: the selected hero (`FF` for none). 2 to 9: the eight places for hero ids, `FF` for an empty one; a garrisoned hero is not in the list.
 - 10 and 11: the two heroes of the tavern, by hero id (`PlayerModel.Tavern`).
   The computer's taverns change both heroes at the start of a week and, within a week, only the place of a hero the computer hired (`SodSeriesTests`).
-- 19: changed from 03 to A7 when a hero dug; unexplained. 23: number of castles. 24: the selected castle (index in the table of castles, `FF` for none), exclusive with a selected hero.
+- 19: changed from 03 to A7 when a hero dug; unexplained.
+- 22: **the days left before the player is banished for owning no town** (`PlayerLayout.DaysLeft`, `PlayerModel.DaysLeft`): `FF` while the player owns a town, 7 the day the last town is lost, one less each day, 0 once banished.
+  Regaining a town sets `FF` at once. Found in `TestData/Hota/Banishing` (`PlayerBanishingTests`), in which Blue loses his last town, regains one, loses it again and is banished; same meaning as HoMM2's 0x304.
+  **Not checked in the game**: that editing it to a lower or higher value makes the game banish the player earlier or later.
+  Banishing also changes bytes the editor does not write (Blue's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record `02 00 00 00 00 FF 01 08` appear in the 579000s, header bytes near 1313, 1356 and 12492), so a banished player (0) is shown but cannot be edited.
+- 23: number of castles. 24: the selected castle (index in the table of castles, `FF` for none), exclusive with a selected hero.
+- 25 onwards: the indices of the player's castles in the table of castles, `FF` for none (Blue's castle 8 at 25; Red's third castle went to 27). Not read.
 - 129 (Red): became 1 with the first visit to a magic spring and stayed 1 on the other square and after the week change.
   It is **not** the visit mark, which the game keeps per square, probably with the map objects.
   Open.

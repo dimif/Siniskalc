@@ -11,10 +11,12 @@
     /// </summary>
     public sealed class PlayerCardViewModel
     {
-        public PlayerCardViewModel(PlayerColor color, PlayerResources? resources, IReadOnlyList<HeroLinkViewModel> heroes, ICommand open, PlayerType? control = null, bool isCurrent = false, IReadOnlyList<CastleLinkViewModel>? castles = null)
+        public PlayerCardViewModel(PlayerColor color, PlayerResources? resources, IReadOnlyList<HeroLinkViewModel> heroes, ICommand open, PlayerType? control = null, bool isCurrent = false, IReadOnlyList<CastleLinkViewModel>? castles = null, string banishingText = "", bool isBanished = false)
         {
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
             this.Name = color.ToString();
+            this.BanishingText = banishingText;
+            this.IsBanished = isBanished;
             this.ColorHex = PlayerPalette.Of(color);
             this.Heroes = heroes;
             this.Castles = castles ?? [];
@@ -29,6 +31,15 @@
         public string Name { get; }
 
         public string ColorHex { get; }
+
+        /// <summary>
+        /// Gets the pill of a player who owns no town ("No towns: 6 days left", "Banished"), or nothing.
+        /// </summary>
+        public string BanishingText { get; }
+
+        public bool HasBanishing => this.BanishingText.Length > 0;
+
+        public bool IsBanished { get; }
 
         /// <summary>
         /// Gets "Human" or "Computer", or nothing when the savefile does not tell.

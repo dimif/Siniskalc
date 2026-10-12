@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- **Banishing**: a player who owns no town shows how many days are left before the game banishes him: a pill beside the name on the player page ("No towns: 6 days left", "Banished"), the same pill on the player's card in the game overview, and "6 days left" after the player in the navigation tree. The first tab of the player page is now called **General**, and for such a player it has a Banishing card with the buttons 7 to 1 to change the days left; a banished player cannot be edited. The days are byte 22 of the player struct (`docs/KNOWLEDGE_BASE.md`) (2026-10-13).
 - **Heroes of Might and Magic II** (work in progress): the new project `Siniskalc.Homm2` reads and writes the savegames of the base game (`.GM1`) and of the Price of Loyalty (`.GX1`): heroes, players and castles, with undo and pending changes. The application opens them next to the HoMM3 ones: the shell picks the game from the file and the window title follows it. The editor has the same layout as the HoMM3 one (navigation tree of players, heroes and towns, tabs, "edited" marks and Reset); for now its pages only show the savegame, the editing comes next. The format is in `docs/HOMM2_SAVE_FORMAT.md` (2026-10-12).
 - `RawSavefileCodec` in `Siniskalc.Core` reads and writes a savegame that is not compressed.
 

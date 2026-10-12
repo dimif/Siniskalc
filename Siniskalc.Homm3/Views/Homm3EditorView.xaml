@@ -21,7 +21,7 @@
                            Visibility="{Binding HasGarrisonedHero, Converter={StaticResource BoolToVisibility}}"/>
                 <!-- One text block, so the smaller subtitle sits on the baseline of the bold name. -->
                 <TextBlock VerticalAlignment="Center">
-                    <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold"/><Run Text=" " FontSize="11"/><Run Text="{Binding Subtitle, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="11"/><Run Text="{Binding GarrisonedHeroSuffix, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="11"/><Run Text="{Binding ChangesMark, Mode=OneWay}" Foreground="{StaticResource AccentBrush}" FontSize="9" ToolTip="Unsaved changes"/>
+                    <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold"/><Run Text=" " FontSize="11"/><Run Text="{Binding Subtitle, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="11"/><Run Text="{Binding GarrisonedHeroSuffix, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="11"/><Run Text="{Binding BanishingSuffix, Mode=OneWay}" Foreground="{StaticResource MutedBrush}" FontSize="11"/><Run Text="{Binding ChangesMark, Mode=OneWay}" Foreground="{StaticResource AccentBrush}" FontSize="9" ToolTip="Unsaved changes"/>
                 </TextBlock>
             </StackPanel>
         </HierarchicalDataTemplate>

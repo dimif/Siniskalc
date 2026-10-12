@@ -60,10 +60,19 @@ New projects `Siniskalc.Homm2` and `Siniskalc.Homm2.Tests`; the exe references t
 
 Also done ahead of Phase 5, because the title of the window had to follow the game: `Homm2Module`, `Homm2EditorViewModel` (an `IGameEditor`) and a first view, `Homm2EditorView`, that shows the map, the date and the players. `AppServices` lists both games, and the window title becomes "Siniskalc - Heroes of Might and Magic II" when a savegame of that game is open.
 
-## Phase 4: the write test with the game (early, before the UI)
+## Phase 4: the write test with the game (in progress)
 
-`Homm2SaveDocument.ToBytes` is already the patcher of Core. A small tool or test writes edited saves into `TestData/Homm2/out` (not committed) with names of at most 8 characters: more gold, a different army, a spell, a building. The user loads them in HoMM2 and confirms.
-This is the real check that nothing in the file (a checksum, a length) rejects an edit; do it before building pages.
+`Homm2EditedSaves` (in the tests) builds 13 savegames from the saves of Broken Alliance, one kind of edit each, with names of at most 8 characters (`E00COPY` is an unchanged control, then gold, resources, army, primary skills, secondary skills, artifacts, spell book with every spell, level and movement, castle buildings and creatures, garrison, a castle given to a player, and everything together). `Homm2EditedSavesTests` checks what they hold; the explicit test `WriteTheSavesForTheGame` writes them to `TestData/Homm2/out` (ignored by git) with a README that says what to look at in the game:
+
+```
+dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheSavesForTheGame
+```
+
+The user copies them to the save folder of HoMM2, loads each and ticks the README. What each result means:
+- the control fails: the game rejects a file that is byte for byte a copy of a save (a name, a date or a checksum is checked): stop and find out what;
+- the control loads but an edit fails to load: something in that kind of record is checked by the game (the README says which);
+- an edit loads but shows something else: the model or the layout of that field is wrong;
+- all load and show what was written: the format is safe to edit, and Phase 6 can go ahead.
 
 ## Phase 5: read-only viewer
 

@@ -339,3 +339,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+# Saves made by the write test with Heroes of Might and Magic II (docs/HOMM2_PLAN.md, Phase 4)
+TestData/Homm2/out/

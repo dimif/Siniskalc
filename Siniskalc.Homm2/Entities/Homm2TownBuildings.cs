@@ -12,8 +12,8 @@
     {
         None = 0,
         MageGuild = 0x01,
-        Tavern = 0x02,
-        ThievesGuild = 0x04,
+        ThievesGuild = 0x02,
+        Tavern = 0x04,
         Shipyard = 0x08,
         Well = 0x10,
         TownOnly = 0x20,

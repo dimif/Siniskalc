@@ -70,8 +70,10 @@ namespace Siniskalc.Homm2.ViewModels
                 ? "Out of the game"
                 : player.DaysLeft is { } days ? $"{days} days left to own a castle" : string.Empty;
 
+            // The game keeps no income for a player that was put out: what the table holds is a counter that walks over the resources
+            // (1 wood, then 1 mercury, then 1 ore, on the days after Green was put out in the Broken Alliance saves 22 to 24).
             this.resources = ResourceOrder
-                .Select(r => new Homm2FactRow(r.ToString(), player.Resources[r].ToString("N0"), player.Income[r] > 0 ? $"+{player.Income[r]:N0} a day" : string.Empty))
+                .Select(r => new Homm2FactRow(r.ToString(), player.Resources[r].ToString("N0"), !player.IsOut && player.Income[r] > 0 ? $"+{player.Income[r]:N0} a day" : string.Empty))
                 .ToList();
 
             this.heroes = allHeroes

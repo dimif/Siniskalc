@@ -167,6 +167,17 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(player.Resources.Select(r => r.Label), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
         }
 
+        [Test]
+        public void APlayerThatWasPutOutEarnsNothingWhateverTheIncomeTableHolds()
+        {
+            var green = new Homm2PlayerViewModel(this.editor.CurrentGame!, Homm2Color.Green, _ => { }, _ => { });
+            var blue = new Homm2PlayerViewModel(this.editor.CurrentGame!, Homm2Color.Blue, _ => { }, _ => { });
+
+            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel((int)Homm2Color.Green).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
+            Assert.That(green.Resources.Select(r => r.Note), Is.All.Empty);
+            Assert.That(blue.Resources.Select(r => r.Note), Has.Some.Not.Empty);
+        }
+
         private static IEnumerable<string> Titles(Homm2NavNodeViewModel player, string group) =>
             (player.Children.FirstOrDefault(c => c.Title == group)?.Children.Select(c => c.Title) ?? []).Order();
 

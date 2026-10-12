@@ -27,7 +27,7 @@ namespace Siniskalc.Homm2.Tests
         {
             return
             [
-                Make("E00COPY", 5, "Nothing: the savegame is read and written back", "It loads exactly like the original 5_ARCHRA.GM1: Blue has 7700 gold, Maximus in the castle, and the Archery Range is built.", _ => { }),
+                Make("E00COPY", 5, "Nothing: the savegame is read and written back", "It loads exactly like the original 5_ARCHRA.GM1: Blue has 7700 gold and the Archery Range is built (Maximus is outside in this save; he enters Xabran in save 07).", _ => { }),
                 Make("E01GOLD", 5, "Blue's gold", "Blue has 99,999 gold (the top bar of the kingdom summary).", game => Player(game, 0, p => p with { Resources = p.Resources.With(Homm2Resource.Gold, 99_999) })),
                 Make("E02RESRC", 5, "All of Blue's resources", "Blue has 500 of every resource and 50,000 gold.", game => Player(game, 0, p => p with { Resources = new Homm2Resources(500, 500, 500, 500, 500, 500, 50_000) })),
                 Make("E03ARMY", 5, "Maximus's army", "Maximus has 7 Black Dragons, 3 Titans, 5 Phoenixes, 20 Paladins and 100 Peasants.", game => Hero(game, 7, h => h with
@@ -60,7 +60,7 @@ namespace Siniskalc.Homm2.Tests
                 })),
                 Make("E07BOOK", 1, "A spell book and every spell for Maximus", "Maximus has a spell book with all 65 spells (the save starts without a book).", game => Hero(game, 7, h => h.WithSpellBook() with { Spells = new Homm2SpellBook(Homm2Spell.All) })),
                 Make("E08LEVEL", 5, "Maximus's level, experience and movement", "Maximus is level 10 with 14,700 experience, and has all his movement points (1,000) although he has none left in the original.", game => Hero(game, 7, h => h with { Level = 10, Experience = 14_700, MovementLeft = h.MaxMovement })),
-                Make("E09CAST", 5, "Xabran's buildings and creatures", "Xabran has the dwellings 3 and 4 built, a tavern, a statue and a well, and 20 creatures wait in each of the six dwellings.", game => Castle(game, 3, c => c with
+                Make("E09CAST", 5, "Xabran's buildings and creatures", "Xabran has the dwellings 3 and 4 built on top of the first two (hut, archery range, blacksmith, armory), a tavern, a statue and a well, and 20 creatures wait in each dwelling that is built.", game => Castle(game, 3, c => c with
                 {
                     Town = c.Town | Homm2TownBuildings.Tavern | Homm2TownBuildings.Statue | Homm2TownBuildings.Well,
                     Dwellings = c.Dwellings | Homm2Dwellings.Dwelling3 | Homm2Dwellings.Dwelling4,
@@ -78,7 +78,7 @@ namespace Siniskalc.Homm2.Tests
                     Castle(game, 2, c => c with { Owner = Homm2Color.Blue });
                     Player(game, 0, p => p with { CastleIds = Homm2Numbers.Of(3, 2) });
                 }),
-                Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills, secondary skills, artifacts and the garrison of Xabran changed together.", game =>
+                Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills, secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
                 {
                     Player(game, 0, p => p with { Resources = new Homm2Resources(500, 500, 500, 500, 500, 500, 50_000) });
                     Hero(game, 7, h => h with

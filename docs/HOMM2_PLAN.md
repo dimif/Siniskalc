@@ -68,6 +68,8 @@ Also done ahead of Phase 5, because the title of the window had to follow the ga
 dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheSavesForTheGame
 ```
 
+Results from the game (2026-10-13): E01-E05, E07, E08, E10 and E11 load and show what was written, so gold, resources, army, primary and secondary skills, the spell book, level, experience, movement, the garrison and a castle's owner are safe to edit. E00 (a byte for byte copy) loads, so nothing in the file is checked; the "Maximus not in the castle" was a wrong expectation (he is outside in save 05). E09: the buildings were as written (the README expectation was unclear about dwellings 1 and 2); the user listed no tavern, to be confirmed. E12 has one town because the owner change is only in E11. **E06 is a real finding:** the artifacts show, but Maximus keeps 2/2/1/1, so the game does not add the bonus of an artifact when it loads a save; either it adds it to the stored skills when the hero picks the artifact up, or the hero screen must be refreshed. A save in which a hero picks up an artifact that changes a primary skill is needed to tell, and the bonus table.
+
 The user copies them to the save folder of HoMM2, loads each and ticks the README. What each result means:
 - the control fails: the game rejects a file that is byte for byte a copy of a save (a name, a date or a checksum is checked): stop and find out what;
 - the control loads but an edit fails to load: something in that kind of record is checked by the game (the README says which);

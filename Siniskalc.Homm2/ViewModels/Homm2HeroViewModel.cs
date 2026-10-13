@@ -38,8 +38,8 @@ namespace Siniskalc.Homm2.ViewModels
             ];
             this.facts =
             [
-                this.Row("Level", Constants.Hero.MinLevel, Constants.Hero.MaxLevel, 1, h => h.Level, (h, v) => h with { Level = (int)v }),
-                this.Row("Experience", Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep, h => h.Experience, (h, v) => h with { Experience = v }),
+                this.Row("Level", Constants.Hero.MinLevel, Constants.Hero.MaxLevel, 1, h => h.Level, (h, v) => h with { Level = (int)v, Experience = Homm2HeroLevels.ExperienceOf((int)v) }),
+                this.Row("Experience", Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep, h => h.Experience, (h, v) => h with { Experience = v, Level = Homm2HeroLevels.LevelOf(v) }),
                 this.Row("Spell points", Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, 1, h => h.SpellPoints, (h, v) => h with { SpellPoints = (int)v }),
                 this.Row("Movement", Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep, h => h.MovementLeft, (h, v) => h with { MovementLeft = v }, () => $"of {this.hero.MaxMovement:N0} a day"),
             ];

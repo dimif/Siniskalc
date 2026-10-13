@@ -108,26 +108,14 @@ namespace Siniskalc.Homm2.Tests
             page.GuildLevelField.Selected = "Level 3";
         }
 
-        private static void ExperienceOnly(Homm2Game game)
-        {
-            var page = Hero(game, 1);
-            page.Facts.Single(r => r.Name == "Level").Value = 1;
-            page.Facts.Single(r => r.Name == "Experience").Value = 50_000;
-        }
+        private static void ExperienceOnly(Homm2Game game) =>
+            game.History.CreateHeroSession(1).Update(h => h with { Level = 1, Experience = 50_000 }); // raw: the page keeps the two in step
 
-        private static void LevelOnly(Homm2Game game)
-        {
-            var page = Hero(game, 1);
-            page.Facts.Single(r => r.Name == "Level").Value = 20;
-            page.Facts.Single(r => r.Name == "Experience").Value = 0;
-        }
+        private static void LevelOnly(Homm2Game game) =>
+            game.History.CreateHeroSession(1).Update(h => h with { Level = 20, Experience = 0 }); // raw: the page keeps the two in step
 
-        private static void BigExperience(Homm2Game game)
-        {
-            var page = Hero(game, 1);
-            page.Facts.Single(r => r.Name == "Level").Value = 1;
-            page.Facts.Single(r => r.Name == "Experience").Value = 200_000;
-        }
+        private static void BigExperience(Homm2Game game) =>
+            game.History.CreateHeroSession(1).Update(h => h with { Level = 1, Experience = 200_000 }); // raw: the page keeps the two in step
 
         private static void BigStacks(Homm2Game game)
         {

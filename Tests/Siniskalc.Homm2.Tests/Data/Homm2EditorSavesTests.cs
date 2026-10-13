@@ -128,7 +128,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(army.Slots[2], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.BlackDragon, 1)));
 
             var stats = Open("E25STATS").Document.Heroes().GetModel(1);
-            Assert.That((stats.Level, stats.Experience, stats.SpellPoints, stats.MovementLeft), Is.EqualTo((20, 50_000L, 99, stats.MaxMovement)));
+            Assert.That((stats.Level, stats.Experience, stats.SpellPoints, stats.MovementLeft), Is.EqualTo((17, 50_000L, 99, stats.MaxMovement)), "the level follows the experience");
             Assert.That(stats.PrimarySkills, Is.EqualTo(new Homm2PrimarySkills(20, 20, 20, 20)));
         }
 

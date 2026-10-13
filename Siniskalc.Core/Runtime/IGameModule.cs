@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Core.Runtime
+namespace Siniskalc.Core.Runtime
 {
     using System;
 
@@ -39,5 +39,11 @@
         /// Makes the editor of the game, with nothing loaded.
         /// </summary>
         IGameEditor CreateEditor();
+
+        /// <summary>
+        /// Tells whether the game can list a savegame with this file name (the name with its extension, no folder): <c>null</c> when it can,
+        /// else what is wrong, in a sentence for the user. Used before the game is saved to a new file. Any name is fine by default.
+        /// </summary>
+        string? ValidateSavegameName(string fileName) => null;
     }
 }

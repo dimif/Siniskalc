@@ -1,4 +1,4 @@
-﻿namespace Siniskalc
+namespace Siniskalc
 {
     using System.Diagnostics;
     using System.Reflection;
@@ -107,6 +107,7 @@
                 new RawSavefileCodec(),
                 this.Backup);
             this.Homm2SaveRegionProvider = new Homm2SaveRegionProvider(homm2Locator);
+            this.Homm2ByteEditTargets = new Homm2ByteEditTargetFactory();
             this.Homm2 = new Homm2Module(homm2Locator, this.CreateHomm2Editor);
         }
 
@@ -173,6 +174,8 @@
 
         public ISaveRegionProvider Homm2SaveRegionProvider { get; }
 
+        public IHomm2ByteEditTargetFactory Homm2ByteEditTargets { get; }
+
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic II.
         /// </summary>
@@ -191,7 +194,7 @@
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider);
+        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets);
 
         private static AboutInfo CreateAboutInfo()
         {

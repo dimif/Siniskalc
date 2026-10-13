@@ -19,6 +19,7 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private readonly IHomm2GameService gameService;
         private readonly ISaveRegionProvider saveRegions;
+        private readonly IHomm2ByteEditTargetFactory byteEditTargets;
         private readonly Homm2NavigationTree navigation;
         private readonly Dictionary<int, Homm2PlayerViewModel> players = [];
         private readonly Dictionary<int, Homm2HeroViewModel> heroes = [];
@@ -31,10 +32,11 @@ namespace Siniskalc.Homm2.ViewModels
         // Who owns each castle and hero, as a text. The tree groups them by owner, so it is built again when this changes.
         private string owners = string.Empty;
 
-        public Homm2EditorViewModel(IHomm2GameService gameService, ISaveRegionProvider saveRegions)
+        public Homm2EditorViewModel(IHomm2GameService gameService, ISaveRegionProvider saveRegions, IHomm2ByteEditTargetFactory byteEditTargets)
         {
             this.gameService = gameService;
             this.saveRegions = saveRegions;
+            this.byteEditTargets = byteEditTargets;
             this.navigation = new Homm2NavigationTree(this.OnNodeSelected);
         }
 
@@ -195,7 +197,7 @@ namespace Siniskalc.Homm2.ViewModels
             var game = this.Loaded();
             if (!this.players.TryGetValue((int)color, out var player))
             {
-                player = new Homm2PlayerViewModel(game, color, this.ShowHero, this.ShowCastle);
+                player = new Homm2PlayerViewModel(game, color, this.ShowHero, this.ShowCastle, this.byteEditTargets);
                 this.players[(int)color] = player;
             }
 
@@ -211,7 +213,7 @@ namespace Siniskalc.Homm2.ViewModels
             var game = this.Loaded();
             if (!this.heroes.TryGetValue(heroId, out var hero))
             {
-                hero = new Homm2HeroViewModel(game, heroId, this.ShowCastle);
+                hero = new Homm2HeroViewModel(game, heroId, this.ShowCastle, this.byteEditTargets);
                 this.heroes[heroId] = hero;
             }
 
@@ -226,7 +228,7 @@ namespace Siniskalc.Homm2.ViewModels
             var game = this.Loaded();
             if (!this.castles.TryGetValue(castleIndex, out var castle))
             {
-                castle = new Homm2CastleViewModel(game, castleIndex, this.ShowHero);
+                castle = new Homm2CastleViewModel(game, castleIndex, this.ShowHero, this.byteEditTargets);
                 this.castles[castleIndex] = castle;
             }
 

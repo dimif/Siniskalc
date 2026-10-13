@@ -76,11 +76,12 @@ The user copies them to the save folder of HoMM2, loads each and ticks the READM
 - an edit loads but shows something else: the model or the layout of that field is wrong;
 - all load and show what was written: the format is safe to edit, and Phase 6 can go ahead.
 
-## Phase 5: read-only viewer (in progress)
+## Phase 5: the viewer and its pages (done)
 
 - Done: `Homm2Module` is registered in the host, so detection, the recent files and the window title work for both games; the hex viewer works (`Homm2SaveRegionProvider`).
 - Done: the UX follows the HoMM3 editor. `Homm2EditorView` has the search box and the navigation tree (`Homm2NavigationTree`: game, a node per player with its "Heroes" and "Towns" groups, "Neutral" for what nobody owns; nodes show the race and level, the hero that is in a town, a dot for unsaved edits), and a frame with the page of what is picked. Pages (each a `Homm2PageViewModel` with tabs, an "edited" mark and a Reset pill): the overview (map, scenario, players that open their page), the player (Resources with the daily income, Heroes with the tavern, Towns), the hero (General, Skills, Creatures, Spells, Artifacts) and the castle (General, Buildings with dwellings, Creatures, Mage Guild). Heroes and towns link to each other.
-- Left: the hex tab of each page (byte edit targets for the three records), `IsValidSavegameName` for the 8-character names, the game-neutral navigation tree (the HoMM3 and HoMM2 trees are two copies; the HoMM3 one was left unchanged).
+- Done: the hex tab of the player, the hero and the castle page (`Homm2RecordRegions` holds the known fields of each record, `IHomm2ByteEditTargetFactory` makes the target; the tab shows in advanced mode as in HoMM3), and the rule for the names of the saves: `IGameModule.ValidateSavegameName` (a default of "any name"), which `Homm2Module` answers with the 8 characters before the extension, and which "Save as" asks before it writes. The backup keeps the extension of the game plus `.bak`, which the game does not list, so it needs no rule.
+- Left: the game-neutral navigation tree (the HoMM3 and HoMM2 trees are two copies; the HoMM3 one was left unchanged).
 
 ## Phase 6: editing (done for heroes, players and castles; unverified in the game)
 

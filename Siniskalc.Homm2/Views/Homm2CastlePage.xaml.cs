@@ -12,6 +12,10 @@ namespace Siniskalc.Homm2.Views
         {
             this.InitializeComponent();
             this.DataContext = viewModel;
+            if (viewModel.CreateByteEditTarget() is { } target)
+            {
+                this.hexEditor.Bind(target);
+            }
         }
     }
 }

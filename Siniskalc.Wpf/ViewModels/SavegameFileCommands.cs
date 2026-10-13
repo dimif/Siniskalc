@@ -92,7 +92,18 @@ namespace Siniskalc.Wpf.ViewModels
         public string? SaveAs(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToSave(shell.SaveFilter);
-            if (path == null || !this.Run(() => shell.SaveGame(path), "Save Game Error", "save game"))
+            if (path == null)
+            {
+                return null;
+            }
+
+            if (shell.ValidateSavegameName(path) is { } problem)
+            {
+                this.messages.ShowWarning("Save Game", problem);
+                return null;
+            }
+
+            if (!this.Run(() => shell.SaveGame(path), "Save Game Error", "save game"))
             {
                 return null;
             }

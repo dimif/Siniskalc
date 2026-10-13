@@ -57,9 +57,23 @@
             <wpf:NavButton Text="Buildings"/>
             <wpf:NavButton Text="Creatures"/>
             <wpf:NavButton Text="Mage Guild"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
+        <!-- Hex -->
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource Homm2TabPanel4}"/>
+
+        <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="4">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <!-- General -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel0}">

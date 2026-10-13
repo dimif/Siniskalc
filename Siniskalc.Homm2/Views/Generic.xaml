@@ -49,6 +49,14 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Homm2TabPanel5" TargetType="FrameworkElement" BasedOn="{StaticResource Homm2TabPanelBase}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SelectedTab}" Value="5">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- A note that is only shown while its Tag is False: "This player has no heroes". -->
     <Style x:Key="Homm2EmptyNoteStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
         <Setter Property="Visibility" Value="Collapsed"/>

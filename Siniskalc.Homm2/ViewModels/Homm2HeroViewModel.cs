@@ -23,8 +23,8 @@ namespace Siniskalc.Homm2.ViewModels
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
-        public Homm2HeroViewModel(Homm2Game game, int heroId, Action<int> openCastle)
-            : base(game, Homm2ChunkKinds.Hero, heroId)
+        public Homm2HeroViewModel(Homm2Game game, int heroId, Action<int> openCastle, IHomm2ByteEditTargetFactory? byteEditTargets = null)
+            : base(game, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
         {
             this.HeroId = heroId;
             this.openCastle = openCastle;
@@ -118,6 +118,8 @@ namespace Siniskalc.Homm2.ViewModels
         public Homm2ArtifactsViewModel ArtifactsEditor { get; }
 
         public bool HasSpellBook => this.hero.HasSpellBook;
+
+        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IHomm2ByteEditTargetFactory factory) => factory.ForHero(this.session);
 
         protected override void Read()
         {

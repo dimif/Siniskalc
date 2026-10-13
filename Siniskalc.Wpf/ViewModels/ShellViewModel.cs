@@ -167,6 +167,11 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Gets the file dialog filter for saving the game that is shown.
         /// </summary>
+        /// <summary>
+        /// Tells why the game of the current module cannot list a savegame called like <paramref name="path"/>, or <c>null</c> when it can.
+        /// </summary>
+        public string? ValidateSavegameName(string path) => this.currentModule.ValidateSavegameName(System.IO.Path.GetFileName(path));
+
         public string SaveFilter => $"{this.currentModule.Name} savegames |{this.currentModule.SavePattern}";
 
         /// <summary>

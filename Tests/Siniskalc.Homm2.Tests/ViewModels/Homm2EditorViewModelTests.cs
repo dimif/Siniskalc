@@ -396,6 +396,37 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(() => artifacts.Finder.Choose(artifacts.Finder.Items.Cast<Homm2ArtifactChoiceViewModel>().First()), Throws.Nothing);
         }
 
+        [Test]
+        public void TheHexTabEditsTheRawBytesOfAHeroAPlayerAndACastle()
+        {
+            this.editor.ShowHero(7);
+            var hero = (Homm2HeroViewModel)this.editor.CurrentPage!;
+            using (var target = hero.CreateByteEditTarget()!)
+            {
+                Assert.That(target.Title, Is.EqualTo("Maximus"));
+                Assert.That(target.Regions.Select(r => r.Name), Does.Contain("Experience").And.Contain("Artifacts"));
+                var level = target.Regions.Single(r => r.Name == "Level").Start;
+                Assert.That(target.Update(bytes => { bytes[level] = 33; return bytes; }), Is.True);
+            }
+
+            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).Level, Is.EqualTo(33));
+            Assert.That(hero.HasPendingChanges, Is.True);
+
+            this.editor.ShowPlayer(Homm2Color.Blue);
+            using (var target = ((Homm2PlayerViewModel)this.editor.CurrentPage!).CreateByteEditTarget()!)
+            {
+                Assert.That(target.Title, Is.EqualTo("Blue player"));
+                Assert.That(target.Regions.Select(r => r.Name), Does.Contain("Resources"));
+            }
+
+            var castle = this.OpenCastleOf(Homm2Color.Blue);
+            using (var target = castle.CreateByteEditTarget()!)
+            {
+                Assert.That(target.Title, Is.EqualTo(castle.Name));
+                Assert.That(target.Regions.Select(r => r.Name), Does.Contain("Dwellings").And.Contain("Town buildings"));
+            }
+        }
+
         private Homm2CastleViewModel OpenCastleOf(Homm2Color owner)
         {
             var castle = this.editor.CurrentGame!.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == owner);

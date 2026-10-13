@@ -29,8 +29,8 @@ namespace Siniskalc.Homm2.ViewModels
         private IReadOnlyList<Homm2FactRow> tavern = [];
         private string status = string.Empty;
 
-        public Homm2PlayerViewModel(Homm2Game game, Homm2Color color, Action<int> openHero, Action<int> openCastle)
-            : base(game, Homm2ChunkKinds.Player, (int)color)
+        public Homm2PlayerViewModel(Homm2Game game, Homm2Color color, Action<int> openHero, Action<int> openCastle, IHomm2ByteEditTargetFactory? byteEditTargets = null)
+            : base(game, Homm2ChunkKinds.Player, (int)color, byteEditTargets)
         {
             this.Color = color;
             this.openHero = openHero;
@@ -77,6 +77,8 @@ namespace Siniskalc.Homm2.ViewModels
         public bool HasHeroes => this.heroes.Count > 0;
 
         public bool HasCastles => this.castles.Count > 0;
+
+        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IHomm2ByteEditTargetFactory factory) => factory.ForPlayer(this.session);
 
         protected override void Read()
         {

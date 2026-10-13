@@ -161,14 +161,15 @@ namespace Siniskalc.Homm2.Tests
                     Assert.That(this.shell.PendingChanges, Has.Count.EqualTo(1));
                     Assert.That(editor.Overview!.Players.First(p => p.Color == Homm2Color.Blue).Gold, Is.EqualTo(1));
 
-                    // Every page, on every tab, binds without errors.
+                    // Every page, on every tab (the hex tab too), binds without errors.
+                    this.shell.IsAdvancedMode = true;
                     var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Homm2Color.Blue).HeroId;
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Homm2Color.Blue).Index;
                     var pages = new (Action Show, Func<Homm2PageViewModel> Page, int Tabs)[]
                     {
-                        (() => editor.ShowPlayer(Homm2Color.Blue), () => (Homm2PlayerViewModel)editor.CurrentPage!, 3),
-                        (() => editor.ShowHero(hero), () => (Homm2HeroViewModel)editor.CurrentPage!, 5),
-                        (() => editor.ShowCastle(castle), () => (Homm2CastleViewModel)editor.CurrentPage!, 4),
+                        (() => editor.ShowPlayer(Homm2Color.Blue), () => (Homm2PlayerViewModel)editor.CurrentPage!, 4),
+                        (() => editor.ShowHero(hero), () => (Homm2HeroViewModel)editor.CurrentPage!, 6),
+                        (() => editor.ShowCastle(castle), () => (Homm2CastleViewModel)editor.CurrentPage!, 5),
                     };
                     foreach (var (show, page, tabs) in pages)
                     {

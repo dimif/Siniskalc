@@ -31,8 +31,8 @@ namespace Siniskalc.Homm2.ViewModels
         private string visitingHeroName = string.Empty;
         private string notice = string.Empty;
 
-        public Homm2CastleViewModel(Homm2Game game, int castleIndex, Action<int> openHero)
-            : base(game, Homm2ChunkKinds.Castle, castleIndex)
+        public Homm2CastleViewModel(Homm2Game game, int castleIndex, Action<int> openHero, IHomm2ByteEditTargetFactory? byteEditTargets = null)
+            : base(game, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
         {
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
@@ -131,6 +131,8 @@ namespace Siniskalc.Homm2.ViewModels
         public ChoiceFieldViewModel GuildLevelField { get; }
 
         public IReadOnlyList<Homm2GuildLevelViewModel> GuildLevels => this.guildLevels;
+
+        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IHomm2ByteEditTargetFactory factory) => factory.ForCastle(this.session);
 
         protected override void Read()
         {

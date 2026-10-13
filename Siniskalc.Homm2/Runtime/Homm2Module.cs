@@ -1,6 +1,8 @@
 namespace Siniskalc.Homm2.Runtime
 {
     using System;
+    using System.IO;
+    using System.Linq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.ViewModels;
@@ -11,6 +13,8 @@ namespace Siniskalc.Homm2.Runtime
     /// </summary>
     public sealed class Homm2Module : IGameModule
     {
+        private const int MaxNameLength = 8;
+
         private readonly IHomm2SaveLayoutLocator locator;
         private readonly Func<Homm2EditorViewModel> createEditor;
 
@@ -39,5 +43,24 @@ namespace Siniskalc.Homm2.Runtime
 
         /// <inheritdoc/>
         public IGameEditor CreateEditor() => this.createEditor();
+
+        /// <summary>
+        /// Heroes of Might and Magic II lists a savegame only when the name before the extension has at most 8 characters, and no space
+        /// or other character a DOS file name cannot have (the extension does not count). The file dialog does not say so, and a longer name
+        /// is simply not there when the game is asked to load one.
+        /// </summary>
+        public string? ValidateSavegameName(string fileName)
+        {
+            var stem = Path.GetFileNameWithoutExtension(fileName);
+            if (stem.Length is 0 or > MaxNameLength || stem.Any(c => !IsDosNameCharacter(c)))
+            {
+                return $"Heroes of Might and Magic II only lists savegames whose name has 1 to {MaxNameLength} letters, digits or _ before the extension, such as E01GOLD.GM1. "
+                    + $"\"{stem}\" would not show in the game.";
+            }
+
+            return null;
+        }
+
+        private static bool IsDosNameCharacter(char c) => char.IsAsciiLetterOrDigit(c) || "_-!#$%&'()@^{}~".Contains(c);
     }
 }

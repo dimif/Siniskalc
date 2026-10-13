@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Runtime;
     using Siniskalc.Wpf.ViewModels;
 
@@ -18,8 +19,11 @@ namespace Siniskalc.Homm2.ViewModels
         private int selectedTab;
         private bool hasPendingChanges;
 
-        protected Homm2PageViewModel(Homm2Game game, ChunkKind kind, int index)
+        private readonly IHomm2ByteEditTargetFactory? byteEditTargets;
+
+        protected Homm2PageViewModel(Homm2Game game, ChunkKind kind, int index, IHomm2ByteEditTargetFactory? byteEditTargets = null)
         {
+            this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.kind = kind;
             this.index = index;
@@ -78,7 +82,15 @@ namespace Siniskalc.Homm2.ViewModels
             this.RaiseAllPropertiesChanged();
         }
 
+        /// <summary>
+        /// Creates the target the hex tab of the page works on: the raw bytes of what the page is about. The caller disposes it. <c>null</c>
+        /// when the editor was built without the means to make one, and the page has no hex tab.
+        /// </summary>
+        public IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets == null ? null : this.CreateByteEditTarget(this.byteEditTargets);
+
         protected abstract void Read();
+
+        protected abstract IByteEditTarget CreateByteEditTarget(IHomm2ByteEditTargetFactory factory);
 
         private void OnHistoryChanged(object? sender, EventArgs e) => this.Refresh();
 

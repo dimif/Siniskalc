@@ -8,7 +8,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// <summary>
     /// A page that lists artifacts and shows what the one the pointer rests on does, in an info card.
     /// </summary>
-    public abstract class ArtifactInfoViewModelBase : PageViewModelBase
+    public abstract class ArtifactInfoViewModelBase : PageViewModelBase, IArtifactInfoSource
     {
         private ArtifactEffectInfo selectedArtifactInfo;
         private Artifact? selectedArtifact;

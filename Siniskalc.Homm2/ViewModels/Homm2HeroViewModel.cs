@@ -20,7 +20,6 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Homm2HeroEditSession session;
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> facts;
-        private IReadOnlyList<Homm2FactRow> artifacts = [];
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
@@ -53,6 +52,10 @@ namespace Siniskalc.Homm2.ViewModels
                 () => this.session.Current.SecondarySkills,
                 edit => this.session.Update(h => h with { SecondarySkills = edit(h.SecondarySkills) }));
             this.SpellsEditor = new Homm2SpellsViewModel(
+                game.GameVersion,
+                () => this.session.Current,
+                edit => this.session.Update(edit));
+            this.ArtifactsEditor = new Homm2ArtifactsViewModel(
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
@@ -109,11 +112,12 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public Homm2SpellsViewModel SpellsEditor { get; }
 
-        public IReadOnlyList<Homm2FactRow> Artifacts => this.artifacts;
+        /// <summary>
+        /// Gets the artifacts of the hero: its fourteen slots and the finder of artifacts.
+        /// </summary>
+        public Homm2ArtifactsViewModel ArtifactsEditor { get; }
 
         public bool HasSpellBook => this.hero.HasSpellBook;
-
-        public bool HasArtifacts => this.hero.Artifacts.Slots.Any(a => a != null);
 
         protected override void Read()
         {
@@ -130,10 +134,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.SkillsEditor?.Refresh();
             this.SpellsEditor?.Refresh();
 
-            this.artifacts = hero.Artifacts.Slots
-                .Where(a => a != null)
-                .Select((a, i) => new Homm2FactRow($"Slot {i + 1}", a!.Name))
-                .ToList();
+            this.ArtifactsEditor?.Refresh();
 
             var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHero == this.HeroId);
             this.castleIndex = castle?.Index ?? -1;

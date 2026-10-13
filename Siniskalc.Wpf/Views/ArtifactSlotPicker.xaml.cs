@@ -1,14 +1,14 @@
-﻿namespace Siniskalc.Homm3.Views
+namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using Siniskalc.Wpf.Views;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A button showing the artifact in a slot; clicking it opens a popup with a finder of the artifacts that fit.
-    /// The DataContext is an <see cref="ViewModels.ArtifactSlotViewModel"/>.
+    /// The DataContext is an <see cref="ArtifactPickerViewModel"/>.
     /// </summary>
     public partial class ArtifactSlotPicker : UserControl
     {
@@ -29,6 +29,20 @@
             set => this.SetValue(PopupWidthProperty, value);
         }
 
+        private static T? FindAncestor<T>(DependencyObject start)
+            where T : DependencyObject
+        {
+            for (var node = VisualTreeHelper.GetParent(start); node != null; node = VisualTreeHelper.GetParent(node))
+            {
+                if (node is T found)
+                {
+                    return found;
+                }
+            }
+
+            return null;
+        }
+
         private static void FocusSearch(DependencyObject root)
         {
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
@@ -41,6 +55,23 @@
                 }
 
                 FocusSearch(child);
+            }
+        }
+
+        // Pointing at the button shows what the artifact does, on the info card of the page, when the page has one.
+        private void ButtonMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (FindAncestor<Page>(this)?.DataContext is IArtifactInfoSource source && this.DataContext is ArtifactPickerViewModel slot)
+            {
+                source.ShowArtifactInfoCommand.Execute(slot.ArtifactName);
+            }
+        }
+
+        private void ButtonMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (FindAncestor<Page>(this)?.DataContext is IArtifactInfoSource source)
+            {
+                source.ClearArtifactInfoCommand.Execute(null);
             }
         }
 

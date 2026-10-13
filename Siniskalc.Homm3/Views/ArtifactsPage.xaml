@@ -9,24 +9,6 @@
       mc:Ignorable="d"
       d:DesignWidth="900"
       Title="Artifacts">
-    <Page.Resources>
-        <!-- One slot: the button that opens the picker, and a button that takes the artifact off. -->
-        <DataTemplate x:Key="SlotRowTemplate">
-            <Grid Margin="0,3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="72"/>
-                    <ColumnDefinition Width="210"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource FieldLabelStyle}" Text="{Binding Label}"/>
-                <local:ArtifactSlotPicker Grid.Column="1"/>
-                <Button Grid.Column="2" Style="{StaticResource SlotButtonStyle}" Content="✕" Command="{Binding ClearCommand}"
-                        Width="26" Height="26" FontSize="12" Margin="6,0,0,0" VerticalAlignment="Center"
-                        ToolTip="Take this artifact off" AutomationProperties.Name="{Binding Label, StringFormat=Clear {0}}"/>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
@@ -43,13 +25,13 @@
             <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Worn"/>
-                        <ItemsControl ItemsSource="{Binding WornSlots}" ItemTemplate="{StaticResource SlotRowTemplate}"/>
+                        <ItemsControl ItemsSource="{Binding WornSlots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
                     </StackPanel>
             </Border>
             <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Carried"/>
-                        <ItemsControl ItemsSource="{Binding CarriedSlots}" ItemTemplate="{StaticResource SlotRowTemplate}"/>
+                        <ItemsControl ItemsSource="{Binding CarriedSlots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
                     </StackPanel>
             </Border>
 

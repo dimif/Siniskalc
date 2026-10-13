@@ -347,6 +347,55 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(model().HasSpellBook, Is.True);
         }
 
+        [Test]
+        public void AnArtifactEquippedFromTheFinderGoesInTheFirstFreeSlotAndMovesItsSkillBonus()
+        {
+            this.editor.ShowHero(7);
+            var artifacts = ((Homm2HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            var before = this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
+
+            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<Homm2ArtifactChoiceViewModel>().Single(c => c.Artifact == Homm2Artifact.UltimateSwordOfDominion));
+
+            var after = this.editor.CurrentGame.History.Current.Heroes().GetModel(7);
+            Assert.That(after.Artifacts.Slots, Has.Member(Homm2Artifact.UltimateSwordOfDominion));
+            Assert.That(after.PrimarySkills.Attack, Is.EqualTo(before.PrimarySkills.Attack + 12));
+            Assert.That(artifacts.Bonuses.Any(b => b.Label == "Attack" && b.Value.StartsWith('+')), Is.True);
+            Assert.That(artifacts.Slots.Any(s => s.ArtifactName == "Ultimate Sword of Dominion"), Is.True);
+        }
+
+        [Test]
+        public void ChoosingAnArtifactInASlotReplacesTheOneThereAndClearingTakesItOff()
+        {
+            this.editor.ShowHero(7);
+            var artifacts = ((Homm2HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
+            var free = artifacts.Slots.First(s => !s.HasArtifact);
+            var index = artifacts.Slots.ToList().IndexOf(free);
+
+            ((Homm2ArtifactFinderViewModel)free.Finder).Choose(((Homm2ArtifactFinderViewModel)free.Finder).Items.Cast<Homm2ArtifactChoiceViewModel>().Single(c => c.Artifact == Homm2Artifact.UltimateCloakOfProtection));
+            Assert.That(model().Artifacts.Slots[index], Is.EqualTo(Homm2Artifact.UltimateCloakOfProtection));
+            var defense = model().PrimarySkills.Defense;
+
+            free.ClearCommand.Execute(null);
+
+            Assert.That(model().Artifacts.Slots[index], Is.Null);
+            Assert.That(model().PrimarySkills.Defense, Is.EqualTo(defense - 12));
+        }
+
+        [Test]
+        public void TheFinderCannotEquipWhenEveryArtifactSlotIsTaken()
+        {
+            this.editor.ShowHero(7);
+            var artifacts = ((Homm2HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            while (artifacts.Slots.Any(s => !s.HasArtifact))
+            {
+                artifacts.Finder.Choose(artifacts.Finder.Items.Cast<Homm2ArtifactChoiceViewModel>().First(c => c.Artifact == Homm2Artifact.AmmoCart));
+            }
+
+            Assert.That(artifacts.Slots.All(s => s.HasArtifact), Is.True);
+            Assert.That(() => artifacts.Finder.Choose(artifacts.Finder.Items.Cast<Homm2ArtifactChoiceViewModel>().First()), Throws.Nothing);
+        }
+
         private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).HeroId;
 
         private static IEnumerable<string> Titles(Homm2NavNodeViewModel player, string group) =>

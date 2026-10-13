@@ -148,7 +148,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
         /// <summary>
         /// Writes the savegames of the second set that are not in TestData/Homm2/out yet, and a README of their own
-        /// (README_EDITOR_2.md) for the ones it wrote. What is there is left as it is, the saves that were tried in the game and the READMEs
+        /// (README_EDITOR_new_*.md) for the ones it wrote. What is there is left as it is, the saves that were tried in the game and the READMEs
         /// that hold what was seen, even if the code that made them has changed since. Run it by hand:
         /// <c>dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheSavesMadeWithTheEditor</c>.
         /// </summary>
@@ -186,7 +186,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             if (written > 0)
             {
-                File.WriteAllText(Path.Combine(folder, "README_EDITOR_2.md"), readme.ToString());
+                File.WriteAllText(Path.Combine(folder, $"README_EDITOR_new_{DateTime.Now:yyyyMMdd_HHmmss}.md"), readme.ToString()); // never over a README that holds results
             }
 
             Assert.That(Directory.GetFiles(folder, "*.GM1").Length, Is.GreaterThanOrEqualTo(Homm2EditorSaves.Build().Count));

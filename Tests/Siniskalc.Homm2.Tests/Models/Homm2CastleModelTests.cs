@@ -109,5 +109,18 @@ namespace Siniskalc.Homm2.Tests.Models
             Assert.That(vertigo.WithLibrary(false).GuildSpellCounts, Is.EqualTo(Homm2Numbers.Of(3, 3, 2, 2, 1)));
             Assert.That(Xabran().WithLibrary(true), Is.EqualTo(Xabran()), "only a Wizard has a Library");
         }
+
+        [Test]
+        public void TheCreaturesOfAnUpgradedDwellingWaitInTheirOwnListAsInTheSaves()
+        {
+            var castles = Homm2TestServices.LoadBrokenAlliance(24).History.Current.Castles();
+
+            var hillstone = castles.GetModel(castles.FindByName("Hillstone"));
+            Assert.That((hillstone.DwellingLevel(2), hillstone.Waiting(2), hillstone.Creatures[1]), Is.EqualTo((2, 10, 0)));
+
+            var moved = Xabran().WithWaiting(2, 7).WithDwellingLevel(2, 2);
+            Assert.That((moved.Waiting(2), moved.Creatures[1], moved.UpgradedCreatures[0]), Is.EqualTo((7, 0, 7)));
+            Assert.That(moved.WithDwellingLevel(2, 1).Waiting(2), Is.EqualTo(7));
+        }
     }
 }

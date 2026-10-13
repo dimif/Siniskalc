@@ -203,8 +203,8 @@ namespace Siniskalc.Homm2.ViewModels
                     Constants.Castle.MinCreatures,
                     Constants.Castle.MaxWaiting,
                     1,
-                    () => this.session.Current.Creatures[dwelling - 1],
-                    () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).Creatures[dwelling - 1],
+                    () => this.session.Current.Waiting(dwelling),
+                    () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).Waiting(dwelling),
                     count => this.session.Update(c => c.WithWaiting(dwelling, (int)count))),
                 () => this.session.Current.DwellingLevel(dwelling) > 0);
         }

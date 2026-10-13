@@ -48,6 +48,12 @@ namespace Siniskalc.Homm2.Data
         public const int Creatures = 0x1E;
 
         /// <summary>
+        /// The creatures that wait in the upgraded dwellings 2 to 6 (five u16): an upgraded dwelling keeps its count here and its own slot
+        /// above is 0 (seen in the castles of Broken Alliance: Hillstone, Dragontooth, Bloodreign, Woodhaven and Vertigo).
+        /// </summary>
+        public const int UpgradedCreatures = 0x2A;
+
+        /// <summary>
         /// The spells of the Mage Guild: four bytes for each of its five levels, each the number of the spell minus one.
         /// </summary>
         public const int GuildSpells = 0x3C;

@@ -95,6 +95,7 @@ namespace Siniskalc.Homm2.Data
             Field("Town buildings", Homm2CastleLayout.TownBuildings, 2, ByteRegionKind.Other, "One bit each: 01 Mage Guild, 02 tavern, 04 thieves guild, 08 shipyard, 10 well, 20 town only, 40 castle, 80 statue"),
             Field("Dwellings", Homm2CastleLayout.Dwellings, 4, ByteRegionKind.Other, "08 to 100 the six dwellings; 10000 and 20000 the Mage Guild level 1 and 2"),
             Slots("Creatures available", Homm2CastleLayout.Creatures, Constants.Castle.DwellingCount, 2, ByteRegionKind.Creatures, "Dwelling"),
+            Slots("Creatures in upgraded dwellings", Homm2CastleLayout.UpgradedCreatures, Constants.Castle.DwellingCount - 1, 2, ByteRegionKind.Creatures, "Dwelling", "Dwellings 2 to 6 once upgraded; their own slot above is then 0"),
             Slots("Mage Guild spells", Homm2CastleLayout.GuildSpells, Homm2Bytes.GuildSpellSlots, 1, ByteRegionKind.Spells, "Spell", "Four for each of the five levels, each the number of the spell minus one"),
             Slots("Mage Guild spell counts", Homm2CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels, 1, ByteRegionKind.Spells, "Level", "How many of the four spells the guild shows"),
             Field("Name", Homm2CastleLayout.Name, Constants.Castle.NameLength, ByteRegionKind.Identity, "Text, zero terminated"),

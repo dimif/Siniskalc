@@ -19,7 +19,8 @@ namespace Siniskalc.Homm2.Models
     /// <param name="VisitingHero">The number of the hero in the castle, or <c>null</c> (a hero only visits: there are no garrison heroes).</param>
     /// <param name="Town">The buildings that are not dwellings.</param>
     /// <param name="Dwellings">The dwellings and the level of the Mage Guild.</param>
-    /// <param name="Creatures">The creatures that wait in each of the six dwellings.</param>
+    /// <param name="Creatures">The creatures that wait in each of the six dwellings, while they are not upgraded.</param>
+    /// <param name="UpgradedCreatures">The creatures that wait in the dwellings 2 to 6 once they are upgraded (an upgraded dwelling keeps its count here).</param>
     /// <param name="GuildSpells">The spell numbers (1 to 65, 0 for none) of the Mage Guild: four for each of the five levels, the first level first.</param>
     /// <param name="GuildSpellCounts">How many of the four spells of each level the guild shows.</param>
     public sealed record Homm2CastleModel(
@@ -34,6 +35,7 @@ namespace Siniskalc.Homm2.Models
         Homm2TownBuildings Town,
         Homm2Dwellings Dwellings,
         Homm2Numbers Creatures,
+        Homm2Numbers UpgradedCreatures,
         Homm2Numbers GuildSpells,
         Homm2Numbers GuildSpellCounts)
     {
@@ -128,7 +130,18 @@ namespace Siniskalc.Homm2.Models
                 2 => 0x100u << (dwelling - 1),
                 _ => (uint)Homm2Dwellings.Dwelling6UpgradedTwice,
             };
-            return this with { Dwellings = (Homm2Dwellings)(((uint)this.Dwellings & ~clear) | bit) };
+            var waiting = this.Waiting(dwelling);
+            var changed = this with { Dwellings = (Homm2Dwellings)(((uint)this.Dwellings & ~clear) | bit) };
+            if (level == 0)
+            {
+                return changed;
+            }
+
+            // the count moves with the dwelling: an upgraded one keeps it in its own list and leaves 0 in the slot of the plain dwelling
+            var moved = changed.WithWaiting(dwelling, waiting);
+            return level >= 2
+                ? moved with { Creatures = moved.Creatures.With(dwelling - 1, 0) }
+                : dwelling >= 2 ? moved with { UpgradedCreatures = moved.UpgradedCreatures.With(dwelling - 2, 0) } : moved;
         }
 
         /// <summary>
@@ -141,10 +154,13 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
         /// </summary>
+        public int Waiting(int dwelling) => this.DwellingLevel(dwelling) >= 2 ? this.UpgradedCreatures[dwelling - 2] : this.Creatures[dwelling - 1];
+
         public Homm2CastleModel WithWaiting(int dwelling, int count)
         {
-            _ = this.DwellingLevel(dwelling);
-            return this with { Creatures = this.Creatures.With(dwelling - 1, count) };
+            return this.DwellingLevel(dwelling) >= 2
+                ? this with { UpgradedCreatures = this.UpgradedCreatures.With(dwelling - 2, count) }
+                : this with { Creatures = this.Creatures.With(dwelling - 1, count) };
         }
 
         /// <summary>

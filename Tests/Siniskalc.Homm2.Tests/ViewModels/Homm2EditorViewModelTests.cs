@@ -451,13 +451,13 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             dwelling.Built.Selected = dwelling.Built.Choices[1];
             dwelling.Waiting.Value = 40;
             Assert.That(model().DwellingLevel(index + 1), Is.EqualTo(1));
-            Assert.That(model().Creatures[index], Is.EqualTo(40));
+            Assert.That(model().Waiting(index + 1), Is.EqualTo(40));
 
             if (dwelling.Built.Choices.Count > 2)
             {
                 dwelling.Built.Selected = dwelling.Built.Choices[2];
                 Assert.That(model().DwellingLevel(index + 1), Is.EqualTo(2), "an upgrade replaces the dwelling");
-                Assert.That(model().Creatures[index], Is.EqualTo(40), "the creatures that wait stay");
+                Assert.That(model().Waiting(index + 1), Is.EqualTo(40), "the creatures that wait stay");
             }
 
             dwelling.Waiting.Value = 100_000;

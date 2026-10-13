@@ -82,6 +82,15 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
+            for (var upgraded = 0; upgraded < original.UpgradedCreatures.Count; upgraded++)
+            {
+                var (before, after, index) = (original.UpgradedCreatures[upgraded], current.UpgradedCreatures[upgraded], upgraded);
+                if (before != after)
+                {
+                    Add(Homm2ChangeAreas.Dwellings, $"Creatures in upgraded dwelling {upgraded + 2}", before.ToString("N0"), after.ToString("N0"), c => c with { UpgradedCreatures = c.UpgradedCreatures.With(index, before) });
+                }
+            }
+
             for (var slot = 0; slot < original.GuildSpells.Count && slot < current.GuildSpells.Count; slot++)
             {
                 var (before, after, index) = (original.GuildSpells[slot], current.GuildSpells[slot], slot);

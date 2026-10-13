@@ -59,6 +59,8 @@ namespace Siniskalc.Homm2.Tests
                     "Sir Gallant has the level byte at 1 and 200,000 experience. Tell me the level the game shows."),
                 Make("E33STACK", "Sir Gallant's army: 32,767 peasants, 9,999 rogues and a dragon", BigStacks, game =>
                     $"Sir Gallant has {ArmyOf(game, 1)}. 65,535 overflowed in E24STACK, so tell me how these are shown on the map and in the hero screen, and whether splitting a stack works."),
+                Make("E34DWUP2", "Xabran and Whiteshield: the upgraded dwellings with their creatures in the list the game keeps them in", UpgradeDwellingsWithCreatures, game =>
+                    $"Xabran has the dwellings {DwellingsOf(game, "Xabran")} with 10 waiting in each (E27 showed only the plain ones); Whiteshield's fourth (Minotaur King) and sixth (Black Dragon) dwellings have 5 and 3 waiting. Tell me the creatures that wait in each."),
                 Make("E26ALL", "All of the edits above that do not exclude each other", EverythingTogether, _ =>
                     "Everything of E14, E15, E16, E17, E18, E19, E21, E22, E23, E24 and E25 together: the towns changed hands, Xabran and Whiteshield are built as there, Maximus has the artifacts and the eight skills, Sir Gallant the book, the army and the stats, and Blue the resources at the limits."),
             ];
@@ -97,6 +99,14 @@ namespace Siniskalc.Homm2.Tests
             }
 
             Castle(game, "Whiteshield").Dwellings[5].Built.Selected = "Black Dragon";
+        }
+
+        private static void UpgradeDwellingsWithCreatures(Homm2Game game)
+        {
+            UpgradeDwellings(game);
+            var whiteshield = Castle(game, "Whiteshield");
+            whiteshield.Dwellings[3].Waiting.Value = 5;
+            whiteshield.Dwellings[5].Waiting.Value = 3;
         }
 
         private static void GuildLevelFive(Homm2Game game) => Castle(game, "Xabran").GuildLevelField.Selected = "Level 5";

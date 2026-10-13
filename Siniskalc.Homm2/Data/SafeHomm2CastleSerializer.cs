@@ -41,6 +41,16 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
+            for (var upgraded = 0; upgraded < Constants.Castle.DwellingCount - 1; upgraded++)
+            {
+                var offset = Homm2CastleLayout.UpgradedCreatures + (upgraded * 2);
+                if (BitConverter.ToUInt16(bytes, offset) != model.UpgradedCreatures[upgraded])
+                {
+                    RangeGuard.ThrowIfOutOfRange<long>(model.UpgradedCreatures[upgraded], Constants.Castle.MinCreatures, Constants.Castle.MaxCreatures, nameof(model.UpgradedCreatures));
+                    ByteBufferHelper.WriteUInt16(bytes, offset, (ushort)model.UpgradedCreatures[upgraded]);
+                }
+            }
+
             for (var slot = 0; slot < Homm2Bytes.GuildSpellSlots; slot++)
             {
                 bytes[Homm2CastleLayout.GuildSpells + slot] = Homm2Bytes.GuildSpellByte(model.GuildSpells[slot], bytes[Homm2CastleLayout.GuildSpells + slot]);

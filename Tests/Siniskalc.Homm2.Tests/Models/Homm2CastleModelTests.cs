@@ -58,7 +58,13 @@ namespace Siniskalc.Homm2.Tests.Models
             var two = one.WithMageGuildLevel(2);
             Assert.That(two.MageGuildLevel, Is.EqualTo(2));
             Assert.That(two.Dwellings.HasFlag(Homm2Dwellings.MageGuild1), Is.False);
-            Assert.That(() => two.WithMageGuildLevel(3), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => two.WithMageGuildLevel(6), Throws.InstanceOf<ArgumentOutOfRangeException>());
+
+            var five = two.WithMageGuildLevel(5);
+            Assert.That(five.MageGuildLevel, Is.EqualTo(5));
+            Assert.That((uint)five.Dwellings & 0x70000, Is.EqualTo(0x50000u), "the level is a number in three bits, as in Peacekeeper");
+            Assert.That(five.GuildSpellCounts, Is.EqualTo(Homm2Numbers.Of(3, 3, 2, 2, 1)));
+            Assert.That(five.WithMageGuildLevel(2).GuildSpellCounts, Is.EqualTo(Homm2Numbers.Of(3, 3, 0, 0, 0)));
         }
 
         [Test]
@@ -69,6 +75,39 @@ namespace Siniskalc.Homm2.Tests.Models
             Assert.That(castle.GuildSpell(2, 1), Is.EqualTo(Homm2Spell.Fireball));
             Assert.That(castle.WithGuildSpell(2, 1, null).GuildSpell(2, 1), Is.Null);
             Assert.That(castle.GuildSpell(1, 1), Is.EqualTo(Xabran().GuildSpell(1, 1)), "the other levels stay");
+        }
+
+        [Test]
+        public void ADwellingThatIsUpgradedLosesItsOwnBitAndTheUpgradesStopWhereTheCreaturesDo()
+        {
+            var warlock = Homm2TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1);
+
+            Assert.That(warlock.Race, Is.EqualTo(Homm2Race.Warlock));
+            Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 1, 1, 2, 1, 1 }), "Whiteshield has a Minotaur King: dwelling 4 is upgraded");
+            Assert.That(((uint)warlock.Dwellings & 0x40) == 0 && ((uint)warlock.Dwellings & 0x800) != 0, Is.True);
+
+            var downgraded = warlock.WithDwellingLevel(4, 1);
+            Assert.That(((uint)downgraded.Dwellings & 0x40) != 0 && ((uint)downgraded.Dwellings & 0x800) == 0, Is.True);
+            Assert.That(Homm2CastleModel.MaxDwellingLevel(Homm2Race.Warlock, 6), Is.EqualTo(3), "the dragons upgrade twice");
+            Assert.That(Homm2CastleModel.MaxDwellingLevel(Homm2Race.Warlock, 1), Is.EqualTo(1));
+            Assert.That(Homm2CastleModel.MaxDwellingLevel(Homm2Race.Barbarian, 6), Is.EqualTo(1), "the Cyclops has no upgrade");
+            Assert.That(() => warlock.WithDwellingLevel(3, 2), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void TheGuildOfTheCastlesOfTheSavesHasTheLevelInThreeBitsAndTheSpellsOfItsLevels()
+        {
+            var castles = Homm2TestServices.LoadBrokenAlliance(24).History.Current.Castles();
+
+            var peacekeeper = castles.GetModel(castles.FindByName("Peacekeeper"));
+            Assert.That((peacekeeper.MageGuildLevel, peacekeeper.GuildSpellCounts), Is.EqualTo((5, Homm2Numbers.Of(3, 3, 2, 2, 1))));
+            var dragontooth = castles.GetModel(castles.FindByName("Dragontooth"));
+            Assert.That((dragontooth.MageGuildLevel, dragontooth.GuildSpellCounts), Is.EqualTo((3, Homm2Numbers.Of(3, 3, 2, 0, 0))));
+            var vertigo = castles.GetModel(castles.FindByName("Vertigo"));
+            Assert.That((vertigo.MageGuildLevel, vertigo.HasLibrary, vertigo.GuildSpellCounts), Is.EqualTo((5, true, Homm2Numbers.Of(4, 4, 3, 3, 2))));
+            Assert.That(castles.GetModel(castles.FindByName("Woodhaven")).HasLibrary, Is.False);
+            Assert.That(vertigo.WithLibrary(false).GuildSpellCounts, Is.EqualTo(Homm2Numbers.Of(3, 3, 2, 2, 1)));
+            Assert.That(Xabran().WithLibrary(true), Is.EqualTo(Xabran()), "only a Wizard has a Library");
         }
     }
 }

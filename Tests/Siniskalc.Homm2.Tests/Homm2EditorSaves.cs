@@ -27,10 +27,10 @@ namespace Siniskalc.Homm2.Tests
                     $"Blue owns Bloodreign too. Red owns no town and has {game.History.Current.Players().GetModel((int)Homm2Color.Red).DaysLeft} days to get one (his heroes are still there)."),
                 Make("E16BLDG", "Xabran: the statue and the well taken down, the shipyard built", ChangeXabranBuildings, game =>
                     $"Xabran has: {BuildingsOf(game, "Xabran")}."),
-                Make("E17DWEL", "Whiteshield: dwelling 4 built, creatures set in the dwellings", ChangeWhiteshieldDwellings, game =>
-                    $"Whiteshield has the dwellings {DwellingsOf(game, "Whiteshield")}."),
+                Make("E17DWEL", "Whiteshield: dwelling 4 taken back from Minotaur King to Minotaur, dragons upgraded to Red, creatures set in the dwellings", ChangeWhiteshieldDwellings, game =>
+                    $"Whiteshield has the dwellings {DwellingsOf(game, "Whiteshield")}. (Before, dwelling 4 was upgraded: a Minotaur King; the first dragon dwelling is now the Red Dragon.)"),
                 Make("E18GUILD", "Xabran: the Mage Guild at level 2 with other spells", ChangeXabranGuild, game =>
-                    $"Xabran's Mage Guild is level 2. Level 1 teaches {GuildOf(game, "Xabran", 1)}; level 2 teaches {GuildOf(game, "Xabran", 2)}."),
+                    $"Xabran's Mage Guild is level 2. Level 1 teaches {GuildOf(game, "Xabran", 1, 3)}; level 2 teaches {GuildOf(game, "Xabran", 2, 3)} (three spells each: the game shows no more at these levels)."),
                 Make("E19ARTS", "Maximus filled with artifacts through the finder", FillMaximusWithArtifacts, game =>
                     $"Maximus carries {ArtifactsOf(game, 7)}. His skills are {SkillsOf(game, 7)} (what the artifacts add is in them)."),
                 Make("E20TAKE", "Maximus given the Ultimate Cloak and the Ultimate Sword, then the sword taken off", EquipAndTakeOff, game =>
@@ -45,6 +45,20 @@ namespace Siniskalc.Homm2.Tests
                     $"Sir Gallant has {ArmyOf(game, 1)}. Look at how the 65,535 is shown."),
                 Make("E25STATS", "Sir Gallant: skills 20, level 20, experience 50,000, spell points 99, all his movement", GallantStats, game =>
                     $"Sir Gallant is level 20 with 50,000 experience, skills {SkillsOf(game, 1)}, 99 spell points and {game.History.Current.Heroes().GetModel(1).MovementLeft:N0} movement points."),
+                Make("E27DWUPG", "Xabran: dwellings upgraded (Ranger, Master Swordsman, Crusader) and built; Whiteshield: the dragons upgraded twice", UpgradeDwellings, game =>
+                    $"Xabran has the dwellings {DwellingsOf(game, "Xabran")}; Whiteshield's sixth is the Black Dragon. Look at the creatures each dwelling offers and whether they can be hired."),
+                Make("E28GLD5", "Xabran: the Mage Guild at level 5", GuildLevelFive, game =>
+                    $"Xabran has a level 5 Mage Guild: it shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Xabran")).GuildSpellCounts)} spells at its levels (3, 3, 2, 2, 1 as in the castles of the saves)."),
+                Make("E29LIBRY", "Corackston (a Wizard castle): the Library built and the Mage Guild at level 3", WizardLibrary, game =>
+                    $"Corackston has the Library and a level 3 guild that shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Corackston")).GuildSpellCounts)} spells (4, 4, 3 with the Library)."),
+                Make("E30XP50K", "Sir Gallant: level 1 but 50,000 experience", ExperienceOnly, _ =>
+                    "Sir Gallant has the level byte at 1 and 50,000 experience. Tell me the level the game shows (it showed 14 for level 20 and 50,000 in E25STATS)."),
+                Make("E31LV20", "Sir Gallant: level 20 but 0 experience", LevelOnly, _ =>
+                    "Sir Gallant has the level byte at 20 and no experience. Tell me the level the game shows."),
+                Make("E32BIGXP", "Sir Gallant: level 1 but 200,000 experience", BigExperience, _ =>
+                    "Sir Gallant has the level byte at 1 and 200,000 experience. Tell me the level the game shows."),
+                Make("E33STACK", "Sir Gallant's army: 32,767 peasants, 9,999 rogues and a dragon", BigStacks, game =>
+                    $"Sir Gallant has {ArmyOf(game, 1)}. 65,535 overflowed in E24STACK, so tell me how these are shown on the map and in the hero screen, and whether splitting a stack works."),
                 Make("E26ALL", "All of the edits above that do not exclude each other", EverythingTogether, _ =>
                     "Everything of E14, E15, E16, E17, E18, E19, E21, E22, E23, E24 and E25 together: the towns changed hands, Xabran and Whiteshield are built as there, Maximus has the artifacts and the eight skills, Sir Gallant the book, the army and the stats, and Blue the resources at the limits."),
             ];
@@ -64,11 +78,68 @@ namespace Siniskalc.Homm2.Tests
 
         private static void ChangeWhiteshieldDwellings(Homm2Game game)
         {
+            // Whiteshield has the Minotaur dwelling upgraded (a Minotaur King) and the first dragon dwelling.
             var page = Castle(game, "Whiteshield");
-            page.Dwellings[3].Built.IsChecked = true;
+            page.Dwellings[3].Built.Selected = "Minotaur";
             page.Dwellings[3].Waiting.Value = 30;
+            page.Dwellings[5].Built.Selected = "Red Dragon";
             page.Dwellings[2].Waiting.Value = 40;
             page.Dwellings[0].Waiting.Value = 0;
+        }
+
+        private static void UpgradeDwellings(Homm2Game game)
+        {
+            var xabran = Castle(game, "Xabran");
+            foreach (var (index, creature) in new[] { (1, "Ranger"), (2, "Pikeman"), (3, "Master Swordsman"), (4, "Cavalry"), (5, "Crusader") })
+            {
+                xabran.Dwellings[index].Built.Selected = creature;
+                xabran.Dwellings[index].Waiting.Value = 10;
+            }
+
+            Castle(game, "Whiteshield").Dwellings[5].Built.Selected = "Black Dragon";
+        }
+
+        private static void GuildLevelFive(Homm2Game game) => Castle(game, "Xabran").GuildLevelField.Selected = "Level 5";
+
+        private static void WizardLibrary(Homm2Game game)
+        {
+            var page = Castle(game, "Corackston");
+            page.Buildings.Single(b => b.Name == "Library").IsChecked = true;
+            page.GuildLevelField.Selected = "Level 3";
+        }
+
+        private static void ExperienceOnly(Homm2Game game)
+        {
+            var page = Hero(game, 1);
+            page.Facts.Single(r => r.Name == "Level").Value = 1;
+            page.Facts.Single(r => r.Name == "Experience").Value = 50_000;
+        }
+
+        private static void LevelOnly(Homm2Game game)
+        {
+            var page = Hero(game, 1);
+            page.Facts.Single(r => r.Name == "Level").Value = 20;
+            page.Facts.Single(r => r.Name == "Experience").Value = 0;
+        }
+
+        private static void BigExperience(Homm2Game game)
+        {
+            var page = Hero(game, 1);
+            page.Facts.Single(r => r.Name == "Level").Value = 1;
+            page.Facts.Single(r => r.Name == "Experience").Value = 200_000;
+        }
+
+        private static void BigStacks(Homm2Game game)
+        {
+            var army = Hero(game, 1).ArmyEditor;
+            foreach (var slot in army.CreatureSlots.Where(s => s.HasCreature))
+            {
+                slot.ClearCommand.Execute(null);
+            }
+
+            army.SendToSlot(Homm2Creature.Peasant, 1, 32_767);
+            army.SendToSlot(Homm2Creature.Rogue, 2, 9_999);
+            army.SendToSlot(Homm2Creature.BlackDragon, 3, 1);
         }
 
         private static void ChangeXabranGuild(Homm2Game game)
@@ -202,14 +273,17 @@ namespace Siniskalc.Homm2.Tests
         private static string BuildingsOf(Homm2Game game, string castle)
         {
             var model = game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName(castle));
-            return string.Join(", ", Castle(game, castle).Buildings.Where(b => b.IsChecked).Select(b => b.Name).Append(model.MageGuildLevel > 0 ? $"Mage Guild {model.MageGuildLevel}" : "no Mage Guild"));
+            var page = Castle(game, castle);
+            return string.Join(", ", page.Buildings.Where(b => b.IsChecked).Select(b => b.Name)
+                .Append(model.MageGuildLevel > 0 ? $"Mage Guild {model.MageGuildLevel}" : "no Mage Guild")
+                .Concat(page.Dwellings.Where(d => d.IsBuilt).Select(d => d.Built.Selected)));
         }
 
         private static string DwellingsOf(Homm2Game game, string castle) =>
-            string.Join(", ", Castle(game, castle).Dwellings.Select(d => d.Built.IsChecked ? $"{d.Built.Name} ({d.Waiting.Value} waiting)" : $"{d.Built.Name} not built"));
+            string.Join(", ", Castle(game, castle).Dwellings.Select(d => d.IsBuilt ? $"{d.Built.Label}: {d.Built.Selected} ({d.Waiting.Value} waiting)" : $"{d.Built.Label} not built"));
 
-        private static string GuildOf(Homm2Game game, string castle, int level) =>
-            string.Join(", ", Castle(game, castle).GuildLevels[level - 1].Spells.Select(s => s.Selected));
+        private static string GuildOf(Homm2Game game, string castle, int level, int shown) =>
+            string.Join(", ", Castle(game, castle).GuildLevels[level - 1].Spells.Take(shown).Select(s => s.Selected));
 
         private static string ArtifactsOf(Homm2Game game, int hero) =>
             string.Join(", ", game.History.Current.Heroes().GetModel(hero).Artifacts.Slots.Where(a => a != null).Select(a => a!.Name));

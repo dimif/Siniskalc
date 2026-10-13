@@ -76,8 +76,24 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(xabran.Town.HasFlag(Homm2TownBuildings.Statue) || xabran.Town.HasFlag(Homm2TownBuildings.Well), Is.False);
 
             var whiteshield = Open("E17DWEL").Document.Castles().GetModel(Open("E17DWEL").Document.Castles().FindByName("Whiteshield"));
-            Assert.That(whiteshield.HasDwelling(4), Is.True);
+            Assert.That(whiteshield.DwellingLevel(4), Is.EqualTo(1), "the Minotaur King went back to the Minotaur");
+            Assert.That(whiteshield.DwellingLevel(6), Is.EqualTo(2), "the Green Dragon became the Red Dragon");
             Assert.That(whiteshield.Creatures[3], Is.EqualTo(30));
+
+            var upgraded = Open("E27DWUPG").Document;
+            Assert.That(Enumerable.Range(1, 6).Select(d => upgraded.Castles().GetModel(upgraded.Castles().FindByName("Xabran")).DwellingLevel(d)), Is.EqualTo(new[] { 1, 2, 1, 2, 1, 2 }));
+            Assert.That(upgraded.Castles().GetModel(upgraded.Castles().FindByName("Whiteshield")).DwellingLevel(6), Is.EqualTo(3));
+
+            var five = Open("E28GLD5").Document.Castles().GetModel(Open("E28GLD5").Document.Castles().FindByName("Xabran"));
+            Assert.That((five.MageGuildLevel, five.GuildSpellCounts), Is.EqualTo((5, Homm2Numbers.Of(3, 3, 2, 2, 1))));
+
+            var library = Open("E29LIBRY").Document.Castles().GetModel(Open("E29LIBRY").Document.Castles().FindByName("Corackston"));
+            Assert.That((library.HasLibrary, library.MageGuildLevel, library.GuildSpellCounts), Is.EqualTo((true, 3, Homm2Numbers.Of(4, 4, 3, 0, 0))));
+
+            Assert.That(Open("E30XP50K").Document.Heroes().GetModel(1), Has.Property("Level").EqualTo(1).And.Property("Experience").EqualTo(50_000L));
+            Assert.That(Open("E31LV20").Document.Heroes().GetModel(1), Has.Property("Level").EqualTo(20).And.Property("Experience").EqualTo(0L));
+            Assert.That(Open("E32BIGXP").Document.Heroes().GetModel(1).Experience, Is.EqualTo(200_000L));
+            Assert.That(Open("E33STACK").Document.Heroes().GetModel(1).Army.Slots.Select(s => s?.Count), Is.EqualTo(new int?[] { 32_767, 9_999, 1, null, null }));
 
             var guild = Open("E18GUILD").Document.Castles().GetModel(Open("E18GUILD").Document.Castles().FindByName("Xabran"));
             Assert.That(guild.MageGuildLevel, Is.EqualTo(2));
@@ -104,10 +120,10 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(gallant.Spells.Contains(Homm2Spell.Cure), Is.True);
 
             var blue = Open("E23LIMIT").Document.Players().GetModel(0).Resources;
-            Assert.That(blue, Is.EqualTo(new Homm2Resources(999, 999, 999, 999, 999, 999, 999_999)));
+            Assert.That(blue, Is.EqualTo(new Homm2Resources(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, 999_999)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
-            Assert.That(army.Slots[0], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.Peasant, 65_535)));
+            Assert.That(army.Slots[0], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.Peasant, (int)Constants.MaxCreatureCount)));
             Assert.That(army.Slots[1], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.Rogue, 500)));
             Assert.That(army.Slots[2], Is.EqualTo(new Homm2ArmySlot(Homm2Creature.BlackDragon, 1)));
 
@@ -126,13 +142,14 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(all.Players().GetModel((int)Homm2Color.Red).DaysLeft, Is.EqualTo(7));
             Assert.That(all.Heroes().GetModel(7).SecondarySkills.Count, Is.EqualTo(8));
             Assert.That(all.Heroes().GetModel(7).Artifacts.IsFull, Is.True);
-            Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo(65_535));
+            Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));
             Assert.That(all.Players().GetModel(0).Resources.Gold, Is.EqualTo(999_999));
         }
 
         /// <summary>
-        /// Writes the second set of savegames for the write test into TestData/Homm2/out with a README of their own
-        /// (README_EDITOR.md), and leaves the first set and its README, which hold what was seen in the game, as they are. Run it by hand:
+        /// Writes the savegames of the second set that are not in TestData/Homm2/out yet, and a README of their own
+        /// (README_EDITOR_2.md) for the ones it wrote. What is there is left as it is, the saves that were tried in the game and the READMEs
+        /// that hold what was seen, even if the code that made them has changed since. Run it by hand:
         /// <c>dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheSavesMadeWithTheEditor</c>.
         /// </summary>
         [Test]
@@ -144,23 +161,34 @@ namespace Siniskalc.Homm2.Tests.Data
             Directory.CreateDirectory(folder);
 
             var readme = new StringBuilder();
-            readme.AppendLine("# Savegames made with the editor, for the write test with Heroes of Might and Magic II");
+            readme.AppendLine("# More savegames made with the editor, for the write test with Heroes of Might and Magic II");
             readme.AppendLine();
-            readme.AppendLine("Made by `Homm2EditorSavesTests.WriteTheSavesMadeWithTheEditor` (not in the repository). Unlike E00 to E13, which edit the models,");
-            readme.AppendLine("these are made with the view models of the editor, the way a user edits. All start from `broken_alliance_24_castles_recaptured__whiteshield_green_tower`");
-            readme.AppendLine("(`24_GREEN` in the game), so load that one first to see what each save changed. Copy them into the save folder of the game, load each one and");
-            readme.AppendLine("write what you see in the last column. Before the first one, load E00COPY to be sure the game is happy with the base.");
+            readme.AppendLine("Made by `Homm2EditorSavesTests.WriteTheSavesMadeWithTheEditor` (not in the repository), after the results of E14 to E26 (README_EDITOR.md).");
+            readme.AppendLine("All start from `broken_alliance_24_castles_recaptured__whiteshield_green_tower` (`24_GREEN` in the game). Copy them into the save folder of the game,");
+            readme.AppendLine("load each one and write what you see in the last column.");
             readme.AppendLine();
             readme.AppendLine("| Save | Edit | Look for | Test result |");
             readme.AppendLine("|---|---|---|---|");
 
+            var written = 0;
             foreach (var save in Homm2EditorSaves.Build())
             {
-                File.WriteAllBytes(Path.Combine(folder, save.Name + Homm2EditedSaves.Extension), save.Bytes);
+                var path = Path.Combine(folder, save.Name + Homm2EditedSaves.Extension);
+                if (File.Exists(path))
+                {
+                    continue;
+                }
+
+                File.WriteAllBytes(path, save.Bytes);
                 readme.AppendLine($"| {save.Name}{Homm2EditedSaves.Extension} | {save.Edit} | {save.Check} | |");
+                written++;
             }
 
-            File.WriteAllText(Path.Combine(folder, "README_EDITOR.md"), readme.ToString());
+            if (written > 0)
+            {
+                File.WriteAllText(Path.Combine(folder, "README_EDITOR_2.md"), readme.ToString());
+            }
+
             Assert.That(Directory.GetFiles(folder, "*.GM1").Length, Is.GreaterThanOrEqualTo(Homm2EditorSaves.Build().Count));
         }
 

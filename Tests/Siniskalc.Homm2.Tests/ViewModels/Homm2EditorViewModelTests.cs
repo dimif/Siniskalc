@@ -437,7 +437,8 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void TheBuildingsAndTheDwellingsOfACastleAreEditedWithBoxesAndSteppers()
         {
-            var page = this.OpenCastleOf(Homm2Color.Blue);
+            this.editor.ShowCastle(this.editor.CurrentGame!.History.Current.Castles().FindByName("Xabran"));
+            var page = (Homm2CastleViewModel)this.editor.CurrentPage!;
             var model = () => this.editor.CurrentGame!.History.Current.Castles().GetModel(page.CastleIndex);
 
             var tavern = page.Buildings.Single(b => b.Name == "Tavern");
@@ -445,12 +446,19 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             tavern.IsChecked = !had;
             Assert.That(model().Town.HasFlag(Homm2TownBuildings.Tavern), Is.EqualTo(!had));
 
-            var dwelling = page.Dwellings.First(d => !d.Built.IsChecked);
+            var dwelling = page.Dwellings.First(d => !d.IsBuilt);
             var index = page.Dwellings.ToList().IndexOf(dwelling);
-            dwelling.Built.IsChecked = true;
+            dwelling.Built.Selected = dwelling.Built.Choices[1];
             dwelling.Waiting.Value = 40;
-            Assert.That(model().HasDwelling(index + 1), Is.True);
+            Assert.That(model().DwellingLevel(index + 1), Is.EqualTo(1));
             Assert.That(model().Creatures[index], Is.EqualTo(40));
+
+            if (dwelling.Built.Choices.Count > 2)
+            {
+                dwelling.Built.Selected = dwelling.Built.Choices[2];
+                Assert.That(model().DwellingLevel(index + 1), Is.EqualTo(2), "an upgrade replaces the dwelling");
+                Assert.That(model().Creatures[index], Is.EqualTo(40), "the creatures that wait stay");
+            }
 
             dwelling.Waiting.Value = 100_000;
             Assert.That(dwelling.Waiting.Value, Is.EqualTo(Constants.Castle.MaxWaiting));
@@ -468,6 +476,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             var slot = page.GuildLevels[1].Spells[0];
             Assert.That(slot.IsEnabled, Is.True);
+            Assert.That(page.GuildLevels[1].Spells[3].IsEnabled, Is.False, "a level of this guild shows three spells, not four");
             slot.Selected = "Fireball";
             Assert.That(model().GuildSpell(2, 0), Is.EqualTo(Homm2Spell.Fireball));
             slot.Selected = "(none)";

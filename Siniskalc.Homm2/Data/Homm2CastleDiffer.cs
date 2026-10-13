@@ -49,13 +49,27 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
-            foreach (var dwelling in Enum.GetValues<Homm2Dwellings>().Where(d => d != Homm2Dwellings.None))
+            for (var dwelling = 1; dwelling <= Constants.Castle.DwellingCount; dwelling++)
             {
-                var (had, has) = (original.Dwellings.HasFlag(dwelling), current.Dwellings.HasFlag(dwelling));
-                if (had != has)
+                var (before, after, number) = (original.DwellingLevel(dwelling), current.DwellingLevel(dwelling), dwelling);
+                if (before != after)
                 {
-                    var which = dwelling;
-                    Add(Homm2ChangeAreas.Dwellings, which.ToString(), had ? "built" : "not built", has ? "built" : "not built", c => c with { Dwellings = had ? c.Dwellings | which : c.Dwellings & ~which });
+                    Add(Homm2ChangeAreas.Dwellings, $"Dwelling {dwelling}", DwellingText(before), DwellingText(after), c => c.WithDwellingLevel(number, Math.Min(before, Homm2CastleModel.MaxDwellingLevel(c.Race, number))));
+                }
+            }
+
+            if (original.MageGuildLevel != current.MageGuildLevel)
+            {
+                var before = original.MageGuildLevel;
+                Add(Homm2ChangeAreas.MageGuild, "Level", before == 0 ? "none" : before.ToString(), current.MageGuildLevel == 0 ? "none" : current.MageGuildLevel.ToString(), c => c with { Dwellings = (c.Dwellings & ~Homm2Dwellings.MageGuildLevelMask) | (Homm2Dwellings)((uint)before << 16) });
+            }
+
+            for (var level = 0; level < Constants.Castle.MageGuildLevels; level++)
+            {
+                var (before, after, index) = (original.GuildSpellCounts[level], current.GuildSpellCounts[level], level);
+                if (before != after)
+                {
+                    Add(Homm2ChangeAreas.MageGuild, $"Spells shown at level {level + 1}", before.ToString(), after.ToString(), c => c with { GuildSpellCounts = c.GuildSpellCounts.With(index, before) });
                 }
             }
 
@@ -80,6 +94,8 @@ namespace Siniskalc.Homm2.Data
 
             return changes;
         }
+
+        private static string DwellingText(int level) => level switch { 0 => "not built", 1 => "built", 2 => "upgraded", _ => "upgraded twice" };
 
         private static string OwnerText(Homm2Color? owner) => owner?.ToString() ?? "nobody";
 

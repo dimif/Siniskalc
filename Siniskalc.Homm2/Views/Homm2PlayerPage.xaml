@@ -75,7 +75,7 @@
                     </Border>
 
                     <TextBlock Margin="0,16,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="Amounts are limited to 999,999 gold and 999 of each other resource. Hold Shift while pressing + or − to step by ten. The income is worked out by the game at the start of each day."/>
+                               Text="Amounts are limited to 999,999 gold and 9,999 of each other resource. Hold Shift while pressing + or − to step by ten. The income is worked out by the game at the start of each day."/>
                 </StackPanel>
 
                 <!-- Heroes -->

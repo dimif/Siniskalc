@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.Tests.Data
                     .With(Homm2SecondarySkill.Wisdom, Homm2SkillLevel.Expert)
                     .With(Homm2SecondarySkill.Estates, Homm2SkillLevel.Advanced)
                     .With(Homm2SecondarySkill.Pathfinding, Homm2SkillLevel.Basic),
-                Army = Homm2Army.Empty.WithSlot(0, new Homm2ArmySlot(Homm2Creature.Titan, 3)).WithSlot(4, new Homm2ArmySlot(Homm2Creature.Peasant, 65_535)),
+                Army = Homm2Army.Empty.WithSlot(0, new Homm2ArmySlot(Homm2Creature.Titan, 3)).WithSlot(4, new Homm2ArmySlot(Homm2Creature.Peasant, 32_767)),
                 Artifacts = Homm2Artifacts.None.Add(Homm2Artifact.UltimateCrown).Add(Homm2Artifact.IceCloak),
                 Spells = new Homm2SpellBook([Homm2Spell.Fireball, Homm2Spell.TownPortal]),
                 Owner = Homm2Color.Red,

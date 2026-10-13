@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System;
+    using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Homm2.Entities;
 
@@ -36,6 +37,9 @@ namespace Siniskalc.Homm2.Models
         Homm2Numbers GuildSpells,
         Homm2Numbers GuildSpellCounts)
     {
+        // The spells a level of the Mage Guild shows: 3, 3, 2, 2 and 1 (the savegames of Broken Alliance: Xabran with level 2, Dragontooth with level 3, Peacekeeper with level 5).
+        private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
+
         /// <summary>
         /// Gets a value indicating whether the map uses the castle.
         /// </summary>
@@ -44,16 +48,41 @@ namespace Siniskalc.Homm2.Models
         public bool HasCastle => this.Town.HasFlag(Homm2TownBuildings.Castle);
 
         /// <summary>
-        /// Gets the level of the Mage Guild, 0 when there is none.
+        /// Gets the level of the Mage Guild, 0 when there is none: the number in the bits 16 to 18 of the dwellings.
         /// </summary>
-        public int MageGuildLevel => this.Dwellings.HasFlag(Homm2Dwellings.MageGuild2) ? 2 : this.Dwellings.HasFlag(Homm2Dwellings.MageGuild1) ? 1 : 0;
+        public int MageGuildLevel => (int)(((uint)this.Dwellings & (uint)Homm2Dwellings.MageGuildLevelMask) >> 16);
 
-        public bool HasDwelling(int dwelling)
+        /// <summary>
+        /// Gets a value indicating whether the castle is a Wizard castle with its Library, which gives each level of the Mage Guild a
+        /// fourth spell.
+        /// </summary>
+        public bool HasLibrary => this.Race == Homm2Race.Wizard && this.Town.HasFlag(Homm2TownBuildings.Special);
+
+        /// <summary>
+        /// Gets the most levels a dwelling can have in a town of the race: the creatures of that level, one for the dwelling and one more for
+        /// each upgrade (the first dwelling has none).
+        /// </summary>
+        public static int MaxDwellingLevel(Homm2Race? race, int dwelling)
         {
-            return dwelling is >= 1 and <= Constants.Castle.DwellingCount
-                ? (this.Dwellings & (Homm2Dwellings)(0x08u << (dwelling - 1))) != 0
-                : throw new ArgumentOutOfRangeException(nameof(dwelling), dwelling, "A town has six dwellings, numbered from 1.");
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            return race is null || dwelling == 1 ? 1 : Math.Clamp(Homm2Creature.ForRace(race.Value).Count(c => c.Level == dwelling), 1, 3);
         }
+
+        /// <summary>
+        /// Gets how far dwelling <paramref name="dwelling"/> (1 to 6) is built: 0 when it is not, 1 for the dwelling, 2 once it is upgraded and
+        /// 3 for the sixth when it is upgraded twice.
+        /// </summary>
+        public int DwellingLevel(int dwelling)
+        {
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            var bits = (uint)this.Dwellings;
+            return dwelling == 6 && (bits & (uint)Homm2Dwellings.Dwelling6UpgradedTwice) != 0 ? 3
+                : dwelling >= 2 && (bits & (0x100u << (dwelling - 1))) != 0 ? 2
+                : (bits & (0x08u << (dwelling - 1))) != 0 ? 1
+                : 0;
+        }
+
+        public bool HasDwelling(int dwelling) => this.DwellingLevel(dwelling) > 0;
 
         /// <summary>
         /// Returns the castle with the building built or taken down. Building the castle takes away "town only" and taking it down puts it
@@ -70,37 +99,68 @@ namespace Siniskalc.Homm2.Models
         }
 
         /// <summary>
-        /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) built or taken down. The creatures that wait in it stay.
+        /// Returns the castle with the Library of a Wizard built or taken down, and the spells each level of its Mage Guild shows changed
+        /// with it. Nothing changes in a castle of another race.
         /// </summary>
-        public Homm2CastleModel WithDwelling(int dwelling, bool built)
+        public Homm2CastleModel WithLibrary(bool built)
         {
-            var bit = (Homm2Dwellings)(0x08u << (dwelling - 1));
-            _ = this.HasDwelling(dwelling);
-            return this with { Dwellings = built ? this.Dwellings | bit : this.Dwellings & ~bit };
+            if (this.Race != Homm2Race.Wizard)
+            {
+                return this;
+            }
+
+            var town = this.WithBuilding(Homm2TownBuildings.Special, built);
+            return town with { GuildSpellCounts = GuildCounts(town.MageGuildLevel, built) };
         }
+
+        /// <summary>
+        /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) at <paramref name="level"/>: 0 for none, 1 for the dwelling,
+        /// 2 and 3 for the upgrades. An upgrade replaces the bit of the dwelling, as the game has it. The creatures that wait stay.
+        /// </summary>
+        public Homm2CastleModel WithDwellingLevel(int dwelling, int level)
+        {
+            RangeGuard.ThrowIfOutOfRange(level, 0, MaxDwellingLevel(this.Race, dwelling), nameof(level));
+            var clear = (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Homm2Dwellings.Dwelling6UpgradedTwice : 0u);
+            var bit = level switch
+            {
+                0 => 0u,
+                1 => 0x08u << (dwelling - 1),
+                2 => 0x100u << (dwelling - 1),
+                _ => (uint)Homm2Dwellings.Dwelling6UpgradedTwice,
+            };
+            return this with { Dwellings = (Homm2Dwellings)(((uint)this.Dwellings & ~clear) | bit) };
+        }
+
+        /// <summary>
+        /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) built (as the dwelling, or as it was when it is built
+        /// already) or taken down. The creatures that wait in it stay.
+        /// </summary>
+        public Homm2CastleModel WithDwelling(int dwelling, bool built) =>
+            built ? (this.DwellingLevel(dwelling) > 0 ? this : this.WithDwellingLevel(dwelling, 1)) : this.WithDwellingLevel(dwelling, 0);
 
         /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
         /// </summary>
         public Homm2CastleModel WithWaiting(int dwelling, int count)
         {
-            _ = this.HasDwelling(dwelling);
+            _ = this.DwellingLevel(dwelling);
             return this with { Creatures = this.Creatures.With(dwelling - 1, count) };
         }
 
         /// <summary>
-        /// Returns the castle with the Mage Guild at <paramref name="level"/>: 0 for none, 1 or 2. The guild is a bit in the mask of the
-        /// buildings and one of two bits in the mask of the dwellings, and the second replaces the first. Levels 3 to 5 are not decoded.
+        /// Returns the castle with the Mage Guild at <paramref name="level"/> (0 to 5). The level is a number in the bits 16 to 18 of the
+        /// dwellings, the bit of the buildings tells that there is a guild, and each level that is built shows 3, 3, 2, 2 and 1 spells (one more
+        /// with the Library of a Wizard); the levels that are not built show none.
         /// </summary>
         public Homm2CastleModel WithMageGuildLevel(int level)
         {
-            RangeGuard.ThrowIfOutOfRange(level, 0, 2, nameof(level));
-            var dwellings = this.Dwellings & ~(Homm2Dwellings.MageGuild1 | Homm2Dwellings.MageGuild2);
-            dwellings |= level == 1 ? Homm2Dwellings.MageGuild1 : level == 2 ? Homm2Dwellings.MageGuild2 : Homm2Dwellings.None;
+            RangeGuard.ThrowIfOutOfRange(level, 0, Constants.Castle.MageGuildLevels, nameof(level));
+            var dwellings = ((uint)this.Dwellings & ~(uint)Homm2Dwellings.MageGuildLevelMask) | ((uint)level << 16);
             return this with
             {
-                Dwellings = dwellings,
+                Dwellings = (Homm2Dwellings)dwellings,
                 Town = level == 0 ? this.Town & ~Homm2TownBuildings.MageGuild : this.Town | Homm2TownBuildings.MageGuild,
+                GuildSpellCounts = GuildCounts(level, this.HasLibrary),
             };
         }
 
@@ -113,6 +173,9 @@ namespace Siniskalc.Homm2.Models
             RangeGuard.ThrowIfOutOfRange(slot, 0, Constants.Castle.MageGuildSlotsPerLevel - 1, nameof(slot));
             return this with { GuildSpells = this.GuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
         }
+
+        private static Homm2Numbers GuildCounts(int level, bool library) =>
+            new(BaseGuildSpells.Select((count, i) => i < level ? count + (library ? 1 : 0) : 0));
 
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.

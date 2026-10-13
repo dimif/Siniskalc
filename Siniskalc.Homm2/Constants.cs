@@ -20,7 +20,7 @@ namespace Siniskalc.Homm2
         /// <summary>
         /// The most creatures a stack holds in the editor (a stack is a 16-bit number in the savefile).
         /// </summary>
-        public const long MaxCreatureCount = 65_535;
+        public const long MaxCreatureCount = 32_767;
 
         /// <summary>
         /// What is kept in a savefile: how many heroes, players and castles it has, whatever the map.
@@ -74,10 +74,10 @@ namespace Siniskalc.Homm2
             public const long MaxResource = 2_000_000_000;
 
             /// <summary>
-            /// The most the editor gives a player. The savegame holds 32 bits, but the game's screens are not made for more than this.
+            /// The most the editor gives a player. The savegame holds 32 bits; the game was seen to take well over 1,000,000 gold and over 1,000 of the other resources (save E23LIMIT, where the next turn went past them), so these are cautious.
             /// </summary>
             public const long MaxGold = 999_999;
-            public const long MaxOther = 999;
+            public const long MaxOther = 9_999;
             public const long GoldStep = 1000;
             public const long OtherStep = 1;
 

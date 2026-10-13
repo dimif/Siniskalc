@@ -8,10 +8,10 @@
         <!-- A dwelling: the box that says it is built, and how many creatures wait in it. -->
         <DataTemplate x:Key="DwellingTemplate" DataType="{x:Type vm:Homm2DwellingRowViewModel}">
             <DockPanel Margin="0,3">
-                <wpf:Stepper DockPanel.Dock="Right" Width="130" VerticalAlignment="Top" IsEnabled="{Binding Built.IsChecked}"
+                <wpf:Stepper DockPanel.Dock="Right" Width="130" VerticalAlignment="Center" IsEnabled="{Binding IsBuilt}"
                              Value="{Binding Waiting.Value}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
                              ToolTip="How many creatures wait in the dwelling"/>
-                <ContentControl Content="{Binding Built}" ContentTemplate="{StaticResource ToggleRowTemplate}"/>
+                <ContentControl Content="{Binding Built}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
             </DockPanel>
         </DataTemplate>
 
@@ -82,6 +82,8 @@
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Castle"/>
                             <ContentControl Content="{Binding OwnerField}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" Text="{Binding Notice}"/>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,2,0,6"
+                                       Text="The flag of the castle on the map, and what the new owner has seen of the map around it, are not changed: the game fixes the flag when someone visits, and the castle may show only in the list of castles of its owner until the map is explored."/>
                             <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,3">
                                 <StackPanel.Style>
@@ -109,7 +111,7 @@
                                 <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                             </StackPanel>
                         </Border>
-                        <Border Style="{StaticResource CardStyle}" Width="420">
+                        <Border Style="{StaticResource CardStyle}" Width="560">
                             <StackPanel>
                                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Dwellings and the creatures that wait in them"/>
                                 <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"/>
@@ -117,7 +119,7 @@
                         </Border>
                     </WrapPanel>
                     <TextBlock Margin="0,8,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="The editor does not check what the game needs before a building can be built: a town needs its castle first. The upgrades of the dwellings and the Mage Guild above level 2 are not decoded yet."/>
+                               Text="The editor does not check what the game needs before a building can be built: a town needs its castle first. A dwelling that is upgraded shows the creature of its upgrade."/>
                 </StackPanel>
 
                 <!-- Creatures -->
@@ -133,7 +135,7 @@
                             <ContentControl Content="{Binding GuildLevelField}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
                             <ItemsControl ItemsSource="{Binding GuildLevels}" ItemTemplate="{StaticResource GuildLevelTemplate}"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                                       Text="The guild teaches the spells of the levels it has built. The fourth spell of a level has not been seen in the game."/>
+                                       Text="The guild teaches the spells of the levels it has built: three at the first two levels, two at the next two and one at the last (one more with the Library of a Wizard)."/>
                         </StackPanel>
                     </Border>
                 </WrapPanel>

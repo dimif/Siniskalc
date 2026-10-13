@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Entities
+namespace Siniskalc.Homm2.Entities
 {
     using System;
 
@@ -19,5 +19,11 @@
         TownOnly = 0x20,
         Castle = 0x40,
         Statue = 0x80,
+
+        /// <summary>
+        /// The special building of the race (the Library of a Wizard, which gives each level of the Mage Guild a fourth spell). Found by
+        /// comparing the castles of the savegames: only the bit tells a Wizard castle with the Library from one without.
+        /// </summary>
+        Special = 0x2000,
     }
 }

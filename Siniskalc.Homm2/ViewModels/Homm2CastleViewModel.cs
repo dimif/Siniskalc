@@ -19,8 +19,8 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private const string Nobody = "Nobody";
         private const string NoSpell = "(none)";
-        private const int MaxGuildLevel = 2;
-
+        private const string NotBuilt = "Not built";
+        
         private readonly Action<int> openHero;
         private readonly Homm2CastleEditSession session;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
@@ -62,15 +62,24 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Building("Statue", Homm2TownBuildings.Statue),
             ];
 
+            if (this.castle.Race == Homm2Race.Wizard)
+            {
+                this.buildings = [.. this.buildings, new ToggleRowViewModel(
+                    "Library",
+                    () => this.session.Current.HasLibrary,
+                    built => this.session.Update(c => c.WithLibrary(built)),
+                    toolTip: "Gives each level of the Mage Guild a fourth spell. Not tried in the game: found by comparing the castles of the savegames.")];
+            }
+
             this.GuildLevelField = new ChoiceFieldViewModel(
                 "Level",
-                ["None", "Level 1", "Level 2"],
+                ["None", .. Enumerable.Range(1, Constants.Castle.MageGuildLevels).Select(l => $"Level {l}")],
                 () => this.session.Current.MageGuildLevel == 0 ? "None" : $"Level {this.session.Current.MageGuildLevel}",
                 name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
-                toolTip: "Builds the Mage Guild to this level, or takes it down. Levels 3 to 5 are not decoded yet.");
+                toolTip: "Builds the Mage Guild to this level, or takes it down. Each level shows 3, 3, 2, 2 and 1 spells (one more with the Library of a Wizard).");
 
             var spellNames = new[] { NoSpell }.Concat(Homm2Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name)).ToList();
-            this.guildLevels = Enumerable.Range(1, MaxGuildLevel)
+            this.guildLevels = Enumerable.Range(1, Constants.Castle.MageGuildLevels)
                 .Select(level => new Homm2GuildLevelViewModel(
                     level,
                     Enumerable.Range(0, Constants.Castle.MageGuildSlotsPerLevel)
@@ -79,7 +88,8 @@ namespace Siniskalc.Homm2.ViewModels
                             spellNames,
                             () => this.session.Current.GuildSpell(level, slot)?.Name ?? NoSpell,
                             name => this.session.Update(c => c.WithGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Homm2Spell>(name))),
-                            () => this.session.Current.MageGuildLevel >= level))
+                            () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.GuildSpellCounts[level - 1],
+                            "The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
                         .ToList()))
                 .ToList();
 
@@ -176,14 +186,17 @@ namespace Siniskalc.Homm2.ViewModels
 
         private Homm2DwellingRowViewModel CreateDwelling(int dwelling)
         {
-            var creature = this.castle.Race is { } race ? Homm2Creature.ForRace(race).FirstOrDefault(c => c.Level == dwelling) : null;
-            var name = $"Level {dwelling}: {creature?.Name ?? "dwelling"}";
+            // The creatures of the level, in the order of the table: the dwelling, then what its upgrades make.
+            var creatures = this.castle.Race is { } race ? Homm2Creature.ForRace(race).Where(c => c.Level == dwelling).Select(c => c.Name).ToList() : [];
+            var levels = new List<string> { NotBuilt };
+            levels.AddRange(Enumerable.Range(0, Homm2CastleModel.MaxDwellingLevel(this.castle.Race, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
             return new Homm2DwellingRowViewModel(
-                new ToggleRowViewModel(
-                    name,
-                    () => this.session.Current.HasDwelling(dwelling),
-                    built => this.session.Update(c => c.WithDwelling(dwelling, built)),
-                    toolTip: "Build the dwelling, or take it down. The creatures that wait in it stay."),
+                new ChoiceFieldViewModel(
+                    $"Level {dwelling}",
+                    levels,
+                    () => levels[this.session.Current.DwellingLevel(dwelling)],
+                    name => this.session.Update(c => c.WithDwellingLevel(dwelling, levels.IndexOf(name))),
+                    toolTip: "Build the dwelling, upgrade it (the creature changes), or take it down. The creatures that wait in it stay."),
                 new AmountRowViewModel(
                     "Waiting",
                     Homm2Palette.NoPlayer,
@@ -192,7 +205,8 @@ namespace Siniskalc.Homm2.ViewModels
                     1,
                     () => this.session.Current.Creatures[dwelling - 1],
                     () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).Creatures[dwelling - 1],
-                    count => this.session.Update(c => c.WithWaiting(dwelling, (int)count))));
+                    count => this.session.Update(c => c.WithWaiting(dwelling, (int)count))),
+                () => this.session.Current.DwellingLevel(dwelling) > 0);
         }
 
         private void ChangeOwner(string name)

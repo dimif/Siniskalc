@@ -397,4 +397,29 @@
         </Grid>
     </DataTemplate>
 
+    <!-- A yes or no of a model as a line of a card: a check box with its name, and a small note under it. -->
+    <DataTemplate x:Key="ToggleRowTemplate" DataType="{x:Type vm:ToggleRowViewModel}">
+        <DockPanel Margin="0,3">
+            <CheckBox DockPanel.Dock="Left" Width="24" Margin="0,2,0,0" VerticalAlignment="Top" IsChecked="{Binding IsChecked}" IsEnabled="{Binding CanToggle}"
+                      ToolTip="{Binding ToolTip}" ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="{Binding Name}"/>
+            <StackPanel>
+                <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Name}"/>
+                <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Note}"/>
+            </StackPanel>
+        </DockPanel>
+    </DataTemplate>
+
+    <!-- A value picked from a list as a line of a card: the name on the left, a combo box on the right. -->
+    <DataTemplate x:Key="ChoiceFieldTemplate" DataType="{x:Type vm:ChoiceFieldViewModel}">
+        <Grid Margin="0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource FieldLabelStyle}" Text="{Binding Label}"/>
+            <ComboBox Grid.Column="1" HorizontalAlignment="Left" Width="170" ItemsSource="{Binding Choices}" SelectedItem="{Binding Selected}"
+                      IsEnabled="{Binding IsEnabled}" ToolTip="{Binding ToolTip}"/>
+        </Grid>
+    </DataTemplate>
+
 </ResourceDictionary>

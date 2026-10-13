@@ -100,6 +100,11 @@ namespace Siniskalc.Homm2
 
             public const long MinCreatures = 0;
             public const long MaxCreatures = 65_535;
+
+            /// <summary>
+            /// The most creatures the editor lets wait in a dwelling. The savegame holds more, but the game was only seen with a few dozen.
+            /// </summary>
+            public const long MaxWaiting = 999;
         }
     }
 }

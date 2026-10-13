@@ -396,6 +396,94 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(() => artifacts.Finder.Choose(artifacts.Finder.Items.Cast<Homm2ArtifactChoiceViewModel>().First()), Throws.Nothing);
         }
 
+        private Homm2CastleViewModel OpenCastleOf(Homm2Color owner)
+        {
+            var castle = this.editor.CurrentGame!.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == owner);
+            this.editor.ShowCastle(castle.Index);
+            return (Homm2CastleViewModel)this.editor.CurrentPage!;
+        }
+
+        [Test]
+        public void TheBuildingsAndTheDwellingsOfACastleAreEditedWithBoxesAndSteppers()
+        {
+            var page = this.OpenCastleOf(Homm2Color.Blue);
+            var model = () => this.editor.CurrentGame!.History.Current.Castles().GetModel(page.CastleIndex);
+
+            var tavern = page.Buildings.Single(b => b.Name == "Tavern");
+            var had = tavern.IsChecked;
+            tavern.IsChecked = !had;
+            Assert.That(model().Town.HasFlag(Homm2TownBuildings.Tavern), Is.EqualTo(!had));
+
+            var dwelling = page.Dwellings.First(d => !d.Built.IsChecked);
+            var index = page.Dwellings.ToList().IndexOf(dwelling);
+            dwelling.Built.IsChecked = true;
+            dwelling.Waiting.Value = 40;
+            Assert.That(model().HasDwelling(index + 1), Is.True);
+            Assert.That(model().Creatures[index], Is.EqualTo(40));
+
+            dwelling.Waiting.Value = 100_000;
+            Assert.That(dwelling.Waiting.Value, Is.EqualTo(Constants.Castle.MaxWaiting));
+            Assert.That(page.HasPendingChanges, Is.True);
+        }
+
+        [Test]
+        public void TheMageGuildIsEditedByLevelAndByPlace()
+        {
+            var page = this.OpenCastleOf(Homm2Color.Blue);
+            var model = () => this.editor.CurrentGame!.History.Current.Castles().GetModel(page.CastleIndex);
+
+            page.GuildLevelField.Selected = "Level 2";
+            Assert.That(model().MageGuildLevel, Is.EqualTo(2));
+
+            var slot = page.GuildLevels[1].Spells[0];
+            Assert.That(slot.IsEnabled, Is.True);
+            slot.Selected = "Fireball";
+            Assert.That(model().GuildSpell(2, 0), Is.EqualTo(Homm2Spell.Fireball));
+            slot.Selected = "(none)";
+            Assert.That(model().GuildSpell(2, 0), Is.Null);
+
+            page.GuildLevelField.Selected = "None";
+            Assert.That(model().MageGuildLevel, Is.EqualTo(0));
+            Assert.That(page.GuildLevels[0].Spells[0].IsEnabled, Is.False, "the spells of a level that is not built are not edited");
+        }
+
+        [Test]
+        public void ACastleChangesHandsWithTheListsOfBothPlayersInOneStepAndUndoPutsItAllBack()
+        {
+            var page = this.OpenCastleOf(Homm2Color.Red);
+            var document = () => this.editor.CurrentGame!.History.Current;
+            var red = () => document().Players().GetModel((int)Homm2Color.Red);
+            var blue = () => document().Players().GetModel((int)Homm2Color.Blue);
+            var blueBefore = blue().CastleIds.Count;
+            Assert.That(red().CastleIds, Does.Contain(page.CastleIndex));
+
+            page.OwnerField.Selected = "Blue";
+
+            Assert.That(document().Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(Homm2Color.Blue));
+            Assert.That(blue().CastleIds, Does.Contain(page.CastleIndex));
+            Assert.That(blue().CastleIds.Count, Is.EqualTo(blueBefore + 1));
+            Assert.That(red().CastleIds, Does.Not.Contain(page.CastleIndex));
+            Assert.That(red().DaysLeft, Is.EqualTo(Homm2PlayerModel.DaysToOwnACastle), "a player that lost its last castle starts counting");
+
+            this.editor.Undo();
+            Assert.That(document().Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(Homm2Color.Red));
+            Assert.That(red().CastleIds, Does.Contain(page.CastleIndex));
+            Assert.That(blue().CastleIds.Count, Is.EqualTo(blueBefore));
+            Assert.That(red().DaysLeft, Is.Null);
+        }
+
+        [Test]
+        public void ACastleCannotGoToAPlayerWhoseListOfCastlesIsFull()
+        {
+            var page = this.OpenCastleOf(Homm2Color.Red);
+            this.editor.CurrentGame!.History.CreatePlayerSession((int)Homm2Color.Blue).Update(p => p with { CastleIds = new Homm2Numbers(Enumerable.Range(40, Constants.Player.CastleListSize)) });
+
+            page.OwnerField.Selected = "Blue";
+
+            Assert.That(page.HasNotice, Is.True);
+            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(Homm2Color.Red));
+        }
+
         private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).HeroId;
 
         private static IEnumerable<string> Titles(Homm2NavNodeViewModel player, string group) =>

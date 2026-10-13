@@ -82,22 +82,12 @@ The user copies them to the save folder of HoMM2, loads each and ticks the READM
 - Done: the UX follows the HoMM3 editor. `Homm2EditorView` has the search box and the navigation tree (`Homm2NavigationTree`: game, a node per player with its "Heroes" and "Towns" groups, "Neutral" for what nobody owns; nodes show the race and level, the hero that is in a town, a dot for unsaved edits), and a frame with the page of what is picked. Pages (each a `Homm2PageViewModel` with tabs, an "edited" mark and a Reset pill): the overview (map, scenario, players that open their page), the player (Resources with the daily income, Heroes with the tavern, Towns), the hero (General, Skills, Creatures, Spells, Artifacts) and the castle (General, Buildings with dwellings, Creatures, Mage Guild). Heroes and towns link to each other.
 - Left: the hex tab of each page (byte edit targets for the three records), `IsValidSavegameName` for the 8-character names, the game-neutral navigation tree (the HoMM3 and HoMM2 trees are two copies; the HoMM3 one was left unchanged).
 
-## Phase 6: editing (heroes and resources)
+## Phase 6: editing (done for heroes, players and castles; unverified in the game)
 
-Resources; primary skills; experience and level (kept in step); secondary skills (up to 8 skills, learn order); army (5 slots, with the creature finder); artifacts (14 slots, finder); the spell book (flag per spell, and the Magic Book). Each is a reducer on the immutable model, undoable, with `PendingChange` text from an injected provider.
-Gate: edit, save, reload in the editor, and load in the game.
+Everything below is a reducer on the immutable model, undoable, with the pages built on shared view models of `Siniskalc.Wpf` (`AmountRowViewModel`, `ArmyViewModelBase`, `SecondarySkillsViewModelBase`, `SpellsViewModelBase`, `ArtifactPickerViewModel`, `ToggleRowViewModel`, `ChoiceFieldViewModel`, with the HoMM3 pages built on the same ones):
 
-## Later
+- **Player**: the seven resources (gold up to 999,999, the others up to 999 until tested in the game), quick add, Reset.
+- **Hero**: primary skills, level, experience, spell points, movement (and "Full movement"); the army (5 slots, finder); the secondary skills (8 slots in the order learned, the list of 14); the spell book (the Magic Book artifact) and the 65 spells; the 14 artifact slots with a finder. An artifact moves its skill bonus with it (`HeroModel.WithArtifact`), as the game does (E13ARTSW).
+- **Castle**: the owner (the castle and the lists of castles of both players change in one step; a player left without a castle starts the countdown of 7 days, as in the savegames), the buildings (castle, tavern, thieves guild, shipyard, well, statue), the six dwellings with the creatures that wait in them (up to 999), the garrison, and the Mage Guild at level 0 to 2 with its spells.
+- Not done: level and experience kept in step (the experience table is unverified), the dwelling upgrades, the Mage Guild levels 3 to 5, the marketplace and the other bits of the high byte of the buildings, the rule that a town needs its castle, the maximum movement (the game works it out), the hex tab of each page, the map (mines, objects).
 
-- Castle editing: buildings with their rules, dwellings and available creatures, the garrison, owner; tavern heroes.
-- Elimination countdown, date.
-- Map arrays: mines and objects (see the open questions of the format document).
-
-## Open questions and risks
-
-- **Header shift of the `.GX1`** (4 + 1 bytes) is verified on one map. The header holds the variable parts, and there may be more shifts for other maps. A save from another expansion map and another base-game map would settle it; until then the locator validates and refuses.
-- **Unknown bytes** (spell points maximum, hero bytes 0x39-0x58, castle `+0x19` and the dwelling upgrade bits) are left untouched, never zeroed.
-- **Artifact and creature names**: IDs beyond those proved by the saves come from fheroes2/wiki and are not yet checked against the game. The tables get a "verified" marker per row, or a test that lists the unverified ones.
-- **Price of Loyalty additions** (extra artifacts, the 14 extra hero bytes, new heroes, new creatures): the 14 extra bytes are copied back unchanged. The new entities are added when a save uses them.
-- **Scale**: Phase 1 touches about 250 source files and 100 test files for renames, so it needs a quiet tree (no one else editing) for a short time.
-- **The CLAUDE.md rule on static helpers** applies to the new code: a locator, loader or provider is an injected instance, built once in the composition root, and the tests use fakes or `TestServices`.

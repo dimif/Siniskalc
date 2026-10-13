@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System;
+    using Siniskalc.Core;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -52,6 +53,65 @@ namespace Siniskalc.Homm2.Models
             return dwelling is >= 1 and <= Constants.Castle.DwellingCount
                 ? (this.Dwellings & (Homm2Dwellings)(0x08u << (dwelling - 1))) != 0
                 : throw new ArgumentOutOfRangeException(nameof(dwelling), dwelling, "A town has six dwellings, numbered from 1.");
+        }
+
+        /// <summary>
+        /// Returns the castle with the building built or taken down. Building the castle takes away "town only" and taking it down puts it
+        /// back, as the game has it. The other bits of the mask are kept.
+        /// </summary>
+        public Homm2CastleModel WithBuilding(Homm2TownBuildings building, bool built)
+        {
+            if (building == Homm2TownBuildings.Castle)
+            {
+                return this with { Town = built ? (this.Town | Homm2TownBuildings.Castle) & ~Homm2TownBuildings.TownOnly : (this.Town & ~Homm2TownBuildings.Castle) | Homm2TownBuildings.TownOnly };
+            }
+
+            return this with { Town = built ? this.Town | building : this.Town & ~building };
+        }
+
+        /// <summary>
+        /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) built or taken down. The creatures that wait in it stay.
+        /// </summary>
+        public Homm2CastleModel WithDwelling(int dwelling, bool built)
+        {
+            var bit = (Homm2Dwellings)(0x08u << (dwelling - 1));
+            _ = this.HasDwelling(dwelling);
+            return this with { Dwellings = built ? this.Dwellings | bit : this.Dwellings & ~bit };
+        }
+
+        /// <summary>
+        /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
+        /// </summary>
+        public Homm2CastleModel WithWaiting(int dwelling, int count)
+        {
+            _ = this.HasDwelling(dwelling);
+            return this with { Creatures = this.Creatures.With(dwelling - 1, count) };
+        }
+
+        /// <summary>
+        /// Returns the castle with the Mage Guild at <paramref name="level"/>: 0 for none, 1 or 2. The guild is a bit in the mask of the
+        /// buildings and one of two bits in the mask of the dwellings, and the second replaces the first. Levels 3 to 5 are not decoded.
+        /// </summary>
+        public Homm2CastleModel WithMageGuildLevel(int level)
+        {
+            RangeGuard.ThrowIfOutOfRange(level, 0, 2, nameof(level));
+            var dwellings = this.Dwellings & ~(Homm2Dwellings.MageGuild1 | Homm2Dwellings.MageGuild2);
+            dwellings |= level == 1 ? Homm2Dwellings.MageGuild1 : level == 2 ? Homm2Dwellings.MageGuild2 : Homm2Dwellings.None;
+            return this with
+            {
+                Dwellings = dwellings,
+                Town = level == 0 ? this.Town & ~Homm2TownBuildings.MageGuild : this.Town | Homm2TownBuildings.MageGuild,
+            };
+        }
+
+        /// <summary>
+        /// Returns the castle with another spell (or none) in a place of the Mage Guild, at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3).
+        /// </summary>
+        public Homm2CastleModel WithGuildSpell(int level, int slot, Homm2Spell? spell)
+        {
+            RangeGuard.ThrowIfOutOfRange(level, 1, Constants.Castle.MageGuildLevels, nameof(level));
+            RangeGuard.ThrowIfOutOfRange(slot, 0, Constants.Castle.MageGuildSlotsPerLevel - 1, nameof(slot));
+            return this with { GuildSpells = this.GuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
         }
 
         /// <summary>

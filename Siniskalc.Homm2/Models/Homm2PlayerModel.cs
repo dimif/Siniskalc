@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Models
 {
+    using System.Linq;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -30,5 +31,46 @@ namespace Siniskalc.Homm2.Models
         /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.
         /// </summary>
         public bool IsOut => this.DaysLeft == 0 && this.CastleIds.Count == 0 && this.HeroIds.Count == 0;
+
+        /// <summary>
+        /// The days a player has to own a castle again once the last one is lost (7 in the savegames: the day after the last castle of
+        /// Blue was taken the count was 7, and the player is out of the game when it reaches 0).
+        /// </summary>
+        public const int DaysToOwnACastle = 7;
+
+        /// <summary>
+        /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The player has the most castles the list holds.</exception>
+        public Homm2PlayerModel WithCastle(int castleIndex)
+        {
+            if (this.CastleIds.Contains(castleIndex))
+            {
+                return this;
+            }
+
+            return this.CastleIds.Count >= Constants.Player.CastleListSize
+                ? throw new System.InvalidOperationException($"A player has at most {Constants.Player.CastleListSize} castles.")
+                : this with { CastleIds = new Homm2Numbers(this.CastleIds.Append(castleIndex)), DaysLeft = null };
+        }
+
+        /// <summary>
+        /// Returns the player without the castle in its list of castles. A player left with none starts counting the days to own a castle.
+        /// </summary>
+        public Homm2PlayerModel WithoutCastle(int castleIndex)
+        {
+            if (!this.CastleIds.Contains(castleIndex))
+            {
+                return this;
+            }
+
+            var castles = new Homm2Numbers(this.CastleIds.Where(c => c != castleIndex));
+            return this with
+            {
+                CastleIds = castles,
+                SelectedCastle = this.SelectedCastle == castleIndex ? null : this.SelectedCastle,
+                DaysLeft = castles.Count == 0 ? this.DaysLeft ?? DaysToOwnACastle : this.DaysLeft,
+            };
+        }
     }
 }

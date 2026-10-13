@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -11,33 +12,79 @@ namespace Siniskalc.Homm2.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The pages of a castle: what it is and who is in it (general), the buildings and dwellings, the army that defends it and the
-    /// Mage Guild.
+    /// The pages of a castle: what it is and who owns it (general), the buildings and the dwellings with the creatures that wait in them,
+    /// the army that defends it and the Mage Guild.
     /// </summary>
     public sealed class Homm2CastleViewModel : Homm2PageViewModel
     {
-        private const string Built = "Built";
-        private const string NotBuilt = "–";
+        private const string Nobody = "Nobody";
+        private const string NoSpell = "(none)";
+        private const int MaxGuildLevel = 2;
 
         private readonly Action<int> openHero;
+        private readonly Homm2CastleEditSession session;
+        private readonly IReadOnlyList<ToggleRowViewModel> buildings;
+        private readonly IReadOnlyList<Homm2DwellingRowViewModel> dwellings;
+        private readonly IReadOnlyList<Homm2GuildLevelViewModel> guildLevels;
         private Homm2CastleModel castle = null!;
         private IReadOnlyList<Homm2FactRow> facts = [];
-        private IReadOnlyList<Homm2FactRow> buildings = [];
-        private IReadOnlyList<Homm2FactRow> dwellings = [];
-        private IReadOnlyList<Homm2FactRow> guild = [];
         private string visitingHeroName = string.Empty;
+        private string notice = string.Empty;
 
         public Homm2CastleViewModel(Homm2Game game, int castleIndex, Action<int> openHero)
             : base(game, Homm2ChunkKinds.Castle, castleIndex)
         {
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
-            var session = game.History.CreateCastleSession(castleIndex);
+            this.session = game.History.CreateCastleSession(castleIndex);
+            this.castle = this.session.Current;
+
             this.GarrisonEditor = new Homm2ArmyViewModel(
                 game.GameVersion,
-                () => session.Current.Garrison,
-                edit => session.Update(c => c with { Garrison = edit(c.Garrison) }));
+                () => this.session.Current.Garrison,
+                edit => this.session.Update(c => c with { Garrison = edit(c.Garrison) }));
             this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHero!.Value), _ => this.castle?.VisitingHero != null);
+
+            this.OwnerField = new ChoiceFieldViewModel(
+                "Owner",
+                [Nobody, .. Enum.GetValues<Homm2Color>().Select(c => c.ToString())],
+                () => this.session.Current.Owner?.ToString() ?? Nobody,
+                this.ChangeOwner,
+                toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
+
+            this.buildings =
+            [
+                this.Building("Castle", Homm2TownBuildings.Castle, "A town becomes a castle when it is built."),
+                this.Building("Tavern", Homm2TownBuildings.Tavern),
+                this.Building("Thieves' Guild", Homm2TownBuildings.ThievesGuild),
+                this.Building("Shipyard", Homm2TownBuildings.Shipyard),
+                this.Building("Well", Homm2TownBuildings.Well),
+                this.Building("Statue", Homm2TownBuildings.Statue),
+            ];
+
+            this.GuildLevelField = new ChoiceFieldViewModel(
+                "Level",
+                ["None", "Level 1", "Level 2"],
+                () => this.session.Current.MageGuildLevel == 0 ? "None" : $"Level {this.session.Current.MageGuildLevel}",
+                name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
+                toolTip: "Builds the Mage Guild to this level, or takes it down. Levels 3 to 5 are not decoded yet.");
+
+            var spellNames = new[] { NoSpell }.Concat(Homm2Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name)).ToList();
+            this.guildLevels = Enumerable.Range(1, MaxGuildLevel)
+                .Select(level => new Homm2GuildLevelViewModel(
+                    level,
+                    Enumerable.Range(0, Constants.Castle.MageGuildSlotsPerLevel)
+                        .Select(slot => new ChoiceFieldViewModel(
+                            $"Spell {slot + 1}",
+                            spellNames,
+                            () => this.session.Current.GuildSpell(level, slot)?.Name ?? NoSpell,
+                            name => this.session.Update(c => c.WithGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Homm2Spell>(name))),
+                            () => this.session.Current.MageGuildLevel >= level))
+                        .ToList()))
+                .ToList();
+
+            this.dwellings = Enumerable.Range(1, Constants.Castle.DwellingCount).Select(this.CreateDwelling).ToList();
+
             this.Refresh();
         }
 
@@ -49,8 +96,6 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string RaceName => this.castle.Race?.ToString() ?? "Unknown race";
 
-        public string OwnerText => this.castle.Owner?.ToString() ?? "Nobody";
-
         /// <summary>
         /// Gets what the settlement is: a castle, or a town that has none built.
         /// </summary>
@@ -61,27 +106,36 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public string VisitingHeroName => this.visitingHeroName;
 
+        /// <summary>
+        /// Gets why an edit of the owner was refused, or nothing.
+        /// </summary>
+        public string Notice => this.notice;
+
+        public bool HasNotice => this.notice.Length > 0;
+
         public ICommand OpenHeroCommand { get; }
+
+        public ChoiceFieldViewModel OwnerField { get; }
 
         public IReadOnlyList<Homm2FactRow> Facts => this.facts;
 
-        public IReadOnlyList<Homm2FactRow> Buildings => this.buildings;
+        public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
-        public IReadOnlyList<Homm2FactRow> Dwellings => this.dwellings;
+        public IReadOnlyList<Homm2DwellingRowViewModel> Dwellings => this.dwellings;
 
         /// <summary>
         /// Gets the army that defends the castle when no hero is in it: its slots and the finder of creatures.
         /// </summary>
         public Homm2ArmyViewModel GarrisonEditor { get; }
 
-        public IReadOnlyList<Homm2FactRow> Guild => this.guild;
+        public ChoiceFieldViewModel GuildLevelField { get; }
 
-        public bool HasMageGuild => this.castle.MageGuildLevel > 0;
+        public IReadOnlyList<Homm2GuildLevelViewModel> GuildLevels => this.guildLevels;
 
         protected override void Read()
         {
             var document = this.Game.History.Current;
-            var castle = document.Castles().GetModel(this.CastleIndex);
+            var castle = this.session.Current;
             this.castle = castle;
             var heroes = document.Heroes().GetModels();
 
@@ -93,37 +147,67 @@ namespace Siniskalc.Homm2.ViewModels
                 new Homm2FactRow("Boat appears at", castle.Boat?.ToString() ?? "no coast"),
             ];
 
-            this.buildings =
-            [
-                new Homm2FactRow("Castle", castle.HasCastle ? Built : NotBuilt),
-                new Homm2FactRow("Mage Guild", castle.MageGuildLevel > 0 ? $"Level {castle.MageGuildLevel}" : NotBuilt),
-                new Homm2FactRow("Tavern", Has(castle, Homm2TownBuildings.Tavern)),
-                new Homm2FactRow("Thieves' Guild", Has(castle, Homm2TownBuildings.ThievesGuild)),
-                new Homm2FactRow("Shipyard", Has(castle, Homm2TownBuildings.Shipyard)),
-                new Homm2FactRow("Well", Has(castle, Homm2TownBuildings.Well)),
-                new Homm2FactRow("Statue", Has(castle, Homm2TownBuildings.Statue)),
-            ];
-
-            IReadOnlyList<Homm2Creature> creatures = castle.Race is { } race ? Homm2Creature.ForRace(race) : [];
-            this.dwellings = Enumerable.Range(1, Constants.Castle.DwellingCount)
-                .Select(level =>
-                {
-                    var name = creatures.FirstOrDefault(c => c.Level == level)?.Name ?? $"Dwelling {level}";
-                    var waiting = castle.Creatures[level - 1];
-                    return new Homm2FactRow($"Level {level}", castle.HasDwelling(level) ? name : NotBuilt, castle.HasDwelling(level) ? $"{waiting:N0} waiting" : string.Empty);
-                })
-                .ToList();
-
+            this.OwnerField?.Refresh();
+            this.GuildLevelField?.Refresh();
             this.GarrisonEditor?.Refresh();
+            foreach (var building in this.buildings ?? [])
+            {
+                building.Refresh();
+            }
 
-            this.guild = Enumerable.Range(1, castle.MageGuildLevel)
-                .Select(level => new Homm2FactRow(
-                    $"Level {level}",
-                    string.Join(", ", Enumerable.Range(0, Math.Min(Constants.Castle.MageGuildSlotsPerLevel, castle.GuildSpellCounts[level - 1]))
-                        .Select(slot => castle.GuildSpell(level, slot)?.Name ?? "none"))))
-                .ToList();
+            foreach (var dwelling in this.dwellings ?? [])
+            {
+                dwelling.Refresh();
+            }
+
+            foreach (var level in this.guildLevels ?? [])
+            {
+                level.Refresh();
+            }
         }
 
-        private static string Has(Homm2CastleModel castle, Homm2TownBuildings building) => castle.Town.HasFlag(building) ? Built : NotBuilt;
+        private ToggleRowViewModel Building(string name, Homm2TownBuildings building, string toolTip = "") => new(
+            name,
+            () => this.session.Current.Town.HasFlag(building),
+            built => this.session.Update(c => c.WithBuilding(building, built)),
+            toolTip: toolTip);
+
+        private Homm2DwellingRowViewModel CreateDwelling(int dwelling)
+        {
+            var creature = this.castle.Race is { } race ? Homm2Creature.ForRace(race).FirstOrDefault(c => c.Level == dwelling) : null;
+            var name = $"Level {dwelling}: {creature?.Name ?? "dwelling"}";
+            return new Homm2DwellingRowViewModel(
+                new ToggleRowViewModel(
+                    name,
+                    () => this.session.Current.HasDwelling(dwelling),
+                    built => this.session.Update(c => c.WithDwelling(dwelling, built)),
+                    toolTip: "Build the dwelling, or take it down. The creatures that wait in it stay."),
+                new AmountRowViewModel(
+                    "Waiting",
+                    Homm2Palette.NoPlayer,
+                    Constants.Castle.MinCreatures,
+                    Constants.Castle.MaxWaiting,
+                    1,
+                    () => this.session.Current.Creatures[dwelling - 1],
+                    () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).Creatures[dwelling - 1],
+                    count => this.session.Update(c => c.WithWaiting(dwelling, (int)count))));
+        }
+
+        private void ChangeOwner(string name)
+        {
+            this.notice = string.Empty;
+            try
+            {
+                this.session.ChangeOwner(name == Nobody ? null : Enum.Parse<Homm2Color>(name));
+            }
+            catch (InvalidOperationException)
+            {
+                this.notice = $"{name} has the most castles a player can have.";
+            }
+
+            this.RaisePropertyChanged(nameof(this.Notice));
+            this.RaisePropertyChanged(nameof(this.HasNotice));
+            this.OwnerField.Refresh();
+        }
     }
 }

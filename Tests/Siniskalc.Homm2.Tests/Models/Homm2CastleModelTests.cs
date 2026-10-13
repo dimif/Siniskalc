@@ -124,7 +124,7 @@ namespace Siniskalc.Homm2.Tests.Models
 
             var dragons = Homm2TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1).WithDwellingLevel(6, 2).WithWaiting(6, 3);
             var black = dragons.WithDwellingLevel(6, 3);
-            Assert.That((black.Waiting(6), black.UpgradedCreatures[4], black.UpgradedCreatures[5]), Is.EqualTo((3, 0, 3)), "the Black Dragon waits in the sixth place");
+            Assert.That((black.Waiting(6), black.UpgradedCreatures[4], black.UpgradedCreatures[5]), Is.EqualTo((3, 3, 3)), "the Black Dragon waits in the sixth place and the game has 3 in the fifth as well");
             Assert.That(black.WithDwellingLevel(6, 1).UpgradedCreatures, Is.EqualTo(Homm2Numbers.Of(0, 0, 0, 0, 0, 0)));
         }
     }

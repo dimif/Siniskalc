@@ -61,8 +61,10 @@ namespace Siniskalc.Homm2.Tests
                     $"Sir Gallant has {ArmyOf(game, 1)}. 65,535 overflowed in E24STACK, so tell me how these are shown on the map and in the hero screen, and whether splitting a stack works."),
                 Make("E34DWUP2", "Xabran and Whiteshield: the upgraded dwellings with their creatures in the list the game keeps them in", UpgradeDwellingsWithCreatures, game =>
                     $"Xabran has the dwellings {DwellingsOf(game, "Xabran")} with 10 waiting in each (E27 showed only the plain ones); Whiteshield's fourth (Minotaur King) and sixth (Black Dragon) dwellings have 5 and 3 waiting. Tell me the creatures that wait in each."),
-                Make("E35BLKDRG", "Whiteshield: the dragons upgraded twice with 3 Black Dragons waiting", BlackDragonsWaiting, game =>
+                Make("E35BLKDG", "Whiteshield: the dragons upgraded twice with 3 Black Dragons waiting", BlackDragonsWaiting, game =>
                     "Whiteshield's sixth dwelling is the Black Dragon with 3 waiting (in E34DWUP2 it showed 0: the count of a dragon upgraded twice is in the sixth place of the list of upgraded dwellings)."),
+                Make("E38DRG5", "Whiteshield: the Black Dragon dwelling with 5 waiting, as the game keeps them", BlackDragonsFive, game =>
+                    "Whiteshield's sixth dwelling is the Black Dragon with 5 waiting (E35 had only the count and showed none: the game wants a 3 in the fifth place of the upgraded list too)."),
                 Make("E26ALL", "All of the edits above that do not exclude each other", EverythingTogether, _ =>
                     "Everything of E14, E15, E16, E17, E18, E19, E21, E22, E23, E24 and E25 together: the towns changed hands, Xabran and Whiteshield are built as there, Maximus has the artifacts and the eight skills, Sir Gallant the book, the army and the stats, and Blue the resources at the limits."),
             ];
@@ -116,6 +118,13 @@ namespace Siniskalc.Homm2.Tests
             var whiteshield = Castle(game, "Whiteshield");
             whiteshield.Dwellings[5].Built.Selected = "Black Dragon";
             whiteshield.Dwellings[5].Waiting.Value = 3;
+        }
+
+        private static void BlackDragonsFive(Homm2Game game)
+        {
+            var whiteshield = Castle(game, "Whiteshield");
+            whiteshield.Dwellings[5].Built.Selected = "Black Dragon";
+            whiteshield.Dwellings[5].Waiting.Value = 5;
         }
 
         private static void GuildLevelFive(Homm2Game game) => Castle(game, "Xabran").GuildLevelField.Selected = "Level 5";

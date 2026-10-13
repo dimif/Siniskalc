@@ -149,7 +149,7 @@ namespace Siniskalc.Homm2.Models
                 }
             }
 
-            return moved with { Creatures = plain, UpgradedCreatures = upgraded };
+            return moved with { Creatures = plain, UpgradedCreatures = WithMarker(upgraded, level) };
         }
 
         /// <summary>
@@ -162,6 +162,14 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
         /// </summary>
+        // The place of the upgraded list that the game also fills for the dragons upgraded twice (3 in the saves it made, 0 in E35 where the dragons did not show).
+        private const int SecondUpgradeMarker = 4;
+        private const int SecondUpgradeMarkerValue = 3;
+
+        // E35, E36, E37: the game shows no dragons of a dwelling upgraded twice while the fifth place is 0.
+        private static Homm2Numbers WithMarker(Homm2Numbers upgraded, int level) =>
+            level >= 3 && upgraded[SecondUpgradeMarker] == 0 ? upgraded.With(SecondUpgradeMarker, SecondUpgradeMarkerValue) : upgraded;
+
         // Where the creatures of an upgraded dwelling wait: the dwellings 2 to 6 have a place each, the dragons upgraded a second time the sixth
         // (E34DWUP2: the Black Dragon had none in the fifth).
         private static int UpgradedPlace(int dwelling, int level) => level >= 3 ? 5 : dwelling - 2;
@@ -175,9 +183,12 @@ namespace Siniskalc.Homm2.Models
         public Homm2CastleModel WithWaiting(int dwelling, int count)
         {
             var level = this.DwellingLevel(dwelling);
-            return level >= 2
-                ? this with { UpgradedCreatures = this.UpgradedCreatures.With(UpgradedPlace(dwelling, level), count) }
-                : this with { Creatures = this.Creatures.With(dwelling - 1, count) };
+            if (level < 2)
+            {
+                return this with { Creatures = this.Creatures.With(dwelling - 1, count) };
+            }
+
+            return this with { UpgradedCreatures = WithMarker(this.UpgradedCreatures.With(UpgradedPlace(dwelling, level), count), level) };
         }
 
         /// <summary>

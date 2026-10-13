@@ -41,7 +41,7 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
-            for (var upgraded = 0; upgraded < Constants.Castle.DwellingCount - 1; upgraded++)
+            for (var upgraded = 0; upgraded < Constants.Castle.DwellingCount; upgraded++)
             {
                 var offset = Homm2CastleLayout.UpgradedCreatures + (upgraded * 2);
                 if (BitConverter.ToUInt16(bytes, offset) != model.UpgradedCreatures[upgraded])

@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Data
                 (Homm2TownBuildings)chunk.GetUInt16At(Homm2CastleLayout.TownBuildings),
                 (Homm2Dwellings)chunk.GetUInt32At(Homm2CastleLayout.Dwellings),
                 new Homm2Numbers(Enumerable.Range(0, Constants.Castle.DwellingCount).Select(i => (int)chunk.GetUInt16At(Homm2CastleLayout.Creatures + (i * 2)))),
-                new Homm2Numbers(Enumerable.Range(0, Constants.Castle.DwellingCount - 1).Select(i => (int)chunk.GetUInt16At(Homm2CastleLayout.UpgradedCreatures + (i * 2)))),
+                new Homm2Numbers(Enumerable.Range(0, Constants.Castle.DwellingCount).Select(i => (int)chunk.GetUInt16At(Homm2CastleLayout.UpgradedCreatures + (i * 2)))),
                 new Homm2Numbers(chunk.GetBytesAt(Homm2CastleLayout.GuildSpells, Homm2Bytes.GuildSpellSlots).Select(Homm2Bytes.GuildSpellNumber)),
                 new Homm2Numbers(chunk.GetBytesAt(Homm2CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels).Select(b => (int)b)));
         }

@@ -48,7 +48,7 @@ namespace Siniskalc.Homm2.Data
         public const int Creatures = 0x1E;
 
         /// <summary>
-        /// The creatures that wait in the upgraded dwellings 2 to 6 (five u16): an upgraded dwelling keeps its count here and its own slot
+        /// The creatures that wait in the upgraded dwellings 2 to 6 (six u16, the last for the sixth dwelling upgraded twice): an upgraded dwelling keeps its count here and its own slot
         /// above is 0 (seen in the castles of Broken Alliance: Hillstone, Dragontooth, Bloodreign, Woodhaven and Vertigo).
         /// </summary>
         public const int UpgradedCreatures = 0x2A;

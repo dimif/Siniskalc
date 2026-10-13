@@ -87,7 +87,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.UpgradedCreatures[upgraded], current.UpgradedCreatures[upgraded], upgraded);
                 if (before != after)
                 {
-                    Add(Homm2ChangeAreas.Dwellings, $"Creatures in upgraded dwelling {upgraded + 2}", before.ToString("N0"), after.ToString("N0"), c => c with { UpgradedCreatures = c.UpgradedCreatures.With(index, before) });
+                    Add(Homm2ChangeAreas.Dwellings, $"Creatures in upgraded dwelling place {upgraded + 1}", before.ToString("N0"), after.ToString("N0"), c => c with { UpgradedCreatures = c.UpgradedCreatures.With(index, before) });
                 }
             }
 

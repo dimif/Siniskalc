@@ -28,7 +28,7 @@
         /// <inheritdoc/>
         public int GetMaximum(GameVersion version, HeroModel hero)
         {
-            return this.GetMaximum(version, hero.PrimarySkills.TotalKno, hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence));
+            return this.GetMaximum(version, hero.PrimarySkills.Kno, hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence));
         }
     }
 }

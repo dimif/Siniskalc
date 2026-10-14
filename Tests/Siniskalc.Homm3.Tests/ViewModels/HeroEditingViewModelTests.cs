@@ -150,7 +150,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 SkillLevel.Expert => 100,
                 _ => 0,
             };
-            var knowledge = Math.Max(0, hero.PrimarySkills.Kno + hero.EquippedArtifacts.GetTotalEffects().Kno);
+            var knowledge = (int)hero.PrimarySkills.Kno;   // the saved knowledge has the bonus of the artifacts in it
 
             general.CurrentSpellPoints = 0;
             general.ResetSpellPointsCommand.Execute(null);

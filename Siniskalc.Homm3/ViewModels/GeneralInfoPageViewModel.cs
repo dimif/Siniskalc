@@ -237,39 +237,39 @@
 
         public byte Attack
         {
-            get => this.Hero.PrimarySkills.Atk;
-            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s with { Atk = ClampSkill(value) });
+            get => ClampSkill(this.Hero.PrimarySkills.BaseAtk);
+            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s.WithBaseAtk(ClampSkill(value)));
         }
 
         public byte Defense
         {
-            get => this.Hero.PrimarySkills.Def;
-            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s with { Def = ClampSkill(value) });
+            get => ClampSkill(this.Hero.PrimarySkills.BaseDef);
+            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s.WithBaseDef(ClampSkill(value)));
         }
 
         public byte SpellPower
         {
-            get => this.Hero.PrimarySkills.Pow;
-            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s with { Pow = ClampSkill(value) });
+            get => ClampSkill(this.Hero.PrimarySkills.BasePow);
+            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s.WithBasePow(ClampSkill(value)));
         }
 
         public byte Knowledge
         {
-            get => this.Hero.PrimarySkills.Kno;
-            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s with { Kno = ClampSkill(value) });
+            get => ClampSkill(this.Hero.PrimarySkills.BaseKno);
+            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s.WithBaseKno(ClampSkill(value)));
         }
 
         /// <summary>
-        /// Gets the attack skill with what the hero's artifacts add, which is what counts in the game.
-        /// The saved skills do not include the artifacts.
+        /// Gets the attack skill with what the hero's artifacts add, which is what counts in the game and what the savefile holds.
+        /// <see cref="Attack"/> is what is left without the artifacts.
         /// </summary>
-        public int AttackTotal => this.Hero.PrimarySkills.TotalAtk;
+        public int AttackTotal => this.Hero.PrimarySkills.Atk;
 
-        public int DefenseTotal => this.Hero.PrimarySkills.TotalDef;
+        public int DefenseTotal => this.Hero.PrimarySkills.Def;
 
-        public int SpellPowerTotal => this.Hero.PrimarySkills.TotalPow;
+        public int SpellPowerTotal => this.Hero.PrimarySkills.Pow;
 
-        public int KnowledgeTotal => this.Hero.PrimarySkills.TotalKno;
+        public int KnowledgeTotal => this.Hero.PrimarySkills.Kno;
 
         /// <summary>
         /// Gets what the hero's artifacts add to the attack skill, such as "+2 from artifacts". Empty when they add nothing.
@@ -464,7 +464,7 @@
 
         private static short ClampCoordinate(short value) => (short)RangeGuard.Clamp<long>(value, Constants.Map.MinCoordinate, Constants.Map.MaxCoordinate);
 
-        private static byte ClampSkill(byte value) => (byte)RangeGuard.Clamp<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
+        private static byte ClampSkill(int value) => (byte)RangeGuard.Clamp<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
 
         private static string SkillNote(short fromArtifacts) => fromArtifacts == 0
             ? string.Empty

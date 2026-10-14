@@ -81,9 +81,9 @@ Artifact                 EffectInfo.SpellGrants (SpellGrantProvider: named spell
 EquippedArtifacts        GrantsSpellBook; GetTotalEffects() unions. IGrantedSpellsResolver (GrantedSpellsResolver, one per game version) turns them into spell -> names of the artifacts that give it
 SpellBook                HasSpellBook, Learned, Granted (from artifacts), OtherAvailable. Available = all three. Immutable.
 HeroModel                keeps what depends on the equipped artifacts up to date whenever the artifacts, game version, spell book or skills
-                         are set (Reconcile): spell grants, PrimarySkills.Bonus and ArtifactEffects.
+                         are set (Reconcile): spell grants, ArtifactEffects, and PrimarySkills (the bonus, and the saved skills move by what the artifacts add or no longer add).
                          WithEquippedArtifacts(...) is the reducer: it also gives the spell book Titan's Thunder brings (and never takes it back)
-HeroPrimarySkills        Atk/Def/Pow/Kno = saved base values; Bonus = from artifacts; Total... = what counts. Equality compares the base only.
+HeroPrimarySkills        Atk/Def/Pow/Kno = the saved values, which have the artifacts' bonus in them (as in HoMM2); Bonus = what the artifacts add; Base... = saved minus bonus. Equality compares the saved values.
 HeroViewModel(session, ..., EffectLineProvider)
   SpellsViewModel(gameVersion, Func<SpellBook>, Action<Func<SpellBook, SpellBook>>)    no HeroModel
   EquippedArtifactsViewModel -> one ArtifactSlotViewModel(label, createFinder, onPicked) per slot

@@ -119,15 +119,15 @@ namespace Siniskalc.Homm3.Tests.Models
         }
 
         [Test]
-        public void ArtifactsAddToTheSkillsWithoutChangingTheSavedValues()
+        public void ArtifactsAddToTheSavedSkillsAndGiveTheSpellPointsOfTheHigherKnowledge()
         {
             var game = Load("arts_00_before_arts");
             var hero = Hero(game, "Valeska");
             var armed = hero.WithEquippedArtifacts(hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Weapon, Artifact.TitansThunder));
 
-            Assert.That(armed.PrimarySkills.Atk, Is.EqualTo(hero.PrimarySkills.Atk));
-            Assert.That(armed.PrimarySkills.TotalAtk, Is.EqualTo(hero.PrimarySkills.TotalAtk + 9));
-            Assert.That(armed.PrimarySkills, Is.EqualTo(hero.PrimarySkills), "equal skills have equal base values; the bonus is derived");
+            Assert.That(armed.PrimarySkills.Atk, Is.EqualTo(hero.PrimarySkills.Atk + 9), "the game saves the skills with the artifact in them");
+            Assert.That(armed.PrimarySkills.BaseAtk, Is.EqualTo(hero.PrimarySkills.BaseAtk), "what the hero learned is the same");
+            Assert.That(armed.PrimarySkills, Is.Not.EqualTo(hero.PrimarySkills));
             Assert.That(TestServices.SpellPoints.GetMaximum(game.GameVersion, armed), Is.GreaterThan(TestServices.SpellPoints.GetMaximum(game.GameVersion, hero)));
         }
 

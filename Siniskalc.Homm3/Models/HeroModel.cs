@@ -70,7 +70,7 @@
             this.SpellPoints = spellPoints;
             this.Army = army;
             this.spellBook = spellBook;
-            this.Reconcile();
+            this.Reconcile(keepSkills: true);
         }
 
         public string Name { get; init; }
@@ -84,7 +84,8 @@
         public PlayerColor? Owner { get; init; }
 
         /// <summary>
-        /// Gets the primary skills: the base values the savefile holds, and what the equipped artifacts add.
+        /// Gets the primary skills: the values the savefile holds, which have what the equipped artifacts add in them. Setting the
+        /// skills takes them as they are; setting the equipped artifacts moves them by what the artifacts add or no longer add.
         /// </summary>
         public HeroPrimarySkills PrimarySkills
         {
@@ -92,7 +93,7 @@
             init
             {
                 this.primarySkills = value;
-                this.Reconcile();
+                this.Reconcile(keepSkills: true);
             }
         }
 
@@ -111,7 +112,8 @@
         public Backpack Backpack { get; init; }
 
         /// <summary>
-        /// Gets the equipped artifacts. Setting them updates the spells they grant and the skill bonuses; use
+        /// Gets the equipped artifacts. Setting them updates the spells they grant and the primary skills (the game saves the skills with
+        /// the bonuses of the artifacts in them, so they go up or down by what the artifacts add); use
         /// <see cref="WithEquippedArtifacts"/> to also give the hero the spell book Titan's Thunder brings.
         /// </summary>
         public EquippedArtifacts EquippedArtifacts
@@ -208,14 +210,14 @@
         /// Brings what depends on the equipped artifacts in line with them. Runs whenever one of the inputs is set, and does the
         /// same every time, so the order in which a <c>with</c> expression sets them does not matter.
         /// </summary>
-        private void Reconcile()
+        private void Reconcile(bool keepSkills = false)
         {
             this.artifactEffects = this.equippedArtifacts.GetTotalEffects();
             this.spellBook = this.spellBook.WithGrants(this.grantedSpellsResolver.ResolveGrantedSpells(this.equippedArtifacts), this.equippedArtifacts.GrantsSpellBook);
-            this.primarySkills = this.primarySkills with
-            {
-                Bonus = new PrimarySkillBonus(this.artifactEffects.Atk, this.artifactEffects.Def, this.artifactEffects.Pow, this.artifactEffects.Kno),
-            };
+            var bonus = new PrimarySkillBonus(this.artifactEffects.Atk, this.artifactEffects.Def, this.artifactEffects.Pow, this.artifactEffects.Kno);
+
+            // Skills that are set, and the ones the savefile held, already have their bonus in them: only the bonus is updated to follow.
+            this.primarySkills = keepSkills ? this.primarySkills with { Bonus = bonus } : this.primarySkills.WithBonus(bonus);
         }
     }
 }

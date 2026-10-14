@@ -39,6 +39,9 @@ namespace Siniskalc.Homm3
             public const long MinPrimarySkill = 0;
             public const long MaxPrimarySkill = 99;
 
+            // The savefile holds a skill with what the artifacts add, in a byte.
+            public const long MaxSavedPrimarySkill = 255;
+
             public const long MinMovementPoints = 0;
             public const long MaxMovementPoints = 99_999;
             public const long MovementStep = 100;

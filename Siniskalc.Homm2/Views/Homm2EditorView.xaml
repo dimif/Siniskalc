@@ -8,7 +8,7 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <!-- Tree node: a marker in the player's colour, the name, a smaller subtitle, and a dot when it has edits. -->
-        <HierarchicalDataTemplate x:Key="NavNodeTemplate" DataType="{x:Type vm:Homm2NavNodeViewModel}" ItemsSource="{Binding Children}">
+        <HierarchicalDataTemplate x:Key="NavNodeTemplate" DataType="{x:Type vm:NavNodeViewModel}" ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal" Margin="0,2">
                 <Ellipse Width="9" Height="9" Margin="0,0,8,0" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
                 <!-- One text block, so the smaller subtitle sits on the baseline of the bold name. -->

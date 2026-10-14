@@ -1,0 +1,57 @@
+namespace Siniskalc.Homm2.Data
+{
+    using System.Collections.Generic;
+    using Siniskalc.Core.Data;
+
+    /// <summary>
+    /// Builds the document of a savegame, giving each collection the deserializer, the serializer and the differ of its kind.
+    /// </summary>
+    public sealed class SaveDocumentFactory : ISaveDocumentFactory
+    {
+        private readonly IHeroDeserializer heroDeserializer;
+        private readonly IHeroSerializer heroSerializer;
+        private readonly IHeroDiffer heroDiffer;
+        private readonly IPlayerDeserializer playerDeserializer;
+        private readonly IPlayerSerializer playerSerializer;
+        private readonly IPlayerDiffer playerDiffer;
+        private readonly ICastleDeserializer castleDeserializer;
+        private readonly ICastleSerializer castleSerializer;
+        private readonly ICastleDiffer castleDiffer;
+        private readonly ISavefileBytesPatcher patcher;
+
+        public SaveDocumentFactory(
+            IHeroDeserializer heroDeserializer,
+            IHeroSerializer heroSerializer,
+            IHeroDiffer heroDiffer,
+            IPlayerDeserializer playerDeserializer,
+            IPlayerSerializer playerSerializer,
+            IPlayerDiffer playerDiffer,
+            ICastleDeserializer castleDeserializer,
+            ICastleSerializer castleSerializer,
+            ICastleDiffer castleDiffer,
+            ISavefileBytesPatcher patcher)
+        {
+            this.heroDeserializer = heroDeserializer;
+            this.heroSerializer = heroSerializer;
+            this.heroDiffer = heroDiffer;
+            this.playerDeserializer = playerDeserializer;
+            this.playerSerializer = playerSerializer;
+            this.playerDiffer = playerDiffer;
+            this.castleDeserializer = castleDeserializer;
+            this.castleSerializer = castleSerializer;
+            this.castleDiffer = castleDiffer;
+            this.patcher = patcher;
+        }
+
+        /// <inheritdoc/>
+        public SaveDocument Create(byte[] bytes, IEnumerable<HeroChunk> heroChunks, IEnumerable<PlayerChunk> playerChunks, IEnumerable<CastleChunk> castleChunks)
+        {
+            return Homm2SaveDocuments.Create(
+                bytes,
+                new HeroChunkCollection(heroChunks, this.heroDeserializer, this.heroSerializer, this.heroDiffer),
+                new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer),
+                new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
+                this.patcher);
+        }
+    }
+}

@@ -17,49 +17,49 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class Homm2EditorViewModel : AbstractViewModelBase, IGameEditor
     {
-        private readonly IHomm2GameService gameService;
+        private readonly IGameService gameService;
         private readonly ISaveRegionProvider saveRegions;
-        private readonly IHomm2ByteEditTargetFactory byteEditTargets;
-        private readonly Homm2NavigationTree navigation;
-        private readonly Dictionary<int, Homm2PlayerViewModel> players = [];
-        private readonly Dictionary<int, Homm2HeroViewModel> heroes = [];
-        private readonly Dictionary<int, Homm2CastleViewModel> castles = [];
-        private Homm2Game? currentGame;
-        private Homm2OverviewViewModel? overview;
+        private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly NavigationTree navigation;
+        private readonly Dictionary<int, PlayerViewModel> players = [];
+        private readonly Dictionary<int, HeroViewModel> heroes = [];
+        private readonly Dictionary<int, CastleViewModel> castles = [];
+        private Game? currentGame;
+        private OverviewViewModel? overview;
         private object? currentPage;
         private string heroFilter = string.Empty;
 
         // Who owns each castle and hero, as a text. The tree groups them by owner, so it is built again when this changes.
         private string owners = string.Empty;
 
-        public Homm2EditorViewModel(IHomm2GameService gameService, ISaveRegionProvider saveRegions, IHomm2ByteEditTargetFactory byteEditTargets)
+        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets)
         {
             this.gameService = gameService;
             this.saveRegions = saveRegions;
             this.byteEditTargets = byteEditTargets;
-            this.navigation = new Homm2NavigationTree(this.OnNodeSelected);
+            this.navigation = new NavigationTree(this.OnNodeSelected);
         }
 
         /// <summary>
         /// Gets the loaded game, or <c>null</c> when none is loaded.
         /// </summary>
-        public Homm2Game? CurrentGame => this.currentGame;
+        public Game? CurrentGame => this.currentGame;
 
         /// <summary>
         /// Gets what the editor shows about the loaded game, or <c>null</c> when none is loaded.
         /// </summary>
-        public Homm2OverviewViewModel? Overview => this.overview;
+        public OverviewViewModel? Overview => this.overview;
 
         /// <summary>
-        /// Gets what the editor shows: a <see cref="Homm2HeroViewModel"/>, a <see cref="Homm2PlayerViewModel"/>, a
-        /// <see cref="Homm2CastleViewModel"/>, the <see cref="Homm2OverviewViewModel"/>, or nothing while no savegame is loaded.
+        /// Gets what the editor shows: a <see cref="HeroViewModel"/>, a <see cref="PlayerViewModel"/>, a
+        /// <see cref="CastleViewModel"/>, the <see cref="OverviewViewModel"/>, or nothing while no savegame is loaded.
         /// </summary>
         public object? CurrentPage => this.currentPage;
 
         /// <summary>
         /// Gets the top level nodes of the navigation tree.
         /// </summary>
-        public ObservableCollection<Homm2NavNodeViewModel> NavigationNodes => this.navigation.Nodes;
+        public ObservableCollection<NavNodeViewModel> NavigationNodes => this.navigation.Nodes;
 
         /// <summary>
         /// Gets or sets the text the navigation tree is filtered by.
@@ -192,12 +192,12 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the page of the player of <paramref name="color"/>, on the tab <paramref name="tab"/>.
         /// </summary>
-        public void ShowPlayer(Homm2Color color, int tab = 0)
+        public void ShowPlayer(Color color, int tab = 0)
         {
             var game = this.Loaded();
             if (!this.players.TryGetValue((int)color, out var player))
             {
-                player = new Homm2PlayerViewModel(game, color, this.ShowHero, this.ShowCastle, this.byteEditTargets);
+                player = new PlayerViewModel(game, color, this.ShowHero, this.ShowCastle, this.byteEditTargets);
                 this.players[(int)color] = player;
             }
 
@@ -213,7 +213,7 @@ namespace Siniskalc.Homm2.ViewModels
             var game = this.Loaded();
             if (!this.heroes.TryGetValue(heroId, out var hero))
             {
-                hero = new Homm2HeroViewModel(game, heroId, this.ShowCastle, this.byteEditTargets);
+                hero = new HeroViewModel(game, heroId, this.ShowCastle, this.byteEditTargets);
                 this.heroes[heroId] = hero;
             }
 
@@ -228,26 +228,26 @@ namespace Siniskalc.Homm2.ViewModels
             var game = this.Loaded();
             if (!this.castles.TryGetValue(castleIndex, out var castle))
             {
-                castle = new Homm2CastleViewModel(game, castleIndex, this.ShowHero, this.byteEditTargets);
+                castle = new CastleViewModel(game, castleIndex, this.ShowHero, this.byteEditTargets);
                 this.castles[castleIndex] = castle;
             }
 
             this.SetCurrentPage(castle);
         }
 
-        private static string OwnersOf(Homm2Game game)
+        private static string OwnersOf(Game game)
         {
             var document = game.History.Current;
             return string.Join(",", document.Castles().GetOwners().Select(o => o?.ToString() ?? "-"))
                 + ";" + string.Join(",", document.Heroes().GetOwners().Select(o => o?.ToString() ?? "-"));
         }
 
-        private Homm2Game Loaded() => this.currentGame ?? throw new InvalidOperationException("No game is currently loaded");
+        private Game Loaded() => this.currentGame ?? throw new InvalidOperationException("No game is currently loaded");
 
-        private void SetGame(Homm2Game game)
+        private void SetGame(Game game)
         {
             // What reads the new game (and so can fail on a savefile that is odd) is built before anything of the open game is let go.
-            var newOverview = new Homm2OverviewViewModel(game, color => this.ShowPlayer(color));
+            var newOverview = new OverviewViewModel(game, color => this.ShowPlayer(color));
             var newOwners = OwnersOf(game);
 
             this.DisposePages();
@@ -275,7 +275,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private void DisposePages()
         {
-            foreach (var page in this.players.Values.Cast<Homm2PageViewModel>().Concat(this.heroes.Values).Concat(this.castles.Values))
+            foreach (var page in this.players.Values.Cast<PageViewModel>().Concat(this.heroes.Values).Concat(this.castles.Values))
             {
                 page.Dispose();
             }
@@ -295,38 +295,38 @@ namespace Siniskalc.Homm2.ViewModels
 
             switch (page)
             {
-                case Homm2OverviewViewModel:
+                case OverviewViewModel:
                     this.navigation.Reveal(this.navigation.Overview);
                     break;
-                case Homm2PlayerViewModel player:
+                case PlayerViewModel player:
                     this.navigation.Reveal(this.navigation.PlayerTabNode((int)player.Color, player.SelectedTab));
                     break;
-                case Homm2HeroViewModel hero:
+                case HeroViewModel hero:
                     this.navigation.Reveal(this.navigation.HeroNode(hero.HeroId));
                     break;
-                case Homm2CastleViewModel castle:
+                case CastleViewModel castle:
                     this.navigation.Reveal(this.navigation.CastleNode(castle.CastleIndex));
                     break;
             }
         }
 
-        private void OnNodeSelected(Homm2NavNodeViewModel node)
+        private void OnNodeSelected(NavNodeViewModel node)
         {
             switch (node.Kind)
             {
-                case Homm2NavNodeKind.Overview:
+                case NavNodeKind.Overview:
                     this.ShowOverview();
                     break;
-                case Homm2NavNodeKind.Player:
-                    this.ShowPlayer((Homm2Color)node.Index);
+                case NavNodeKind.Player:
+                    this.ShowPlayer((Color)node.Index);
                     break;
-                case Homm2NavNodeKind.PlayerTab:
-                    this.ShowPlayer((Homm2Color)node.Index, node.Tab);
+                case NavNodeKind.PlayerTab:
+                    this.ShowPlayer((Color)node.Index, node.Tab);
                     break;
-                case Homm2NavNodeKind.Hero:
+                case NavNodeKind.Hero:
                     this.ShowHero(node.Index);
                     break;
-                case Homm2NavNodeKind.Castle:
+                case NavNodeKind.Castle:
                     this.ShowCastle(node.Index);
                     break;
             }

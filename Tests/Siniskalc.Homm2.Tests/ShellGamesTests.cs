@@ -11,6 +11,7 @@ namespace Siniskalc.Homm2.Tests
     using Siniskalc.Homm2.Views;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
+    using Color = Siniskalc.Homm2.Entities.Color;
 
     /// <summary>
     /// The application with both games: opening a savegame of Heroes of Might and Magic II switches the shell to its editor and its title.
@@ -46,7 +47,7 @@ namespace Siniskalc.Homm2.Tests
         [Test]
         public void OpeningAHeroes2SavegameSwitchesTheTitleAndTheEditorToThoseOfTheGame()
         {
-            var path = Homm2Saves.BrokenAllianceSave(10);
+            var path = Saves.BrokenAllianceSave(10);
 
             this.shell.LoadGame(path);
 
@@ -61,24 +62,24 @@ namespace Siniskalc.Homm2.Tests
         [Test]
         public void ThePriceOfLoyaltySavegameOpensTheSameWay()
         {
-            this.shell.LoadGame(Homm2Saves.Path(Homm2Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));
+            this.shell.LoadGame(Saves.Path(Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));
 
             var editor = (Homm2EditorViewModel)this.shell.Editor;
             Assert.That(editor.Overview!.MapName, Is.EqualTo("Arrax the Jerk"));
             Assert.That(editor.Overview.Version, Is.EqualTo("Price of Loyalty"));
-            Assert.That(editor.Overview.Players.Select(p => p.Color), Is.EqualTo(new[] { Homm2Color.Blue, Homm2Color.Green }));
+            Assert.That(editor.Overview.Players.Select(p => p.Color), Is.EqualTo(new[] { Color.Blue, Color.Green }));
         }
 
         [Test]
         public void ASavegameThatCannotBeReadLeavesTheGameThatWasOpen()
         {
             var broken = Path.Combine(this.folder, "BROKEN.GM1");
-            File.WriteAllBytes(broken, Homm2Saves.Read(Homm2Saves.BrokenAllianceSave(1))[..0x3000]);
-            this.shell.LoadGame(Homm2Saves.BrokenAllianceSave(1));
+            File.WriteAllBytes(broken, Saves.Read(Saves.BrokenAllianceSave(1))[..0x3000]);
+            this.shell.LoadGame(Saves.BrokenAllianceSave(1));
 
             Assert.That(() => this.shell.LoadGame(broken), Throws.InstanceOf<UnsupportedSavefileException>());
 
-            Assert.That(this.shell.File, Is.EqualTo(Homm2Saves.BrokenAllianceSave(1)));
+            Assert.That(this.shell.File, Is.EqualTo(Saves.BrokenAllianceSave(1)));
             Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
         }
 
@@ -86,18 +87,18 @@ namespace Siniskalc.Homm2.Tests
         public void EditsAreSavedWithAnUnchangedFileSizeAndAreBackedUp()
         {
             var path = Path.Combine(this.folder, "E01GOLD.GM1");
-            File.Copy(Homm2Saves.BrokenAllianceSave(5), path);
+            File.Copy(Saves.BrokenAllianceSave(5), path);
             this.shell.LoadGame(path);
             var editor = (Homm2EditorViewModel)this.shell.Editor;
 
-            editor.CurrentGame!.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Homm2Resource.Gold, 99_999) });
+            editor.CurrentGame!.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, 99_999) });
             Assert.That(this.shell.HasPendingChanges, Is.True);
             this.shell.SaveGame();
 
-            Assert.That(new FileInfo(path).Length, Is.EqualTo(new FileInfo(Homm2Saves.BrokenAllianceSave(5)).Length));
+            Assert.That(new FileInfo(path).Length, Is.EqualTo(new FileInfo(Saves.BrokenAllianceSave(5)).Length));
             Assert.That(this.shell.HasPendingChanges, Is.False);
             Assert.That(File.Exists(path + ".bak"), Is.True);
-            Assert.That(File.ReadAllBytes(path + ".bak"), Is.EqualTo(File.ReadAllBytes(Homm2Saves.BrokenAllianceSave(5))));
+            Assert.That(File.ReadAllBytes(path + ".bak"), Is.EqualTo(File.ReadAllBytes(Saves.BrokenAllianceSave(5))));
 
             this.shell.ReloadGame();
             Assert.That(editor.CurrentGame!.History.Current.Players().GetModel(0).Resources.Gold, Is.EqualTo(99_999));
@@ -106,7 +107,7 @@ namespace Siniskalc.Homm2.Tests
         [Test]
         public void TheHexDumpOfAGameHasARegionForEveryHeroPlayerAndUsedCastle()
         {
-            this.shell.LoadGame(Homm2Saves.BrokenAllianceSave(1));
+            this.shell.LoadGame(Saves.BrokenAllianceSave(1));
 
             var dump = this.shell.CreateSaveHexDump();
 
@@ -146,7 +147,7 @@ namespace Siniskalc.Homm2.Tests
                     Pump();
                     Assert.That(window.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic III"));
 
-                    this.shell.LoadGame(Homm2Saves.BrokenAllianceSave(24));
+                    this.shell.LoadGame(Saves.BrokenAllianceSave(24));
                     Pump();
                     window.UpdateLayout();
 
@@ -155,21 +156,21 @@ namespace Siniskalc.Homm2.Tests
                     Assert.That(Find<Homm2EditorView>(window)!.DataContext, Is.SameAs(this.shell.Editor));
 
                     var editor = (Homm2EditorViewModel)this.shell.Editor;
-                    editor.CurrentGame!.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Homm2Resource.Gold, 1) });
+                    editor.CurrentGame!.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, 1) });
                     this.shell.IsPendingChangesOpen = true;
                     Pump();
                     Assert.That(this.shell.PendingChanges, Has.Count.EqualTo(1));
-                    Assert.That(editor.Overview!.Players.First(p => p.Color == Homm2Color.Blue).Gold, Is.EqualTo(1));
+                    Assert.That(editor.Overview!.Players.First(p => p.Color == Color.Blue).Gold, Is.EqualTo(1));
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;
-                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Homm2Color.Blue).HeroId;
-                    var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Homm2Color.Blue).Index;
-                    var pages = new (Action Show, Func<Homm2PageViewModel> Page, int Tabs)[]
+                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue).HeroId;
+                    var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue).Index;
+                    var pages = new (Action Show, Func<PageViewModel> Page, int Tabs)[]
                     {
-                        (() => editor.ShowPlayer(Homm2Color.Blue), () => (Homm2PlayerViewModel)editor.CurrentPage!, 4),
-                        (() => editor.ShowHero(hero), () => (Homm2HeroViewModel)editor.CurrentPage!, 6),
-                        (() => editor.ShowCastle(castle), () => (Homm2CastleViewModel)editor.CurrentPage!, 5),
+                        (() => editor.ShowPlayer(Color.Blue), () => (PlayerViewModel)editor.CurrentPage!, 4),
+                        (() => editor.ShowHero(hero), () => (HeroViewModel)editor.CurrentPage!, 6),
+                        (() => editor.ShowCastle(castle), () => (CastleViewModel)editor.CurrentPage!, 5),
                     };
                     foreach (var (show, page, tabs) in pages)
                     {

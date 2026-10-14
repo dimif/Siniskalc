@@ -15,12 +15,12 @@ namespace Siniskalc.Homm2.Runtime
     {
         private const int MaxNameLength = 8;
 
-        private readonly IHomm2SaveLayoutLocator locator;
+        private readonly ISaveLayoutLocator locator;
         private readonly Func<Homm2EditorViewModel> createEditor;
 
         /// <param name="locator">Tells whether a file is a savegame of the game, from its first bytes.</param>
         /// <param name="createEditor">Makes an editor with nothing loaded (the composition root builds its collaborators).</param>
-        public Homm2Module(IHomm2SaveLayoutLocator locator, Func<Homm2EditorViewModel> createEditor)
+        public Homm2Module(ISaveLayoutLocator locator, Func<Homm2EditorViewModel> createEditor)
         {
             this.locator = locator;
             this.createEditor = createEditor;

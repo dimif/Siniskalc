@@ -7,18 +7,18 @@
     /// </summary>
     public abstract class Homm2Enumeration : AbstractEnumeration
     {
-        protected Homm2Enumeration(string name, byte code, Homm2GameVersion gameVersion)
+        protected Homm2Enumeration(string name, byte code, GameVersion gameVersion)
             : base(name, code, (int)gameVersion)
         {
         }
 
         protected Homm2Enumeration(string name, byte code)
-            : this(name, code, Homm2GameVersion.BaseGame)
+            : this(name, code, GameVersion.BaseGame)
         {
         }
 
-        public Homm2GameVersion GameVersion => (Homm2GameVersion)this.AvailableFrom;
+        public GameVersion GameVersion => (GameVersion)this.AvailableFrom;
 
-        public bool IsAvailableIn(Homm2GameVersion version) => this.IsAvailableIn((int)version);
+        public bool IsAvailableIn(GameVersion version) => this.IsAvailableIn((int)version);
     }
 }

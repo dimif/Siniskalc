@@ -73,10 +73,10 @@ namespace Siniskalc.Homm2.Views
                 {
                     page = current switch
                     {
-                        Homm2HeroViewModel hero => new Homm2HeroPage(hero),
-                        Homm2PlayerViewModel player => new Homm2PlayerPage(player),
-                        Homm2CastleViewModel castle => new Homm2CastlePage(castle),
-                        Homm2OverviewViewModel overview => new Homm2OverviewPage(overview),
+                        HeroViewModel hero => new HeroPage(hero),
+                        PlayerViewModel player => new PlayerPage(player),
+                        CastleViewModel castle => new CastlePage(castle),
+                        OverviewViewModel overview => new OverviewPage(overview),
                         _ => throw new InvalidOperationException($"No page for {current.GetType().Name}."),
                     };
                     this.pages[current] = page;

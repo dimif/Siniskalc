@@ -5,8 +5,6 @@ namespace Siniskalc
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
-    using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Runtime;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
@@ -14,6 +12,8 @@ namespace Siniskalc
     using Siniskalc.Homm3.ViewModels;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
+    using H2Data = Siniskalc.Homm2.Data;
+    using H2Runtime = Siniskalc.Homm2.Runtime;
 
     /// <summary>
     /// The composition root: builds each component once and hands it to the ones that use it. Nothing else creates a component
@@ -87,28 +87,28 @@ namespace Siniskalc
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
             this.Homm3 = new Homm3Module(this.CreateHomm3Editor);
 
-            var homm2Locator = new Homm2SaveLayoutLocator();
-            this.Homm2GameService = new Homm2GameService(
-                new Homm2SavegameParser(
+            var homm2Locator = new H2Data.SaveLayoutLocator();
+            this.Homm2GameService = new H2Runtime.GameService(
+                new H2Runtime.SavegameParser(
                     homm2Locator,
-                    new Homm2BytesLoader(),
-                    new Homm2HeaderReader(),
-                    new Homm2SaveDocumentFactory(
-                        new Homm2HeroDeserializer(),
-                        new SafeHomm2HeroSerializer(),
-                        new Homm2HeroDiffer(),
-                        new Homm2PlayerDeserializer(),
-                        new SafeHomm2PlayerSerializer(),
-                        new Homm2PlayerDiffer(),
-                        new Homm2CastleDeserializer(),
-                        new SafeHomm2CastleSerializer(),
-                        new Homm2CastleDiffer(),
+                    new H2Data.BytesLoader(),
+                    new H2Data.HeaderReader(),
+                    new H2Data.SaveDocumentFactory(
+                        new H2Data.HeroDeserializer(),
+                        new H2Data.SafeHeroSerializer(),
+                        new H2Data.HeroDiffer(),
+                        new H2Data.PlayerDeserializer(),
+                        new H2Data.SafePlayerSerializer(),
+                        new H2Data.PlayerDiffer(),
+                        new H2Data.CastleDeserializer(),
+                        new H2Data.SafeCastleSerializer(),
+                        new H2Data.CastleDiffer(),
                         this.BytesPatcher)),
                 new RawSavefileCodec(),
                 this.Backup);
-            this.Homm2SaveRegionProvider = new Homm2SaveRegionProvider(homm2Locator);
-            this.Homm2ByteEditTargets = new Homm2ByteEditTargetFactory();
-            this.Homm2 = new Homm2Module(homm2Locator, this.CreateHomm2Editor);
+            this.Homm2SaveRegionProvider = new H2Data.SaveRegionProvider(homm2Locator);
+            this.Homm2ByteEditTargets = new H2Data.ByteEditTargetFactory();
+            this.Homm2 = new H2Runtime.Homm2Module(homm2Locator, this.CreateHomm2Editor);
         }
 
         public IGameService GameService { get; }
@@ -170,11 +170,11 @@ namespace Siniskalc
         /// </summary>
         public IGameModule Homm3 { get; }
 
-        public IHomm2GameService Homm2GameService { get; }
+        public H2Runtime.IGameService Homm2GameService { get; }
 
         public ISaveRegionProvider Homm2SaveRegionProvider { get; }
 
-        public IHomm2ByteEditTargetFactory Homm2ByteEditTargets { get; }
+        public H2Data.IByteEditTargetFactory Homm2ByteEditTargets { get; }
 
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic II.

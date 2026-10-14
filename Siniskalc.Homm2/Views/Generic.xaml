@@ -96,7 +96,7 @@
     </Style>
 
     <!-- One line of a card: what it is on the left, its value, and a smaller note after it. -->
-    <DataTemplate x:Key="Homm2FactRowTemplate" DataType="{x:Type vm:Homm2FactRow}">
+    <DataTemplate x:Key="Homm2FactRowTemplate" DataType="{x:Type vm:FactRow}">
         <StackPanel Orientation="Horizontal" Margin="0,3">
             <TextBlock Width="130" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Label}"/>
             <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Value}"/>
@@ -105,7 +105,7 @@
     </DataTemplate>
 
     <!-- A hero or a town of the player: the name opens it, the detail sits on the right. -->
-    <DataTemplate x:Key="Homm2LinkTemplate" DataType="{x:Type vm:Homm2LinkViewModel}">
+    <DataTemplate x:Key="Homm2LinkTemplate" DataType="{x:Type vm:LinkViewModel}">
         <DockPanel Margin="0,3">
             <TextBlock DockPanel.Dock="Right" Margin="12,0,0,0" Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Detail}"/>
             <Button Style="{StaticResource LinkButtonStyle}" HorizontalAlignment="Left" Command="{Binding OpenCommand}" Content="{Binding Name}"

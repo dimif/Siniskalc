@@ -13,6 +13,9 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - **Code that knows no game lives in `Siniskalc.Core` (no UI) or `Siniskalc.Wpf` (WPF).** Neither names a Heroes of Might and Magic type, and neither references a game's project; a game's values and collaborators are passed in.
   A new project for another game references them.
   Add a type to the game's project (`Siniskalc.Homm3` or `Siniskalc.Homm2`) when it needs a layout, rule or entity of that game. The exe `Siniskalc` is only the host that builds the components and starts the window.
+- **A type carries no game prefix**: the namespace says the game (`Siniskalc.Homm2.Models.HeroModel`, not `Homm2HeroModel`).
+  The exceptions are the wrappers of generic Core types (`Homm3Enumeration`, `Homm2EditSessions`, `Homm2PendingChanges`, `Homm2SaveDocuments`, `Homm2ChunkKinds`) and the entry points the exe and the shell name side by side (`Homm2Module`/`Homm3Module`, `Homm2EditorViewModel`/`Homm3EditorViewModel`, `Homm2EditorView`/`Homm3EditorView`).
+  Code that sees both games (`AppServices`) uses namespace aliases.
 - Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`); a test goes with the project of the class it tests.
 - A view model is called `...ViewModel` (also when it is a node of a tree: `NavNodeViewModel`).
 

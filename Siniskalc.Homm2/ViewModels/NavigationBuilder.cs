@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -36,7 +37,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         public void Build(NavigationTree tree, Game game)
         {
-            var overview = new NavNodeViewModel("Game", string.IsNullOrEmpty(game.Name) ? string.Empty : System.IO.Path.GetFileName(game.Name), Palette.NoPlayer, NavNodeKind.Overview, onSelected: tree.OnSelected)
+            var overview = new NavNodeViewModel("Game", string.IsNullOrEmpty(game.Name) ? string.Empty : System.IO.Path.GetFileName(game.Name), PlayerPalette.NoPlayer, NavNodeKind.Overview, onSelected: tree.OnSelected)
             {
                 DefaultExpanded = true,
                 IsExpanded = true,
@@ -113,7 +114,7 @@ namespace Siniskalc.Homm2.ViewModels
             // A colour is a page of its own (the resources); what nobody owns only holds its heroes and towns.
             var playerIndex = owner == null ? -1 : (int)owner.Value;
             var isPlayer = playerIndex >= 0;
-            var colorHex = Palette.Of(owner);
+            var colorHex = PlayerPalette.Of(PlayerColors.Of(owner));
             var node = new NavNodeViewModel(
                 owner?.ToString() ?? "Neutral",
                 string.Join(" · ", parts),

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -18,7 +19,7 @@
             this.Name = color.ToString();
             this.BanishingText = banishingText;
             this.IsBanished = isBanished;
-            this.ColorHex = PlayerPalette.Of(color);
+            this.ColorHex = PlayerPalette.Of(PlayerColors.Of(color));
             this.Heroes = heroes;
             this.Castles = castles ?? [];
             this.OpenCommand = open;

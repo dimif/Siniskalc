@@ -15,9 +15,13 @@ The shell picks the game of the file the user opens, and shows the game's editor
 The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, undo, pending changes, the page that is shown), the generic `NavigationTree` and `NavNodeViewModel` (a game adds badges and notes to a node and fills the tree through its `INavigationBuilder<TGame>`) and `NavigationEditorView` (search box, tree and page frame; the game gives it a page factory).
 `Siniskalc.Core` has the matching `IOpenGame` and `ISavegameService<TGame>`.
 
-**`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game: the values that mean the same in every game (`Resource`, `GameDate`).
-It references nothing of a game and no UI (`HeroesLayeringTests`); the games reference it.
-The games' creature, spell, artifact, player colour, position, map header and skill level tables are not shared: they differ in codes, sets or meaning (HoMM3 has 8 colours and 3 skill levels with no level as `null`, HoMM2 has 6 colours and a `None` level).
+**`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
+It holds the values that mean the same in every game (`Resource`, `GameDate`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity` of Core: a name and the code the savefile holds).
+A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, HoMM3's `Faction`) implement the interface, and the enums (`Color`, `PlayerColor`, HoMM2's `Faction`, `SkillLevel`) stay enums in the models and the `Data` layer, with a small catalog (`PlayerColors.Of(color)`, `SkillLevels.Of(level)`) that gives the view-model layer the interface.
+A level a hero has not learned is `null`, whatever the game stores.
+The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
+`Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`); the games reference it.
+The creature, spell and artifact tables, positions and map headers are not shared (yet): they differ in codes, sets or shape.
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).

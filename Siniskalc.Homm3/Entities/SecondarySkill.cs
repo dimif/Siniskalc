@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public sealed class SecondarySkill : Homm3Enumeration
+    public sealed class SecondarySkill : Homm3Enumeration, Siniskalc.Heroes.Entities.ISecondarySkill
     {
         public static readonly SecondarySkill Pathfinding = new("Pathfinding", 0);
         public static readonly SecondarySkill Archery = new("Archery", 1);

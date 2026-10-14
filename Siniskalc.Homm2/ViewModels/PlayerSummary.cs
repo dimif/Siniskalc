@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -10,7 +11,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the colour of the marker beside the name of the player, e.g. "#C0392B".
         /// </summary>
-        public string ColorHex => Palette.Of(this.Color);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Color));
 
         public string Name => this.Color.ToString();
 

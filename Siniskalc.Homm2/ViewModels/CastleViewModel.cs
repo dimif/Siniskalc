@@ -5,6 +5,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -102,7 +103,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.castle.Name;
 
-        public string ColorHex => Palette.Of(this.castle.Owner);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.castle.Owner));
 
         public string FactionName => this.castle.Faction?.ToString() ?? "Unknown faction";
 
@@ -199,7 +200,7 @@ namespace Siniskalc.Homm2.ViewModels
                     toolTip: "Build the dwelling, upgrade it (the creature changes), or take it down. The creatures that wait in it stay."),
                 new AmountRowViewModel(
                     "Waiting",
-                    Palette.NoPlayer,
+                    PlayerPalette.NoPlayer,
                     Constants.Castle.MinCreatures,
                     Constants.Castle.MaxWaiting,
                     1,

@@ -11,7 +11,7 @@
     /// <remarks>
     /// See https://learn.microsoft.com/en-gb/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/enumeration-classes-over-enum-types.
     /// </remarks>
-    public abstract class AbstractEnumeration : IComparable, IEquatable<AbstractEnumeration>
+    public abstract class AbstractEnumeration : IGameEntity, IComparable, IEquatable<AbstractEnumeration>
     {
         protected AbstractEnumeration(string name, byte code, int availableFrom)
         {

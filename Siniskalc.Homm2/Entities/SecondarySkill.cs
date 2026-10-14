@@ -6,7 +6,7 @@
     /// A secondary skill of Heroes of Might and Magic II. The code is its place in the tables of a hero (levels and order learned): 0 for Pathfinding.
     /// The order is checked against the savegames for Leadership, Ballistics, Pathfinding, Archery, Wisdom and Estates.
     /// </summary>
-    public sealed class SecondarySkill : Homm2Enumeration
+    public sealed class SecondarySkill : Homm2Enumeration, Siniskalc.Heroes.Entities.ISecondarySkill
     {
         public static readonly SecondarySkill Pathfinding = new("Pathfinding", 0);
         public static readonly SecondarySkill Archery = new("Archery", 1);

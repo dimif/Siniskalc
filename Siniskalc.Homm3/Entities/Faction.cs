@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public sealed class Faction : Homm3Enumeration
+    public sealed class Faction : Homm3Enumeration, Siniskalc.Heroes.Entities.IFaction
     {
         public static readonly Faction Neutral = new("Neutral", 99);
         public static readonly Faction Castle = new("Castle", 0x00);

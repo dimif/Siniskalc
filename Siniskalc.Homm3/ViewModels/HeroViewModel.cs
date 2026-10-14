@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -120,7 +121,7 @@
 
         public string Name => this.HeroModel.Name;
 
-        public string ColorHex => PlayerPalette.Of(this.HeroModel.Owner);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.HeroModel.Owner));
 
         /// <summary>
         /// Gets the owners to pick from: "Neutral" and the eight player colours.

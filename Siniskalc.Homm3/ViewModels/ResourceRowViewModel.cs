@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.ViewModels
             Action<Func<PlayerResources, PlayerResources>> update)
             : base(
                 resource.ToString(),
-                PlayerPalette.Of(resource),
+                ResourcePalette.Of(resource.ToString()),
                 Constants.Resources.Min,
                 resource == Resource.Gold ? Constants.Resources.MaxGold : Constants.Resources.MaxOther,
                 resource == Resource.Gold ? Constants.Resources.GoldStep : Constants.Resources.OtherStep,

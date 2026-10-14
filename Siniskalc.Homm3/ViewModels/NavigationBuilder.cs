@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -151,7 +152,7 @@ namespace Siniskalc.Homm3.ViewModels
 
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
             var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner.Value);
-            var colorHex = PlayerPalette.Of(owner);
+            var colorHex = PlayerPalette.Of(PlayerColors.Of(owner));
             var node = new NavNodeViewModel(
                 owner?.ToString() ?? "Neutral",
                 string.Join(" · ", parts),

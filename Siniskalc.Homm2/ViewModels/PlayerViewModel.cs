@@ -5,6 +5,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -47,7 +48,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.Color.ToString();
 
-        public string ColorHex => Palette.Of(this.Color);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Color));
 
         /// <summary>
         /// Gets what the player is up to: out of the game, counting the days to own a castle, or nothing.
@@ -120,7 +121,7 @@ namespace Siniskalc.Homm2.ViewModels
             var gold = resource == Resource.Gold;
             return new AmountRowViewModel(
                 resource.ToString(),
-                Palette.Of(resource),
+                ResourcePalette.Of(resource.ToString()),
                 Constants.Player.MinResource,
                 gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
                 gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,

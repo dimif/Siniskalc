@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -68,7 +69,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.hero.Name;
 
-        public string ColorHex => Palette.Of(this.hero.Owner);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.hero.Owner));
 
         public string FactionName => this.hero.Faction.ToString();
 
@@ -145,7 +146,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,
-            Palette.Of(this.hero?.Owner),
+            PlayerPalette.Of(PlayerColors.Of(this.hero?.Owner)),
             minimum,
             maximum,
             step,

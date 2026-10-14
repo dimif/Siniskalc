@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -109,7 +110,7 @@
             set => this.BuiltThisTurn = !value;
         }
 
-        public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Castle.Owner));
 
         /// <summary>
         /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".

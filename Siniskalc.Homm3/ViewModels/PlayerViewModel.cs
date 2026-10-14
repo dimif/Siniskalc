@@ -6,6 +6,7 @@
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -74,7 +75,7 @@
         /// </summary>
         public string ControlText { get; }
 
-        public string ColorHex => PlayerPalette.Of(this.Color);
+        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Color));
 
         /// <summary>
         /// Gets the resources, gold first (the game lists it last, but it is what players look for first).

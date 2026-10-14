@@ -3,7 +3,7 @@
     /// <summary>
     /// The six towns (and the classes of the heroes that belong to them), in the order of the savegame: 0 for a Knight.
     /// </summary>
-    public enum Race : byte
+    public enum Faction : byte
     {
         Knight = 0,
         Barbarian = 1,

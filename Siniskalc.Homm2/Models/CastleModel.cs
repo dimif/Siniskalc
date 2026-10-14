@@ -12,7 +12,7 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Index">The number of the castle, which is its place in the table.</param>
     /// <param name="Name">The name of the castle, empty for a record the map does not use.</param>
     /// <param name="Owner">The player who owns the castle, or <c>null</c> for nobody.</param>
-    /// <param name="Race">The race of the town, or <c>null</c> when the savegame has a number that is no race.</param>
+    /// <param name="Faction">The faction of the town, or <c>null</c> when the savegame has a number that is no faction.</param>
     /// <param name="Position">The tile of the castle.</param>
     /// <param name="Boat">The tile a ship built in the castle appears on, or <c>null</c> for a castle that is not on the coast.</param>
     /// <param name="Garrison">The five slots of the army that defends the castle when no hero is in it.</param>
@@ -27,7 +27,7 @@ namespace Siniskalc.Homm2.Models
         int Index,
         string Name,
         Color? Owner,
-        Race? Race,
+        Faction? Faction,
         Position Position,
         Position? Boat,
         Army Garrison,
@@ -58,16 +58,16 @@ namespace Siniskalc.Homm2.Models
         /// Gets a value indicating whether the castle is a Wizard castle with its Library, which gives each level of the Mage Guild a
         /// fourth spell.
         /// </summary>
-        public bool HasLibrary => this.Race == Entities.Race.Wizard && this.Town.HasFlag(TownBuildings.Special);
+        public bool HasLibrary => this.Faction == Entities.Faction.Wizard && this.Town.HasFlag(TownBuildings.Special);
 
         /// <summary>
-        /// Gets the most levels a dwelling can have in a town of the race: the creatures of that level, one for the dwelling and one more for
+        /// Gets the most levels a dwelling can have in a town of the faction: the creatures of that level, one for the dwelling and one more for
         /// each upgrade (the first dwelling has none).
         /// </summary>
-        public static int MaxDwellingLevel(Race? race, int dwelling)
+        public static int MaxDwellingLevel(Faction? faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            return race is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForRace(race.Value).Count(c => c.Level == dwelling), 1, 3);
+            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction.Value).Count(c => c.Level == dwelling), 1, 3);
         }
 
         /// <summary>
@@ -102,11 +102,11 @@ namespace Siniskalc.Homm2.Models
 
         /// <summary>
         /// Returns the castle with the Library of a Wizard built or taken down, and the spells each level of its Mage Guild shows changed
-        /// with it. Nothing changes in a castle of another race.
+        /// with it. Nothing changes in a castle of another faction.
         /// </summary>
         public CastleModel WithLibrary(bool built)
         {
-            if (this.Race != Entities.Race.Wizard)
+            if (this.Faction != Entities.Faction.Wizard)
             {
                 return this;
             }
@@ -121,7 +121,7 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public CastleModel WithDwellingLevel(int dwelling, int level)
         {
-            RangeGuard.ThrowIfOutOfRange(level, 0, MaxDwellingLevel(this.Race, dwelling), nameof(level));
+            RangeGuard.ThrowIfOutOfRange(level, 0, MaxDwellingLevel(this.Faction, dwelling), nameof(level));
             var clear = (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
             var bit = level switch
             {

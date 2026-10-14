@@ -5,7 +5,7 @@ namespace Siniskalc.Homm2.Models
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
-    /// A hero of Heroes of Might and Magic II as the savegame has it. There are 54 heroes, nine for each race and all in the savegame
+    /// A hero of Heroes of Might and Magic II as the savegame has it. There are 54 heroes, nine for each faction and all in the savegame
     /// whether the map uses them or not; a hero that no player has is in the pool of those a tavern offers.
     /// </summary>
     /// <param name="HeroId">The number of the hero, which is its place in the table of heroes (0 is Lord Kilburn).</param>
@@ -43,9 +43,9 @@ namespace Siniskalc.Homm2.Models
         private const int HeroesPerRace = 9;
 
         /// <summary>
-        /// Gets the race of the hero: the heroes of each race are numbered together, nine at a time.
+        /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
-        public Race Race => (Race)Math.Min(this.HeroId / HeroesPerRace, (int)Race.Necromancer);
+        public Faction Faction => (Faction)Math.Min(this.HeroId / HeroesPerRace, (int)Faction.Necromancer);
 
         /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.

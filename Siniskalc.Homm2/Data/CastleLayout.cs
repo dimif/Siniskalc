@@ -15,7 +15,7 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int Owner = 0x01;
 
-        public const int Race = 0x03;
+        public const int Faction = 0x03;
         public const int X = 0x04;
         public const int Y = 0x05;
 

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 

@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));
             Assert.That(xabran.Index, Is.EqualTo(Xabran));
             Assert.That(xabran.Owner, Is.EqualTo(Color.Blue));
-            Assert.That(xabran.Race, Is.EqualTo(Race.Knight));
+            Assert.That(xabran.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(xabran.Position, Is.EqualTo(new Position(28, 25)));
             Assert.That(xabran.Boat, Is.Null);
             Assert.That(xabran.HasCastle, Is.True);
@@ -82,7 +82,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var captured = Castle(14, Corackston);
 
             Assert.That(neutral.Owner, Is.Null);
-            Assert.That(neutral.Race, Is.EqualTo(Race.Wizard));
+            Assert.That(neutral.Faction, Is.EqualTo(Faction.Wizard));
             Assert.That(neutral.Garrison.Slots.Count(s => s != null), Is.EqualTo(3));
             Assert.That(captured.Owner, Is.EqualTo(Color.Blue));
             Assert.That(captured.Garrison.Slots, Is.All.Null);
@@ -107,7 +107,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var shipyard = Castle(20, Whiteshield);
             var tower = Castle(24, Whiteshield);
 
-            Assert.That(shipyard.Race, Is.EqualTo(Race.Warlock));
+            Assert.That(shipyard.Faction, Is.EqualTo(Faction.Warlock));
             Assert.That(shipyard.Town.HasFlag(TownBuildings.Shipyard), Is.True);
             Assert.That(shipyard.Boat, Is.EqualTo(new Position(62, 10)));
             Assert.That(Castle(19, Whiteshield).Town.HasFlag(TownBuildings.Shipyard), Is.False);

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
 
@@ -12,9 +13,9 @@ namespace Siniskalc.Homm2.Data
         public SaveMetadata Read(byte[] bytes, SaveLayout layout)
         {
             var date = new GameDate(
-                bytes[layout.DateStart],
+                bytes[layout.DateStart + (2 * HeaderLayout.DateStep)],
                 bytes[layout.DateStart + HeaderLayout.DateStep],
-                bytes[layout.DateStart + (2 * HeaderLayout.DateStep)]);
+                bytes[layout.DateStart]);
             var map = new MapHeader(
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),

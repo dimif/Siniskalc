@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the town the creature is recruited in, or "Neutral"; the list is grouped by it.
         /// </summary>
-        public string Race => this.Creature.Race?.ToString() ?? "Neutral";
+        public string Faction => this.Creature.Faction?.ToString() ?? "Neutral";
 
         /// <summary>
         /// Gets the creature level, 1 to 6.

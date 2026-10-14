@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(maximus.Name, Is.EqualTo("Maximus"));
             Assert.That(maximus.HeroId, Is.EqualTo(Maximus));
-            Assert.That(maximus.Race, Is.EqualTo(Race.Knight));
+            Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(maximus.Owner, Is.EqualTo(Color.Blue));
             Assert.That(maximus.Position, Is.EqualTo(new Position(28, 27)));
             Assert.That(maximus.Destination, Is.Null);
@@ -157,8 +157,8 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(heroes.Select(h => h.HeroId), Is.EqualTo(Enumerable.Range(0, 54)));
             Assert.That(heroes[0].Name, Is.EqualTo("Lord Kilburn"));
             Assert.That(heroes[51].Name, Is.EqualTo("Roxana"));
-            Assert.That(heroes.Select(h => h.Race).Distinct(), Is.EqualTo(Enum.GetValues<Race>()));
-            Assert.That(heroes.GroupBy(h => h.Race).Select(g => g.Count()), Is.All.EqualTo(9));
+            Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(Enum.GetValues<Faction>()));
+            Assert.That(heroes.GroupBy(h => h.Faction).Select(g => g.Count()), Is.All.EqualTo(9));
             Assert.That(heroes.Where(h => h.Owner == Color.Blue).Select(h => h.Name), Is.EqualTo(new[] { "Maximus" }));
         }
 

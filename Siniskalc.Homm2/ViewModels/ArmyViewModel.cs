@@ -78,7 +78,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
         [
-            new("Town", creature.Race?.ToString() ?? "Neutral"),
+            new("Town", creature.Faction?.ToString() ?? "Neutral"),
             new("Level", creature.Level.ToString()),
             new("Growth", $"{creature.Growth} a week"),
         ];

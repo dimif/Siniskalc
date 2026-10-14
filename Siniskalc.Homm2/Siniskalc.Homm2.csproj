@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Siniskalc.Core\Siniskalc.Core.csproj" />
+    <ProjectReference Include="..\Siniskalc.Heroes\Siniskalc.Heroes.csproj" />
     <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
   </ItemGroup>
 

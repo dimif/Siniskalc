@@ -70,7 +70,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string ColorHex => Palette.Of(this.hero.Owner);
 
-        public string RaceName => this.hero.Race.ToString();
+        public string FactionName => this.hero.Faction.ToString();
 
         public int Level => this.hero.Level;
 

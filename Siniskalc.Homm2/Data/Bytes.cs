@@ -35,9 +35,9 @@
 
         public static byte ColorByte(Color? color, byte existing) => ReadColor(existing) == color ? existing : color is null ? Empty : (byte)color;
 
-        public static Race? ReadRace(byte code) => code <= (byte)Race.Necromancer ? (Race)code : null;
+        public static Faction? ReadFaction(byte code) => code <= (byte)Faction.Necromancer ? (Faction)code : null;
 
-        public static byte RaceByte(Race? race, byte existing) => ReadRace(existing) == race ? existing : race is null ? Empty : (byte)race;
+        public static byte FactionByte(Faction? faction, byte existing) => ReadFaction(existing) == faction ? existing : faction is null ? Empty : (byte)faction;
 
         /// <summary>
         /// Reads a number of a hero, a castle or a tile that is 0xFF when there is none.

@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.Entities
         Statue = 0x80,
 
         /// <summary>
-        /// The special building of the race (the Library of a Wizard, which gives each level of the Mage Guild a fourth spell). Found by
+        /// The special building of the faction (the Library of a Wizard, which gives each level of the Mage Guild a fourth spell). Found by
         /// comparing the castles of the savegames: only the bit tells a Wizard castle with the Library from one without.
         /// </summary>
         Special = 0x2000,

@@ -85,7 +85,7 @@ namespace Siniskalc.Homm2.Data
         [
             Field("Castle number", CastleLayout.Index, 1, ByteRegionKind.Identity),
             Field("Owner", CastleLayout.Owner, 1, ByteRegionKind.Identity, "Colour of the player; FF for nobody"),
-            Field("Race", CastleLayout.Race, 1, ByteRegionKind.Identity, "0 Knight to 5 Necromancer"),
+            Field("Faction", CastleLayout.Faction, 1, ByteRegionKind.Identity, "0 Knight to 5 Necromancer"),
             Field("Pos X", CastleLayout.X, 1, ByteRegionKind.Position),
             Field("Pos Y", CastleLayout.Y, 1, ByteRegionKind.Position),
             Named("Shipyard", CastleLayout.Boat, ByteRegionKind.Position, "Where a ship appears; FF when the castle is not on the coast", ("X", 1), ("Y", 1)),

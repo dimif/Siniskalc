@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -41,7 +42,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var bikko = document.Heroes().GetModel(16);
             Assert.That(bikko.Owner, Is.EqualTo(Color.Blue));
-            Assert.That(bikko.Race, Is.EqualTo(Race.Barbarian));
+            Assert.That(bikko.Faction, Is.EqualTo(Faction.Barbarian));
             Assert.That(bikko.Position, Is.EqualTo(new Position(17, 12)));
             Assert.That(bikko.Army.Slots.Take(2).Select(s => s!.Creature), Is.EqualTo(new[] { Creature.Goblin, Creature.Orc }));
 
@@ -53,7 +54,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var xabran = document.Castles().GetModel(2);
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));
             Assert.That(xabran.Owner, Is.EqualTo(Color.Blue));
-            Assert.That(xabran.Race, Is.EqualTo(Race.Barbarian));
+            Assert.That(xabran.Faction, Is.EqualTo(Faction.Barbarian));
             Assert.That(xabran.Position, Is.EqualTo(new Position(17, 12)));
             Assert.That(document.Castles().UsedIndexes(), Is.EqualTo(new[] { 0, 1, 2, 3, 4 }));
         }
@@ -62,9 +63,9 @@ namespace Siniskalc.Homm2.Tests.Data
         public void TheDateOfEachSavegameIsRead()
         {
             Assert.That(TestServices.LoadBrokenAlliance(1).Date, Is.EqualTo(new GameDate(1, 1, 1)));
-            Assert.That(TestServices.LoadBrokenAlliance(6).Date, Is.EqualTo(new GameDate(2, 1, 1)));
+            Assert.That(TestServices.LoadBrokenAlliance(6).Date, Is.EqualTo(new GameDate(1, 1, 2)));
             Assert.That(TestServices.LoadBrokenAlliance(12).Date, Is.EqualTo(new GameDate(1, 2, 1)));
-            Assert.That(TestServices.LoadBrokenAlliance(21).Date, Is.EqualTo(new GameDate(6, 4, 1)));
+            Assert.That(TestServices.LoadBrokenAlliance(21).Date, Is.EqualTo(new GameDate(1, 4, 6)));
             Assert.That(TestServices.LoadBrokenAlliance(22).Date, Is.EqualTo(new GameDate(2, 1, 2)));
             Assert.That(TestServices.LoadBrokenAlliance(22).Date.ToString(), Is.EqualTo("Month 2, Week 1, Day 2"));
         }

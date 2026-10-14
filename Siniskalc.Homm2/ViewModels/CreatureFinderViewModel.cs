@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.ViewModels
             Func<int, string>? describeSlot = null)
             : base(
                 CreateRows(gameVersion),
-                nameof(CreatureChoiceViewModel.Race),
+                nameof(CreatureChoiceViewModel.Faction),
                 FinderColumns,
                 Constants.ArmySlotCount,
                 1,
@@ -40,19 +40,19 @@ namespace Siniskalc.Homm2.ViewModels
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
             new("Creature", nameof(CreatureChoiceViewModel.Name), new GridLength(150)),
-            new("Town", nameof(CreatureChoiceViewModel.Race), new GridLength(100)),
+            new("Town", nameof(CreatureChoiceViewModel.Faction), new GridLength(100)),
             new("Level", nameof(CreatureChoiceViewModel.Level), new GridLength(60), FinderColumnKind.MutedText, "The level of the creature among those of its town"),
             new("Growth", nameof(CreatureChoiceViewModel.Growth), new GridLength(1, GridUnitType.Star), FinderColumnKind.MutedText, "How many a dwelling grows each week"),
         ];
 
-        protected override bool Matches(CreatureChoiceViewModel choice) => this.TextMatches(choice.Name, choice.Race, $"Level {choice.Level}");
+        protected override bool Matches(CreatureChoiceViewModel choice) => this.TextMatches(choice.Name, choice.Faction, $"Level {choice.Level}");
 
         /// <summary>
         /// Lists creatures town by town, neutral ones last, and inside a town by level.
         /// </summary>
         private static List<CreatureChoiceViewModel> CreateRows(GameVersion gameVersion) => Creature.All
             .Where(c => c.IsAvailableIn(gameVersion))
-            .OrderBy(c => c.Race == null ? int.MaxValue : (int)c.Race).ThenBy(c => c.Level).ThenBy(c => c.Code)
+            .OrderBy(c => c.Faction == null ? int.MaxValue : (int)c.Faction).ThenBy(c => c.Level).ThenBy(c => c.Code)
             .Select(c => new CreatureChoiceViewModel(c))
             .ToList();
     }

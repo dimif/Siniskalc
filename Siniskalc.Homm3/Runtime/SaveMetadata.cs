@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Runtime
 {
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
     /// <summary>

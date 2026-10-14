@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -98,13 +99,13 @@ namespace Siniskalc.Homm2.ViewModels
             this.heroes = allHeroes
                 .Where(h => h.Owner == this.Color)
                 .OrderBy(h => h.Name)
-                .Select(h => new LinkViewModel(h.Name, $"{h.Race}, level {h.Level}", new DelegateCommand(_ => this.openHero(h.HeroId))))
+                .Select(h => new LinkViewModel(h.Name, $"{h.Faction}, level {h.Level}", new DelegateCommand(_ => this.openHero(h.HeroId))))
                 .ToList();
 
             this.castles = document.Castles().GetModels()
                 .Where(c => c.IsUsed && c.Owner == this.Color)
                 .OrderBy(c => c.Name)
-                .Select(c => new LinkViewModel(c.Name, c.Race?.ToString() ?? string.Empty, new DelegateCommand(_ => this.openCastle(c.Index))))
+                .Select(c => new LinkViewModel(c.Name, c.Faction?.ToString() ?? string.Empty, new DelegateCommand(_ => this.openCastle(c.Index))))
                 .ToList();
 
             this.tavern =

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Runtime
 {
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
 
     /// <summary>

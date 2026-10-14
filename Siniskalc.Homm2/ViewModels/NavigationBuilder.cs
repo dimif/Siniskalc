@@ -137,7 +137,7 @@ namespace Siniskalc.Homm2.ViewModels
 
                 foreach (var hero in heroes)
                 {
-                    var heroNode = new NavNodeViewModel(hero.Name, $"{hero.Race}, level {hero.Level}", colorHex, NavNodeKind.Hero, hero.HeroId, onSelected: tree.OnSelected);
+                    var heroNode = new NavNodeViewModel(hero.Name, $"{hero.Faction}, level {hero.Level}", colorHex, NavNodeKind.Hero, hero.HeroId, onSelected: tree.OnSelected);
                     group.Children.Add(heroNode);
                     tree.Register(heroNode);
                 }
@@ -156,7 +156,7 @@ namespace Siniskalc.Homm2.ViewModels
 
                 foreach (var castle in castles)
                 {
-                    var castleNode = new NavNodeViewModel(castle.Name, castle.Race?.ToString() ?? string.Empty, colorHex, NavNodeKind.Castle, castle.Index, onSelected: tree.OnSelected)
+                    var castleNode = new NavNodeViewModel(castle.Name, castle.Faction?.ToString() ?? string.Empty, colorHex, NavNodeKind.Castle, castle.Index, onSelected: tree.OnSelected)
                     {
                         Notes = NotesOf(VisitorName(allHeroes, castle)),
                     };

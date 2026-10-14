@@ -15,6 +15,10 @@ The shell picks the game of the file the user opens, and shows the game's editor
 The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, undo, pending changes, the page that is shown), the generic `NavigationTree` and `NavNodeViewModel` (a game adds badges and notes to a node and fills the tree through its `INavigationBuilder<TGame>`) and `NavigationEditorView` (search box, tree and page frame; the game gives it a page factory).
 `Siniskalc.Core` has the matching `IOpenGame` and `ISavegameService<TGame>`.
 
+**`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game: the values that mean the same in every game (`Resource`, `GameDate`).
+It references nothing of a game and no UI (`HeroesLayeringTests`); the games reference it.
+The games' creature, spell, artifact, player colour, position, map header and skill level tables are not shared: they differ in codes, sets or meaning (HoMM3 has 8 colours and 3 skill levels with no level as `null`, HoMM2 has 6 colours and a `None` level).
+
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).
 

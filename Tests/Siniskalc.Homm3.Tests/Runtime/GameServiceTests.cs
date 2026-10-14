@@ -91,7 +91,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
         private Game EditedGame(out string path)
         {
             var game = TestServices.GameService.LoadGameFromFile(Save);
-            game.History.CreatePlayerSession(0).Update(player => player with { Resources = player.Resources.With(Siniskalc.Homm3.Entities.Resource.Gold, 12345) });
+            game.History.CreatePlayerSession(0).Update(player => player with { Resources = player.Resources.With(Siniskalc.Heroes.Entities.Resource.Gold, 12345) });
             path = Path.Combine(this.folder, "target.GM1");
             File.WriteAllBytes(path, [1, 2, 3]);
             return game;

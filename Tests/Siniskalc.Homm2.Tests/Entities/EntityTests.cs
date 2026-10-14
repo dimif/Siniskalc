@@ -32,15 +32,15 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryRaceHasNineCreaturesInSixLevelsAndTheNeutralOnesHaveNoRace()
         {
-            foreach (var race in Enum.GetValues<Race>())
+            foreach (var faction in Enum.GetValues<Faction>())
             {
-                var creatures = Creature.ForRace(race);
+                var creatures = Creature.ForFaction(faction);
 
-                Assert.That(creatures.Select(c => c.Level).Distinct().Order(), Is.EqualTo(Enumerable.Range(1, 6)), race.ToString());
-                Assert.That(creatures, Has.Count.InRange(9, 12), race.ToString());
+                Assert.That(creatures.Select(c => c.Level).Distinct().Order(), Is.EqualTo(Enumerable.Range(1, 6)), faction.ToString());
+                Assert.That(creatures, Has.Count.InRange(9, 12), faction.ToString());
             }
 
-            Assert.That(Creature.All.Where(c => c.Race is null).Select(c => c.Name), Is.EqualTo(new[] { "Rogue", "Nomad", "Ghost", "Genie", "Medusa", "Earth Elemental", "Air Elemental", "Fire Elemental", "Water Elemental" }));
+            Assert.That(Creature.All.Where(c => c.Faction is null).Select(c => c.Name), Is.EqualTo(new[] { "Rogue", "Nomad", "Ghost", "Genie", "Medusa", "Earth Elemental", "Air Elemental", "Fire Elemental", "Water Elemental" }));
         }
 
         [Test]

@@ -62,7 +62,7 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Building("Statue", TownBuildings.Statue),
             ];
 
-            if (this.castle.Race == Race.Wizard)
+            if (this.castle.Faction == Faction.Wizard)
             {
                 this.buildings = [.. this.buildings, new ToggleRowViewModel(
                     "Library",
@@ -104,7 +104,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string ColorHex => Palette.Of(this.castle.Owner);
 
-        public string RaceName => this.castle.Race?.ToString() ?? "Unknown race";
+        public string FactionName => this.castle.Faction?.ToString() ?? "Unknown faction";
 
         /// <summary>
         /// Gets what the settlement is: a castle, or a town that has none built.
@@ -187,9 +187,9 @@ namespace Siniskalc.Homm2.ViewModels
         private DwellingRowViewModel CreateDwelling(int dwelling)
         {
             // The creatures of the level, in the order of the table: the dwelling, then what its upgrades make.
-            var creatures = this.castle.Race is { } race ? Creature.ForRace(race).Where(c => c.Level == dwelling).Select(c => c.Name).ToList() : [];
+            var creatures = this.castle.Faction is { } faction ? Creature.ForFaction(faction).Where(c => c.Level == dwelling).Select(c => c.Name).ToList() : [];
             var levels = new List<string> { NotBuilt };
-            levels.AddRange(Enumerable.Range(0, CastleModel.MaxDwellingLevel(this.castle.Race, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
+            levels.AddRange(Enumerable.Range(0, CastleModel.MaxDwellingLevel(this.castle.Faction, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
             return new DwellingRowViewModel(
                 new ChoiceFieldViewModel(
                     $"Level {dwelling}",

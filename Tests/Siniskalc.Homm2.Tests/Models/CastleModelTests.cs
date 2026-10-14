@@ -82,15 +82,15 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var warlock = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1);
 
-            Assert.That(warlock.Race, Is.EqualTo(Race.Warlock));
+            Assert.That(warlock.Faction, Is.EqualTo(Faction.Warlock));
             Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 1, 1, 2, 1, 1 }), "Whiteshield has a Minotaur King: dwelling 4 is upgraded");
             Assert.That(((uint)warlock.Dwellings & 0x40) == 0 && ((uint)warlock.Dwellings & 0x800) != 0, Is.True);
 
             var downgraded = warlock.WithDwellingLevel(4, 1);
             Assert.That(((uint)downgraded.Dwellings & 0x40) != 0 && ((uint)downgraded.Dwellings & 0x800) == 0, Is.True);
-            Assert.That(CastleModel.MaxDwellingLevel(Race.Warlock, 6), Is.EqualTo(3), "the dragons upgrade twice");
-            Assert.That(CastleModel.MaxDwellingLevel(Race.Warlock, 1), Is.EqualTo(1));
-            Assert.That(CastleModel.MaxDwellingLevel(Race.Barbarian, 6), Is.EqualTo(1), "the Cyclops has no upgrade");
+            Assert.That(CastleModel.MaxDwellingLevel(Faction.Warlock, 6), Is.EqualTo(3), "the dragons upgrade twice");
+            Assert.That(CastleModel.MaxDwellingLevel(Faction.Warlock, 1), Is.EqualTo(1));
+            Assert.That(CastleModel.MaxDwellingLevel(Faction.Barbarian, 6), Is.EqualTo(1), "the Cyclops has no upgrade");
             Assert.That(() => warlock.WithDwellingLevel(3, 2), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 

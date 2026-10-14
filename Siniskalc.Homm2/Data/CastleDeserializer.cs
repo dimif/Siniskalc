@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Data
                 chunk.GetByteAt(CastleLayout.Index),
                 Bytes.ReadText(bytes, CastleLayout.Name, Constants.Castle.NameLength),
                 this.DeserializeOwner(chunk),
-                Bytes.ReadRace(chunk.GetByteAt(CastleLayout.Race)),
+                Bytes.ReadFaction(chunk.GetByteAt(CastleLayout.Faction)),
                 new Position(chunk.GetByteAt(CastleLayout.X), chunk.GetByteAt(CastleLayout.Y)),
                 boatX == Bytes.Empty ? null : new Position(boatX, chunk.GetByteAt(CastleLayout.Boat + 1)),
                 Bytes.Army(chunk.GetBytesAt(CastleLayout.GarrisonTypes, Constants.ArmySlotCount), counts),

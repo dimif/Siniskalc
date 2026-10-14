@@ -1,7 +1,7 @@
-﻿namespace Siniskalc.Homm2.Entities
+namespace Siniskalc.Heroes.Entities
 {
     /// <summary>
-    /// The seven resources, in the order of the savegame's tables (the stock of a player and what the player earns each day).
+    /// The seven resources of the Heroes of Might and Magic games, in the order of the savegames' tables.
     /// </summary>
     public enum Resource : byte
     {

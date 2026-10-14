@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Data
             var bytes = chunk.ToArray();
 
             bytes[CastleLayout.Owner] = Bytes.ColorByte(model.Owner, bytes[CastleLayout.Owner]);
-            bytes[CastleLayout.Race] = Bytes.RaceByte(model.Race, bytes[CastleLayout.Race]);
+            bytes[CastleLayout.Faction] = Bytes.FactionByte(model.Faction, bytes[CastleLayout.Faction]);
             bytes[CastleLayout.X] = ToByte(model.Position.X, nameof(model.Position));
             bytes[CastleLayout.Y] = ToByte(model.Position.Y, nameof(model.Position));
             WriteBoat(bytes, model.Boat);

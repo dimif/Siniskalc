@@ -54,7 +54,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, number) = (original.DwellingLevel(dwelling), current.DwellingLevel(dwelling), dwelling);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Dwellings, $"Dwelling {dwelling}", DwellingText(before), DwellingText(after), c => c.WithDwellingLevel(number, Math.Min(before, CastleModel.MaxDwellingLevel(c.Race, number))));
+                    Add(ChangeAreas.Dwellings, $"Dwelling {dwelling}", DwellingText(before), DwellingText(after), c => c.WithDwellingLevel(number, Math.Min(before, CastleModel.MaxDwellingLevel(c.Faction, number))));
                 }
             }
 

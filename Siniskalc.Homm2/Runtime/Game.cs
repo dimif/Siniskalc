@@ -8,7 +8,7 @@ namespace Siniskalc.Homm2.Runtime
     /// <summary>
     /// A loaded Heroes of Might and Magic II savefile. Edits go through <see cref="History"/>; <see cref="Bytes"/> holds the loaded bytes.
     /// </summary>
-    public sealed class Game
+    public sealed class Game : Siniskalc.Core.Runtime.IOpenGame
     {
         public Game(string? file, byte[] bytes, SaveLayout layout, SaveDocumentHistory history, SaveMetadata metadata, string? name = null)
         {
@@ -38,6 +38,9 @@ namespace Siniskalc.Homm2.Runtime
         public SaveLayout Layout { get; }
 
         public GameVersion GameVersion => this.Layout.Version;
+
+        /// <inheritdoc/>
+        public string VersionName => this.GameVersion.ToString();
 
         /// <summary>
         /// Gets the undo and redo history of edits, shared by every hero, player and castle of the savefile.

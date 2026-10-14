@@ -11,7 +11,7 @@
     /// A loaded savefile. Edits go through <see cref="History"/>; <see cref="Bytes"/> holds the loaded bytes.
     /// Loading and saving files is the job of <see cref="GameService"/>.
     /// </summary>
-    public class Game
+    public class Game : Siniskalc.Core.Runtime.IOpenGame
     {
         public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, SaveMetadata? metadata = null, string? name = null)
         {
@@ -40,6 +40,9 @@
         public string? Name { get; }
 
         public GameVersion GameVersion { get; }
+
+        /// <inheritdoc/>
+        public string VersionName => this.GameVersion.ToString();
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 

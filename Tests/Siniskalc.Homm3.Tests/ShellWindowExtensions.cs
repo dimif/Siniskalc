@@ -3,7 +3,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using Siniskalc.Homm3.Views;
+    using Siniskalc.Wpf.Views;
 
     /// <summary>
     /// Lets a test reach into the window of the shell, which shows the HoMM3 editor through a data template.
@@ -16,8 +16,8 @@
         public static Frame HeroFrame(this Window window)
         {
             window.UpdateLayout();
-            var view = Find<Homm3EditorView>(window) ?? throw new AssertionException("The window shows no HoMM3 editor.");
-            return (Frame)view.FindName("heroFrame");
+            var view = Find<NavigationEditorView>(window) ?? throw new AssertionException("The window shows no editor with a navigation tree.");
+            return (Frame)view.FindName("pageFrame");
         }
 
         private static T? Find<T>(DependencyObject root)

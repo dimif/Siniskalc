@@ -184,7 +184,7 @@ namespace Siniskalc
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
-        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets);
+        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new Siniskalc.Homm3.ViewModels.NavigationBuilder(this.BanishingText));
 
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.
@@ -194,7 +194,7 @@ namespace Siniskalc
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets);
+        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder());
 
         private static AboutInfo CreateAboutInfo()
         {

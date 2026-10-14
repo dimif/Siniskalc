@@ -1,6 +1,7 @@
 ﻿using Siniskalc;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
+using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
@@ -276,7 +277,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheNavigationFilterFindsPlayersAndShowsTheirHeroesAndTowns()
         {
-            this.main.HeroFilter = "purple";
+            this.main.NavigationFilter = "purple";
 
             var visible = this.main.PlayerNodes().Where(n => n.IsVisible).ToList();
             Assert.That(visible.Select(n => n.Title), Is.EqualTo(new[] { "Purple" }));

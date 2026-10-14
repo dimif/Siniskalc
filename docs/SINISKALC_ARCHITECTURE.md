@@ -12,6 +12,8 @@ It defines what the application shell needs from a game: `IGameModule` (how its 
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer.
 It also holds the colours and styles every page shares, and the shell of the application: `ShellWindow` (menus, toolbar, status bar, the panel of pending changes and the menu icons), `ShellViewModel` and `SavegameFileCommands`.
 The shell picks the game of the file the user opens, and shows the game's editor through the data template of the editor's type.
+The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, undo, pending changes, the page that is shown), the generic `NavigationTree` and `NavNodeViewModel` (a game adds badges and notes to a node and fills the tree through its `INavigationBuilder<TGame>`) and `NavigationEditorView` (search box, tree and page frame; the game gives it a page factory).
+`Siniskalc.Core` has the matching `IOpenGame` and `ISavegameService<TGame>`.
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).

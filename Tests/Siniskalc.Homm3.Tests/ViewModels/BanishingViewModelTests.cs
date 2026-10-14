@@ -39,8 +39,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(BluePage(main).BanishingText, Is.EqualTo(pill));
             Assert.That(main.LoadedOverview().Players.Single(p => p.Name == "Blue").BanishingText, Is.EqualTo(pill));
-            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").BanishingText, Is.EqualTo(nav));
-            Assert.That(main.PlayerNodes().Single(n => n.Title == "Red").BanishingText, Is.Empty);
+            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").NoteText(), Is.EqualTo(nav));
+            Assert.That(main.PlayerNodes().Single(n => n.Title == "Red").NoteText(), Is.Empty);
         }
 
         [Test]
@@ -71,12 +71,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(page.DaysLeft, Is.EqualTo(2));
             Assert.That(page.BanishingText, Is.EqualTo("No towns: 2 days left"));
             Assert.That(page.DayChoices.Single(c => c.IsCurrent).Days, Is.EqualTo(2));
-            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").BanishingText, Is.EqualTo("2 days left"));
+            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").NoteText(), Is.EqualTo("2 days left"));
 
             page.ResetCommand.Execute(null);
 
             Assert.That(page.DaysLeft, Is.EqualTo(6));
-            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").BanishingText, Is.EqualTo("6 days left"));
+            Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").NoteText(), Is.EqualTo("6 days left"));
         }
 
         [Test]

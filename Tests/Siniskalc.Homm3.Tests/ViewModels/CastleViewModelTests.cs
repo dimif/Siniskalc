@@ -1,5 +1,6 @@
 ﻿using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
+using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
@@ -54,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheGarrisonListsAllSevenSlots()
         {
-            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").Index);
 
             var castle = this.main.CurrentPageOf<CastleViewModel>();
             Assert.That(castle.Garrison.Select(s => s.CreatureName), Is.EqualTo(new[] { "Pikeman", "Archer", "Griffin", "Swordsman", "Monk", "Cavalier", "Angel" }));
@@ -65,7 +66,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheGarrisonOfAnEmptyCastleShowsEmptySlots()
         {
-            this.main.ShowCastle(this.CastleNode("Blue", "Castle Tumlac").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Blue", "Castle Tumlac").Index);
 
             var castle = this.main.CurrentPageOf<CastleViewModel>();
             Assert.That(castle.Garrison, Has.Count.EqualTo(7));
@@ -76,7 +77,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheBuildingsAreGroupedAndTheBuiltOnesTicked()
         {
-            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").Index);
 
             var castle = this.main.CurrentPageOf<CastleViewModel>();
             Assert.That(castle.BuildingGroups.Select(g => g.Title), Is.EqualTo(new[] { "Town", "Special buildings", "Creature dwellings" }));
@@ -97,7 +98,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ABuildingBuiltWithoutWhatItNeedsIsFlagged()
         {
-            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").Index);
 
             var rows = (this.main.CurrentPageOf<CastleViewModel>()).BuildingGroups.SelectMany(g => g.Rows).ToDictionary(r => r.Name);
 
@@ -137,11 +138,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ReloadingAGameClosesTheCastlePages()
         {
-            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").Index);
             var first = this.main.CurrentPage;
 
             this.main.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
-            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").CastleIndex);
+            this.main.ShowCastle(this.CastleNode("Tan", "Castle Haret").Index);
 
             Assert.That(this.main.CurrentPage, Is.Not.SameAs(first));
         }

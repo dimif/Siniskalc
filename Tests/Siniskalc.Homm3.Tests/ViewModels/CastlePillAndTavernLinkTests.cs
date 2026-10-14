@@ -3,6 +3,7 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
+using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
@@ -91,12 +92,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             var conflux = nodes.Single(n => n.Title == "Conflux");
             var necropolis = nodes.Single(n => n.Title == "5_necropolis");
-            Assert.That((conflux.IsCapital, conflux.HasGrail, conflux.GrailText), Is.EqualTo((true, true, "Aurora Borealis")));
-            Assert.That((necropolis.IsCapital, necropolis.HasGrail), Is.EqualTo((false, false)));
+            Assert.That((conflux.HasBadge(NavigationBuilder.CapitalBadge), conflux.HasBadge(NavigationBuilder.GrailBadge), conflux.BadgeTooltip(NavigationBuilder.GrailBadge)), Is.EqualTo((true, true, "Grail: Aurora Borealis")));
+            Assert.That((necropolis.HasBadge(NavigationBuilder.CapitalBadge), necropolis.HasBadge(NavigationBuilder.GrailBadge)), Is.EqualTo((false, false)));
 
-            main.CurrentGame!.History.CreateCastleSession(conflux.CastleIndex).Update(c => CastleBuilder.Unbuild(c, Building.Capitol));
+            main.CurrentGame!.History.CreateCastleSession(conflux.Index).Update(c => CastleBuilder.Unbuild(c, Building.Capitol));
 
-            Assert.That(main.NavigationNodes.Descendants().Single(n => n.Title == "Conflux").IsCapital, Is.False);
+            Assert.That(main.NavigationNodes.Descendants().Single(n => n.Title == "Conflux").HasBadge(NavigationBuilder.CapitalBadge), Is.False);
         }
     }
 }

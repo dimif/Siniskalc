@@ -7,8 +7,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 - **Game modules** (done): the HoMM3 code is in `Siniskalc.Homm3` and the exe is a thin host with a shell (`IGameModule`, `IGameEditor`, `ShellViewModel`, `ShellWindow`); see `docs/HOMM2_PLAN.md`.
   Which hero, castle and creature types the two games share is still open; expect to fork more than to share.
-- `NavNodeViewModel` and `NavigationTree` are HoMM3-shaped (hero, player and castle indexes).
-  Make a generic node when the second game has a tree of its own.
+- The navigation tree, its node and the editor view are shared (`Siniskalc.Wpf`); each game has a `NavigationBuilder`.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
   A single store holding the document and applying reducers would replace the per-view-model `Update` callbacks and the `Refresh()` calls that follow `History.Changed`.

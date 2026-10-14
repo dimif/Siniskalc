@@ -1,4 +1,5 @@
 ﻿using Siniskalc.Homm3.ViewModels;
+using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
@@ -22,6 +23,15 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         /// <summary>
         /// Returns the players (and neutral) nodes: the children of the game node, which is the root of the tree.
         /// </summary>
+        /// <summary>
+        /// Returns the notes of the node as they are told after its subtitle, without the separators.
+        /// </summary>
+        public static string NoteText(this NavNodeViewModel node) => string.Join(" · ", node.Notes);
+
+        public static bool HasBadge(this NavNodeViewModel node, string key) => node.Badges.Any(b => b.Key == key);
+
+        public static string BadgeTooltip(this NavNodeViewModel node, string key) => node.Badges.Single(b => b.Key == key).Tooltip;
+
         public static IList<NavNodeViewModel> PlayerNodes(this Homm3EditorViewModel main) => main.NavigationNodes.Single().Children;
 
         public static IEnumerable<NavNodeViewModel> Descendants(this IEnumerable<NavNodeViewModel> nodes) => nodes.SelectMany(n => n.Descendants());

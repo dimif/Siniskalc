@@ -1,36 +1,36 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Wpf.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// A node of the navigation tree: the game, a player (whose page shows the player's resources, and which holds the
-    /// player's heroes and towns), a group of heroes or towns, a hero, or a castle.
+    /// A node of the navigation tree: the game, a player (whose page shows the player's resources, and which holds the player's heroes
+    /// and towns), a group of heroes or towns, a hero, or a castle. What a game adds to the look of a node are its
+    /// <see cref="Badges"/> and its <see cref="Notes"/>.
     /// </summary>
     public sealed class NavNodeViewModel : AbstractViewModelBase
     {
+        private static readonly IReadOnlyList<NavBadge> NoBadges = [];
+        private static readonly IReadOnlyList<string> NoNotes = [];
+
         private readonly Action<NavNodeViewModel>? onSelected;
         private bool isSelected;
         private bool isExpanded;
         private bool isVisible = true;
         private bool hasChanges;
-        private bool isCapital;
-        private string grailText = string.Empty;
-        private string garrisonedHeroName = string.Empty;
-        private string banishingText = string.Empty;
+        private IReadOnlyList<NavBadge> badges = NoBadges;
+        private IReadOnlyList<string> notes = NoNotes;
 
-        public NavNodeViewModel(string title, string subtitle, string colorHex, int heroIndex = -1, Action<NavNodeViewModel>? onSelected = null, NavNodeKind? kind = null, int playerIndex = -1, int castleIndex = -1, int tab = 0)
+        public NavNodeViewModel(string title, string subtitle, string colorHex, NavNodeKind kind, int index = -1, int tab = 0, Action<NavNodeViewModel>? onSelected = null)
         {
-            this.Tab = tab;
-            this.Kind = kind ?? (heroIndex >= 0 ? NavNodeKind.Hero : NavNodeKind.Group);
-            this.PlayerIndex = playerIndex;
-            this.CastleIndex = castleIndex;
             this.Title = title;
             this.Subtitle = subtitle;
             this.ColorHex = colorHex;
-            this.HeroIndex = heroIndex;
+            this.Kind = kind;
+            this.Index = index;
+            this.Tab = tab;
             this.onSelected = onSelected;
         }
 
@@ -46,22 +46,12 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string ColorHex { get; }
 
-        /// <summary>
-        /// Gets the hero's index in the savefile, or -1 for a group.
-        /// </summary>
-        public int HeroIndex { get; }
-
         public NavNodeKind Kind { get; }
 
         /// <summary>
-        /// Gets the player's index in the savefile, or -1 if the node is not a player's page.
+        /// Gets the number of the hero, the castle or the player the node stands for, or -1 for a node that is none of them.
         /// </summary>
-        public int PlayerIndex { get; }
-
-        /// <summary>
-        /// Gets the castle's index in the savefile, or -1 if the node is not a castle's page.
-        /// </summary>
-        public int CastleIndex { get; }
+        public int Index { get; }
 
         /// <summary>
         /// Gets the tab of the player's page the node opens: 0 for the resources, 1 for the heroes, 2 for the towns.
@@ -70,97 +60,54 @@ namespace Siniskalc.Homm3.ViewModels
 
         public bool IsHero => this.Kind == NavNodeKind.Hero;
 
-        /// <summary>
-        /// Gets or sets whether the castle of the node has a Capitol; shown as a crown in front of the name.
-        /// </summary>
-        public bool IsCapital
-        {
-            get => this.isCapital;
-            set
-            {
-                if (this.isCapital != value)
-                {
-                    this.isCapital = value;
-                    this.RaisePropertyChanged(nameof(this.IsCapital));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the name of the Grail structure the castle of the node has built, or nothing; shown as a mark in front of the name.
-        /// </summary>
-        public string GrailText
-        {
-            get => this.grailText;
-            set
-            {
-                if (this.grailText != value)
-                {
-                    this.grailText = value;
-                    this.RaisePropertyChanged(nameof(this.GrailText));
-                    this.RaisePropertyChanged(nameof(this.HasGrail));
-                }
-            }
-        }
-
-        public bool HasGrail => this.grailText.Length > 0;
-
         public bool IsCastle => this.Kind == NavNodeKind.Castle;
 
-        /// <summary>
-        /// Gets or sets the name of the hero garrisoned in the castle of the node, or nothing; shown as a mark in front of the name and
-        /// after the faction.
-        /// </summary>
-        public string GarrisonedHeroName
-        {
-            get => this.garrisonedHeroName;
-            set
-            {
-                if (this.garrisonedHeroName != value)
-                {
-                    this.garrisonedHeroName = value;
-                    this.RaisePropertyChanged(nameof(this.GarrisonedHeroName));
-                    this.RaisePropertyChanged(nameof(this.HasGarrisonedHero));
-                    this.RaisePropertyChanged(nameof(this.GarrisonedHeroSuffix));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the garrisoned hero as it follows the faction, such as " · Nymus", or nothing.
-        /// </summary>
-        public string GarrisonedHeroSuffix => this.HasGarrisonedHero ? $" · {this.garrisonedHeroName}" : string.Empty;
-
-        /// <summary>
-        /// Gets or sets the text of a player who owns no town, such as "6 days left" or "banished", or nothing; shown after the subtitle.
-        /// </summary>
-        public string BanishingText
-        {
-            get => this.banishingText;
-            set
-            {
-                if (this.banishingText != value)
-                {
-                    this.banishingText = value;
-                    this.RaisePropertyChanged(nameof(this.BanishingText));
-                    this.RaisePropertyChanged(nameof(this.BanishingSuffix));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the banishing text as it follows the subtitle, such as " · 6 days left", or nothing.
-        /// </summary>
-        public string BanishingSuffix => this.banishingText.Length > 0 ? $" · {this.banishingText}" : string.Empty;
-
-        public bool HasGarrisonedHero => this.garrisonedHeroName.Length > 0;
-
-        public ObservableCollection<NavNodeViewModel> Children { get; } = new ObservableCollection<NavNodeViewModel>();
+        public ObservableCollection<NavNodeViewModel> Children { get; } = [];
 
         /// <summary>
         /// Gets or sets whether a node that holds others is expanded when no filter is applied.
         /// </summary>
         public bool DefaultExpanded { get; set; }
+
+        /// <summary>
+        /// Gets or sets the marks shown in front of the name.
+        /// </summary>
+        public IReadOnlyList<NavBadge> Badges
+        {
+            get => this.badges;
+            set
+            {
+                value ??= NoBadges;
+                if (!this.badges.SequenceEqual(value))
+                {
+                    this.badges = value;
+                    this.RaisePropertyChanged(nameof(this.Badges));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets what is told after the subtitle, one text each, such as the hero that visits a castle or the days a player has left.
+        /// </summary>
+        public IReadOnlyList<string> Notes
+        {
+            get => this.notes;
+            set
+            {
+                value ??= NoNotes;
+                if (!this.notes.SequenceEqual(value))
+                {
+                    this.notes = value;
+                    this.RaisePropertyChanged(nameof(this.Notes));
+                    this.RaisePropertyChanged(nameof(this.NotesText));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the notes as they follow the subtitle, such as " · Ariel · 6 days left", or nothing.
+        /// </summary>
+        public string NotesText => string.Concat(this.notes.Select(n => $" · {n}"));
 
         public bool IsSelected
         {
@@ -212,7 +159,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets whether the node, or a hero below it, has unsaved edits.
+        /// Gets or sets whether the node, or one below it, has unsaved edits.
         /// </summary>
         public bool HasChanges
         {

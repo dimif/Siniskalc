@@ -113,13 +113,13 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         {
             var hero = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.Hero);
 
-            this.editor.HeroFilter = hero.Title;
+            this.editor.NavigationFilter = hero.Title;
 
             var visible = Descendants(this.editor.NavigationNodes[0]).Where(n => n.IsVisible && n.Kind == NavNodeKind.Hero).ToList();
             Assert.That(visible.Select(n => n.Title), Does.Contain(hero.Title));
             Assert.That(visible.Count, Is.LessThan(Descendants(this.editor.NavigationNodes[0]).Count(n => n.Kind == NavNodeKind.Hero)));
 
-            this.editor.HeroFilter = string.Empty;
+            this.editor.NavigationFilter = string.Empty;
             Assert.That(Descendants(this.editor.NavigationNodes[0]).All(n => n.IsVisible), Is.True);
         }
 

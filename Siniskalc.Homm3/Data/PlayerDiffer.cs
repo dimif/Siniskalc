@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
     /// <summary>

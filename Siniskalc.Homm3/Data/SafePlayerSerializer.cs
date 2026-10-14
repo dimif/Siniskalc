@@ -2,6 +2,7 @@
 {
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
     /// <summary>

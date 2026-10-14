@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>

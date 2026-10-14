@@ -156,7 +156,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => $"{c.Path}: {c.Change.Description} {c.Change.Before} -> {c.Change.After}"), Is.EqualTo(new[]
             {
-                "Maximus › Army: Slot 3 empty -> Roc × 2",
+                "Maximus › Creatures: Slot 3 empty -> Roc × 2",
                 "Blue › Resources: Ore 20 -> 1",
                 "Blue › Resources: Gold 7,500 -> 9,999",
             }));

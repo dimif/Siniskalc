@@ -1,27 +1,27 @@
-namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Heroes.Models
 {
     using System.Collections.Generic;
     using Siniskalc.Core;
 
     /// <summary>
-    /// The two heroes the tavern of a player offers for hire, by hero id. A place the tavern has no hero for is <c>null</c>.
+    /// The two heroes the tavern of a player offers for hire, by hero number. A place the tavern has no hero for is <c>null</c>.
     /// </summary>
-    /// <param name="First">The id of the hero in the first place, or <c>null</c>.</param>
-    /// <param name="Second">The id of the hero in the second place, or <c>null</c>.</param>
-    public sealed record TavernHeroes(int? First, int? Second)
+    /// <param name="First">The number of the hero in the first place, or <c>null</c>.</param>
+    /// <param name="Second">The number of the hero in the second place, or <c>null</c>.</param>
+    public readonly record struct TavernHeroes(int? First, int? Second)
     {
         /// <summary>
         /// How many heroes a tavern offers.
         /// </summary>
-        public const int Places = 2;
+        public const int Places = Constants.Tavern.Places;
 
         /// <summary>
         /// Gets a tavern with no hero in it.
         /// </summary>
-        public static TavernHeroes Empty { get; } = new(null, null);
+        public static TavernHeroes Empty => default;
 
         /// <summary>
-        /// Gets the hero ids of the places, in order.
+        /// Gets the hero numbers of the places, in order.
         /// </summary>
         public IReadOnlyList<int?> Ids => [this.First, this.Second];
 
@@ -38,7 +38,7 @@ namespace Siniskalc.Homm3.Models
             RangeGuard.ThrowIfNotIndex(place, Places, nameof(place));
             if (heroId is { } id)
             {
-                RangeGuard.ThrowIfOutOfRange(id, Constants.Player.MinHeroId, Constants.Player.MaxHeroId, nameof(heroId));
+                RangeGuard.ThrowIfOutOfRange(id, Constants.Hero.MinId, Constants.Hero.MaxId, nameof(heroId));
             }
 
             return place == 0 ? this with { First = heroId } : this with { Second = heroId };

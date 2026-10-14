@@ -5,6 +5,7 @@ namespace Siniskalc.Homm2.Data
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -59,7 +60,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.Army.Slots[slot], current.Army.Slots[slot], slot);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Army, $"Slot {slot + 1}", SlotText(before), SlotText(after), h => h with { Army = h.Army.WithSlot(index, before) });
+                    Add(ChangeAreas.Creatures, $"Slot {slot + 1}", SlotText(before), SlotText(after), h => h with { Army = h.Army.WithSlot(index, before) });
                 }
             }
 
@@ -90,22 +91,22 @@ namespace Siniskalc.Homm2.Data
             var after = current.PrimarySkills;
             if (before.Attack != after.Attack)
             {
-                add(ChangeAreas.Skills, "Attack", before.Attack.ToString(), after.Attack.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Attack = before.Attack } });
+                add(ChangeAreas.PrimarySkills, "Attack", before.Attack.ToString(), after.Attack.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Attack = before.Attack } });
             }
 
             if (before.Defense != after.Defense)
             {
-                add(ChangeAreas.Skills, "Defense", before.Defense.ToString(), after.Defense.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Defense = before.Defense } });
+                add(ChangeAreas.PrimarySkills, "Defense", before.Defense.ToString(), after.Defense.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Defense = before.Defense } });
             }
 
             if (before.SpellPower != after.SpellPower)
             {
-                add(ChangeAreas.Skills, "Spell power", before.SpellPower.ToString(), after.SpellPower.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { SpellPower = before.SpellPower } });
+                add(ChangeAreas.PrimarySkills, "Spell power", before.SpellPower.ToString(), after.SpellPower.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { SpellPower = before.SpellPower } });
             }
 
             if (before.Knowledge != after.Knowledge)
             {
-                add(ChangeAreas.Skills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Knowledge = before.Knowledge } });
+                add(ChangeAreas.PrimarySkills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Knowledge = before.Knowledge } });
             }
         }
 
@@ -116,7 +117,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after) = (original.SecondarySkills.LevelOf(skill), current.SecondarySkills.LevelOf(skill));
                 if (before != after)
                 {
-                    add(ChangeAreas.Skills, skill.Name, LevelText(before), LevelText(after), h => h with { SecondarySkills = h.SecondarySkills.With(skill, before) });
+                    add(ChangeAreas.SecondarySkills, skill.Name, LevelText(before), LevelText(after), h => h with { SecondarySkills = h.SecondarySkills.With(skill, before) });
                 }
             }
         }

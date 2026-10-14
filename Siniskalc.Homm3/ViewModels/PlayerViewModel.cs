@@ -17,14 +17,13 @@
     /// ViewModel that wraps a player for UI binding. Like <see cref="HeroViewModel"/>, it reads from a
     /// <see cref="PlayerEditSession"/>, writes every change back through it, and refreshes when the history changes.
     /// </summary>
-    public sealed class PlayerViewModel : PageViewModelBase, IDisposable
+    public sealed class PlayerViewModel : TabbedPageViewModelBase, IDisposable
     {
         private readonly PlayerEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int>? openHero;
         private readonly Action<int>? openCastle;
-        private int selectedTab;
 
         public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
             : base(session.Current.Color.ToString())
@@ -82,22 +81,6 @@
         /// Gets the resources, gold first (the game lists it last, but it is what players look for first).
         /// </summary>
         public IReadOnlyList<ResourceRowViewModel> Resources { get; }
-
-        /// <summary>
-        /// Gets or sets the tab shown: 0 for the general tab (resources and banishing), 1 for the heroes, 2 for the towns, 3 for the obelisks, 4 for the hex editor.
-        /// </summary>
-        public int SelectedTab
-        {
-            get => this.selectedTab;
-            set
-            {
-                if (this.selectedTab != value)
-                {
-                    this.selectedTab = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedTab));
-                }
-            }
-        }
 
         /// <summary>
         /// Gets the heroes of the player, by name.

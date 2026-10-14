@@ -12,16 +12,15 @@ namespace Siniskalc.Homm2.ViewModels
     /// A page of the editor about one hero, player or castle: its tab, whether the savegame holds edits of it, and Reset. The page reads
     /// the models of the current document and so is up to date after every edit, undo and redo.
     /// </summary>
-    public abstract class PageViewModel : AbstractViewModelBase, IDisposable
+    public abstract class PageViewModel : TabbedPageViewModelBase, IDisposable
     {
         private readonly ChunkKind kind;
         private readonly int index;
-        private int selectedTab;
-        private bool hasPendingChanges;
 
         private readonly IByteEditTargetFactory? byteEditTargets;
 
         protected PageViewModel(Game game, ChunkKind kind, int index, IByteEditTargetFactory? byteEditTargets = null)
+            : base(kind.ToString())
         {
             this.byteEditTargets = byteEditTargets;
             this.Game = game;
@@ -29,38 +28,6 @@ namespace Siniskalc.Homm2.ViewModels
             this.index = index;
             this.ResetCommand = new DelegateCommand(_ => this.Reset(), _ => this.HasPendingChanges);
             game.History.Changed += this.OnHistoryChanged;
-        }
-
-        /// <summary>
-        /// Gets the position of the tab that is shown, from the first one.
-        /// </summary>
-        public int SelectedTab
-        {
-            get => this.selectedTab;
-            set
-            {
-                if (this.selectedTab != value)
-                {
-                    this.selectedTab = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedTab));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the savegame holds edits of what the page is about that are not saved.
-        /// </summary>
-        public bool HasPendingChanges
-        {
-            get => this.hasPendingChanges;
-            private set
-            {
-                if (this.hasPendingChanges != value)
-                {
-                    this.hasPendingChanges = value;
-                    this.RaisePropertyChanged(nameof(this.HasPendingChanges));
-                }
-            }
         }
 
         /// <summary>

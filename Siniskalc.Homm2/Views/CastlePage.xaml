@@ -37,10 +37,10 @@
             <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14">
                 <Run Text="{Binding FactionName, Mode=OneWay}"/><Run Text=" "/><Run Text="{Binding KindText, Mode=OneWay}"/>
             </TextBlock>
-            <Border Style="{StaticResource Homm2EditedMarkStyle}" ToolTip="This castle has changes that are not saved yet">
+            <Border Style="{StaticResource EditedMarkStyle}" ToolTip="This castle has changes that are not saved yet">
                 <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
             </Border>
-            <Button Style="{StaticResource Homm2ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
+            <Button Style="{StaticResource ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
                     ToolTip="Put everything of this castle back to what the savegame had"/>
         </StackPanel>
 
@@ -61,7 +61,7 @@
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource Homm2TabPanel4}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
@@ -76,7 +76,7 @@
             </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <!-- General -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel0}">
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Castle"/>
@@ -84,7 +84,7 @@
                             <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" Text="{Binding Notice}"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,2,0,6"
                                        Text="The flag of the castle on the map, and what the new owner has seen of the map around it, are not changed: the game fixes the flag when someone visits, and the castle may show only in the list of castles of its owner until the map is explored."/>
-                            <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
+                            <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource FactRowTemplate}"/>
                             <StackPanel Orientation="Horizontal" Margin="0,3">
                                 <StackPanel.Style>
                                     <Style TargetType="StackPanel">
@@ -103,7 +103,7 @@
                 </WrapPanel>
 
                 <!-- Buildings -->
-                <StackPanel Style="{StaticResource Homm2TabPanel1}">
+                <StackPanel Style="{StaticResource TabPanel1}">
                     <WrapPanel Margin="-6,0,0,0">
                         <Border Style="{StaticResource CardStyle}" Width="330">
                             <StackPanel>
@@ -123,12 +123,12 @@
                 </StackPanel>
 
                 <!-- Creatures -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
                     <wpf:ArmyEditorView DataContext="{Binding GarrisonEditor}"/>
                 </StackPanel>
 
                 <!-- Mage Guild -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
                     <Border Style="{StaticResource CardStyle}" Width="400">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Mage Guild"/>

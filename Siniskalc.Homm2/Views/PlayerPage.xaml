@@ -16,10 +16,10 @@
             <Ellipse Width="14" Height="14" Margin="0,0,10,0" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
             <TextBlock Text="{Binding Name}" FontSize="24" FontWeight="SemiBold"/>
             <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding Status}"/>
-            <Border Style="{StaticResource Homm2EditedMarkStyle}" ToolTip="This player has changes that are not saved yet">
+            <Border Style="{StaticResource EditedMarkStyle}" ToolTip="This player has changes that are not saved yet">
                 <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
             </Border>
-            <Button Style="{StaticResource Homm2ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
+            <Button Style="{StaticResource ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
                     ToolTip="Put everything of this player back to what the savegame had"/>
         </StackPanel>
 
@@ -39,7 +39,7 @@
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource Homm2TabPanel3}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel3}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
@@ -54,7 +54,7 @@
             </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <!-- Resources -->
-                <StackPanel Style="{StaticResource Homm2TabPanel0}">
+                <StackPanel Style="{StaticResource TabPanel0}">
                     <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource AmountCardTemplate}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -79,29 +79,29 @@
                 </StackPanel>
 
                 <!-- Heroes -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel1}">
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Heroes"/>
-                            <ItemsControl ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource Homm2LinkTemplate}"/>
-                            <TextBlock Style="{StaticResource Homm2EmptyNoteStyle}" Tag="{Binding HasHeroes}" Text="This player has no heroes"/>
+                            <ItemsControl ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource LinkTemplate}"/>
+                            <TextBlock Style="{StaticResource EmptyNoteStyle}" Tag="{Binding HasHeroes}" Text="This player has no heroes"/>
                         </StackPanel>
                     </Border>
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Tavern"/>
-                            <ItemsControl ItemsSource="{Binding Tavern}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
+                            <ItemsControl ItemsSource="{Binding Tavern}" ItemTemplate="{StaticResource FactRowTemplate}"/>
                         </StackPanel>
                     </Border>
                 </WrapPanel>
 
                 <!-- Towns -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Towns"/>
-                            <ItemsControl ItemsSource="{Binding Castles}" ItemTemplate="{StaticResource Homm2LinkTemplate}"/>
-                            <TextBlock Style="{StaticResource Homm2EmptyNoteStyle}" Tag="{Binding HasCastles}" Text="This player has no towns"/>
+                            <ItemsControl ItemsSource="{Binding Castles}" ItemTemplate="{StaticResource LinkTemplate}"/>
+                            <TextBlock Style="{StaticResource EmptyNoteStyle}" Tag="{Binding HasCastles}" Text="This player has no towns"/>
                         </StackPanel>
                     </Border>
                 </WrapPanel>

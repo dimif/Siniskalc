@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Heroes.ViewModels
 {
     using System.Windows.Input;
 

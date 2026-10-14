@@ -30,7 +30,7 @@
         <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CardStyle}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="What the artifacts add to the skills"/>
-                <ItemsControl ItemsSource="{Binding Bonuses}" ItemTemplate="{StaticResource Homm2FactRowTemplate}"/>
+                <ItemsControl ItemsSource="{Binding Bonuses}" ItemTemplate="{StaticResource FactRowTemplate}"/>
                 <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,4,0,0"
                            Text="Already counted in the skills of the hero: the game adds them when an artifact is given and takes them off when it is taken away."/>
             </StackPanel>

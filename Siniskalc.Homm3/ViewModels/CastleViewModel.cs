@@ -17,7 +17,7 @@
     /// <see cref="CastleEditSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
     /// the pending changes and follow undo and redo.
     /// </summary>
-    public sealed class CastleViewModel : PageViewModelBase, IDisposable
+    public sealed class CastleViewModel : TabbedPageViewModelBase, IDisposable
     {
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 

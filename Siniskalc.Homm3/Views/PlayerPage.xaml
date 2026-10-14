@@ -33,50 +33,10 @@
             </Border>
         </DataTemplate>
 
-        <!-- A panel of a tab: hidden unless the tab with its number is the picked one. -->
-        <Style x:Key="TabPanelBase" TargetType="FrameworkElement">
-            <Setter Property="Visibility" Value="Collapsed"/>
-        </Style>
-        <Style x:Key="TabPanel0" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="0">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TabPanel1" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="1">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TabPanel2" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="2">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TabPanel3" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="3">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TabPanel4" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="4">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <Style x:Key="CardsScrollerStyle" TargetType="ScrollViewer">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedIndex, ElementName=tabs}" Value="4">
+                <DataTrigger Binding="{Binding SelectedTab}" Value="4">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -196,36 +156,11 @@
             <Border Style="{StaticResource BanishingPillStyle}" Margin="12,0,0,4" VerticalAlignment="Bottom">
                 <TextBlock Text="{Binding BanishingText}"/>
             </Border>
-            <Border Margin="12,0,0,4" Padding="6,1" VerticalAlignment="Bottom" CornerRadius="9" Background="{StaticResource AccentSoftBrush}"
-                    ToolTip="This player has changes that are not saved yet">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+            <Border Style="{StaticResource EditedMarkStyle}" ToolTip="This player has changes that are not saved yet">
                 <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
             </Border>
-            <Button Margin="6,0,0,4" VerticalAlignment="Bottom" Content="Reset" Command="{Binding ResetCommand}"
-                    ToolTip="Put every resource of this player back to what the savegame had">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
-                        <Setter Property="FontSize" Value="11"/>
-                        <Setter Property="FontWeight" Value="Normal"/>
-                        <Setter Property="Padding" Value="5,0"/>
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <Button Style="{StaticResource ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
+                    ToolTip="Put every resource of this player back to what the savegame had"/>
         </StackPanel>
 
         <!-- The pages of a player, as tabs. -->

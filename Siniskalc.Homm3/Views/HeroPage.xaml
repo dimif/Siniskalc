@@ -48,36 +48,11 @@
                 <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenGarrisonCastleCommand}" Content="{Binding GarrisonCastleName}"
                         FontSize="14" ToolTip="Go to castle"/>
             </StackPanel>
-            <Border Margin="12,0,0,4" Padding="6,1" VerticalAlignment="Bottom" CornerRadius="9" Background="{StaticResource AccentSoftBrush}"
-                    ToolTip="This hero has changes that are not saved yet">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+            <Border Style="{StaticResource EditedMarkStyle}" ToolTip="This hero has changes that are not saved yet">
                 <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
             </Border>
-            <Button Margin="6,0,0,4" VerticalAlignment="Bottom" Content="Reset" Command="{Binding ResetCommand}"
-                    ToolTip="Put everything of this hero back to what the savegame had">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
-                        <Setter Property="FontSize" Value="11"/>
-                        <Setter Property="FontWeight" Value="Normal"/>
-                        <Setter Property="Padding" Value="5,0"/>
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HasPendingChanges}" Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <Button Style="{StaticResource ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
+                    ToolTip="Put everything of this hero back to what the savegame had"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
             <TextBlock Text="Owner" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
@@ -87,7 +62,7 @@
         </StackPanel>
 
         <!-- The pages of a hero, as tabs. -->
-        <ListBox Grid.Row="1" SelectionMode="Single" SelectionChanged="SidebarSelectionChanged" x:Name="sidebar"
+        <ListBox Grid.Row="1" SelectionMode="Single" x:Name="sidebar" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}"
                  Margin="16,0" BorderThickness="0,0,0,1" BorderBrush="{StaticResource LineBrush}" Background="Transparent"
                  ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ListBox.ItemsPanel>
@@ -95,15 +70,39 @@
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <wpf:NavButton Navlink="/GeneralInfoPage.xaml" Text="General"/>
-            <wpf:NavButton Navlink="/SecondarySkillsPage.xaml" Text="Skills"/>
-            <wpf:NavButton Navlink="/ArmyPage.xaml" Text="Creatures"/>
-            <wpf:NavButton Navlink="/SpellsPage.xaml" Text="Spells"/>
-            <wpf:NavButton Navlink="/ArtifactsPage.xaml" Text="Artifacts"/>
-            <wpf:NavButton Navlink="/BackpackPage.xaml" Text="Backpack"/>
-            <wpf:NavButton Navlink="/HexPage.xaml" Text="Hex" RequiresAdvancedMode="True"/>
+            <wpf:NavButton Text="General"/>
+            <wpf:NavButton Text="Skills"/>
+            <wpf:NavButton Text="Creatures"/>
+            <wpf:NavButton Text="Spells"/>
+            <wpf:NavButton Text="Artifacts"/>
+            <wpf:NavButton Text="Backpack"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
-        <Frame Grid.Row="2" x:Name="navframe" NavigationUIVisibility="Hidden" Margin="8,8,8,0"/>
+        <!-- The panel of each tab, shown while its tab is the picked one. A panel keeps the data context of the page, which has the
+             selected tab; the data context of what it shows is the hero's view model of that tab. -->
+        <Grid Grid.Row="2" Margin="8,8,8,0">
+            <Grid Style="{StaticResource TabPanel0}">
+                <local:GeneralInfoView DataContext="{Binding GeneralInfoViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel1}">
+                <wpf:SecondarySkillsView DataContext="{Binding SecondarySkillsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel2}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <local:ArmyEditor DataContext="{Binding ArmyViewModel}"/>
+                </ScrollViewer>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel3}">
+                <wpf:SpellsView DataContext="{Binding SpellsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel4}">
+                <local:ArtifactsView DataContext="{Binding ArtifactsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel5}">
+                <local:BackpackView DataContext="{Binding BackpackViewModel}"/>
+            </Grid>
+            <wpf:HexEditor x:Name="hexEditor" Style="{StaticResource TabPanel6}"/>
+        </Grid>
     </Grid>
 </Page>

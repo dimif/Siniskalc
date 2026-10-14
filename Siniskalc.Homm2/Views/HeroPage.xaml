@@ -34,10 +34,10 @@
                     <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenCastleCommand}" Content="{Binding CastleName}"
                             FontSize="14" ToolTip="Go to castle"/>
                 </StackPanel>
-                <Border Style="{StaticResource Homm2EditedMarkStyle}" ToolTip="This hero has changes that are not saved yet">
+                <Border Style="{StaticResource EditedMarkStyle}" ToolTip="This hero has changes that are not saved yet">
                     <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
                 </Border>
-                <Button Style="{StaticResource Homm2ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
+                <Button Style="{StaticResource ResetPillStyle}" Content="Reset" Command="{Binding ResetCommand}"
                         ToolTip="Put everything of this hero back to what the savegame had"/>
             </StackPanel>
         </StackPanel>
@@ -60,7 +60,7 @@
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource Homm2TabPanel5}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel5}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
@@ -75,7 +75,7 @@
             </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <!-- General -->
-                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel0}">
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Primary skills"/>
@@ -99,22 +99,22 @@
                 </WrapPanel>
 
                 <!-- Skills -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel1}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
                     <wpf:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
                 </StackPanel>
 
                 <!-- Creatures -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel2}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
                     <wpf:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
                 </StackPanel>
 
                 <!-- Spells -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel3}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
                     <wpf:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
                 </StackPanel>
 
                 <!-- Artifacts -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource Homm2TabPanel4}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel4}">
                     <local:ArtifactsView DataContext="{Binding ArtifactsEditor}"/>
                 </StackPanel>
             </Grid>

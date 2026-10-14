@@ -6,7 +6,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <!-- The colours and the styles of the controls that every page uses; the styles below are the ones that only make sense for heroes. -->
-        <ResourceDictionary Source="pack://application:,,,/Siniskalc.Wpf;component/Styles/SiniskalcStyles.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Siniskalc.Heroes.Wpf;component/Styles/PageStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <!-- The pill of a player who owns no town ("No towns: 6 days left", "Banished"), on the player's page and card. The data context has HasBanishing and IsBanished. -->

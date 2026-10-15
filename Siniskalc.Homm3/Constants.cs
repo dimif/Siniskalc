@@ -32,6 +32,11 @@ namespace Siniskalc.Homm3
             public const long MinLevel = 1;
             public const long MaxLevel = 75;
 
+            /// <summary>
+            /// The level is a byte in the savefile, which holds more than the game gives a hero.
+            /// </summary>
+            public const long MaxStoredLevel = byte.MaxValue;
+
             public const long MinExperience = 0;
             public const long MaxExperience = 2_000_000_000;
             public const long ExperienceStep = 1000;
@@ -175,6 +180,13 @@ namespace Siniskalc.Homm3
             /// A dwelling stores the creatures it has in 16 bits.
             /// </summary>
             public const long MaxDwellingCreatures = ushort.MaxValue;
+
+            public const long MaxMageGuildLevel = 5;
+
+            /// <summary>
+            /// How many spells a level of the Mage Guild holds is a byte in the savefile.
+            /// </summary>
+            public const long MaxSpellsOfALevel = byte.MaxValue;
         }
     }
 }

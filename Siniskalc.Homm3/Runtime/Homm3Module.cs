@@ -25,13 +25,13 @@
         public string OpenPattern => "*.CGM;*.GM*";
 
         /// <inheritdoc/>
-        public string SavePattern => "*.*GM;*.GM*";
+        public string SavePattern => "*.CGM;*.GM*";
 
         /// <inheritdoc/>
-        public int HeadLength => 2;
+        public int HeadLength => GzipSavefileCodec.MagicLength;
 
         /// <inheritdoc/>
-        public bool Recognizes(string filePath, ReadOnlySpan<byte> head) => head.Length >= 2 && head[0] == 0x1F && head[1] == 0x8B;
+        public bool Recognizes(string filePath, ReadOnlySpan<byte> head) => GzipSavefileCodec.IsGzip(head);
 
         /// <inheritdoc/>
         public IGameEditor CreateEditor() => this.createEditor();

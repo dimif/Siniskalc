@@ -1,26 +1,23 @@
-﻿namespace Siniskalc.Homm3.Runtime
+namespace Siniskalc.Homm3.Runtime
 {
-    using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// A loaded savefile. Edits go through <see cref="History"/>; <see cref="Bytes"/> holds the loaded bytes.
+    /// A loaded savefile. Edits go through <see cref="OpenGame.History"/>; <see cref="OpenGame.Bytes"/> holds the loaded bytes.
     /// Loading and saving files is the job of <see cref="GameService"/>.
     /// </summary>
-    public class Game : Siniskalc.Core.Runtime.IOpenGame
+    public sealed class Game : OpenGame
     {
         public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, SaveMetadata? metadata = null, string? name = null)
+            : base(file, bytes, history, name)
         {
-            this.File = file;
-            this.Name = name ?? file;
-            this.Bytes = bytes;
             this.GameVersion = gameVersion;
-            this.History = history;
             this.Metadata = metadata ?? SaveMetadata.None;
         }
 
@@ -29,33 +26,12 @@
         /// </summary>
         public SaveMetadata Metadata { get; }
 
-        /// <summary>
-        /// Gets the savefile the game is tied to: where it was loaded from, or last saved to. <c>null</c> when it was loaded from bytes
-        /// (a dump), which have no file to read again.
-        /// </summary>
-        public string? File { get; private set; }
-
-        /// <summary>
-        /// Gets what to call the game: its file, or the name it was given when loaded from bytes. <c>null</c> when it has neither.
-        /// </summary>
-        public string? Name { get; }
-
         public GameVersion GameVersion { get; }
 
         /// <inheritdoc/>
-        public string VersionName => this.GameVersion.ToString();
+        public override string VersionName => this.GameVersion.ToString();
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
-
-        /// <summary>
-        /// Gets the savefile bytes as loaded; saving applies the edits from <see cref="History"/> to them.
-        /// </summary>
-        public byte[] Bytes { get; }
-
-        /// <summary>
-        /// Gets the undo/redo history of edits, shared by every hero and player in this savefile.
-        /// </summary>
-        public SaveDocumentHistory History { get; }
 
         /// <summary>
         /// Gets the date in the game when the savefile was loaded, or <c>null</c> when it cannot be found in this version.
@@ -95,22 +71,6 @@
         {
             var index = (int)color;
             return this.PlayerControls != null && index < this.PlayerControls.Count ? this.PlayerControls[index] : null;
-        }
-
-        /// <summary>
-        /// Ties the game to the file it was just saved to, which is what reloading reads.
-        /// </summary>
-        public void SavedTo(string filePath)
-        {
-            this.File = filePath;
-        }
-
-        /// <summary>
-        /// Returns the bytes to save: the loaded bytes with every edit from <see cref="History"/> applied.
-        /// </summary>
-        public byte[] GetBytesToSave()
-        {
-            return this.History.Current.ApplyChangesTo(this.Bytes);
         }
     }
 }

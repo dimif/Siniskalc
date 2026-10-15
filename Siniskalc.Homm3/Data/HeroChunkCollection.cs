@@ -10,9 +10,8 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// The heroes of a savefile.
     /// </summary>
-    public sealed class HeroChunkCollection : ChunkCollection<HeroChunk>
+    public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, IHeroSerializer>
     {
-        private readonly IHeroDeserializer deserializer;
         private readonly IHeroDiffer differ;
 
         /// <param name="chunks">The heroes.</param>
@@ -21,11 +20,9 @@ namespace Siniskalc.Homm3.Data
         /// <param name="serializer">Writes a hero to a chunk; made for <paramref name="offsets"/>.</param>
         /// <param name="differ">Tells what differs between two versions of a hero.</param>
         public HeroChunkCollection(IEnumerable<HeroChunk> chunks, HeroOffsets offsets, IHeroDeserializer deserializer, IHeroSerializer serializer, IHeroDiffer differ)
-            : base(chunks)
+            : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.Offsets = offsets;
-            this.deserializer = deserializer;
-            this.Serializer = serializer;
             this.differ = differ;
         }
 
@@ -39,17 +36,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public bool SupportsAsleep => this.Offsets.AsleepOffset != null;
 
-        /// <summary>
-        /// Gets what reads a hero from a chunk.
-        /// </summary>
-        public IHeroDeserializer Deserializer => this.deserializer;
-
-        /// <summary>
-        /// Gets what writes a hero to a chunk.
-        /// </summary>
-        public IHeroSerializer Serializer { get; }
-
-        public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.deserializer, this.Serializer, this.differ);
+        public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.Deserializer, this.Serializer, this.differ);
 
         /// <summary>
         /// Returns the index of the first hero with the given name, or -1.
@@ -59,32 +46,17 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who owns each hero, in the order of the collection. Reads the owner byte only.
         /// </summary>
-        /// <summary>
-        /// Returns the hero at <paramref name="index"/> as a model.
-        /// </summary>
-        public HeroModel GetModel(int index) => this.deserializer.Deserialize(this[index]);
-
-        public IReadOnlyList<PlayerColor?> GetOwners() => this.Select(this.deserializer.DeserializeOwner).ToList();
+        public IReadOnlyList<PlayerColor?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
         /// Returns a short summary of every hero. Reads only what the summary needs, so it is cheap enough to run for every hero.
         /// </summary>
-        public IReadOnlyList<HeroSummary> GetSummaries()
-        {
-            var summaries = new List<HeroSummary>();
-
-            for (var i = 0; i < this.Count; i++)
-            {
-                summaries.Add(this.Summarize(i));
-            }
-
-            return summaries;
-        }
+        public IReadOnlyList<HeroSummary> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
 
         /// <summary>
         /// Returns the index of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or -1 if the savefile has no such hero.
         /// </summary>
-        public int IndexOfId(int heroId) => this.IndexOf(c => this.deserializer.DeserializeHeroId(c) == heroId);
+        public int IndexOfId(int heroId) => this.IndexOf(c => this.Deserializer.DeserializeHeroId(c) == heroId);
 
         /// <summary>
         /// Returns the summary of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or null if the savefile has no such hero.
@@ -92,31 +64,22 @@ namespace Siniskalc.Homm3.Data
         public HeroSummary? FindById(int heroId)
         {
             var index = this.IndexOfId(heroId);
-            return index < 0 ? null : this.Summarize(index);
+            return index < 0 ? null : this.GetSummary(index);
         }
 
         /// <summary>
         /// Returns the summary of the hero at <paramref name="index"/>.
         /// </summary>
-        public HeroSummary GetSummary(int index) => this.Summarize(index);
-
-        protected override IEnumerable<PendingChange> DiffChunk(int index, HeroChunk original, HeroChunk current)
-        {
-            var before = this.deserializer.Deserialize(original);
-            var after = this.deserializer.Deserialize(current);
-            return this.differ.Diff(before, after).Select(change => Homm3PendingChanges.ForHero(after.Name, index, change));
-        }
-
-        private HeroSummary Summarize(int index)
+        public HeroSummary GetSummary(int index)
         {
             var chunk = this[index];
             return new HeroSummary(
                 index,
-                this.deserializer.DeserializeHeroId(chunk),
+                this.Deserializer.DeserializeHeroId(chunk),
                 chunk.Name,
-                this.deserializer.DeserializeOwner(chunk),
-                this.deserializer.DeserializeClass(chunk),
-                this.deserializer.DeserializeLevel(chunk).Level);
+                this.Deserializer.DeserializeOwner(chunk),
+                this.Deserializer.DeserializeClass(chunk),
+                this.Deserializer.DeserializeLevel(chunk).Level);
         }
     }
 }

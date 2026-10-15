@@ -3,6 +3,7 @@
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
+    using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Homm3.Entities;
@@ -26,15 +27,17 @@
 
             SerializeOwner(bytes, castle.Owner);
             SerializeBuiltThisTurn(bytes, castle.BuiltThisTurn);
+            RangeGuard.ThrowIfOutOfRange<long>(castle.MageGuildLevel, 0, Constants.Castle.MaxMageGuildLevel, nameof(castle.MageGuildLevel));
             bytes[CastleLayout.MageGuildLevel] = (byte)castle.MageGuildLevel;
-            bytes[CastleLayout.GarrisonedHero] = (byte)(castle.GarrisonedHeroId ?? Constants.ByteOff);
-            bytes[CastleLayout.VisitingHero] = (byte)(castle.VisitingHeroId ?? Constants.ByteOff);
+            bytes[CastleLayout.GarrisonedHero] = HeroByte(castle.GarrisonedHeroId, nameof(castle.GarrisonedHeroId));
+            bytes[CastleLayout.VisitingHero] = HeroByte(castle.VisitingHeroId, nameof(castle.VisitingHeroId));
             SerializeGarrison(bytes, castle.Garrison);
             SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.CreaturesAvailableFromNameEnd, castle.CreaturesAvailable);
             SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd, castle.UpgradedCreaturesAvailable);
 
             for (var level = 0; level < CastleLayout.SpellLevelCount && level < castle.SpellCounts.Count; level++)
             {
+                RangeGuard.ThrowIfOutOfRange<long>(castle.SpellCounts[level], 0, Constants.Castle.MaxSpellsOfALevel, nameof(castle.SpellCounts));
                 bytes[nameEnd + CastleLayout.SpellCountsFromNameEnd + level] = (byte)castle.SpellCounts[level];
             }
 
@@ -67,6 +70,7 @@
                 var spells = castle.MageGuildSpells[level - 1];
                 if (spells.Count != slots.Count)
                 {
+                    // TODO:LOG warning: the spells of level {level} of the Mage Guild of {castle.Name} were not written: the model lists {spells.Count} of them and the savefile has {slots.Count} slots that hold a known spell.
                     continue;
                 }
 
@@ -77,30 +81,15 @@
             }
         }
 
-        /// <summary>
-        /// Bits of the building masks that no <see cref="Building"/> stands for but that the game sets together with a building.
-        /// They stay set when the building is replaced by an upgrade, so they follow the building itself being built or removed.
-        /// Found by comparing savefiles, so only the factions that were compared are here: Rampart (Horn of the Abyss and Shadow of Death)
-        /// and Necropolis (Shadow of Death) set 27, 28 and 29 with the town hall, the city hall and the capitol, Bulwark and Factory (Horn of the
-        /// Abyss) and Stronghold (Shadow of Death) set 27 with the fort. Bulwark and Factory also have a bit 28
-        /// that comes and goes with their fourth dwelling; what it is for is not known, so it is left as it is.
-        /// Conflux (Shadow of Death; Horn of the Abyss agrees) sets 22 with the fort and 27, 28 and 29 with the town hall, the city hall and the capitol.
-        /// Not listed: bit 23, which Castle gets with the shipyard and Fortress with the fort (and Rampart, Necropolis and Conflux have from the start).
-        /// Building those in the editor leaves the bit out; whether the game minds is untested (see docs/KNOWLEDGE_BASE.md).
-        /// </summary>
-        private static IEnumerable<(Building Trigger, int Bit)> CompanionBits(Faction faction)
+        private static byte HeroByte(int? heroId, string name)
         {
-            if (faction == Faction.Rampart || faction == Faction.Necropolis)
+            if (heroId is not { } id)
             {
-                return [(Building.TownHall, 27), (Building.CityHall, 28), (Building.Capitol, 29)];
+                return Constants.ByteOff;
             }
 
-            if (faction == Faction.Conflux)
-            {
-                return [(Building.Fort, 22), (Building.TownHall, 27), (Building.CityHall, 28), (Building.Capitol, 29)];
-            }
-
-            return faction == Faction.Bulwark || faction == Faction.Factory || faction == Faction.Stronghold ? [(Building.Fort, 27)] : [];
+            RangeGuard.ThrowIfOutOfRange<long>(id, 0, Constants.Player.MaxHeroId, name);
+            return (byte)id;
         }
 
         private static void SerializeOwner(byte[] bytes, PlayerColor? owner)
@@ -154,6 +143,7 @@
         {
             for (var level = 0; level < CastleLayout.CreatureLevelCount && level < counts.Count; level++)
             {
+                RangeGuard.ThrowIfOutOfRange<long>(counts[level], Constants.Castle.MinDwellingCreatures, Constants.Castle.MaxDwellingCreatures, nameof(counts));
                 ByteBufferHelper.WriteUInt16(bytes, offset + (level * 2), (ushort)counts[level]);
             }
         }
@@ -179,6 +169,7 @@
             {
                 if (building.Code >= 64)
                 {
+                    // TODO:LOG warning: the building {building.Name} has a code that does not fit the 64-bit masks and was not written.
                     continue;
                 }
 
@@ -187,7 +178,7 @@
                 enabled = WithBit(enabled, building.Code, castle.EnabledBuildings.Contains(building));
             }
 
-            foreach (var (trigger, bit) in CompanionBits(castle.Faction))
+            foreach (var (trigger, bit) in CastleLayout.CompanionBits(castle.Faction))
             {
                 var had = (hadBuilt & (1UL << trigger.Code)) != 0;
                 var has = castle.Buildings.Contains(trigger);

@@ -224,7 +224,7 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(changes, Has.All.Matches<PendingChange>(c => c.OwnerName == "Christian"));
             Assert.That(descriptions, Is.SupersetOf(new[] { "Attack", "Spell points", "Slot 1", "Slot 2", "Slot 3", "Skills" }));
             Assert.That(changes.Single(c => c.Change.Description == "Attack").Change.After, Is.EqualTo("77"));
-            Assert.That(changes.Single(c => c.Change.Description == "Slot 3").Change.After, Is.EqualTo(HeroDiffer.Empty));
+            Assert.That(changes.Single(c => c.Change.Description == "Slot 3").Change.After, Is.EqualTo(ChangeText.Empty));
             Assert.That(changes.Single(c => c.Change.Description == "Slot 1").Path, Is.EqualTo("Christian › Creatures"));
         }
 

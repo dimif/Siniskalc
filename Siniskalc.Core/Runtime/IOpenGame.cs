@@ -32,5 +32,10 @@ namespace Siniskalc.Core.Runtime
         /// Returns the bytes to save: the loaded bytes with every edit from <see cref="History"/> applied.
         /// </summary>
         byte[] GetBytesToSave();
+
+        /// <summary>
+        /// Ties the game to the file it was just saved to, which is what reloading reads.
+        /// </summary>
+        void SavedTo(string filePath);
     }
 }

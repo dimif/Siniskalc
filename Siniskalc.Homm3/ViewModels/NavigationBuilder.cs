@@ -1,9 +1,12 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -139,72 +142,24 @@ namespace Siniskalc.Homm3.ViewModels
 
         private NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner, IReadOnlyList<HeroSummary> heroes, IReadOnlyList<(int Index, CastleModel Model)> castles)
         {
-            var parts = new List<string>();
-            if (heroes.Count > 0)
-            {
-                parts.Add($"{heroes.Count} {(heroes.Count == 1 ? "hero" : "heroes")}");
-            }
-
-            if (castles.Count > 0)
-            {
-                parts.Add($"{castles.Count} {(castles.Count == 1 ? "town" : "towns")}");
-            }
-
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
             var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner.Value);
-            var colorHex = PlayerPalette.Of(PlayerColors.Of(owner));
-            var node = new NavNodeViewModel(
-                owner?.ToString() ?? "Neutral",
-                string.Join(" · ", parts),
-                colorHex,
-                playerIndex >= 0 ? NavNodeKind.Player : NavNodeKind.Group,
+            var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
+            var node = OwnerNavGroup.Create(
+                tree,
+                OwnerNames<PlayerColor>.Of(owner),
+                PlayerPalette.Of(PlayerColors<PlayerColor>.Of(owner)),
                 playerIndex,
-                onSelected: playerIndex >= 0 ? tree.OnSelected : null)
-            {
-                // Only what players own is of interest at first; the many neutral heroes and towns are one click away.
-                DefaultExpanded = owner != null,
-            };
+                owner != null,
+                string.Empty,
+                heroes.Select(h => new NavEntry(h.Index, h.Name, h.Description)).ToList(),
+                castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction?.Name ?? string.Empty)).ToList(),
+                (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]));
             if (playerIndex >= 0)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));
             }
 
-            tree.Register(node);
-
-            if (heroes.Count > 0)
-            {
-                var group = new NavNodeViewModel("Heroes", heroes.Count.ToString(), colorHex, playerIndex >= 0 ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, 1, playerIndex >= 0 ? tree.OnSelected : null) { DefaultExpanded = owner != null };
-                tree.Register(group);
-
-                foreach (var summary in heroes)
-                {
-                    var heroNode = new NavNodeViewModel(summary.Name, summary.Description, colorHex, NavNodeKind.Hero, summary.Index, onSelected: tree.OnSelected);
-                    group.Children.Add(heroNode);
-                    tree.Register(heroNode);
-                }
-
-                group.IsExpanded = group.DefaultExpanded;
-                node.Children.Add(group);
-            }
-
-            if (castles.Count > 0)
-            {
-                var group = new NavNodeViewModel("Towns", castles.Count.ToString(), colorHex, playerIndex >= 0 ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, 2, playerIndex >= 0 ? tree.OnSelected : null) { DefaultExpanded = owner != null };
-                tree.Register(group);
-
-                foreach (var (index, castle) in castles)
-                {
-                    var castleNode = new NavNodeViewModel(castle.Name, castle.Faction?.Name ?? string.Empty, colorHex, NavNodeKind.Castle, index, onSelected: tree.OnSelected);
-                    this.MarkCastle(castleNode, game, castle);
-                    group.Children.Add(castleNode);
-                    tree.Register(castleNode);
-                }
-
-                group.IsExpanded = group.DefaultExpanded;
-                node.Children.Add(group);
-            }
-
-            node.IsExpanded = node.DefaultExpanded;
             return node;
         }
     }

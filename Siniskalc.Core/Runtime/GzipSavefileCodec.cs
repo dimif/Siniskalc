@@ -16,6 +16,19 @@
     /// </remarks>
     public sealed class GzipSavefileCodec : ISavefileCodec
     {
+        /// <summary>
+        /// The number of bytes at the start of a file that tell whether it is a GZip file.
+        /// </summary>
+        public const int MagicLength = 2;
+
+        private const byte FirstMagicByte = 0x1F;
+        private const byte SecondMagicByte = 0x8B;
+
+        /// <summary>
+        /// Tells whether the first bytes of a file are those of a GZip file.
+        /// </summary>
+        public static bool IsGzip(ReadOnlySpan<byte> head) => head.Length >= MagicLength && head[0] == FirstMagicByte && head[1] == SecondMagicByte;
+
         /// <inheritdoc/>
         public byte[] Read(string filePath)
         {

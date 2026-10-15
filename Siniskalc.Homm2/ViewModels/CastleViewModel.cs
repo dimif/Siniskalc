@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,8 +50,8 @@ namespace Siniskalc.Homm2.ViewModels
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames.Choices,
-                () => OwnerNames.Of(this.session.Current.Owner),
+                OwnerNames<Color>.Choices,
+                () => OwnerNames<Color>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
@@ -103,7 +105,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.castle.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.castle.Owner));
+        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.castle.Owner));
 
         public string FactionName => this.castle.Faction?.ToString() ?? "Unknown faction";
 
@@ -143,7 +145,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets who owns the castle, as "Neutral" or the name of a colour.
         /// </summary>
-        public string OwnerText => OwnerNames.Of(this.castle.Owner);
+        public string OwnerText => OwnerNames<Color>.Of(this.castle.Owner);
 
         public string PositionText => this.castle.Position.ToString();
 
@@ -240,7 +242,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(OwnerNames.Parse(name));
+                this.session.ChangeOwner(OwnerNames<Color>.Parse(name));
             }
             catch (InvalidOperationException)
             {

@@ -13,8 +13,6 @@
     /// </summary>
     public sealed class CastleDiffer : ICastleDiffer
     {
-        public const string Empty = "empty";
-
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
             var changes = new List<PendingChange>();
@@ -85,7 +83,7 @@
                 changes.Add(Homm3PendingChanges.ForCastle(
                     current.Name,
                     castleIndex,
-                    new Change(ChangeAreas.General, "Owner", OwnerNames.Of(original.Owner), OwnerNames.Of(current.Owner)),
+                    new Change(ChangeAreas.General, "Owner", OwnerNames<PlayerColor>.Of(original.Owner), OwnerNames<PlayerColor>.Of(current.Owner)),
                     c => c with { Owner = original.Owner }));
             }
 
@@ -170,7 +168,7 @@
         }
 
         private static string SlotText(ArmySlot? slot) =>
-            slot == null ? Empty : $"{Creature.NameOf(slot.CreatureCode)} × {slot.CreatureCount:N0}";
+            slot == null ? ChangeText.Empty : $"{Creature.NameOf(slot.CreatureCode)} × {slot.CreatureCount:N0}";
 
         private void DiffBuildings(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
         {

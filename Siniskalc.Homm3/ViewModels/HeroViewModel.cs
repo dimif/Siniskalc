@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -122,12 +124,12 @@
 
         public string Name => this.HeroModel.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.HeroModel.Owner));
+        public string ColorHex => PlayerPalette.Of(PlayerColors<PlayerColor>.Of(this.HeroModel.Owner));
 
         /// <summary>
         /// Gets the owners to pick from: "Neutral" and the eight player colours.
         /// </summary>
-        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames.Choices;
+        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. A hero that is made neutral leaves the map:
@@ -135,10 +137,10 @@
         /// </summary>
         public string SelectedOwner
         {
-            get => OwnerNames.Of(this.HeroModel.Owner);
+            get => OwnerNames<PlayerColor>.Of(this.HeroModel.Owner);
             set
             {
-                var owner = OwnerNames.Parse(value);
+                var owner = OwnerNames<PlayerColor>.Parse(value);
                 if (owner == this.HeroModel.Owner)
                 {
                     return;

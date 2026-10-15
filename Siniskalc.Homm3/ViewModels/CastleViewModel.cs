@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -72,12 +74,12 @@
             this.Castle.BuiltThisTurn ? "built this turn" : "nothing built this turn",
         });
 
-        public string OwnerText => OwnerNames.Of(this.Castle.Owner);
+        public string OwnerText => OwnerNames<PlayerColor>.Of(this.Castle.Owner);
 
         /// <summary>
         /// Gets the owners to pick from: "Neutral" and the eight player colours.
         /// </summary>
-        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames.Choices;
+        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour.
@@ -87,7 +89,7 @@
             get => this.OwnerText;
             set
             {
-                var owner = OwnerNames.Parse(value);
+                var owner = OwnerNames<PlayerColor>.Parse(value);
                 this.Edit(castle => castle with { Owner = owner });
             }
         }
@@ -111,7 +113,7 @@
             set => this.BuiltThisTurn = !value;
         }
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Castle.Owner));
+        public string ColorHex => PlayerPalette.Of(PlayerColors<PlayerColor>.Of(this.Castle.Owner));
 
         /// <summary>
         /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".

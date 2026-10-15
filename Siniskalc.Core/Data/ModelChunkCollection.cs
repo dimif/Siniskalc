@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Core.Data
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Core.Data;
 
     /// <summary>
     /// The chunks of one kind of record of a savegame, with what reads and writes them and the models read from them (once for each

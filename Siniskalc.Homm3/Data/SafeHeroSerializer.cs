@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Core;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -182,7 +183,8 @@
             return Edit(chunk, buffer =>
             {
                 ByteBufferHelper.WriteInt32(buffer, this.heroOffsets[HeroOffsetName.ExperiencePoints], level.Experience);
-                buffer[this.heroOffsets[HeroOffsetName.Level]] = checked((byte)level.Level);
+                RangeGuard.ThrowIfOutOfRange<long>(level.Level, 0, Constants.Hero.MaxStoredLevel, nameof(level));
+                buffer[this.heroOffsets[HeroOffsetName.Level]] = (byte)level.Level;
             });
         }
 

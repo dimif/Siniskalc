@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -69,13 +71,13 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.hero.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.hero.Owner));
+        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.hero.Owner));
 
         public string FactionName => this.hero.Faction.ToString();
 
         public int Level => this.hero.Level;
 
-        public string OwnerText => OwnerNames.Of(this.hero.Owner);
+        public string OwnerText => OwnerNames<Color>.Of(this.hero.Owner);
 
         /// <summary>
         /// Gets where the hero is on the map, or nothing for a hero that serves nobody.
@@ -146,7 +148,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,
-            PlayerPalette.Of(PlayerColors.Of(this.hero?.Owner)),
+            PlayerPalette.Of(PlayerColors<Color>.Of(this.hero?.Owner)),
             minimum,
             maximum,
             step,

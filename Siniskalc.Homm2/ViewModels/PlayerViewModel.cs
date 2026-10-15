@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -49,7 +50,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Name => this.Color.ToString();
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors.Of(this.Color));
+        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.Color));
 
         /// <summary>
         /// Gets what the player is up to: out of the game, counting the days to own a castle, or nothing.
@@ -154,6 +155,6 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         private static string TavernHero(IReadOnlyList<HeroModel> heroes, int? id) =>
-            id is { } hero && hero >= 0 && hero < heroes.Count ? heroes[hero].Name : DifferText.None;
+            id is { } hero && hero >= 0 && hero < heroes.Count ? heroes[hero].Name : ChangeText.None;
     }
 }

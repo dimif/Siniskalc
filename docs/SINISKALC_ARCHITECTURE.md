@@ -17,7 +17,7 @@ A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `Lis
 
 **`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
 It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
-A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, HoMM3's `Faction`) implement the interface, and the enums (`Color`, `PlayerColor`, HoMM2's `Faction`, `SkillLevel`) stay enums in the models and the `Data` layer, with a small catalog (`PlayerColors.Of(color)`, `SkillLevels.Of(level)`) that gives the view-model layer the interface.
+A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, HoMM3's `Faction`) implement the interface, and the enums (`Color`, `PlayerColor`, HoMM2's `Faction`, `SkillLevel`) stay enums in the models and the `Data` layer, with a small catalog (`PlayerColors<TColor>.Of(color)` in `Siniskalc.Heroes`, `SkillLevels.Of(level)`) that gives the view-model layer the interface.
 A level a hero has not learned is `null`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
@@ -71,7 +71,7 @@ Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fak
 
 A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:
 
-1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` and a `Game : IOpenGame`; the module (`IGameModule`) that recognises the file.
+1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` (a `GameService : SavegameService<Game>`, whose parser is an `ISavegameParser<Game>`) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core); the module (`IGameModule`) that recognises the file.
 2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
 3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
 4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.

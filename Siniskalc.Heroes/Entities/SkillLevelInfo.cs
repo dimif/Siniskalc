@@ -1,9 +1,7 @@
-namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Heroes.Entities
 {
-    using Siniskalc.Heroes.Entities;
-
     /// <summary>
-    /// A level of a secondary skill of Heroes of Might and Magic III, for what works with the levels of every game.
+    /// A level of a secondary skill, for what works with the levels of every game.
     /// </summary>
     /// <param name="Name">The name of the level, as the game shows it.</param>
     /// <param name="Code">The number the savegame holds for it.</param>

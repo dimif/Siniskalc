@@ -10,9 +10,9 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3PendingChanges
     {
-        public static PendingChange ForHero(string heroName, int heroIndex, HeroChange change)
+        public static PendingChange ForHero(string heroName, int heroIndex, Change change, Func<HeroModel, HeroModel> revert)
         {
-            return new PendingChange(heroName, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).Update(change.Revert));
+            return new PendingChange(heroName, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).Update(revert));
         }
 
         public static PendingChange ForCastle(string castleName, int castleIndex, Change change, Func<CastleModel, CastleModel> revert)

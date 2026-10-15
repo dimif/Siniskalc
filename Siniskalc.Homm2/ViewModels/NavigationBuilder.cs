@@ -1,9 +1,12 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -95,82 +98,18 @@ namespace Siniskalc.Homm2.ViewModels
 
         private static NavNodeViewModel CreateGroup(NavigationTree tree, Color? owner, string status, IReadOnlyList<HeroModel> heroes, IReadOnlyList<CastleModel> castles, IReadOnlyList<HeroModel> allHeroes)
         {
-            var parts = new List<string>();
-            if (status.Length > 0)
-            {
-                parts.Add(status);
-            }
-
-            if (heroes.Count > 0)
-            {
-                parts.Add($"{heroes.Count} {(heroes.Count == 1 ? "hero" : "heroes")}");
-            }
-
-            if (castles.Count > 0)
-            {
-                parts.Add($"{castles.Count} {(castles.Count == 1 ? "town" : "towns")}");
-            }
-
             // A colour is a page of its own (the resources); what nobody owns only holds its heroes and towns.
-            var playerIndex = owner == null ? -1 : (int)owner.Value;
-            var isPlayer = playerIndex >= 0;
-            var colorHex = PlayerPalette.Of(PlayerColors.Of(owner));
-            var node = new NavNodeViewModel(
-                OwnerNames.Of(owner),
-                string.Join(" · ", parts),
-                colorHex,
-                isPlayer ? NavNodeKind.Player : NavNodeKind.Group,
-                playerIndex,
-                onSelected: isPlayer ? tree.OnSelected : null)
-            {
-                // Only what players own is of interest at first; the many heroes of the tavern pool are one click away.
-                DefaultExpanded = owner != null,
-            };
-            tree.Register(node);
-
-            if (heroes.Count > 0)
-            {
-                var group = new NavNodeViewModel("Heroes", heroes.Count.ToString(), colorHex, isPlayer ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, 1, isPlayer ? tree.OnSelected : null)
-                {
-                    DefaultExpanded = owner != null,
-                };
-                tree.Register(group);
-
-                foreach (var hero in heroes)
-                {
-                    var heroNode = new NavNodeViewModel(hero.Name, $"{hero.Faction}, level {hero.Level}", colorHex, NavNodeKind.Hero, hero.HeroId, onSelected: tree.OnSelected);
-                    group.Children.Add(heroNode);
-                    tree.Register(heroNode);
-                }
-
-                group.IsExpanded = group.DefaultExpanded;
-                node.Children.Add(group);
-            }
-
-            if (castles.Count > 0)
-            {
-                var group = new NavNodeViewModel("Towns", castles.Count.ToString(), colorHex, isPlayer ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, 2, isPlayer ? tree.OnSelected : null)
-                {
-                    DefaultExpanded = owner != null,
-                };
-                tree.Register(group);
-
-                foreach (var castle in castles)
-                {
-                    var castleNode = new NavNodeViewModel(castle.Name, castle.Faction?.ToString() ?? string.Empty, colorHex, NavNodeKind.Castle, castle.Index, onSelected: tree.OnSelected)
-                    {
-                        Notes = NotesOf(VisitorName(allHeroes, castle)),
-                    };
-                    group.Children.Add(castleNode);
-                    tree.Register(castleNode);
-                }
-
-                group.IsExpanded = group.DefaultExpanded;
-                node.Children.Add(group);
-            }
-
-            node.IsExpanded = node.DefaultExpanded;
-            return node;
+            var castleModels = castles.ToDictionary(c => c.Index);
+            return OwnerNavGroup.Create(
+                tree,
+                OwnerNames<Color>.Of(owner),
+                PlayerPalette.Of(PlayerColors<Color>.Of(owner)),
+                owner == null ? -1 : (int)owner.Value,
+                owner != null,
+                status,
+                heroes.Select(h => new NavEntry(h.HeroId, h.Name, $"{h.Faction}, level {h.Level}")).ToList(),
+                castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction?.ToString() ?? string.Empty)).ToList(),
+                (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
         }
     }
 }

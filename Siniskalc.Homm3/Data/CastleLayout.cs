@@ -1,5 +1,8 @@
 namespace Siniskalc.Homm3.Data
 {
+    using System.Collections.Generic;
+    using Siniskalc.Homm3.Entities;
+
     /// <summary>
     /// Where the fields of a castle (a town) are in a <see cref="CastleChunk"/>.
     /// </summary>
@@ -140,5 +143,37 @@ namespace Siniskalc.Homm3.Data
 
         /// <summary>The number of bytes from the start of a chunk to the name, and from the end of the name to the end.</summary>
         public const int FixedLength = Name + ChunkEndFromNameEnd;
+
+        private const int FortBitOfConflux = 22;
+        private const int FortBitOfFortressLikeFactions = 27;
+        private const int TownHallBit = 27;
+        private const int CityHallBit = 28;
+        private const int CapitolBit = 29;
+
+        /// <summary>
+        /// Bits of the building masks that no <see cref="Building"/> stands for but that the game sets together with a building.
+        /// They stay set when the building is replaced by an upgrade, so they follow the building itself being built or removed.
+        /// Found by comparing savefiles, so only the factions that were compared are here: Rampart (Horn of the Abyss and Shadow of Death)
+        /// and Necropolis (Shadow of Death) set 27, 28 and 29 with the town hall, the city hall and the capitol, Bulwark and Factory (Horn of the
+        /// Abyss) and Stronghold (Shadow of Death) set 27 with the fort. Bulwark and Factory also have a bit 28
+        /// that comes and goes with their fourth dwelling; what it is for is not known, so it is left as it is.
+        /// Conflux (Shadow of Death; Horn of the Abyss agrees) sets 22 with the fort and 27, 28 and 29 with the town hall, the city hall and the capitol.
+        /// Not listed: bit 23, which Castle gets with the shipyard and Fortress with the fort (and Rampart, Necropolis and Conflux have from the start).
+        /// Building those in the editor leaves the bit out; whether the game minds is untested (see docs/KNOWLEDGE_BASE.md).
+        /// </summary>
+        public static IEnumerable<(Building Trigger, int Bit)> CompanionBits(Entities.Faction faction)
+        {
+            if (faction == Entities.Faction.Rampart || faction == Entities.Faction.Necropolis)
+            {
+                return [(Building.TownHall, TownHallBit), (Building.CityHall, CityHallBit), (Building.Capitol, CapitolBit)];
+            }
+
+            if (faction == Entities.Faction.Conflux)
+            {
+                return [(Building.Fort, FortBitOfConflux), (Building.TownHall, TownHallBit), (Building.CityHall, CityHallBit), (Building.Capitol, CapitolBit)];
+            }
+
+            return faction == Entities.Faction.Bulwark || faction == Entities.Faction.Factory || faction == Entities.Faction.Stronghold ? [(Building.Fort, FortBitOfFortressLikeFactions)] : [];
+        }
     }
 }

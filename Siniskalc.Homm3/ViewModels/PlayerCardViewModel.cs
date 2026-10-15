@@ -19,7 +19,7 @@
             this.Name = color.ToString();
             this.BanishingText = banishingText;
             this.IsBanished = isBanished;
-            this.ColorHex = PlayerPalette.Of(PlayerColors.Of(color));
+            this.ColorHex = PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color));
             this.Heroes = heroes;
             this.Castles = castles ?? [];
             this.OpenCommand = open;

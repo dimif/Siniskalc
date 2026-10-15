@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Data
 
             if (original.Owner != current.Owner)
             {
-                Add(ChangeAreas.General, "Owner", OwnerNames.Of(original.Owner), OwnerNames.Of(current.Owner), c => c with { Owner = original.Owner });
+                Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), c => c with { Owner = original.Owner });
             }
 
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
@@ -34,7 +34,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.Garrison.Slots[slot], current.Garrison.Slots[slot], slot);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? DifferText.Empty, after?.ToString() ?? DifferText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
+                    Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? ChangeText.Empty, after?.ToString() ?? ChangeText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
                 }
             }
 

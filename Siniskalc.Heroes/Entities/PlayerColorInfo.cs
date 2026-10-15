@@ -1,9 +1,7 @@
-namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Heroes.Entities
 {
-    using Siniskalc.Heroes.Entities;
-
     /// <summary>
-    /// A colour of a player of Heroes of Might and Magic III, for what works with the colours of every game.
+    /// A colour of a player, for what works with the colours of every game.
     /// </summary>
     /// <param name="Name">The name of the colour.</param>
     /// <param name="Code">The number the savegame holds for it.</param>

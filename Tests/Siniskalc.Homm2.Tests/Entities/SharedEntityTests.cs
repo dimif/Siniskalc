@@ -13,9 +13,9 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryColourOfTheGameIsAnIPlayerColorWithItsNameAndCodeAndItsOwnHexValue()
         {
-            Assert.That(PlayerColors.All.Select(c => (c.Name, c.Code)), Is.EqualTo(Enum.GetValues<Color>().Select(c => (c.ToString(), (byte)c))));
-            Assert.That(PlayerColors.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
-            Assert.That(PlayerColors.Of(null), Is.Null);
+            Assert.That(PlayerColors<Color>.All.Select(c => (c.Name, c.Code)), Is.EqualTo(Enum.GetValues<Color>().Select(c => (c.ToString(), (byte)c))));
+            Assert.That(PlayerColors<Color>.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
+            Assert.That(PlayerColors<Color>.Of(null), Is.Null);
         }
 
         [Test]

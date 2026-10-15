@@ -24,7 +24,9 @@ The colours the editor draws a player with are in `PlayerPalette`, by the name o
 The creature, spell and artifact tables, positions and map headers are not shared (yet): they differ in codes, sets or shape.
 
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either: `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill of a page's header, the empty note, and the templates of a fact row and a link.
-A game's `Generic.xaml` merges it.
+It also has the blocks every page is made of, so the pages of the two games look and work the same: `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle` (the strip of tabs), `ResourcesPanel` (a card for each resource, the quick add buttons, and a game's own cards in between) and `ItemsCard` (a heading and a list, with a note for an empty one).
+A game's page puts its own content in them: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
+A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the controls' styles come last.
 Every page with tabs derives from `TabbedPageViewModelBase` (`Siniskalc.Wpf`), and its tab strip is a `ListBox` bound to `SelectedTab`; the panels of the tabs sit in one grid, each with the style of its number.
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.

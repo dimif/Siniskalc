@@ -15,7 +15,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Styles
         [OneTimeSetUp]
         public void LoadTheStyles()
         {
-            _ = Application.Current ?? new Application();
+            WpfTestApplication.Ensure();
             this.styles = new ResourceDictionary { Source = new Uri("pack://application:,,,/Siniskalc.Heroes.Wpf;component/Styles/PageStyles.xaml") };
         }
 
@@ -27,6 +27,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Styles
         [TestCase("ResetPillStyle")]
         [TestCase("FactRowTemplate")]
         [TestCase("LinkTemplate")]
+        [TestCase("TabStripStyle")]
         public void TheStylesAndTemplatesOfThePagesAreThere(string key)
         {
             Assert.That(this.styles.Contains(key), Is.True);

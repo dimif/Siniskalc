@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -13,20 +12,19 @@ namespace Siniskalc.Homm3.ViewModels
 
     /// <summary>
     /// The editor of Heroes of Might and Magic III: the open savegame, its navigation tree and the pages (hero, player, castle,
-    /// overview) it shows. Orchestrates game loading, hero management, and hero selection. The application shell
-    /// (<see cref="ShellViewModel"/>) works with it through <see cref="IGameEditor"/>.
+    /// overview) it shows. The application shell (<see cref="ShellViewModel"/>) works with it through <see cref="IGameEditor"/>.
     /// </summary>
-    public class Homm3EditorViewModel : EditorViewModelBase<Game>
+    public sealed class Homm3EditorViewModel : EditorViewModelBase<Game>
     {
         private readonly EffectLineProvider effectLines;
         private readonly BanishingTextProvider banishingText;
         private readonly CastleBuildMessageProvider castleBuildMessages;
         private readonly ISpellPointsCalculator spellPoints;
         private readonly IByteEditTargetFactory byteEditTargets;
-        private readonly Dictionary<int, PlayerViewModel> players = new Dictionary<int, PlayerViewModel>();
-        private readonly Dictionary<int, CastleViewModel> castles = new Dictionary<int, CastleViewModel>();
+        private readonly Dictionary<int, PlayerViewModel> players = [];
+        private readonly Dictionary<int, HeroViewModel> heroes = [];
+        private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
-        private HeroViewModel? selectedHeroViewModel;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)
@@ -36,38 +34,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.castleBuildMessages = castleBuildMessages;
             this.spellPoints = spellPoints;
             this.byteEditTargets = byteEditTargets;
-            this.Heroes = new ObservableCollection<HeroViewModel>();
-        }
-
-        /// <summary>
-        /// Gets the collection of open HeroViewModels.
-        /// </summary>
-        public ObservableCollection<HeroViewModel> Heroes { get; }
-
-        /// <summary>
-        /// Gets or sets the currently selected HeroViewModel.
-        /// When set, raises PropertyChanged notification for UI binding.
-        /// </summary>
-        public HeroViewModel? SelectedHeroViewModel
-        {
-            get => this.selectedHeroViewModel;
-            set
-            {
-                if (this.selectedHeroViewModel != value)
-                {
-                    this.selectedHeroViewModel = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedHeroViewModel));
-                }
-
-                if (value != null)
-                {
-                    this.SetCurrentPage(value);
-                }
-                else if (this.CurrentPage is HeroViewModel)
-                {
-                    this.SetCurrentPage(this.overview);
-                }
-            }
         }
 
         /// <summary>
@@ -79,47 +45,42 @@ namespace Siniskalc.Homm3.ViewModels
         protected override object? OverviewPage => this.overview;
 
         /// <summary>
-        /// Reloads the current game from its file, discarding unsaved edits.
-        /// Reopens the heroes that were open, and keeps the selected hero if possible.
+        /// Shows the page of the hero with the given name, if the savegame has one.
         /// </summary>
-        public override void ReloadGame()
+        /// <param name="heroName">The name of the hero to search for.</param>
+        /// <returns>True if the hero was found; false otherwise.</returns>
+        public bool ShowHero(string heroName)
         {
-            var openHeroNames = this.Heroes.Select(hvm => hvm.Name).ToList();
-            var selectedHeroName = this.selectedHeroViewModel?.Name;
-
-            base.ReloadGame();
-
-            foreach (var name in openHeroNames)
-            {
-                this.OpenHero(name);
-            }
-
-            this.SelectedHeroViewModel = this.Heroes.FirstOrDefault(hvm => hvm.Name == selectedHeroName)
-                ?? this.Heroes.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Searches for a hero by name in the current game.
-        /// If found, opens the hero (or selects it, if already open).
-        /// </summary>
-        /// <param name="heroName">The name of the hero to search for</param>
-        /// <returns>True if the hero was found; false otherwise</returns>
-        public bool SearchAndAddHero(string heroName)
-        {
-            this.Loaded();
-
+            var game = this.Loaded();
             if (string.IsNullOrWhiteSpace(heroName))
             {
                 return false;
             }
 
-            var heroViewModel = this.OpenHero(heroName);
-            if (heroViewModel != null)
+            var heroIndex = game.History.Current.Heroes().FindByName(heroName);
+            if (heroIndex < 0)
             {
-                this.SelectedHeroViewModel = heroViewModel;
+                return false;
             }
 
-            return heroViewModel != null;
+            this.ShowHero(heroIndex);
+            return true;
+        }
+
+        /// <summary>
+        /// Shows the page of the hero at <paramref name="heroIndex"/> in the savegame's heroes.
+        /// </summary>
+        public void ShowHero(int heroIndex)
+        {
+            var game = this.Loaded();
+
+            if (!this.heroes.TryGetValue(heroIndex, out var hero))
+            {
+                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints, this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle);
+                this.heroes[heroIndex] = hero;
+            }
+
+            this.SetCurrentPage(hero);
         }
 
         /// <summary>
@@ -138,7 +99,7 @@ namespace Siniskalc.Homm3.ViewModels
                     this.banishingText,
                     game.GetControl(color),
                     game.CurrentPlayer == color,
-                    this.SearchAndSelectHero,
+                    this.ShowHero,
                     this.ShowCastle);
                 this.players[playerIndex] = player;
             }
@@ -157,68 +118,27 @@ namespace Siniskalc.Homm3.ViewModels
 
             if (!this.castles.TryGetValue(castleIndex, out var castle))
             {
-                castle = new CastleViewModel(game.History, castleIndex, this.byteEditTargets, this.castleBuildMessages, this.SearchAndSelectHero);
+                castle = new CastleViewModel(game.History, castleIndex, this.byteEditTargets, this.castleBuildMessages, this.ShowHero);
                 this.castles[castleIndex] = castle;
             }
 
             this.SetCurrentPage(castle);
         }
 
-        /// <summary>
-        /// Closes a hero. Its edits stay in the game's history.
-        /// </summary>
-        /// <param name="heroViewModel">The HeroViewModel to remove</param>
-        public void RemoveHero(HeroViewModel heroViewModel)
-        {
-            if (!this.Heroes.Remove(heroViewModel))
-            {
-                return;
-            }
-
-            heroViewModel.Dispose();
-
-            // Clear selection if the removed hero was selected
-            if (this.SelectedHeroViewModel == heroViewModel)
-            {
-                this.SelectedHeroViewModel = this.Heroes.FirstOrDefault();
-            }
-        }
-
-        /// <summary>
-        /// Closes all heroes and resets the selection.
-        /// </summary>
-        public void ClearHeroes()
-        {
-            foreach (var heroViewModel in this.Heroes)
-            {
-                heroViewModel.Dispose();
-            }
-
-            this.Heroes.Clear();
-            this.SelectedHeroViewModel = null;
-        }
-
         /// <inheritdoc/>
         protected override object? PrepareGame(Game game) =>
-            new OverviewViewModel(game, this.banishingText, index => this.SearchAndSelectHero(index), index => this.ShowPlayer(index), this.ShowCastle);
+            new OverviewViewModel(game, this.banishingText, this.ShowHero, index => this.ShowPlayer(index), this.ShowCastle);
 
         /// <inheritdoc/>
         protected override void CloseGame()
         {
-            this.ClearHeroes();
-
-            foreach (var player in this.players.Values)
+            foreach (var page in this.players.Values.Cast<IDisposable>().Concat(this.heroes.Values).Concat(this.castles.Values))
             {
-                player.Dispose();
+                page.Dispose();
             }
 
             this.players.Clear();
-
-            foreach (var castle in this.castles.Values)
-            {
-                castle.Dispose();
-            }
-
+            this.heroes.Clear();
             this.castles.Clear();
         }
 
@@ -245,7 +165,7 @@ namespace Siniskalc.Homm3.ViewModels
             switch (node.Kind)
             {
                 case NavNodeKind.Hero:
-                    this.SelectedHeroViewModel = this.OpenHeroAt(node.Index);
+                    this.ShowHero(node.Index);
                     break;
                 case NavNodeKind.Player:
                     this.ShowPlayer(node.Index);
@@ -279,46 +199,6 @@ namespace Siniskalc.Homm3.ViewModels
             {
                 this.overview.Refresh();
             }
-        }
-
-        private void SearchAndSelectHero(int heroIndex)
-        {
-            this.SelectedHeroViewModel = this.OpenHeroAt(heroIndex);
-        }
-
-        private HeroViewModel? OpenHero(string heroName)
-        {
-            var open = this.Heroes.FirstOrDefault(hvm => string.Equals(hvm.Name, heroName, StringComparison.OrdinalIgnoreCase));
-            if (open != null)
-            {
-                return open;
-            }
-
-            if (this.CurrentGame == null)
-            {
-                return null;
-            }
-
-            var heroIndex = this.CurrentGame.History.Current.Heroes().FindByName(heroName);
-            return heroIndex < 0 ? null : this.OpenHeroAt(heroIndex);
-        }
-
-        private HeroViewModel? OpenHeroAt(int heroIndex)
-        {
-            if (this.CurrentGame == null)
-            {
-                return null;
-            }
-
-            var open = this.Heroes.FirstOrDefault(hvm => hvm.Session.HeroIndex == heroIndex);
-            if (open != null)
-            {
-                return open;
-            }
-
-            var heroViewModel = new HeroViewModel(this.CurrentGame.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints, this.byteEditTargets, this.CurrentGame.Map?.HasUnderground ?? true, this.ShowCastle);
-            this.Heroes.Add(heroViewModel);
-            return heroViewModel;
         }
     }
 }

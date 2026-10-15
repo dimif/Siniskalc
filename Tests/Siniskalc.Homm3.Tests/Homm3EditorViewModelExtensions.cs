@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests
 
         public static HeroViewModel SelectedHero(this Homm3EditorViewModel main)
         {
-            return main.SelectedHeroViewModel ?? throw new AssertionException("No hero is selected.");
+            return main.CurrentPageOf<HeroViewModel>();
         }
 
         public static OverviewViewModel LoadedOverview(this Homm3EditorViewModel main)

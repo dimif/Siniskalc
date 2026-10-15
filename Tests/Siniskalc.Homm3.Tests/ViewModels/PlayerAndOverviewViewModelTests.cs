@@ -92,7 +92,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void EditsMarkTheNodesAboveTheEditedHeroAndPlayer()
         {
-            Assert.That(this.main.SearchAndAddHero("Christian"), Is.True);
+            Assert.That(this.main.ShowHero("Christian"), Is.True);
             this.main.SelectedHero().GeneralInfoViewModel.Attack = 77;
 
             var purple = this.PlayerNode("Purple");
@@ -116,18 +116,28 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
-        public void PickingAHeroAfterAPlayerShowsTheHeroEvenWhenItWasSelectedBefore()
+        public void ShowingAHeroAfterAPlayerBringsBackTheSamePageOfTheHero()
         {
-            Assert.That(this.main.SearchAndAddHero("Christian"), Is.True);
-            var hero = this.main.SelectedHeroViewModel;
+            Assert.That(this.main.ShowHero("Christian"), Is.True);
+            var hero = this.main.CurrentPage;
 
             this.PlayerNode("Purple").IsSelected = true;
             Assert.That(this.main.CurrentPage, Is.InstanceOf<PlayerViewModel>());
 
-            this.main.SelectedHeroViewModel = hero;
+            Assert.That(this.main.ShowHero("Christian"), Is.True);
             Assert.That(this.main.CurrentPage, Is.SameAs(hero));
         }
 
+
+        [Test]
+        public void AHeroThatTheSavegameDoesNotHaveIsNotShown()
+        {
+            var page = this.main.CurrentPage;
+
+            Assert.That(this.main.ShowHero("Nobody Of That Name"), Is.False);
+            Assert.That(this.main.ShowHero(" "), Is.False);
+            Assert.That(this.main.CurrentPage, Is.SameAs(page));
+        }
         [Test]
         public void EditingAResourceIsUndoableAndMarksThePlayerAndItsNode()
         {

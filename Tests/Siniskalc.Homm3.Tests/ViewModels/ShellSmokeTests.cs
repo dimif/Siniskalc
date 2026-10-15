@@ -67,7 +67,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     viewModel.RevertAll();
                     Pump();
 
-                    Assert.That(viewModel.SearchAndAddHero("Christian"), Is.True);
+                    Assert.That(viewModel.ShowHero("Christian"), Is.True);
                     Pump();
 
                     var heroFrame = window.HeroFrame();
@@ -275,7 +275,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
                 var viewModel = TestServices.CreateHomm3Editor();
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
-                viewModel.SearchAndAddHero("Christian");
+                viewModel.ShowHero("Christian");
                 viewModel.SelectedHero().GeneralInfoViewModel.Attack = 33;
 
                 var window = new SaveHexWindow(viewModel.CreateSaveHexDump);
@@ -363,7 +363,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Assert.That(viewModel.CurrentPageOf<CastleViewModel>().Heroes.Select(h => (h.Role, h.Name)), Is.EqualTo(new[] { ("Garrisoned", "Nymus"), ("Visiting", "Tazar") }));
 
                     // The asleep box of a hero.
-                    Assert.That(viewModel.SearchAndAddHero("Nymus"), Is.True);
+                    Assert.That(viewModel.ShowHero("Nymus"), Is.True);
                     Pump();
                     Assert.That(viewModel.SelectedHero().CanSleep, Is.True);
                     viewModel.SelectedHero().IsAsleep = true;

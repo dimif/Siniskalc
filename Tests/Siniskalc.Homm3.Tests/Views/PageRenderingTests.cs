@@ -49,7 +49,7 @@ namespace Siniskalc.Homm3.Tests.Views
                 var texts = Descendants<TextBlock>((Page)frame.Content).Where(t => t.IsVisible).Select(t => t.Text).ToList();
                 Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick add" }));
 
-                Assert.That(editor.SearchAndAddHero("Christian"), Is.True);
+                Assert.That(editor.ShowHero("Christian"), Is.True);
                 Pump();
                 var hero = editor.SelectedHero();
                 foreach (var tab in Enumerable.Range(0, 7))

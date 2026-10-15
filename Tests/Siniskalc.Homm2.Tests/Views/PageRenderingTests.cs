@@ -82,7 +82,7 @@ namespace Siniskalc.Homm2.Tests.Views
                 }
 
                 editor.ShowCastle(castle.Index);
-                foreach (var tab in Enumerable.Range(0, 4))
+                foreach (var tab in Enumerable.Range(0, 5))
                 {
                     ((CastleViewModel)editor.CurrentPage!).SelectedTab = tab;
                     Show(window);

@@ -136,15 +136,9 @@
         </DataTemplate>
 
         <DataTemplate x:Key="BuildingGroupTemplate" DataType="{x:Type vm:BuildingGroupViewModel}">
-            <Border Style="{StaticResource CardStyle}" Width="330">
-                <StackPanel>
-                    <DockPanel Margin="0,0,0,8">
-                        <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding Summary}"/>
-                        <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="{Binding Title}"/>
-                    </DockPanel>
-                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource BuildingRowTemplate}"/>
-                </StackPanel>
-            </Border>
+            <heroes:HeadedCard Heading="{Binding Title}" Summary="{Binding Summary}">
+                <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource BuildingRowTemplate}"/>
+            </heroes:HeadedCard>
         </DataTemplate>
     </Page.Resources>
 
@@ -176,11 +170,7 @@
             <TextBlock Margin="0,4,0,0" Style="{StaticResource FieldNoteStyle}">
                 <Run Text="{Binding StatusText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding ShipyardText, Mode=OneWay}"/>
             </TextBlock>
-            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                <TextBlock Text="Owner" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
-                <ComboBox Width="130" Margin="8,0,0,0" ItemsSource="{Binding OwnerChoices}" SelectedItem="{Binding SelectedOwner}"
-                          ToolTip="Who owns the town"/>
-            </StackPanel>
+            <heroes:OwnerPicker Margin="0,8,0,0" PickerToolTip="Who owns the town"/>
             <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
@@ -239,33 +229,23 @@
 
                 <!-- Available creatures -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <DockPanel Margin="0,0,0,8">
-                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding DwellingsSummary}"/>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="Available creatures"/>
-                            </DockPanel>
-                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingRowTemplate}"/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:HeadedCard Heading="Available creatures" Summary="{Binding DwellingsSummary}">
+                        <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingRowTemplate}"/>
+                    </heroes:HeadedCard>
                 </WrapPanel>
 
                 <!-- Mage guild -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
+                    <heroes:HeadedCard Heading="Mage guild" Summary="{Binding MageGuildSummary}">
                         <StackPanel>
-                            <DockPanel Margin="0,0,0,8">
-                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{Binding MageGuildSummary}"/>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="Mage guild"/>
-                            </DockPanel>
                             <DockPanel Margin="0,0,0,8">
                                 <TextBlock Text="Level" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
                                 <ComboBox Width="80" Margin="8,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding MageGuildLevelChoices}" SelectedItem="{Binding SelectedMageGuildLevel}"
                                           ToolTip="Builds the Mage Guild up to this level, or removes the levels above it"/>
                             </DockPanel>
-                            <ItemsControl ItemsSource="{Binding MageGuildLevels}" ItemTemplate="{StaticResource MageGuildLevelTemplate}"/>                            
+                            <ItemsControl ItemsSource="{Binding MageGuildLevels}" ItemTemplate="{StaticResource MageGuildLevelTemplate}"/>
                         </StackPanel>
-                    </Border>
+                    </heroes:HeadedCard>
                 </WrapPanel>
             </Grid>
         </ScrollViewer>

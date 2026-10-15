@@ -208,4 +208,38 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- The choice of who owns a hero or a castle. -->
+    <Style TargetType="{x:Type views:OwnerPicker}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type views:OwnerPicker}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Owner" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
+                        <ComboBox Width="130" Margin="8,0,0,0" ItemsSource="{Binding OwnerChoices}" SelectedItem="{Binding SelectedOwner}"
+                                  ToolTip="{TemplateBinding PickerToolTip}"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A card with a heading, a summary on the right of it, and what the page puts in it. -->
+    <Style TargetType="{x:Type views:HeadedCard}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type views:HeadedCard}">
+                    <Border Style="{StaticResource CardStyle}" Width="{TemplateBinding CardWidth}">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{TemplateBinding Summary}"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="{TemplateBinding Heading}"/>
+                            </DockPanel>
+                            <ContentPresenter/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

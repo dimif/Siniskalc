@@ -25,6 +25,8 @@ The creature, spell and artifact tables, positions and map headers are not share
 
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either: `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill of a page's header, the empty note, and the templates of a fact row and a link.
 It also has the blocks every page is made of, so the pages of the two games look and work the same: `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle` (the strip of tabs), `ResourcesPanel` (a card for each resource, the quick add buttons, and a game's own cards in between) and `ItemsCard` (a heading and a list, with a note for an empty one).
+`OwnerPicker` (the choice of owner of a hero or a castle, for a page that implements `IOwnerChoice`) and `HeadedCard` (a card with a heading, a summary and content) complete the set.
+The castle pages of both games have the same tabs and header: Buildings, Garrison, Available creatures, Mage guild and Hex, and a header with the owner picker.
 A game's page puts its own content in them: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
 A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the controls' styles come last.
 Every page with tabs derives from `TabbedPageViewModelBase` (`Siniskalc.Wpf`), and its tab strip is a `ListBox` bound to `SelectedTab`; the panels of the tabs sit in one grid, each with the style of its number.

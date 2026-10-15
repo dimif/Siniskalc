@@ -16,9 +16,9 @@ namespace Siniskalc.Homm2.ViewModels
     /// The pages of a castle: what it is and who owns it (general), the buildings and the dwellings with the creatures that wait in them,
     /// the army that defends it and the Mage Guild.
     /// </summary>
-    public sealed class CastleViewModel : PageViewModel
+    public sealed class CastleViewModel : PageViewModel, IOwnerChoice
     {
-        private const string Nobody = "Nobody";
+        private const string Neutral = "Neutral";
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
         
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
         private CastleModel castle = null!;
-        private IReadOnlyList<FactRow> facts = [];
+        private IReadOnlyList<LinkViewModel> heroes = [];
         private string visitingHeroName = string.Empty;
         private string notice = string.Empty;
 
@@ -48,8 +48,8 @@ namespace Siniskalc.Homm2.ViewModels
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                [Nobody, .. Enum.GetValues<Color>().Select(c => c.ToString())],
-                () => this.session.Current.Owner?.ToString() ?? Nobody,
+                [Neutral, .. Enum.GetValues<Color>().Select(c => c.ToString())],
+                () => this.session.Current.Owner?.ToString() ?? Neutral,
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
@@ -128,7 +128,34 @@ namespace Siniskalc.Homm2.ViewModels
 
         public ChoiceFieldViewModel OwnerField { get; }
 
-        public IReadOnlyList<FactRow> Facts => this.facts;
+        /// <summary>
+        /// Gets the owner picked in the list, which is "Neutral" or the name of a colour.
+        /// </summary>
+        public string SelectedOwner
+        {
+            get => this.OwnerField.Selected;
+            set => this.OwnerField.Selected = value;
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<string> OwnerChoices => this.OwnerField.Choices;
+
+        /// <summary>
+        /// Gets who owns the castle, as "Neutral" or the name of a colour.
+        /// </summary>
+        public string OwnerText => this.castle.Owner?.ToString() ?? Neutral;
+
+        public string PositionText => this.castle.Position.ToString();
+
+        /// <summary>
+        /// Gets where a boat appears when the castle is on a coast, or says there is no coast.
+        /// </summary>
+        public string ShipyardText => this.castle.Boat is { } boat ? $"Boat appears at {boat}" : "No coast";
+
+        /// <summary>
+        /// Gets the hero in the castle, as a link that opens it: none, or one.
+        /// </summary>
+        public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
 
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
@@ -154,11 +181,7 @@ namespace Siniskalc.Homm2.ViewModels
 
             this.visitingHeroName = castle.VisitingHero is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
 
-            this.facts =
-            [
-                new FactRow("Position", castle.Position.ToString()),
-                new FactRow("Boat appears at", castle.Boat?.ToString() ?? "no coast"),
-            ];
+            this.heroes = this.visitingHeroName.Length > 0 ? [new LinkViewModel(this.visitingHeroName, "Visiting", this.OpenHeroCommand)] : [];
 
             this.OwnerField?.Refresh();
             this.GuildLevelField?.Refresh();
@@ -215,7 +238,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(name == Nobody ? null : Enum.Parse<Color>(name));
+                this.session.ChangeOwner(name == Neutral ? null : Enum.Parse<Color>(name));
             }
             catch (InvalidOperationException)
             {

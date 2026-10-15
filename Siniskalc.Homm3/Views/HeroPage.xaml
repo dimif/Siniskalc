@@ -52,11 +52,7 @@
                 </StackPanel>
             </StackPanel>
         </heroes:PageHeader>
-        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-            <TextBlock Text="Owner" VerticalAlignment="Center" Style="{StaticResource MutedTextStyle}"/>
-            <ComboBox Width="130" Margin="8,0,0,0" ItemsSource="{Binding OwnerChoices}" SelectedItem="{Binding SelectedOwner}"
-                      ToolTip="Which player the hero belongs to. A neutral hero is taken off the map."/>
-        </StackPanel>
+        <heroes:OwnerPicker Margin="0,8,0,0" PickerToolTip="Which player the hero belongs to. A neutral hero is taken off the map."/>
         </StackPanel>
 
         <!-- The pages of a hero, as tabs. -->

@@ -7,7 +7,6 @@ namespace Siniskalc.Homm2.Data
     /// are at fixed places after a header whose size depends on the version of the game.
     /// </summary>
     /// <param name="Version">The game the savegame comes from.</param>
-    /// <param name="Marker">How many bytes the file has in front of the header of the base game (the 4 bytes of the Price of Loyalty).</param>
     /// <param name="Width">The width of the map in tiles.</param>
     /// <param name="Height">The height of the map in tiles.</param>
     /// <param name="HeroStride">The size of the record of a hero.</param>
@@ -17,7 +16,6 @@ namespace Siniskalc.Homm2.Data
     /// <param name="CastleTableStart">Where the record of the first castle begins.</param>
     public sealed record SaveLayout(
         GameVersion Version,
-        int Marker,
         int Width,
         int Height,
         int HeroStride,
@@ -27,14 +25,20 @@ namespace Siniskalc.Homm2.Data
         int CastleTableStart)
     {
         /// <summary>
+        /// Gets how many bytes the file has in front of the header of the base game: none for the base game, the 4 bytes of the marker for
+        /// the Price of Loyalty.
+        /// </summary>
+        public int MarkerLength => this.Version == GameVersion.PriceOfLoyalty ? HeaderLayout.MarkerLength : 0;
+
+        /// <summary>
         /// Gets where the name of the map begins: a 16-bit length, then the text.
         /// </summary>
-        public int MapNameStart => HeaderLayout.MapName + this.Marker;
+        public int MapNameStart => HeaderLayout.MapName + this.MarkerLength;
 
         /// <summary>
         /// Gets where the description of the map begins.
         /// </summary>
-        public int MapDescriptionStart => HeaderLayout.MapDescription + this.Marker;
+        public int MapDescriptionStart => HeaderLayout.MapDescription + this.MarkerLength;
 
         /// <summary>
         /// Gets the position in the savefile of the record of the player at <paramref name="index"/>.

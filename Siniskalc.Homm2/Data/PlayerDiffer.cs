@@ -51,10 +51,27 @@ namespace Siniskalc.Homm2.Data
                 Add(ChangeAreas.General, "Days left without a castle", DaysText(original.DaysLeft), DaysText(current.DaysLeft), p => p with { DaysLeft = original.DaysLeft });
             }
 
+            if (original.SelectedHero != current.SelectedHero)
+            {
+                Add(ChangeAreas.General, "Selected hero", DifferText.Number(original.SelectedHero), DifferText.Number(current.SelectedHero), p => p with { SelectedHero = original.SelectedHero });
+            }
+
+            if (original.SelectedCastle != current.SelectedCastle)
+            {
+                Add(ChangeAreas.General, "Selected castle", DifferText.Number(original.SelectedCastle), DifferText.Number(current.SelectedCastle), p => p with { SelectedCastle = original.SelectedCastle });
+            }
+
+            if (original.Tavern != current.Tavern)
+            {
+                Add(ChangeAreas.Heroes, "Tavern", TavernText(original.Tavern), TavernText(current.Tavern), p => p with { Tavern = original.Tavern });
+            }
+
             return changes;
         }
 
         private static string List(Numbers ids) => ids.Count == 0 ? "none" : string.Join(", ", ids);
+
+        private static string TavernText(TavernHeroes tavern) => $"{DifferText.Number(tavern.First)}, {DifferText.Number(tavern.Second)}";
 
         private static string DaysText(int? days) => days?.ToString() ?? "not counting";
     }

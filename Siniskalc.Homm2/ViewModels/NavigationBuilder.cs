@@ -116,7 +116,7 @@ namespace Siniskalc.Homm2.ViewModels
             var isPlayer = playerIndex >= 0;
             var colorHex = PlayerPalette.Of(PlayerColors.Of(owner));
             var node = new NavNodeViewModel(
-                owner?.ToString() ?? "Neutral",
+                OwnerNames.Of(owner),
                 string.Join(" · ", parts),
                 colorHex,
                 isPlayer ? NavNodeKind.Player : NavNodeKind.Group,

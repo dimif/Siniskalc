@@ -19,7 +19,6 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class CastleViewModel : PageViewModel, ICastlePage
     {
-        private const string Neutral = "Neutral";
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
         
@@ -49,8 +48,8 @@ namespace Siniskalc.Homm2.ViewModels
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                [Neutral, .. Enum.GetValues<Color>().Select(c => c.ToString())],
-                () => this.session.Current.Owner?.ToString() ?? Neutral,
+                OwnerNames.Choices,
+                () => OwnerNames.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
@@ -144,7 +143,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets who owns the castle, as "Neutral" or the name of a colour.
         /// </summary>
-        public string OwnerText => this.castle.Owner?.ToString() ?? Neutral;
+        public string OwnerText => OwnerNames.Of(this.castle.Owner);
 
         public string PositionText => this.castle.Position.ToString();
 
@@ -241,7 +240,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(name == Neutral ? null : Enum.Parse<Color>(name));
+                this.session.ChangeOwner(OwnerNames.Parse(name));
             }
             catch (InvalidOperationException)
             {

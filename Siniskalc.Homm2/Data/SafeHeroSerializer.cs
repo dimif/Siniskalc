@@ -20,8 +20,8 @@
 
             bytes[HeroLayout.Owner] = Bytes.ColorByte(model.Owner, bytes[HeroLayout.Owner]);
             WriteNumber(bytes, HeroLayout.SpellPoints, 2, model.SpellPoints, Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, nameof(model.SpellPoints));
-            WriteNumber(bytes, HeroLayout.X, 4, model.Position.X, 0, int.MaxValue, nameof(model.Position));
-            WriteNumber(bytes, HeroLayout.Y, 4, model.Position.Y, 0, int.MaxValue, nameof(model.Position));
+            WriteNumber(bytes, HeroLayout.X, 4, model.Position.X, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
+            WriteNumber(bytes, HeroLayout.Y, 4, model.Position.Y, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
             WriteDestination(bytes, model.Destination);
             WriteNumber(bytes, HeroLayout.MaxMovement, 4, model.MaxMovement, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MaxMovement));
             WriteNumber(bytes, HeroLayout.MovementLeft, 4, model.MovementLeft, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementLeft));
@@ -61,7 +61,9 @@
                 2 => BitConverter.ToUInt16(bytes, offset),
                 _ => BitConverter.ToUInt32(bytes, offset),
             };
-            if (current == value)
+
+            // A 32 bit number the model cannot hold reads as the largest it can (see Bytes.ReadCoordinate): it is left alone while the model says that.
+            if (current == value || (max == Constants.Hero.MaxCoordinate && value == max && current > max))
             {
                 return;
             }
@@ -119,31 +121,7 @@
         {
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
             {
-                var typeOffset = HeroLayout.ArmyTypes + slot;
-                var countOffset = HeroLayout.ArmyCounts + (slot * 2);
-                var wanted = army.Slots[slot];
-                var currentType = Bytes.ReadCreature(bytes[typeOffset]);
-                var currentCount = BitConverter.ToUInt16(bytes, countOffset);
-
-                if (wanted is null)
-                {
-                    if (currentType is not null)
-                    {
-                        bytes[typeOffset] = Bytes.Empty;
-                        ByteBufferHelper.WriteUInt16(bytes, countOffset, 0);
-                    }
-
-                    continue;
-                }
-
-                if (currentType == wanted.Creature && currentCount == wanted.Count)
-                {
-                    continue;
-                }
-
-                RangeGuard.ThrowIfOutOfRange<long>(wanted.Count, 0, Constants.MaxCreatureCount, nameof(army));
-                bytes[typeOffset] = Bytes.CreatureByte(wanted.Creature, bytes[typeOffset]);
-                ByteBufferHelper.WriteUInt16(bytes, countOffset, (ushort)wanted.Count);
+                Bytes.WriteArmySlot(bytes, HeroLayout.ArmyTypes + slot, HeroLayout.ArmyCounts + (slot * 2), army.Slots[slot], nameof(army));
             }
         }
     }

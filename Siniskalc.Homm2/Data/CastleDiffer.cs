@@ -14,8 +14,6 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class CastleDiffer : ICastleDiffer
     {
-        public const string Empty = "empty";
-
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
@@ -28,7 +26,7 @@ namespace Siniskalc.Homm2.Data
 
             if (original.Owner != current.Owner)
             {
-                Add(ChangeAreas.General, "Owner", OwnerText(original.Owner), OwnerText(current.Owner), c => c with { Owner = original.Owner });
+                Add(ChangeAreas.General, "Owner", OwnerNames.Of(original.Owner), OwnerNames.Of(current.Owner), c => c with { Owner = original.Owner });
             }
 
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
@@ -36,11 +34,11 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.Garrison.Slots[slot], current.Garrison.Slots[slot], slot);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? Empty, after?.ToString() ?? Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
+                    Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? DifferText.Empty, after?.ToString() ?? DifferText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
                 }
             }
 
-            foreach (var building in Enum.GetValues<TownBuildings>().Where(b => b != TownBuildings.None))
+            foreach (var building in Enum.GetValues<TownBuildings>().Where(b => b != TownBuildings.None && b != TownBuildings.MageGuild))
             {
                 var (had, has) = (original.Town.HasFlag(building), current.Town.HasFlag(building));
                 if (had != has)
@@ -50,46 +48,20 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
+            // A dwelling, the creatures that wait in it (wherever the savegame keeps them for its level) and the Mage Guild (its level, its
+            // building and the spells each level shows) change together, so each is one change that is reverted as a whole.
             for (var dwelling = 1; dwelling <= Constants.Castle.DwellingCount; dwelling++)
             {
-                var (before, after, number) = (original.DwellingLevel(dwelling), current.DwellingLevel(dwelling), dwelling);
-                if (before != after)
+                var number = dwelling;
+                if (!current.HasSameDwelling(original, number))
                 {
-                    Add(ChangeAreas.Dwellings, $"Dwelling {dwelling}", DwellingText(before), DwellingText(after), c => c.WithDwellingLevel(number, Math.Min(before, CastleModel.MaxDwellingLevel(c.Faction, number))));
+                    Add(ChangeAreas.Dwellings, $"Dwelling {number}", DwellingText(original, number), DwellingText(current, number), c => c.WithDwellingFrom(original, number));
                 }
             }
 
-            if (original.MageGuildLevel != current.MageGuildLevel)
+            if (!current.HasSameMageGuild(original))
             {
-                var before = original.MageGuildLevel;
-                Add(ChangeAreas.MageGuild, "Level", before == 0 ? "none" : before.ToString(), current.MageGuildLevel == 0 ? "none" : current.MageGuildLevel.ToString(), c => c with { Dwellings = (c.Dwellings & ~Dwellings.MageGuildLevelMask) | (Dwellings)((uint)before << 16) });
-            }
-
-            for (var level = 0; level < Constants.Castle.MageGuildLevels; level++)
-            {
-                var (before, after, index) = (original.GuildSpellCounts[level], current.GuildSpellCounts[level], level);
-                if (before != after)
-                {
-                    Add(ChangeAreas.MageGuild, $"Spells shown at level {level + 1}", before.ToString(), after.ToString(), c => c with { GuildSpellCounts = c.GuildSpellCounts.With(index, before) });
-                }
-            }
-
-            for (var dwelling = 0; dwelling < Constants.Castle.DwellingCount; dwelling++)
-            {
-                var (before, after, index) = (original.Creatures[dwelling], current.Creatures[dwelling], dwelling);
-                if (before != after)
-                {
-                    Add(ChangeAreas.Dwellings, $"Creatures in dwelling {dwelling + 1}", before.ToString("N0"), after.ToString("N0"), c => c with { Creatures = c.Creatures.With(index, before) });
-                }
-            }
-
-            for (var upgraded = 0; upgraded < original.UpgradedCreatures.Count; upgraded++)
-            {
-                var (before, after, index) = (original.UpgradedCreatures[upgraded], current.UpgradedCreatures[upgraded], upgraded);
-                if (before != after)
-                {
-                    Add(ChangeAreas.Dwellings, $"Creatures in upgraded dwelling place {upgraded + 1}", before.ToString("N0"), after.ToString("N0"), c => c with { UpgradedCreatures = c.UpgradedCreatures.With(index, before) });
-                }
+                Add(ChangeAreas.MageGuild, "Mage Guild", MageGuildText(original), MageGuildText(current), c => c.WithMageGuildFrom(original));
             }
 
             for (var slot = 0; slot < original.GuildSpells.Count && slot < current.GuildSpells.Count; slot++)
@@ -105,9 +77,12 @@ namespace Siniskalc.Homm2.Data
             return changes;
         }
 
-        private static string DwellingText(int level) => level switch { 0 => "not built", 1 => "built", 2 => "upgraded", _ => "upgraded twice" };
+        private static string DwellingText(CastleModel castle, int dwelling) =>
+            castle.DwellingLevel(dwelling) switch { 0 => "not built", 1 => "built", 2 => "upgraded", _ => "upgraded twice" }
+            + (castle.DwellingLevel(dwelling) > 0 ? $", {castle.Waiting(dwelling):N0} waiting" : string.Empty);
 
-        private static string OwnerText(Color? owner) => owner?.ToString() ?? "nobody";
+        private static string MageGuildText(CastleModel castle) =>
+            castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.GuildSpellCounts)}";
 
         private static string SpellText(int number) => number == 0 ? "none" : Spell.NameOf((byte)number);
     }

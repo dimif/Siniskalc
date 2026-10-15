@@ -9,9 +9,6 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class SaveLayoutLocator : ISaveLayoutLocator
     {
-        // The largest map of the game is 144 tiles wide.
-        private const int MaxMapSize = 144;
-
         /// <inheritdoc/>
         public int HeadLength => HeaderLayout.MarkerLength + HeaderLayout.MapFormatField + 4;
 
@@ -26,13 +23,12 @@ namespace Siniskalc.Homm2.Data
                 return null;
             }
 
-            var expansion = header.Marker > 0;
+            var expansion = header.Version == GameVersion.PriceOfLoyalty;
             var shift = expansion ? HeaderLayout.ExpansionShift : 0;
             var stride = expansion ? HeroLayout.ExpansionRecordSize : HeroLayout.BaseRecordSize;
             var heroTable = HeaderLayout.HeroTable + shift;
             var layout = new SaveLayout(
-                expansion ? GameVersion.PriceOfLoyalty : GameVersion.BaseGame,
-                header.Marker,
+                header.Version,
                 header.Size,
                 header.Size,
                 stride,
@@ -73,11 +69,12 @@ namespace Siniskalc.Homm2.Data
             return true;
         }
 
-        private static (int Marker, int Size)? ReadHeader(ReadOnlySpan<byte> bytes)
+        private static (GameVersion Version, int Size)? ReadHeader(ReadOnlySpan<byte> bytes)
         {
-            var marker = bytes.Length >= HeaderLayout.MarkerLength && BinaryPrimitives.ReadUInt32LittleEndian(bytes) == HeaderLayout.Marker
-                ? HeaderLayout.MarkerLength
-                : 0;
+            var version = bytes.Length >= HeaderLayout.MarkerLength && BinaryPrimitives.ReadUInt32LittleEndian(bytes) == HeaderLayout.Marker
+                ? GameVersion.PriceOfLoyalty
+                : GameVersion.BaseGame;
+            var marker = version == GameVersion.PriceOfLoyalty ? HeaderLayout.MarkerLength : 0;
             if (bytes.Length < marker + HeaderLayout.MapFormatField + 4)
             {
                 return null;
@@ -86,7 +83,7 @@ namespace Siniskalc.Homm2.Data
             var width = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(marker + HeaderLayout.Width)..]);
             var height = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(marker + HeaderLayout.Height)..]);
             var format = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(marker + HeaderLayout.MapFormatField)..]);
-            return format == HeaderLayout.MapFormat && width == height && width is > 0 and <= MaxMapSize ? (marker, (int)width) : null;
+            return format == HeaderLayout.MapFormat && width == height && width is > 0 and <= Constants.Table.MaxMapSize ? (version, (int)width) : null;
         }
     }
 }

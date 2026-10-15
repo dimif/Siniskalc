@@ -23,10 +23,20 @@ namespace Siniskalc.Homm2
         public const long MaxCreatureCount = 32_767;
 
         /// <summary>
+        /// The most a savegame name can have before its extension: the game lists no longer ones.
+        /// </summary>
+        public const int MaxSavegameNameLength = 8;
+
+        /// <summary>
         /// What is kept in a savefile: how many heroes, players and castles it has, whatever the map.
         /// </summary>
         public static class Table
         {
+            /// <summary>
+            /// The largest map of the game is this many tiles wide.
+            /// </summary>
+            public const int MaxMapSize = 144;
+
             public const int HeroCount = 54;
             public const int PlayerCount = 6;
             public const int CastleSlotCount = 72;
@@ -41,6 +51,14 @@ namespace Siniskalc.Homm2
             public const int SecondarySkillCount = 14;
             public const int MaxSecondarySkills = 8;
             public const int SpellCount = 65;
+
+            /// <summary>
+            /// The heroes of each faction are numbered together, this many at a time.
+            /// </summary>
+            public const int PerFaction = 9;
+
+            public const long MinCoordinate = 0;
+            public const long MaxCoordinate = int.MaxValue;
 
             public const long MinLevel = 1;
             public const long MaxLevel = 255;
@@ -97,6 +115,17 @@ namespace Siniskalc.Homm2
             public const int MageGuildLevels = 5;
             public const int MageGuildSlotsPerLevel = 4;
             public const int NameLength = 13;
+
+            public const long MinCoordinate = 0;
+            public const long MaxCoordinate = byte.MaxValue;
+
+            public const long MinGuildSpellCount = 0;
+            public const long MaxGuildSpellCount = MageGuildSlotsPerLevel;
+
+            /// <summary>
+            /// The buildings of the town are 16 bits in the savegame.
+            /// </summary>
+            public const long MaxTownBuildings = ushort.MaxValue;
 
             public const long MinCreatures = 0;
             public const long MaxCreatures = 65_535;

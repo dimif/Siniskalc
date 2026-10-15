@@ -25,9 +25,10 @@ namespace Siniskalc.Homm2.Data
 
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
             {
-                WriteGarrisonSlot(bytes, slot, model.Garrison.Slots[slot]);
+                Bytes.WriteArmySlot(bytes, CastleLayout.GarrisonTypes + slot, CastleLayout.GarrisonCounts + (slot * 2), model.Garrison.Slots[slot], nameof(model.Garrison));
             }
 
+            RangeGuard.ThrowIfOutOfRange<long>((long)model.Town, 0, Constants.Castle.MaxTownBuildings, nameof(model.Town));
             ByteBufferHelper.WriteUInt16(bytes, CastleLayout.TownBuildings, (ushort)model.Town);
             ByteBufferHelper.WriteUInt32(bytes, CastleLayout.Dwellings, (uint)model.Dwellings);
 
@@ -58,6 +59,7 @@ namespace Siniskalc.Homm2.Data
 
             for (var level = 0; level < Constants.Castle.MageGuildLevels; level++)
             {
+                RangeGuard.ThrowIfOutOfRange<long>(model.GuildSpellCounts[level], Constants.Castle.MinGuildSpellCount, Constants.Castle.MaxGuildSpellCount, nameof(model.GuildSpellCounts));
                 bytes[CastleLayout.GuildSpellCounts + level] = (byte)model.GuildSpellCounts[level];
             }
 
@@ -66,7 +68,7 @@ namespace Siniskalc.Homm2.Data
 
         private static byte ToByte(int value, string name)
         {
-            RangeGuard.ThrowIfOutOfRange(value, 0, byte.MaxValue, name);
+            RangeGuard.ThrowIfOutOfRange<long>(value, Constants.Castle.MinCoordinate, Constants.Castle.MaxCoordinate, name);
             return (byte)value;
         }
 
@@ -80,34 +82,6 @@ namespace Siniskalc.Homm2.Data
 
             bytes[CastleLayout.Boat] = boat is { } at ? ToByte(at.X, nameof(boat)) : Bytes.Empty;
             bytes[CastleLayout.Boat + 1] = boat is { } to ? ToByte(to.Y, nameof(boat)) : Bytes.Empty;
-        }
-
-        private static void WriteGarrisonSlot(byte[] bytes, int slot, ArmySlot? wanted)
-        {
-            var typeOffset = CastleLayout.GarrisonTypes + slot;
-            var countOffset = CastleLayout.GarrisonCounts + (slot * 2);
-            var currentType = Bytes.ReadCreature(bytes[typeOffset]);
-            var currentCount = BitConverter.ToUInt16(bytes, countOffset);
-
-            if (wanted is null)
-            {
-                if (currentType is not null)
-                {
-                    bytes[typeOffset] = Bytes.Empty;
-                    ByteBufferHelper.WriteUInt16(bytes, countOffset, 0);
-                }
-
-                return;
-            }
-
-            if (currentType == wanted.Creature && currentCount == wanted.Count)
-            {
-                return;
-            }
-
-            RangeGuard.ThrowIfOutOfRange<long>(wanted.Count, 0, Constants.MaxCreatureCount, nameof(wanted));
-            bytes[typeOffset] = Bytes.CreatureByte(wanted.Creature, bytes[typeOffset]);
-            ByteBufferHelper.WriteUInt16(bytes, countOffset, (ushort)wanted.Count);
         }
     }
 }

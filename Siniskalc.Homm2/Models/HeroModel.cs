@@ -40,12 +40,10 @@ namespace Siniskalc.Homm2.Models
         Artifacts Artifacts,
         SpellBook Spells)
     {
-        private const int HeroesPerRace = 9;
-
         /// <summary>
         /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
-        public Faction Faction => (Faction)Math.Min(this.HeroId / HeroesPerRace, (int)Faction.Necromancer);
+        public Faction Faction => (Faction)Math.Min(this.HeroId / Constants.Hero.PerFaction, (int)Faction.Necromancer);
 
         /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.

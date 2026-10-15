@@ -75,7 +75,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public int Level => this.hero.Level;
 
-        public string OwnerText => this.hero.Owner?.ToString() ?? "Neutral";
+        public string OwnerText => OwnerNames.Of(this.hero.Owner);
 
         /// <summary>
         /// Gets where the hero is on the map, or nothing for a hero that serves nobody.

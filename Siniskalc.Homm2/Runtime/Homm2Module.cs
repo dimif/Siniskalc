@@ -13,8 +13,6 @@ namespace Siniskalc.Homm2.Runtime
     /// </summary>
     public sealed class Homm2Module : IGameModule
     {
-        private const int MaxNameLength = 8;
-
         private readonly ISaveLayoutLocator locator;
         private readonly Func<Homm2EditorViewModel> createEditor;
 
@@ -52,9 +50,9 @@ namespace Siniskalc.Homm2.Runtime
         public string? ValidateSavegameName(string fileName)
         {
             var stem = Path.GetFileNameWithoutExtension(fileName);
-            if (stem.Length is 0 or > MaxNameLength || stem.Any(c => !IsDosNameCharacter(c)))
+            if (stem.Length is 0 or > Constants.MaxSavegameNameLength || stem.Any(c => !IsDosNameCharacter(c)))
             {
-                return $"Heroes of Might and Magic II only lists savegames whose name has 1 to {MaxNameLength} letters, digits or _ before the extension, such as E01GOLD.GM1. "
+                return $"Heroes of Might and Magic II only lists savegames whose name has 1 to {Constants.MaxSavegameNameLength} letters, digits or _ before the extension, such as E01GOLD.GM1. "
                     + $"\"{stem}\" would not show in the game.";
             }
 

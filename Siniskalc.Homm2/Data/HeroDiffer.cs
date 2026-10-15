@@ -15,8 +15,6 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
-        public const string Empty = "empty";
-
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int heroIndex, HeroModel original, HeroModel current)
         {
@@ -29,7 +27,7 @@ namespace Siniskalc.Homm2.Data
 
             if (original.Owner != current.Owner)
             {
-                Add(ChangeAreas.General, "Owner", OwnerText(original.Owner), OwnerText(current.Owner), h => h with { Owner = original.Owner });
+                Add(ChangeAreas.General, "Owner", OwnerNames.Of(original.Owner), OwnerNames.Of(current.Owner), h => h with { Owner = original.Owner });
             }
 
             if (original.SpellPoints != current.SpellPoints)
@@ -69,7 +67,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.Artifacts.Slots[slot], current.Artifacts.Slots[slot], slot);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Artifacts, $"Slot {slot + 1}", before?.Name ?? Empty, after?.Name ?? Empty, h => h with { Artifacts = h.Artifacts.WithSlot(index, before) });
+                    Add(ChangeAreas.Artifacts, $"Slot {slot + 1}", before?.Name ?? DifferText.Empty, after?.Name ?? DifferText.Empty, h => h with { Artifacts = h.Artifacts.WithSlot(index, before) });
                 }
             }
 
@@ -122,10 +120,8 @@ namespace Siniskalc.Homm2.Data
             }
         }
 
-        private static string OwnerText(Color? owner) => owner?.ToString() ?? "nobody";
-
         private static string LevelText(SkillLevel level) => level == SkillLevel.None ? "none" : level.ToString();
 
-        private static string SlotText(ArmySlot? slot) => slot?.ToString() ?? Empty;
+        private static string SlotText(ArmySlot? slot) => slot?.ToString() ?? DifferText.Empty;
     }
 }

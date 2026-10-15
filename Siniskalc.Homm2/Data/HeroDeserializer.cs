@@ -25,7 +25,7 @@ namespace Siniskalc.Homm2.Data
                 chunk.GetByteAt(HeroLayout.Id),
                 Bytes.ReadText(bytes, HeroLayout.Name, HeroLayout.NameLength),
                 this.DeserializeOwner(chunk),
-                new Position((int)chunk.GetUInt32At(HeroLayout.X), (int)chunk.GetUInt32At(HeroLayout.Y)),
+                new Position(Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.X)), Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.Y))),
                 Bytes.OptionalPosition(chunk.GetUInt32At(HeroLayout.Destination), chunk.GetUInt32At(HeroLayout.Destination + 4)),
                 chunk.GetUInt16At(HeroLayout.SpellPoints),
                 chunk.GetUInt32At(HeroLayout.MaxMovement),

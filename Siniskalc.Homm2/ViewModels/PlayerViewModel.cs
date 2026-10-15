@@ -154,6 +154,6 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         private static string TavernHero(IReadOnlyList<HeroModel> heroes, int? id) =>
-            id is { } hero && hero >= 0 && hero < heroes.Count ? heroes[hero].Name : "nobody";
+            id is { } hero && hero >= 0 && hero < heroes.Count ? heroes[hero].Name : DifferText.None;
     }
 }

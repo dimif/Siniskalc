@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Homm2.Entities;
@@ -84,6 +85,50 @@ namespace Siniskalc.Homm2.Models
                 : 0;
         }
 
+        /// <summary>
+        /// Returns the castle with everything of dwelling <paramref name="dwelling"/> (1 to 6) as it is in <paramref name="source"/>: its
+        /// bits of the dwellings and the creatures that wait in it, wherever the savegame keeps them.
+        /// </summary>
+        public CastleModel WithDwellingFrom(CastleModel source, int dwelling)
+        {
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            var clear = DwellingBits(dwelling);
+            var upgraded = this.UpgradedCreatures;
+            foreach (var place in UpgradedPlaces(dwelling))
+            {
+                upgraded = upgraded.With(place, source.UpgradedCreatures[place]);
+            }
+
+            return this with
+            {
+                Dwellings = (Dwellings)(((uint)this.Dwellings & ~clear) | ((uint)source.Dwellings & clear)),
+                Creatures = this.Creatures.With(dwelling - 1, source.Creatures[dwelling - 1]),
+                UpgradedCreatures = upgraded,
+            };
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether dwelling <paramref name="dwelling"/> (1 to 6) is the same in <paramref name="other"/>: built to
+        /// the same level, with the same creatures waiting wherever the savegame keeps them.
+        /// </summary>
+        public bool HasSameDwelling(CastleModel other, int dwelling) => this.WithDwellingFrom(other, dwelling).Equals(this);
+
+        /// <summary>
+        /// Returns the castle with its Mage Guild as it is in <paramref name="source"/>: its level, the building and the number of
+        /// spells each level shows (not the spells themselves).
+        /// </summary>
+        public CastleModel WithMageGuildFrom(CastleModel source) => this with
+        {
+            Dwellings = (Dwellings)(((uint)this.Dwellings & ~(uint)Dwellings.MageGuildLevelMask) | ((uint)source.Dwellings & (uint)Dwellings.MageGuildLevelMask)),
+            Town = (this.Town & ~TownBuildings.MageGuild) | (source.Town & TownBuildings.MageGuild),
+            GuildSpellCounts = source.GuildSpellCounts,
+        };
+
+        /// <summary>
+        /// Gets a value indicating whether the Mage Guild is the same in <paramref name="other"/>.
+        /// </summary>
+        public bool HasSameMageGuild(CastleModel other) => this.WithMageGuildFrom(other).Equals(this);
+
         public bool HasDwelling(int dwelling) => this.DwellingLevel(dwelling) > 0;
 
         /// <summary>
@@ -122,7 +167,7 @@ namespace Siniskalc.Homm2.Models
         public CastleModel WithDwellingLevel(int dwelling, int level)
         {
             RangeGuard.ThrowIfOutOfRange(level, 0, MaxDwellingLevel(this.Faction, dwelling), nameof(level));
-            var clear = (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
+            var clear = DwellingBits(dwelling);
             var bit = level switch
             {
                 0 => 0u,
@@ -159,9 +204,6 @@ namespace Siniskalc.Homm2.Models
         public CastleModel WithDwelling(int dwelling, bool built) =>
             built ? (this.DwellingLevel(dwelling) > 0 ? this : this.WithDwellingLevel(dwelling, 1)) : this.WithDwellingLevel(dwelling, 0);
 
-        /// <summary>
-        /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
-        /// </summary>
         // The place of the upgraded list that the game also fills for the dragons upgraded twice (3 in the saves it made, 0 in E35 where the dragons did not show).
         private const int SecondUpgradeMarker = 4;
         private const int SecondUpgradeMarkerValue = 3;
@@ -170,16 +212,40 @@ namespace Siniskalc.Homm2.Models
         private static Numbers WithMarker(Numbers upgraded, int level) =>
             level >= 3 && upgraded[SecondUpgradeMarker] == 0 ? upgraded.With(SecondUpgradeMarker, SecondUpgradeMarkerValue) : upgraded;
 
+        // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
+        private static uint DwellingBits(int dwelling) =>
+            (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
+
+        // The places of the list of upgraded creatures that belong to a dwelling: its own and, for the sixth, the one of the second upgrade.
+        private static IEnumerable<int> UpgradedPlaces(int dwelling)
+        {
+            if (dwelling >= 2)
+            {
+                yield return dwelling - 2;
+            }
+
+            if (dwelling == 6)
+            {
+                yield return 5;
+            }
+        }
+
         // Where the creatures of an upgraded dwelling wait: the dwellings 2 to 6 have a place each, the dragons upgraded a second time the sixth
         // (E34DWUP2: the Black Dragon had none in the fifth).
         private static int UpgradedPlace(int dwelling, int level) => level >= 3 ? 5 : dwelling - 2;
 
+        /// <summary>
+        /// Gets the creatures that wait in dwelling <paramref name="dwelling"/> (1 to 6), wherever the savegame keeps them for its level.
+        /// </summary>
         public int Waiting(int dwelling)
         {
             var level = this.DwellingLevel(dwelling);
             return level >= 2 ? this.UpgradedCreatures[UpgradedPlace(dwelling, level)] : this.Creatures[dwelling - 1];
         }
 
+        /// <summary>
+        /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
+        /// </summary>
         public CastleModel WithWaiting(int dwelling, int count)
         {
             var level = this.DwellingLevel(dwelling);

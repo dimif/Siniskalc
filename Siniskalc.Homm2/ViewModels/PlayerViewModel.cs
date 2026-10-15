@@ -6,6 +6,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -15,7 +16,7 @@ namespace Siniskalc.Homm2.ViewModels
     /// <summary>
     /// The pages of a player: the resources and what they earn each day, the heroes and the tavern, and the towns.
     /// </summary>
-    public sealed class PlayerViewModel : PageViewModel
+    public sealed class PlayerViewModel : PageViewModel, IPlayerPage
     {
         private static readonly Resource[] ResourceOrder =
         [
@@ -75,6 +76,10 @@ namespace Siniskalc.Homm2.ViewModels
         public IReadOnlyList<LinkViewModel> Castles => this.castles;
 
         public IReadOnlyList<FactRow> Tavern => this.tavern;
+
+        IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
+
+        IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
 
         public bool HasHeroes => this.heroes.Count > 0;
 

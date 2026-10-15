@@ -5,7 +5,7 @@ namespace Siniskalc.Heroes.ViewModels
     /// <summary>
     /// A hero or a town in the card of a player: the name opens its pages, the detail sits beside it.
     /// </summary>
-    public sealed class LinkViewModel
+    public sealed class LinkViewModel : ILink
     {
         public LinkViewModel(string name, string detail, ICommand open)
         {

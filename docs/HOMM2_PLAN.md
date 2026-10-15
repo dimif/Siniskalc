@@ -81,7 +81,7 @@ The user copies them to the save folder of HoMM2, loads each and ticks the READM
 - Done: `Homm2Module` is registered in the host, so detection, the recent files and the window title work for both games; the hex viewer works (`SaveRegionProvider`).
 - Done: the UX follows the HoMM3 editor. `Homm2EditorView` has the search box and the navigation tree (`NavigationTree`: game, a node per player with its "Heroes" and "Towns" groups, "Neutral" for what nobody owns; nodes show the race and level, the hero that is in a town, a dot for unsaved edits), and a frame with the page of what is picked. Pages (each a `PageViewModel` with tabs, an "edited" mark and a Reset pill): the overview (map, scenario, players that open their page), the player (Resources with the daily income, Heroes with the tavern, Towns), the hero (General, Skills, Creatures, Spells, Artifacts) and the castle (General, Buildings with dwellings, Creatures, Mage Guild). Heroes and towns link to each other.
 - Done: the hex tab of the player, the hero and the castle page (`RecordRegions` holds the known fields of each record, `IByteEditTargetFactory` makes the target; the tab shows in advanced mode as in HoMM3), and the rule for the names of the saves: `IGameModule.ValidateSavegameName` (a default of "any name"), which `Homm2Module` answers with the 8 characters before the extension, and which "Save as" asks before it writes. The backup keeps the extension of the game plus `.bak`, which the game does not list, so it needs no rule.
-- Left: the game-neutral navigation tree (the HoMM3 and HoMM2 trees are two copies; the HoMM3 one was left unchanged).
+- The game-neutral navigation tree was left for later; it is done in Phase 7.
 
 ## Phase 6: editing (done for heroes, players and castles; unverified in the game)
 
@@ -93,3 +93,16 @@ Everything below is a reducer on the immutable model, undoable, with the pages b
 - Changed by the write test (see `docs/HOMM2_SAVE_FORMAT.md`, "What the write test with the game showed"): the dwellings have levels (built, upgraded) and an upgrade replaces the bit; the Mage Guild goes to level 5 and a Wizard has a Library; a stack stops at 32,767; the limits of the resources are 999,999 gold and 9,999 of the others.
 - Not done: level and experience kept in step (the game showed level 14 for level 20 and 50,000 experience; E30 to E32 are there to find the rule), the map (the flag of a castle, what a player has explored), the marketplace and the other bits of the high byte of the buildings, the rule that a town needs its castle, the maximum movement (the game works it out).
 
+
+## Phase 7: what the two games share (done)
+
+HoMM2 was built by copying the structure of the HoMM3 editor, so the two had copies of the navigation tree, the editor view, the styles of the pages and some models. Done, in order, with the whole suite green after each step:
+
+1. **HoMM2 types lose the `Homm2` prefix** (`Homm2HeroModel` is `HeroModel` in `Siniskalc.Homm2.Models`); the wrappers of Core types and the entry points the exe names side by side keep it (`CLAUDE.md`).
+2. **A shared editor shell** in `Siniskalc.Wpf`: `EditorViewModelBase<TGame>`, the generic `NavigationTree` and `NavNodeViewModel` (badges and notes), `NavigationEditorView`; each game has an `INavigationBuilder<TGame>`. Core gets `IOpenGame` and `ISavegameService<TGame>`.
+3. **`Siniskalc.Heroes`** for what means the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`) and the interfaces of what each game has its own set of (`IPlayerColor`, `IFaction`, `ISecondarySkill`, `ISkillLevel`, `ILink`, `IOwnerChoice`), with a catalog per game for the enums. HoMM2's `Race` became `Faction`. Colours have one palette, by name. Colours, skill levels, creatures, spells, artifacts, positions and map headers are not merged: they differ in codes, sets or shape.
+4. **`Siniskalc.Heroes.Wpf`**: the styles and blocks the pages are made of (tab panels, `PageHeader`, `TabStripStyle`, `ResourcesPanel`, `ItemsCard`, `OwnerPicker`, `HeadedCard`) and the interfaces of the pages (`IResettablePage`, `IResourcesPage`, `IPlayerPage`, `ICastlePage`). The hero, player and castle pages of both games are built from them, and the HoMM3 hero page no longer navigates a frame to a page file per tab.
+5. **The HoMM3 primary skills** are the saved values with the artifacts' bonus in them, as in HoMM2 (found by comparing the Arts saves; `KNOWLEDGE_BASE.md`). Putting an artifact on or off changes them, and the page edits the base.
+6. **The castle pages have the same tabs and header** (Buildings, Garrison, Available creatures, Mage guild, Hex), and the owner of what nobody owns is "Neutral" in both games.
+
+Seen in the game: nothing of this phase. The pages were checked by the tests that open them in a window (`PageRenderingTests`, `PageContractTests`), not by eye.

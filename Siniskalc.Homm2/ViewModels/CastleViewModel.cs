@@ -6,6 +6,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Windows.Input;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -16,7 +17,7 @@ namespace Siniskalc.Homm2.ViewModels
     /// The pages of a castle: what it is and who owns it (general), the buildings and the dwellings with the creatures that wait in them,
     /// the army that defends it and the Mage Guild.
     /// </summary>
-    public sealed class CastleViewModel : PageViewModel, IOwnerChoice
+    public sealed class CastleViewModel : PageViewModel, ICastlePage
     {
         private const string Neutral = "Neutral";
         private const string NoSpell = "(none)";
@@ -156,6 +157,8 @@ namespace Siniskalc.Homm2.ViewModels
         /// Gets the hero in the castle, as a link that opens it: none, or one.
         /// </summary>
         public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
+
+        IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
 
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 

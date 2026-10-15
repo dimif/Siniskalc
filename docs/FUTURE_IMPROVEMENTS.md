@@ -6,8 +6,17 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 ## Project structure
 
 - **Game modules** (done): the HoMM3 code is in `Siniskalc.Homm3` and the exe is a thin host with a shell (`IGameModule`, `IGameEditor`, `ShellViewModel`, `ShellWindow`); see `docs/HOMM2_PLAN.md`.
-  Which hero, castle and creature types the two games share is still open; expect to fork more than to share.
+  What the two games share is decided (see `Siniskalc.Heroes` and "Adding a game" in `docs/SINISKALC_ARCHITECTURE.md`): the values that mean the same (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), interfaces for the entities each game has its own set of (colours, factions, skills, skill levels), the blocks the pages are made of, and the shell, the navigation tree and the editor base.
+  Creatures, spells, artifacts, positions and map headers are not shared: they differ in codes, sets or shape.
 - The navigation tree, its node and the editor view are shared (`Siniskalc.Wpf`); each game has a `NavigationBuilder`.
+- **A second savefile format of a game we have** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the format is not.
+  Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules (entities, models, reducers, pages) and the format (locator, chunks, (de)serializers) when the first of them is started; the editor view models and pages already work with models and the collection classes, never with chunks.
+- **A third game** (HoMM1 first, as the test that the page interfaces are right): see "Adding a game" in the architecture document.
+- **Names behind a provider.** Names of creatures, spells and artifacts are string literals in the entity tables.
+  Before a third game, one injected name provider (like `EffectLineProvider`) so a creature is named once and the UI can be localized.
+- **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`), but each game's view model is its own.
+  There is no hero page interface yet: the tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class).
+- **View models free of WPF.** The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite for Avalonia.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
   A single store holding the document and applying reducers would replace the per-view-model `Update` callbacks and the `Refresh()` calls that follow `History.Changed`.

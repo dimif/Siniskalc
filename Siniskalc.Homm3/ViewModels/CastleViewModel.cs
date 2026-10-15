@@ -7,6 +7,7 @@
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -17,7 +18,7 @@
     /// <see cref="CastleEditSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
     /// the pending changes and follow undo and redo.
     /// </summary>
-    public sealed class CastleViewModel : TabbedPageViewModelBase, IDisposable, IOwnerChoice
+    public sealed class CastleViewModel : TabbedPageViewModelBase, ICastlePage, IDisposable
     {
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
@@ -146,6 +147,8 @@
         /// Gets the heroes in the castle: the garrisoned one and the one at the gate, if there are any.
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; private set; } = [];
+
+        IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
 
         public bool HasHeroes => this.Heroes.Count > 0;
 

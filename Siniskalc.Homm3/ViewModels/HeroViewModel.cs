@@ -6,6 +6,7 @@
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -16,7 +17,7 @@
     /// Reads the hero from a <see cref="HeroEditSession"/> and writes every change back through it, so edits land in
     /// the savefile's undo/redo history. Refreshes itself whenever that history changes.
     /// </summary>
-    public class HeroViewModel : TabbedPageViewModelBase, IDisposable, IOwnerChoice
+    public class HeroViewModel : TabbedPageViewModelBase, IResettablePage, IDisposable, IOwnerChoice
     {
         private readonly HeroEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;

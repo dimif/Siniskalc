@@ -1,12 +1,13 @@
 ﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System.Windows.Input;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// A hero in a player's card of the overview. Opening it shows the hero's pages.
     /// </summary>
-    public sealed class HeroLinkViewModel
+    public sealed class HeroLinkViewModel : ILink
     {
         public HeroLinkViewModel(HeroSummary summary, ICommand open)
         {

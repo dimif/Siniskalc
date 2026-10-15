@@ -6,61 +6,78 @@
 It turns a savefile into a list of byte chunks and keeps them in an immutable document with undo and redo.
 An edit goes through an edit session that deserializes a chunk, applies the change and serializes it back, so only the bytes that changed are patched on save and the rest of the file is left as it was.
 It also reads and writes the compressed savefile, makes the numbered backups, and stores the user's settings and recent files.
-It defines what the application shell needs from a game: `IGameModule` (how its savefiles are recognised and picked, and how to make its editor) and `IGameEditor` (loading, saving, undo and redo, the pending changes, the bytes to save).
+It defines what the application shell needs from a game: `IGameModule` (how its savefiles are recognised and picked, and how to make its editor), `IGameEditor` (loading, saving, undo and redo, the pending changes, the bytes to save), `IOpenGame` and `ISavegameService<TGame>` (what an editor needs of an open savefile and of the service that loads and saves it), and `IGameEntity` (a name and the code the savefile holds for it).
 
 **`Siniskalc.Wpf`** (net8.0-windows) is the reusable user interface, and it knows no game either.
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer.
 It also holds the colours and styles every page shares, and the shell of the application: `ShellWindow` (menus, toolbar, status bar, the panel of pending changes and the menu icons), `ShellViewModel` and `SavegameFileCommands`.
 The shell picks the game of the file the user opens, and shows the game's editor through the data template of the editor's type.
 The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, undo, pending changes, the page that is shown), the generic `NavigationTree` and `NavNodeViewModel` (a game adds badges and notes to a node and fills the tree through its `INavigationBuilder<TGame>`) and `NavigationEditorView` (search box, tree and page frame; the game gives it a page factory).
-`Siniskalc.Core` has the matching `IOpenGame` and `ISavegameService<TGame>`.
+A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `ListBox` bound to `SelectedTab`, and the panels of the tabs sit in one grid, each with the style of its number.
 
 **`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
-It holds the values that mean the same in every game (`Resource`, `GameDate`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity` of Core: a name and the code the savefile holds).
+It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
 A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, HoMM3's `Faction`) implement the interface, and the enums (`Color`, `PlayerColor`, HoMM2's `Faction`, `SkillLevel`) stay enums in the models and the `Data` layer, with a small catalog (`PlayerColors.Of(color)`, `SkillLevels.Of(level)`) that gives the view-model layer the interface.
 A level a hero has not learned is `null`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
-`Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`); the games reference it.
-The creature, spell and artifact tables, positions and map headers are not shared (yet): they differ in codes, sets or shape.
+`Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
+The creature, spell and artifact tables, positions and map headers are not shared: they differ in codes, sets or shape.
 
-**`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either: `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill of a page's header, the empty note, and the templates of a fact row and a link.
-It also has the blocks every page is made of, so the pages of the two games look and work the same: `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle` (the strip of tabs), `ResourcesPanel` (a card for each resource, the quick add buttons, and a game's own cards in between) and `ItemsCard` (a heading and a list, with a note for an empty one).
-`OwnerPicker` (the choice of owner of a hero or a castle, for a page that implements `IOwnerChoice`) and `HeadedCard` (a card with a heading, a summary and content) complete the set.
-The castle pages of both games have the same tabs and header: Buildings, Garrison, Available creatures, Mage guild and Hex, and a header with the owner picker.
-A game's page puts its own content in them: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
-A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the controls' styles come last.
-Every page with tabs derives from `TabbedPageViewModelBase` (`Siniskalc.Wpf`), and its tab strip is a `ListBox` bound to `SelectedTab`; the panels of the tabs sit in one grid, each with the style of its number.
+**`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either.
+`Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
+`PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle`, `ResourcesPanel` (a card for each resource, the quick add buttons, a game's own cards in between), `ItemsCard` (a heading and a list, with a note for an empty one), `OwnerPicker` and `HeadedCard` (a card with a heading, a summary and content).
+A game's page puts its own content in the blocks: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
+A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the styles of the controls come last.
+The blocks bind to what `IResettablePage`, `IResourcesPage`, `IPlayerPage` and `ICastlePage` say a page has (`PageContractTests` puts them on pages that have nothing else).
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).
 
-**`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`) and `ViewModels` and `Views` (for now an overview of the savegame). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
+**`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`), and `ViewModels` and `Views` (the overview, the player, hero and castle pages and the navigation builder). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
 
 **`Siniskalc`** is the exe, the host that starts the window.
 It holds `App` and `AppServices`, the composition root that builds all the components once and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), and `AppInfo` (the name and the web addresses).
 A game's data templates are merged in `App.xaml`.
 
 ```
+Siniskalc.Core         No game, no UI: chunks, history, codecs, settings, IGameModule / IGameEditor
+Siniskalc.Wpf          No game: shell, base view models, controls, EditorViewModelBase, the navigation tree
+Siniskalc.Heroes       The series, no UI: shared values and the interfaces of the entities, links and owner
+Siniskalc.Heroes.Wpf   The series: the styles and blocks the pages are made of, the interfaces of the pages
 Siniskalc.Homm3/
   Data/           Reading and writing savefile bytes: loaders, chunks, (de)serializers, edit sessions
   Entities/       Game vocabulary: artifacts, creatures, spells, skills, factions, buildings, ...
   Models/         Immutable views of what is in a save: heroes, players, castles, game setup
   Runtime/        Loading and holding the open game
-  ViewModels/     MVVM view models and the navigation tree
+  ViewModels/     MVVM view models and the navigation builder
   Views/          XAML pages (one page per kind of edit)
   Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
+Siniskalc.Homm2/  The same folders for HoMM2
 Siniskalc/        The exe: App and AppServices (the composition root)
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
-TestData/         Sample savegames (Roe, Sod, Hota) and hero dumps used by the tests.
+TestData/         Sample savegames (Roe, Sod, Hota, Homm2) and hero dumps used by the tests.
 docs/             Architecture, how things are located in a savefile, knowledge base, user guide, plans.
 ```
 
-Dependencies point one way: `Siniskalc` references `Siniskalc.Homm3`, `Siniskalc.Homm2`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Homm3` and `Siniskalc.Homm2` each reference `Siniskalc.Wpf` and `Siniskalc.Core`; and `Siniskalc.Wpf` references `Siniskalc.Core`.
-Nothing in Core or WPF should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and the HoMM3 side wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChanges`, `Homm3Enumeration`).
-A game gets a project of its own that references the same two libraries; HoMM2 is the second.
+Dependencies point one way: `Siniskalc` references the games and the libraries; `Siniskalc.Homm3` and `Siniskalc.Homm2` each reference `Siniskalc.Heroes.Wpf`, `Siniskalc.Heroes`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Heroes.Wpf` references `Siniskalc.Heroes` and `Siniskalc.Wpf`; `Siniskalc.Wpf` and `Siniskalc.Heroes` reference `Siniskalc.Core`.
+Nothing in Core, WPF or Heroes should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and each game wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChanges`, `Homm3Enumeration`, and the same for HoMM2).
+A game gets a project of its own that references the same libraries; HoMM2 is the second.
+A type carries no game prefix (`Siniskalc.Homm2.Models.HeroModel`): the namespace says the game, and the exe uses namespace aliases where it names both.
 
-Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests` and `Siniskalc.Homm3.Tests` (the real savegames).
+Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests` (the blocks, rendered), and `Siniskalc.Homm3.Tests` and `Siniskalc.Homm2.Tests` (the real savegames, and the pages of each game opened in a window: `PageRenderingTests`).
+
+## Adding a game
+
+A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:
+
+1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` and a `Game : IOpenGame`; the module (`IGameModule`) that recognises the file.
+2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
+3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
+4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.
+5. Its `Generic.xaml`, which merges `PageStyles.xaml` and gives the data template of its editor, and its line in `AppServices`.
+
+What a second savefile format of the same game (fheroes2 for HoMM2, VCMI for HoMM3) would share is the entities, models and pages; splitting the game's project into the rules and the format is left until the first of them is started.
 
 ## Layers
 

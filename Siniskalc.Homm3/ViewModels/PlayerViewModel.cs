@@ -8,6 +8,7 @@
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -17,7 +18,7 @@
     /// ViewModel that wraps a player for UI binding. Like <see cref="HeroViewModel"/>, it reads from a
     /// <see cref="PlayerEditSession"/>, writes every change back through it, and refreshes when the history changes.
     /// </summary>
-    public sealed class PlayerViewModel : TabbedPageViewModelBase, IDisposable
+    public sealed class PlayerViewModel : TabbedPageViewModelBase, IPlayerPage, IDisposable
     {
         private readonly PlayerEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
@@ -86,6 +87,12 @@
         /// Gets the heroes of the player, by name.
         /// </summary>
         public IReadOnlyList<HeroLinkViewModel> Heroes { get; private set; } = [];
+
+        IReadOnlyList<AmountRowViewModel> IResourcesPage.Resources => this.Resources;
+
+        IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
+
+        IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
 
         public bool HasHeroes => this.Heroes.Count > 0;
 

@@ -9,14 +9,18 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   Only a type that is used exclusively inside one other class may be nested or declared in that class's file.
   (`SA1402` is a warning in `.editorconfig`; `SA1649` is not enabled because it crashes on records.)
 - Namespaces follow the folders: `Data`, `Entities`, `Models`, `Runtime`, `ViewModels`, `Views`.
-  The root namespace is the name of the project: `Siniskalc` (the exe), `Siniskalc.Homm3`, `Siniskalc.Homm2`, `Siniskalc.Core`, `Siniskalc.Wpf`.
+  The root namespace is the name of the project: `Siniskalc` (the exe), `Siniskalc.Homm3`, `Siniskalc.Homm2`, `Siniskalc.Core`, `Siniskalc.Wpf`, `Siniskalc.Heroes`, `Siniskalc.Heroes.Wpf`.
 - **Code that knows no game lives in `Siniskalc.Core` (no UI) or `Siniskalc.Wpf` (WPF).** Neither names a Heroes of Might and Magic type, and neither references a game's project; a game's values and collaborators are passed in.
   A new project for another game references them.
+- **What the games of the series share, and no single game, lives in `Siniskalc.Heroes` (no UI) or `Siniskalc.Heroes.Wpf` (WPF).** Neither references a game's project (`HeroesLayeringTests` checks it).
+  A value goes there only when it means the same in every game (`Resource`, `GameDate`); a thing each game has its own set of (a colour, a faction, a skill) is an interface there (`IPlayerColor`, `IFaction`, ...) that each game implements with its own types, and a page is made of the blocks of `Siniskalc.Heroes.Wpf` and binds to what `IPlayerPage` / `ICastlePage` say it has.
+  Do not merge two games' tables (creatures, spells, artifacts) or enums (colours, skill levels) that differ in codes, sets or meaning.
   Add a type to the game's project (`Siniskalc.Homm3` or `Siniskalc.Homm2`) when it needs a layout, rule or entity of that game. The exe `Siniskalc` is only the host that builds the components and starts the window.
 - **A type carries no game prefix**: the namespace says the game (`Siniskalc.Homm2.Models.HeroModel`, not `Homm2HeroModel`).
   The exceptions are the wrappers of generic Core types (`Homm3Enumeration`, `Homm2EditSessions`, `Homm2PendingChanges`, `Homm2SaveDocuments`, `Homm2ChunkKinds`) and the entry points the exe and the shell name side by side (`Homm2Module`/`Homm3Module`, `Homm2EditorViewModel`/`Homm3EditorViewModel`, `Homm2EditorView`/`Homm3EditorView`).
   Code that sees both games (`AppServices`) uses namespace aliases.
-- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`); a test goes with the project of the class it tests.
+- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`); a test goes with the project of the class it tests.
+- **A control that is styled by a resource dictionary is tested by what it shows**, not only by its bindings: a template that did not apply leaves the control empty and raises no binding error (`PageRenderingTests`, `PageContractTests`).
 - A view model is called `...ViewModel` (also when it is a node of a tree: `NavNodeViewModel`).
 
 ## Layers

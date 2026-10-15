@@ -4,13 +4,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// A castle in a player's card of the overview. Opening it shows the castle's page.
     /// </summary>
-    public sealed class CastleLinkViewModel
+    public sealed class CastleLinkViewModel : ILink
     {
         public CastleLinkViewModel(string name, string detail, ICommand open, string hallText = "", string fortText = "", bool isCapital = false, int mageGuildLevel = 0, int dwellings = 0, string grailText = "", IReadOnlyList<CastleHeroRowViewModel>? heroes = null)
         {

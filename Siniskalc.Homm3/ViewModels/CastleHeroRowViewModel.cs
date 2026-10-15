@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Collections.Generic;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -11,7 +12,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// <summary>
     /// A hero in a castle, as a line of a page: whether it is garrisoned or visiting, and a link to the page of the hero.
     /// </summary>
-    public sealed class CastleHeroRowViewModel
+    public sealed class CastleHeroRowViewModel : ILink
     {
         public CastleHeroRowViewModel(CastleHeroRole kind, string name, ICommand open)
         {
@@ -30,6 +31,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the role as it reads after the name, such as "garrisoned".
         /// </summary>
+        /// <summary>
+        /// Gets the role of the hero in the castle, which is what is told beside its name.
+        /// </summary>
+        public string Detail => this.Role;
+
         public string RoleText => this.Role.ToLowerInvariant();
 
         public string Name { get; }

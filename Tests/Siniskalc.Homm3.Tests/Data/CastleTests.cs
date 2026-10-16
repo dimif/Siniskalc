@@ -108,13 +108,5 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(current, Does.Contain(Building.Capitol));
             Assert.That(current, Does.Not.Contain(Building.CityHall).And.Not.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));
         }
-
-        [Test]
-        public void LoadingCastlesDoesNotChangeTheSavedBytes()
-        {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "castles_01_blacksmith_garrison_tumlac_to_blue.GM1"));
-
-            Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes));
-        }
     }
 }

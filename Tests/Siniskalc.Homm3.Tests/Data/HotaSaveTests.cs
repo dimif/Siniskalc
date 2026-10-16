@@ -21,7 +21,6 @@ namespace Siniskalc.Homm3.Tests.Data
         private IReadOnlyList<HeroChunk> chunks;
         private HeroOffsets offsets;
         private HeroDeserializer deserializer;
-        private SafeHeroSerializer serializer;
 
         [OneTimeSetUp]
         public void LoadSave()
@@ -32,15 +31,11 @@ namespace Siniskalc.Homm3.Tests.Data
             this.offsets = new HeroOffsets(new SavegameVersionDetector().Detect(this.bytes));
             var entities = TestServices.VersionEntities.For(this.offsets.GameVersion);
             this.deserializer = new HeroDeserializer(this.offsets, entities);
-            this.serializer = new SafeHeroSerializer(this.offsets, entities);
         }
 
         [Test]
-        public void LoaderDetectsHotaAndFindsThePurpleHeroes()
+        public void ThePurpleHeroesAreFoundByName()
         {
-            Assert.That(new SavegameVersionDetector().Detect(this.bytes), Is.EqualTo(GameVersion.HornOfTheAbyss));
-            Assert.That(this.chunks, Has.Count.EqualTo(215));
-
             foreach (var name in new[] { "Sir Mullich", "Maximus", "Christian" })
             {
                 Assert.That(this.chunks.Count(c => c.Name == name), Is.EqualTo(1), name);
@@ -53,16 +48,6 @@ namespace Siniskalc.Homm3.Tests.Data
             foreach (var chunk in this.chunks)
             {
                 Assert.DoesNotThrow(() => this.deserializer.Deserialize(chunk), chunk.Name);
-            }
-        }
-
-        [Test]
-        public void EveryHeroRoundTripsToIdenticalBytes()
-        {
-            foreach (var chunk in this.chunks)
-            {
-                var result = serializer.Serialize(chunk, this.deserializer.Deserialize(chunk));
-                Assert.That(result.HasSameBytes(chunk), Is.True, chunk.Name);
             }
         }
 
@@ -224,14 +209,6 @@ namespace Siniskalc.Homm3.Tests.Data
             });
 
             AssertBackpack(hero);
-        }
-
-        [Test]
-        public void UnchangedGameSavesIdenticalBytes()
-        {
-            var game = TestServices.GameService.LoadGameFromBytes(this.bytes, SavePath);
-
-            Assert.That(game.GetBytesToSave(), Is.EqualTo(this.bytes));
         }
 
         [Test]

@@ -1,11 +1,12 @@
-namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Core.Runtime
 {
     using System;
 
     /// <summary>
     /// One game the application can edit: how its savefiles are recognised and picked, and the editor that works on them.
     /// </summary>
-    public interface IGameModule
+    /// <typeparam name="TEditor">The editor of the game.</typeparam>
+    public interface IGameModule<out TEditor>
     {
         /// <summary>
         /// Gets what the game is called, for the title of the window.
@@ -24,7 +25,7 @@ namespace Siniskalc.Core.Runtime
         string SavePattern { get; }
 
         /// <summary>
-        /// Gets how many bytes from the start of the file <see cref="Recognizes"/> may need.
+        /// Gets how many bytes from the start of the file <see cref="IsOwnSavefile"/> may need.
         /// </summary>
         int HeadLength { get; }
 
@@ -33,12 +34,12 @@ namespace Siniskalc.Core.Runtime
         /// </summary>
         /// <param name="filePath">The path of the file; only its name and extension are looked at.</param>
         /// <param name="head">The first bytes of the file, as many as it has up to <see cref="HeadLength"/>.</param>
-        bool Recognizes(string filePath, ReadOnlySpan<byte> head);
+        bool IsOwnSavefile(string filePath, ReadOnlySpan<byte> head);
 
         /// <summary>
         /// Makes the editor of the game, with nothing loaded.
         /// </summary>
-        IGameEditor CreateEditor();
+        TEditor CreateEditor();
 
         /// <summary>
         /// Tells whether the game can list a savegame with this file name (the name with its extension, no folder): <c>null</c> when it can,

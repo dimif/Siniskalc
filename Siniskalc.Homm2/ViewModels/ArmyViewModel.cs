@@ -4,6 +4,8 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -27,7 +29,15 @@ namespace Siniskalc.Homm2.ViewModels
             this.update = update;
 
             this.CreateSlots(Constants.ArmySlotCount, (i, changed, move, clear) => new StackSlotViewModel(i, changed, move, clear));
-            this.Finder = new CreatureFinderViewModel(gameVersion, () => this.HasFreeSlot, this.AddCreature, this.SendToSlot, this.DescribeSlot);
+            this.Finder = new CreatureFinderViewModel(
+                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => ((ICreature)c, c.Info)),
+                Constants.ArmySlotCount,
+                1,
+                (int)Constants.MaxCreatureCount,
+                () => this.HasFreeSlot,
+                (creature, count) => this.AddCreature((Creature)creature, count),
+                (creature, slot, count) => this.SendToSlot((Creature)creature, slot, count),
+                this.DescribeSlot);
 
             this.Refresh();
         }
@@ -79,8 +89,8 @@ namespace Siniskalc.Homm2.ViewModels
         private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
         [
             new("Town", creature.Faction?.ToString() ?? "Neutral"),
-            new("Level", creature.Level.ToString()),
-            new("Growth", $"{creature.Growth} a week"),
+            new("Level", creature.Tier.ToString()),
+            new("Growth", $"{creature.Info.Growth} a week"),
         ];
 
         private void SetSlot(int index, Creature creature, int count)

@@ -5,7 +5,7 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     /// <typeparam name="TGame">What the game calls an open savefile.</typeparam>
     public interface ISavegameService<TGame>
-        where TGame : IOpenGame
+        where TGame : ISavegame
     {
         TGame LoadGameFromFile(string filePath);
 

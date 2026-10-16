@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Tests.Entities
             var creature = Creature.FromByte(code)!;
 
             Assert.That(creature.Name, Is.EqualTo(name));
-            Assert.That(creature.Growth, Is.EqualTo(growth));
+            Assert.That(creature.Info.Growth, Is.EqualTo(growth));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Tests.Entities
             {
                 var creatures = Creature.ForFaction(faction);
 
-                Assert.That(creatures.Select(c => c.Level).Distinct().Order(), Is.EqualTo(Enumerable.Range(1, 6)), faction.ToString());
+                Assert.That(creatures.Select(c => c.Tier).Distinct().Order(), Is.EqualTo(Enumerable.Range(1, 6)), faction.ToString());
                 Assert.That(creatures, Has.Count.InRange(9, 12), faction.ToString());
             }
 

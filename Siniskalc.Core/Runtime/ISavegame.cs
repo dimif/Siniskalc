@@ -1,22 +1,21 @@
-namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Core.Runtime
 {
     using Siniskalc.Core.Data;
 
     /// <summary>
-    /// What a game's editor needs to know about the savefile it has open, whatever the game: where it is, what it is called, its history
-    /// of edits and the bytes to save.
+    /// What a game's editor needs to know about the savefile it has open, whatever the game: where it is, what it is called, its history  of edits and the bytes to save.
     /// </summary>
-    public interface IOpenGame
+    public interface ISavegame
     {
         /// <summary>
         /// Gets the savefile the game is tied to: where it was loaded from, or last saved to. <c>null</c> when it was loaded from bytes.
         /// </summary>
-        string? File { get; }
+        string? FileName { get; }
 
         /// <summary>
         /// Gets what to call the game: its file, or the name it was given when loaded from bytes.
         /// </summary>
-        string? Name { get; }
+        string Name { get; }
 
         /// <summary>
         /// Gets the name of the game version of the savefile, such as "RestorationOfErathia".

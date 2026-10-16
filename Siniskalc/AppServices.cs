@@ -1,4 +1,4 @@
-namespace Siniskalc
+﻿namespace Siniskalc
 {
     using System.Diagnostics;
     using System.Reflection;
@@ -59,7 +59,7 @@ namespace Siniskalc
                 : new SettingsStore(settingsPath);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
-            this.Backup = new NumberedSavefileBackup(this.Settings);
+            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
             this.GameService = new GameService(
                 new SavegameParser(
                 new SavegameVersionDetector(),
@@ -121,7 +121,7 @@ namespace Siniskalc
 
         public RecentFilesMenuViewModel RecentFilesMenu { get; }
 
-        public ISavefileBackup Backup { get; }
+        public IFileBackupServiceProvider Backup { get; }
 
         public ISaveDocumentFactory DocumentFactory { get; }
 
@@ -168,7 +168,7 @@ namespace Siniskalc
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic III.
         /// </summary>
-        public IGameModule Homm3 { get; }
+        public IGameModule<Homm3EditorViewModel> Homm3 { get; }
 
         public H2Runtime.IGameService Homm2GameService { get; }
 
@@ -179,7 +179,7 @@ namespace Siniskalc
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic II.
         /// </summary>
-        public IGameModule Homm2 { get; }
+        public IGameModule<Homm2EditorViewModel> Homm2 { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
@@ -203,7 +203,7 @@ namespace Siniskalc
             return new AboutInfo(
                 AppInfo.Name,
                 plus < 0 ? version : version[..plus],
-                "A savegame editor for Heroes of Might and Magic III.",
+                "A savegame editor for Heroes of Might and Magic II & III.",
                 AppInfo.RepositoryUrl,
                 AppInfo.ReleasesUrl,
                 "Copyright (c) 2026 Dimitri Fadda. Released under the MIT License.",

@@ -1,41 +1,46 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.ViewModels
 {
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Entities;
 
     /// <summary>
-    /// One creature in the creature finder list, with its stats for the game version of the savegame.
+    /// One creature in the creature finder list of any game, with its stats for the game version of the savegame.
     /// </summary>
     public sealed class CreatureChoiceViewModel
     {
         private readonly CreatureInfo info;
 
-        public CreatureChoiceViewModel(Creature creature, GameVersion gameVersion)
+        public CreatureChoiceViewModel(ICreature creature, CreatureInfo info)
         {
             this.Creature = creature;
-            this.info = creature.GetInfo(gameVersion);
+            this.info = info;
         }
 
-        public Creature Creature { get; }
+        public ICreature Creature { get; }
 
         public string Name => this.Creature.Name;
 
         /// <summary>
-        /// Gets the town the creature belongs to; the list is grouped by it.
+        /// Gets the town the creature belongs to, or "Neutral"; the list is grouped by it.
         /// </summary>
-        public string Faction => this.Creature.Faction.Name;
+        public string Faction => this.Creature.Faction?.Name ?? "Neutral";
 
         /// <summary>
-        /// Gets the creature level, 1 to 7.
+        /// Gets the town the creature belongs to as a number to order the list by: neutral creatures come last.
+        /// </summary>
+        public int FactionOrder => this.Creature.Faction?.Code ?? int.MaxValue;
+
+        /// <summary>
+        /// Gets the creature level among those of its town.
         /// </summary>
         public int Level => this.Creature.Tier;
 
         /// <summary>
         /// Gets "Basic", or "Upgraded" for the upgraded form of another creature. Searchable, not shown.
         /// </summary>
-        public string Form => this.Creature.BaseCreatureCode == null ? "Basic" : "Upgraded";
+        public string Form => this.Creature.IsUpgrade ? "Upgraded" : "Basic";
 
         public int Attack => this.info.Atk;
 
@@ -73,7 +78,7 @@
         public string Special => string.Join(", ", (this.info.Special ?? []).Select(this.AbilityText));
 
         /// <summary>
-        /// Gets what the creature costs besides gold, what it can do beyond fighting, and how many shots it has, one fact per line.
+        /// Gets what the creature costs besides gold, how many it grows a week, what it can do beyond fighting, and how many shots it has, one fact per line.
         /// </summary>
         public string Details
         {
@@ -83,6 +88,7 @@
                 var resources = this.ResourceParts();
                 resources.Insert(0, $"{this.info.Gold:N0} gold");
                 lines.Add("Cost: " + string.Join(", ", resources));
+                lines.Add($"Growth: {this.info.Growth} a week");
 
                 if (this.info.Shots > 0)
                 {
@@ -106,8 +112,8 @@
             }
         }
 
-        private string AbilityText(CreatureAbility ability) =>
-            ability == CreatureAbility.Ranged && this.info.Shots > 0 ? $"{ability.Name} ({this.info.Shots} shots)" : ability.Name;
+        private string AbilityText(ICreatureAbility ability) =>
+            ability.IsRanged && this.info.Shots > 0 ? $"{ability.Name} ({this.info.Shots} shots)" : ability.Name;
 
         private List<string> ResourceParts()
         {

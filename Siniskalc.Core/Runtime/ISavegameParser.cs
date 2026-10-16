@@ -5,7 +5,7 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     /// <typeparam name="TGame">What the game calls an open savefile.</typeparam>
     public interface ISavegameParser<out TGame>
-        where TGame : IOpenGame
+        where TGame : ISavegame
     {
         /// <param name="bytes">The bytes of the savefile (decompressed when the game compresses them).</param>
         /// <param name="file">The savefile the bytes were read from, or null when they did not come from one.</param>

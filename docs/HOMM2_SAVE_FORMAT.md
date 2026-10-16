@@ -34,7 +34,7 @@ The map sizes differ (72x72 versus 36x36) but do not move any table before the m
 | 0x00 | u32 | map width (72) - confirmed by value |
 | 0x04 | u32 | map height (72) |
 | 0x08 | u32 | 0x5C, the MP2 magic |
-| 0x0C | u16 | difficulty (1 = normal) - guess |
+| 0x0C | u16 | game difficulty, 0 to 4 (easy, normal, hard, expert, impossible), read as Pawn, Knight, Rook, Queen, King like HoMM3 - guess: every save we have holds 1, other levels not yet seen |
 | 0x0E,0x0F | u8,u8 | width, height again (0x48) |
 | 0x10.. | 6 x u8 | colours in play (Blue, Green, Red, Yellow, Orange, Purple), then human-allowed and computer-allowed masks - guess |
 | 0x42 | char[16] | map name "Broken Alliance" - confirmed |

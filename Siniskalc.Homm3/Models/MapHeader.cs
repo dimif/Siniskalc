@@ -1,6 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
-    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// What the savefile says about the map it was made on.

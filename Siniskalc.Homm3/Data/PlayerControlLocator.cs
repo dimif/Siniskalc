@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 

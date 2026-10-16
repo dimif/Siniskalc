@@ -139,8 +139,8 @@ namespace Siniskalc.Homm2.Tests
                     new ShellUrlLauncher(_ => { }),
                     this.services.About,
                     this.services.Help,
-                    new SilentMessageService(),
-                    new SavegameFileCommands(this.services.RecentFiles, new NoFileDialogs(), new SilentMessageService())) { DataContext = this.shell };
+                    NoUserInteraction.Messages(),
+                    new SavegameFileCommands(this.services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages())) { DataContext = this.shell };
                 window.Show();
 
                 try
@@ -232,34 +232,6 @@ namespace Siniskalc.Homm2.Tests
             }
 
             public override void WriteLine(string? message) => this.Messages.Add(message ?? string.Empty);
-        }
-
-        private sealed class SilentMessageService : IMessageService
-        {
-            public void ShowError(string title, string message)
-            {
-            }
-
-            public void ShowUnexpectedError(string title, string message, string details)
-            {
-            }
-
-            public void ShowWarning(string title, string message)
-            {
-            }
-
-            public void ShowInformation(string title, string message)
-            {
-            }
-
-            public MessageAnswer AskYesNoCancel(string title, string message) => MessageAnswer.No;
-        }
-
-        private sealed class NoFileDialogs : IFileDialogs
-        {
-            public string? PickFileToOpen(string filter) => null;
-
-            public string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null) => null;
         }
     }
 }

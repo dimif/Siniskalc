@@ -216,7 +216,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
             this.shell.SaveGame(path);
 
             Assert.That(this.second.Editor.Undone, Is.EqualTo(1));
-            Assert.That(this.second.Editor.File, Is.EqualTo(path));
+            Assert.That(this.second.Editor.Savegame?.FileName, Is.EqualTo(path));
             Assert.That(this.first.Editor.Undone, Is.Zero);
             Assert.That(this.shell.GetBytesToSave(), Is.EqualTo(new byte[] { 1, 2, 3 }));
         }

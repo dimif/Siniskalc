@@ -215,7 +215,7 @@ namespace Siniskalc.Homm2.ViewModels
         private DwellingRowViewModel CreateDwelling(int dwelling)
         {
             // The creatures of the level, in the order of the table: the dwelling, then what its upgrades make.
-            var creatures = this.castle.Faction is { } faction ? Creature.ForFaction(faction).Where(c => c.Level == dwelling).Select(c => c.Name).ToList() : [];
+            var creatures = this.castle.Faction is { } faction ? Creature.ForFaction(faction).Where(c => c.Tier == dwelling).Select(c => c.Name).ToList() : [];
             var levels = new List<string> { NotBuilt };
             levels.AddRange(Enumerable.Range(0, CastleModel.MaxDwellingLevel(this.castle.Faction, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
             return new DwellingRowViewModel(

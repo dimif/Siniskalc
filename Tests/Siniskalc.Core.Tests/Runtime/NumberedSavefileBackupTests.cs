@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Tests.Runtime
+﻿namespace Siniskalc.Core.Tests.Runtime
 {
     using Siniskalc.Core.Runtime;
 
@@ -7,7 +7,6 @@ namespace Siniskalc.Core.Tests.Runtime
     {
         private string folder = string.Empty;
         private string save = string.Empty;
-        private SettingsStore settings = null!;
 
         [SetUp]
         public void CreateFolder()
@@ -15,7 +14,6 @@ namespace Siniskalc.Core.Tests.Runtime
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-backup-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
             this.save = Path.Combine(this.folder, "save1.gm1");
-            this.settings = new SettingsStore(Path.Combine(this.folder, "settings.json"));
         }
 
         [TearDown]
@@ -26,7 +24,7 @@ namespace Siniskalc.Core.Tests.Runtime
         {
             File.WriteAllText(this.save, "one");
 
-            var copy = new NumberedSavefileBackup(this.settings).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak"));
             Assert.That(File.ReadAllText(this.save + ".bak"), Is.EqualTo("one"));
@@ -35,7 +33,7 @@ namespace Siniskalc.Core.Tests.Runtime
         [Test]
         public void ABackupNeverReplacesAnEarlierOneAndTheCounterGoesUp()
         {
-            var backup = new NumberedSavefileBackup(this.settings);
+            var backup = new NumberedSavefileBackupService();
             File.WriteAllText(this.save, "one");
             backup.Backup(this.save);
             File.WriteAllText(this.save, "two");
@@ -55,7 +53,7 @@ namespace Siniskalc.Core.Tests.Runtime
             File.WriteAllText(this.save + ".bak", "old");
             File.WriteAllText(this.save + ".bak5", "newer");
 
-            var copy = new NumberedSavefileBackup(this.settings).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak6"));
         }
@@ -67,27 +65,15 @@ namespace Siniskalc.Core.Tests.Runtime
             File.WriteAllText(this.save + ".bakery", "not a copy");
             File.WriteAllText(Path.Combine(this.folder, "save10.gm1.bak3"), "another save");
 
-            var copy = new NumberedSavefileBackup(this.settings).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak"));
         }
 
         [Test]
-        public void NothingIsCopiedWhenBackupOnSaveIsOff()
+        public void AFileThatDoesNotExistCannotBeBackedUp()
         {
-            File.WriteAllText(this.save, "one");
-            this.settings.BackupOnSave = false;
-
-            var copy = new NumberedSavefileBackup(this.settings).Backup(this.save);
-
-            Assert.That(copy, Is.Null);
-            Assert.That(File.Exists(this.save + ".bak"), Is.False);
-        }
-
-        [Test]
-        public void ASaveThatDoesNotExistYetHasNothingToCopy()
-        {
-            Assert.That(new NumberedSavefileBackup(this.settings).Backup(this.save), Is.Null);
+            Assert.That(() => new NumberedSavefileBackupService().Backup(this.save), Throws.TypeOf<FileNotFoundException>());
         }
     }
 }

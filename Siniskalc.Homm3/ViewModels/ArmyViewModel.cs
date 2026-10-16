@@ -5,6 +5,8 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -33,7 +35,15 @@ namespace Siniskalc.Homm3.ViewModels
             this.update = update;
 
             this.CreateSlots(Constants.CreatureSlotCount, (i, changed, move, clear) => new ArmySlotViewModel(i, changed, move, clear));
-            this.Finder = new CreatureFinderViewModel(gameVersion, () => this.HasFreeSlot, this.AddCreature, this.SendToSlot, this.DescribeSlot);
+            this.Finder = new CreatureFinderViewModel(
+                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => ((ICreature)c, c.GetInfo(gameVersion))),
+                Constants.CreatureSlotCount,
+                Constants.Army.MinStackSize,
+                Constants.Army.MaxStackSize,
+                () => this.HasFreeSlot,
+                (creature, count) => this.AddCreature((Creature)creature, count),
+                (creature, slot, count) => this.SendToSlot((Creature)creature, slot, count),
+                this.DescribeSlot);
 
             this.Refresh();
         }

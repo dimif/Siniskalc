@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm2.Data
 {
+    using System;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
@@ -9,6 +11,9 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeaderReader : IHeaderReader
     {
+        // The levels in the order of the game's own numbers: easy, normal, hard, expert, impossible.
+        private static readonly GameDifficulty[] Difficulties = [GameDifficulty.Pawn, GameDifficulty.Knight, GameDifficulty.Rook, GameDifficulty.Queen, GameDifficulty.King];
+
         /// <inheritdoc/>
         public SaveMetadata Read(byte[] bytes, SaveLayout layout)
         {
@@ -21,7 +26,14 @@ namespace Siniskalc.Homm2.Data
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
                 layout.Width,
                 layout.Height);
-            return new SaveMetadata(date, map);
+            return new SaveMetadata(date, map, ReadDifficulty(bytes, layout.DifficultyStart));
+        }
+
+        // TODO:LOG warning: a difficulty that is no level was read as the first one.
+        private static GameDifficulty ReadDifficulty(byte[] bytes, int offset)
+        {
+            var code = BitConverter.ToUInt16(bytes, offset);
+            return code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
         }
     }
 }

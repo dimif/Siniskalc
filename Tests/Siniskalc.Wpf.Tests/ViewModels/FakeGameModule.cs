@@ -1,11 +1,11 @@
-using Siniskalc.Core.Runtime;
+﻿using Siniskalc.Core.Runtime;
 
 namespace Siniskalc.Wpf.Tests.ViewModels
 {
     /// <summary>
     /// A game that does not exist: its savefiles start with a byte of its own, and its editor is a <see cref="FakeGameEditor"/>.
     /// </summary>
-    internal sealed class FakeGameModule : IGameModule
+    internal sealed class FakeGameModule : IGameModule<FakeGameEditor>
     {
         private readonly byte marker;
 
@@ -29,9 +29,9 @@ namespace Siniskalc.Wpf.Tests.ViewModels
 
         public int HeadLength => 1;
 
-        public bool Recognizes(string filePath, ReadOnlySpan<byte> head) => head.Length >= 1 && head[0] == this.marker;
+        public bool IsOwnSavefile(string filePath, ReadOnlySpan<byte> head) => head.Length >= 1 && head[0] == this.marker;
 
-        public IGameEditor CreateEditor()
+        public FakeGameEditor CreateEditor()
         {
             this.Created++;
             return this.Editor;

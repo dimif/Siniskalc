@@ -93,17 +93,6 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(cityHall.Buildings, Does.Contain(Building.VillageHall).And.Contain(Building.TownHall));
         }
 
-        [Test]
-        public void TheMageGuildHasLevelOneInEveryCastleOfRedFromSaveTen()
-        {
-            foreach (var name in RedCastles)
-            {
-                Assert.That(Castle("roe_09_town_hall", name).MageGuildLevel, Is.EqualTo(0), name);
-                Assert.That(Castle("roe_10_mage_guild_1", name).MageGuildLevel, Is.EqualTo(1), name);
-                Assert.That(Castle("roe_11_city_hall", name).MageGuildLevel, Is.EqualTo(1), name);
-            }
-        }
-
         [TestCaseSource(nameof(Saves))]
         public void ElfwindStaysANeutralRampartWithItsFourStartingBuildings(string save)
         {

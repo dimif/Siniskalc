@@ -1,3 +1,4 @@
+using Moq;
 using Siniskalc;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Runtime;
@@ -64,9 +65,16 @@ namespace Siniskalc.Homm3.Tests
         public static ShellWindow CreateShellWindow(ShellViewModel shell, IMessageService? messages = null)
         {
             var recentFiles = CreateRecentFiles();
-            var shownMessages = messages ?? new RecordingMessageService();
-            var files = new SavegameFileCommands(recentFiles, new ScriptedFileDialogs(), shownMessages);
+            var shownMessages = messages ?? CancellingMessages();
+            var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages);
             return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), Services.About, Services.Help, shownMessages, files) { DataContext = shell };
+        }
+
+        private static IMessageService CancellingMessages()
+        {
+            var messages = new Mock<IMessageService>();
+            messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(MessageAnswer.Cancel);
+            return messages.Object;
         }
 
         /// <summary>

@@ -2,8 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
 
-    public sealed class Creature : Homm3Enumeration
+    public sealed class Creature : Homm3Enumeration, ICreature
     {
         public static readonly Creature Peasant = new("Peasant", 0x8B, Faction.Neutral, 1, new() { Atk = 1, Def = 1, MinDamage = 1, MaxDamage = 1, Health = 1, Speed = 3, Growth = 25, AiValue = 15, FightValue = 15, Gold = 10 });
         public static readonly Creature Boar = new("Boar", 0x8C, Faction.Neutral, 2, new() { Atk = 6, Def = 5, MinDamage = 2, MaxDamage = 3, Health = 15, Speed = 6, Growth = 8, AiValue = 145, FightValue = 145, Gold = 150 });
@@ -224,6 +225,10 @@
         public IReadOnlyDictionary<GameVersion, CreatureInfo> VersionInfo { get; }
 
         public byte? BaseCreatureCode { get; }
+
+        bool ICreature.IsUpgrade => this.BaseCreatureCode != null;
+
+        IFaction? ICreature.Faction => this.Faction == Faction.Neutral ? null : this.Faction;
 
         /// <summary>
         /// Gets the building of its castle that recruits the creature: the dwelling of a creature, the upgraded dwelling of an upgraded

@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -12,8 +12,8 @@ namespace Siniskalc.Wpf.ViewModels
     /// The application shell works with it through <see cref="IGameEditor"/>, and its view through <see cref="INavigationEditor"/>.
     /// </summary>
     /// <typeparam name="TGame">What the game calls an open savefile.</typeparam>
-    public abstract class EditorViewModelBase<TGame> : AbstractViewModelBase, IGameEditor, INavigationEditor
-        where TGame : class, IOpenGame
+    public abstract class EditorViewModelBase<TGame> : AbstractViewModelBase, IObservableGameEditor, INavigationEditor
+        where TGame : class, ISavegame
     {
         private readonly ISavegameService<TGame> gameService;
         private readonly ISaveRegionProvider saveRegions;
@@ -36,6 +36,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// Gets the loaded game, or <c>null</c> when none is loaded.
         /// </summary>
         public TGame? CurrentGame => this.currentGame;
+
+        /// <inheritdoc/>
+        public ISavegame? Savegame => this.currentGame;
 
         /// <inheritdoc/>
         public object? CurrentPage => this.currentPage;
@@ -63,18 +66,6 @@ namespace Siniskalc.Wpf.ViewModels
 
         /// <inheritdoc/>
         public bool IsGameLoaded => this.currentGame != null;
-
-        /// <inheritdoc/>
-        public string? File => this.currentGame?.File;
-
-        /// <inheritdoc/>
-        public string? Name => this.currentGame?.Name;
-
-        /// <inheritdoc/>
-        public bool HasFile => !string.IsNullOrWhiteSpace(this.currentGame?.File);
-
-        /// <inheritdoc/>
-        public bool CanReload => this.HasFile;
 
         /// <inheritdoc/>
         public bool CanUndo => this.currentGame?.History.CanUndo ?? false;
@@ -113,7 +104,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <inheritdoc/>
         public void SaveGame()
         {
-            var file = this.currentGame?.File;
+            var file = this.currentGame?.FileName;
             if (string.IsNullOrWhiteSpace(file))
             {
                 throw new InvalidOperationException("The game has no file to save to");
@@ -126,7 +117,7 @@ namespace Siniskalc.Wpf.ViewModels
         public void SaveGame(string filePath)
         {
             this.gameService.SaveGame(this.Loaded(), filePath);
-            this.RaiseFileChanged();
+            this.RaisePropertyChanged(nameof(this.Savegame));
         }
 
         /// <inheritdoc/>
@@ -250,7 +241,7 @@ namespace Siniskalc.Wpf.ViewModels
             this.PendingChanges.Clear();
             this.RaisePropertyChanged(nameof(this.CurrentGame));
             this.RaisePropertyChanged(nameof(this.IsGameLoaded));
-            this.RaiseFileChanged();
+            this.RaisePropertyChanged(nameof(this.Savegame));
             this.OnHistoryChangedCore(this, EventArgs.Empty);
             this.SetCurrentPage(this.OverviewPage);
         }
@@ -260,14 +251,6 @@ namespace Siniskalc.Wpf.ViewModels
             this.navigation.Clear();
             this.navigationBuilder.Build(this.navigation, game);
             this.navigation.ReapplyFilter();
-        }
-
-        private void RaiseFileChanged()
-        {
-            this.RaisePropertyChanged(nameof(this.File));
-            this.RaisePropertyChanged(nameof(this.Name));
-            this.RaisePropertyChanged(nameof(this.HasFile));
-            this.RaisePropertyChanged(nameof(this.CanReload));
         }
 
         private void OnHistoryChangedCore(object? sender, EventArgs e)

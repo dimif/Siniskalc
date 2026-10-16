@@ -1,9 +1,11 @@
 using System.IO;
+using Moq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Models;
 using Siniskalc.Core.Runtime;
+using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Wpf.Tests.ViewModels
 {
@@ -11,11 +13,12 @@ namespace Siniskalc.Wpf.Tests.ViewModels
     /// The editor of a game that does not exist: it "loads" a file by remembering its path, and says so through the notifications a real
     /// editor sends.
     /// </summary>
-    internal sealed class FakeGameEditor : IGameEditor
+    internal sealed class FakeGameEditor : IObservableGameEditor
     {
         private string? file;
         private string? name;
         private bool loaded;
+        private ISavegame? savegame;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -27,15 +30,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
 
         public List<string> Loaded { get; } = new();
 
-        public bool IsGameLoaded => this.loaded;
-
-        public string? File => this.file;
-
-        public string? Name => this.name;
-
-        public bool HasFile => this.file != null;
-
-        public bool CanReload => this.HasFile;
+        public ISavegame? Savegame => this.loaded ? this.savegame : null;
 
         public bool CanUndo => this.PendingChanges.Count > 0;
 
@@ -56,7 +51,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
             this.loaded = true;
             this.file = filePath;
             this.name = filePath;
-            this.Raise(nameof(this.IsGameLoaded), nameof(this.File), nameof(this.Name), nameof(this.HasFile), nameof(this.CanReload));
+            this.Update();
         }
 
         public void LoadGameFromBytes(byte[] bytes, string? sourceName = null)
@@ -64,7 +59,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
             this.loaded = true;
             this.file = null;
             this.name = sourceName;
-            this.Raise(nameof(this.IsGameLoaded), nameof(this.File), nameof(this.Name), nameof(this.HasFile), nameof(this.CanReload));
+            this.Update();
         }
 
         public void ReloadGame() => this.LoadGame(this.file ?? throw new InvalidOperationException("No file."));
@@ -74,7 +69,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         public void SaveGame(string filePath)
         {
             this.file = filePath;
-            this.Raise(nameof(this.File), nameof(this.HasFile), nameof(this.CanReload));
+            this.Update();
         }
 
         public byte[] GetBytesToSave() => [1, 2, 3];
@@ -98,6 +93,15 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         {
             this.PendingChanges.Add(new PendingChange("Somebody", new Change(new ChangeArea("Resources"), "Gold", "1", "2"), new ChunkKind("Player", 1), 0, _ => { }));
             this.Raise(nameof(this.HasPendingChanges), nameof(this.CanUndo));
+        }
+
+        private void Update()
+        {
+            var savegame = new Mock<ISavegame>();
+            savegame.SetupGet(g => g.FileName).Returns(this.file);
+            savegame.SetupGet(g => g.Name).Returns(this.name ?? "Savefile");
+            this.savegame = savegame.Object;
+            this.Raise(nameof(this.Savegame));
         }
 
         private void Raise(params string[] names)

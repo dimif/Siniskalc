@@ -53,6 +53,25 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(Red(Load(save)).Tavern, Is.EqualTo(new TavernHeroes(first, second)));
         }
 
+        private static IEnumerable<TestCaseData> HotseatTaverns()
+        {
+            const string Begin = "five_teams_00_game_begin";
+            yield return new TestCaseData(Begin, Siniskalc.Homm3.Entities.PlayerColor.Red, "Brissa", "Dace").SetName("Red_in_" + Begin);
+            yield return new TestCaseData(Begin, Siniskalc.Homm3.Entities.PlayerColor.Blue, "Malcom", "Oris").SetName("Blue_in_" + Begin);
+        }
+
+        [TestCaseSource(nameof(HotseatTaverns))]
+        public void TheTavernOfAPlayerOfAHotseatGameOffersTheHeroesTheGameShowed(string save, Siniskalc.Homm3.Entities.PlayerColor colour, string first, string second)
+        {
+            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
+            var players = game.History.Current.Players();
+            var tavern = players.GetModel(players.FindByColor(colour)).Tavern;
+            var heroes = game.History.Current.Heroes();
+
+            Assert.That(heroes.FindById(tavern.First!.Value)!.Name, Is.EqualTo(first));
+            Assert.That(heroes.FindById(tavern.Second!.Value)!.Name, Is.EqualTo(second));
+        }
+
         [Test]
         public void TheHeroesTheTavernOffersAreNamedByTheirId()
         {

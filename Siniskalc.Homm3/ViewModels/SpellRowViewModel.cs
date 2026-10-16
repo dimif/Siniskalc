@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.ViewModels
 {
     using System;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Wpf.ViewModels;
 
@@ -10,7 +11,7 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class SpellRowViewModel : SpellChoiceViewModel
     {
         public SpellRowViewModel(Spell spell, Action<SpellRowViewModel, bool> onLearnedChanged)
-            : base(spell.Name, SchoolOf(spell), spell.Level, spell.Type == SpellType.Adventure ? "Adventure" : "Combat", (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
+            : base(spell.Name, SchoolOf(spell), spell.Level, spell.Type.ToString(), (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
         {
             this.Spell = spell;
         }

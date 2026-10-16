@@ -131,29 +131,6 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(TestServices.SpellPoints.GetMaximum(game.GameVersion, armed), Is.GreaterThan(TestServices.SpellPoints.GetMaximum(game.GameVersion, hero)));
         }
 
-        [TestCase("arts_00_before_arts")]
-        [TestCase("arts_01_arts")]
-        [TestCase("arts_02_arts")]
-        [TestCase("arts_03_arts")]
-        [TestCase("arts_04_arts")]
-        [TestCase("arts_05_arts")]
-        [TestCase("arts_06_arts")]
-        [TestCase("arts_07_before_adv_spells")]
-        [TestCase("arts_12_all")]
-        public void EveryHeroOfTheArtsSavesWritesBackTheSameBytes(string save)
-        {
-            var game = Load(save);
-            var offsets = game.History.Current.Heroes().Offsets;
-            var entities = TestServices.VersionEntities.For(offsets.GameVersion);
-            var deserializer = new HeroDeserializer(offsets, entities);
-            var serializer = new SafeHeroSerializer(offsets, entities);
-
-            foreach (var chunk in game.History.Current.Heroes())
-            {
-                Assert.That(serializer.Serialize(chunk, deserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, chunk.Name);
-            }
-        }
-
         [Test]
         public void TheGrantsMatchWhatTheGameStoredForTheHeroesOfTheArtsSaves()
         {

@@ -48,14 +48,6 @@
             }
         }
 
-        /// <remarks>
-        /// Writes to a file of its own next to <paramref name="filePath"/> and moves it over the savefile once it is complete, so a
-        /// write that fails halfway leaves the savefile as it was.
-        /// </remarks>
-        /// <remarks>
-        /// Writes to a file of its own next to <paramref name="filePath"/> and moves it over the savefile once it is complete, so a
-        /// write that fails halfway leaves the savefile as it was.
-        /// </remarks>
         /// <inheritdoc/>
         public void Write(string filePath, byte[] bytes)
         {

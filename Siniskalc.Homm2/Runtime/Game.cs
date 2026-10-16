@@ -1,19 +1,20 @@
-namespace Siniskalc.Homm2.Runtime
+﻿namespace Siniskalc.Homm2.Runtime
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
-    /// A loaded Heroes of Might and Magic II savefile. Edits go through <see cref="OpenGame.History"/>; <see cref="OpenGame.Bytes"/>
+    /// A loaded Heroes of Might and Magic II savefile. Edits go through <see cref="AbstractSavegame.History"/>; <see cref="AbstractSavegame.Bytes"/>
     /// holds the loaded bytes.
     /// </summary>
-    public sealed class Game : OpenGame
+    public sealed class Game : AbstractSavegame
     {
-        public Game(string? file, byte[] bytes, SaveLayout layout, SaveDocumentHistory history, SaveMetadata metadata, string? name = null)
+        public Game(string? file, byte[] bytes, SaveLayout layout, SaveDocumentHistory history, SaveMetadata metadata, string? name)
             : base(file, bytes, history, name)
         {
             this.Layout = layout;
@@ -35,5 +36,10 @@ namespace Siniskalc.Homm2.Runtime
         public GameDate Date => this.Metadata.Date;
 
         public MapHeader Map => this.Metadata.Map;
+
+        /// <summary>
+        /// Gets the difficulty the game was started with.
+        /// </summary>
+        public GameDifficulty Difficulty => this.Metadata.Difficulty;
     }
 }

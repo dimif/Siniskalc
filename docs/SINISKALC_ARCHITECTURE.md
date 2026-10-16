@@ -6,7 +6,7 @@
 It turns a savefile into a list of byte chunks and keeps them in an immutable document with undo and redo.
 An edit goes through an edit session that deserializes a chunk, applies the change and serializes it back, so only the bytes that changed are patched on save and the rest of the file is left as it was.
 It also reads and writes the compressed savefile, makes the numbered backups, and stores the user's settings and recent files.
-It defines what the application shell needs from a game: `IGameModule` (how its savefiles are recognised and picked, and how to make its editor), `IGameEditor` (loading, saving, undo and redo, the pending changes, the bytes to save), `IOpenGame` and `ISavegameService<TGame>` (what an editor needs of an open savefile and of the service that loads and saves it), and `IGameEntity` (a name and the code the savefile holds for it).
+It defines what the application shell needs from a game: `IGameModule<out TEditor>` (how its savefiles are recognised and picked, and how to make its editor), `IGameEditor` (loading, saving, undo and redo, the pending changes, the bytes to save, and the `ISavegame` it has loaded, if any, which says the name, the file and the history; the editor lives as long as the application and holds at most one savegame; it has no change notification, which is a WPF interface: `Siniskalc.Wpf` adds `IObservableGameEditor : IGameEditor, INotifyPropertyChanged`, which the shell works with and `EditorViewModelBase` implements), `ISavegame` and `ISavegameService<TGame>` (what an editor needs of an open savefile and of the service that loads and saves it), and `IGameEntity` (a name and the code the savefile holds for it).
 
 **`Siniskalc.Wpf`** (net8.0-windows) is the reusable user interface, and it knows no game either.
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer.
@@ -162,7 +162,7 @@ The Hex `NavButton` of each page binds its `Visibility` to it, and a `NavButton`
 
 `SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on) and `AdvancedMode` (default off) never overwrite each other.
 A setting missing from the file keeps its default.
-`AppServices` builds one store and hands it to `RecentFilesStore`, `NumberedSavefileBackup` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
+`AppServices` builds one store and hands it to `RecentFilesStore`, `FileBackupServiceProvider` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
 
-`GameService.SaveGame` calls `ISavefileBackup.Backup(path)` before it writes.
-`NumberedSavefileBackup` copies the file to `name.bak`, or `name.bak<N>` with N one above the highest copy in the folder, and never overwrites a copy; it does nothing while `BackupOnSave` is off.
+`SavegameService.SaveGame` asks `IFileBackupServiceProvider` for the backup service and calls `Backup(path)` on it before it writes, when the file exists; a backup that fails stops the save and the exception reaches `SavegameFileCommands.Run`, which shows it.
+`NumberedSavefileBackupService` copies the file to `name.bak`, or `name.bak<N>` with N one above the highest copy in the folder, never overwrites a copy, has no settings and throws when the file is missing. The provider serves it while `BackupOnSave` is on and `DisabledFileBackupService` (does nothing) while it is off.

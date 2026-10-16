@@ -8,7 +8,7 @@
     /// Heroes of Might and Magic III as a game of the application: its savegames are gzip files, and its editor is a
     /// <see cref="Homm3EditorViewModel"/>.
     /// </summary>
-    public sealed class Homm3Module : IGameModule
+    public sealed class Homm3Module : IGameModule<Homm3EditorViewModel>
     {
         private readonly Func<Homm3EditorViewModel> createEditor;
 
@@ -31,9 +31,9 @@
         public int HeadLength => GzipSavefileCodec.MagicLength;
 
         /// <inheritdoc/>
-        public bool Recognizes(string filePath, ReadOnlySpan<byte> head) => GzipSavefileCodec.IsGzip(head);
+        public bool IsOwnSavefile(string filePath, ReadOnlySpan<byte> head) => GzipSavefileCodec.IsGzip(head);
 
         /// <inheritdoc/>
-        public IGameEditor CreateEditor() => this.createEditor();
+        public Homm3EditorViewModel CreateEditor() => this.createEditor();
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace Siniskalc.Core.Runtime
 {
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using Siniskalc.Core.Data;
 
     /// <summary>
@@ -9,33 +8,13 @@
     /// what is pending), and the bytes it would save. The pages that edit the game, and everything else that is specific to it, are the
     /// game's own; the shell shows them through a data template of the editor's type.
     /// </summary>
-    public interface IGameEditor : INotifyPropertyChanged
+    public interface IGameEditor
     {
         /// <summary>
-        /// Gets a value indicating whether a savegame is loaded.
+        /// Gets the savegame that is loaded, or <c>null</c> when none is. Whether a game is loaded, the file it is tied to (<c>null</c> when it was
+        /// loaded from bytes, a dump), what to call it and whether it can be read again are read from it.
         /// </summary>
-        bool IsGameLoaded { get; }
-
-        /// <summary>
-        /// Gets the file the game is tied to: where it was loaded from, or last saved to. <c>null</c> when it was loaded from bytes (a dump),
-        /// which have no file to read again.
-        /// </summary>
-        string? File { get; }
-
-        /// <summary>
-        /// Gets what to call the loaded game: its file, or the name it was given when loaded from bytes. <c>null</c> when none is loaded.
-        /// </summary>
-        string? Name { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the game is tied to a file.
-        /// </summary>
-        bool HasFile { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the game can be read again from its file.
-        /// </summary>
-        bool CanReload { get; }
+        ISavegame? Savegame { get; }
 
         bool CanUndo { get; }
 

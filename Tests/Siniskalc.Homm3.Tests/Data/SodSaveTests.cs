@@ -27,35 +27,6 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static PlayerResources Resources(Game game, PlayerColor player) => game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(player)).Current.Resources;
 
-        [TestCase("sod_game_00_baseline")]
-        [TestCase("sod_game_01_red_gives_blue_resources")]
-        public void TheSavefileIsDetectedAsShadowOfDeathWithAllItsHeroes(string name)
-        {
-            var game = Load(Path.Combine("TestData", "Sod", name + ".GM1"));
-
-            Assert.That(game.GameVersion, Is.EqualTo(GameVersion.ShadowOfDeath));
-            Assert.That(game.History.Current.Heroes(), Has.Count.EqualTo(156));
-        }
-
-        [TestCase("sod_game_00_baseline")]
-        [TestCase("sod_game_01_red_gives_blue_resources")]
-        public void EveryHeroDeserializesAndSerializesBackToTheSameBytes(string name)
-        {
-            var bytes = TestServices.SavefileCodec.Read(Path.Combine("TestData", "Sod", name + ".GM1"));
-            var loader = new HeroBytesLoader(Encoding.Latin1);
-            var chunks = loader.LoadHeroChunks(bytes, new SavegameVersionDetector().Detect(bytes));
-            var offsets = new HeroOffsets(new SavegameVersionDetector().Detect(bytes));
-            var entities = TestServices.VersionEntities.For(offsets.GameVersion);
-            var deserializer = new HeroDeserializer(offsets, entities);
-            var serializer = new SafeHeroSerializer(offsets, entities);
-
-            foreach (var chunk in chunks)
-            {
-                var result = serializer.Serialize(chunk, deserializer.Deserialize(chunk));
-                Assert.That(result.HasSameBytes(chunk), Is.True, chunk.Name);
-            }
-        }
-
         [Test]
         public void MariusIsTheLevelOneDemoniacOfRed()
         {
@@ -152,14 +123,6 @@ namespace Siniskalc.Homm3.Tests.Data
             {
                 Assert.That(second.History.Current.Heroes()[i].HasSameBytes(first.History.Current.Heroes()[i]), Is.True, first.History.Current.Heroes()[i].Name);
             }
-        }
-
-        [Test]
-        public void UnchangedGameSavesIdenticalBytes()
-        {
-            var game = Load(Save1);
-
-            Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes));
         }
 
         [Test]

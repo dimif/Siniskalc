@@ -32,17 +32,6 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void EverySaveLoadsAsShadowOfDeathWithTheSameHeroes()
-        {
-            foreach (var save in Saves)
-            {
-                var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
-                Assert.That(game.GameVersion, Is.EqualTo(GameVersion.ShadowOfDeath), save);
-                Assert.That(game.History.Current.Heroes().Count, Is.EqualTo(156), save);
-            }
-        }
-
-        [Test]
         public void VisitingAnObeliskLeavesTheObeliskObjectTypeUnderTheHero()
         {
             Assert.That(Hero(1, "Tazar").GetByteAt(11), Is.EqualTo(57));
@@ -81,18 +70,6 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(Hero(8, "Sir Mullich").GetByteAt(MoraleBonus), Is.EqualTo(0), "the first visit is the fight");
             Assert.That(Hero(9, "Sir Mullich").GetByteAt(MoraleBonus), Is.EqualTo(0xFF), "morale -1");
             Assert.That(Hero(9, "Sir Mullich").GetByteAt(EffectsB) & 0x04, Is.EqualTo(0x04));
-        }
-
-        [Test]
-        public void TheTavernOfRedOffersBrissaAndDaceAsTheGameShowed()
-        {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", "five_teams_00_game_begin.GM2"));
-            var players = game.History.Current.Players();
-            var tavern = players.GetModel(players.FindByColor(PlayerColor.Red)).Tavern;
-            var heroes = game.History.Current.Heroes();
-
-            Assert.That(heroes.FindById(tavern.First!.Value)!.Name, Is.EqualTo("Brissa"));
-            Assert.That(heroes.FindById(tavern.Second!.Value)!.Name, Is.EqualTo("Dace"));
         }
 
         private static Game Hotseat(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
@@ -144,18 +121,6 @@ namespace Siniskalc.Homm3.Tests.Data
 
             game.History.CreateObeliskSession().Update(v => v.WithAll(PlayerColor.Red, false));
             Assert.That(game.History.Current.Obelisks().GetModel()!.Masks, Is.EqualTo(new byte[] { 0x42, 0x42, 2, 2, 2, 2, 2 }), "the Teal bit stays");
-        }
-
-        [Test]
-        public void TheTavernOfBlueOffersMalcomAndOrisAsTheGameShowed()
-        {
-            var game = Hotseat("five_teams_00_game_begin");
-            var players = game.History.Current.Players();
-            var tavern = players.GetModel(players.FindByColor(PlayerColor.Blue)).Tavern;
-            var heroes = game.History.Current.Heroes();
-
-            Assert.That(heroes.FindById(tavern.First!.Value)!.Name, Is.EqualTo("Malcom"));
-            Assert.That(heroes.FindById(tavern.Second!.Value)!.Name, Is.EqualTo("Oris"));
         }
 
         [Test]

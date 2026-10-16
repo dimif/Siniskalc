@@ -10,7 +10,7 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class SpellRowViewModel : SpellChoiceViewModel
     {
         public SpellRowViewModel(Spell spell, Action<SpellRowViewModel, bool> onLearnedChanged)
-            : base(spell.Name, string.Empty, 0, string.Empty, (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
+            : base(spell.Name, string.Empty, 0, spell.Type.ToString(), (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
         {
             this.Spell = spell;
         }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests.Runtime
 {
+    using Moq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
@@ -13,8 +14,8 @@ namespace Siniskalc.Homm2.Tests.Runtime
         private string folder = string.Empty;
         private AppServices services = null!;
         private ShellViewModel shell = null!;
-        private Dialogs dialogs = null!;
-        private Messages messages = null!;
+        private readonly List<string> warnings = [];
+        private string? nextPath;
         private SavegameFileCommands commands = null!;
 
         [SetUp]
@@ -24,9 +25,13 @@ namespace Siniskalc.Homm2.Tests.Runtime
             Directory.CreateDirectory(this.folder);
             this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"));
             this.shell = this.services.CreateShellViewModel();
-            this.dialogs = new Dialogs();
-            this.messages = new Messages();
-            this.commands = new SavegameFileCommands(this.services.RecentFiles, this.dialogs, this.messages);
+            this.warnings.Clear();
+            var dialogs = new Mock<IFileDialogs>();
+            dialogs.Setup(d => d.PickFileToSave(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string?>())).Returns(() => this.nextPath);
+            var messages = new Mock<IMessageService>();
+            messages.Setup(m => m.ShowWarning(It.IsAny<string>(), It.IsAny<string>())).Callback<string, string>((_, message) => this.warnings.Add(message));
+            messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(MessageAnswer.No);
+            this.commands = new SavegameFileCommands(this.services.RecentFiles, dialogs.Object, messages.Object);
             this.shell.LoadGame(Saves.BrokenAllianceSave(5));
         }
 
@@ -59,56 +64,26 @@ namespace Siniskalc.Homm2.Tests.Runtime
         [Test]
         public void SaveAsWithALongNameWarnsAndWritesNothing()
         {
-            this.dialogs.Next = Path.Combine(this.folder, "far_too_long_a_name.GM1");
+            this.nextPath = Path.Combine(this.folder, "far_too_long_a_name.GM1");
 
             var saved = this.commands.SaveAs(this.shell);
 
             Assert.That(saved, Is.Null);
-            Assert.That(File.Exists(this.dialogs.Next), Is.False);
-            Assert.That(this.messages.Warnings, Has.Count.EqualTo(1));
-            Assert.That(this.messages.Warnings[0], Does.Contain("8"));
+            Assert.That(File.Exists(this.nextPath), Is.False);
+            Assert.That(this.warnings, Has.Count.EqualTo(1));
+            Assert.That(this.warnings[0], Does.Contain("8"));
         }
 
         [Test]
         public void SaveAsWithAShortNameSaves()
         {
-            this.dialogs.Next = Path.Combine(this.folder, "OK.GM1");
+            this.nextPath = Path.Combine(this.folder, "OK.GM1");
 
             var saved = this.commands.SaveAs(this.shell);
 
-            Assert.That(saved, Is.EqualTo(this.dialogs.Next));
-            Assert.That(File.Exists(this.dialogs.Next), Is.True);
-            Assert.That(this.messages.Warnings, Is.Empty);
-        }
-
-        private sealed class Dialogs : IFileDialogs
-        {
-            public string? Next { get; set; }
-
-            public string? PickFileToOpen(string filter) => null;
-
-            public string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null) => this.Next;
-        }
-
-        private sealed class Messages : IMessageService
-        {
-            public List<string> Warnings { get; } = [];
-
-            public void ShowError(string title, string message)
-            {
-            }
-
-            public void ShowUnexpectedError(string title, string message, string details)
-            {
-            }
-
-            public void ShowWarning(string title, string message) => this.Warnings.Add(message);
-
-            public void ShowInformation(string title, string message)
-            {
-            }
-
-            public MessageAnswer AskYesNoCancel(string title, string message) => MessageAnswer.No;
+            Assert.That(saved, Is.EqualTo(this.nextPath));
+            Assert.That(File.Exists(this.nextPath), Is.True);
+            Assert.That(this.warnings, Is.Empty);
         }
     }
 }

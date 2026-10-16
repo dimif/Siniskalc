@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Moq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.Tests.ViewModels;
 using Siniskalc.Wpf.ViewModels;
@@ -38,8 +39,8 @@ namespace Siniskalc.Wpf.Tests.Views
                     new ShellUrlLauncher(_ => { }),
                     new AboutInfo("Editor", "1.0", "A test.", "https://example.org", "https://example.org/releases", "MIT", []),
                     new HelpLinks("https://example.org/guide", "https://example.org/issues"),
-                    new SilentMessageService(),
-                    new SavegameFileCommands(recent, new NoFileDialogs(), new SilentMessageService())) { DataContext = shell };
+                    SilentMessages(),
+                    new SavegameFileCommands(recent, new Mock<IFileDialogs>().Object, SilentMessages())) { DataContext = shell };
                 window.Show();
 
                 try
@@ -119,32 +120,11 @@ namespace Siniskalc.Wpf.Tests.Views
             public override void WriteLine(string? message) => this.Messages.Add(message ?? string.Empty);
         }
 
-        private sealed class SilentMessageService : IMessageService
+        private static IMessageService SilentMessages()
         {
-            public void ShowError(string title, string message)
-            {
-            }
-
-            public void ShowUnexpectedError(string title, string message, string details)
-            {
-            }
-
-            public void ShowWarning(string title, string message)
-            {
-            }
-
-            public void ShowInformation(string title, string message)
-            {
-            }
-
-            public MessageAnswer AskYesNoCancel(string title, string message) => MessageAnswer.No;
-        }
-
-        private sealed class NoFileDialogs : IFileDialogs
-        {
-            public string? PickFileToOpen(string filter) => null;
-
-            public string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null) => null;
+            var messages = new Mock<IMessageService>();
+            messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(MessageAnswer.No);
+            return messages.Object;
         }
     }
 }

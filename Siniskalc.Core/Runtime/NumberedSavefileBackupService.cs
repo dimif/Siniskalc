@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Core.Runtime
 {
     using System;
     using System.Globalization;
@@ -6,24 +6,20 @@ namespace Siniskalc.Core.Runtime
 
     /// <summary>
     /// Copies a file to <c>name.bak</c>, and when that exists to <c>name.bak1</c>, <c>name.bak2</c> and so on, one number higher than
-    /// the highest copy there is. A copy is never overwritten. Does nothing while <see cref="SettingsStore.BackupOnSave"/> is off.
+    /// the highest copy there is. A copy is never overwritten. Has no settings; throws when the file does not exist.
     /// </summary>
-    public sealed class NumberedSavefileBackup : ISavefileBackup
+    public sealed class NumberedSavefileBackupService : IFileBackupService
     {
         private const string Extension = ".bak";
 
-        private readonly SettingsStore settings;
-
-        public NumberedSavefileBackup(SettingsStore settings)
+        /// <inheritdoc/>
+        /// <exception cref="FileNotFoundException">The file does not exist.</exception>
+        /// <exception cref="IOException">The copy could not be made.</exception>
+        public string Backup(string filePath)
         {
-            this.settings = settings;
-        }
-
-        public string? Backup(string filePath)
-        {
-            if (!this.settings.BackupOnSave || !File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
-                return null;
+                throw new FileNotFoundException("The file to back up does not exist.", filePath);
             }
 
             var next = HighestCopy(filePath) + 1;

@@ -68,7 +68,7 @@ namespace Siniskalc.Homm2.Models
         public static int MaxDwellingLevel(Faction? faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction.Value).Count(c => c.Level == dwelling), 1, 3);
+            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction.Value).Count(c => c.Tier == dwelling), 1, 3);
         }
 
         /// <summary>

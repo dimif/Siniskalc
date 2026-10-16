@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -20,28 +20,23 @@ namespace Siniskalc.Wpf.ViewModels
         // What the shell mirrors from the editor it shows, so its bindings read the same names.
         private static readonly string[] Mirrored =
         [
-            nameof(IGameEditor.IsGameLoaded),
-            nameof(IGameEditor.File),
-            nameof(IGameEditor.Name),
-            nameof(IGameEditor.HasFile),
-            nameof(IGameEditor.CanReload),
             nameof(IGameEditor.CanUndo),
             nameof(IGameEditor.CanRedo),
             nameof(IGameEditor.HasPendingChanges),
         ];
 
-        private readonly IReadOnlyList<IGameModule> modules;
+        private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
         private readonly SettingsStore settings;
         private readonly string applicationName;
-        private readonly Dictionary<IGameModule, IGameEditor> editors = new();
-        private IGameModule currentModule;
-        private IGameEditor editor;
+        private readonly Dictionary<IGameModule<IObservableGameEditor>, IObservableGameEditor> editors = new();
+        private IGameModule<IObservableGameEditor> currentModule;
+        private IObservableGameEditor editor;
         private bool isPendingChangesOpen;
 
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
-        public ShellViewModel(IReadOnlyList<IGameModule> modules, SettingsStore settings, string applicationName)
+        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName)
         {
             if (modules.Count == 0)
             {
@@ -61,17 +56,17 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Gets the games the application can edit.
         /// </summary>
-        public IReadOnlyList<IGameModule> Modules => this.modules;
+        public IReadOnlyList<IGameModule<IObservableGameEditor>> Modules => this.modules;
 
         /// <summary>
         /// Gets the game whose editor is shown.
         /// </summary>
-        public IGameModule CurrentModule => this.currentModule;
+        public IGameModule<IObservableGameEditor> CurrentModule => this.currentModule;
 
         /// <summary>
         /// Gets the editor that is shown: the one of the game whose savegame was opened last, or of the first game when none was.
         /// </summary>
-        public IGameEditor Editor => this.editor;
+        public IObservableGameEditor Editor => this.editor;
 
         /// <summary>
         /// Gets the title of the window.
@@ -130,21 +125,21 @@ namespace Siniskalc.Wpf.ViewModels
 
         public ICommand RevertAllCommand { get; }
 
-        public bool IsGameLoaded => this.editor.IsGameLoaded;
+        public bool IsGameLoaded => this.editor.Savegame != null;
 
         /// <summary>
         /// Gets what to call the loaded game: its file, or the name it was given when loaded from bytes.
         /// </summary>
-        public string? Name => this.editor.Name;
+        public string? Name => this.editor.Savegame?.Name;
 
         /// <summary>
         /// Gets the file the loaded game is tied to, or <c>null</c> when it has none.
         /// </summary>
-        public string? File => this.editor.File;
+        public string? File => this.editor.Savegame?.FileName;
 
-        public bool HasFile => this.editor.HasFile;
+        public bool HasFile => !string.IsNullOrWhiteSpace(this.File);
 
-        public bool CanReload => this.editor.CanReload;
+        public bool CanReload => this.HasFile;
 
         public bool CanUndo => this.editor.CanUndo;
 
@@ -177,14 +172,14 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Returns the game whose savegame the file is, or <c>null</c> when none recognises it or it cannot be read.
         /// </summary>
-        public IGameModule? Recognize(string filePath)
+        public IGameModule<IObservableGameEditor>? Recognize(string filePath)
         {
             try
             {
                 var head = new byte[this.modules.Max(m => m.HeadLength)];
                 using var stream = System.IO.File.OpenRead(filePath);
                 var read = stream.Read(head, 0, head.Length);
-                return this.modules.FirstOrDefault(m => m.Recognizes(filePath, head.AsSpan(0, Math.Min(read, m.HeadLength))));
+                return this.modules.FirstOrDefault(m => m.IsOwnSavefile(filePath, head.AsSpan(0, Math.Min(read, m.HeadLength))));
             }
             catch (IOException)
             {
@@ -232,7 +227,7 @@ namespace Siniskalc.Wpf.ViewModels
 
         public void RevertAll() => this.editor.RevertAll();
 
-        private IGameEditor EditorOf(IGameModule module)
+        private IObservableGameEditor EditorOf(IGameModule<IObservableGameEditor> module)
         {
             if (!this.editors.TryGetValue(module, out var made))
             {
@@ -243,7 +238,7 @@ namespace Siniskalc.Wpf.ViewModels
             return made;
         }
 
-        private void Show(IGameEditor target)
+        private void Show(IObservableGameEditor target)
         {
             if (ReferenceEquals(target, this.editor))
             {
@@ -264,6 +259,15 @@ namespace Siniskalc.Wpf.ViewModels
             if (e.PropertyName is { } name && Array.IndexOf(Mirrored, name) >= 0)
             {
                 this.RaisePropertyChanged(name);
+            }
+
+            if (e.PropertyName == nameof(IGameEditor.Savegame))
+            {
+                this.RaisePropertyChanged(nameof(this.IsGameLoaded));
+                this.RaisePropertyChanged(nameof(this.Name));
+                this.RaisePropertyChanged(nameof(this.File));
+                this.RaisePropertyChanged(nameof(this.HasFile));
+                this.RaisePropertyChanged(nameof(this.CanReload));
             }
 
             if (e.PropertyName == nameof(IGameEditor.HasPendingChanges))

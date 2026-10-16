@@ -37,6 +37,11 @@ namespace Siniskalc.Homm2.ViewModels
         public string Date => this.game.Date.ToString();
 
         /// <summary>
+        /// Gets the difficulty, e.g. "Difficulty: Queen (160%)".
+        /// </summary>
+        public string DifficultyText => $"Difficulty: {this.game.Difficulty} ({(int)this.game.Difficulty}%)";
+
+        /// <summary>
         /// Gets the command that shows the page of a player; its parameter is the colour of the player.
         /// </summary>
         public System.Windows.Input.ICommand OpenPlayerCommand { get; }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests.ViewModels
 {
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;

@@ -1,7 +1,7 @@
-﻿namespace Siniskalc.Homm3.Entities
+﻿namespace Siniskalc.Heroes.Entities
 {
     /// <summary>
-    /// The difficulty the game was started with, by the names Horn of the Abyss gives the levels.
+    /// The difficulty a game was started with, by the names Horn of the Abyss gives the levels. The value is the percentage the game shows.
     /// </summary>
     public enum GameDifficulty : byte
     {

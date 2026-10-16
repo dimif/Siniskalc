@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
     using System;
     using System.Linq;
@@ -70,7 +70,7 @@ namespace Siniskalc.Homm3.Runtime
 
             var offsets = new HeroOffsets(gameVersion);
             var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks);
-            return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), metadata, name);
+            return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata);
         }
     }
 }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
+    using Moq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Data;
@@ -15,8 +16,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         private string folder = string.Empty;
         private RecentFilesStore recent = null!;
-        private ScriptedFileDialogs dialogs = null!;
-        private RecordingMessageService messages = null!;
+        private Mock<IMessageService> messages = null!;
+        private string? pathToOpen;
+        private string? pathToSave;
+        private string? suggestedName;
+        private int asked;
+        private MessageAnswer answer;
         private SavegameFileCommands commands = null!;
         private ShellViewModel shell = null!;
 
@@ -26,9 +31,25 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-file-commands-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
             this.recent = TestServices.CreateRecentFiles();
-            this.dialogs = new ScriptedFileDialogs();
-            this.messages = new RecordingMessageService();
-            this.commands = new SavegameFileCommands(this.recent, this.dialogs, this.messages);
+            this.pathToOpen = null;
+            this.pathToSave = null;
+            this.suggestedName = null;
+            this.asked = 0;
+            this.answer = MessageAnswer.Cancel;
+            var dialogs = new Mock<IFileDialogs>();
+            dialogs.Setup(d => d.PickFileToOpen(It.IsAny<string>()))
+                .Callback(() => this.asked++)
+                .Returns(() => this.pathToOpen);
+            dialogs.Setup(d => d.PickFileToSave(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string?>()))
+                .Callback<string, string?, string?>((_, name, _) =>
+                {
+                    this.asked++;
+                    this.suggestedName = name;
+                })
+                .Returns(() => this.pathToSave);
+            this.messages = new Mock<IMessageService>();
+            this.messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(() => this.answer);
+            this.commands = new SavegameFileCommands(this.recent, dialogs.Object, this.messages.Object);
             this.shell = TestServices.CreateShell();
         }
 
@@ -38,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void OpeningASavegameLoadsItAndRemembersIt()
         {
-            this.dialogs.PathToOpen = Save;
+            this.pathToOpen = Save;
 
             var status = this.commands.Open(this.shell);
 
@@ -50,11 +71,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ACancelledDialogDoesNothing()
         {
-            this.dialogs.PathToOpen = null;
+            this.pathToOpen = null;
 
             Assert.That(this.commands.Open(this.shell), Is.Null);
             Assert.That(this.shell.IsGameLoaded, Is.False);
-            Assert.That(this.messages.Shown, Is.Empty);
+            this.messages.VerifyNoOtherCalls();
         }
 
         [Test]
@@ -62,13 +83,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var path = Path.Combine(this.folder, "notes.GM1");
             File.WriteAllText(path, "not a savegame");
-            this.dialogs.PathToOpen = path;
+            this.pathToOpen = path;
 
             Assert.That(this.commands.Open(this.shell), Is.Null);
 
-            Assert.That(this.messages.Shown, Has.Count.EqualTo(1));
-            Assert.That(this.messages.Shown[0].Kind, Is.EqualTo("Error"));
-            Assert.That(this.messages.Shown[0].Message, Does.Not.StartWith("Failed to"));
+            this.messages.Verify(m => m.ShowError(It.IsAny<string>(), It.Is<string>(message => !message.StartsWith("Failed to"))), Times.Once);
+            this.messages.VerifyNoOtherCalls();
             Assert.That(this.recent.Entries, Is.Empty);
         }
 
@@ -80,7 +100,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(this.commands.OpenRecent(this.shell, path), Is.Null);
 
-            Assert.That(this.messages.Shown.Single().Kind, Is.EqualTo("Warning"));
+            this.messages.Verify(m => m.ShowWarning(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            this.messages.VerifyNoOtherCalls();
             Assert.That(this.recent.Entries, Is.Empty);
         }
 
@@ -89,12 +110,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             this.shell.LoadGameFromBytes(TestServices.SavefileCodec.Read(Save), "dump.bin");
             var path = Path.Combine(this.folder, "copy.GM1");
-            this.dialogs.PathToSave = path;
+            this.pathToSave = path;
 
             Assert.That(this.commands.Save(this.shell), Is.EqualTo(path));
-            Assert.That(this.dialogs.Asked, Is.EqualTo(1));
+            Assert.That(this.asked, Is.EqualTo(1));
             Assert.That(this.commands.Save(this.shell), Is.EqualTo(path));
-            Assert.That(this.dialogs.Asked, Is.EqualTo(1));
+            Assert.That(this.asked, Is.EqualTo(1));
             Assert.That(this.recent.Entries, Is.EqualTo(new[] { path }));
         }
 
@@ -102,11 +123,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void ASaveThatFailsIsToldAndNothingIsRemembered()
         {
             this.shell.LoadGameFromBytes(TestServices.SavefileCodec.Read(Save), "dump.bin");
-            this.dialogs.PathToSave = Path.Combine(this.folder, "missing folder", "copy.GM1");
+            this.pathToSave = Path.Combine(this.folder, "missing folder", "copy.GM1");
 
             Assert.That(this.commands.SaveAs(this.shell), Is.Null);
 
-            Assert.That(this.messages.Shown.Single().Message, Does.StartWith("Failed to save game"));
+            this.messages.Verify(m => m.ShowError(It.IsAny<string>(), It.Is<string>(message => message.StartsWith("Failed to save game"))), Times.Once);
+            this.messages.VerifyNoOtherCalls();
             Assert.That(this.recent.Entries, Is.Empty);
         }
 
@@ -115,12 +137,12 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             this.shell.LoadGame(Save);
             var path = Path.Combine(this.folder, "bytes.bin");
-            this.dialogs.PathToSave = path;
+            this.pathToSave = path;
 
             Assert.That(await this.commands.ExportBytesAsync(this.shell), Is.EqualTo(path));
-            Assert.That(this.dialogs.SuggestedName, Does.EndWith(".bin"));
+            Assert.That(this.suggestedName, Does.EndWith(".bin"));
 
-            this.dialogs.PathToOpen = path;
+            this.pathToOpen = path;
             Assert.That(this.commands.LoadBytes(this.shell), Is.EqualTo(path));
             Assert.That(this.shell.HasFile, Is.False);
             Assert.That(this.shell.CanReload, Is.False);
@@ -132,10 +154,10 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             this.shell.LoadGame(Save);
             ((Homm3EditorViewModel)this.shell.Editor).LoadedGame().History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, 4242) });
 
-            this.messages.Answer = MessageAnswer.Cancel;
+            this.answer = MessageAnswer.Cancel;
             Assert.That(this.commands.ConfirmClose(this.shell), Is.False);
 
-            this.messages.Answer = MessageAnswer.No;
+            this.answer = MessageAnswer.No;
             Assert.That(this.commands.ConfirmClose(this.shell), Is.True);
             Assert.That(this.shell.HasPendingChanges, Is.True);
         }
@@ -146,7 +168,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             this.shell.LoadGame(Save);
 
             Assert.That(this.commands.ConfirmClose(this.shell), Is.True);
-            Assert.That(this.messages.Shown, Is.Empty);
+            this.messages.VerifyNoOtherCalls();
         }
     }
 }

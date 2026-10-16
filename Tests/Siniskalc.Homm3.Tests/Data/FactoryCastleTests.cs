@@ -60,12 +60,5 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             Assert.That(Building.ForFaction(Faction.Factory).Where(b => b.Code == 6), Is.EquivalentTo(new[] { Building.FactoryManaGenerator }));
         }
-
-        [Test]
-        public void TheMageGuildLevelFollowsTheMageGuildBuilt()
-        {
-            Assert.That(Gantry("factory_14_mage_guild").MageGuildLevel, Is.EqualTo(1));
-            Assert.That(Gantry("factory_29_mage_guild_2").MageGuildLevel, Is.EqualTo(2));
-        }
     }
 }

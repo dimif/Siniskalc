@@ -31,6 +31,12 @@ namespace Siniskalc.Homm2.Data
         public const int MapFormatField = 8;
 
         /// <summary>
+        /// The difficulty of the game: a 16-bit number, 0 for the easiest level to 4 for the hardest. Not yet checked against saves made at
+        /// each level (only the value 1 has been seen).
+        /// </summary>
+        public const int Difficulty = 0x0C;
+
+        /// <summary>
         /// The name of the map: 16 bytes, zero terminated.
         /// </summary>
         public const int MapName = 0x42;

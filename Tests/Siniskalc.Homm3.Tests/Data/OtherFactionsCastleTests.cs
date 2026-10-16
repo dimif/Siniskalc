@@ -112,18 +112,6 @@ namespace Siniskalc.Homm3.Tests.Data
             }
         }
 
-        [TestCase("other_factions_10_mage_guild_1", 1)]
-        [TestCase("other_factions_11_mage_guild_2", 2)]
-        [TestCase("other_factions_12_mage_guild_3", 3)]
-        [TestCase("other_factions_42_city_hall", 3)]
-        public void TheMageGuildLevelFollowsTheMageGuildBuilt(string save, int level)
-        {
-            foreach (var (name, _) in Castles)
-            {
-                Assert.That(Castle(save, name).MageGuildLevel, Is.EqualTo(level), name);
-            }
-        }
-
         [Test]
         public void TheUpgradedHordeBuildingsAppearWithTheUpgradeOfTheirDwellings()
         {

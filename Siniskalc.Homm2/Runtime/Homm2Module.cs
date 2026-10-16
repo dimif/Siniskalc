@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Runtime
+﻿namespace Siniskalc.Homm2.Runtime
 {
     using System;
     using System.IO;
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Runtime
     /// Heroes of Might and Magic II as a game of the application: its savegames are not compressed (<c>.GM1</c> for the base game and
     /// <c>.GX1</c> for the Price of Loyalty), and its editor is a <see cref="Homm2EditorViewModel"/>.
     /// </summary>
-    public sealed class Homm2Module : IGameModule
+    public sealed class Homm2Module : IGameModule<Homm2EditorViewModel>
     {
         private readonly ISaveLayoutLocator locator;
         private readonly Func<Homm2EditorViewModel> createEditor;
@@ -37,10 +37,10 @@ namespace Siniskalc.Homm2.Runtime
         public int HeadLength => this.locator.HeadLength;
 
         /// <inheritdoc/>
-        public bool Recognizes(string filePath, ReadOnlySpan<byte> head) => this.locator.Recognizes(head);
+        public bool IsOwnSavefile(string filePath, ReadOnlySpan<byte> head) => this.locator.Recognizes(head);
 
         /// <inheritdoc/>
-        public IGameEditor CreateEditor() => this.createEditor();
+        public Homm2EditorViewModel CreateEditor() => this.createEditor();
 
         /// <summary>
         /// Heroes of Might and Magic II lists a savegame only when the name before the extension has at most 8 characters, and no space

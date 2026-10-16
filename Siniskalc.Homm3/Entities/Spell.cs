@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Entities
 {
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Entities;
 
     public sealed class Spell : Homm3Enumeration
     {

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
     using Siniskalc.Core.Runtime;
 
@@ -8,8 +8,8 @@ namespace Siniskalc.Homm3.Runtime
     /// </summary>
     public sealed class GameService : SavegameService<Game>, IGameService
     {
-        public GameService(ISavegameParser parser, ISavefileCodec codec, ISavefileBackup backup)
-            : base(parser, codec, backup)
+        public GameService(ISavegameParser parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
+            : base(parser, codec, backups)
         {
         }
     }

@@ -1,6 +1,7 @@
-namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Core.Runtime
 {
     using System;
+    using System.IO;
 
     /// <summary>
     /// Loads, reloads and saves the open games of one game: the file I/O. Building a game from the bytes of a savefile is the job of
@@ -8,17 +9,17 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     /// <typeparam name="TGame">What the game calls an open savefile.</typeparam>
     public abstract class SavegameService<TGame> : ISavegameService<TGame>
-        where TGame : IOpenGame
+        where TGame : ISavegame
     {
         private readonly ISavegameParser<TGame> parser;
         private readonly ISavefileCodec codec;
-        private readonly ISavefileBackup backup;
+        private readonly IFileBackupServiceProvider backups;
 
-        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, ISavefileBackup backup)
+        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
         {
             this.parser = parser;
             this.codec = codec;
-            this.backup = backup;
+            this.backups = backups;
         }
 
         /// <inheritdoc/>
@@ -41,12 +42,12 @@ namespace Siniskalc.Core.Runtime
         /// <exception cref="InvalidOperationException">The game has no file to read again.</exception>
         public TGame ReloadGame(TGame game)
         {
-            if (string.IsNullOrWhiteSpace(game.File))
+            if (string.IsNullOrWhiteSpace(game.FileName))
             {
                 throw new InvalidOperationException("Cannot reload game without an associated file");
             }
 
-            return this.LoadGameFromFile(game.File);
+            return this.LoadGameFromFile(game.FileName);
         }
 
         /// <inheritdoc/>
@@ -56,7 +57,11 @@ namespace Siniskalc.Core.Runtime
             var bytes = game.GetBytesToSave();
 
             // Keep a copy of whatever is being replaced, so a bad save can be undone (when the user has not turned that off).
-            this.backup.Backup(filePath);
+            // A failed backup stops the save: the exception goes up to the caller, which shows it to the user.
+            if (File.Exists(filePath))
+            {
+                this.backups.GetService().Backup(filePath);
+            }
 
             this.codec.Write(filePath, bytes);
 

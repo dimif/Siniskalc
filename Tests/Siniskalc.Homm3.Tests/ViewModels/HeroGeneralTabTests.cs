@@ -1,5 +1,6 @@
 ﻿using Siniskalc;
 using Siniskalc.Core.Entities;
+using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
@@ -124,14 +125,14 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ACreatureChoiceTellsItsResourcesAndSpecial()
         {
-            var troll = new CreatureChoiceViewModel(Creature.Troll, this.hero.GameVersion);
+            var troll = new CreatureChoiceViewModel(Creature.Troll, Creature.Troll.GetInfo(this.hero.GameVersion));
 
             Assert.That(troll.Special, Does.Contain("Regeneration"));
             Assert.That(troll.Resources, Is.Empty);
 
             // A creature that costs a resource besides gold lists it, and the finder's tooltip still lists it with the gold.
             var version = this.hero.GameVersion;
-            var pricey = Creature.All.Where(c => c.IsAvailableIn(version)).Select(c => new CreatureChoiceViewModel(c, version)).First(c => c.Resources.Length > 0);
+            var pricey = Creature.All.Where(c => c.IsAvailableIn(version)).Select(c => new CreatureChoiceViewModel(c, c.GetInfo(version))).First(c => c.Resources.Length > 0);
             Assert.That(pricey.Details, Does.Contain(pricey.Resources));
         }
 

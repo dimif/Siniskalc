@@ -1,12 +1,13 @@
 namespace Siniskalc.Homm3.Entities
 {
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// Something a creature can do or suffer beyond the plain attack and defense of its stats, as listed on the Heroes 3 wiki.
     /// <see cref="Ranged"/> does not say how many shots the creature has; that is <see cref="CreatureInfo.Shots"/>.
     /// </summary>
-    public sealed class CreatureAbility : Homm3Enumeration
+    public sealed class CreatureAbility : Homm3Enumeration, ICreatureAbility
     {
         public static readonly CreatureAbility Spying = new("Spying", 0);
         public static readonly CreatureAbility DoublesFriendlyUnitsLuckChance = new("Doubles friendly units Luck chance", 1);
@@ -151,6 +152,8 @@ namespace Siniskalc.Homm3.Entities
             : base(name, code)
         {
         }
+
+        public bool IsRanged => this == Ranged;
 
         public static IReadOnlyList<CreatureAbility> All => GetAll<CreatureAbility>();
     }

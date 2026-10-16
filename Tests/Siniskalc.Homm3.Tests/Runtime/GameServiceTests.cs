@@ -1,5 +1,6 @@
-namespace Siniskalc.Homm3.Tests.Runtime
+﻿namespace Siniskalc.Homm3.Tests.Runtime
 {
+    using Moq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Runtime;
@@ -28,7 +29,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
 
             var game = TestServices.GameService.LoadGameFromBytes(bytes, "dump.bin");
 
-            Assert.That(game.File, Is.Null);
+            Assert.That(game.FileName, Is.Null);
             Assert.That(game.Name, Is.EqualTo("dump.bin"));
             Assert.That(() => TestServices.GameService.ReloadGame(game), Throws.InvalidOperationException);
         }
@@ -38,7 +39,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
         {
             var game = TestServices.GameService.LoadGameFromFile(Save);
 
-            Assert.That(game.File, Is.EqualTo(Save));
+            Assert.That(game.FileName, Is.EqualTo(Save));
             Assert.That(game.Name, Is.EqualTo(Save));
         }
 
@@ -50,8 +51,8 @@ namespace Siniskalc.Homm3.Tests.Runtime
 
             TestServices.GameService.SaveGame(game, path);
 
-            Assert.That(game.File, Is.EqualTo(path));
-            Assert.That(TestServices.GameService.ReloadGame(game).File, Is.EqualTo(path));
+            Assert.That(game.FileName, Is.EqualTo(path));
+            Assert.That(TestServices.GameService.ReloadGame(game).FileName, Is.EqualTo(path));
         }
 
         [Test]
@@ -64,27 +65,53 @@ namespace Siniskalc.Homm3.Tests.Runtime
         public void ABackupThatFailsStopsTheSaveAndLeavesTheGameUnsaved()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(new NoParser(), TestServices.SavefileCodec, new FailingBackup());
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(FailingBackup()));
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());
 
             Assert.That(File.ReadAllBytes(path), Is.EqualTo(before));
-            Assert.That(game.File, Is.EqualTo(Save));
+            Assert.That(game.FileName, Is.EqualTo(Save));
             Assert.That(game.History.GetPendingChanges(), Is.Not.Empty);
+        }
+
+        [Test]
+        public void SavingToAFileThatDoesNotExistYetMakesNoBackup()
+        {
+            var game = TestServices.GameService.LoadGameFromFile(Save);
+            var backup = new Mock<IFileBackupService>(MockBehavior.Strict);
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+            var path = Path.Combine(this.folder, "new.GM1");
+
+            service.SaveGame(game, path);
+
+            backup.Verify(b => b.Backup(It.IsAny<string>()), Times.Never);
+            Assert.That(File.Exists(path), Is.True);
+        }
+
+        [Test]
+        public void SavingOverAnExistingFileBacksItUpFirst()
+        {
+            var game = this.EditedGame(out var path);
+            var backup = new Mock<IFileBackupService>();
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+
+            service.SaveGame(game, path);
+
+            backup.Verify(b => b.Backup(path), Times.Once);
         }
 
         [Test]
         public void AWriteThatFailsLeavesTheGameUnsavedAndTheFileAsItWas()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(new NoParser(), new FailingCodec(), new NoBackup());
+            var service = new GameService(NoParser(), FailingCodec(), BackupsOf(new DisabledFileBackupService()));
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());
 
             Assert.That(File.ReadAllBytes(path), Is.EqualTo(before));
-            Assert.That(game.File, Is.EqualTo(Save));
+            Assert.That(game.FileName, Is.EqualTo(Save));
             Assert.That(game.History.GetPendingChanges(), Is.Not.Empty);
         }
 
@@ -97,26 +124,27 @@ namespace Siniskalc.Homm3.Tests.Runtime
             return game;
         }
 
-        private sealed class NoParser : ISavegameParser
+        private static ISavegameParser NoParser() => new Mock<ISavegameParser>(MockBehavior.Strict).Object;
+
+        private static IFileBackupServiceProvider BackupsOf(IFileBackupService service)
         {
-            public Game Parse(byte[] bytes, string? file, string? name = null) => throw new NotSupportedException();
+            var provider = new Mock<IFileBackupServiceProvider>();
+            provider.Setup(p => p.GetService()).Returns(service);
+            return provider.Object;
         }
 
-        private sealed class NoBackup : ISavefileBackup
+        private static IFileBackupService FailingBackup()
         {
-            public string? Backup(string filePath) => null;
+            var backup = new Mock<IFileBackupService>();
+            backup.Setup(b => b.Backup(It.IsAny<string>())).Throws(new IOException("The disk is full."));
+            return backup.Object;
         }
 
-        private sealed class FailingBackup : ISavefileBackup
+        private static ISavefileCodec FailingCodec()
         {
-            public string? Backup(string filePath) => throw new IOException("The disk is full.");
-        }
-
-        private sealed class FailingCodec : ISavefileCodec
-        {
-            public byte[] Read(string filePath) => throw new NotSupportedException();
-
-            public void Write(string filePath, byte[] bytes) => throw new IOException("The disk is full.");
+            var codec = new Mock<ISavefileCodec>();
+            codec.Setup(c => c.Write(It.IsAny<string>(), It.IsAny<byte[]>())).Throws(new IOException("The disk is full."));
+            return codec.Object;
         }
     }
 }

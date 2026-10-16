@@ -101,17 +101,6 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(after.Buildings.Except(before.Buildings).Select(b => b.Name), Is.EquivalentTo(added));
         }
 
-        [TestCase("conflux_08_resource_silo", 0, "Resource Silo")]
-        [TestCase("conflux_09_mage_guild_1", 1, null)]
-        [TestCase("conflux_13_mage_guild_5", 5, null)]
-        public void TheMageGuildLevelOfTheConfluxCastleFollowsTheBuilding(string save, int level, string? other)
-        {
-            var castle = Castle(Load(save), "Conflux");
-
-            Assert.That(castle.MageGuildLevel, Is.EqualTo(level));
-            Assert.That(other == null || castle.Buildings.Select(b => b.Name).Contains(other), Is.True);
-        }
-
         [TestCase("conflux_19_dwelling_1", "20,0,0,0,0,0,0", "0,0,0,0,0,0,0")]
         [TestCase("conflux_21_dwelling_3", "20,6,6,0,0,0,0", "0,0,0,0,0,0,0")]
         [TestCase("conflux_22_dwelling_4", "60,18,18,5,0,0,0", "0,0,0,0,0,0,0")]

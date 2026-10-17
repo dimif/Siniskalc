@@ -1,7 +1,8 @@
 # What can move into Siniskalc.Heroes: review of `Entities` and `Models`
 
 A review, component by component, of `Siniskalc.Homm2` and `Siniskalc.Homm3` (`Entities` and `Models`), for what could be one abstraction in `Siniskalc.Heroes` (or `Siniskalc.Core` when it knows no game at all).
-Nothing in this document is done. Each item has a verdict, what it would look like, and the reasons, so it can be accepted, changed or refused one at a time.
+Each item has a verdict, what it would look like, and the reasons, so it can be accepted, changed or refused one at a time.
+The work was done in the order at the end; **"Status after the work"** below says what was done, what was not and why, and what the assessment looks like now. The sections further down are the review as it was written, kept for the reasoning.
 
 Read from the working tree of 2026-10-16, which already has the work of `6f06ab7`, `aeb17a6` and what is not committed yet.
 What that work moved into `Heroes` is listed under "Already shared" and is not proposed again.
@@ -19,6 +20,35 @@ What that work moved into `Heroes` is listed under "Already shared" and is not p
 ## Already shared (not proposed again)
 
 `Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`, `ChangeText`, `OwnerNames<TColor>`, `PlayerColors<TColor>`, `PlayerColorInfo`, `SkillLevelInfo`, `GameDifficulty`, `SpellType`, `CreatureInfo`, `ICreature`, `ICreatureAbility`, `IPlayerColor`, `IFaction`, `ISecondarySkill`, `ISkillLevel`, `ILink`, `IOwnerChoice`, `PlayerPalette`.
+
+## Status after the work (2026-10-17)
+
+Done, each in its own commit with the whole suite run after it:
+
+| Group | Items | Commit |
+|---|---|---|
+| 1 | E1 `VersionedEnumeration<TVersion>` (Core), E2 `Factions<TFaction>`, M7 `ResourceSet`, M8 `Numbers` (Core), M15 `GameRuleException`, E10 `HeroLevel` and `MovementPoints` | `371facd` and the ones before it |
+| 2 | M2 `PrimarySkills` and `PrimarySkillBonus`, E7 `IArtifact`, M6 (the HoMM2 bonus table moved into its `Artifact`) | `6758615` |
+| 3 | M1 `Army<TCreature>` and `ArmySlot<TCreature>` | `0e77a03` |
+| 4 | M9 `PlayerModelBase<TColor>`, M11 `HeroSummary<TColor>`, M14 `ExperienceTable` | `fae02c8` |
+| 5 | M4 `SpellSet<TSpell>` | `e488f67` |
+| 6 | E9 `MapPosition` | `da9bb07` |
+
+**Not done, and why**
+
+- **E3 (skill level) and M3 (secondary skills):** left for later, as you decided. M3 needs E3.
+- **M13 (`MapHeader`):** you are changing the HoMM2 header at the moment (`HeaderReader`, `HeaderLayout`, `MapHeader`, `MapSizes`, the overview). A shared header record built now would collide with that work. Do it once it has landed; `GameDifficulty` and `MapSizes` are already in `Heroes`.
+- **M12 (`MageGuild`, `CreatureStock`):** looked at again, and it is not the small step the review said. The two castles do not store the same thing in a way a value can hide: HoMM2 keeps the guild level inside the `Dwellings` flags and the guild spells as 15 spell numbers, HoMM3 a level field and lists of `Spell`; HoMM2's upgraded-creature numbers carry a marker for the upgrade state that HoMM3's do not. A shared `MageGuild<TSpell>` would first need HoMM2's castle to hold the guild as a value (a model change with its serializer, differ and tests), and its only reader would be the two castle pages. Do it together with the shared mage guild view model, as the review said, not before. No new decoding is needed for it.
+- **E5 (`ISpell`):** still waits for a consumer (a shared spell row).
+
+**What the assessment looks like now**
+
+- **Hero.** After E10, M1, M2, M4 and M14 the two hero models hold the same *parts* (level, movement, primary skills, army, spell set). What is left that differs is secondary skills (M3, deferred) and the glue (artifact rules, class, backpack, war machines, flags). M10 stays KEEP; the next step is a hero page interface (`IHeroPage`, a view-model question) and, after E3 and M3, the secondary skills page.
+- **Player and map.** The player is now a shared base plus each game's lists. What remains different is real: HoMM2 keeps lists of hero and castle numbers and an income, HoMM3 does not. `GameSetup` (who controls each colour, whose turn) stays HoMM3's until the HoMM2 header masks are decoded (test 2 in `HOMM2_PLAN.md`); then `PlayerType` and `GameSetup` move together (E12 and M13).
+- **M17, obelisks: revised.** The review said `ObeliskVisits` had no HoMM2 counterpart. HoMM2 has obelisks that work like HoMM3's, and no teams. The model is already free of teams: it is a byte per obelisk with a bit per colour; "the whole team gets the bit" is done by the game when it writes and is only described in a comment. So `ObeliskVisits` can become `ObeliskVisits<TColor>` in `Heroes` (its positions are `MapPosition?` now), together with the obelisk view models. The blocker is decoding, not design: test 3 in `HOMM2_PLAN.md`. For HoMM2 the "team" case is simply not offered. M17 is therefore no longer KEEP for the obelisks; granted spells, the castle builder and `PrimarySkillBonus` stay as they were (the last moved with M2).
+- **Entities.** E4 (secondary skills), E8 (buildings), E11 (HoMM3 hero vocabulary), M5 (artifacts and backpack), M16 (spell points rule): unchanged, for the reasons given. E11 has one new note: `FacingDirection` moves first when the HoMM2 facing byte is decoded (test 4).
+- **Pattern that held.** Every shared type that came out of this was either a value both games store in the same way (`ResourceSet`, `MapPosition`, `PrimarySkills`), or a generic over the game's own entity (`Army<TCreature>`, `SpellSet<TSpell>`, `HeroSummary<TColor>`, `PlayerModelBase<TColor>`), or a mechanism with the game's data passed in (`ExperienceTable`, `Factions<TFaction>`). What did not move is exactly what each game's rules own.
+- **Small leftovers.** `NameOf(code)` in every entity class (E6) is still six one-liners; the HoMM3 `Position` properties on the view models (`PositionX`, `PositionY`) are `short` for the steppers and clamp the model's `int`.
 
 ## Summary
 

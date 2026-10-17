@@ -16,29 +16,29 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void CreaturesSwapMovesStacksAndIntoEmptySlots()
         {
-            var army = new Army([])
-                .WithSlot(1, Creature.Pikeman, 10)
-                .WithSlot(2, Creature.Archer, 5);
+            var army = new Army<Creature>(Constants.CreatureSlotCount)
+                .WithSlot(0, Creature.Pikeman, 10)
+                .WithSlot(1, Creature.Archer, 5);
 
-            var swapped = army.Swap(1, 2);
-            Assert.That(swapped.GetSlot(1), Is.EqualTo(new ArmySlot(1, Creature.Archer.Code, 5)));
-            Assert.That(swapped.GetSlot(2), Is.EqualTo(new ArmySlot(2, Creature.Pikeman.Code, 10)));
+            var swapped = army.Swap(0, 1);
+            Assert.That(swapped.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Archer, 5)));
+            Assert.That(swapped.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Pikeman, 10)));
 
-            var moved = army.Swap(2, 3);
-            Assert.That(moved.FindSlot(2), Is.Null);
-            Assert.That(moved.GetSlot(3), Is.EqualTo(new ArmySlot(3, Creature.Archer.Code, 5)));
+            var moved = army.Swap(1, 2);
+            Assert.That(moved.Slots[1], Is.Null);
+            Assert.That(moved.Slots[2], Is.EqualTo(new ArmySlot<Creature>(Creature.Archer, 5)));
         }
 
         [Test]
         public void CreaturesWithoutSlotEmptiesIt()
         {
-            var army = new Army([]).WithSlot(1, Creature.Pikeman, 10).WithSlot(2, Creature.Archer, 5);
+            var army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10).WithSlot(1, Creature.Archer, 5);
 
-            var cleared = army.WithoutSlot(1);
+            var cleared = army.WithoutSlot(0);
 
-            Assert.That(cleared.FindSlot(1), Is.Null);
-            Assert.That(cleared.GetSlot(2).CreatureCount, Is.EqualTo(5u));
-            Assert.That(() => army.WithoutSlot(8), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(cleared.Slots[0], Is.Null);
+            Assert.That(cleared.Slots[1]!.Count, Is.EqualTo(5));
+            Assert.That(() => army.WithoutSlot(7), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace Siniskalc.Homm3.Tests.Models
             {
                 PrimarySkills = h.PrimarySkills with { Attack = 77 },
                 SpellPoints = 123,
-                Army = h.Army.Swap(1, 2).WithoutSlot(3),
+                Army = h.Army.Swap(0, 1).WithoutSlot(2),
                 SecondarySkills = h.SecondarySkills.WithoutSlot(0),
             });
 
@@ -254,7 +254,7 @@ namespace Siniskalc.Homm3.Tests.Models
             {
                 HeroClass = HeroClass.Knight,
                 HeroLevel = new HeroLevel { Level = 20, Experience = 81961 },
-                Army = h.Army.Swap(1, 4).WithSlot(7, Creature.Angel, 3),
+                Army = h.Army.Swap(0, 3).WithSlot(6, Creature.Angel, 3),
                 SecondarySkills = h.SecondarySkills.Swap(0, 1).WithoutSlot(2),
                 EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
                 Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
@@ -299,10 +299,10 @@ namespace Siniskalc.Homm3.Tests.Models
             var game = TestServices.GameService.LoadGameFromFile(SavePath);
             game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")).Update(h => h with
             {
-                Army = new Army([])
-                    .WithSlot(1, Creature.Pikeman, 10)
-                    .WithSlot(2, Creature.Archer, 5)
-                    .WithSlot(3, Creature.Griffin, 3),
+                Army = new Army<Creature>(Constants.CreatureSlotCount)
+                    .WithSlot(0, Creature.Pikeman, 10)
+                    .WithSlot(1, Creature.Archer, 5)
+                    .WithSlot(2, Creature.Griffin, 3),
                 SecondarySkills = ThreeSkills(),
             });
 

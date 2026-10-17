@@ -1,4 +1,4 @@
-﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
@@ -38,7 +38,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(haret.Faction, Is.EqualTo(Faction.Castle));
             Assert.That(haret.Owner, Is.EqualTo(PlayerColor.Tan));
             Assert.That(haret.Position, Is.EqualTo(new Position(33, 23, 0)));
-            Assert.That(haret.Garrison.Slots, Is.Empty);
+            Assert.That(haret.Garrison.Filled, Is.Empty);
             Assert.That(haret.Buildings, Is.EquivalentTo(new[]
             {
                 Building.MagesGuild1,
@@ -61,7 +61,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(tumlac.Faction, Is.EqualTo(Faction.Tower));
             Assert.That(tumlac.Owner, Is.EqualTo(PlayerColor.Tan));
             Assert.That(tumlac.Position, Is.EqualTo(new Position(9, 29, 0)));
-            Assert.That(tumlac.Garrison.Slots, Is.Empty);
+            Assert.That(tumlac.Garrison.Filled, Is.Empty);
             Assert.That(tumlac.Buildings, Is.EquivalentTo(new[] { Building.MagesGuild1, Building.VillageHall, Building.TownHall }));
         }
 
@@ -75,9 +75,9 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(before.Buildings.Except(after.Buildings), Is.Empty);
 
             var expected = new[] { "Pikeman", "Archer", "Griffin", "Swordsman", "Monk", "Cavalier", "Angel" };
-            Assert.That(after.Garrison.Slots.OrderBy(s => s.SlotNumber).Select(s => s.SlotNumber), Is.EqualTo(Enumerable.Range(1, 7)));
-            Assert.That(after.Garrison.Slots.OrderBy(s => s.SlotNumber).Select(s => Creature.FromByte(s.CreatureCode)!.Name), Is.EqualTo(expected));
-            Assert.That(after.Garrison.Slots.Select(s => s.CreatureCount), Has.All.EqualTo(123));
+            Assert.That(after.Garrison.Slots, Has.All.Not.Null);
+            Assert.That(after.Garrison.Slots.Select(s => s!.Creature.Name), Is.EqualTo(expected));
+            Assert.That(after.Garrison.Slots.Select(s => s!.Count), Has.All.EqualTo(123));
         }
 
         [Test]

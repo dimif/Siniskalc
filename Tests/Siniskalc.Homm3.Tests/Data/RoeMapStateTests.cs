@@ -261,9 +261,9 @@ namespace Siniskalc.Homm3.Tests.Data
             var after = Load("roe_64_elfwind_captured");
 
             Assert.That(Castle(before, "Elfwind").Owner, Is.Null);
-            Assert.That(Castle(before, "Elfwind").Garrison.Slots, Is.Not.Empty);
+            Assert.That(Castle(before, "Elfwind").Garrison.Filled, Is.Not.Empty);
             Assert.That(Castle(after, "Elfwind").Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(Castle(after, "Elfwind").Garrison.Slots, Is.Empty);
+            Assert.That(Castle(after, "Elfwind").Garrison.Filled, Is.Empty);
             Assert.That(Castle(after, "Elfwind").Buildings, Is.EquivalentTo(Castle(before, "Elfwind").Buildings));
         }
 

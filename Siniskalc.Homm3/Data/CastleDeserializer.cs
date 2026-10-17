@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -63,24 +64,24 @@
             return x == byte.MaxValue && y == byte.MaxValue ? null : new Position(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
-        public Army DeserializeGarrison(CastleChunk chunk)
+        public Army<Creature> DeserializeGarrison(CastleChunk chunk)
         {
-            var slots = new List<ArmySlot>();
+            var slots = new ArmySlot<Creature>?[Constants.CreatureSlotCount];
 
             for (var i = 0; i < Constants.CreatureSlotCount; i++)
             {
                 var type = chunk.GetInt32At(CastleLayout.GarrisonTypes + (i * 4));
-                if (type < 0 || type > byte.MaxValue || Creature.FromByte((byte)type) == null)
+                var creature = type < 0 || type > byte.MaxValue ? null : Creature.FromByte((byte)type);
+                if (creature == null)
                 {
                     // TODO:LOG warning: the castle "{chunk.Name}" holds creature type {type} in garrison slot {i + 1}, which this editor does not know; the slot reads as empty and its bytes are kept (-1 is a slot that is empty, not to be logged).
                     continue;
                 }
 
-                // Slots are 1 - 7.
-                slots.Add(new ArmySlot(i + 1, (byte)type, chunk.GetUInt32At(CastleLayout.GarrisonCounts + (i * 4))));
+                slots[i] = new ArmySlot<Creature>(creature, chunk.GetUInt32At(CastleLayout.GarrisonCounts + (i * 4)));
             }
 
-            return new Army([.. slots]);
+            return new Army<Creature>(slots);
         }
 
         /// <summary>

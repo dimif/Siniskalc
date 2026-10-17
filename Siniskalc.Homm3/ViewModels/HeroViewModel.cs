@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -229,7 +229,7 @@
             set => this.Update(h => h with { SpellPoints = value });
         }
 
-        public Army Army
+        public Army<Creature> Army
         {
             get => this.HeroModel.Army;
             set => this.Update(h => h with { Army = value });

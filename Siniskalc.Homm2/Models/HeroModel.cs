@@ -33,7 +33,7 @@ namespace Siniskalc.Homm2.Models
         HeroLevel HeroLevel,
         PrimarySkills PrimarySkills,
         SecondarySkills SecondarySkills,
-        Army Army,
+        Army<Creature> Army,
         Artifacts Artifacts,
         SpellBook Spells)
     {

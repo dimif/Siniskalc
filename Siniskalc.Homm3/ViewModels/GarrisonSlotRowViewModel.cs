@@ -1,20 +1,20 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System.Globalization;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// A slot of the garrison of a castle, as a line of the page.
     /// </summary>
     public sealed class GarrisonSlotRowViewModel
     {
-        public GarrisonSlotRowViewModel(int slotNumber, ArmySlot? slot)
+        public GarrisonSlotRowViewModel(int slotNumber, ArmySlot<Creature>? slot)
         {
             this.SlotNumber = slotNumber;
             this.IsEmpty = slot == null;
-            this.CreatureName = slot == null ? "Empty" : Creature.NameOf(slot.CreatureCode);
-            this.CountText = slot == null ? string.Empty : slot.CreatureCount.ToString("N0", CultureInfo.CurrentCulture);
+            this.CreatureName = slot == null ? "Empty" : slot.Creature.Name;
+            this.CountText = slot == null ? string.Empty : slot.Count.ToString("N0", CultureInfo.CurrentCulture);
         }
 
         public int SlotNumber { get; }

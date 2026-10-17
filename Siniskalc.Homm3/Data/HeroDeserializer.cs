@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -99,9 +99,9 @@
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
-        public Army DeserializeCreatures(HeroChunk chunk)
+        public Army<Creature> DeserializeCreatures(HeroChunk chunk)
         {
-            var slots = new List<ArmySlot>();
+            var slots = new ArmySlot<Creature>?[Constants.CreatureSlotCount];
 
             for (var i = 0; i < Constants.CreatureSlotCount; i++)
             {
@@ -120,11 +120,10 @@
 
                 var creatureCount = chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.CreaturesAmounts] + (i * 4));
 
-                // Slots are 1 - 7.
-                slots.Add(new ArmySlot(i + 1, creature.Code, creatureCount));
+                slots[i] = new ArmySlot<Creature>(creature, creatureCount);
             }
 
-            return new Army([.. slots]);
+            return new Army<Creature>(slots);
         }
 
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)

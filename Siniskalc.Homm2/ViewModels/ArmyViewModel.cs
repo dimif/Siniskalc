@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Linq;
     using Siniskalc.Core;
@@ -19,10 +20,10 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private const int MinStackSize = 1;
 
-        private readonly Func<Army> getArmy;
-        private readonly Action<Func<Army, Army>> update;
+        private readonly Func<Army<Creature>> getArmy;
+        private readonly Action<Func<Army<Creature>, Army<Creature>>> update;
 
-        public ArmyViewModel(GameVersion gameVersion, Func<Army> getArmy, Action<Func<Army, Army>> update)
+        public ArmyViewModel(GameVersion gameVersion, Func<Army<Creature>> getArmy, Action<Func<Army<Creature>, Army<Creature>>> update)
             : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList())
         {
             this.getArmy = getArmy;
@@ -66,7 +67,7 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         protected override StackContent? ReadStack(int index) => this.getArmy().Slots[index] is { } slot
-            ? new StackContent(slot.Creature.Name, slot.Count, _ => Facts(slot.Creature))
+            ? new StackContent(slot.Creature.Name, (int)slot.Count, _ => Facts(slot.Creature))
             : null;
 
         protected override void PutStack(int index, string? creatureName, int amount)
@@ -84,7 +85,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         protected override void ClearStack(int index) => this.update(army => army.WithSlot(index, null));
 
-        protected override void SwapStacks(int first, int second) => this.update(army => army.WithSlot(first, army.Slots[second]).WithSlot(second, army.Slots[first]));
+        protected override void SwapStacks(int first, int second) => this.update(army => army.Swap(first, second));
 
         private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
         [
@@ -97,7 +98,7 @@ namespace Siniskalc.Homm2.ViewModels
         {
             // A newly picked creature starts with one in the stack, as the game does not allow an empty stack.
             var size = (int)RangeGuard.Clamp(count, MinStackSize, (int)Constants.MaxCreatureCount);
-            this.update(army => army.WithSlot(index, new ArmySlot(creature, size)));
+            this.update(army => army.WithSlot(index, new ArmySlot<Creature>(creature, size)));
         }
 
         private string DescribeSlot(int slot) => this.getArmy().Slots[slot - 1] is { } stack ? $"{stack.Creature.Name} ×{stack.Count}" : "empty";

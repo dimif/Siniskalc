@@ -1,4 +1,4 @@
-﻿using Siniskalc;
+using Siniskalc;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -110,7 +110,7 @@ namespace Siniskalc.Homm3.Tests.Data
             {
                 PrimarySkills = new PrimarySkills(11, 12, 13, 14),
                 HeroLevel = new HeroLevel { Level = 30, Experience = 123456 },
-                Army = new Army([]).WithSlot(1, Creature.Pikeman, 10).WithSlot(7, Creature.Angel, 3),
+                Army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10).WithSlot(6, Creature.Angel, 3),
                 SecondarySkills = model.SecondarySkills.WithoutSlot(0),
                 Backpack = model.Backpack.WithSlot(Constants.BackpackSlotCount - 1, Artifact.OrbOfInhibition),
                 EquippedArtifacts = model.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),

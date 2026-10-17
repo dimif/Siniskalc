@@ -1,4 +1,4 @@
-﻿using Siniskalc.Heroes.Models;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -41,18 +41,21 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(() => hasSpellBook, Is.EqualTo(ExpectedHasSpellBook));
 
             // 0x0D Arch Angel
-            var expectedCreatureSlots = new List<ArmySlot>
+            var expectedCreatureSlots = new ArmySlot<Creature>?[]
             {
-                new ArmySlot(4, 0x0D, 42),
-                new ArmySlot(5, 0x0D, 41)
+                null,
+                null,
+                null,
+                new ArmySlot<Creature>(Creature.FromByte(0x0D)!, 42),
+                new ArmySlot<Creature>(Creature.FromByte(0x0D)!, 41),
+                null,
+                null,
             };
 
             var creatures = this.deserializer.DeserializeCreatures(bytesChunk);
 
-            Assert.That(() => creatures.Slots, Has.Length.EqualTo(2));
-
-            Assert.That(() => creatures.Slots[0], Is.EqualTo(expectedCreatureSlots[0]));
-            Assert.That(() => creatures.Slots[1], Is.EqualTo(expectedCreatureSlots[1]));
+            Assert.That(() => creatures.Filled.Count(), Is.EqualTo(2));
+            Assert.That(() => creatures.Slots, Is.EqualTo(expectedCreatureSlots));
         }
 
         [Test]
@@ -99,14 +102,15 @@ namespace Siniskalc.Homm3.Tests.Data
                 Assert.That(hero.SecondarySkills.GetSkillLevel(expectedSkills[i].Item1), Is.EqualTo(expectedSkills[i].Item2), $"Skill level slot {i + 1}");
             }
 
-            var expectedCreatures = new[]
+            var expectedCreatures = new ArmySlot<Creature>?[]
             {
-                new ArmySlot(1, Creature.Skeleton.Code, 15),
-                new ArmySlot(3, Creature.RoyalGriffin.Code, 832),
-                new ArmySlot(4, Creature.Archangel.Code, 145),
-                new ArmySlot(5, Creature.Zealot.Code, 411),
-                new ArmySlot(6, Creature.Champion.Code, 276),
-                new ArmySlot(7, Creature.GoldDragon.Code, 63),
+                new ArmySlot<Creature>(Creature.Skeleton, 15),
+                null,
+                new ArmySlot<Creature>(Creature.RoyalGriffin, 832),
+                new ArmySlot<Creature>(Creature.Archangel, 145),
+                new ArmySlot<Creature>(Creature.Zealot, 411),
+                new ArmySlot<Creature>(Creature.Champion, 276),
+                new ArmySlot<Creature>(Creature.GoldDragon, 63),
             };
 
             Assert.That(hero.Army.Slots, Is.EqualTo(expectedCreatures));

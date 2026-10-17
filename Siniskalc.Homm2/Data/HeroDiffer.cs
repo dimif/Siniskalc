@@ -122,6 +122,6 @@ namespace Siniskalc.Homm2.Data
 
         private static string LevelText(SkillLevel level) => level == SkillLevel.None ? "none" : level.ToString();
 
-        private static string SlotText(ArmySlot? slot) => slot?.ToString() ?? ChangeText.Empty;
+        private static string SlotText(ArmySlot<Creature>? slot) => slot?.ToString() ?? ChangeText.Empty;
     }
 }

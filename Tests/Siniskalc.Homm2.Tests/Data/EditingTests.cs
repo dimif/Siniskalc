@@ -48,7 +48,7 @@ namespace Siniskalc.Homm2.Tests.Data
                     .With(SecondarySkill.Wisdom, SkillLevel.Expert)
                     .With(SecondarySkill.Estates, SkillLevel.Advanced)
                     .With(SecondarySkill.Pathfinding, SkillLevel.Basic),
-                Army = Army.Empty.WithSlot(0, new ArmySlot(Creature.Titan, 3)).WithSlot(4, new ArmySlot(Creature.Peasant, 32_767)),
+                Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(Creature.Titan, 3)).WithSlot(4, new ArmySlot<Creature>(Creature.Peasant, 32_767)),
                 Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
                 Spells = new SpellBook([Spell.Fireball, Spell.TownPortal]),
                 Owner = Color.Red,
@@ -83,7 +83,7 @@ namespace Siniskalc.Homm2.Tests.Data
             session.Update(c => c with
             {
                 Owner = Color.Green,
-                Garrison = c.Garrison.WithSlot(0, new ArmySlot(Creature.Paladin, 10)),
+                Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)),
                 Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue,
                 Dwellings = c.Dwellings | Dwellings.Dwelling3 | Dwellings.MageGuild2,
                 Creatures = c.Creatures.With(2, 4),
@@ -91,7 +91,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var castle = TestServices.Parser.Parse(this.game.GetBytesToSave(), null).History.Current.Castles().GetModel(3);
             Assert.That(castle.Owner, Is.EqualTo(Color.Green));
-            Assert.That(castle.Garrison.Slots[0], Is.EqualTo(new ArmySlot(Creature.Paladin, 10)));
+            Assert.That(castle.Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Paladin, 10)));
             Assert.That(castle.Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.Tavern | TownBuildings.Statue));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(2));
             Assert.That(castle.HasDwelling(3), Is.True);
@@ -118,7 +118,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(untouched[HeroLayout.Artifacts + 5], Is.EqualTo(0xC9));
             Assert.That(untouched[HeroLayout.Owner], Is.EqualTo(0x77));
 
-            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot(Creature.Archer, 1)), Owner = Color.Blue }).ToArray();
+            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 1)), Owner = Color.Blue }).ToArray();
             Assert.That(changed[HeroLayout.ArmyTypes], Is.EqualTo(Creature.Archer.Code));
             Assert.That(changed[HeroLayout.Owner], Is.EqualTo((byte)Color.Blue));
         }
@@ -143,7 +143,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(() => session.Update(p => p with { Resources = p.Resources.With(Resource.Gold, -1) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Level = 300 }), Throws.InstanceOf<ArgumentOutOfRangeException>());
-            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(0, new ArmySlot(Creature.Peasant, 70_000)) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Peasant, 70_000)) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(this.game.History.CanUndo, Is.False);
         }
 
@@ -151,7 +151,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void EditsArePendingChangesThatCanBePutBackOneByOneAndUndone()
         {
             this.game.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, 9_999).With(Resource.Ore, 1) });
-            this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(2, new ArmySlot(Creature.Roc, 2)) });
+            this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(2, new ArmySlot<Creature>(Creature.Roc, 2)) });
 
             var changes = this.game.History.GetPendingChanges();
 

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -142,11 +142,12 @@
 
         private static void DiffCreatures(HeroModel original, HeroModel current, HeroChanges changes)
         {
-            for (var slot = 1; slot <= Constants.CreatureSlotCount; slot++)
+            for (var index = 0; index < Constants.CreatureSlotCount; index++)
             {
-                var slotNumber = slot;
-                var before = original.Army.FindSlot(slotNumber);
-                var after = current.Army.FindSlot(slotNumber);
+                var slotIndex = index;
+                var slotNumber = index + 1;
+                var before = original.Army.Slots[index];
+                var after = current.Army.Slots[index];
 
                 if (before == after)
                 {
@@ -158,7 +159,7 @@
                     $"Slot {slotNumber}",
                     FormatCreatureSlot(before),
                     FormatCreatureSlot(after),
-                    h => h with { Army = RestoreCreatureSlot(h.Army, slotNumber, before) });
+                    h => h with { Army = h.Army.WithSlot(slotIndex, before) });
             }
         }
 
@@ -244,17 +245,6 @@
             changes.Add(ChangeAreas.Spells, "Learned spells", before, after, h => h with { SpellBook = h.SpellBook.WithLearned(added, false).WithLearned(removed, true) });
         }
 
-        private static Army RestoreCreatureSlot(Army creatures, int slotNumber, ArmySlot? slot)
-        {
-            if (slot == null)
-            {
-                return creatures.WithoutSlot(slotNumber);
-            }
-
-            var creature = Creature.FromByte(slot.CreatureCode);
-            return creature == null ? creatures : creatures.WithSlot(slotNumber, creature, slot.CreatureCount);
-        }
-
         private static EquippedArtifacts RestoreEquipped(EquippedArtifacts equipped, ArtifactSlots slot, Artifact? artifact, Spell? spell)
         {
             return artifact == null ? equipped.WithUnequipped(slot) : equipped.WithEquipped(slot, artifact, spell);
@@ -265,14 +255,14 @@
             return spell != null ? SpellScroll.NameOf(spell) : artifact?.Name ?? ChangeText.Empty;
         }
 
-        private static string FormatCreatureSlot(ArmySlot? slot)
+        private static string FormatCreatureSlot(ArmySlot<Creature>? slot)
         {
             if (slot == null)
             {
                 return ChangeText.Empty;
             }
 
-            return $"{slot.CreatureCount:N0} {Creature.NameOf(slot.CreatureCode)}";
+            return $"{slot.Count:N0} {slot.Creature.Name}";
         }
 
         private static string FormatSecondarySkills(SecondarySkills skills)

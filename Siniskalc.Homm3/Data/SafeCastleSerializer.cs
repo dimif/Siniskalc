@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
@@ -111,18 +112,19 @@
             }
         }
 
-        private static void SerializeGarrison(byte[] bytes, Army garrison)
+        private static void SerializeGarrison(byte[] bytes, Army<Creature> garrison)
         {
             for (var i = 0; i < Constants.CreatureSlotCount; i++)
             {
-                var slot = garrison.FindSlot(i + 1);
+                var slot = garrison.Slots[i];
                 var typeOffset = CastleLayout.GarrisonTypes + (i * 4);
                 var countOffset = CastleLayout.GarrisonCounts + (i * 4);
 
                 if (slot != null)
                 {
-                    ByteBufferHelper.WriteInt32(bytes, typeOffset, (int)slot.CreatureCode);
-                    ByteBufferHelper.WriteUInt32(bytes, countOffset, slot.CreatureCount);
+                    RangeGuard.ThrowIfOutOfRange<long>(slot.Count, 0, uint.MaxValue, nameof(garrison));
+                    ByteBufferHelper.WriteInt32(bytes, typeOffset, slot.Creature.Code);
+                    ByteBufferHelper.WriteUInt32(bytes, countOffset, (uint)slot.Count);
                 }
                 else if (HoldsKnownCreature(bytes, typeOffset))
                 {

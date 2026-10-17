@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -42,7 +42,7 @@
         Faction? Faction,
         PlayerColor? Owner,
         Position Position,
-        Army Garrison,
+        Army<Creature> Garrison,
         IReadOnlySet<Building> Buildings,
         Position? ShipyardLocation,
         int? GarrisonedHeroId,
@@ -66,7 +66,7 @@
         /// the game, so the slots of the castle cannot be set while a hero is garrisoned.
         /// </summary>
         /// <exception cref="GameRuleException">A hero is garrisoned in the castle.</exception>
-        public CastleModel WithGarrison(Army garrison) => this.GarrisonedHeroId != null
+        public CastleModel WithGarrison(Army<Creature> garrison) => this.GarrisonedHeroId != null
             ? throw new GameRuleException("A hero is garrisoned here, so its army takes the place of the town's creatures.")
             : this with { Garrison = garrison };
 

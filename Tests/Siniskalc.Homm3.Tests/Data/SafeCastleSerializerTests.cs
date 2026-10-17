@@ -1,4 +1,5 @@
-﻿using Siniskalc;
+using Siniskalc;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -73,13 +74,13 @@ namespace Siniskalc.Homm3.Tests.Data
             var chunk = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
             var castle = TestServices.CastleDeserializer.Deserialize(chunk);
 
-            var filled = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(2, Creature.Centaur, 1234).WithSlot(7, Creature.GoldDragon, 3) });
+            var filled = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3) });
             var garrison = TestServices.CastleDeserializer.DeserializeGarrison(filled);
-            Assert.That(garrison.GetSlot(2), Is.EqualTo(new ArmySlot(2, Creature.Centaur.Code, 1234)));
-            Assert.That(garrison.GetSlot(7), Is.EqualTo(new ArmySlot(7, Creature.GoldDragon.Code, 3)));
-            Assert.That(garrison.Slots, Has.Length.EqualTo(2));
+            Assert.That(garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Centaur, 1234)));
+            Assert.That(garrison.Slots[6], Is.EqualTo(new ArmySlot<Creature>(Creature.GoldDragon, 3)));
+            Assert.That(garrison.Filled.Count(), Is.EqualTo(2));
 
-            var emptied = TestServices.SerializeCastle(filled, TestServices.CastleDeserializer.Deserialize(filled) with { Garrison = new Army([]) });
+            var emptied = TestServices.SerializeCastle(filled, TestServices.CastleDeserializer.Deserialize(filled) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
             Assert.That(emptied.HasSameBytes(chunk), Is.True);
         }
 
@@ -115,7 +116,7 @@ namespace Siniskalc.Homm3.Tests.Data
             System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(CastleLayout.GarrisonTypes + (3 * 4)), 250);
             var unknown = chunk.WithBytes(bytes);
 
-            var written = TestServices.SerializeCastle(unknown, TestServices.CastleDeserializer.Deserialize(unknown) with { Garrison = new Army([]) });
+            var written = TestServices.SerializeCastle(unknown, TestServices.CastleDeserializer.Deserialize(unknown) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
 
             Assert.That(written.GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(250));
         }
@@ -172,7 +173,7 @@ namespace Siniskalc.Homm3.Tests.Data
             && a.MageGuildLevel == b.MageGuildLevel && a.Buildings.SetEquals(b.Buildings) && a.CurrentBuildings.SetEquals(b.CurrentBuildings)
             && a.EnabledBuildings.SetEquals(b.EnabledBuildings) && a.CreaturesAvailable.SequenceEqual(b.CreaturesAvailable)
             && a.UpgradedCreaturesAvailable.SequenceEqual(b.UpgradedCreaturesAvailable) && a.SpellCounts.SequenceEqual(b.SpellCounts)
-            && a.Garrison.Slots.OrderBy(s => s.SlotNumber).SequenceEqual(b.Garrison.Slots.OrderBy(s => s.SlotNumber))
+            && a.Garrison.Equals(b.Garrison)
             && a.GarrisonedHeroId == b.GarrisonedHeroId && a.VisitingHeroId == b.VisitingHeroId;
     }
 }

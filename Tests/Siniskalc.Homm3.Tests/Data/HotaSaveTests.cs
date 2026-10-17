@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -293,10 +293,9 @@ namespace Siniskalc.Homm3.Tests.Data
         private static void AssertCreatures(HeroModel hero, params (Creature Creature, uint Count)?[] expectedBySlot)
         {
             var expected = expectedBySlot
-                .Select((e, i) => e is { } slot ? new ArmySlot(i + 1, slot.Creature.Code, slot.Count) : null)
-                .Where(s => s != null);
+                .Select(e => e is { } slot ? new ArmySlot<Creature>(slot.Creature, slot.Count) : null);
 
-            Assert.That(hero.Army.Slots, Is.EquivalentTo(expected));
+            Assert.That(hero.Army.Slots, Is.EqualTo(expected));
         }
 
         private static void AssertEquipped(HeroModel hero, Dictionary<ArtifactSlots, Artifact> expected)

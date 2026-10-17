@@ -1,4 +1,4 @@
-﻿using Siniskalc.Heroes.Entities;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -263,9 +263,9 @@ namespace Siniskalc.Homm3.Tests.Data
             var dungeon = Castle("roe_47_garrisons", "6_Dung");
             var tower = Castle("roe_47_garrisons", "3_Tower");
 
-            Assert.That(dungeon.Garrison.Slots.Select(s => (s.SlotNumber, s.CreatureCode, s.CreatureCount)), Is.EqualTo(new[] { (1, (byte)83, 9u), (2, (byte)81, 18u), (3, (byte)79, 27u), (4, (byte)77, 36u), (5, (byte)75, 63u), (6, (byte)73, 88u), (7, (byte)71, 174u) }));
-            Assert.That(tower.Garrison.Slots.Select(s => (s.SlotNumber, s.CreatureCode, s.CreatureCount)), Is.EqualTo(new[] { (1, (byte)41, 9u), (2, (byte)39, 18u), (3, (byte)37, 27u) }));
-            Assert.That(Castle("roe_46_mage_guild_5", "6_Dung").Garrison.Slots, Is.Empty);
+            Assert.That(dungeon.Garrison.Filled.Select(s => (s.Creature.Code, s.Count)), Is.EqualTo(new[] { ((byte)83, 9L), ((byte)81, 18L), ((byte)79, 27L), ((byte)77, 36L), ((byte)75, 63L), ((byte)73, 88L), ((byte)71, 174L) }));
+            Assert.That(tower.Garrison.Filled.Select(s => (s.Creature.Code, s.Count)), Is.EqualTo(new[] { ((byte)41, 9L), ((byte)39, 18L), ((byte)37, 27L) }));
+            Assert.That(Castle("roe_46_mage_guild_5", "6_Dung").Garrison.Filled, Is.Empty);
         }
 
         [Test]

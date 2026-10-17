@@ -125,9 +125,9 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(blue, Is.EqualTo(new ResourceSet(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, 999_999)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
-            Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot(Creature.Peasant, (int)Constants.MaxCreatureCount)));
-            Assert.That(army.Slots[1], Is.EqualTo(new ArmySlot(Creature.Rogue, 500)));
-            Assert.That(army.Slots[2], Is.EqualTo(new ArmySlot(Creature.BlackDragon, 1)));
+            Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Peasant, (int)Constants.MaxCreatureCount)));
+            Assert.That(army.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Rogue, 500)));
+            Assert.That(army.Slots[2], Is.EqualTo(new ArmySlot<Creature>(Creature.BlackDragon, 1)));
 
             var stats = Open("E25STATS").Document.Heroes().GetModel(1);
             Assert.That((stats.Level, stats.Experience, stats.SpellPoints, stats.MovementLeft), Is.EqualTo((17, 50_000L, 99, stats.MaxMovement)), "the level follows the experience");

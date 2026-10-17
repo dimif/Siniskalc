@@ -118,7 +118,7 @@
             bytes[HeroLayout.SkillCount] = (byte)skills.Count;
         }
 
-        private static void WriteArmy(byte[] bytes, Army army)
+        private static void WriteArmy(byte[] bytes, Army<Creature> army)
         {
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
             {

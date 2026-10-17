@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -99,21 +99,22 @@
 
         private static void DiffGarrison(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
         {
-            for (var number = 1; number <= Constants.CreatureSlotCount; number++)
+            for (var index = 0; index < Constants.CreatureSlotCount; index++)
             {
-                var before = original.Garrison.FindSlot(number);
-                var after = current.Garrison.FindSlot(number);
+                var number = index + 1;
+                var slot = index;
+                var before = original.Garrison.Slots[index];
+                var after = current.Garrison.Slots[index];
                 if (before == after)
                 {
                     continue;
                 }
 
-                var slot = number;
                 changes.Add(Homm3PendingChanges.ForCastle(
                     current.Name,
                     castleIndex,
                     new Change(ChangeAreas.Garrison, $"Slot {number}", SlotText(before), SlotText(after)),
-                    c => c with { Garrison = before == null ? c.Garrison.WithoutSlot(slot) : c.Garrison.WithSlot(slot, Creature.FromByte(before.CreatureCode)!, before.CreatureCount) }));
+                    c => c with { Garrison = c.Garrison.WithSlot(slot, before) }));
             }
         }
 
@@ -167,8 +168,8 @@
             }
         }
 
-        private static string SlotText(ArmySlot? slot) =>
-            slot == null ? ChangeText.Empty : $"{Creature.NameOf(slot.CreatureCode)} × {slot.CreatureCount:N0}";
+        private static string SlotText(ArmySlot<Creature>? slot) =>
+            slot == null ? ChangeText.Empty : slot.ToString();
 
         private void DiffBuildings(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
         {

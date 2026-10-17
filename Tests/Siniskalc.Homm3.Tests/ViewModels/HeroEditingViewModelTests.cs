@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Heroes.Models;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -49,7 +50,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(slots[0].SelectedCreature, Is.EqualTo("Archer"));
             Assert.That(slots[1].SelectedCreature, Is.EqualTo("Pikeman"));
             Assert.That(slots[1].CreatureAmount, Is.EqualTo(10));
-            Assert.That(this.hero.HeroModel.Army.GetSlot(2).CreatureCode, Is.EqualTo(Creature.Pikeman.Code));
+            Assert.That(this.hero.HeroModel.Army.Slots[1]!.Creature, Is.EqualTo(Creature.Pikeman));
         }
 
         [Test]
@@ -61,7 +62,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(slots[1].SelectedCreature, Is.Null);
             Assert.That(slots[1].CreatureAmount, Is.EqualTo(0));
-            Assert.That(this.hero.HeroModel.Army.FindSlot(2), Is.Null);
+            Assert.That(this.hero.HeroModel.Army.Slots[1], Is.Null);
 
             this.game.History.Undo();
 
@@ -78,10 +79,10 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(slots[5].CreatureAmount, Is.EqualTo(1));
 
             slots[5].CreatureAmount = 40;
-            Assert.That(this.hero.HeroModel.Army.GetSlot(6), Is.EqualTo(new ArmySlot(6, Creature.Angel.Code, 40)));
+            Assert.That(this.hero.HeroModel.Army.Slots[5], Is.EqualTo(new ArmySlot<Creature>(Creature.Angel, 40)));
 
             slots[5].SelectedCreature = string.Empty;
-            Assert.That(this.hero.HeroModel.Army.FindSlot(6), Is.Null);
+            Assert.That(this.hero.HeroModel.Army.Slots[5], Is.Null);
         }
 
         [Test]

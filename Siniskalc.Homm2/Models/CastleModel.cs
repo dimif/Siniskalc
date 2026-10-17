@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Models
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,7 +33,7 @@ namespace Siniskalc.Homm2.Models
         Faction? Faction,
         Position Position,
         Position? Boat,
-        Army Garrison,
+        Army<Creature> Garrison,
         int? VisitingHero,
         TownBuildings Town,
         Dwellings Dwellings,

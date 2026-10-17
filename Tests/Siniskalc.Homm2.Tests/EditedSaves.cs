@@ -35,13 +35,13 @@ namespace Siniskalc.Homm2.Tests
                 Make("E02RESRC", 5, "All of Blue's resources", "Blue has 500 of every resource and 50,000 gold.", game => Player(game, 0, p => p with { Resources = new ResourceSet(500, 500, 500, 500, 500, 500, 50_000) })),
                 Make("E03ARMY", 5, "Maximus's army", "Maximus has 7 Black Dragons, 3 Titans, 5 Phoenixes, 20 Paladins and 100 Peasants.", game => Hero(game, 7, h => h with
                 {
-                    Army = new Army(
+                    Army = new Army<Creature>(
                     [
-                        new ArmySlot(Creature.BlackDragon, 7),
-                        new ArmySlot(Creature.Titan, 3),
-                        new ArmySlot(Creature.Phoenix, 5),
-                        new ArmySlot(Creature.Paladin, 20),
-                        new ArmySlot(Creature.Peasant, 100),
+                        new ArmySlot<Creature>(Creature.BlackDragon, 7),
+                        new ArmySlot<Creature>(Creature.Titan, 3),
+                        new ArmySlot<Creature>(Creature.Phoenix, 5),
+                        new ArmySlot<Creature>(Creature.Paladin, 20),
+                        new ArmySlot<Creature>(Creature.Peasant, 100),
                     ]),
                 })),
                 Make("E04SKILL", 5, "Maximus's primary skills", "Maximus has attack 15, defense 15, spell power 15 and knowledge 15.", game => Hero(game, 7, h => h with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) })),
@@ -70,9 +70,9 @@ namespace Siniskalc.Homm2.Tests
                 Make("E10GARR", 5, "Xabran's garrison", "Xabran has a garrison of 10 Paladins, 20 Cavalry and 5 Champions; open the castle to see it.", game => Castle(game, 3, c => c with
                 {
                     Garrison = c.Garrison
-                        .WithSlot(0, new ArmySlot(Creature.Paladin, 10))
-                        .WithSlot(1, new ArmySlot(Creature.Cavalry, 20))
-                        .WithSlot(2, new ArmySlot(Creature.Champion, 5)),
+                        .WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10))
+                        .WithSlot(1, new ArmySlot<Creature>(Creature.Cavalry, 20))
+                        .WithSlot(2, new ArmySlot<Creature>(Creature.Champion, 5)),
                 })),
                 Make("E11OWNR", 13, "Corackston given to Blue", "Blue owns Corackston (a town without a castle) as well as Xabran; it is in the list of Blue's castles. Its garrison is the neutral one.", game =>
                 {
@@ -85,10 +85,10 @@ namespace Siniskalc.Homm2.Tests
                     Hero(game, 7, h => h.WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.IceCloak) with
                     {
                         PrimarySkills = new PrimarySkills(15, 15, 15, 15),
-                        Army = new Army([new ArmySlot(Creature.BlackDragon, 7), new ArmySlot(Creature.Titan, 3), null, null, null]),
+                        Army = new Army<Creature>([new ArmySlot<Creature>(Creature.BlackDragon, 7), new ArmySlot<Creature>(Creature.Titan, 3), null, null, null]),
                         SecondarySkills = h.SecondarySkills.With(SecondarySkill.Wisdom, SkillLevel.Expert),
                     });
-                    Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new ArmySlot(Creature.Paladin, 10)) });
+                    Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)) });
                 }),
             ];
         }

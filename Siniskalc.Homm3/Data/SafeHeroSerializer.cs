@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Core;
     using System;
@@ -53,7 +53,7 @@
             return chunk;
         }
 
-        public HeroChunk SerializeCreatures(HeroChunk chunk, Army creatures)
+        public HeroChunk SerializeCreatures(HeroChunk chunk, Army<Creature> creatures)
         {
             return Edit(chunk, buffer =>
             {
@@ -65,8 +65,7 @@
                     var currentCode = buffer[codeOffset];
                     var currentlyPresent = currentCode != Constants.ByteOff && Creature.FromByte(currentCode) != null;
 
-                    // Slots are 1 - 7.
-                    var slot = creatures.Slots.FirstOrDefault(s => s.SlotNumber == i + 1);
+                    var slot = creatures.Slots[i];
 
                     if (slot == null)
                     {
@@ -79,12 +78,13 @@
                         continue;
                     }
 
-                    if (!currentlyPresent || currentCode != slot.CreatureCode)
+                    if (!currentlyPresent || currentCode != slot.Creature.Code)
                     {
-                        ByteBufferHelper.WriteUInt32(buffer, codeOffset, slot.CreatureCode);
+                        ByteBufferHelper.WriteUInt32(buffer, codeOffset, slot.Creature.Code);
                     }
 
-                    ByteBufferHelper.WriteUInt32(buffer, countOffset, slot.CreatureCount);
+                    RangeGuard.ThrowIfOutOfRange<long>(slot.Count, 0, uint.MaxValue, nameof(creatures));
+                    ByteBufferHelper.WriteUInt32(buffer, countOffset, (uint)slot.Count);
                 }
             });
         }

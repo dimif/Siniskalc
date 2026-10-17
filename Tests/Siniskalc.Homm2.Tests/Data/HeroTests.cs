@@ -37,7 +37,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 new SkillEntry(SecondarySkill.Leadership, SkillLevel.Basic),
                 new SkillEntry(SecondarySkill.Ballistics, SkillLevel.Basic),
             }));
-            Assert.That(maximus.Army.Slots, Is.EqualTo(new[] { new ArmySlot(Creature.Peasant, 37), new ArmySlot(Creature.Archer, 4), null, null, null }));
+            Assert.That(maximus.Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(Creature.Peasant, 37), new ArmySlot<Creature>(Creature.Archer, 4), null, null, null }));
             Assert.That(maximus.Artifacts, Is.EqualTo(Artifacts.None));
             Assert.That(maximus.HasSpellBook, Is.False);
             Assert.That(maximus.Spells.Count, Is.Zero);
@@ -126,7 +126,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheFountainTurnedTheArmyIntoFiveBlackDragons()
         {
-            Assert.That(Hero(13, Maximus).Army.Slots, Is.EqualTo(new[] { new ArmySlot(Creature.BlackDragon, 5), null, null, null, null }));
+            Assert.That(Hero(13, Maximus).Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(Creature.BlackDragon, 5), null, null, null, null }));
         }
 
         [Test]

@@ -1,4 +1,4 @@
-﻿using Siniskalc;
+using Siniskalc;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -62,8 +62,8 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheGarrisonSlotsAreEditedPendingAndReverted()
         {
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, Creature.GoldDragon, 5) });
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(4, Creature.Centaur, 120) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(0, Creature.GoldDragon, 5) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, Creature.Centaur, 120) });
 
             Assert.That(this.history.GetPendingChanges().Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[]
             {
@@ -71,13 +71,13 @@ namespace Siniskalc.Homm3.Tests.Data
                 ("Slot 4", "empty", "Centaur × 120"),
             }));
             var reloaded = this.Reloaded("Still Water").Garrison;
-            Assert.That(reloaded.GetSlot(1), Is.EqualTo(new ArmySlot(1, Creature.GoldDragon.Code, 5)));
-            Assert.That(reloaded.GetSlot(4), Is.EqualTo(new ArmySlot(4, Creature.Centaur.Code, 120)));
+            Assert.That(reloaded.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.GoldDragon, 5)));
+            Assert.That(reloaded.Slots[3], Is.EqualTo(new ArmySlot<Creature>(Creature.Centaur, 120)));
 
             this.history.GetPendingChanges()[0].Revert(this.history);
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Slot 4" }));
 
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(4, Creature.Centaur, 7) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, Creature.Centaur, 7) });
             Assert.That(this.history.GetPendingChanges().Single().Change.After, Is.EqualTo("Centaur × 7"));
 
             this.history.GetPendingChanges().Single().Revert(this.history);
@@ -87,15 +87,15 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ACreatureReplacedInTheGarrisonRevertsToTheOriginalCreature()
         {
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(2, Creature.Pikeman, 10) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, Creature.Pikeman, 10) });
             this.history.MarkSaved();
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(2, Creature.Angel, 1) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, Creature.Angel, 1) });
 
             var change = this.history.GetPendingChanges().Single();
             Assert.That((change.Change.Before, change.Change.After), Is.EqualTo(("Pikeman × 10", "Angel × 1")));
 
             change.Revert(this.history);
-            Assert.That(this.still.Current.Garrison.GetSlot(2), Is.EqualTo(new ArmySlot(2, Creature.Pikeman.Code, 10)));
+            Assert.That(this.still.Current.Garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Pikeman, 10)));
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             this.still.Update(c => c with { Owner = PlayerColor.Green });
             this.still.Update(c => CastleBuilder.Unbuild(c, Building.RampartDragonCliffs));
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(7, Creature.Angel, 2) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(6, Creature.Angel, 2) });
 
             while (this.history.CanUndo)
             {

@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -81,9 +82,9 @@
         /// <summary>
         /// Reads the stacks of the army, from the table of creature types and the table of counts.
         /// </summary>
-        public static Army Army(IReadOnlyList<byte> types, IReadOnlyList<int> counts)
+        public static Army<Creature> Army(IReadOnlyList<byte> types, IReadOnlyList<int> counts)
         {
-            return new Army(Enumerable.Range(0, Constants.ArmySlotCount).Select(i => ReadCreature(types[i]) is { } creature ? new ArmySlot(creature, counts[i]) : null));
+            return new Army<Creature>(Enumerable.Range(0, Constants.ArmySlotCount).Select(i => ReadCreature(types[i]) is { } creature ? new ArmySlot<Creature>(creature, counts[i]) : null));
         }
 
         /// <summary>
@@ -115,7 +116,7 @@
         /// <summary>
         /// Writes a stack of an army (a creature byte and a 16-bit count) as the model says, leaving the bytes alone while they read as it does.
         /// </summary>
-        public static void WriteArmySlot(byte[] bytes, int typeOffset, int countOffset, ArmySlot? wanted, string name)
+        public static void WriteArmySlot(byte[] bytes, int typeOffset, int countOffset, ArmySlot<Creature>? wanted, string name)
         {
             var currentType = ReadCreature(bytes[typeOffset]);
             var currentCount = BitConverter.ToUInt16(bytes, countOffset);

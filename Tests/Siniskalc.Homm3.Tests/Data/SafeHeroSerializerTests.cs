@@ -1,4 +1,4 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -104,11 +104,9 @@ namespace Siniskalc.Homm3.Tests.Data
         public void EditedCreaturesAreWritten()
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
-            var creatures = new Army(
-            [
-                new ArmySlot(2, Creature.Archangel.Code, 7),
-                new ArmySlot(3, Creature.RoyalGriffin.Code, 5),
-            ]);
+            var creatures = new Army<Creature>(Constants.CreatureSlotCount)
+                .WithSlot(1, Creature.Archangel, 7)
+                .WithSlot(2, Creature.RoyalGriffin, 5);
 
             var result = this.serializer.SerializeCreatures(chunk, creatures);
 

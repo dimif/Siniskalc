@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -18,7 +19,7 @@
 
                 Assert.That(game.FileName, Is.EqualTo(path));
                 Assert.That(game.GameVersion, Is.EqualTo(GameVersion.BaseGame), path);
-                Assert.That(game.Map, Is.EqualTo(new MapHeader("Broken Alliance", game.Map.Description, 72, 72)), path);
+                Assert.That(game.Map, Is.EqualTo(new MapHeader("Broken Alliance", game.Map.Description, GameDifficulty.Knight, 72, 72)), path);
                 Assert.That(game.Map.Description, Does.StartWith("The alliance has crumbled"), path);
                 Assert.That(game.History.Current.Heroes(), Has.Count.EqualTo(54), path);
                 Assert.That(game.History.Current.Players(), Has.Count.EqualTo(6), path);

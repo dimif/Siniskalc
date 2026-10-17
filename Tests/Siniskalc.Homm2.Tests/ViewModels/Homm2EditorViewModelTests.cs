@@ -244,12 +244,12 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             free.SelectedCreature = "Titan";
             free.CreatureAmount = 7;
 
-            Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot(Creature.Titan, 7)));
+            Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot<Creature>(Creature.Titan, 7)));
             Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "Town", "Level", "Growth" }));
 
             army.Finder.AddAmount = 12;
             army.Finder.Choose(army.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Single(c => c.Name == "Peasant"));
-            Assert.That(model().Slots.OfType<ArmySlot>(), Has.Member(new ArmySlot(Creature.Peasant, 12)));
+            Assert.That(model().Slots.OfType<ArmySlot<Creature>>(), Has.Member(new ArmySlot<Creature>(Creature.Peasant, 12)));
 
             army.MoveSlot(free.SlotNumber, 1);
             Assert.That(model().Slots[free.SlotNumber + 1]?.Creature, Is.EqualTo(Creature.Titan));
@@ -267,7 +267,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             garrison.SendToSlot(Creature.Paladin, 1, 10);
 
-            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(castle.Index).Garrison.Slots[0], Is.EqualTo(new ArmySlot(Creature.Paladin, 10)));
+            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(castle.Index).Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Paladin, 10)));
             Assert.That(garrison.CreatureSlots[0].SelectedCreature, Is.EqualTo("Paladin"));
         }
 

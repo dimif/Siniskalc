@@ -43,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(castle.GarrisonEditor.IsEditable, Is.False);
             Assert.That(
                 castle.GarrisonEditor.CreatureSlots.Select(s => s.SelectedCreature),
-                Is.EqualTo(Enumerable.Range(1, 7).Select(i => nymus.FindSlot(i) is { } s ? Siniskalc.Homm3.Entities.Creature.FromByte(s.CreatureCode)?.Name : null)));
+                Is.EqualTo(nymus.Slots.Select(s => s?.Creature.Name)));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             castle.GarrisonEditor.CreatureSlots[0].CreatureAmount = 40;
 
             Assert.That(this.main.PendingChanges, Is.Empty);
-            Assert.That(this.main.LoadedGame().History.Current.Castles().GetModel(castle.CastleIndex).Garrison.Slots.Length, Is.EqualTo(0));
+            Assert.That(this.main.LoadedGame().History.Current.Castles().GetModel(castle.CastleIndex).Garrison.Filled.Count(), Is.EqualTo(0));
         }
 
         [Test]

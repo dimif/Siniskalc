@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
@@ -18,7 +19,7 @@ namespace Siniskalc.Homm3.Data
 
         Position? DeserializeShipyardLocation(CastleChunk chunk);
 
-        Army DeserializeGarrison(CastleChunk chunk);
+        Army<Creature> DeserializeGarrison(CastleChunk chunk);
 
         IReadOnlySet<Building> DeserializeBuiltBuildings(CastleChunk chunk);
 

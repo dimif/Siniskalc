@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -121,7 +121,7 @@
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Z)}";
 
         public string Garrisoned => this.HasGarrisonedHero ? $"Garrisoned by {this.GarrisonedHeroName}"
-            : this.Castle.Garrison.Slots.Length == 0 ? "No garrison" : $"{this.Castle.Garrison.Slots.Length} of {Constants.CreatureSlotCount} slots in use";
+            : this.Castle.Garrison.Filled.Count() == 0 ? "No garrison" : $"{this.Castle.Garrison.Filled.Count()} of {Constants.CreatureSlotCount} slots in use";
 
         /// <summary>
         /// Gets whether a hero is garrisoned in the castle. Its army then takes the place of the castle's own creatures.
@@ -244,7 +244,7 @@
             this.UpdateIsDirty();
 
             this.Garrison = Enumerable.Range(1, Constants.CreatureSlotCount)
-                .Select(slot => new GarrisonSlotRowViewModel(slot, this.Castle.Garrison.FindSlot(slot)))
+                .Select(slot => new GarrisonSlotRowViewModel(slot, this.Castle.Garrison.Slots[slot - 1]))
                 .ToList();
 
             this.Heroes = CastleHeroRowViewModel.For(this.Castle, this.history.Current.Heroes(), this.openHero);

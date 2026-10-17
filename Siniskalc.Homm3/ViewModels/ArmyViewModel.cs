@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -19,14 +20,14 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class ArmyViewModel : ArmyViewModelBase<ArmySlotViewModel>
     {
-        private readonly Func<Army> getCreatures;
-        private readonly Action<Func<Army, Army>> update;
+        private readonly Func<Army<Creature>> getCreatures;
+        private readonly Action<Func<Army<Creature>, Army<Creature>>> update;
         private readonly GameVersion gameVersion;
 
         public ArmyViewModel(
             GameVersion gameVersion,
-            Func<Army> getCreatures,
-            Action<Func<Army, Army>> update,
+            Func<Army<Creature>> getCreatures,
+            Action<Func<Army<Creature>, Army<Creature>>> update,
             Func<bool>? isReadOnly = null)
             : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(), isReadOnly)
         {
@@ -63,11 +64,11 @@ namespace Siniskalc.Homm3.ViewModels
                 return;
             }
 
-            var size = (uint)RangeGuard.Clamp(count, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
+            long size = RangeGuard.Clamp(count, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
             this.update(creatures =>
             {
-                var free = this.FirstFreeSlot(creatures);
-                return free == 0 ? creatures : creatures.WithSlot(free, creature, size);
+                var free = FirstFreeSlot(creatures);
+                return free < 0 ? creatures : creatures.WithSlot(free, creature, size);
             });
         }
 
@@ -77,21 +78,19 @@ namespace Siniskalc.Homm3.ViewModels
         public void SendToSlot(Creature creature, int slot, int count)
         {
             RangeGuard.ThrowIfOutOfRange(slot, 1, Constants.CreatureSlotCount, nameof(slot));
-            var size = (uint)RangeGuard.Clamp(count, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
-            this.update(creatures => creatures.WithSlot(slot, creature, size));
+            long size = RangeGuard.Clamp(count, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
+            this.update(creatures => creatures.WithSlot(slot - 1, creature, size));
         }
 
         protected override StackContent? ReadStack(int index)
         {
-            var stack = this.getCreatures().FindSlot(index + 1);
-            var creature = stack == null ? null : Creature.FromByte(stack.CreatureCode);
-            if (stack == null)
+            if (this.getCreatures().Slots[index] is not { } stack)
             {
                 return null;
             }
 
-            // A creature the editor does not know shows as an empty slot, as it always did.
-            return creature == null ? new StackContent(string.Empty, (int)stack.CreatureCount) : new StackContent(creature.Name, (int)stack.CreatureCount, amount => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts());
+            var creature = stack.Creature;
+            return new StackContent(creature.Name, (int)stack.Count, amount => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts());
         }
 
         protected override void AfterSlotRead(ArmySlotViewModel slot, StackContent? stack)
@@ -106,36 +105,29 @@ namespace Siniskalc.Homm3.ViewModels
             if (creature == null)
             {
                 // The empty entry, or a name that is not a creature, empties the slot.
-                this.update(creatures => creatures.WithoutSlot(index + 1));
+                this.update(creatures => creatures.WithoutSlot(index));
                 return;
             }
 
             // A newly picked creature starts with one in the stack, as the game does not allow an empty stack.
-            var count = (uint)RangeGuard.Clamp(amount, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
-            this.update(creatures => creatures.WithSlot(index + 1, creature, count));
+            long count = RangeGuard.Clamp(amount, Constants.Army.MinStackSize, Constants.Army.MaxStackSize);
+            this.update(creatures => creatures.WithSlot(index, creature, count));
         }
 
-        protected override void ClearStack(int index) => this.update(creatures => creatures.WithoutSlot(index + 1));
+        protected override void ClearStack(int index) => this.update(creatures => creatures.WithoutSlot(index));
 
-        protected override void SwapStacks(int first, int second) => this.update(creatures => creatures.Swap(first + 1, second + 1));
+        protected override void SwapStacks(int first, int second) => this.update(creatures => creatures.Swap(first, second));
 
         protected override string Summarize()
         {
             var creatures = this.getCreatures();
             long health = 0, gold = 0, ai = 0, fight = 0, wood = 0, ore = 0, mercury = 0, sulfur = 0, crystal = 0, gems = 0;
             var any = false;
-            for (var slot = 1; slot <= Constants.CreatureSlotCount; slot++)
+            foreach (var stack in creatures.Filled)
             {
-                var stack = creatures.FindSlot(slot);
-                var creature = stack == null ? null : Creature.FromByte(stack.CreatureCode);
-                if (stack == null || creature == null)
-                {
-                    continue;
-                }
-
                 any = true;
-                var info = creature.GetInfo(this.gameVersion);
-                long count = stack.CreatureCount;
+                var info = stack.Creature.GetInfo(this.gameVersion);
+                long count = stack.Count;
                 health += info.Health * count;
                 gold += info.Gold * count;
                 ai += info.AiValue * count;
@@ -168,25 +160,23 @@ namespace Siniskalc.Homm3.ViewModels
 
         private string DescribeSlot(int slot)
         {
-            var stack = this.getCreatures().FindSlot(slot);
-            var creature = stack == null ? null : Creature.FromByte(stack.CreatureCode);
-            return creature == null || stack == null ? "empty" : $"{creature.Name} ×{stack.CreatureCount}";
+            return this.getCreatures().Slots[slot - 1] is { } stack ? $"{stack.Creature.Name} ×{stack.Count}" : "empty";
         }
 
         /// <summary>
-        /// Gets the first empty slot, from 1, or 0 when the army is full.
+        /// Gets the first empty slot, from 0, or -1 when the army is full.
         /// </summary>
-        private int FirstFreeSlot(Army creatures)
+        private static int FirstFreeSlot(Army<Creature> creatures)
         {
-            for (var slot = 1; slot <= Constants.CreatureSlotCount; slot++)
+            for (var slot = 0; slot < creatures.Slots.Count; slot++)
             {
-                if (creatures.FindSlot(slot) == null)
+                if (creatures.Slots[slot] == null)
                 {
                     return slot;
                 }
             }
 
-            return 0;
+            return -1;
         }
     }
 }

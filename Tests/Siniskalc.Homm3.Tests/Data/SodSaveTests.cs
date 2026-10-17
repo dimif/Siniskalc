@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -39,11 +39,11 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)1));
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(
-                hero.Army.Slots,
-                Is.EquivalentTo(new[]
+                hero.Army.Filled,
+                Is.EqualTo(new[]
                 {
-                    new ArmySlot(1, Creature.Imp.Code, 20u),
-                    new ArmySlot(2, Creature.Gog.Code, 7u),
+                    new ArmySlot<Creature>(Creature.Imp, 20),
+                    new ArmySlot<Creature>(Creature.Gog, 7),
                 }));
         }
 
@@ -199,7 +199,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 var hero = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Marius")).Current;
                 Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(30, 20, 10, 5)));
                 Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(Artifact.OrbOfInhibition));
-                Assert.That(hero.Army.Slots, Has.Length.EqualTo(2));
+                Assert.That(hero.Army.Filled.Count(), Is.EqualTo(2));
             }
             finally
             {

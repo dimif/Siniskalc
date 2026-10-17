@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using System;
     using System.Collections.Generic;
@@ -34,7 +34,7 @@
             EquippedArtifacts equippedArtifacts,
             IReadOnlyList<WarMachine> warMachines,
             ushort spellPoints,
-            Army army,
+            Army<Creature> army,
             SpellBook spellBook,
             int heroId,
             string? biography,
@@ -136,7 +136,7 @@
 
         public ushort SpellPoints { get; init; }
 
-        public Army Army { get; init; }
+        public Army<Creature> Army { get; init; }
 
         /// <summary>
         /// Gets the hero's spell book: whether it has one, the spells it learned and the ones artifacts let it cast.

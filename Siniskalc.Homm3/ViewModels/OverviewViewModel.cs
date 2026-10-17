@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Runtime;
@@ -50,12 +51,12 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the difficulty, e.g. "Difficulty: Queen (160%)", or nothing when the savefile's difficulty is not known.
         /// </summary>
-        public string DifficultyText => this.game.Difficulty is { } difficulty ? $"Difficulty: {difficulty} ({(int)difficulty}%)" : string.Empty;
+        public string DifficultyText => this.game.Difficulty is { } difficulty ? OverviewText.Difficulty(difficulty) : string.Empty;
 
         /// <summary>
         /// Gets the difficulty the map was made with, e.g. "Rating: King (200%)", or nothing when it is not known.
         /// </summary>
-        public string MapDifficultyText => this.game.MapDifficulty is { } difficulty ? $"Rating: {difficulty} ({(int)difficulty}%)" : string.Empty;
+        public string MapDifficultyText => this.game.MapDifficulty is { } difficulty ? OverviewText.MapRating(difficulty) : string.Empty;
 
         /// <summary>
         /// Gets whether the savefile tells about the map. The other map properties are empty when it does not.
@@ -140,7 +141,7 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             var unowned = summaries.Count(s => s.Owner == null);
-            this.Summary = $"{this.Players.Count} {(this.Players.Count == 1 ? "player" : "players")} · {summaries.Count - unowned} {(summaries.Count - unowned == 1 ? "hero" : "heroes")}";
+            this.Summary = $"{OverviewText.Count(this.Players.Count, "player", "players")} · {OverviewText.Count(summaries.Count - unowned, "hero", "heroes")}";
             if (this.DifficultyText.Length > 0)
             {
                 this.Summary += " · " + this.DifficultyText;
@@ -148,7 +149,7 @@ namespace Siniskalc.Homm3.ViewModels
 
             if (this.game.History.Current.Obelisks().GetModel() is { Count: > 0 } obelisks)
             {
-                this.Summary += $" · {obelisks.Count} {(obelisks.Count == 1 ? "obelisk" : "obelisks")}";
+                this.Summary += " · " + OverviewText.Count(obelisks.Count, "obelisk", "obelisks");
             }
 
             this.UnownedNote = unowned == 0 ? string.Empty : $"{unowned} more {(unowned == 1 ? "hero belongs" : "heroes belong")} to no player; they are listed under \"Neutral\" on the left.";

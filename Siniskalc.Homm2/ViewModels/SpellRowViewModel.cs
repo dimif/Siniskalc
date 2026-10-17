@@ -10,12 +10,17 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class SpellRowViewModel : SpellChoiceViewModel
     {
         public SpellRowViewModel(Spell spell, Action<SpellRowViewModel, bool> onLearnedChanged)
-            : base(spell.Name, string.Empty, 0, spell.Type.ToString(), (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
+            : base(spell.Name, string.Empty, spell.Level, spell.Type.ToString(), (row, learned) => onLearnedChanged((SpellRowViewModel)row, learned))
         {
             this.Spell = spell;
         }
 
         public Spell Spell { get; }
+
+        /// <summary>
+        /// Gets "Mind" or "Elemental" for the spells the rules single out (the giants and the titans are immune to the mind spells), otherwise nothing.
+        /// </summary>
+        public string Magic => this.Spell.Group == SpellGroup.None ? string.Empty : this.Spell.Group.ToString();
 
         /// <summary>
         /// Gets how many spell points casting the spell costs.

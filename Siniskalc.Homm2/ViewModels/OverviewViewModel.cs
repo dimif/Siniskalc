@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -35,7 +36,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the difficulty the map was made with, e.g. "Rating: Rook (130%)".
         /// </summary>
-        public string MapDifficultyText => $"Rating: {this.game.Map.Difficulty} ({(int)this.game.Map.Difficulty}%)";
+        public string MapDifficultyText => OverviewText.MapRating(this.game.Map.Difficulty);
 
         public string Version => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
 
@@ -44,7 +45,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the difficulty, e.g. "Difficulty: Queen (160%)".
         /// </summary>
-        public string DifficultyText => $"Difficulty: {this.game.Difficulty} ({(int)this.game.Difficulty}%)";
+        public string DifficultyText => OverviewText.Difficulty(this.game.Difficulty);
 
         /// <summary>
         /// Gets the command that shows the page of a player; its parameter is the colour of the player.

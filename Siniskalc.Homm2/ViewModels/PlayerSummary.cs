@@ -19,6 +19,6 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets what the player has, such as "2 heroes · 1 town".
         /// </summary>
-        public string Holdings => $"{this.Heroes} {(this.Heroes == 1 ? "hero" : "heroes")} · {this.Castles} {(this.Castles == 1 ? "town" : "towns")}";
+        public string Holdings => $"{OverviewText.Count(this.Heroes, "hero", "heroes")} · {OverviewText.Count(this.Castles, "town", "towns")}";
     }
 }

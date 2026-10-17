@@ -89,7 +89,6 @@
                     <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
                     <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
                     <heroes:MapPointCard DataContext="{Binding Position}"/>
-                    <heroes:MapPointCard DataContext="{Binding Destination}"/>
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Next battle"/>
@@ -123,6 +122,8 @@
                             <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding UsedOnce}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                         </StackPanel>
                     </Border>
+                    <!-- Last, so that it is not stretched to the height of the tall card beside it. -->
+                    <heroes:MapPointCard DataContext="{Binding Destination}"/>
                 </WrapPanel>
 
                 <!-- Skills -->

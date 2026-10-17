@@ -35,7 +35,7 @@ namespace Siniskalc.Homm2.Models
         SecondarySkills SecondarySkills,
         Army<Creature> Army,
         Artifacts Artifacts,
-        SpellBook Spells)
+        SpellSet<Spell> Spells)
     {
         /// <summary>
         /// Gets or sets the level of the hero (a <c>with</c> expression sets it, and leaves the experience as it is).

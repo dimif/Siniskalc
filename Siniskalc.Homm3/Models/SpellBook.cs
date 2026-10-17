@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.Models
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -15,7 +16,7 @@ namespace Siniskalc.Homm3.Models
     {
         private static readonly IReadOnlyDictionary<Spell, string> NoGrants = new Dictionary<Spell, string>();
 
-        private readonly ISet<Spell> learnedSpells;
+        private readonly SpellSet<Spell> learnedSpells;
 
         private readonly IReadOnlyDictionary<Spell, string> grantedSpells;
 
@@ -25,11 +26,11 @@ namespace Siniskalc.Homm3.Models
         /// <param name="otherAvailableSpells">Spells that are available although they are not learned and no artifact grants them.</param>
         /// <param name="hasSpellBook">Whether the hero carries a spell book. Without one, learned spells have no effect.</param>
         public SpellBook(ISet<Spell> learnedSpells, ISet<Spell> otherAvailableSpells, bool hasSpellBook = false)
-            : this(learnedSpells, NoGrants, false, otherAvailableSpells, hasSpellBook)
+            : this(new SpellSet<Spell>(learnedSpells), NoGrants, false, otherAvailableSpells, hasSpellBook)
         {
         }
 
-        private SpellBook(ISet<Spell> learnedSpells, IReadOnlyDictionary<Spell, string> grantedSpells, bool isSpellBookGranted, ISet<Spell> otherAvailableSpells, bool hasSpellBook)
+        private SpellBook(SpellSet<Spell> learnedSpells, IReadOnlyDictionary<Spell, string> grantedSpells, bool isSpellBookGranted, ISet<Spell> otherAvailableSpells, bool hasSpellBook)
         {
             this.learnedSpells = learnedSpells;
             this.grantedSpells = grantedSpells;
@@ -97,7 +98,7 @@ namespace Siniskalc.Homm3.Models
                 }
             }
 
-            return new SpellBook(updated, this.grantedSpells, this.IsSpellBookGranted, this.otherAvailableSpells, this.HasSpellBook);
+            return new SpellBook(new SpellSet<Spell>(updated), this.grantedSpells, this.IsSpellBookGranted, this.otherAvailableSpells, this.HasSpellBook);
         }
 
         /// <summary>

@@ -50,7 +50,7 @@ namespace Siniskalc.Homm2.Tests.Data
                     .With(SecondarySkill.Pathfinding, SkillLevel.Basic),
                 Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(Creature.Titan, 3)).WithSlot(4, new ArmySlot<Creature>(Creature.Peasant, 32_767)),
                 Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
-                Spells = new SpellBook([Spell.Fireball, Spell.TownPortal]),
+                Spells = new SpellSet<Spell>([Spell.Fireball, Spell.TownPortal]),
                 Owner = Color.Red,
                 Destination = new Position(3, 4),
             };

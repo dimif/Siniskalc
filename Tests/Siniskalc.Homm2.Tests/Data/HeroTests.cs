@@ -79,7 +79,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(maximus.HasSpellBook, Is.True);
             Assert.That(maximus.Artifacts.Slots[0], Is.EqualTo(Artifact.MagicBook));
-            Assert.That(maximus.Spells.Spells, Is.EqualTo(new[]
+            Assert.That(maximus.Spells, Is.EqualTo(new[]
             {
                 Spell.Cure,
                 Spell.Steelskin,

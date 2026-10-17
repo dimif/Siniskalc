@@ -90,9 +90,9 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Reads the spells the savegame marks, from its flags (the first is the flag of spell number 0, which is none).
         /// </summary>
-        public static SpellBook SpellBook(byte[] flags)
+        public static SpellSet<Spell> SpellBook(byte[] flags)
         {
-            return new SpellBook(Spell.All.Where(spell => spell.Code < flags.Length && flags[spell.Code] != 0));
+            return new SpellSet<Spell>(Spell.All.Where(spell => spell.Code < flags.Length && flags[spell.Code] != 0));
         }
 
         /// <summary>

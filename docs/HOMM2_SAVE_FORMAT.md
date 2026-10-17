@@ -34,11 +34,12 @@ The map sizes differ (72x72 versus 36x36) but do not move any table before the m
 | 0x00 | u32 | map width (72) - confirmed by value |
 | 0x04 | u32 | map height (72) |
 | 0x08 | u32 | 0x5C, the MP2 magic |
-| 0x0C | u16 | game difficulty, 0 to 4 (easy, normal, hard, expert, impossible), read as Pawn, Knight, Rook, Queen, King like HoMM3 - guess: every save we have holds 1, other levels not yet seen |
-| 0x0E,0x0F | u8,u8 | width, height again (0x48) |
+| 0x0C | u16 | **map difficulty**: 0 easy, 1 normal, 2 hard, 3 expert (saves of maps of each; the map is not the game difficulty, which never changes it) - confirmed. Shown as Pawn, Knight, Rook, Queen like HoMM3 |
+| 0x0E,0x0F | u8,u8 | width, height again (0x48) - confirmed: 0x24 small, 0x48 medium, 0x6C large, 0x90 extra large |
 | 0x10.. | 6 x u8 | colours in play (Blue, Green, Red, Yellow, Orange, Purple), then human-allowed and computer-allowed masks - guess |
 | 0x42 | char[16] | map name "Broken Alliance" - confirmed |
 | 0x76 | char[...] | map description - confirmed |
+| 0x1C4 | u8 | **game difficulty**, the byte in front of the map file name: 0 easy, 1 normal, 2 hard, 3 expert, 4 impossible - confirmed (five saves of one map, `MapDifficultySize` 01 to 05). Shown as Pawn, Knight, Rook, Queen, King. 0x1EE.. holds a percentage that follows it (70, 100, 120, 140, 160) but also depends on the map |
 | 0x1C9 | char[] | map file name `brokena.mp2` - confirmed |
 | 0x1F6 | char[~13] x 6 | default player names "Blue player" ... - confirmed |
 | 0x29E | char[] | the savefile's own name (`1_START.GM1`). It is the only thing that differs besides game state; changes each save. |
@@ -211,3 +212,7 @@ Saves E01 to E13 were made by editing the models, E14 to E26 with the editor its
 - **Creatures in upgraded dwellings (E27).** Only the plain dwellings showed their 10 creatures: an upgraded dwelling keeps its count in **its own list at +0x2A, five u16 for the dwellings 2 to 6**, and its slot at +0x1E is then 0 (the same in the castles of the save: Hillstone, Dragontooth, Bloodreign, Woodhaven, Vertigo). The model has `UpgradedCreatures` and `Waiting(dwelling)`; upgrading moves the count. E34DWUP2 tests it.
 - **The Black Dragon (E34DWUP2).** Every upgraded dwelling worked except the dragons upgraded a second time (0 waiting): the list of upgraded counts at +0x2A has **six** entries and the last one (+0x34) is for the sixth dwelling upgraded twice. E35BLKDG tests it.
 - **The Black Dragon, solved (E36, E37).** The count of the dragons upgraded twice is at +0x34, but the game shows none while the entry before it (+0x32) is 0; the saves the game made have a 3 there (E36: count 9 with the 3 shows 9; E37: 3 and 3 shows 3). The editor writes a 3 there when it has to; what the 3 means is not known. E38DRG5, made by the editor with it, showed 5, could be hired from and restocked at the right rate (confirmed).
+
+## Maps with heroes of their own
+
+In `MapDifficultySize` save 07 (a scenario with heroes such as Famine, War and Pestilence) four heroes hold another number than their index in the byte that is the hero ID elsewhere (`HeroLayout.Id`), probably the portrait the map gave them. The locator therefore accepts a table when most heroes hold their index (and every castle holds its own). How the editor treats those heroes (it finds them by that byte) is not checked yet.

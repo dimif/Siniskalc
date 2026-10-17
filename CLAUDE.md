@@ -68,7 +68,6 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 
 - Keep page-specific styles inline in the page.
   Only styles used by several pages go to `Views/Generic.xaml`.
-- When extracting a new model, leave existing usages unchanged unless asked to update them.
 
 ## Working in this repo
 

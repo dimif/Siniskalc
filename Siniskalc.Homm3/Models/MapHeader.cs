@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// What the savefile says about the map it was made on.
@@ -15,16 +16,6 @@
         /// <summary>
         /// Gets the size as the map editor names it, e.g. "Small (36 x 36)", or nothing when the size is not a standard one.
         /// </summary>
-        public string SizeText => this.Size switch
-        {
-            36 => "Small (36 x 36)",
-            72 => "Medium (72 x 72)",
-            108 => "Large (108 x 108)",
-            144 => "Extra large (144 x 144)",
-            180 => "Huge (180 x 180)",
-            216 => "Extra huge (216 x 216)",
-            252 => "Giant (252 x 252)",
-            _ => this.Size > 0 ? $"{this.Size} x {this.Size}" : string.Empty,
-        };
+        public string SizeText => MapSizes.Describe(this.Size);
     }
 }

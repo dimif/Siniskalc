@@ -31,7 +31,12 @@ namespace Siniskalc.Homm2.Data
         public int MarkerLength => this.Version == GameVersion.PriceOfLoyalty ? HeaderLayout.MarkerLength : 0;
 
         /// <summary>
-        /// Gets where the difficulty of the game is.
+        /// Gets where the difficulty the map was made with is.
+        /// </summary>
+        public int MapDifficultyStart => HeaderLayout.MapDifficulty + this.MarkerLength;
+
+        /// <summary>
+        /// Gets where the difficulty the game was started at is.
         /// </summary>
         public int DifficultyStart => HeaderLayout.Difficulty + this.MarkerLength;
 

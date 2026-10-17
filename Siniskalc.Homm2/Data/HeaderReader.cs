@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeaderReader : IHeaderReader
     {
-        // The levels in the order of the game's own numbers: easy, normal, hard, expert, impossible.
+        // The levels in the order of the game's own numbers: easy, normal, hard, expert, impossible (a map has only the first four).
         private static readonly GameDifficulty[] Difficulties = [GameDifficulty.Pawn, GameDifficulty.Knight, GameDifficulty.Rook, GameDifficulty.Queen, GameDifficulty.King];
 
         /// <inheritdoc/>
@@ -24,16 +24,13 @@ namespace Siniskalc.Homm2.Data
             var map = new MapHeader(
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
+                ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
                 layout.Width,
                 layout.Height);
-            return new SaveMetadata(date, map, ReadDifficulty(bytes, layout.DifficultyStart));
+            return new SaveMetadata(date, map, ReadDifficulty(bytes[layout.DifficultyStart]));
         }
 
         // TODO:LOG warning: a difficulty that is no level was read as the first one.
-        private static GameDifficulty ReadDifficulty(byte[] bytes, int offset)
-        {
-            var code = BitConverter.ToUInt16(bytes, offset);
-            return code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
-        }
+        private static GameDifficulty ReadDifficulty(int code) => code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
     }
 }

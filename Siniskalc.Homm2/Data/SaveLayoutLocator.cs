@@ -46,16 +46,23 @@ namespace Siniskalc.Homm2.Data
             return layout;
         }
 
-        // Every hero and every castle holds its own number: that is what the tables of the two known versions have in common, and
-        // what a table found at a wrong place would not.
+        // Every castle holds its own number, and so does a hero unless the map gave it a portrait of its own (the heroes of a scenario
+        // such as "Famine" or "Pestilence" hold another number): that is what the tables of the known versions have in common, and what a
+        // table found at a wrong place would not, so most heroes must hold theirs.
         private static bool HasTables(byte[] bytes, SaveLayout layout)
         {
+            var heroesInPlace = 0;
             for (var hero = 0; hero < Constants.Table.HeroCount; hero++)
             {
-                if (bytes[layout.HeroStart(hero) + HeroLayout.Id] != hero)
+                if (bytes[layout.HeroStart(hero) + HeroLayout.Id] == hero)
                 {
-                    return false;
+                    heroesInPlace++;
                 }
+            }
+
+            if (heroesInPlace < Constants.Table.HeroCount / 2)
+            {
+                return false;
             }
 
             for (var castle = 0; castle < Constants.Table.CastleSlotCount; castle++)

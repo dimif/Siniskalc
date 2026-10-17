@@ -70,9 +70,23 @@ namespace Siniskalc.Homm2.Tests.Data
         public void ASavegameWhoseTablesAreNotWhereTheyAreExpectedIsRefused()
         {
             var bytes = Saves.Read(Saves.BrokenAllianceSave(1));
-            bytes[0x79C + HeroLayout.Id] = 99;
+            bytes[0x79C + HeroLayout.Id + (3 * HeroLayout.BaseRecordSize)] = 99;
+            Assert.That(this.locator.Locate(bytes), Is.Not.Null, "one hero with another number is a hero the map gave a portrait");
+
+            for (var hero = 0; hero < 40; hero++)
+            {
+                bytes[0x79C + HeroLayout.Id + (hero * HeroLayout.BaseRecordSize)] = 99;
+            }
 
             Assert.That(this.locator.Locate(bytes), Is.Null);
+        }
+
+        [Test]
+        public void ASavegameOfAMapWhoseHeroesHaveTheirOwnNumbersIsFound()
+        {
+            var bytes = Saves.Read(Saves.Path(Saves.MapDifficultySize, "map_difficulty_size_07_map_hard_extra_large"));
+
+            Assert.That(this.locator.Locate(bytes), Is.Not.Null);
         }
 
         [Test]

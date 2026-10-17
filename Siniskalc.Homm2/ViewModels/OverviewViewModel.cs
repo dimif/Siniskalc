@@ -30,7 +30,12 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Description => this.game.Map.Description;
 
-        public string MapSize => $"{this.game.Map.Width} × {this.game.Map.Height}";
+        public string MapSize => this.game.Map.SizeText;
+
+        /// <summary>
+        /// Gets the difficulty the map was made with, e.g. "Rating: Rook (130%)".
+        /// </summary>
+        public string MapDifficultyText => $"Rating: {this.game.Map.Difficulty} ({(int)this.game.Map.Difficulty}%)";
 
         public string Version => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
 

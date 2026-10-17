@@ -5,6 +5,7 @@
     using System.Linq;
     using Siniskalc;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -126,13 +127,11 @@
             return new Army([.. slots]);
         }
 
-        public HeroMovementPoints DeserializeMovementPoints(HeroChunk chunk)
+        public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {
-            return new HeroMovementPoints
-            {
-                CurrentMovementPoints = chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.CurrentMovementPoints]),
-                MaxMovementPoints = chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.MaxMovementPoints]),
-            };
+            return new MovementPoints(
+                chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.CurrentMovementPoints]),
+                chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.MaxMovementPoints]));
         }
 
         public SecondarySkills DeserializeSecondarySkills(HeroChunk chunk)
@@ -188,11 +187,9 @@
 
         public HeroLevel DeserializeLevel(HeroChunk chunk)
         {
-            return new HeroLevel
-            {
-                Experience = chunk.GetInt32At(this.heroOffsets[HeroOffsetName.ExperiencePoints]),
-                Level = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Level]),
-            };
+            return new HeroLevel(
+                chunk.GetInt32At(this.heroOffsets[HeroOffsetName.ExperiencePoints]),
+                chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Level]));
         }
 
         public HeroPosition DeserializePosition(HeroChunk chunk)

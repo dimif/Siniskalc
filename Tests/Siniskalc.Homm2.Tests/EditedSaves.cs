@@ -1,6 +1,8 @@
 namespace Siniskalc.Homm2.Tests
 {
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -30,7 +32,7 @@ namespace Siniskalc.Homm2.Tests
             [
                 Make("E00COPY", 5, "Nothing: the savegame is read and written back", "It loads exactly like the original 5_ARCHRA.GM1: Blue has 7700 gold and the Archery Range is built (Maximus is outside in this save; he enters Xabran in save 07).", _ => { }),
                 Make("E01GOLD", 5, "Blue's gold", "Blue has 99,999 gold (the top bar of the kingdom summary).", game => Player(game, 0, p => p with { Resources = p.Resources.With(Resource.Gold, 99_999) })),
-                Make("E02RESRC", 5, "All of Blue's resources", "Blue has 500 of every resource and 50,000 gold.", game => Player(game, 0, p => p with { Resources = new Resources(500, 500, 500, 500, 500, 500, 50_000) })),
+                Make("E02RESRC", 5, "All of Blue's resources", "Blue has 500 of every resource and 50,000 gold.", game => Player(game, 0, p => p with { Resources = new ResourceSet(500, 500, 500, 500, 500, 500, 50_000) })),
                 Make("E03ARMY", 5, "Maximus's army", "Maximus has 7 Black Dragons, 3 Titans, 5 Phoenixes, 20 Paladins and 100 Peasants.", game => Hero(game, 7, h => h with
                 {
                     Army = new Army(
@@ -79,7 +81,7 @@ namespace Siniskalc.Homm2.Tests
                 }),
                 Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills (15 each, the sword included), secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
                 {
-                    Player(game, 0, p => p with { Resources = new Resources(500, 500, 500, 500, 500, 500, 50_000) });
+                    Player(game, 0, p => p with { Resources = new ResourceSet(500, 500, 500, 500, 500, 500, 50_000) });
                     Hero(game, 7, h => h.WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.IceCloak) with
                     {
                         PrimarySkills = new PrimarySkills(15, 15, 15, 15),

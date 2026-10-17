@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Heroes.Models;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
@@ -63,8 +64,8 @@ namespace Siniskalc.Homm3.Tests.Data
             var hero = this.deserializer.Deserialize(bytesChunk);
 
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Purple));
-            Assert.That(hero.MovementPoints.CurrentMovementPoints, Is.EqualTo(0u));
-            Assert.That(hero.MovementPoints.MaxMovementPoints, Is.EqualTo(1760u));
+            Assert.That(hero.MovementPoints.Current, Is.EqualTo(0u));
+            Assert.That(hero.MovementPoints.Max, Is.EqualTo(1760u));
             Assert.That(hero.SpellPoints, Is.EqualTo((ushort)175));
 
             Assert.That(hero.Position.X, Is.EqualTo((short)69));

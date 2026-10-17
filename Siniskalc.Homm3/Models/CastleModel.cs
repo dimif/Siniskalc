@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Models;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -48,10 +50,10 @@
         IReadOnlySet<Building> EnabledBuildings,
         bool BuiltThisTurn,
         int MageGuildLevel,
-        IReadOnlyList<int> CreaturesAvailable,
-        IReadOnlyList<int> UpgradedCreaturesAvailable,
+        Numbers CreaturesAvailable,
+        Numbers UpgradedCreaturesAvailable,
         IReadOnlySet<Building> CurrentBuildings,
-        IReadOnlyList<int> SpellCounts,
+        Numbers SpellCounts,
         IReadOnlyList<IReadOnlyList<Spell>> MageGuildSpells)
     {
         /// <summary>

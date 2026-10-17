@@ -1,6 +1,7 @@
 ﻿using Siniskalc;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Entities;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -18,9 +19,9 @@ namespace Siniskalc.Homm3.Tests.Data
         private static readonly string Save1 = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
         private static readonly string Save2 = Path.Combine("TestData", "Hota", "empire_of_the_world_02_m5w4d6_purple_gifts_red.GM1");
 
-        private static PlayerResources PurpleBefore => new(28, 153, 34, 151, 76, 91, 220976);
+        private static ResourceSet PurpleBefore => new(28, 153, 34, 151, 76, 91, 220976);
 
-        private static PlayerResources PurpleAfter => new(27, 148, 31, 144, 65, 78, 220959);
+        private static ResourceSet PurpleAfter => new(27, 148, 31, 144, 65, 78, 220959);
 
         private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
 
@@ -58,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(game.History.Current.Players(), Has.Count.EqualTo(original.History.Current.Players().Count));
             Assert.That(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Purple)).Current.Resources, Is.EqualTo(PurpleAfter));
-            Assert.That(red, Is.EqualTo(new PlayerResources(
+            Assert.That(red, Is.EqualTo(new ResourceSet(
                 redBefore.Wood + 1, redBefore.Mercury + 5, redBefore.Ore + 3, redBefore.Sulfur + 7, redBefore.Crystal + 11, redBefore.Gems + 13, redBefore.Gold + 17)));
         }
 
@@ -97,7 +98,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var red = game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red));
             red.Update(p => p with
             {
-                Resources = new PlayerResources(
+                Resources = new ResourceSet(
                     p.Resources.Wood + 1, p.Resources.Mercury + 5, p.Resources.Ore + 3, p.Resources.Sulfur + 7, p.Resources.Crystal + 11, p.Resources.Gems + 13, p.Resources.Gold + 17),
             });
 

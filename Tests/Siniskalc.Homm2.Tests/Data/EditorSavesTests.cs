@@ -2,6 +2,8 @@ namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -120,7 +122,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(gallant.Spells.Contains(Spell.Cure), Is.True);
 
             var blue = Open("E23LIMIT").Document.Players().GetModel(0).Resources;
-            Assert.That(blue, Is.EqualTo(new Resources(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, 999_999)));
+            Assert.That(blue, Is.EqualTo(new ResourceSet(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, 999_999)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
             Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot(Creature.Peasant, (int)Constants.MaxCreatureCount)));

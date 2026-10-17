@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -96,7 +97,7 @@
 
         private static bool HasResources(byte[] chunk)
         {
-            for (var resource = 0; resource < PlayerResources.All.Count; resource++)
+            for (var resource = 0; resource < ResourceSet.All.Count; resource++)
             {
                 if (BitConverter.ToInt32(chunk, PlayerLayout.ResourcesOffset + (resource * PlayerLayout.ResourceSize)) != 0)
                 {
@@ -173,7 +174,7 @@
                 }
             }
 
-            for (var resource = 0; resource < PlayerResources.All.Count; resource++)
+            for (var resource = 0; resource < ResourceSet.All.Count; resource++)
             {
                 if (BitConverter.ToInt32(bytes, start + PlayerLayout.ResourcesOffset + (resource * PlayerLayout.ResourceSize)) < 0)
                 {

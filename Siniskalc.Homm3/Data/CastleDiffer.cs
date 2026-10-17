@@ -73,7 +73,7 @@
                 spells[spellLevel] = original.SpellCounts[spellLevel];
             }
 
-            return restored with { CreaturesAvailable = creatures, UpgradedCreaturesAvailable = upgraded, SpellCounts = spells };
+            return restored with { CreaturesAvailable = new Numbers(creatures), UpgradedCreaturesAvailable = new Numbers(upgraded), SpellCounts = new Numbers(spells) };
         }
 
         private static void DiffGeneral(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)

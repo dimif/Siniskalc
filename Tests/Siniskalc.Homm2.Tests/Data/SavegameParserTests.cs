@@ -47,9 +47,9 @@
             Assert.That(bikko.Army.Slots.Take(2).Select(s => s!.Creature), Is.EqualTo(new[] { Creature.Goblin, Creature.Orc }));
 
             var blue = document.Players().GetModel(0);
-            Assert.That(blue.Resources, Is.EqualTo(Resources.None));
+            Assert.That(blue.Resources, Is.EqualTo(ResourceSet.None));
             Assert.That(blue.HeroIds, Is.EqualTo(new[] { 16 }));
-            Assert.That(document.Players().GetModel(1).Resources, Is.EqualTo(new Resources(30, 10, 30, 10, 10, 10, 10000)));
+            Assert.That(document.Players().GetModel(1).Resources, Is.EqualTo(new ResourceSet(30, 10, 30, 10, 10, 10, 10000)));
 
             var xabran = document.Castles().GetModel(2);
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));

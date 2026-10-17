@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -82,9 +83,9 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(changed, Is.EqualTo(new[] { 2, 9, 11, 15, 16, 41, 61, 62 }));
             Assert.That(U32(before.Bytes, a + StandingOnType), Is.EqualTo(TownTypeId));
             Assert.That(before.Bytes[a + StandingOnIndex], Is.EqualTo(1), "the Dungeon is the second castle of the savefile");
-            Assert.That(Hero(before, "Tazar").MovementPoints.CurrentMovementPoints, Is.EqualTo(2900));
-            Assert.That(Hero(after, "Tazar").MovementPoints.CurrentMovementPoints, Is.EqualTo(2800));
-            Assert.That(Hero(after, "Tazar").MovementPoints.MaxMovementPoints, Is.EqualTo(2900));
+            Assert.That(Hero(before, "Tazar").MovementPoints.Current, Is.EqualTo(2900));
+            Assert.That(Hero(after, "Tazar").MovementPoints.Current, Is.EqualTo(2800));
+            Assert.That(Hero(after, "Tazar").MovementPoints.Max, Is.EqualTo(2900));
         }
 
         [Test]
@@ -100,9 +101,9 @@ namespace Siniskalc.Homm3.Tests.Data
             var before = Load("roe_57_tazar_moved");
             var after = Load("roe_58_haart_dug");
 
-            Assert.That(Hero(before, "Lord Haart").MovementPoints.CurrentMovementPoints, Is.EqualTo(2600));
-            Assert.That(Hero(after, "Lord Haart").MovementPoints.CurrentMovementPoints, Is.EqualTo(0));
-            Assert.That(Hero(after, "Lord Haart").MovementPoints.MaxMovementPoints, Is.EqualTo(2600));
+            Assert.That(Hero(before, "Lord Haart").MovementPoints.Current, Is.EqualTo(2600));
+            Assert.That(Hero(after, "Lord Haart").MovementPoints.Current, Is.EqualTo(0));
+            Assert.That(Hero(after, "Lord Haart").MovementPoints.Max, Is.EqualTo(2600));
             Assert.That(U32(after.Bytes, HeroStart(after, "Lord Haart") + StandingOnType), Is.EqualTo(HoleTypeId));
             Assert.That(DugTiles(before), Is.Empty);
             Assert.That(DugTiles(after), Is.EqualTo(new[] { (30, 8, 0) }));
@@ -133,7 +134,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(DugTiles(before), Is.EqualTo(new[] { (30, 8, 0) }), "Haart's dig stays in the list for the rest of the game");
             Assert.That(DugTiles(after), Is.EqualTo(new[] { (30, 8, 0), (16, 38, 0) }));
             Assert.That(Hero(after, "Tazar").Position, Is.EqualTo(Hero(before, "Tazar").Position));
-            Assert.That(Hero(after, "Tazar").MovementPoints.CurrentMovementPoints, Is.EqualTo(0));
+            Assert.That(Hero(after, "Tazar").MovementPoints.Current, Is.EqualTo(0));
             Assert.That(Encoding.Latin1.GetString(before.Bytes), Does.Not.Contain("AVLholr0.def"));
             Assert.That(Encoding.Latin1.GetString(after.Bytes), Does.Contain("AVLholr0.def"));
             Assert.That(U32(after.Bytes, tazar + 560), Is.EqualTo(Artifact.TheGrail.Code), "the first backpack slot");

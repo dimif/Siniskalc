@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Data
 {
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -28,10 +29,8 @@ namespace Siniskalc.Homm2.Data
                 new Position(Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.X)), Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.Y))),
                 Bytes.OptionalPosition(chunk.GetUInt32At(HeroLayout.Destination), chunk.GetUInt32At(HeroLayout.Destination + 4)),
                 chunk.GetUInt16At(HeroLayout.SpellPoints),
-                chunk.GetUInt32At(HeroLayout.MaxMovement),
-                chunk.GetUInt32At(HeroLayout.MovementLeft),
-                chunk.GetUInt32At(HeroLayout.Experience),
-                chunk.GetByteAt(HeroLayout.Level),
+                new MovementPoints(chunk.GetUInt32At(HeroLayout.MovementLeft), chunk.GetUInt32At(HeroLayout.MaxMovement)),
+                new HeroLevel(chunk.GetUInt32At(HeroLayout.Experience), chunk.GetByteAt(HeroLayout.Level)),
                 new PrimarySkills(
                     chunk.GetByteAt(HeroLayout.PrimarySkills),
                     chunk.GetByteAt(HeroLayout.PrimarySkills + 1),

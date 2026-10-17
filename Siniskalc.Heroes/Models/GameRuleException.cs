@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Heroes.Models
 {
     using System;
 

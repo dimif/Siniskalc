@@ -48,11 +48,11 @@
             return chunk.Color;
         }
 
-        public PlayerResources DeserializeResources(PlayerChunk chunk)
+        public ResourceSet DeserializeResources(PlayerChunk chunk)
         {
             int Read(Resource resource) => chunk.GetInt32At(PlayerLayout.OffsetOf(resource));
 
-            return new PlayerResources(
+            return new ResourceSet(
                 Read(Resource.Wood),
                 Read(Resource.Mercury),
                 Read(Resource.Ore),

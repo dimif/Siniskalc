@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Data
     {
         PlayerColor DeserializeColor(PlayerChunk chunk);
 
-        PlayerResources DeserializeResources(PlayerChunk chunk);
+        ResourceSet DeserializeResources(PlayerChunk chunk);
 
         TavernHeroes DeserializeTavern(PlayerChunk chunk);
     }

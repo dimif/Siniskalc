@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Models
+namespace Siniskalc.Core.Models
 {
     using System;
     using System.Collections;

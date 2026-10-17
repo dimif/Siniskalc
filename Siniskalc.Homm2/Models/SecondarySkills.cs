@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.Models
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -40,7 +41,7 @@ namespace Siniskalc.Homm2.Models
         /// Returns the skills with <paramref name="skill"/> at <paramref name="level"/>: learned last when the hero did not have it, changed
         /// where it is when it did, and taken away (the ones after it move up) at <see cref="SkillLevel.None"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The hero has eight skills and <paramref name="skill"/> is none of them.</exception>
+        /// <exception cref="GameRuleException">The hero has eight skills and <paramref name="skill"/> is none of them.</exception>
         public SecondarySkills With(SecondarySkill skill, SkillLevel level)
         {
             var known = this.entries.Any(e => e.Skill == skill);
@@ -52,7 +53,7 @@ namespace Siniskalc.Homm2.Models
                 }
 
                 return this.IsFull
-                    ? throw new InvalidOperationException("A hero has at most eight secondary skills.")
+                    ? throw new GameRuleException("A hero has at most eight secondary skills.")
                     : new SecondarySkills(this.entries.Append(new SkillEntry(skill, level)));
             }
 

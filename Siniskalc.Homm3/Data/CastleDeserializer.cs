@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -104,7 +105,7 @@
             return index == byte.MaxValue ? null : index;
         }
 
-        private static int[] DeserializeSpellCounts(CastleChunk chunk)
+        private static Numbers DeserializeSpellCounts(CastleChunk chunk)
         {
             var counts = new int[CastleLayout.SpellLevelCount];
             for (var level = 0; level < counts.Length; level++)
@@ -112,7 +113,7 @@
                 counts[level] = chunk.GetByteAt(chunk.NameEnd + CastleLayout.SpellCountsFromNameEnd + level);
             }
 
-            return counts;
+            return new Numbers(counts);
         }
 
         /// <summary>
@@ -146,7 +147,7 @@
             return levels;
         }
 
-        private static int[] DeserializeCreaturesAvailable(CastleChunk chunk, int offsetFromNameEnd)
+        private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, int offsetFromNameEnd)
         {
             var counts = new int[CastleLayout.CreatureLevelCount];
             for (var level = 0; level < counts.Length; level++)
@@ -154,7 +155,7 @@
                 counts[level] = chunk.GetUInt16At(chunk.NameEnd + offsetFromNameEnd + (level * 2));
             }
 
-            return counts;
+            return new Numbers(counts);
         }
 
         private static HashSet<Building> DeserializeBuildings(CastleChunk chunk, Faction? faction, int offsetFromNameEnd)

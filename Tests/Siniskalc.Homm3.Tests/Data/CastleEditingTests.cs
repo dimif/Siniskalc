@@ -202,7 +202,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ChangesOfCastlesHeroesAndPlayersAreListedTogether()
         {
             this.still.Update(c => c with { Owner = PlayerColor.Blue });
-            this.history.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(PlayerResources.All[0], 1) });
+            this.history.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(ResourceSet.All[0], 1) });
 
             var changes = this.history.GetPendingChanges();
 

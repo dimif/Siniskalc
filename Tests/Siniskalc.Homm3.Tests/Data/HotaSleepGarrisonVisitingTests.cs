@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Heroes.Models;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -97,7 +98,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 var akka = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Akka")).Current;
 
                 Assert.That(oidana.MovedToday, Is.True, save);
-                Assert.That(oidana.MovementPoints.CurrentMovementPoints, Is.LessThan(oidana.MovementPoints.MaxMovementPoints), save);
+                Assert.That(oidana.MovementPoints.Current, Is.LessThan(oidana.MovementPoints.Max), save);
                 Assert.That(akka.MovedToday, Is.False, save);
             }
 

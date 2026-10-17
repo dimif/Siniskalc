@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -27,7 +28,7 @@
             HeroLevel level,
             HeroPosition position,
             Position markerPosition,
-            HeroMovementPoints movementPoints,
+            MovementPoints movementPoints,
             SecondarySkills secondarySkills,
             Backpack backpack,
             EquippedArtifacts equippedArtifacts,
@@ -105,7 +106,7 @@
 
         public Position MarkerPosition { get; init; }
 
-        public HeroMovementPoints MovementPoints { get; init; }
+        public MovementPoints MovementPoints { get; init; }
 
         public SecondarySkills SecondarySkills { get; init; }
 

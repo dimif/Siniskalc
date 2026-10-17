@@ -86,8 +86,8 @@
                 changes.Add(
                     ChangeAreas.General,
                     "Movement points",
-                    $"{original.MovementPoints.CurrentMovementPoints} / {original.MovementPoints.MaxMovementPoints}",
-                    $"{current.MovementPoints.CurrentMovementPoints} / {current.MovementPoints.MaxMovementPoints}",
+                    $"{original.MovementPoints.Current} / {original.MovementPoints.Max}",
+                    $"{current.MovementPoints.Current} / {current.MovementPoints.Max}",
                     h => h with { MovementPoints = original.MovementPoints });
             }
 

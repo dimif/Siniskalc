@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.Models
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Models;
     using Siniskalc.Core;
     using Siniskalc.Homm2.Entities;
 

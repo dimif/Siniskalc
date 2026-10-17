@@ -2,6 +2,7 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -13,9 +14,9 @@ namespace Siniskalc.Homm3.ViewModels
     {
         public ResourceRowViewModel(
             Resource resource,
-            Func<PlayerResources> current,
-            Func<PlayerResources> original,
-            Action<Func<PlayerResources, PlayerResources>> update)
+            Func<ResourceSet> current,
+            Func<ResourceSet> original,
+            Action<Func<ResourceSet, ResourceSet>> update)
             : base(
                 resource.ToString(),
                 ResourcePalette.Of(resource.ToString()),
@@ -24,7 +25,7 @@ namespace Siniskalc.Homm3.ViewModels
                 resource == Resource.Gold ? Constants.Resources.GoldStep : Constants.Resources.OtherStep,
                 () => current()[resource],
                 () => original()[resource],
-                value => update(resources => resources.With(resource, (int)value)))
+                value => update(resources => resources.With(resource, value)))
         {
             this.Resource = resource;
         }

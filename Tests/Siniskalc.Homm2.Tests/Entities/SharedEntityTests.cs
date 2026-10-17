@@ -21,9 +21,9 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryFactionOfTheGameIsAnIFactionWithItsNameAndCode()
         {
-            Assert.That(Factions.All.Select(f => (f.Name, f.Code)), Is.EqualTo(Enum.GetValues<Faction>().Select(f => (f.ToString(), (byte)f))));
-            Assert.That(Factions.Of(null), Is.Null);
-            Assert.That(Factions.Of(Faction.Wizard)!.Name, Is.EqualTo("Wizard"));
+            Assert.That(Factions<Faction>.All.Select(f => (f.Name, f.Code)), Is.EqualTo(Enum.GetValues<Faction>().Select(f => (f.ToString(), (byte)f))));
+            Assert.That(Factions<Faction>.Of(null), Is.Null);
+            Assert.That(Factions<Faction>.Of(Faction.Wizard)!.Name, Is.EqualTo("Wizard"));
         }
 
         [Test]

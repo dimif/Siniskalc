@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -13,7 +14,7 @@
     /// </summary>
     public sealed class PlayerCardViewModel
     {
-        public PlayerCardViewModel(PlayerColor color, PlayerResources? resources, IReadOnlyList<HeroLinkViewModel> heroes, ICommand open, PlayerType? control = null, bool isCurrent = false, IReadOnlyList<CastleLinkViewModel>? castles = null, string banishingText = "", bool isBanished = false)
+        public PlayerCardViewModel(PlayerColor color, ResourceSet? resources, IReadOnlyList<HeroLinkViewModel> heroes, ICommand open, PlayerType? control = null, bool isCurrent = false, IReadOnlyList<CastleLinkViewModel>? castles = null, string banishingText = "", bool isBanished = false)
         {
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
             this.Name = color.ToString();
@@ -27,7 +28,7 @@
             this.Gold = resources?.Gold.ToString("N0") ?? string.Empty;
             this.OtherResources = resources == null
                 ? string.Empty
-                : string.Join(" · ", PlayerResources.All.Where(r => r != Resource.Gold).Select(r => $"{resources[r]:N0} {r.ToString().ToLowerInvariant()}"));
+                : string.Join(" · ", ResourceSet.All.Where(r => r != Resource.Gold).Select(r => $"{resources[r]:N0} {r.ToString().ToLowerInvariant()}"));
         }
 
         public string Name { get; }

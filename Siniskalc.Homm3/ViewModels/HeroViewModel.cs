@@ -179,7 +179,7 @@
         /// <summary>
         /// Gets the hero's level as a number, for display.
         /// </summary>
-        public short LevelNumber => this.HeroModel.HeroLevel.Level;
+        public short LevelNumber => (short)this.HeroModel.HeroLevel.Level;
 
         public HeroClass HeroClass
         {
@@ -250,7 +250,7 @@
             }
         }
 
-        public HeroMovementPoints MovementPoints
+        public MovementPoints MovementPoints
         {
             get => this.HeroModel.MovementPoints;
             set => this.Update(h => h with { MovementPoints = value });

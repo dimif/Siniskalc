@@ -160,8 +160,8 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(tazar.Position, Is.EqualTo(new HeroPosition(44, 7, 0, FacingDirection.East)));
             Assert.That(moved.Position, Is.EqualTo(new HeroPosition(22, 10, 0, FacingDirection.SouthWest)));
-            Assert.That((tazar.MovementPoints.CurrentMovementPoints, tazar.MovementPoints.MaxMovementPoints), Is.EqualTo((2900, 2900)));
-            Assert.That((moved.MovementPoints.CurrentMovementPoints, moved.MovementPoints.MaxMovementPoints), Is.EqualTo((2318, 2900)));
+            Assert.That((tazar.MovementPoints.Current, tazar.MovementPoints.Max), Is.EqualTo((2900, 2900)));
+            Assert.That((moved.MovementPoints.Current, moved.MovementPoints.Max), Is.EqualTo((2318, 2900)));
 
             // The flag of "moved today" the editor reads (a Horn of the Abyss byte) is beyond the hero here and says nothing.
             Assert.That(tazar.MovedToday, Is.False);

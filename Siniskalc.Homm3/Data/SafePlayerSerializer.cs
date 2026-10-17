@@ -56,12 +56,14 @@
             return chunk.WithBytes(bytes);
         }
 
-        private static PlayerChunk SerializeResources(PlayerChunk chunk, PlayerResources resources)
+        private static PlayerChunk SerializeResources(PlayerChunk chunk, ResourceSet resources)
         {
             var bytes = chunk.ToArray();
-            foreach (var resource in PlayerResources.All)
+            foreach (var resource in ResourceSet.All)
             {
-                ByteBufferHelper.WriteInt32(bytes, PlayerLayout.OffsetOf(resource), resources[resource]);
+                // The savefile holds an amount in 32 bits; a larger one is refused and not cut.
+                RangeGuard.ThrowIfOutOfRange<long>(resources[resource], int.MinValue, int.MaxValue, nameof(resources));
+                ByteBufferHelper.WriteInt32(bytes, PlayerLayout.OffsetOf(resource), (int)resources[resource]);
             }
 
             return chunk.WithBytes(bytes);

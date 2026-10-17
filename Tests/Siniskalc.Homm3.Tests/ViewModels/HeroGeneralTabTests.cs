@@ -1,5 +1,6 @@
 ﻿using Siniskalc;
 using Siniskalc.Core.Entities;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -36,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             general.MaxMovementCommand.Execute(null);
             general.MaxSpellPointsCommand.Execute(null);
 
-            Assert.That(this.hero.HeroModel.MovementPoints.CurrentMovementPoints, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
+            Assert.That(this.hero.HeroModel.MovementPoints.Current, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(Constants.Hero.MaxSpellPoints));
             Assert.That(general.MaxMovementCommand.CanExecute(null), Is.False);
             Assert.That(general.MaxSpellPointsCommand.CanExecute(null), Is.False);
@@ -151,7 +152,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(this.hero.HeroModel.Position.X, Is.EqualTo(Constants.Map.MaxCoordinate));
             Assert.That(this.hero.HeroModel.MarkerPosition.Y, Is.EqualTo(Constants.Map.MinCoordinate));
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(Constants.Hero.MaxSpellPoints));
-            Assert.That(this.hero.HeroModel.MovementPoints.CurrentMovementPoints, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
+            Assert.That(this.hero.HeroModel.MovementPoints.Current, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
         }
     }
 }

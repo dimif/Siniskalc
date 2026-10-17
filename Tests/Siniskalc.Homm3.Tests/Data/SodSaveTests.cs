@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Siniskalc;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -17,15 +18,15 @@ namespace Siniskalc.Homm3.Tests.Data
         private static readonly string Save1 = Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1");
         private static readonly string Save2 = Path.Combine("TestData", "Sod", "sod_game_01_red_gives_blue_resources.GM1");
 
-        private static PlayerResources RedBefore => new(20, 10, 20, 10, 10, 10, 20000);
+        private static ResourceSet RedBefore => new(20, 10, 20, 10, 10, 10, 20000);
 
-        private static PlayerResources RedAfter => new(19, 5, 17, 3, 2, 1, 0);
+        private static ResourceSet RedAfter => new(19, 5, 17, 3, 2, 1, 0);
 
-        private static PlayerResources BlueBefore => new(10, 4, 10, 4, 10, 4, 7500);
+        private static ResourceSet BlueBefore => new(10, 4, 10, 4, 10, 4, 7500);
 
         private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
 
-        private static PlayerResources Resources(Game game, PlayerColor player) => game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(player)).Current.Resources;
+        private static ResourceSet Resources(Game game, PlayerColor player) => game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(player)).Current.Resources;
 
         [Test]
         public void MariusIsTheLevelOneDemoniacOfRed()
@@ -98,7 +99,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(Resources(second, PlayerColor.Red), Is.EqualTo(RedAfter));
             Assert.That(
                 Resources(second, PlayerColor.Blue),
-                Is.EqualTo(new PlayerResources(
+                Is.EqualTo(new ResourceSet(
                     BlueBefore.Wood + RedBefore.Wood - RedAfter.Wood,
                     BlueBefore.Mercury + RedBefore.Mercury - RedAfter.Mercury,
                     BlueBefore.Ore + RedBefore.Ore - RedAfter.Ore,

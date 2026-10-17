@@ -244,7 +244,7 @@ namespace Siniskalc.Homm2.ViewModels
             {
                 this.session.ChangeOwner(OwnerNames<Color>.Parse(name));
             }
-            catch (InvalidOperationException)
+            catch (GameRuleException)
             {
                 this.notice = $"{name} has the most castles a player can have.";
             }

@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.Data
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
@@ -18,7 +19,7 @@ namespace Siniskalc.Homm3.Data
         public IReadOnlyList<ByteRegion> GetRegions(PlayerLayout layout, int chunkLength = int.MaxValue)
         {
             const string resourcesName = "Resources";
-            var resourceParts = PlayerResources.All
+            var resourceParts = ResourceSet.All
                 .Select(r => new ByteRegion(r.ToString(), PlayerLayout.OffsetOf(r), PlayerLayout.ResourceSize, ByteRegionKind.Resources, resourcesName))
                 .ToList();
 

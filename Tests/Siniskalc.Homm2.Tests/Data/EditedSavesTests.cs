@@ -2,6 +2,8 @@ namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -81,7 +83,7 @@ namespace Siniskalc.Homm2.Tests.Data
             HeroModel Maximus(string name) => TestServices.Parser.Parse(Named(name).Bytes, null).History.Current.Heroes().GetModel(7);
 
             Assert.That(TestServices.Parser.Parse(Named("E01GOLD").Bytes, null).History.Current.Players().GetModel(0).Resources.Gold, Is.EqualTo(99_999));
-            Assert.That(TestServices.Parser.Parse(Named("E02RESRC").Bytes, null).History.Current.Players().GetModel(0).Resources, Is.EqualTo(new Resources(500, 500, 500, 500, 500, 500, 50_000)));
+            Assert.That(TestServices.Parser.Parse(Named("E02RESRC").Bytes, null).History.Current.Players().GetModel(0).Resources, Is.EqualTo(new ResourceSet(500, 500, 500, 500, 500, 500, 50_000)));
             Assert.That(Maximus("E03ARMY").Army.Slots.Select(s => s!.Creature.Name), Is.EqualTo(new[] { "Black Dragon", "Titan", "Phoenix", "Paladin", "Peasant" }));
             Assert.That(Maximus("E04SKILL").PrimarySkills, Is.EqualTo(new PrimarySkills(15, 15, 15, 15)));
             Assert.That(Maximus("E05SKL2").SecondarySkills.Count, Is.EqualTo(8));

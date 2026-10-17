@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests.Models
 {
+    using Siniskalc.Core.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;

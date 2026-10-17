@@ -35,7 +35,7 @@
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
-            this.Resources = PlayerResources.All
+            this.Resources = ResourceSet.All
                 .OrderBy(resource => resource != Resource.Gold)
                 .Select(resource => new ResourceRowViewModel(
                     resource,

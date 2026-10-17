@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System.Linq;
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -19,8 +20,8 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Tavern">The heroes the taverns offer.</param>
     public sealed record PlayerModel(
         Color Color,
-        Resources Resources,
-        Resources Income,
+        ResourceSet Resources,
+        ResourceSet Income,
         Numbers HeroIds,
         int? SelectedHero,
         Numbers CastleIds,
@@ -42,7 +43,7 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The player has the most castles the list holds.</exception>
+        /// <exception cref="GameRuleException">The player has the most castles the list holds.</exception>
         public PlayerModel WithCastle(int castleIndex)
         {
             if (this.CastleIds.Contains(castleIndex))
@@ -51,7 +52,7 @@ namespace Siniskalc.Homm2.Models
             }
 
             return this.CastleIds.Count >= Constants.Player.CastleListSize
-                ? throw new System.InvalidOperationException($"A player has at most {Constants.Player.CastleListSize} castles.")
+                ? throw new GameRuleException($"A player has at most {Constants.Player.CastleListSize} castles.")
                 : this with { CastleIds = new Numbers(this.CastleIds.Append(castleIndex)), DaysLeft = null };
         }
 

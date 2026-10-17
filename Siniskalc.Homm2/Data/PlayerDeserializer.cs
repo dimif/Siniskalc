@@ -21,8 +21,8 @@ namespace Siniskalc.Homm2.Data
 
             return new PlayerModel(
                 Enum.Parse<Color>(chunk.Name),
-                new Resources(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5], resources[6]),
-                new Resources(income[0], income[1], income[2], income[3], income[4], income[5], chunk.GetUInt32At(PlayerLayout.GoldIncome)),
+                new ResourceSet(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5], resources[6]),
+                new ResourceSet(income[0], income[1], income[2], income[3], income[4], income[5], chunk.GetUInt32At(PlayerLayout.GoldIncome)),
                 Bytes.IdList(bytes, PlayerLayout.Heroes, Constants.Player.HeroListSize),
                 Bytes.Id(chunk.GetByteAt(PlayerLayout.SelectedHero)),
                 Bytes.IdList(bytes, PlayerLayout.Castles, Constants.Player.CastleListSize),

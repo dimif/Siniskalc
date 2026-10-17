@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.Data
     using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -22,7 +23,7 @@ namespace Siniskalc.Homm2.Data
         /// Gives the castle to a player, or to nobody, in one step of the history. The castle, the list of castles of the player that had it and
         /// the list of the player that has it now change together, as they do in the game. Does nothing when the owner is the same.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The new owner has the most castles the list holds.</exception>
+        /// <exception cref="GameRuleException">The new owner has the most castles the list holds.</exception>
         public void ChangeOwner(Color? owner)
         {
             var document = this.History.Current;

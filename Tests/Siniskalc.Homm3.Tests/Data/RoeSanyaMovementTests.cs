@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -36,8 +37,8 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void MovingSpendsMovementPointsAndTurnsTheHero()
         {
-            Assert.That(Sanya(0).MovementPoints.CurrentMovementPoints, Is.EqualTo(1560));
-            Assert.That(Sanya(1).MovementPoints.CurrentMovementPoints, Is.EqualTo(1510));
+            Assert.That(Sanya(0).MovementPoints.Current, Is.EqualTo(1560));
+            Assert.That(Sanya(1).MovementPoints.Current, Is.EqualTo(1510));
             Assert.That(Sanya(1).Position.Y, Is.EqualTo(Sanya(0).Position.Y + 1));
             Assert.That(Sanya(1).Position.FacingDirection, Is.EqualTo(FacingDirection.South));
         }
@@ -55,7 +56,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void MovingWakesTheHeroAndAQuestObjectIsUnderHer()
         {
             Assert.That(Sanya(3).IsAsleep, Is.False);
-            Assert.That(Sanya(3).MovementPoints.CurrentMovementPoints, Is.EqualTo(1260));
+            Assert.That(Sanya(3).MovementPoints.Current, Is.EqualTo(1260));
             Assert.That(Chunk(3).GetByteAt(11), Is.EqualTo(83), "a Seer's Hut");
             Assert.That(Chunk(3).GetByteAt(15), Is.EqualTo(1));
         }
@@ -63,7 +64,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ANewDayRestoresMovementPointsAndNothingElseOfTheHero()
         {
-            Assert.That(Sanya(4).MovementPoints.CurrentMovementPoints, Is.EqualTo(Sanya(4).MovementPoints.MaxMovementPoints));
+            Assert.That(Sanya(4).MovementPoints.Current, Is.EqualTo(Sanya(4).MovementPoints.Max));
             Assert.That(Sanya(4).Position, Is.EqualTo(Sanya(3).Position));
             Assert.That(Sanya(4).IsAsleep, Is.False);
         }
@@ -75,7 +76,7 @@ namespace Siniskalc.Homm3.Tests.Data
             // hero: there is no byte for "moved today", as in the other Shadow of Death saves.
             Assert.That(Sanya(4).MovedToday, Is.False);
             Assert.That(Sanya(5).MovedToday, Is.False);
-            Assert.That(Sanya(5).MovementPoints.CurrentMovementPoints, Is.EqualTo(1419));
+            Assert.That(Sanya(5).MovementPoints.Current, Is.EqualTo(1419));
         }
     }
 }

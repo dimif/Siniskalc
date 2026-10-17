@@ -7,6 +7,7 @@
     using System.Windows.Input;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -69,7 +70,7 @@
 
         public short Level
         {
-            get => this.Hero.HeroLevel.Level;
+            get => (short)this.Hero.HeroLevel.Level;
             set
             {
                 if (value != this.Level && RangeGuard.IsInRange<long>(value, Constants.Hero.MinLevel, Constants.Hero.MaxLevel))
@@ -81,7 +82,7 @@
 
         public int Experience
         {
-            get => this.Hero.HeroLevel.Experience;
+            get => (int)this.Hero.HeroLevel.Experience;
             set
             {
                 value = (int)RangeGuard.Clamp<long>(value, Constants.Hero.MinExperience, Constants.Hero.MaxExperience);
@@ -119,13 +120,13 @@
 
         public uint CurrentMovement
         {
-            get => this.Hero.MovementPoints.CurrentMovementPoints;
+            get => (uint)this.Hero.MovementPoints.Current;
             set
             {
                 value = (uint)RangeGuard.Clamp<long>(value, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints);
                 if (value != this.CurrentMovement)
                 {
-                    this.Update(h => h with { MovementPoints = h.MovementPoints with { CurrentMovementPoints = value } });
+                    this.Update(h => h with { MovementPoints = h.MovementPoints with { Current = value } });
                 }
             }
         }
@@ -140,7 +141,7 @@
         /// </summary>
         public ICommand MaxSpellPointsCommand { get; }
 
-        public uint MaxMovement => this.Hero.MovementPoints.MaxMovementPoints;
+        public uint MaxMovement => (uint)this.Hero.MovementPoints.Max;
 
         /// <summary>
         /// Gets the command that gives the hero all of its movement points back.
@@ -294,7 +295,7 @@
         {
             get
             {
-                var next = LevelCalculator.GetNextLevel(this.Hero.HeroLevel.Experience);
+                var next = LevelCalculator.GetNextLevel((int)this.Hero.HeroLevel.Experience);
                 return next == null
                     ? string.Empty
                     : string.Create(

@@ -18,7 +18,7 @@
         {
             var changes = new List<PendingChange>();
 
-            foreach (var resource in PlayerResources.All)
+            foreach (var resource in ResourceSet.All)
             {
                 var before = original.Resources[resource];
                 var after = current.Resources[resource];

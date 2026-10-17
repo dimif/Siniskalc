@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using Siniskalc.Core.Models;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Entities;

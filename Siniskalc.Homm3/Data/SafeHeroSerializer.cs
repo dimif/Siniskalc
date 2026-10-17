@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -88,12 +89,15 @@
             });
         }
 
-        public HeroChunk SerializeMovementPoints(HeroChunk chunk, HeroMovementPoints movementPoints)
+        public HeroChunk SerializeMovementPoints(HeroChunk chunk, MovementPoints movementPoints)
         {
             return Edit(chunk, buffer =>
             {
-                ByteBufferHelper.WriteUInt32(buffer, this.heroOffsets[HeroOffsetName.CurrentMovementPoints], movementPoints.CurrentMovementPoints);
-                ByteBufferHelper.WriteUInt32(buffer, this.heroOffsets[HeroOffsetName.MaxMovementPoints], movementPoints.MaxMovementPoints);
+                // The savefile holds the movement points in 32 bits; more is refused and not cut.
+                RangeGuard.ThrowIfOutOfRange<long>(movementPoints.Current, 0, uint.MaxValue, nameof(movementPoints));
+                RangeGuard.ThrowIfOutOfRange<long>(movementPoints.Max, 0, uint.MaxValue, nameof(movementPoints));
+                ByteBufferHelper.WriteUInt32(buffer, this.heroOffsets[HeroOffsetName.CurrentMovementPoints], (uint)movementPoints.Current);
+                ByteBufferHelper.WriteUInt32(buffer, this.heroOffsets[HeroOffsetName.MaxMovementPoints], (uint)movementPoints.Max);
             });
         }
 
@@ -182,7 +186,8 @@
         {
             return Edit(chunk, buffer =>
             {
-                ByteBufferHelper.WriteInt32(buffer, this.heroOffsets[HeroOffsetName.ExperiencePoints], level.Experience);
+                RangeGuard.ThrowIfOutOfRange<long>(level.Experience, int.MinValue, int.MaxValue, nameof(level));
+                ByteBufferHelper.WriteInt32(buffer, this.heroOffsets[HeroOffsetName.ExperiencePoints], (int)level.Experience);
                 RangeGuard.ThrowIfOutOfRange<long>(level.Level, 0, Constants.Hero.MaxStoredLevel, nameof(level));
                 buffer[this.heroOffsets[HeroOffsetName.Level]] = (byte)level.Level;
             });

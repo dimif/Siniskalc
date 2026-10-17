@@ -113,7 +113,7 @@
 
         bool ICreature.IsUpgrade => this.BaseCreatureCode != null;
 
-        IFaction? ICreature.Faction => Factions.Of(this.Faction);
+        IFaction? ICreature.Faction => Factions<Faction>.Of(this.Faction);
 
         /// <summary>
         /// Gets the dwelling flag of its castle that recruits the creature: the dwelling of a creature, the upgraded dwelling of an upgraded

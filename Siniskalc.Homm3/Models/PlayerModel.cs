@@ -14,7 +14,7 @@
     /// <param name="DaysLeft">
     /// The days before the player is banished for owning no town, 1 to 7, or 0 when the player has been banished; null while the player owns a town.
     /// </param>
-    public sealed record PlayerModel(PlayerColor Color, PlayerResources Resources, TavernHeroes Tavern, int? DaysLeft = null)
+    public sealed record PlayerModel(PlayerColor Color, ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft = null)
     {
         /// <summary>
         /// Gets whether the player is out of the game.

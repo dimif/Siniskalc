@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.Models
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -46,11 +47,11 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the artifacts with <paramref name="artifact"/> in the first empty slot.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Every slot is taken.</exception>
+        /// <exception cref="GameRuleException">Every slot is taken.</exception>
         public Artifacts Add(Artifact artifact)
         {
             var free = Array.IndexOf(this.slots, null);
-            return free < 0 ? throw new InvalidOperationException("Every artifact slot is taken.") : this.WithSlot(free, artifact);
+            return free < 0 ? throw new GameRuleException("Every artifact slot is taken.") : this.WithSlot(free, artifact);
         }
 
         /// <summary>

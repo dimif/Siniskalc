@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Linq;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -14,10 +15,8 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Position">The tile the hero stands on (meaningless while it serves nobody).</param>
     /// <param name="Destination">The tile the hero was going to when its movement ran out, or <c>null</c>.</param>
     /// <param name="SpellPoints">The spell points the hero has now.</param>
-    /// <param name="MaxMovement">The movement points of a full day, which the game works out from the army, the skills and the artifacts.</param>
-    /// <param name="MovementLeft">The movement points the hero has left today.</param>
-    /// <param name="Experience">The experience of the hero.</param>
-    /// <param name="Level">The level of the hero.</param>
+    /// <param name="MovementPoints">The movement points the hero has left today, and the ones of a full day, which the game works out from the army, the skills and the artifacts.</param>
+    /// <param name="HeroLevel">The level of the hero and its experience.</param>
     /// <param name="PrimarySkills">The attack, the defense, the spell power and the knowledge.</param>
     /// <param name="SecondarySkills">The secondary skills, in the order they were learned.</param>
     /// <param name="Army">The five slots of the army.</param>
@@ -30,16 +29,50 @@ namespace Siniskalc.Homm2.Models
         Position Position,
         Position? Destination,
         int SpellPoints,
-        long MaxMovement,
-        long MovementLeft,
-        long Experience,
-        int Level,
+        MovementPoints MovementPoints,
+        HeroLevel HeroLevel,
         PrimarySkills PrimarySkills,
         SecondarySkills SecondarySkills,
         Army Army,
         Artifacts Artifacts,
         SpellBook Spells)
     {
+        /// <summary>
+        /// Gets or sets the level of the hero (a <c>with</c> expression sets it, and leaves the experience as it is).
+        /// </summary>
+        public int Level
+        {
+            get => this.HeroLevel.Level;
+            init => this.HeroLevel = this.HeroLevel with { Level = value };
+        }
+
+        /// <summary>
+        /// Gets or sets the experience of the hero (a <c>with</c> expression sets it, and leaves the level as it is).
+        /// </summary>
+        public long Experience
+        {
+            get => this.HeroLevel.Experience;
+            init => this.HeroLevel = this.HeroLevel with { Experience = value };
+        }
+
+        /// <summary>
+        /// Gets or sets the movement points of a full day.
+        /// </summary>
+        public long MaxMovement
+        {
+            get => this.MovementPoints.Max;
+            init => this.MovementPoints = this.MovementPoints with { Max = value };
+        }
+
+        /// <summary>
+        /// Gets or sets the movement points the hero has left today.
+        /// </summary>
+        public long MovementLeft
+        {
+            get => this.MovementPoints.Current;
+            init => this.MovementPoints = this.MovementPoints with { Current = value };
+        }
+
         /// <summary>
         /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
@@ -75,11 +108,11 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the hero with <paramref name="artifact"/> in its first free slot, and its skills changed by what the artifact gives.
         /// </summary>
-        /// <exception cref="InvalidOperationException">The hero has no free artifact slot.</exception>
+        /// <exception cref="GameRuleException">The hero has no free artifact slot.</exception>
         public HeroModel WithArtifact(Artifact artifact)
         {
             var free = Array.IndexOf(this.Artifacts.Slots.ToArray(), null);
-            return free < 0 ? throw new InvalidOperationException("Every artifact slot is taken.") : this.WithArtifact(free, artifact);
+            return free < 0 ? throw new GameRuleException("Every artifact slot is taken.") : this.WithArtifact(free, artifact);
         }
 
         /// <summary>
@@ -94,7 +127,7 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the hero with the Magic Book in its first free slot (nothing changes when it has it already).
         /// </summary>
-        /// <exception cref="InvalidOperationException">The hero has no free artifact slot.</exception>
+        /// <exception cref="GameRuleException">The hero has no free artifact slot.</exception>
         public HeroModel WithSpellBook() => this.HasSpellBook ? this : this with { Artifacts = this.Artifacts.Add(Artifact.MagicBook) };
 
         /// <summary>

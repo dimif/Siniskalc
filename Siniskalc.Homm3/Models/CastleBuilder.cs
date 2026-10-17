@@ -3,7 +3,9 @@ namespace Siniskalc.Homm3.Models
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Models;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -266,11 +268,10 @@ namespace Siniskalc.Homm3.Models
                 $"A dwelling holds {Constants.Castle.MinDwellingCreatures} to {Constants.Castle.MaxDwellingCreatures} creatures.");
 
             var dwelling = DwellingOf(castle, level) ?? throw new GameRuleException($"No dwelling is built for the creatures of level {level + 1}.");
-            var creatures = castle.CreaturesAvailable.ToArray();
-            var upgraded = castle.UpgradedCreaturesAvailable.ToArray();
-            (dwelling.IsUpgradedDwelling ? upgraded : creatures)[level] = count;
 
-            return castle with { CreaturesAvailable = creatures, UpgradedCreaturesAvailable = upgraded };
+            return dwelling.IsUpgradedDwelling
+                ? castle with { UpgradedCreaturesAvailable = castle.UpgradedCreaturesAvailable.With(level, count) }
+                : castle with { CreaturesAvailable = castle.CreaturesAvailable.With(level, count) };
         }
 
         /// <summary>
@@ -327,9 +328,9 @@ namespace Siniskalc.Homm3.Models
             {
                 Buildings = buildings,
                 CurrentBuildings = current,
-                CreaturesAvailable = creatures,
-                UpgradedCreaturesAvailable = upgraded,
-                SpellCounts = spells,
+                CreaturesAvailable = new Numbers(creatures),
+                UpgradedCreaturesAvailable = new Numbers(upgraded),
+                SpellCounts = new Numbers(spells),
                 MageGuildLevel = mageGuild,
             };
         }

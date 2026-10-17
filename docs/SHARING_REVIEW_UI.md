@@ -1,0 +1,46 @@
+# What can move into Siniskalc.Heroes(.Wpf): review of `ViewModels` and `Views`
+
+The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.
+Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was changed with this review.
+
+## What is already shared
+
+`Siniskalc.Wpf`: the shell, the navigation tree, `EditorViewModelBase`, the army, secondary skill and spell view models and views (`ArmyViewModelBase`, `SecondarySkillsViewModelBase`, `SpellsViewModelBase`, `FinderViewModel`), the artifact picker, steppers, hex editor.
+`Siniskalc.Heroes(.Wpf)`: the page blocks (`PageHeader`, `ResourcesPanel`, `ItemsCard`, `OwnerPicker`, `HeadedCard`), the page interfaces (`IPlayerPage`, `ICastlePage`, `IResourcesPage`, `IResettablePage`), `OwnerNavGroup`, `NavEntry`, `CreatureFinderViewModel`, the palette.
+
+## Summary
+
+| # | Component | HoMM2 | HoMM3 | Verdict | Status |
+|---|---|---|---|---|---|
+| V1 | Overview sentences ("Difficulty: Queen (160%)", "2 heroes") | written in place | written in place | SHARE (`OverviewText`) | **done** |
+| V2 | Place on the map ("X: 28, Y: 27") | `ToString` of the tile | `MapLevelText` | SHARE (`MapLevelText` in `Heroes.ViewModels`) | **done** |
+| V3 | Spell rows and finder | name, cost | name, school, level, type, availability | KEEP the finder; rows now alike | **done** (HoMM2 shows level, type and mind/elemental) |
+| V4 | Page base: tab, pending changes, Reset, dispose | `PageViewModel` | repeated in each page | GENERIC base in `Heroes.Wpf` | open |
+| V5 | Navigation builder | 115 lines | 166 lines | GENERIC base | open |
+| V6 | Player page: resources, quick buttons | `SetAll`, `SetRich` | the same, plus tavern, days left, obelisks | INTERFACE (`IResourcesPage`) already; share tavern | open (feature gap) |
+| V7 | Overview page | list of players | cards with heroes and castles | KEEP the view; share the card parts | open (feature gap) |
+| V8 | Castle page: dwellings, Mage Guild | `DwellingRowViewModel`, `GuildLevelViewModel` | `DwellingRowViewModel`, `MageGuildLevelRowViewModel` | wait for M12 | open |
+| V9 | Hero page | 4 sections | 6 sections and a General tab | KEEP; `IHeroPage` when asked | open |
+| V10 | Artifact choice and finder | bonuses | effect lines, slot, spell | KEEP; share the bonus text | open, small |
+| V11 | Skill level text | `SkillLevelText` (Wpf) | `SkillLevelNames` | follows E3 | deferred |
+
+## Done
+
+- **V1 `OverviewText`** (`Heroes.ViewModels`): `Difficulty`, `MapRating`, `Count`. The difficulty and rating lines were written three times, the "1 hero / 2 heroes" test five times.
+- **V2 `MapLevelText`** moved from HoMM3 to `Heroes.ViewModels`; HoMM2's hero and castle pages now say "X: 28, Y: 27" as HoMM3's say "X: 33, Y: 23, Surface (0)" (a game with one level leaves the level out).
+- **V3**: HoMM2 spell rows carry the level and, from `SpellGroup`, "Mind" or "Elemental"; the finder has Level, Type and Magic columns and searches them ("level 3", "mind", "combat").
+  `ISpell` (`Type`, `Level`) is in `Heroes.Entities` and both `Spell` classes implement it.
+  **The levels of the HoMM2 spells are from the fheroes2 tables and are not confirmed.** I compared them with the Mage Guilds in the test saves and they disagree for 17 spells (a guild row does not always hold spells of its own level, so the saves cannot settle it). Please check them in the game.
+
+## Open
+
+- **V4 page base.** HoMM2 has one `PageViewModel` for hero, castle and player (tab, `HasPendingChanges`, `ResetCommand`, dispose, hex target). HoMM3 repeats the same four members in `HeroViewModel`, `CastleViewModel`, `PlayerViewModel`. A base in `Heroes.Wpf` that takes "the pending changes of this page" and "revert them" as delegates would serve both without knowing `Game` or `PlayerEditSession`. Medium work, no behaviour change; the best next step.
+- **V5 navigation builder.** The skeleton is the same: the overview node, the list of owners (players with data, plus owners of heroes and castles, plus "nobody"), `StructureKey`, the group per owner through `OwnerNavGroup`. What differs is real: HoMM3's badges (capital, grail, garrison) and the countdown notes, HoMM2's visitor name. A generic `OwnerNavigationBuilderBase<TGame, TColor>` with the owners, entries and marks supplied by the game would remove about 60 lines each; it needs a small interface for "the game's history" (both `Game`s have one, of different types).
+- **V6/V7 feature gaps** that sharing would close: HoMM2's player already has a tavern model and no tavern card; HoMM2's overview is a plain list while HoMM3's shows each player's heroes and castles. The data is there in both games; the cards (`TavernPlaceViewModel`, `PlayerCardViewModel`, `HeroLinkViewModel`) would have to take interfaces (`ILink`, `TavernHeroes`) instead of HoMM3 types.
+- **V8** waits for the shared castle values (M12 in `SHARING_REVIEW.md`).
+- **V9** hero page: HoMM3 is the superset (General tab, backpack, war machines); the four sections they share already come from `Siniskalc.Wpf`. An `IHeroPage` for the header and Reset, as for the player and castle pages, is the only step left.
+- **V10**: HoMM2's `Describe(PrimarySkillBonus)` can serve HoMM3's effect lines for the primary skills through `IArtifact`; small.
+
+## Views (XAML)
+
+The two `Generic.xaml` files (16 and 99 lines) hold only styles a game's own pages use. `HeroPage` (114 and 95 lines) and the artifact views differ by the layout of the slots. The `PlayerPage`, `CastlePage` and `OverviewPage` of HoMM3 are 3 to 5 times longer than HoMM2's because of the extra cards, not because of copied markup; the repeated markup (headers, resources, owner picker, items cards) already lives in the blocks of `Siniskalc.Heroes.Wpf`. No XAML is worth moving before V4 to V7 are done.

@@ -1,17 +1,21 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.ViewModels
 {
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Entities;
 
     /// <summary>
-    /// The words for a level of the map, with the number the savefile holds in brackets: "Surface (0)" and "Underground (1)".
+    /// The words for a place on the map: "X: 59, Y: 9, Surface (0)" in a game that has two levels, "X: 59, Y: 9" in one that has one.
     /// </summary>
     public static class MapLevelText
     {
         /// <summary>
         /// Returns a place on the map such as "X: 59, Y: 9, Surface (0)".
         /// </summary>
-        public static string Coordinates(int x, int y, int level) => $"X: {x}, Y: {y}, {Of(level)}";
+        public static string Coordinates(int x, int y, int level) => $"{Coordinates(x, y)}, {Of(level)}";
+
+        /// <summary>
+        /// Returns a place on a map that has no levels, such as "X: 59, Y: 9".
+        /// </summary>
+        public static string Coordinates(int x, int y) => $"X: {x}, Y: {y}";
 
         public static string Of(int level) => level switch
         {

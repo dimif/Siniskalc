@@ -82,7 +82,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets where the hero is on the map, or nothing for a hero that serves nobody.
         /// </summary>
-        public string PositionText => this.hero.Owner == null ? string.Empty : $"at {this.hero.Position}";
+        public string PositionText => this.hero.Owner == null ? string.Empty : $"at {MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y)}";
 
         /// <summary>
         /// Gets the name of the castle the hero is in, or nothing.

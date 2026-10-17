@@ -147,7 +147,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public string OwnerText => OwnerNames<Color>.Of(this.castle.Owner);
 
-        public string PositionText => this.castle.Position.ToString();
+        public string PositionText => MapLevelText.Coordinates(this.castle.Position.X, this.castle.Position.Y);
 
         /// <summary>
         /// Gets where a boat appears when the castle is on a coast, or says there is no coast.

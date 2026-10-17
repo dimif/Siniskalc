@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// Fills the navigation tree with the game (what the savefile contains), which holds one node per player (and one for what
     /// nobody owns). A player's node is its resources page, and holds a "Heroes" group and a "Towns" group.
     /// </summary>
-    public sealed class NavigationBuilder : INavigationBuilder<Game>
+    public sealed class NavigationBuilder : OwnerNavigationBuilderBase<Game, PlayerColor>
     {
         public const string CapitalBadge = "capital";
         public const string GrailBadge = "grail";
@@ -34,68 +34,26 @@ namespace Siniskalc.Homm3.ViewModels
 
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
         public NavigationBuilder(BanishingTextProvider banishingText)
+            : base(Kinds)
         {
             this.banishingText = banishingText;
         }
 
         /// <inheritdoc/>
-        public IReadOnlyDictionary<NavNodeKind, ChunkKind> ChunkKinds => Kinds;
-
-        /// <summary>
-        /// Returns who owns each castle and hero, as one text that changes when any of them changes hands. Reads the owner bytes only.
-        /// </summary>
-        public string StructureKey(Game game)
-        {
-            var document = game.History.Current;
-            return string.Join(",", document.Castles().GetOwners().Select(o => o?.ToString() ?? "-"))
-                + ";" + string.Join(",", document.Heroes().GetOwners().Select(o => o?.ToString() ?? "-"));
-        }
+        protected override IReadOnlyList<PlayerColor?> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
 
         /// <inheritdoc/>
-        public void Build(NavigationTree tree, Game game)
-        {
-            var overview = new NavNodeViewModel("Game", string.IsNullOrEmpty(game.Name) ? string.Empty : System.IO.Path.GetFileName(game.Name), PlayerPalette.NoPlayer, NavNodeKind.Overview, onSelected: tree.OnSelected)
-            {
-                DefaultExpanded = true,
-                IsExpanded = true,
-            };
-            tree.SetOverview(overview);
+        protected override IReadOnlyList<PlayerColor?> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
-            var summaries = game.History.Current.Heroes().GetSummaries();
-            var playerColors = game.History.Current.Players().GetColors();
-            var castles = game.History.Current.Castles().GetModels()
-                .Select((model, index) => (Index: index, Model: model))
-                .ToList();
-
-            // A player is listed when the savefile has the player's data or one of the player's heroes.
-            var owners = playerColors
-                .Concat(summaries.Select(s => s.Owner).OfType<PlayerColor>())
-                .Concat(castles.Select(c => c.Model.Owner).OfType<PlayerColor>())
-                .Distinct()
-                .OrderBy(c => c)
-                .Select(c => (PlayerColor?)c)
-                .ToList();
-            if (summaries.Any(s => s.Owner == null) || castles.Any(c => c.Model.Owner == null))
-            {
-                owners.Add(null);
-            }
-
-            foreach (var owner in owners)
-            {
-                overview.Children.Add(this.CreateGroup(
-                    tree,
-                    game,
-                    owner,
-                    summaries.Where(s => s.Owner == owner).OrderBy(s => s.Name).ToList(),
-                    castles.Where(c => c.Model.Owner == owner).OrderBy(c => c.Model.Name).ToList()));
-            }
-        }
+        // A player is listed when the savefile has the player's data or one of the player's heroes.
+        /// <inheritdoc/>
+        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetColors();
 
         /// <summary>
         /// Shows the crown and the Grail mark of the castles and the days left of the players with no town as they are in
         /// <paramref name="game"/> now, after an edit or an undo.
         /// </summary>
-        public void RefreshMarks(NavigationTree tree, Game game)
+        public override void RefreshMarks(NavigationTree tree, Game game)
         {
             var castles = game.History.Current.Castles().GetModels();
             foreach (var (index, node) in tree.CastleNodes)
@@ -140,8 +98,16 @@ namespace Siniskalc.Homm3.ViewModels
             node.Notes = NotesOf(garrisoned);
         }
 
-        private NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner, IReadOnlyList<HeroSummary<PlayerColor>> heroes, IReadOnlyList<(int Index, CastleModel Model)> castles)
+        /// <inheritdoc/>
+        protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner)
         {
+            var summaries = game.History.Current.Heroes().GetSummaries();
+            var heroes = summaries.Where(s => s.Owner == owner).OrderBy(s => s.Name).ToList();
+            var castles = game.History.Current.Castles().GetModels()
+                .Select((model, index) => (Index: index, Model: model))
+                .Where(c => c.Model.Owner == owner)
+                .OrderBy(c => c.Model.Name)
+                .ToList();
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
             var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner.Value);
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);

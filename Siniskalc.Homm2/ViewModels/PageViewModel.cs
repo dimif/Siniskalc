@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.ViewModels
     /// A page of the editor about one hero, player or castle: its tab, whether the savegame holds edits of it, and Reset. The page reads
     /// the models of the current document and so is up to date after every edit, undo and redo.
     /// </summary>
-    public abstract class PageViewModel : TabbedPageViewModelBase, IResettablePage, IDisposable
+    public abstract class PageViewModel : ResettablePageViewModelBase
     {
         private readonly ChunkKind kind;
         private readonly int index;
@@ -21,24 +21,15 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IByteEditTargetFactory? byteEditTargets;
 
         protected PageViewModel(Game game, ChunkKind kind, int index, IByteEditTargetFactory? byteEditTargets = null)
-            : base(kind.ToString())
+            : base(kind.ToString(), game.History)
         {
             this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.kind = kind;
             this.index = index;
-            this.ResetCommand = new DelegateCommand(_ => this.Reset(), _ => this.HasPendingChanges);
-            game.History.Changed += this.OnHistoryChanged;
         }
 
-        /// <summary>
-        /// Gets the command that puts everything of the page back to what the savegame had.
-        /// </summary>
-        public ICommand ResetCommand { get; }
-
         protected Game Game { get; }
-
-        public void Dispose() => this.Game.History.Changed -= this.OnHistoryChanged;
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
@@ -60,9 +51,9 @@ namespace Siniskalc.Homm2.ViewModels
 
         protected abstract IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory);
 
-        private void OnHistoryChanged(object? sender, EventArgs e) => this.Refresh();
+        protected override void OnHistoryChanged() => this.Refresh();
 
-        private void Reset()
+        protected override void Reset()
         {
             foreach (var change in this.PendingChangesOfPage().ToList())
             {

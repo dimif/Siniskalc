@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// <see cref="CastleEditSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
     /// the pending changes and follow undo and redo.
     /// </summary>
-    public sealed class CastleViewModel : TabbedPageViewModelBase, ICastlePage, IDisposable
+    public sealed class CastleViewModel : ResettablePageViewModelBase, ICastlePage
     {
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
@@ -33,7 +33,7 @@ namespace Siniskalc.Homm3.ViewModels
         private string notice = string.Empty;
 
         public CastleViewModel(SaveDocumentHistory history, int castleIndex, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
-            : base(history.Current.Castles().GetName(castleIndex))
+            : base(history.Current.Castles().GetName(castleIndex), history)
         {
             this.history = history;
             this.byteEditTargets = byteEditTargets;
@@ -42,7 +42,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.castleIndex = castleIndex;
             this.openHero = openHero;
             this.Castle = this.session.Current;
-            this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.Original), _ => this.HasPendingChanges);
             this.Refresh();
 
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
@@ -53,7 +52,6 @@ namespace Siniskalc.Homm3.ViewModels
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
 
-            this.history.Changed += this.OnHistoryChanged;
         }
 
         public int CastleIndex => this.castleIndex;
@@ -216,7 +214,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the command that puts the whole castle back to what the savegame had.
         /// </summary>
-        public ICommand ResetCommand { get; }
 
         private CastleModel Castle { get; set; }
 
@@ -224,11 +221,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the castle as the savegame had it when it was loaded or last saved.
         /// </summary>
         private CastleModel Original => this.history.Original.Castles().GetModel(this.castleIndex);
-
-        public void Dispose()
-        {
-            this.history.Changed -= this.OnHistoryChanged;
-        }
 
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.
@@ -449,7 +441,9 @@ namespace Siniskalc.Homm3.ViewModels
             this.HasPendingChanges = this.session.IsDirty;
         }
 
-        private void OnHistoryChanged(object? sender, EventArgs e)
+        protected override void Reset() => this.session.Update(_ => this.Original);
+
+        protected override void OnHistoryChanged()
         {
             this.Refresh();
         }

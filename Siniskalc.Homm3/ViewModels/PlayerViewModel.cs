@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@
     /// ViewModel that wraps a player for UI binding. Like <see cref="HeroViewModel"/>, it reads from a
     /// <see cref="PlayerEditSession"/>, writes every change back through it, and refreshes when the history changes.
     /// </summary>
-    public sealed class PlayerViewModel : TabbedPageViewModelBase, IPlayerPage, IDisposable
+    public sealed class PlayerViewModel : ResettablePageViewModelBase, IPlayerPage
     {
         private readonly PlayerEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
@@ -27,7 +27,7 @@
         private readonly Action<int>? openCastle;
 
         public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
-            : base(session.Current.Color.ToString())
+            : base(session.Current.Color.ToString(), session.History)
         {
             this.session = session;
             this.byteEditTargets = byteEditTargets;
@@ -49,7 +49,6 @@
                 .Reverse()
                 .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
                 .ToList();
-            this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.Original), _ => this.HasPendingChanges);
             this.Obelisks = new ObeliskVisitsViewModel(session.History, session.Current.Color);
             this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
                 .Select(place => new TavernPlaceViewModel(
@@ -60,7 +59,6 @@
                     heroId => this.OpenHeroById(heroId)))
                 .ToList();
 
-            this.session.History.Changed += this.OnHistoryChanged;
             this.UpdateIsDirty();
             this.RefreshOwned();
         }
@@ -139,7 +137,6 @@
 
         public ICommand SetRichCommand { get; }
 
-        public ICommand ResetCommand { get; }
 
         /// <summary>
         /// Gets the player as the savefile had it when it was loaded or last saved.
@@ -150,11 +147,6 @@
         /// Creates the raw bytes of the player for the hex editor. The caller owns the target and disposes it.
         /// </summary>
         public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForPlayer(this.session);
-
-        public void Dispose()
-        {
-            this.session.History.Changed -= this.OnHistoryChanged;
-        }
 
         /// <summary>
         /// Gives the player <paramref name="amount"/> more of each resource of the rows, up to the most a resource can hold.
@@ -168,7 +160,9 @@
             });
         }
 
-        private void OnHistoryChanged(object? sender, EventArgs e)
+        protected override void Reset() => this.session.Update(_ => this.Original);
+
+        protected override void OnHistoryChanged()
         {
             foreach (var row in this.Resources)
             {

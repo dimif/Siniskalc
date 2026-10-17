@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// Reads the hero from a <see cref="HeroEditSession"/> and writes every change back through it, so edits land in
     /// the savefile's undo/redo history. Refreshes itself whenever that history changes.
     /// </summary>
-    public class HeroViewModel : TabbedPageViewModelBase, IResettablePage, IDisposable, IOwnerChoice
+    public class HeroViewModel : ResettablePageViewModelBase, IOwnerChoice
     {
         private readonly HeroEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
@@ -29,14 +29,13 @@ namespace Siniskalc.Homm3.ViewModels
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
         public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, ISpellPointsCalculator spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null)
-            : base(session.Current.Name)
+            : base(session.Current.Name, session.History)
         {
             this.session = session;
             this.byteEditTargets = byteEditTargets;
             this.OpenGarrisonCastleCommand = new DelegateCommand(
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
-            this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.OriginalModel), _ => this.HasPendingChanges);
             this.shownRevision = session.Revision;
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
@@ -64,7 +63,6 @@ namespace Siniskalc.Homm3.ViewModels
                 artifact => this.BackpackViewModel.Add(artifact),
                 () => this.BackpackViewModel.HasFreeSlot);
 
-            this.session.History.Changed += this.OnHistoryChanged;
             this.UpdateIsDirty();
         }
 
@@ -111,7 +109,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the command that puts the whole hero back to what the savegame had when it was loaded or last saved.
         /// </summary>
-        public ICommand ResetCommand { get; }
 
         /// <summary>
         /// Gets where the hero is on the map, such as "X: 5, Y: 28, Surface (0)", or nothing for a hero that is not on the map.
@@ -295,18 +292,15 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForHero(this.session);
 
-        public void Dispose()
-        {
-            this.session.History.Changed -= this.OnHistoryChanged;
-        }
-
         private void Update(Func<HeroModel, HeroModel> edit)
         {
             // History.Changed refreshes the properties.
             this.session.Update(edit);
         }
 
-        private void OnHistoryChanged(object? sender, EventArgs e)
+        protected override void Reset() => this.session.Update(_ => this.OriginalModel);
+
+        protected override void OnHistoryChanged()
         {
             // Also raised after saving, which moves the baseline without touching the chunk.
             this.UpdateIsDirty();

@@ -30,7 +30,6 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly PlayerEditSession session;
         private IReadOnlyList<LinkViewModel> heroes = [];
         private IReadOnlyList<LinkViewModel> castles = [];
-        private IReadOnlyList<FactRow> tavern = [];
         private string status = string.Empty;
 
         public PlayerViewModel(Game game, Color color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
@@ -43,6 +42,14 @@ namespace Siniskalc.Homm2.ViewModels
             this.resources = ResourceOrder.Select(this.CreateRow).ToList();
             this.SetAllResourcesCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name != nameof(Resource.Gold)), Constants.Player.AllResourcesIncrease));
             this.SetRichCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name == nameof(Resource.Gold)), Constants.Player.GoldIncrease));
+            this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
+                .Select(place => new TavernPlaceViewModel(
+                    place == 0 ? "First hero" : "Second hero",
+                    () => TavernChoices.For(this.session.Current.Tavern, place, this.Game.History.Current.Heroes().GetModels().Select(h => h.Summary)),
+                    () => this.session.Current.Tavern.Ids[place],
+                    heroId => this.session.Update(player => player with { Tavern = player.Tavern.With(place, heroId) }),
+                    heroId => this.openHero(heroId)))
+                .ToList();
             this.Refresh();
         }
 
@@ -76,7 +83,10 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<LinkViewModel> Castles => this.castles;
 
-        public IReadOnlyList<FactRow> Tavern => this.tavern;
+        /// <summary>
+        /// Gets the two places of the tavern of the player, each with the heroes it can be given to.
+        /// </summary>
+        public IReadOnlyList<TavernPlaceViewModel> TavernPlaces { get; }
 
         IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
 
@@ -115,11 +125,10 @@ namespace Siniskalc.Homm2.ViewModels
                 .Select(c => new LinkViewModel(c.Name, c.Faction?.ToString() ?? string.Empty, new DelegateCommand(_ => this.openCastle(c.Index))))
                 .ToList();
 
-            this.tavern =
-            [
-                new FactRow("First hero", TavernHero(allHeroes, player.Tavern.First)),
-                new FactRow("Second hero", TavernHero(allHeroes, player.Tavern.Second)),
-            ];
+            foreach (var place in this.TavernPlaces)
+            {
+                place.Refresh();
+            }
         }
 
         private AmountRowViewModel CreateRow(Resource resource)
@@ -154,7 +163,5 @@ namespace Siniskalc.Homm2.ViewModels
             });
         }
 
-        private static string TavernHero(IReadOnlyList<HeroModel> heroes, int? id) =>
-            id is { } hero && hero >= 0 && hero < heroes.Count ? heroes[hero].Name : ChangeText.None;
     }
 }

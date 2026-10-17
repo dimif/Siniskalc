@@ -196,24 +196,7 @@
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
                     <heroes:ItemsCard Heading="Heroes" ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource LinkTemplate}"
                                       HasItems="{Binding HasHeroes}" EmptyText="This player has no heroes"/>
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0,0,0,8" Text="Tavern"/>
-                            <ItemsControl ItemsSource="{Binding TavernPlaces}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type vm:TavernPlaceViewModel}">
-                                        <DockPanel Margin="0,3">
-                                            <TextBlock DockPanel.Dock="Left" Width="90" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Label}"/>
-                                            <Button DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenCommand}" Content="Open"
-                                                    ToolTip="Go to Hero"/>
-                                            <ComboBox ItemsSource="{Binding Choices}" SelectedValue="{Binding SelectedKey}" SelectedValuePath="Key" DisplayMemberPath="Name"
-                                                      ToolTip="The hero the tavern of this player offers for hire."/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
+                    <heroes:TavernCard ItemsSource="{Binding TavernPlaces}"/>
                 </WrapPanel>
 
                 <!-- Towns -->

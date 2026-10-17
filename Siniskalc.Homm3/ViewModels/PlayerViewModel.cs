@@ -53,7 +53,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
                 .Select(place => new TavernPlaceViewModel(
                     place == 0 ? "First hero" : "Second hero",
-                    () => this.TavernChoices(place),
+                    () => TavernChoices.For(this.session.Current.Tavern, place, this.session.History.Current.Heroes().GetSummaries()),
                     () => this.session.Current.Tavern.Ids[place],
                     heroId => this.session.Update(player => player with { Tavern = player.Tavern.With(place, heroId) }),
                     heroId => this.OpenHeroById(heroId)))
@@ -187,33 +187,6 @@ namespace Siniskalc.Homm3.ViewModels
             {
                 this.openHero?.Invoke(hero.Index);
             }
-        }
-
-        /// <summary>
-        /// Lists who can be put in a place of the tavern: nobody, the hero that is in it now, and the heroes no player owns, except the one in the other place.
-        /// </summary>
-        private IReadOnlyList<HeroChoiceViewModel> TavernChoices(int place)
-        {
-            var tavern = this.session.Current.Tavern;
-            var inPlace = tavern.Ids[place];
-            var inOther = tavern.Ids[TavernHeroes.Places - 1 - place];
-            var candidates = this.session.History.Current.Heroes().GetSummaries()
-                .Where(h => h.HeroId == inPlace || (h.Owner == null && h.HeroId != inOther))
-                .OrderBy(h => h.Name, StringComparer.CurrentCultureIgnoreCase)
-                .ThenBy(h => h.HeroId)
-                .ToList();
-
-            // Names are not unique in a savefile (there are two Lord Haarts, say), so a repeated name is told apart by the id.
-            var repeated = candidates.GroupBy(h => h.Name).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet();
-            var choices = new List<HeroChoiceViewModel> { new(null, "(none)") };
-            choices.AddRange(candidates.Select(h => new HeroChoiceViewModel(h.HeroId, repeated.Contains(h.Name) ? $"{h.Name} (id {h.HeroId})" : h.Name)));
-            if (inPlace is { } id && candidates.All(h => h.HeroId != id))
-            {
-                // The place holds an id that the savefile has no hero for.
-                choices.Add(new HeroChoiceViewModel(id, $"Unknown hero (id {id})"));
-            }
-
-            return choices;
         }
 
         private void RefreshOwned()

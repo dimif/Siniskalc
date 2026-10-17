@@ -50,12 +50,7 @@
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
                     <heroes:ItemsCard Heading="Heroes" ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource LinkTemplate}"
                                       HasItems="{Binding HasHeroes}" EmptyText="This player has no heroes"/>
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Tavern"/>
-                            <ItemsControl ItemsSource="{Binding Tavern}" ItemTemplate="{StaticResource FactRowTemplate}"/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:TavernCard ItemsSource="{Binding TavernPlaces}"/>
                 </WrapPanel>
 
                 <!-- Towns -->

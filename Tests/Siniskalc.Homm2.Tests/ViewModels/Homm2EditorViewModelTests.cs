@@ -173,6 +173,23 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheTavernOfAPlayerIsEditedByPickingAHeroNobodyOwns()
+        {
+            var game = this.editor.CurrentGame!;
+            var blue = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
+            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner == null && !game.History.Current.Players().GetModel((int)Color.Blue).Tavern.Contains(h.HeroId));
+
+            Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
+            Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.HeroId));
+
+            blue.TavernPlaces[0].SelectedKey = free.HeroId;
+
+            Assert.That(game.History.Current.Players().GetModel((int)Color.Blue).Tavern.First, Is.EqualTo(free.HeroId));
+            Assert.That(blue.TavernPlaces[0].Selected!.Name, Is.EqualTo(free.Name));
+            Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.HeroId), "a hero is offered in one place only");
+        }
+
+        [Test]
         public void APlayerThatWasPutOutEarnsNothingWhateverTheIncomeTableHolds()
         {
             var green = new PlayerViewModel(this.editor.CurrentGame!, Color.Green, _ => { }, _ => { });

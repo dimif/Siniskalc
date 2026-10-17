@@ -15,13 +15,13 @@ Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was 
 | V1 | Overview sentences ("Difficulty: Queen (160%)", "2 heroes") | written in place | written in place | SHARE (`OverviewText`) | **done** |
 | V2 | Place on the map ("X: 28, Y: 27") | `ToString` of the tile | `MapLevelText` | SHARE (`MapLevelText` in `Heroes.ViewModels`) | **done** |
 | V3 | Spell rows and finder | name, cost | name, school, level, type, availability | KEEP the finder; rows now alike | **done** (HoMM2 shows level, type and mind/elemental) |
-| V4 | Page base: tab, pending changes, Reset, dispose | `PageViewModel` | repeated in each page | GENERIC base in `Heroes.Wpf` | open |
+| V4 | Page base: tab, pending changes, Reset, dispose | `PageViewModel` | repeated in each page | GENERIC base in `Heroes.Wpf` | **done** (`ResettablePageViewModelBase`) |
 | V5 | Navigation builder | 115 lines | 166 lines | GENERIC base | open |
-| V6 | Player page: resources, quick buttons | `SetAll`, `SetRich` | the same, plus tavern, days left, obelisks | INTERFACE (`IResourcesPage`) already; share tavern | open (feature gap) |
+| V6 | Player page: resources, quick buttons | `SetAll`, `SetRich` | the same, plus tavern, days left, obelisks | INTERFACE (`IResourcesPage`) already; share tavern | tavern **done** (`TavernCard`, `TavernPlaceViewModel`, `TavernChoices`; HoMM2 edits it now); days left and obelisks open |
 | V7 | Overview page | list of players | cards with heroes and castles | KEEP the view; share the card parts | open (feature gap) |
 | V8 | Castle page: dwellings, Mage Guild | `DwellingRowViewModel`, `GuildLevelViewModel` | `DwellingRowViewModel`, `MageGuildLevelRowViewModel` | wait for M12 | open |
 | V9 | Hero page | 4 sections | 6 sections and a General tab | KEEP; `IHeroPage` when asked | open |
-| V10 | Artifact choice and finder | bonuses | effect lines, slot, spell | KEEP; share the bonus text | open, small |
+| V10 | Artifact choice and finder | bonuses | effect lines, slot, spell | KEEP; share the bonus text | **done** (`PrimarySkillBonusText`; HoMM2 now says "Attack +6" as HoMM3 does) |
 | V11 | Skill level text | `SkillLevelText` (Wpf) | `SkillLevelNames` | follows E3 | deferred |
 
 ## Done

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     /// <summary>
     /// A hero (or nobody) to pick for a place of the tavern.
@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Gets the id of the hero (see <see cref="Siniskalc.Homm3.Models.HeroModel.HeroId"/>), or null for the choice of nobody.
+        /// Gets the id of the hero (see the hero number the savefile holds), or null for the choice of nobody.
         /// </summary>
         public int? HeroId { get; }
 

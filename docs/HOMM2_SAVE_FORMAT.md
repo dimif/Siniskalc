@@ -295,3 +295,24 @@ The counts of the bytes at 9 agree with the pictures where both were checked (th
 - **The sphinx is in the first part of the map:** a block that starts with `D2 04 00 00` (1234), an id, then a byte that is 1 until the riddle is answered (it went from 1 to 0 at 0xDD1 when Colar Blau answered, save 74), the reward (8,000 gold, an artifact), the number of answers (2) and the answers (13 characters each: **"darkness" and "shadow"**; the sphinx of this map accepts those two), then the text of the riddle (at 0xE59 of the map part, and the messages of the map, signs and rumors after it, all in the savegame).
 - **Shrines:** a hero who visits one learns the spell, which is marked in its spell book (saves 78 and 79: Mass Haste, Mass Bless; the spell is part of the object, the second circle shrine is not in the test saves). A shrine is not used up.
 - Save 72 was made from `T03BONUS` of the editor, so Colar Blau already had +3 morale and +3 luck there and Charity -3 and -3; they are not from the arena.
+
+## Shrines, sphinxes and arenas (2026-10-17, Threedom saves 72 to 79 and the other test maps)
+
+**The first part of the map is a list of blocks.** Each starts with `D2 04 00 00` (1234), a 16 bit length and the payload: signs (17 bytes, the text "To Agal"), events and messages (the text of a rumor, a bar, a hero's story), and the objects with state. Blocks do not hold a position: the block of an object is found by the order of the objects of its kind on the map (row by row), as the bits of a hero's visited places are.
+
+**The sphinx (a tile with 0xCF at byte 9, 1 on the map of Threedom, at 13, 31)** has one block (335 bytes in Threedom, 377 in Arrax the Jerk), its payload being:
+
+| Offset | Size | Meaning |
+|---|---|---|
+| 0 | u8 | **1 while the riddle has not been answered, 0 after** (Colar Blau answered in save 74: 1 to 0 at the start of the payload) |
+| 1 | 7 x u32 | the reward in resources: wood, mercury, ore, sulfur, crystal, gems, gold (Threedom 8,000 gold; Arrax 15 mercury) |
+| 29 | u16 | the artifact reward, 96 in both maps with none given (it is also the code of the Legendary Scepter: read as none) |
+| 31 | u8 | how many answers (Threedom 2, Arrax 6) |
+| 32 | 8 x 13 bytes | the answers, text padded with zeros (Threedom: "darkness" and "shadow"; Arrax: "1", "one", "1 bushel"...) |
+| 136 | text | the riddle, ending with a zero ("I Only Creep. I Never Run...") |
+
+The riddle and the answers are in the savegame, so they can be read and edited; the game compares the answer typed with the list. The gold of the reward arrived with the answer (the gold of save 74 grew by 23,100, which is three days of income and 8,000).
+
+**A shrine is a tile; its spell is in the tile.** The kind of the circle is the byte at 9 (0x9F the first circle, 0xCA the second, 0xCB the third), and the spell is **the 16 bit number at tile bytes 4 and 5 shifted right by 3** (the low 3 bits are the tile's own flags and are kept): Threedom has Shield (42, the first shrine, learned in save 20: `0x0150 >> 3`), Haste (10), Dispel Magic (24) and Cure (6) in the first circle; Steelskin (18), Haunt (61) and 56 in the second; Holy Word (21), Identify Hero (55), Earthquake (48), View Towns (52), Mass Haste (11) and Mass Bless (16) in the third. The shrine of save 78 is the one at 29, 42 (Mass Haste) and of save 79 at 31, 47 (Mass Bless): the tile numbers agree with what Charity learned. All of it checked in the six maps of the test saves (the spells of the first circle are all of level 1, those of the third mostly level 3). A shrine is not used up and leaves no mark in the map; the hero's spell book is the only memory.
+
+**Arena and stables.** Both tiles have 0xFA at byte 9 (7 tiles on the map of Threedom: the ones with `F4` at byte 2 and the ones with `F8`; the stables of save 77 is `F8 04`, the arena of save 72 `F4 46`). A visit changes only the hero's bits (0x400000 for the arena, 0x800000 for the stables of the field at +0xD9) and the skill: the map has no mark of who used an arena, so **the memory of an arena is one bit of the hero, not one for each arena**. Whether the game really gives a hero a bonus from each arena was not tried: it would need a hero that has used one arena visit another (probe saves: Charity, who has used the arena at 44, 28, at the arena at 58, 31; Colar Blau at 58, 31 and then at 19, 33).

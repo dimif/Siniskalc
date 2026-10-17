@@ -153,13 +153,13 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(node.HasChanges, Is.True);
             Assert.That(this.editor.NavigationNodes[0].HasChanges, Is.True, "the nodes above the hero are marked");
             Assert.That(page.HasPendingChanges, Is.True);
-            Assert.That(page.Facts.Single(f => f.Name == "Experience").Value, Is.EqualTo(experience + 1000));
+            Assert.That(page.LevelAndClass.Experience, Is.EqualTo(experience + 1000));
 
             page.ResetCommand.Execute(null);
 
             Assert.That(node.HasChanges, Is.False);
             Assert.That(page.HasPendingChanges, Is.False);
-            Assert.That(page.Facts.Single(f => f.Name == "Experience").Value, Is.EqualTo(experience));
+            Assert.That(page.LevelAndClass.Experience, Is.EqualTo(experience));
         }
 
         [Test]
@@ -197,7 +197,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             hero.SelectedOwner = "Neutral";
 
             Assert.That(document().Heroes().GetModel(7).Owner, Is.Null);
-            Assert.That(document().Heroes().GetModel(7).Destination, Is.Null);
+            Assert.That(document().Heroes().GetModel(7).Destination, Is.EqualTo(MapPosition.None));
             Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.False);
 
             hero.SelectedOwner = "Green";

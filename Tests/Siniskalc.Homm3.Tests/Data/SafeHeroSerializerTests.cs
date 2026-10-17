@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Entities;
 using System.Buffers.Binary;
 using Siniskalc;
 using Siniskalc.Heroes.Models;

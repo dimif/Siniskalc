@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -41,9 +41,9 @@
             [HeroOffsetName.Gender] = 20,                 // Gender (0 male, 1 female), in the hero header: not in the chunk of a hero with a biography
             [HeroOffsetName.HeroId] = HeroIdOffset,       // Which hero this is: 0 Orrin, 1 Valeska, ... 17 Ufretin
             [HeroOffsetName.Portrait] = 38,               // Portrait id: the hero id unless the map gives the hero another portrait
-            [HeroOffsetName.MarkerX] = 45,                // Marker XYZ coordinates
-            [HeroOffsetName.MarkerY] = 47,
-            [HeroOffsetName.MarkerZ] = 49,
+            [HeroOffsetName.DestinationX] = 45,                // Destination XYZ coordinates (where the hero is going: the marker of its path)
+            [HeroOffsetName.DestinationY] = 47,
+            [HeroOffsetName.DestinationZ] = 49,
             [HeroOffsetName.MaxMovementPoints] = 57,      // Movement points in total
             [HeroOffsetName.CurrentMovementPoints] = 61,  // Movement points remaining
             [HeroOffsetName.ExperiencePoints] = 65,       // Experience points

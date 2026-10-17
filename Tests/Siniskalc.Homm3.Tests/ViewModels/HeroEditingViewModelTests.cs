@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -90,11 +91,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.Level = 10;
-            Assert.That(general.Experience, Is.EqualTo(14700));
+            general.LevelAndClass.Level = 10;
+            Assert.That(general.LevelAndClass.Experience, Is.EqualTo(14700));
 
-            general.Experience = 20600;
-            Assert.That(general.Level, Is.EqualTo((short)12));
+            general.LevelAndClass.Experience = 20600;
+            Assert.That(general.LevelAndClass.Level, Is.EqualTo(12));
         }
 
         [Test]
@@ -103,7 +104,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var general = this.hero.GeneralInfoViewModel;
 
             general.Attack = 42;
-            general.CurrentSpellPoints = 99;
+            general.MovementAndSpellPoints.CurrentSpellPoints = 99;
             general.UpdateWarMachine("Ammo_Cart", true);
 
             Assert.That(this.hero.HeroModel.PrimarySkills.Attack, Is.EqualTo((byte)42));
@@ -130,13 +131,13 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.CurrentMovement = 0;
-            Assert.That(general.RestoreMovementCommand.CanExecute(null), Is.True);
+            general.MovementAndSpellPoints.CurrentMovement = 0;
+            Assert.That(general.MovementAndSpellPoints.RestoreMovementCommand.CanExecute(null), Is.True);
 
-            general.RestoreMovementCommand.Execute(null);
+            general.MovementAndSpellPoints.RestoreMovementCommand.Execute(null);
 
-            Assert.That(general.CurrentMovement, Is.EqualTo(general.MaxMovement));
-            Assert.That(general.RestoreMovementCommand.CanExecute(null), Is.False);
+            Assert.That(general.MovementAndSpellPoints.CurrentMovement, Is.EqualTo(general.MovementAndSpellPoints.MaxMovement));
+            Assert.That(general.MovementAndSpellPoints.RestoreMovementCommand.CanExecute(null), Is.False);
         }
 
         [Test]
@@ -153,11 +154,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             };
             var knowledge = (int)hero.PrimarySkills.Knowledge;   // the saved knowledge has the bonus of the artifacts in it
 
-            general.CurrentSpellPoints = 0;
-            general.ResetSpellPointsCommand.Execute(null);
+            general.MovementAndSpellPoints.CurrentSpellPoints = 0;
+            general.MovementAndSpellPoints.ResetSpellPointsCommand.Execute(null);
 
-            Assert.That(general.MaxSpellPoints, Is.EqualTo(knowledge * 10 * (100 + percent) / 100));
-            Assert.That(general.CurrentSpellPoints, Is.EqualTo(general.MaxSpellPoints));
+            Assert.That(general.MovementAndSpellPoints.MostSpellPoints, Is.EqualTo(knowledge * 10 * (100 + percent) / 100));
+            Assert.That(general.MovementAndSpellPoints.CurrentSpellPoints, Is.EqualTo(general.MovementAndSpellPoints.MostSpellPoints));
         }
 
         [Test]
@@ -165,13 +166,13 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.FacingDirection = FacingDirection.North;
-            general.RotateLeftCommand.Execute(null);
-            Assert.That(general.FacingDirection, Is.EqualTo(FacingDirection.NorthWest));
+            general.Position.Facing = FacingDirection.North;
+            general.Position.RotateLeftCommand.Execute(null);
+            Assert.That(general.Position.Facing, Is.EqualTo(FacingDirection.NorthWest));
 
-            general.RotateRightCommand.Execute(null);
-            general.RotateRightCommand.Execute(null);
-            Assert.That(general.FacingDirection, Is.EqualTo(FacingDirection.NorthEast));
+            general.Position.RotateRightCommand.Execute(null);
+            general.Position.RotateRightCommand.Execute(null);
+            Assert.That(general.Position.Facing, Is.EqualTo(FacingDirection.NorthEast));
         }
 
         [Test]
@@ -179,11 +180,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.MarkerX = 5;
-            general.RemoveMarkerCommand.Execute(null);
+            general.Destination.X = 5;
+            general.Destination.RemoveCommand.Execute(null);
 
-            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new MapPosition(-1, -1, -1)));
-            Assert.That(general.RemoveMarkerCommand.CanExecute(null), Is.False);
+            Assert.That(this.hero.HeroModel.Destination, Is.EqualTo(new MapPosition(-1, -1, -1)));
+            Assert.That(general.Destination.RemoveCommand.CanExecute(null), Is.False);
         }
 
         [Test]
@@ -203,7 +204,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(this.hero.HeroModel.Owner, Is.Null);
             Assert.That(this.hero.HeroModel.Position, Is.EqualTo(new HeroPosition(-1, -1, -1, FacingDirection.East)));
-            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new MapPosition(-1, -1, -1)));
+            Assert.That(this.hero.HeroModel.Destination, Is.EqualTo(new MapPosition(-1, -1, -1)));
 
             this.hero.SelectedOwner = "Blue";
             Assert.That(this.hero.HeroModel.Owner, Is.EqualTo(PlayerColor.Blue));
@@ -214,8 +215,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = new GeneralInfoPageViewModel(() => this.hero.HeroModel, edit => this.hero.Session.Update(edit), TestServices.SpellPoints, this.hero.GameVersion, hasUnderground: false);
 
-            Assert.That(general.PositionLevelChoices.Select(c => c.Label), Is.EqualTo(new[] { "Surface (0)" }).Or.EqualTo(new[] { "Surface (0)", "None" }));
-            Assert.That(this.hero.GeneralInfoViewModel.PositionLevelChoices.Select(c => c.Label), Does.Contain("Underground (1)"));
+            Assert.That(general.Position.LevelChoices.Select(c => c.Label), Is.EqualTo(new[] { "Surface (0)" }).Or.EqualTo(new[] { "Surface (0)", "None" }));
+            Assert.That(this.hero.GeneralInfoViewModel.Position.LevelChoices.Select(c => c.Label), Does.Contain("Underground (1)"));
         }
     }
 }

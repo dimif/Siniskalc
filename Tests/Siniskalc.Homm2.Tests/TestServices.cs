@@ -57,5 +57,10 @@ namespace Siniskalc.Homm2.Tests
         /// Loads the save of Threedom whose number is <paramref name="number"/>.
         /// </summary>
         public static Game LoadThreedom(int number) => Load(Saves.ThreedomSave(number));
+
+        /// <summary>
+        /// Loads the save of MarkerFacing whose number is <paramref name="number"/>.
+        /// </summary>
+        public static Game LoadMarkerFacing(int number) => Load(Saves.MarkerFacingSave(number));
     }
 }

@@ -247,10 +247,10 @@ namespace Siniskalc.Homm2.Tests
                 row.Value = 20;
             }
 
-            page.Facts.Single(r => r.Name == "Level").Value = 20;
-            page.Facts.Single(r => r.Name == "Experience").Value = 50_000;
-            page.Facts.Single(r => r.Name == "Spell points").Value = 99;
-            page.RestoreMovementCommand.Execute(null);
+            page.LevelAndClass.Level = 20;
+            page.LevelAndClass.Experience = 50_000;
+            page.MovementAndSpellPoints.CurrentSpellPoints = 99;
+            page.MovementAndSpellPoints.RestoreMovementCommand.Execute(null);
         }
 
         private static void EverythingTogether(Game game)

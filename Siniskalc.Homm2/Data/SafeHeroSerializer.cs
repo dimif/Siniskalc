@@ -24,6 +24,11 @@ namespace Siniskalc.Homm2.Data
             WriteNumber(bytes, HeroLayout.X, 4, model.Position.X, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
             WriteNumber(bytes, HeroLayout.Y, 4, model.Position.Y, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
             WriteDestination(bytes, model.Destination);
+            if (Bytes.Facing(bytes[HeroLayout.Facing]) != model.Facing)
+            {
+                bytes[HeroLayout.Facing] = (byte)model.Facing;
+            }
+
             WriteNumber(bytes, HeroLayout.MaxMovement, 4, model.MaxMovement, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MaxMovement));
             WriteNumber(bytes, HeroLayout.MovementLeft, 4, model.MovementLeft, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementLeft));
             WriteNumber(bytes, HeroLayout.Experience, 4, model.Experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(model.Experience));
@@ -120,16 +125,19 @@ namespace Siniskalc.Homm2.Data
             }
         }
 
-        private static void WriteDestination(byte[] bytes, MapPosition? destination)
+        private static void WriteDestination(byte[] bytes, MapPosition destination)
         {
-            var current = Bytes.OptionalPosition(ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination), ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination + 4));
-            if (current == destination)
+            var current = Bytes.Destination(ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination), ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination + 4));
+            if (current.X == destination.X && current.Y == destination.Y)
             {
                 return;
             }
 
-            ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination, destination is { } x ? (uint)x.X : uint.MaxValue);
-            ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination + 4, destination is { } y ? (uint)y.Y : uint.MaxValue);
+            // A part that is below 0 is the game's "none".
+            RangeGuard.ThrowIfOutOfRange(destination.X, Siniskalc.Heroes.Constants.Map.NoCoordinate, Constants.Hero.MaxCoordinate, nameof(destination));
+            RangeGuard.ThrowIfOutOfRange(destination.Y, Siniskalc.Heroes.Constants.Map.NoCoordinate, Constants.Hero.MaxCoordinate, nameof(destination));
+            ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination, destination.X < 0 ? uint.MaxValue : (uint)destination.X);
+            ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination + 4, destination.Y < 0 ? uint.MaxValue : (uint)destination.Y);
         }
 
         private static void WriteSecondarySkills(byte[] bytes, SecondarySkills skills)

@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(maximus.Owner, Is.EqualTo(Color.Blue));
             Assert.That(maximus.Position, Is.EqualTo(new MapPosition(28, 27)));
-            Assert.That(maximus.Destination, Is.Null);
+            Assert.That(maximus.Destination, Is.EqualTo(MapPosition.None));
             Assert.That(maximus.Level, Is.EqualTo(1));
             Assert.That(maximus.Experience, Is.Zero);
             Assert.That(maximus.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));

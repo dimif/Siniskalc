@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Heroes.Entities
 {
     public enum FacingDirection : byte
     {

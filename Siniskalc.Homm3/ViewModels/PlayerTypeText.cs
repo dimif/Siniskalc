@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -17,7 +18,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Returns who plays a colour, followed by "current turn" when it is that colour's turn, or only that when it is not known who plays it.
         /// </summary>
-        public static string Describe(PlayerType? control, bool isCurrent) =>
-            Of(control) + (isCurrent ? (control == null ? "Current turn" : " · current turn") : string.Empty);
+        public static string Describe(PlayerType? control, bool isCurrent) => TurnText.Beside(Of(control), isCurrent);
     }
 }

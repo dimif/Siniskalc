@@ -150,10 +150,10 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(general.AttackArtifactNote, Is.EqualTo("+6 from artifacts"));
             Assert.That(general.AttackTotal, Is.EqualTo(baseAttack + 6));
-            Assert.That(general.NextLevelNote, Does.Contain("XP to level"));
+            Assert.That(general.LevelAndClass.NextLevelNote, Does.Contain("XP to level"));
             Assert.That(general.KnowledgeArtifactNote, Does.Contain("from artifacts"));
-            Assert.That(general.MovementArtifactNote, Is.Empty);
-            Assert.That(general.MaxMovementText, Does.StartWith("Maximum "));
+            Assert.That(general.MovementAndSpellPoints.MovementNote, Is.Empty);
+            Assert.That(general.MovementAndSpellPoints.MaxMovementText, Does.StartWith("Maximum "));
 
             this.game.History.Undo();
 

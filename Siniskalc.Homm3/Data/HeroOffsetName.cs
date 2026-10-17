@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     public enum HeroOffsetName
     {
@@ -8,9 +8,9 @@
         Owner,
         Class,
         Facing,
-        MarkerX,
-        MarkerY,
-        MarkerZ,
+        DestinationX,
+        DestinationY,
+        DestinationZ,
         MaxMovementPoints,
         CurrentMovementPoints,
         ExperiencePoints,

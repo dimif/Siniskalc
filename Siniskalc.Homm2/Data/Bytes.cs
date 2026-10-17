@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
@@ -142,7 +143,15 @@ namespace Siniskalc.Homm2.Data
             ByteBufferHelper.WriteUInt16(bytes, countOffset, (ushort)wanted.Count);
         }
 
-        public static MapPosition? OptionalPosition(uint x, uint y) => x == uint.MaxValue || y == uint.MaxValue ? null : new MapPosition(ReadCoordinate(x), ReadCoordinate(y));
+        /// <summary>
+        /// Reads the destination of a hero: two 32 bit numbers, 0xFFFFFFFF for none. Both none is <see cref="MapPosition.None"/>; one of them
+        /// none is kept as a -1, so that what the user typed in a box is not lost.
+        /// </summary>
+        public static MapPosition Destination(uint x, uint y) => x == uint.MaxValue && y == uint.MaxValue
+            ? MapPosition.None
+            : new MapPosition(x == uint.MaxValue ? Heroes.Constants.Map.NoCoordinate : ReadCoordinate(x), y == uint.MaxValue ? Heroes.Constants.Map.NoCoordinate : ReadCoordinate(y));
+
+        public static FacingDirection Facing(byte value) => Enum.IsDefined((FacingDirection)value) ? (FacingDirection)value : FacingDirection.North;
 
         public static Numbers IdList(byte[] bytes, int offset, int size) => new(bytes.AsSpan(offset, size).ToArray().Where(b => b != Empty).Select(b => (int)b));
 

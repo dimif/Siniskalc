@@ -7,6 +7,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -22,7 +23,6 @@ namespace Siniskalc.Homm2.ViewModels
         private HeroModel hero = null!;
         private readonly HeroEditSession session;
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
-        private readonly IReadOnlyList<AmountRowViewModel> facts;
         private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
@@ -42,13 +42,6 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Row("Defense", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Defense, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Defense = (int)v } }),
                 this.Row("Spell power", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.SpellPower, (h, v) => h with { PrimarySkills = h.PrimarySkills with { SpellPower = (int)v } }),
                 this.Row("Knowledge", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Knowledge, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Knowledge = (int)v } }),
-            ];
-            this.facts =
-            [
-                this.Row("Level", Constants.Hero.MinLevel, Constants.Hero.MaxLevel, 1, h => h.Level, (h, v) => h with { Level = (int)v, Experience = HeroLevels.ExperienceOf((int)v) }),
-                this.Row("Experience", Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep, h => h.Experience, (h, v) => h with { Experience = v, Level = HeroLevels.LevelOf(v) }),
-                this.Row("Spell points", Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, 1, h => h.SpellPoints, (h, v) => h with { SpellPoints = (int)v }),
-                this.Row("Movement", Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep, h => h.MovementLeft, (h, v) => h with { MovementLeft = v }, () => $"of {this.hero.MaxMovement:N0} a day"),
             ];
             this.battleBonus =
             [
@@ -70,12 +63,12 @@ namespace Siniskalc.Homm2.ViewModels
             ];
             this.visitedPlaces =
             [
-                this.Visited(game, PlaceKind.Gazebo, "Gazebos", "Gazebo", "A thousand experience points, once per hero"),
-                this.Visited(game, PlaceKind.Fort, "Forts", "Fort", "A point of defense, once per hero"),
-                this.Visited(game, PlaceKind.WitchDoctorHut, "Witch doctor's huts", "Witch doctor's hut", "A point of knowledge or a skill, once per hero"),
-                this.Visited(game, PlaceKind.MercenaryCamp, "Mercenary camps", "Mercenary camp", "A point of attack, once per hero"),
-                this.Visited(game, PlaceKind.StandingStones, "Standing stones", "Standing stones", "A point of spell power, once per hero"),
-                this.Visited(game, PlaceKind.Xanadu, "Xanadu", "Xanadu", "A point of every primary skill, once per hero"),
+                this.Visited(game, PlaceKind.Gazebo, "Gazebos", "A thousand experience points, once per hero"),
+                this.Visited(game, PlaceKind.Fort, "Forts", "A point of defense, once per hero"),
+                this.Visited(game, PlaceKind.WitchDoctorHut, "Witch doctor's huts", "A point of knowledge or a skill, once per hero"),
+                this.Visited(game, PlaceKind.MercenaryCamp, "Mercenary camps", "A point of attack, once per hero"),
+                this.Visited(game, PlaceKind.StandingStones, "Standing stones", "A point of spell power, once per hero"),
+                this.Visited(game, PlaceKind.Xanadu, "Xanadu", "A point of every primary skill, once per hero"),
             ];
             this.ArmyEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -99,7 +92,34 @@ namespace Siniskalc.Homm2.ViewModels
                 () => OwnerNames<Color>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish.");
-            this.RestoreMovementCommand = new DelegateCommand(_ => this.session.Update(h => h with { MovementLeft = h.MaxMovement }), _ => this.hero.MovementLeft != this.hero.MaxMovement);
+            this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
+                () => this.session.Current.MovementLeft,
+                value => this.session.Update(h => h with { MovementLeft = value }),
+                () => this.session.Current.MaxMovement,
+                new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
+                () => this.session.Current.SpellPoints,
+                value => this.session.Update(h => h with { SpellPoints = value }),
+                new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints));
+            this.LevelAndClass = new LevelAndClassCardViewModel(
+                () => this.session.Current.Level,
+                value => this.session.Update(h => h with { Level = value, Experience = HeroLevels.ExperienceOf(value) }),
+                new NumberRange(Constants.Hero.MinLevel, Constants.Hero.MaxLevel),
+                () => this.session.Current.Experience,
+                value => this.session.Update(h => h with { Experience = value, Level = HeroLevels.LevelOf(value) }),
+                new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
+                this.NextLevelNote,
+                Enum.GetNames<Faction>(),
+                () => this.session.Current.Faction.ToString());
+            this.Position = MapPointCardViewModel.ForPosition(
+                () => this.session.Current.Position,
+                position => this.session.Update(h => h with { Position = position }),
+                new NumberRange(Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate),
+                getFacing: () => this.session.Current.Facing,
+                setFacing: facing => this.session.Update(h => h with { Facing = facing }));
+            this.Destination = MapPointCardViewModel.ForDestination(
+                () => this.session.Current.Destination,
+                destination => this.session.Update(h => h with { Destination = destination }),
+                new NumberRange(Siniskalc.Heroes.Constants.Map.NoCoordinate, Constants.Hero.MaxCoordinate));
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
         }
@@ -140,7 +160,12 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets where the hero is on the map, or nothing for a hero that serves nobody.
         /// </summary>
-        public string PositionText => this.hero.Owner == null ? string.Empty : $"at {MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y)}";
+        public string PositionText => this.hero.Owner == null ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
+
+        /// <summary>
+        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4".
+        /// </summary>
+        public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 
         /// <summary>
         /// Gets the name of the castle the hero is in, or nothing.
@@ -150,13 +175,26 @@ namespace Siniskalc.Homm2.ViewModels
         public ICommand OpenCastleCommand { get; }
 
         /// <summary>
-        /// Gets the command that gives the hero all the movement points of a day.
+        /// Gets the card of the movement points and the spell points.
         /// </summary>
-        public ICommand RestoreMovementCommand { get; }
+        public MovementAndSpellPointsCardViewModel MovementAndSpellPoints { get; }
+
+        /// <summary>
+        /// Gets the card of the level, the experience and the faction (which is the class of a hero of this game).
+        /// </summary>
+        public LevelAndClassCardViewModel LevelAndClass { get; }
+
+        /// <summary>
+        /// Gets the card of where the hero stands and which way it faces.
+        /// </summary>
+        public MapPointCardViewModel Position { get; }
+
+        /// <summary>
+        /// Gets the card of the marker of the hero.
+        /// </summary>
+        public MapPointCardViewModel Destination { get; }
 
         public IReadOnlyList<AmountRowViewModel> PrimarySkills => this.primarySkills;
-
-        public IReadOnlyList<AmountRowViewModel> Facts => this.facts;
 
         /// <summary>
         /// Gets the morale and the luck the hero has for its next battle only (a temple, a fountain, a faerie ring).
@@ -209,7 +247,7 @@ namespace Siniskalc.Homm2.ViewModels
             var hero = document.Heroes().GetModel(this.HeroId);
             this.hero = hero;
 
-            foreach (var row in this.primarySkills.Concat(this.facts).Concat(this.battleBonus))
+            foreach (var row in this.primarySkills.Concat(this.battleBonus))
             {
                 row.Refresh();
             }
@@ -224,6 +262,10 @@ namespace Siniskalc.Homm2.ViewModels
                 row.Refresh();
             }
 
+            this.MovementAndSpellPoints?.Refresh();
+            this.LevelAndClass?.Refresh();
+            this.Position?.Refresh();
+            this.Destination?.Refresh();
             this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
@@ -234,6 +276,20 @@ namespace Siniskalc.Homm2.ViewModels
             var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHero == this.HeroId);
             this.castleIndex = castle?.Index ?? -1;
             this.castleName = castle?.Name ?? string.Empty;
+        }
+
+        private string NextLevelNote()
+        {
+            var level = this.session.Current.Level;
+            if (level >= Constants.Hero.MaxLevel)
+            {
+                return string.Empty;
+            }
+
+            var next = HeroLevels.ExperienceOf(level + 1);
+            return string.Create(
+                System.Globalization.CultureInfo.CurrentCulture,
+                $"{next - this.session.Current.Experience:N0} XP to level {level + 1} (at {next:N0})");
         }
 
         private void ChangeOwner(string name)
@@ -271,12 +327,12 @@ namespace Siniskalc.Homm2.ViewModels
             on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
             toolTip: toolTip + ". Not tried in the game.");
 
-        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string single, string toolTip)
+        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip)
         {
             // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
             var places = game.Places.Of(kind)
                 .Select((position, index) => new ToggleRowViewModel(
-                    $"{single} at {MapLevelText.Coordinates(position.X, position.Y)}",
+                    $"At {MapLevelText.Coordinates(position.X, position.Y)}",
                     () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
                     visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
                     toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))

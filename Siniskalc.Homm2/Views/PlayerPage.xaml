@@ -19,7 +19,10 @@
         <heroes:PageHeader Grid.Row="0" Margin="16,14,16,4" ColorHex="{Binding ColorHex}" Title="{Binding Name}"
                            EditedToolTip="This player has changes that are not saved yet"
                            ResetToolTip="Put everything of this player back to what the savegame had">
-            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding Status}"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding ControlText}"/>
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding Status}"/>
+            </StackPanel>
         </heroes:PageHeader>
 
         <!-- The pages of a player, as tabs. -->
@@ -60,27 +63,14 @@
 
                 <!-- Towns -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <heroes:ItemsCard Heading="Towns" ItemsSource="{Binding Castles}" ItemTemplate="{StaticResource LinkTemplate}"
+                    <heroes:ItemsCard Heading="Towns" ItemsSource="{Binding Castles}" ItemTemplate="{StaticResource CastleLinkTemplate}"
                                       HasItems="{Binding HasCastles}" EmptyText="This player has no towns"/>
                 </WrapPanel>
 
                 <!-- Obelisks -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
                     <!-- The obelisks of the map and which of them this player has visited. Only for savegames in which they were found. -->
-                    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" DataContext="{Binding Obelisks}">
-                        <StackPanel>
-                            <DockPanel Margin="0,0,0,8">
-                                <TextBlock DockPanel.Dock="Right" Margin="16,0,0,0" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Visited obelisks"
-                                           ToolTip="The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the Ultimate Artifact."/>
-                            </DockPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                                <Button Style="{StaticResource PillButtonStyle}" Content="Visit all" Command="{Binding VisitAllCommand}" ToolTip="This player has visited every obelisk"/>
-                                <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Content="None" Command="{Binding ClearAllCommand}" ToolTip="This player has visited no obelisk"/>
-                            </StackPanel>
-                            <ItemsControl ItemsSource="{Binding Obelisks}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:ObeliskVisitsCard DataContext="{Binding Obelisks}"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

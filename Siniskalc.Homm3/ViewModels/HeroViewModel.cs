@@ -117,6 +117,11 @@ namespace Siniskalc.Homm3.ViewModels
             ? string.Empty
             : MapLevelText.Coordinates(this.HeroModel.Position.X, this.HeroModel.Position.Y, this.HeroModel.Position.Level);
 
+        /// <summary>
+        /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4, Surface (0)".
+        /// </summary>
+        public string SubtitleText => string.Join(" · ", new[] { this.HeroModel.HeroClass.Name, $"level {this.LevelNumber}", this.PositionText }.Where(t => t.Length > 0));
+
         private HeroModel OriginalModel => this.session.History.Original.Heroes().GetModel(this.session.HeroIndex);
 
         public string Name => this.HeroModel.Name;
@@ -130,7 +135,7 @@ namespace Siniskalc.Homm3.ViewModels
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. A hero that is made neutral leaves the map:
-        /// its position and marker become -1, -1, -1 and it faces east.
+        /// its position and destination become -1, -1, -1 and it faces east.
         /// </summary>
         public string SelectedOwner
         {
@@ -149,7 +154,7 @@ namespace Siniskalc.Homm3.ViewModels
                     {
                         Owner = null,
                         Position = new HeroPosition(MapPosition.None.X, MapPosition.None.Y, MapPosition.None.Level, FacingDirection.East),
-                        MarkerPosition = MapPosition.None,
+                        Destination = MapPosition.None,
                     });
             }
         }
@@ -190,10 +195,10 @@ namespace Siniskalc.Homm3.ViewModels
             set => this.Update(h => h with { Position = value });
         }
 
-        public MapPosition MarkerPosition
+        public MapPosition Destination
         {
-            get => this.HeroModel.MarkerPosition;
-            set => this.Update(h => h with { MarkerPosition = value });
+            get => this.HeroModel.Destination;
+            set => this.Update(h => h with { Destination = value });
         }
 
         public PrimarySkills PrimarySkills

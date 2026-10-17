@@ -47,7 +47,7 @@ namespace Siniskalc.Homm2.Data
                 edits.Add(((int)next, players.GetModel((int)next).WithHero(hero.HeroId)));
             }
 
-            var changed = owner == null ? hero with { Owner = null, Destination = null } : hero with { Owner = owner };
+            var changed = owner == null ? hero with { Owner = null, Destination = MapPosition.None } : hero with { Owner = owner };
             var updated = document.WithChunk(Homm2ChunkKinds.Hero, this.HeroIndex, heroes.Serializer.Serialize(heroes[this.HeroIndex], changed));
             foreach (var (player, model) in edits)
             {

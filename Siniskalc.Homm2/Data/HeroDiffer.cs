@@ -30,6 +30,21 @@ namespace Siniskalc.Homm2.Data
                 Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), h => h with { Owner = original.Owner });
             }
 
+            if (original.Position != current.Position)
+            {
+                Add(ChangeAreas.General, "Position", original.Position.ToString(), current.Position.ToString(), h => h with { Position = original.Position });
+            }
+
+            if (original.Facing != current.Facing)
+            {
+                Add(ChangeAreas.General, "Facing", original.Facing.ToString(), current.Facing.ToString(), h => h with { Facing = original.Facing });
+            }
+
+            if (original.Destination != current.Destination)
+            {
+                Add(ChangeAreas.General, "Destination", original.Destination == MapPosition.None ? ChangeText.Empty : original.Destination.ToString(), current.Destination == MapPosition.None ? ChangeText.Empty : current.Destination.ToString(), h => h with { Destination = original.Destination });
+            }
+
             if (original.SpellPoints != current.SpellPoints)
             {
                 Add(ChangeAreas.General, "Spell points", original.SpellPoints.ToString("N0"), current.SpellPoints.ToString("N0"), h => h with { SpellPoints = original.SpellPoints });

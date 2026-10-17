@@ -21,21 +21,8 @@
                            EditedToolTip="This hero has changes that are not saved yet"
                            ResetToolTip="Put everything of this hero back to what the savegame had">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
-            <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14">
-                    <Run Text="{Binding HeroClass.Name, Mode=OneWay}"/><Run Text=", level "/><Run Text="{Binding LevelNumber, Mode=OneWay}"/>
-                </TextBlock>
-                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding PositionText, Mode=OneWay}"
-                           ToolTip="Where the hero is on the map">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <Trigger Property="Text" Value="">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding SubtitleText, Mode=OneWay}"
+                           ToolTip="Class, level and where the hero is on the map"/>
                 <StackPanel Orientation="Horizontal" Margin="8,0,0,3" VerticalAlignment="Bottom">
                     <StackPanel.Style>
                         <Style TargetType="StackPanel">

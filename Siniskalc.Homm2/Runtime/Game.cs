@@ -40,6 +40,11 @@ namespace Siniskalc.Homm2.Runtime
         /// </summary>
         public GameDate Date => this.Metadata.Date;
 
+        /// <summary>
+        /// Gets the colour whose turn it was when the savegame was made, or <c>null</c> when the savegame does not say.
+        /// </summary>
+        public Color? CurrentPlayer => this.Metadata.CurrentPlayer;
+
         public MapHeader Map => this.Metadata.Map;
 
         /// <summary>

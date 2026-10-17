@@ -17,11 +17,8 @@
                                EditedToolTip="This hero has changes that are not saved yet"
                                ResetToolTip="Put everything of this hero back to what the savegame had">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
-                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14">
-                        <Run Text="{Binding FactionName, Mode=OneWay}"/><Run Text=", level "/><Run Text="{Binding Level, Mode=OneWay}"/>
-                    </TextBlock>
-                    <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding PositionText, Mode=OneWay}"
-                               ToolTip="Where the hero is on the map" Style="{StaticResource FieldNoteStyle}"/>
+                    <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding SubtitleText, Mode=OneWay}"
+                               ToolTip="Faction, level and where the hero is on the map"/>
                     <StackPanel Orientation="Horizontal" Margin="8,0,0,3" VerticalAlignment="Bottom">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
@@ -89,18 +86,10 @@
                                        Text="The game keeps the skills with the bonuses of the artifacts in them, and moves them with the artifact."/>
                         </StackPanel>
                     </Border>
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hero"/>
-                            <ItemsControl ItemsSource="{Binding Facts}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
-                            <Button Margin="120,4,0,0" HorizontalAlignment="Left" Style="{StaticResource PillButtonStyle}" Content="Full movement" Command="{Binding RestoreMovementCommand}"
-                                    ToolTip="Give the hero all the movement points of a day"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,3">
-                                <TextBlock Width="130" Foreground="{StaticResource MutedBrush}" Text="Serves"/>
-                                <TextBlock FontWeight="SemiBold" Text="{Binding OwnerText}"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                    <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
+                    <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
+                    <heroes:MapPointCard DataContext="{Binding Position}"/>
+                    <heroes:MapPointCard DataContext="{Binding Destination}"/>
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Next battle"/>

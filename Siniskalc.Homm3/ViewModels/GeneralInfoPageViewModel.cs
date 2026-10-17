@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Models;
     using System;
@@ -12,6 +13,7 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -23,8 +25,6 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class GeneralInfoPageViewModel : PageViewModelBase
     {
         private const int WarMachineCheckBoxCount = 5;
-        private const uint HighestMovement = (uint)Constants.Hero.MaxMovementPoints;
-        private const ushort HighestSpellPoints = (ushort)Constants.Hero.MaxSpellPoints;
 
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
@@ -44,23 +44,43 @@ namespace Siniskalc.Homm3.ViewModels
             this.hasUnderground = hasUnderground;
             this.canSleep = canSleep ?? (() => false);
 
-            this.RestoreMovementCommand = new DelegateCommand(
-                _ => this.CurrentMovement = this.MaxMovement,
-                _ => this.CurrentMovement != this.MaxMovement);
-            this.MaxMovementCommand = new DelegateCommand(
-                _ => this.CurrentMovement = HighestMovement,
-                _ => this.CurrentMovement != HighestMovement);
-            this.MaxSpellPointsCommand = new DelegateCommand(
-                _ => this.CurrentSpellPoints = HighestSpellPoints,
-                _ => this.CurrentSpellPoints != HighestSpellPoints);
-            this.ResetSpellPointsCommand = new DelegateCommand(
-                _ => this.CurrentSpellPoints = (ushort)Math.Min(this.MaxSpellPoints, HighestSpellPoints),
-                _ => this.CurrentSpellPoints != Math.Min(this.MaxSpellPoints, HighestSpellPoints));
-            this.RotateLeftCommand = new DelegateCommand(_ => this.Rotate(-1));
-            this.RotateRightCommand = new DelegateCommand(_ => this.Rotate(1));
-            this.RemoveMarkerCommand = new DelegateCommand(
-                _ => this.Update(h => h with { MarkerPosition = MapPosition.None }),
-                _ => this.Hero.MarkerPosition != MapPosition.None);
+            this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
+                () => this.Hero.MovementPoints.Current,
+                value => this.Update(h => h with { MovementPoints = h.MovementPoints with { Current = (uint)value } }),
+                () => this.Hero.MovementPoints.Max,
+                new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
+                () => this.Hero.SpellPoints,
+                value => this.Update(h => h with { SpellPoints = (ushort)value }),
+                new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, Constants.Hero.SpellPointsStep),
+                () => this.spellPoints.GetMaximum(this.gameVersion, this.Hero),
+                () => this.ArtifactEffects.LandMovement == 0 ? string.Empty : $"{this.ArtifactEffects.LandMovement:+0;-0} from artifacts");
+            this.LevelAndClass = new LevelAndClassCardViewModel(
+                () => this.Hero.HeroLevel.Level,
+                level => this.SetLevelAndExperience((short)level, LevelCalculator.GetXpForLevel((short)level)),
+                new NumberRange(Constants.Hero.MinLevel, Constants.Hero.MaxLevel),
+                () => this.Hero.HeroLevel.Experience,
+                experience => this.SetLevelAndExperience(LevelCalculator.GetLevelFromXp((int)experience), (int)experience),
+                new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
+                this.NextLevelNote,
+                Entities.HeroClass.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(),
+                () => this.Hero.HeroClass.Name,
+                this.SetHeroClass,
+                Enum.GetNames<Entities.HeroGender>(),
+                () => this.Hero.Gender?.ToString() ?? string.Empty,
+                this.SetGender);
+            var coordinates = new NumberRange(Constants.Map.MinCoordinate, Constants.Map.MaxCoordinate);
+            this.Position = MapPointCardViewModel.ForPosition(
+                () => this.Hero.Position,
+                position => this.Update(h => h with { Position = (HeroPosition)position }),
+                coordinates,
+                this.LevelChoices,
+                () => this.Hero.Position.FacingDirection,
+                facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
+            this.Destination = MapPointCardViewModel.ForDestination(
+                () => this.Hero.Destination,
+                destination => this.Update(h => h with { Destination = destination }),
+                coordinates,
+                this.LevelChoices);
             this.SelectAllWarMachinesCommand = new DelegateCommand(_ => this.SelectAllWarMachines());
 
             this.WarMachinesChecked = new ObservableCollection<bool>(new bool[WarMachineCheckBoxCount]);
@@ -70,168 +90,25 @@ namespace Siniskalc.Homm3.ViewModels
 
         public string HeroName => this.Hero.Name;
 
-        public short Level
-        {
-            get => (short)this.Hero.HeroLevel.Level;
-            set
-            {
-                if (value != this.Level && RangeGuard.IsInRange<long>(value, Constants.Hero.MinLevel, Constants.Hero.MaxLevel))
-                {
-                    this.SetLevelAndExperience(value, LevelCalculator.GetXpForLevel(value));
-                }
-            }
-        }
-
-        public int Experience
-        {
-            get => (int)this.Hero.HeroLevel.Experience;
-            set
-            {
-                value = (int)RangeGuard.Clamp<long>(value, Constants.Hero.MinExperience, Constants.Hero.MaxExperience);
-                if (value != this.Experience)
-                {
-                    this.SetLevelAndExperience(LevelCalculator.GetLevelFromXp(value), value);
-                }
-            }
-        }
-
-        public string HeroClass
-        {
-            get => this.Hero.HeroClass.Name;
-            set
-            {
-                var heroClass = AbstractEnumeration.FromName<Entities.HeroClass>(value);
-                if (heroClass != null && heroClass != this.Hero.HeroClass)
-                {
-                    this.Update(h => h with { HeroClass = heroClass });
-                }
-            }
-        }
-
-        public string Gender
-        {
-            get => this.Hero.Gender?.ToString() ?? string.Empty;
-            set
-            {
-                if (Enum.TryParse<Entities.HeroGender>(value, out var gender) && gender != this.Hero.Gender)
-                {
-                    this.Update(h => h with { Gender = gender });
-                }
-            }
-        }
-
-        public uint CurrentMovement
-        {
-            get => (uint)this.Hero.MovementPoints.Current;
-            set
-            {
-                value = (uint)RangeGuard.Clamp<long>(value, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints);
-                if (value != this.CurrentMovement)
-                {
-                    this.Update(h => h with { MovementPoints = h.MovementPoints with { Current = value } });
-                }
-            }
-        }
+        /// <summary>
+        /// Gets the card of the movement points and the spell points.
+        /// </summary>
+        public MovementAndSpellPointsCardViewModel MovementAndSpellPoints { get; }
 
         /// <summary>
-        /// Gets the command that gives the hero 99999 movement points, more than the game ever grants.
+        /// Gets the card of the level, the experience, the class and the gender.
         /// </summary>
-        public ICommand MaxMovementCommand { get; }
+        public LevelAndClassCardViewModel LevelAndClass { get; }
 
         /// <summary>
-        /// Gets the command that gives the hero 999 spell points, more than the game ever grants.
+        /// Gets the card of where the hero stands and which way it faces.
         /// </summary>
-        public ICommand MaxSpellPointsCommand { get; }
-
-        public uint MaxMovement => (uint)this.Hero.MovementPoints.Max;
+        public MapPointCardViewModel Position { get; }
 
         /// <summary>
-        /// Gets the command that gives the hero all of its movement points back.
+        /// Gets the card of the destination of the hero: the tile it is going to.
         /// </summary>
-        public ICommand RestoreMovementCommand { get; }
-
-        /// <summary>
-        /// Gets the most spell points the hero can have, from knowledge and Intelligence.
-        /// </summary>
-        public int MaxSpellPoints => this.spellPoints.GetMaximum(this.gameVersion, this.Hero);
-
-        public string MaxSpellPointsText => $"Maximum {this.MaxSpellPoints}";
-
-        /// <summary>
-        /// Gets the command that fills the hero's spell points up to the maximum.
-        /// </summary>
-        public ICommand ResetSpellPointsCommand { get; }
-
-        public ushort CurrentSpellPoints
-        {
-            get => this.Hero.SpellPoints;
-            set
-            {
-                value = (ushort)RangeGuard.Clamp<long>(value, Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints);
-                if (value != this.CurrentSpellPoints)
-                {
-                    this.Update(h => h with { SpellPoints = value });
-                }
-            }
-        }
-
-        public short PositionX
-        {
-            get => Coordinate(this.Hero.Position.X);
-            set => this.SetPosition(this.PositionX, ClampCoordinate(value), p => p with { X = ClampCoordinate(value) });
-        }
-
-        public short PositionY
-        {
-            get => Coordinate(this.Hero.Position.Y);
-            set => this.SetPosition(this.PositionY, ClampCoordinate(value), p => p with { Y = ClampCoordinate(value) });
-        }
-
-        public int PositionZ
-        {
-            get => this.Hero.Position.Level;
-            set => this.SetPosition(this.PositionZ, value, p => p with { Level = value });
-        }
-
-        public FacingDirection FacingDirection
-        {
-            get => this.Hero.Position.FacingDirection;
-            set => this.SetPosition(this.FacingDirection, value, p => p with { FacingDirection = value });
-        }
-
-        public short MarkerX
-        {
-            get => Coordinate(this.Hero.MarkerPosition.X);
-            set => this.SetMarker(this.MarkerX, ClampCoordinate(value), p => p with { X = ClampCoordinate(value) });
-        }
-
-        public short MarkerY
-        {
-            get => Coordinate(this.Hero.MarkerPosition.Y);
-            set => this.SetMarker(this.MarkerY, ClampCoordinate(value), p => p with { Y = ClampCoordinate(value) });
-        }
-
-        public int MarkerZ
-        {
-            get => this.Hero.MarkerPosition.Level;
-            set => this.SetMarker(this.MarkerZ, value, p => p with { Level = value });
-        }
-
-        /// <summary>
-        /// Gets the levels the hero's position can be on. Has "None" too when the position is -1, as it is for a hero that is not on the map.
-        /// </summary>
-        public IReadOnlyList<MapLevelChoice> PositionLevelChoices => this.LevelChoices(this.Hero.Position.Level);
-
-        public IReadOnlyList<MapLevelChoice> MarkerLevelChoices => this.LevelChoices(this.Hero.MarkerPosition.Level);
-
-        public ICommand RotateLeftCommand { get; }
-
-        public ICommand RotateRightCommand { get; }
-
-        /// <summary>
-        /// Gets the command that sets the marker's X, Y and level to -1, which is how the savefile says there is none.
-        /// </summary>
-        public ICommand RemoveMarkerCommand { get; }
+        public MapPointCardViewModel Destination { get; }
 
         /// <summary>
         /// Gets the command that gives the hero every war machine it can have.
@@ -288,32 +165,6 @@ namespace Siniskalc.Homm3.ViewModels
         public string? Biography => this.Hero.Biography;
 
         public bool HasBiography => !string.IsNullOrEmpty(this.Hero.Biography);
-
-        /// <summary>
-        /// Gets how much experience the hero needs for the next level, such as "2,440 XP to level 8 (at 10,000)".
-        /// Empty at the highest level.
-        /// </summary>
-        public string NextLevelNote
-        {
-            get
-            {
-                var next = LevelCalculator.GetNextLevel((int)this.Hero.HeroLevel.Experience);
-                return next == null
-                    ? string.Empty
-                    : string.Create(
-                        System.Globalization.CultureInfo.CurrentCulture,
-                        $"{next.Value.Experience - this.Hero.HeroLevel.Experience:N0} XP to level {next.Value.Level} (at {next.Value.Experience:N0})");
-            }
-        }
-
-        /// <summary>
-        /// Gets what the hero's artifacts add to the movement on land, such as "+600 from artifacts". Empty when they add nothing.
-        /// </summary>
-        public string MovementArtifactNote => this.ArtifactEffects.LandMovement == 0
-            ? string.Empty
-            : $"{this.ArtifactEffects.LandMovement:+0;-0} from artifacts";
-
-        public string MaxMovementText => $"Maximum {this.MaxMovement}";
 
         /// <summary>
         /// Gets which war machine check boxes are ticked. Order: ballista, ballista (HotA), cannon, ammo cart, first aid tent.
@@ -409,13 +260,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public bool HasSingleBallista => !this.IsHota;
 
-        public IEnumerable<string> AvailableHeroClasses =>
-            Entities.HeroClass.All.Where(c => c.IsAvailableIn(this.gameVersion)).Select(c => c.Name).ToList();
-
-        public IEnumerable<string> AvailableGenders => Enum.GetNames<Entities.HeroGender>();
-
-        public Array AvailableFacingDirections => Enum.GetValues(typeof(FacingDirection));
-
         private HeroModel Hero => this.getHero();
 
         private ArtifactEffectInfo ArtifactEffects => this.Hero.ArtifactEffects;
@@ -429,6 +273,10 @@ namespace Siniskalc.Homm3.ViewModels
             try
             {
                 this.RefreshWarMachines();
+                this.MovementAndSpellPoints.Refresh();
+                this.LevelAndClass.Refresh();
+                this.Position.Refresh();
+                this.Destination.Refresh();
 
                 this.RaiseAllPropertiesChanged();
             }
@@ -465,8 +313,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.Update(h => h with { WarMachines = updated });
         }
 
-        private static short ClampCoordinate(short value) => (short)RangeGuard.Clamp<long>(value, Constants.Map.MinCoordinate, Constants.Map.MaxCoordinate);
-
         private static byte ClampSkill(int value) => (byte)RangeGuard.Clamp<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
 
         private static string SkillNote(short fromArtifacts) => fromArtifacts == 0
@@ -481,22 +327,6 @@ namespace Siniskalc.Homm3.ViewModels
             "First_Aid_Tent" => WarMachine.FirstAidTent,
             _ => null,
         };
-
-        private IReadOnlyList<MapLevelChoice> LevelChoices(int current)
-        {
-            var choices = new List<MapLevelChoice> { new(MapPosition.Above, MapLevelText.Of(MapPosition.Above)) };
-            if (this.hasUnderground || current == MapPosition.Underground)
-            {
-                choices.Add(new(MapPosition.Underground, MapLevelText.Of(MapPosition.Underground)));
-            }
-
-            if (current != MapPosition.Above && current != MapPosition.Underground)
-            {
-                choices.Add(new(current, MapLevelText.Of(current)));
-            }
-
-            return choices;
-        }
 
         private static string Modifiers(params (string Name, int Value)[] parts) =>
             string.Join(", ", parts.Where(p => p.Value != 0).Select(p => $"{p.Name} {FormatSigned(p.Value)}"));
@@ -514,12 +344,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell });
         }
 
-        private void Rotate(int turns)
-        {
-            var count = Enum.GetValues<FacingDirection>().Length;
-            this.FacingDirection = (FacingDirection)(((int)this.FacingDirection + turns + count) % count);
-        }
-
         private void SelectAllWarMachines()
         {
             // Ballista and cannon share a place; a hero that has the cannon keeps it, any other gets the ballista.
@@ -531,27 +355,55 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets how much experience the hero needs for the next level, such as "2,440 XP to level 8 (at 10,000)". Empty at the highest level.
+        /// </summary>
+        private string NextLevelNote()
+        {
+            var next = LevelCalculator.GetNextLevel((int)this.Hero.HeroLevel.Experience);
+            return next == null
+                ? string.Empty
+                : string.Create(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    $"{next.Value.Experience - this.Hero.HeroLevel.Experience:N0} XP to level {next.Value.Level} (at {next.Value.Experience:N0})");
+        }
+
+        private void SetHeroClass(string value)
+        {
+            var heroClass = AbstractEnumeration.FromName<Entities.HeroClass>(value);
+            if (heroClass != null && heroClass != this.Hero.HeroClass)
+            {
+                this.Update(h => h with { HeroClass = heroClass });
+            }
+        }
+
+        private void SetGender(string value)
+        {
+            if (Enum.TryParse<Entities.HeroGender>(value, out var gender) && gender != this.Hero.Gender)
+            {
+                this.Update(h => h with { Gender = gender });
+            }
+        }
+
         private void SetLevelAndExperience(short level, int experience)
         {
             this.Update(h => h with { HeroLevel = new HeroLevel { Level = level, Experience = experience } });
         }
 
-        private static short Coordinate(int value) => (short)RangeGuard.Clamp(value, short.MinValue, short.MaxValue);
-
-        private void SetPosition<T>(T current, T value, Func<HeroPosition, HeroPosition> edit)
+        private IReadOnlyList<MapLevelChoice> LevelChoices(int current)
         {
-            if (!EqualityComparer<T>.Default.Equals(current, value))
+            var choices = new List<MapLevelChoice> { new(MapPosition.Above, MapLevelText.Of(MapPosition.Above)) };
+            if (this.hasUnderground || current == MapPosition.Underground)
             {
-                this.Update(h => h with { Position = edit(h.Position) });
+                choices.Add(new(MapPosition.Underground, MapLevelText.Of(MapPosition.Underground)));
             }
-        }
 
-        private void SetMarker(int current, int value, Func<MapPosition, MapPosition> edit)
-        {
-            if (current != value)
+            if (current != MapPosition.Above && current != MapPosition.Underground)
             {
-                this.Update(h => h with { MarkerPosition = edit(h.MarkerPosition) });
+                choices.Add(new(current, MapLevelText.Of(current)));
             }
+
+            return choices;
         }
 
         private void SetPrimarySkills(byte current, byte value, Func<PrimarySkills, PrimarySkills> edit)

@@ -61,9 +61,9 @@ namespace Siniskalc.Homm2.ViewModels
         public string DifficultyText => OverviewText.Difficulty(this.game.Difficulty);
 
         /// <summary>
-        /// Gets nothing: whose turn it is has not been found in the savegames yet.
+        /// Gets whose turn it is, such as "Current turn: Red", or nothing while the savegames do not tell (see <see cref="SaveMetadata"/>).
         /// </summary>
-        public string TurnText => string.Empty;
+        public string TurnText => Siniskalc.Heroes.ViewModels.TurnText.Overview(this.game.CurrentPlayer?.ToString());
 
         /// <summary>
         /// Gets a line about the savegame, e.g. "2 players · 3 heroes · Difficulty: Queen (160%)".
@@ -104,12 +104,7 @@ namespace Siniskalc.Homm2.ViewModels
             var castles = allCastles
                 .Where(c => c.Owner == color)
                 .OrderBy(c => c.Name)
-                .Select(c => new CastleLinkViewModel(
-                    c.Name,
-                    c.Faction?.ToString() ?? string.Empty,
-                    new DelegateCommand(_ => this.openCastle(c.Index)),
-                    StatusOf(c),
-                    heroes: VisitorOf(c, allHeroes)))
+                .Select(c => CastleLinks.For(c, allHeroes, new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
                 .ToList();
             return new PlayerCardViewModel(
                 color.ToString(),
@@ -117,26 +112,11 @@ namespace Siniskalc.Homm2.ViewModels
                 player.Resources,
                 heroes,
                 new DelegateCommand(_ => this.openPlayer(color)),
+                Siniskalc.Heroes.ViewModels.TurnText.Beside(string.Empty, this.game.CurrentPlayer == color),
                 castles: castles,
                 banishingText: this.banishingText.Pill(player),
                 isBanished: player.IsBanished);
         }
-
-        private static string StatusOf(CastleModel castle)
-        {
-            var dwellings = Enumerable.Range(1, Constants.Castle.DwellingCount).Count(d => castle.DwellingLevel(d) > 0);
-            return string.Join(" · ", new[]
-            {
-                castle.HasCastle ? "Castle" : "Town",
-                castle.MageGuildLevel > 0 ? $"Mage Guild {castle.MageGuildLevel}" : string.Empty,
-                OverviewText.Count(dwellings, "dwelling", "dwellings"),
-            }.Where(t => t.Length > 0));
-        }
-
-        private IReadOnlyList<CastleHeroRowViewModel> VisitorOf(CastleModel castle, IReadOnlyList<HeroModel> heroes) =>
-            castle.VisitingHero is { } id && id >= 0 && id < heroes.Count
-                ? [new CastleHeroRowViewModel("Visiting", heroes[id].Name, new DelegateCommand(_ => this.openHero(id)))]
-                : [];
 
         private void OnHistoryChanged(object? sender, EventArgs e) => this.Refresh();
     }

@@ -115,8 +115,8 @@ Maximus is 7, Sir Gallant 1, Roxana 51. Offsets are from the start of the record
 | 0x0E | u8 | hero ID - confirmed |
 | 0x0F | u32 | tile x (0 while not on the map) - confirmed (Maximus 28 -> 29 after one move) |
 | 0x13 | u32 | tile y - confirmed |
-| 0x17 | u32, u32 | target tile of an unfinished move (x, y); 0xFFFFFFFF when none. Save 5 (movement ran out) holds 23,23 - guess |
-| 0x22 | u8 | changes with every move (2,3,4,7,2,...): facing/direction or a sprite phase - guess; 0 while inside a castle |
+| 0x17 | u32, u32 | **destination: the tile the hero is going to, which the game marks on the map** (x, y); 0xFFFFFFFF when none. Set while a move is planned (save 5 held 23,23 when the movement ran out) - **confirmed** by the MarkerFacing saves: the tile was put on each of the eight sides of Colar Blau |
+| 0x22 | u8 | **facing**: 0 north, 1 northeast, 2 east, 3 southeast, 4 south, 5 southwest, 6 west, 7 northwest (clockwise); the way of the last step; 0 while inside a castle - **confirmed** by MarkerFacing (east in 83 to 90, west 91, northwest 92, northeast 93); every hero of every test save holds 0 to 7 |
 | 0x23 | u8 | tile object under the hero: 0xA3 castle gateway (also Kalindra in Vertigo), 0x66 sawmill, 0x89 fountain - guess |
 | 0x25 | u8 | castle index while inside a castle (Maximus 3 in Xabran and 2 in captured Corackston) - confirmed. It was 7 once in save 15 while the hero stood outside, unexplained |
 | 0x27 | u32 | maximum movement points. It is **derived from the army**: 1000 with peasants and archers, 1400 (0x578) once the army was black dragons only, and 1200 for Crodo's start army - confirmed. Recalculated by the game, but a writer that changes the army should know it |

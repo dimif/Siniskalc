@@ -91,7 +91,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets whose turn it was, e.g. "Current turn: Tan", or nothing when the savefile does not tell.
         /// </summary>
-        public string TurnText => this.game.CurrentPlayer is { } player ? $"Current turn: {player}" : string.Empty;
+        public string TurnText => Siniskalc.Heroes.ViewModels.TurnText.Overview(this.game.CurrentPlayer?.ToString());
 
         public ObservableCollection<PlayerCardViewModel> Players { get; } = new ObservableCollection<PlayerCardViewModel>();
 

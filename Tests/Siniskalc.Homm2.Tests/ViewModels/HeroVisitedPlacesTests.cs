@@ -38,11 +38,11 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(forts.Text, Is.EqualTo("2 of 5"));
             Assert.That(forts.Places.Select(p => (p.Name, p.IsChecked)), Is.EqualTo(new[]
             {
-                ("Fort at X: 1, Y: 4", true),
-                ("Fort at X: 29, Y: 18", true),
-                ("Fort at X: 64, Y: 36", false),
-                ("Fort at X: 51, Y: 46", false),
-                ("Fort at X: 9, Y: 54", false),
+                ("At X: 1, Y: 4", true),
+                ("At X: 29, Y: 18", true),
+                ("At X: 64, Y: 36", false),
+                ("At X: 51, Y: 46", false),
+                ("At X: 9, Y: 54", false),
             }));
             Assert.That(Row(page, "Standing stones").Places.Select(p => p.IsChecked), Is.EqualTo(new[] { true, false, false, false, false, false, false }), "Colar Blau visited the one at 5, 0");
         }

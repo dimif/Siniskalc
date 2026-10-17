@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using Siniskalc.Wpf.ViewModels;
@@ -24,7 +24,7 @@
         public string Label => $"Obelisk {this.Number}";
 
         /// <summary>
-        /// Gets where the obelisk is on the map, such as "34, 58", or nothing when the savefile does not tell.
+        /// Gets where the obelisk is on the map, such as "X: 34, Y: 58", or nothing when the savefile does not tell.
         /// </summary>
         public string Coordinates { get; }
 

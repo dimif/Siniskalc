@@ -46,6 +46,12 @@ namespace Siniskalc.Homm2.Data
         public const int Destination = Name + 0x17;
 
         /// <summary>
+        /// The direction the hero faces, a byte from 0 to 7 clockwise from north (0 north, 1 northeast, 2 east, 3 southeast, 4 south,
+        /// 5 southwest, 6 west, 7 northwest): the way of its last step. Found in the MarkerFacing saves.
+        /// </summary>
+        public const int Facing = Name + 0x22;
+
+        /// <summary>
         /// The byte 9 of the tile the hero stands on (what the tile is: 0x99 for an obelisk, 0xA3 the gate of a castle...). The table of tiles
         /// holds a marker on the tile of a hero instead, so this is where the tile's own byte is kept while the hero is on it.
         /// </summary>

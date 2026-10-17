@@ -119,38 +119,7 @@
                 <!-- Obelisks -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
                     <!-- The obelisks of the map and which of them this player has visited. Only for savegames in which they were found. -->
-                    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" DataContext="{Binding Obelisks}">
-                        <StackPanel>
-                            <DockPanel Margin="0,0,0,8">
-                                <TextBlock DockPanel.Dock="Right" Margin="16,0,0,0" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Visited obelisks"
-                                           ToolTip="The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the Grail."/>
-                            </DockPanel>
-                            <ItemsControl ItemsSource="{Binding Tiles}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.Resources>
-                                    <DataTemplate DataType="{x:Type vm:ObeliskActionViewModel}">
-                                        <Button Style="{StaticResource TileButton}" Width="Auto" MinWidth="150" MinHeight="52" Command="{Binding Command}" ToolTip="{Binding ToolTip}">
-                                            <TextBlock FontWeight="SemiBold" Text="{Binding Label}"/>
-                                        </Button>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type vm:ObeliskRowViewModel}">
-                                        <CheckBox Style="{StaticResource TileCheckBox}" Width="Auto" MinWidth="150" IsChecked="{Binding IsVisited}"
-                                                  ToolTip="Tick it when this player has visited the obelisk">
-                                            <StackPanel>
-                                                <TextBlock FontWeight="SemiBold" Text="{Binding Label}"/>
-                                                <TextBlock FontSize="11" Foreground="{StaticResource MutedBrush}" Text="{Binding Coordinates}"/>
-                                            </StackPanel>
-                                        </CheckBox>
-                                    </DataTemplate>
-                                </ItemsControl.Resources>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
+                    <heroes:ObeliskVisitsCard DataContext="{Binding Obelisks}"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

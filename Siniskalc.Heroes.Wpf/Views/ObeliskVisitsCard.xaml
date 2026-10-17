@@ -1,0 +1,37 @@
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.ObeliskVisitsCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels">
+    <!-- The data context is an ObeliskVisitsViewModelBase: the obelisks of the map and which of them the player has visited. -->
+    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
+        <StackPanel>
+            <DockPanel Margin="0,0,0,8">
+                <TextBlock DockPanel.Dock="Right" Margin="16,0,0,0" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
+                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Visited obelisks" ToolTip="{Binding PuzzleToolTip}"/>
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding Tiles}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.Resources>
+                    <DataTemplate DataType="{x:Type vm:ObeliskActionViewModel}">
+                        <Button Style="{StaticResource TileButton}" Width="Auto" MinWidth="150" MinHeight="52" Command="{Binding Command}" ToolTip="{Binding ToolTip}">
+                            <TextBlock FontWeight="SemiBold" Text="{Binding Label}"/>
+                        </Button>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:ObeliskRowViewModel}">
+                        <CheckBox Style="{StaticResource TileCheckBox}" Width="Auto" MinWidth="150" IsChecked="{Binding IsVisited}"
+                                  ToolTip="Tick it when this player has visited the obelisk">
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold" Text="{Binding Label}"/>
+                                <TextBlock FontSize="11" Foreground="{StaticResource MutedBrush}" Text="{Binding Coordinates}"/>
+                            </StackPanel>
+                        </CheckBox>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>

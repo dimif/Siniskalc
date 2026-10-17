@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -13,7 +14,7 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Name">The name of the hero.</param>
     /// <param name="Owner">The player the hero serves, or <c>null</c> when it serves nobody.</param>
     /// <param name="Position">The tile the hero stands on (meaningless while it serves nobody).</param>
-    /// <param name="Destination">The tile the hero was going to when its movement ran out, or <c>null</c>.</param>
+    /// <param name="Destination">The tile the hero is going to (the game marks it on the map), or <see cref="MapPosition.None"/>.</param>
     /// <param name="SpellPoints">The spell points the hero has now.</param>
     /// <param name="MovementPoints">The movement points the hero has left today, and the ones of a full day, which the game works out from the army, the skills and the artifacts.</param>
     /// <param name="HeroLevel">The level of the hero and its experience.</param>
@@ -27,7 +28,7 @@ namespace Siniskalc.Homm2.Models
         string Name,
         Color? Owner,
         MapPosition Position,
-        MapPosition? Destination,
+        MapPosition Destination,
         int SpellPoints,
         MovementPoints MovementPoints,
         HeroLevel HeroLevel,
@@ -72,6 +73,11 @@ namespace Siniskalc.Homm2.Models
             get => this.MovementPoints.Current;
             init => this.MovementPoints = this.MovementPoints with { Current = value };
         }
+
+        /// <summary>
+        /// Gets or sets the direction the hero faces: the way of its last step (Heroes of Might and Magic II keeps eight directions, clockwise from north).
+        /// </summary>
+        public FacingDirection Facing { get; init; } = FacingDirection.North;
 
         /// <summary>
         /// Gets or sets the morale and luck the hero has for its next battle only.

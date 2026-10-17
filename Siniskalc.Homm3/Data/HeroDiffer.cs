@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -96,9 +97,9 @@ namespace Siniskalc.Homm3.Data
                 changes.Add(ChangeAreas.General, "Position", FormatPosition(original.Position), FormatPosition(current.Position), h => h with { Position = original.Position });
             }
 
-            if (original.MarkerPosition != current.MarkerPosition)
+            if (original.Destination != current.Destination)
             {
-                changes.Add(ChangeAreas.General, "Marker", FormatPosition(original.MarkerPosition), FormatPosition(current.MarkerPosition), h => h with { MarkerPosition = original.MarkerPosition });
+                changes.Add(ChangeAreas.General, "Destination", FormatPosition(original.Destination), FormatPosition(current.Destination), h => h with { Destination = original.Destination });
             }
         }
 

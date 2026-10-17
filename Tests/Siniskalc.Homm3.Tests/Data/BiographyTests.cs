@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Data
             hero.Name,
             hero.Owner,
             hero.Position,
-            hero.MarkerPosition,
+            hero.Destination,
             hero.HeroClass,
         };
 

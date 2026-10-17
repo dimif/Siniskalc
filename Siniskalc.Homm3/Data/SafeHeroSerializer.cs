@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Core;
     using System;
     using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Siniskalc.Homm3.Data
             chunk = this.SerializeClass(chunk, hero.HeroClass);
             chunk = this.SerializeLevel(chunk, hero.HeroLevel);
             chunk = this.SerializePosition(chunk, hero.Position);
-            chunk = this.SerializeMarkerPosition(chunk, hero.MarkerPosition);
+            chunk = this.SerializeDestination(chunk, hero.Destination);
             chunk = this.SerializeMovementPoints(chunk, hero.MovementPoints);
             chunk = this.SerializeSecondarySkills(chunk, hero.SecondarySkills);
             chunk = this.SerializeBackpack(chunk, hero.Backpack);
@@ -164,13 +165,13 @@ namespace Siniskalc.Homm3.Data
             return (short)value;
         }
 
-        public HeroChunk SerializeMarkerPosition(HeroChunk chunk, MapPosition markerPosition)
+        public HeroChunk SerializeDestination(HeroChunk chunk, MapPosition destination)
         {
             return Edit(chunk, buffer =>
             {
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerX], Coordinate(markerPosition.X, nameof(markerPosition)));
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerY], Coordinate(markerPosition.Y, nameof(markerPosition)));
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerZ], Coordinate(markerPosition.Level, nameof(markerPosition)));
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationX], Coordinate(destination.X, nameof(destination)));
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationY], Coordinate(destination.Y, nameof(destination)));
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationZ], Coordinate(destination.Level, nameof(destination)));
             });
         }
 

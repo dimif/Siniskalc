@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.ViewModels
 {
     /// <summary>
     /// A level of the map to pick from: "Surface (0)", "Underground (1)", or a value this editor does not recognise.

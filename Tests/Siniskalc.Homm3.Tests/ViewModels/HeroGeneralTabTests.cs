@@ -1,4 +1,4 @@
-﻿using Siniskalc;
+using Siniskalc;
 using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.ViewModels;
@@ -34,22 +34,22 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.MaxMovementCommand.Execute(null);
-            general.MaxSpellPointsCommand.Execute(null);
+            general.MovementAndSpellPoints.MaxMovementCommand.Execute(null);
+            general.MovementAndSpellPoints.MaxSpellPointsCommand.Execute(null);
 
             Assert.That(this.hero.HeroModel.MovementPoints.Current, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(Constants.Hero.MaxSpellPoints));
-            Assert.That(general.MaxMovementCommand.CanExecute(null), Is.False);
-            Assert.That(general.MaxSpellPointsCommand.CanExecute(null), Is.False);
+            Assert.That(general.MovementAndSpellPoints.MaxMovementCommand.CanExecute(null), Is.False);
+            Assert.That(general.MovementAndSpellPoints.MaxSpellPointsCommand.CanExecute(null), Is.False);
         }
 
         [Test]
         public void ResetStillFillsTheSpellPointsToTheMostTheHeroCanHave()
         {
             var general = this.hero.GeneralInfoViewModel;
-            general.MaxSpellPointsCommand.Execute(null);
+            general.MovementAndSpellPoints.MaxSpellPointsCommand.Execute(null);
 
-            general.ResetSpellPointsCommand.Execute(null);
+            general.MovementAndSpellPoints.ResetSpellPointsCommand.Execute(null);
 
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(TestServices.SpellPoints.GetMaximum(this.hero.GameVersion, this.hero.HeroModel)));
         }
@@ -77,8 +77,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(this.hero.PositionText, Does.Match(@"^X: \d+, Y: \d+, (Surface \(0\)|Underground \(1\))$"));
             Assert.That(this.hero.ResetCommand.CanExecute(null), Is.False);
 
-            this.hero.GeneralInfoViewModel.MaxMovementCommand.Execute(null);
-            this.hero.GeneralInfoViewModel.MaxSpellPointsCommand.Execute(null);
+            this.hero.GeneralInfoViewModel.MovementAndSpellPoints.MaxMovementCommand.Execute(null);
+            this.hero.GeneralInfoViewModel.MovementAndSpellPoints.MaxSpellPointsCommand.Execute(null);
             Assert.That(this.hero.ResetCommand.CanExecute(null), Is.True);
 
             this.hero.ResetCommand.Execute(null);
@@ -143,14 +143,14 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var general = this.hero.GeneralInfoViewModel;
 
             general.Attack = byte.MaxValue;
-            general.PositionX = short.MaxValue;
-            general.MarkerY = short.MinValue;
-            general.CurrentSpellPoints = ushort.MaxValue;
-            general.CurrentMovement = uint.MaxValue;
+            general.Position.X = short.MaxValue;
+            general.Destination.Y = short.MinValue;
+            general.MovementAndSpellPoints.CurrentSpellPoints = ushort.MaxValue;
+            general.MovementAndSpellPoints.CurrentMovement = uint.MaxValue;
 
             Assert.That(this.hero.HeroModel.PrimarySkills.Attack, Is.EqualTo(Constants.Hero.MaxPrimarySkill));
             Assert.That(this.hero.HeroModel.Position.X, Is.EqualTo(Constants.Map.MaxCoordinate));
-            Assert.That(this.hero.HeroModel.MarkerPosition.Y, Is.EqualTo(Constants.Map.MinCoordinate));
+            Assert.That(this.hero.HeroModel.Destination.Y, Is.EqualTo(Constants.Map.MinCoordinate));
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(Constants.Hero.MaxSpellPoints));
             Assert.That(this.hero.HeroModel.MovementPoints.Current, Is.EqualTo((uint)Constants.Hero.MaxMovementPoints));
         }

@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.Data
                 Bytes.ReadText(bytes, HeroLayout.Name, HeroLayout.NameLength),
                 this.DeserializeOwner(chunk),
                 new MapPosition(Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.X)), Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.Y))),
-                Bytes.OptionalPosition(chunk.GetUInt32At(HeroLayout.Destination), chunk.GetUInt32At(HeroLayout.Destination + 4)),
+                Bytes.Destination(chunk.GetUInt32At(HeroLayout.Destination), chunk.GetUInt32At(HeroLayout.Destination + 4)),
                 chunk.GetUInt16At(HeroLayout.SpellPoints),
                 new MovementPoints(chunk.GetUInt32At(HeroLayout.MovementLeft), chunk.GetUInt32At(HeroLayout.MaxMovement)),
                 new HeroLevel(chunk.GetUInt32At(HeroLayout.Experience), chunk.GetByteAt(HeroLayout.Level)),
@@ -48,6 +48,7 @@ namespace Siniskalc.Homm2.Data
                 artifacts,
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
             {
+                Facing = Bytes.Facing(chunk.GetByteAt(HeroLayout.Facing)),
                 NextBattle = new NextBattleBonus((sbyte)chunk.GetByteAt(HeroLayout.BattleMorale), (sbyte)chunk.GetByteAt(HeroLayout.BattleLuck)),
                 Effects = (HeroEffects)chunk.GetUInt32At(HeroLayout.Effects),
                 Visited = new VisitedPlaces(

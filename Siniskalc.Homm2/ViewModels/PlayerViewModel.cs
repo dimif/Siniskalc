@@ -29,7 +29,7 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IReadOnlyList<AmountRowViewModel> resources;
         private readonly PlayerEditSession session;
         private IReadOnlyList<LinkViewModel> heroes = [];
-        private IReadOnlyList<LinkViewModel> castles = [];
+        private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string status = string.Empty;
 
         public PlayerViewModel(Game game, Color color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
@@ -57,6 +57,11 @@ namespace Siniskalc.Homm2.ViewModels
         public Color Color { get; }
 
         public string Name => this.Color.ToString();
+
+        /// <summary>
+        /// Gets "Current turn" when it is the turn of the player, or nothing (the savegames do not say who is human yet).
+        /// </summary>
+        public string ControlText => TurnText.Beside(string.Empty, this.Game.CurrentPlayer == this.Color);
 
         public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.Color));
 
@@ -87,7 +92,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
 
-        public IReadOnlyList<LinkViewModel> Castles => this.castles;
+        public IReadOnlyList<CastleLinkViewModel> Castles => this.castles;
 
         /// <summary>
         /// Gets the two places of the tavern of the player, each with the heroes it can be given to.
@@ -128,7 +133,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.castles = document.Castles().GetModels()
                 .Where(c => c.IsUsed && c.Owner == this.Color)
                 .OrderBy(c => c.Name)
-                .Select(c => new LinkViewModel(c.Name, c.Faction?.ToString() ?? string.Empty, new DelegateCommand(_ => this.openCastle(c.Index))))
+                .Select(c => CastleLinks.For(c, allHeroes, new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
                 .ToList();
 
             this.Obelisks?.Refresh();

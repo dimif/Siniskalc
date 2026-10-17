@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -31,7 +32,7 @@ namespace Siniskalc.Homm3.Data
                 this.DeserializeClass(chunk),
                 this.DeserializeLevel(chunk),
                 this.DeserializePosition(chunk),
-                this.DeserializeMarkerPosition(chunk),
+                this.DeserializeDestination(chunk),
                 this.DeserializeMovementPoints(chunk),
                 this.DeserializeSecondarySkills(chunk),
                 this.DeserializeBackpack(chunk),
@@ -169,13 +170,13 @@ namespace Siniskalc.Homm3.Data
             return new SecondarySkills(allSkillsToLevels, slots);
         }
 
-        public MapPosition DeserializeMarkerPosition(HeroChunk chunk)
+        public MapPosition DeserializeDestination(HeroChunk chunk)
         {
-            var markerX = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerX]);
-            var markerY = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerY]);
-            var markerZ = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerZ]);
+            var destinationX = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationX]);
+            var destinationY = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationY]);
+            var destinationZ = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationZ]);
 
-            return new MapPosition(markerX, markerY, markerZ);
+            return new MapPosition(destinationX, destinationY, destinationZ);
         }
 
         public HeroClass DeserializeClass(HeroChunk chunk)

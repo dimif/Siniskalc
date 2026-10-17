@@ -157,13 +157,20 @@ namespace Siniskalc.Homm3.Data
             });
         }
 
-        public HeroChunk SerializeMarkerPosition(HeroChunk chunk, Position markerPosition)
+        // The savefile holds a coordinate in 16 bits; one that does not fit is refused and not cut.
+        private static short Coordinate(int value, string name)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(value, short.MinValue, short.MaxValue, name);
+            return (short)value;
+        }
+
+        public HeroChunk SerializeMarkerPosition(HeroChunk chunk, MapPosition markerPosition)
         {
             return Edit(chunk, buffer =>
             {
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerX], markerPosition.X);
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerY], markerPosition.Y);
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerZ], markerPosition.Z);
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerX], Coordinate(markerPosition.X, nameof(markerPosition)));
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerY], Coordinate(markerPosition.Y, nameof(markerPosition)));
+                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.MarkerZ], Coordinate(markerPosition.Level, nameof(markerPosition)));
             });
         }
 
@@ -201,9 +208,9 @@ namespace Siniskalc.Homm3.Data
                 // biography text, so they are left alone.
                 if (chunk.OutsidePositionBytes == null)
                 {
-                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionX], position.X);
-                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionY], position.Y);
-                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionZ], position.Z);
+                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionX], Coordinate(position.X, nameof(position)));
+                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionY], Coordinate(position.Y, nameof(position)));
+                    ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.PositionZ], Coordinate(position.Level, nameof(position)));
                 }
 
                 // A byte that is no direction reads as North, and is left alone while the hero keeps facing North.

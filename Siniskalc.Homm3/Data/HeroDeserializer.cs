@@ -169,13 +169,13 @@ namespace Siniskalc.Homm3.Data
             return new SecondarySkills(allSkillsToLevels, slots);
         }
 
-        public Position DeserializeMarkerPosition(HeroChunk chunk)
+        public MapPosition DeserializeMarkerPosition(HeroChunk chunk)
         {
             var markerX = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerX]);
             var markerY = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerY]);
             var markerZ = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.MarkerZ]);
 
-            return new Position(markerX, markerY, markerZ);
+            return new MapPosition(markerX, markerY, markerZ);
         }
 
         public HeroClass DeserializeClass(HeroChunk chunk)

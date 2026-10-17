@@ -182,7 +182,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             general.MarkerX = 5;
             general.RemoveMarkerCommand.Execute(null);
 
-            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new Position(-1, -1, -1)));
+            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new MapPosition(-1, -1, -1)));
             Assert.That(general.RemoveMarkerCommand.CanExecute(null), Is.False);
         }
 
@@ -203,7 +203,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(this.hero.HeroModel.Owner, Is.Null);
             Assert.That(this.hero.HeroModel.Position, Is.EqualTo(new HeroPosition(-1, -1, -1, FacingDirection.East)));
-            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new Position(-1, -1, -1)));
+            Assert.That(this.hero.HeroModel.MarkerPosition, Is.EqualTo(new MapPosition(-1, -1, -1)));
 
             this.hero.SelectedOwner = "Blue";
             Assert.That(this.hero.HeroModel.Owner, Is.EqualTo(PlayerColor.Blue));

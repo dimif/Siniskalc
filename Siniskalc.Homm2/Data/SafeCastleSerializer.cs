@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
@@ -72,9 +73,9 @@ namespace Siniskalc.Homm2.Data
             return (byte)value;
         }
 
-        private static void WriteBoat(byte[] bytes, Position? boat)
+        private static void WriteBoat(byte[] bytes, MapPosition? boat)
         {
-            var current = bytes[CastleLayout.Boat] == Bytes.Empty ? (Position?)null : new Position(bytes[CastleLayout.Boat], bytes[CastleLayout.Boat + 1]);
+            var current = bytes[CastleLayout.Boat] == Bytes.Empty ? (MapPosition?)null : new MapPosition(bytes[CastleLayout.Boat], bytes[CastleLayout.Boat + 1]);
             if (current == boat)
             {
                 return;

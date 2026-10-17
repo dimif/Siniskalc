@@ -73,7 +73,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(hero.Position.X, Is.EqualTo((short)69));
             Assert.That(hero.Position.Y, Is.EqualTo((short)7));
-            Assert.That(hero.Position.Z, Is.EqualTo((short)0));
+            Assert.That(hero.Position.Level, Is.EqualTo(0));
             Assert.That(hero.Position.FacingDirection, Is.EqualTo(FacingDirection.East));
 
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)32));

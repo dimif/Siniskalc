@@ -283,11 +283,11 @@ namespace Siniskalc.Homm3.Data
             return FormatList(parts);
         }
 
-        private static string FormatPosition(Position position)
+        private static string FormatPosition(MapPosition position)
         {
             return position is HeroPosition heroPosition
-                ? $"{position.X}, {position.Y}, {position.Z} facing {heroPosition.FacingDirection}"
-                : $"{position.X}, {position.Y}, {position.Z}";
+                ? $"{position.X}, {position.Y}, {position.Level} facing {heroPosition.FacingDirection}"
+                : $"{position.X}, {position.Y}, {position.Level}";
         }
 
         private static string FormatList(IEnumerable<string> items)

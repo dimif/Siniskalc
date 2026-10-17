@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -10,12 +11,12 @@
         /// <summary>
         /// Returns a place on the map such as "X: 59, Y: 9, Surface (0)".
         /// </summary>
-        public static string Coordinates(short x, short y, short level) => $"X: {x}, Y: {y}, {Of(level)}";
+        public static string Coordinates(int x, int y, int level) => $"X: {x}, Y: {y}, {Of(level)}";
 
-        public static string Of(short level) => level switch
+        public static string Of(int level) => level switch
         {
-            Position.Above => $"Surface ({Position.Above})",
-            Position.Underground => $"Underground ({Position.Underground})",
+            MapPosition.Above => $"Surface ({MapPosition.Above})",
+            MapPosition.Underground => $"Underground ({MapPosition.Underground})",
             -1 => "None",
             _ => $"Level {level}",
         };

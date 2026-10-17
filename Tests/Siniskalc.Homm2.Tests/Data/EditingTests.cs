@@ -52,7 +52,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
                 Spells = new SpellSet<Spell>([Spell.Fireball, Spell.TownPortal]),
                 Owner = Color.Red,
-                Destination = new Position(3, 4),
+                Destination = new MapPosition(3, 4),
             };
 
             session.Update(_ => edited);

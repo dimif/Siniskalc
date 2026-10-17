@@ -146,7 +146,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var visits = Hotseat("five_teams_00_game_begin").History.Current.Obelisks().GetModel()!;
 
             Assert.That(
-                Enumerable.Range(0, visits.Count).Select(i => $"{visits.PositionOf(i)!.X},{visits.PositionOf(i)!.Y},{visits.PositionOf(i)!.Z}"),
+                Enumerable.Range(0, visits.Count).Select(i => $"{visits.PositionOf(i)!.X},{visits.PositionOf(i)!.Y},{visits.PositionOf(i)!.Level}"),
                 Is.EqualTo(new[] { "47,8,0", "46,11,0", "5,28,0", "34,58,0", "9,61,0", "54,66,0", "34,69,0" }));
         }
 

@@ -75,7 +75,7 @@ namespace Siniskalc.Homm3
             /// <summary>
             /// Written as the coordinate of something that is not on the map.
             /// </summary>
-            public const long NoCoordinate = -1;
+            public const long NoCoordinate = Heroes.Constants.Map.NoCoordinate;
 
             public const long MinCoordinate = NoCoordinate;
 

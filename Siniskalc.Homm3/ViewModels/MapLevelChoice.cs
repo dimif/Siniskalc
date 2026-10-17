@@ -5,5 +5,5 @@
     /// </summary>
     /// <param name="Value">The Z coordinate as the savefile holds it.</param>
     /// <param name="Label">What the list shows.</param>
-    public sealed record MapLevelChoice(short Value, string Label);
+    public sealed record MapLevelChoice(int Value, string Label);
 }

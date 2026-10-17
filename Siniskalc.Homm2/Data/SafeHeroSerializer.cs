@@ -84,7 +84,7 @@
             }
         }
 
-        private static void WriteDestination(byte[] bytes, Position? destination)
+        private static void WriteDestination(byte[] bytes, MapPosition? destination)
         {
             var current = Bytes.OptionalPosition(ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination), ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Destination + 4));
             if (current == destination)

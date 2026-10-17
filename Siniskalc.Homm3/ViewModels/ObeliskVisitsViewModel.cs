@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
@@ -88,10 +89,10 @@
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private static string CoordinatesText(Position? position) => position switch
+        private static string CoordinatesText(MapPosition? position) => position switch
         {
             null => string.Empty,
-            var p => MapLevelText.Coordinates(p.X, p.Y, p.Z),
+            var p => MapLevelText.Coordinates(p.X, p.Y, p.Level),
         };
 
         private void Edit(System.Func<ObeliskVisits, ObeliskVisits> edit)

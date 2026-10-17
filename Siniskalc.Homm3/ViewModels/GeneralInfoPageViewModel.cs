@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -57,8 +57,8 @@
             this.RotateLeftCommand = new DelegateCommand(_ => this.Rotate(-1));
             this.RotateRightCommand = new DelegateCommand(_ => this.Rotate(1));
             this.RemoveMarkerCommand = new DelegateCommand(
-                _ => this.Update(h => h with { MarkerPosition = Position.None }),
-                _ => this.Hero.MarkerPosition != Position.None);
+                _ => this.Update(h => h with { MarkerPosition = MapPosition.None }),
+                _ => this.Hero.MarkerPosition != MapPosition.None);
             this.SelectAllWarMachinesCommand = new DelegateCommand(_ => this.SelectAllWarMachines());
 
             this.WarMachinesChecked = new ObservableCollection<bool>(new bool[WarMachineCheckBoxCount]);
@@ -175,20 +175,20 @@
 
         public short PositionX
         {
-            get => this.Hero.Position.X;
+            get => Coordinate(this.Hero.Position.X);
             set => this.SetPosition(this.PositionX, ClampCoordinate(value), p => p with { X = ClampCoordinate(value) });
         }
 
         public short PositionY
         {
-            get => this.Hero.Position.Y;
+            get => Coordinate(this.Hero.Position.Y);
             set => this.SetPosition(this.PositionY, ClampCoordinate(value), p => p with { Y = ClampCoordinate(value) });
         }
 
-        public short PositionZ
+        public int PositionZ
         {
-            get => this.Hero.Position.Z;
-            set => this.SetPosition(this.PositionZ, value, p => p with { Z = value });
+            get => this.Hero.Position.Level;
+            set => this.SetPosition(this.PositionZ, value, p => p with { Level = value });
         }
 
         public FacingDirection FacingDirection
@@ -199,28 +199,28 @@
 
         public short MarkerX
         {
-            get => this.Hero.MarkerPosition.X;
+            get => Coordinate(this.Hero.MarkerPosition.X);
             set => this.SetMarker(this.MarkerX, ClampCoordinate(value), p => p with { X = ClampCoordinate(value) });
         }
 
         public short MarkerY
         {
-            get => this.Hero.MarkerPosition.Y;
+            get => Coordinate(this.Hero.MarkerPosition.Y);
             set => this.SetMarker(this.MarkerY, ClampCoordinate(value), p => p with { Y = ClampCoordinate(value) });
         }
 
-        public short MarkerZ
+        public int MarkerZ
         {
-            get => this.Hero.MarkerPosition.Z;
-            set => this.SetMarker(this.MarkerZ, value, p => p with { Z = value });
+            get => this.Hero.MarkerPosition.Level;
+            set => this.SetMarker(this.MarkerZ, value, p => p with { Level = value });
         }
 
         /// <summary>
         /// Gets the levels the hero's position can be on. Has "None" too when the position is -1, as it is for a hero that is not on the map.
         /// </summary>
-        public IReadOnlyList<MapLevelChoice> PositionLevelChoices => this.LevelChoices(this.Hero.Position.Z);
+        public IReadOnlyList<MapLevelChoice> PositionLevelChoices => this.LevelChoices(this.Hero.Position.Level);
 
-        public IReadOnlyList<MapLevelChoice> MarkerLevelChoices => this.LevelChoices(this.Hero.MarkerPosition.Z);
+        public IReadOnlyList<MapLevelChoice> MarkerLevelChoices => this.LevelChoices(this.Hero.MarkerPosition.Level);
 
         public ICommand RotateLeftCommand { get; }
 
@@ -480,15 +480,15 @@
             _ => null,
         };
 
-        private IReadOnlyList<MapLevelChoice> LevelChoices(short current)
+        private IReadOnlyList<MapLevelChoice> LevelChoices(int current)
         {
-            var choices = new List<MapLevelChoice> { new(Position.Above, MapLevelText.Of(Position.Above)) };
-            if (this.hasUnderground || current == Position.Underground)
+            var choices = new List<MapLevelChoice> { new(MapPosition.Above, MapLevelText.Of(MapPosition.Above)) };
+            if (this.hasUnderground || current == MapPosition.Underground)
             {
-                choices.Add(new(Position.Underground, MapLevelText.Of(Position.Underground)));
+                choices.Add(new(MapPosition.Underground, MapLevelText.Of(MapPosition.Underground)));
             }
 
-            if (current != Position.Above && current != Position.Underground)
+            if (current != MapPosition.Above && current != MapPosition.Underground)
             {
                 choices.Add(new(current, MapLevelText.Of(current)));
             }
@@ -534,6 +534,8 @@
             this.Update(h => h with { HeroLevel = new HeroLevel { Level = level, Experience = experience } });
         }
 
+        private static short Coordinate(int value) => (short)RangeGuard.Clamp(value, short.MinValue, short.MaxValue);
+
         private void SetPosition<T>(T current, T value, Func<HeroPosition, HeroPosition> edit)
         {
             if (!EqualityComparer<T>.Default.Equals(current, value))
@@ -542,7 +544,7 @@
             }
         }
 
-        private void SetMarker(short current, short value, Func<Position, Position> edit)
+        private void SetMarker(int current, int value, Func<MapPosition, MapPosition> edit)
         {
             if (current != value)
             {

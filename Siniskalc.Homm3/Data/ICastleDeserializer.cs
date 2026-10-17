@@ -15,9 +15,9 @@ namespace Siniskalc.Homm3.Data
 
         PlayerColor? DeserializeOwner(CastleChunk chunk);
 
-        Position DeserializePosition(CastleChunk chunk);
+        MapPosition DeserializePosition(CastleChunk chunk);
 
-        Position? DeserializeShipyardLocation(CastleChunk chunk);
+        MapPosition? DeserializeShipyardLocation(CastleChunk chunk);
 
         Army<Creature> DeserializeGarrison(CastleChunk chunk);
 

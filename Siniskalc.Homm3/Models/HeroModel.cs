@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Models
             HeroClass heroClass,
             HeroLevel level,
             HeroPosition position,
-            Position markerPosition,
+            MapPosition markerPosition,
             MovementPoints movementPoints,
             SecondarySkills secondarySkills,
             Backpack backpack,
@@ -104,7 +104,7 @@ namespace Siniskalc.Homm3.Models
 
         public HeroPosition Position { get; init; }
 
-        public Position MarkerPosition { get; init; }
+        public MapPosition MarkerPosition { get; init; }
 
         public MovementPoints MovementPoints { get; init; }
 

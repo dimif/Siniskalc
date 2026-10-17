@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Models;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
@@ -26,8 +27,8 @@ namespace Siniskalc.Homm2.Data
                 Bytes.ReadText(bytes, CastleLayout.Name, Constants.Castle.NameLength),
                 this.DeserializeOwner(chunk),
                 Bytes.ReadFaction(chunk.GetByteAt(CastleLayout.Faction)),
-                new Position(chunk.GetByteAt(CastleLayout.X), chunk.GetByteAt(CastleLayout.Y)),
-                boatX == Bytes.Empty ? null : new Position(boatX, chunk.GetByteAt(CastleLayout.Boat + 1)),
+                new MapPosition(chunk.GetByteAt(CastleLayout.X), chunk.GetByteAt(CastleLayout.Y)),
+                boatX == Bytes.Empty ? null : new MapPosition(boatX, chunk.GetByteAt(CastleLayout.Boat + 1)),
                 Bytes.Army(chunk.GetBytesAt(CastleLayout.GarrisonTypes, Constants.ArmySlotCount), counts),
                 Bytes.Id(chunk.GetByteAt(CastleLayout.VisitingHero)),
                 (TownBuildings)chunk.GetUInt16At(CastleLayout.TownBuildings),

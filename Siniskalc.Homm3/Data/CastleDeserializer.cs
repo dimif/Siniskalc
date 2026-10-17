@@ -49,19 +49,19 @@ namespace Siniskalc.Homm3.Data
             return ByteEnum.TryRead<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner), out var owner) ? owner : null;
         }
 
-        public Position DeserializePosition(CastleChunk chunk)
+        public MapPosition DeserializePosition(CastleChunk chunk)
         {
-            return new Position(
+            return new MapPosition(
                 chunk.GetByteAt(CastleLayout.PositionX),
                 chunk.GetByteAt(CastleLayout.PositionY),
                 chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
-        public Position? DeserializeShipyardLocation(CastleChunk chunk)
+        public MapPosition? DeserializeShipyardLocation(CastleChunk chunk)
         {
             var x = chunk.GetByteAt(CastleLayout.ShipyardX);
             var y = chunk.GetByteAt(CastleLayout.ShipyardY);
-            return x == byte.MaxValue && y == byte.MaxValue ? null : new Position(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
+            return x == byte.MaxValue && y == byte.MaxValue ? null : new MapPosition(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
         public Army<Creature> DeserializeGarrison(CastleChunk chunk)

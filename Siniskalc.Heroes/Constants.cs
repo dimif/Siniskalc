@@ -42,6 +42,17 @@ namespace Siniskalc.Heroes
         }
 
         /// <summary>
+        /// The map.
+        /// </summary>
+        public static class Map
+        {
+            /// <summary>
+            /// Written as the coordinate of something that is not on the map.
+            /// </summary>
+            public const int NoCoordinate = -1;
+        }
+
+        /// <summary>
         /// The tavern of a player.
         /// </summary>
         public static class Tavern

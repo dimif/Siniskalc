@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -15,11 +16,11 @@
     public sealed record ObeliskVisits
     {
         private readonly byte[] masks;
-        private readonly Position?[] positions;
+        private readonly MapPosition?[] positions;
 
         /// <param name="masks">One byte for each obelisk, with a bit for every colour that has visited it.</param>
         /// <param name="positions">Where each obelisk is on the map, null for one that was not found; may be empty. Read-only.</param>
-        public ObeliskVisits(IEnumerable<byte> masks, IEnumerable<Position?>? positions = null)
+        public ObeliskVisits(IEnumerable<byte> masks, IEnumerable<MapPosition?>? positions = null)
         {
             this.masks = [.. masks];
             this.positions = [.. positions ?? []];
@@ -38,7 +39,7 @@
         /// <summary>
         /// Returns where obelisk <paramref name="index"/> is on the map, or null when that is not known.
         /// </summary>
-        public Position? PositionOf(int index) => index >= 0 && index < this.positions.Length ? this.positions[index] : null;
+        public MapPosition? PositionOf(int index) => index >= 0 && index < this.positions.Length ? this.positions[index] : null;
 
         /// <summary>
         /// Returns the visits of a map with <paramref name="count"/> obelisks that nobody has visited.

@@ -118,7 +118,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string PositionText => this.HeroModel.Position.X < 0 || this.HeroModel.Position.Y < 0
             ? string.Empty
-            : MapLevelText.Coordinates(this.HeroModel.Position.X, this.HeroModel.Position.Y, this.HeroModel.Position.Z);
+            : MapLevelText.Coordinates(this.HeroModel.Position.X, this.HeroModel.Position.Y, this.HeroModel.Position.Level);
 
         private HeroModel OriginalModel => this.session.History.Original.Heroes().GetModel(this.session.HeroIndex);
 
@@ -151,8 +151,8 @@ namespace Siniskalc.Homm3.ViewModels
                     : h with
                     {
                         Owner = null,
-                        Position = new HeroPosition(Entities.Position.None.X, Entities.Position.None.Y, Entities.Position.None.Z, FacingDirection.East),
-                        MarkerPosition = Entities.Position.None,
+                        Position = new HeroPosition(MapPosition.None.X, MapPosition.None.Y, MapPosition.None.Level, FacingDirection.East),
+                        MarkerPosition = MapPosition.None,
                     });
             }
         }
@@ -193,7 +193,7 @@ namespace Siniskalc.Homm3.ViewModels
             set => this.Update(h => h with { Position = value });
         }
 
-        public Position MarkerPosition
+        public MapPosition MarkerPosition
         {
             get => this.HeroModel.MarkerPosition;
             set => this.Update(h => h with { MarkerPosition = value });

@@ -1,4 +1,6 @@
-﻿namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Homm3.Entities
 {
-    public record HeroPosition(short X, short Y, short Z, FacingDirection FacingDirection) : Position(X, Y, Z);
+    using Siniskalc.Heroes.Models;
+
+    public record HeroPosition(int X, int Y, int Level, FacingDirection FacingDirection) : MapPosition(X, Y, Level);
 }

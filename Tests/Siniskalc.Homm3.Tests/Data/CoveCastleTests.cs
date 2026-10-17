@@ -1,4 +1,5 @@
 ﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -36,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(castle.Position, Is.EqualTo(new Position(15, 12, 0)));
+            Assert.That(castle.Position, Is.EqualTo(new MapPosition(15, 12, 0)));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(0));
             Assert.That(castle.BuiltThisTurn, Is.False);
             Assert.That(castle.Buildings, Is.EquivalentTo(new[]
@@ -165,7 +166,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
             Assert.That(castle.Owner, Is.Null);
             Assert.That(castle.Buildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
-            Assert.That(castle.ShipyardLocation, Is.EqualTo(new Position(55, 16, 0)));
+            Assert.That(castle.ShipyardLocation, Is.EqualTo(new MapPosition(55, 16, 0)));
             Assert.That(castle.EnabledBuildings, Does.Contain(Building.Shipyard));
             Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").ShipyardLocation, Is.Null);
             Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(Building.Shipyard));

@@ -142,7 +142,7 @@ namespace Siniskalc.Homm2.Data
             ByteBufferHelper.WriteUInt16(bytes, countOffset, (ushort)wanted.Count);
         }
 
-        public static Position? OptionalPosition(uint x, uint y) => x == uint.MaxValue || y == uint.MaxValue ? null : new Position(ReadCoordinate(x), ReadCoordinate(y));
+        public static MapPosition? OptionalPosition(uint x, uint y) => x == uint.MaxValue || y == uint.MaxValue ? null : new MapPosition(ReadCoordinate(x), ReadCoordinate(y));
 
         public static Numbers IdList(byte[] bytes, int offset, int size) => new(bytes.AsSpan(offset, size).ToArray().Where(b => b != Empty).Select(b => (int)b));
 

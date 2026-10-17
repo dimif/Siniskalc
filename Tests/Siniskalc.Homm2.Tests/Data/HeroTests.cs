@@ -27,7 +27,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(maximus.HeroId, Is.EqualTo(Maximus));
             Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(maximus.Owner, Is.EqualTo(Color.Blue));
-            Assert.That(maximus.Position, Is.EqualTo(new Position(28, 27)));
+            Assert.That(maximus.Position, Is.EqualTo(new MapPosition(28, 27)));
             Assert.That(maximus.Destination, Is.Null);
             Assert.That(maximus.Level, Is.EqualTo(1));
             Assert.That(maximus.Experience, Is.Zero);
@@ -59,7 +59,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var moved = Hero(3, Maximus);
 
-            Assert.That(moved.Position, Is.EqualTo(new Position(29, 28)));
+            Assert.That(moved.Position, Is.EqualTo(new MapPosition(29, 28)));
             Assert.That(moved.MovementLeft, Is.EqualTo(888));
         }
 
@@ -69,7 +69,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var tired = Hero(5, Maximus);
 
             Assert.That(tired.MovementLeft, Is.Zero);
-            Assert.That(tired.Destination, Is.EqualTo(new Position(23, 23)));
+            Assert.That(tired.Destination, Is.EqualTo(new MapPosition(23, 23)));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(before.Owner, Is.Null);
             Assert.That(hired.Owner, Is.EqualTo(Color.Blue));
-            Assert.That(hired.Position, Is.EqualTo(new Position(28, 25)));
+            Assert.That(hired.Position, Is.EqualTo(new MapPosition(28, 25)));
         }
 
         [Test]

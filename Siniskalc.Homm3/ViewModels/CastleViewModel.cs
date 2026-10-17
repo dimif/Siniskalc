@@ -118,7 +118,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".
         /// </summary>
-        public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Z)}";
+        public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 
         public string Garrisoned => this.HasGarrisonedHero ? $"Garrisoned by {this.GarrisonedHeroName}"
             : this.Castle.Garrison.Filled.Count() == 0 ? "No garrison" : $"{this.Castle.Garrison.Filled.Count()} of {Constants.CreatureSlotCount} slots in use";

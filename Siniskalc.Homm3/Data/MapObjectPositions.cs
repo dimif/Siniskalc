@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Homm3.Entities;
@@ -24,7 +25,7 @@
         /// </summary>
         /// <param name="bytes">The savefile.</param>
         /// <param name="searchEnd">Where to stop looking: the table comes before the players.</param>
-        public static IReadOnlyList<Position> Find(byte[] bytes, int searchEnd)
+        public static IReadOnlyList<MapPosition> Find(byte[] bytes, int searchEnd)
         {
             var end = DefinitionsEnd(bytes, Math.Min(searchEnd, bytes.Length));
             if (end < 0)
@@ -34,7 +35,7 @@
 
             // A 16-bit count of the objects comes right after the definitions, then the list.
             var count = BitConverter.ToUInt16(bytes, end);
-            var positions = new List<Position>();
+            var positions = new List<MapPosition>();
             for (var at = end + CountLength; positions.Count < count && at + PositionEntryLength <= searchEnd; at += PositionEntryLength)
             {
                 var (x, y, z) = (bytes[at + 2], bytes[at + 3], bytes[at + 4]);
@@ -43,7 +44,7 @@
                     break;
                 }
 
-                positions.Add(new Position(x, y, z));
+                positions.Add(new MapPosition(x, y, z));
             }
 
             return positions;

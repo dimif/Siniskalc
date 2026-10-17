@@ -52,7 +52,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var conflux = Castle(game, "Conflux");
             Assert.That(conflux.Faction, Is.EqualTo(Faction.Conflux));
             Assert.That(conflux.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(conflux.Position, Is.EqualTo(new Position(50, 4, 0)));
+            Assert.That(conflux.Position, Is.EqualTo(new MapPosition(50, 4, 0)));
             Assert.That(conflux.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
             Assert.That(Castle(game, "8_Fort").Owner, Is.EqualTo(PlayerColor.Pink));
             Assert.That(Castle(game, "Marishen").Owner, Is.Null);

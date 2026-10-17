@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Homm3.Entities;
@@ -49,7 +50,7 @@ namespace Siniskalc.Homm3.Data
         /// obelisk in the list of the objects of the map (16 bits), then the number of the obelisk (32 bits). A hero standing on an obelisk hides
         /// its record, and that obelisk then has no position.
         /// </summary>
-        private static IReadOnlyList<Position?> FindPositions(byte[] bytes, int start, int count)
+        private static IReadOnlyList<MapPosition?> FindPositions(byte[] bytes, int start, int count)
         {
             var objects = MapObjectPositions.Find(bytes, start);
             if (objects.Count == 0)
@@ -57,7 +58,7 @@ namespace Siniskalc.Homm3.Data
                 return [];
             }
 
-            var positions = new Position?[count];
+            var positions = new MapPosition?[count];
             for (var i = 0; i + 10 <= start; i++)
             {
                 if (bytes[i] != ObeliskObjectType || bytes[i + 1] != 0 || bytes[i + 2] != 0 || bytes[i + 3] != 0)

@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -37,7 +38,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(haret.Faction, Is.EqualTo(Faction.Castle));
             Assert.That(haret.Owner, Is.EqualTo(PlayerColor.Tan));
-            Assert.That(haret.Position, Is.EqualTo(new Position(33, 23, 0)));
+            Assert.That(haret.Position, Is.EqualTo(new MapPosition(33, 23, 0)));
             Assert.That(haret.Garrison.Filled, Is.Empty);
             Assert.That(haret.Buildings, Is.EquivalentTo(new[]
             {
@@ -60,7 +61,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(tumlac.Faction, Is.EqualTo(Faction.Tower));
             Assert.That(tumlac.Owner, Is.EqualTo(PlayerColor.Tan));
-            Assert.That(tumlac.Position, Is.EqualTo(new Position(9, 29, 0)));
+            Assert.That(tumlac.Position, Is.EqualTo(new MapPosition(9, 29, 0)));
             Assert.That(tumlac.Garrison.Filled, Is.Empty);
             Assert.That(tumlac.Buildings, Is.EquivalentTo(new[] { Building.MagesGuild1, Building.VillageHall, Building.TownHall }));
         }

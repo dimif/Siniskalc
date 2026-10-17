@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
@@ -9,7 +10,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class ObeliskChunk : BytesChunk
     {
-        public ObeliskChunk(string name, byte[] bytes, int startIndex, IReadOnlyList<Position?>? positions = null)
+        public ObeliskChunk(string name, byte[] bytes, int startIndex, IReadOnlyList<MapPosition?>? positions = null)
             : base(name, bytes, startIndex)
         {
             this.Positions = positions ?? [];
@@ -19,7 +20,7 @@ namespace Siniskalc.Homm3.Data
         /// Gets where each obelisk is on the map (the obelisk at the same place in the chunk), or null for one that was not found. Empty when the
         /// savefile has no list of objects that could be read. It is not part of the chunk's bytes.
         /// </summary>
-        public IReadOnlyList<Position?> Positions { get; }
+        public IReadOnlyList<MapPosition?> Positions { get; }
 
         public override ObeliskChunk WithBytes(byte[] bytes)
         {

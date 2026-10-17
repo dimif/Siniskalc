@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests.Data
 {
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -25,7 +26,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(xabran.Index, Is.EqualTo(Xabran));
             Assert.That(xabran.Owner, Is.EqualTo(Color.Blue));
             Assert.That(xabran.Faction, Is.EqualTo(Faction.Knight));
-            Assert.That(xabran.Position, Is.EqualTo(new Position(28, 25)));
+            Assert.That(xabran.Position, Is.EqualTo(new MapPosition(28, 25)));
             Assert.That(xabran.Boat, Is.Null);
             Assert.That(xabran.HasCastle, Is.True);
             Assert.That(xabran.Dwellings, Is.EqualTo(Dwellings.Dwelling1));
@@ -109,7 +110,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(shipyard.Faction, Is.EqualTo(Faction.Warlock));
             Assert.That(shipyard.Town.HasFlag(TownBuildings.Shipyard), Is.True);
-            Assert.That(shipyard.Boat, Is.EqualTo(new Position(62, 10)));
+            Assert.That(shipyard.Boat, Is.EqualTo(new MapPosition(62, 10)));
             Assert.That(Castle(19, Whiteshield).Town.HasFlag(TownBuildings.Shipyard), Is.False);
             Assert.That(shipyard.HasDwelling(6), Is.False);
             Assert.That(tower.HasDwelling(6), Is.True);

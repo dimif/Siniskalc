@@ -16,7 +16,7 @@ namespace Siniskalc.Homm2.ViewModels
     /// <summary>
     /// The pages of a hero: what the hero is and has (general), the secondary skills, the army, the spell book and the artifacts.
     /// </summary>
-    public sealed class HeroViewModel : PageViewModel
+    public sealed class HeroViewModel : PageViewModel, IOwnerChoice
     {
         private readonly Action<int> openCastle;
         private HeroModel hero = null!;
@@ -62,12 +62,39 @@ namespace Siniskalc.Homm2.ViewModels
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
+            this.OwnerField = new ChoiceFieldViewModel(
+                "Owner",
+                OwnerNames<Color>.Choices,
+                () => OwnerNames<Color>.Of(this.session.Current.Owner),
+                this.ChangeOwner,
+                toolTip: "Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish.");
             this.RestoreMovementCommand = new DelegateCommand(_ => this.session.Update(h => h with { MovementLeft = h.MaxMovement }), _ => this.hero.MovementLeft != this.hero.MaxMovement);
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
         }
 
         public int HeroId { get; }
+
+        public ChoiceFieldViewModel OwnerField { get; }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<string> OwnerChoices => this.OwnerField.Choices;
+
+        /// <summary>
+        /// Gets or sets the owner, as "Neutral" or the name of a player colour.
+        /// </summary>
+        public string SelectedOwner
+        {
+            get => this.OwnerField.Selected;
+            set => this.OwnerField.Selected = value;
+        }
+
+        /// <summary>
+        /// Gets a sentence saying why the owner could not be changed, or nothing.
+        /// </summary>
+        public string Notice { get; private set; } = string.Empty;
+
+        public bool HasNotice => this.Notice.Length > 0;
 
         public string Name => this.hero.Name;
 
@@ -135,6 +162,7 @@ namespace Siniskalc.Homm2.ViewModels
                 row.Refresh();
             }
 
+            this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
             this.SpellsEditor?.Refresh();
@@ -144,6 +172,23 @@ namespace Siniskalc.Homm2.ViewModels
             var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHero == this.HeroId);
             this.castleIndex = castle?.Index ?? -1;
             this.castleName = castle?.Name ?? string.Empty;
+        }
+
+        private void ChangeOwner(string name)
+        {
+            this.Notice = string.Empty;
+            try
+            {
+                this.session.ChangeOwner(OwnerNames<Color>.Parse(name));
+            }
+            catch (GameRuleException)
+            {
+                this.Notice = $"{name} has the most heroes a player can have.";
+            }
+
+            this.RaisePropertyChanged(nameof(this.Notice));
+            this.RaisePropertyChanged(nameof(this.HasNotice));
+            this.OwnerField.Refresh();
         }
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(

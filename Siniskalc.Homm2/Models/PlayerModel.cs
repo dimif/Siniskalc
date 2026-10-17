@@ -42,6 +42,29 @@ namespace Siniskalc.Homm2.Models
         public const int DaysToOwnACastle = Heroes.Constants.Player.MaxDaysLeft;
 
         /// <summary>
+        /// Returns the player with the hero in its list of heroes.
+        /// </summary>
+        /// <exception cref="GameRuleException">The player has the most heroes the list holds.</exception>
+        public PlayerModel WithHero(int heroId)
+        {
+            if (this.HeroIds.Contains(heroId))
+            {
+                return this;
+            }
+
+            return this.HeroIds.Count >= Constants.Player.HeroListSize
+                ? throw new GameRuleException($"A player has at most {Constants.Player.HeroListSize} heroes.")
+                : this with { HeroIds = new Numbers(this.HeroIds.Append(heroId)) };
+        }
+
+        /// <summary>
+        /// Returns the player without the hero in its list of heroes (and without it as the selected hero).
+        /// </summary>
+        public PlayerModel WithoutHero(int heroId) => this.HeroIds.Contains(heroId)
+            ? this with { HeroIds = new Numbers(this.HeroIds.Where(h => h != heroId)), SelectedHero = this.SelectedHero == heroId ? null : this.SelectedHero }
+            : this;
+
+        /// <summary>
         /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one.
         /// </summary>
         /// <exception cref="GameRuleException">The player has the most castles the list holds.</exception>

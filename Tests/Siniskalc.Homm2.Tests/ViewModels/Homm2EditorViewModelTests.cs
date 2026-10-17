@@ -173,6 +173,31 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void AHeroMadeNeutralLeavesTheListOfHeroesOfItsPlayerAndHasNoMoveToFinish()
+        {
+            this.editor.ShowHero(7);
+            var hero = (HeroViewModel)this.editor.CurrentPage!;
+            var document = () => this.editor.CurrentGame!.History.Current;
+            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.True);
+
+            hero.SelectedOwner = "Neutral";
+
+            Assert.That(document().Heroes().GetModel(7).Owner, Is.Null);
+            Assert.That(document().Heroes().GetModel(7).Destination, Is.Null);
+            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.False);
+
+            hero.SelectedOwner = "Green";
+
+            Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(Color.Green));
+            Assert.That(document().Players().GetModel((int)Color.Green).HeroIds.Contains(7), Is.True);
+
+            this.editor.CurrentGame!.History.Undo();
+            this.editor.CurrentGame!.History.Undo();
+            Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(Color.Blue));
+            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.True);
+        }
+
+        [Test]
         public void TheTavernOfAPlayerIsEditedByPickingAHeroNobodyOwns()
         {
             var game = this.editor.CurrentGame!;

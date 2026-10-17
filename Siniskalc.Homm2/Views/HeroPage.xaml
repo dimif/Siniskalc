@@ -38,6 +38,20 @@
                     </StackPanel>
                 </StackPanel>
             </heroes:PageHeader>
+            <heroes:OwnerPicker Margin="0,8,0,0"
+                                PickerToolTip="Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish."/>
+            <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
         </StackPanel>
 
         <!-- The pages of a hero, as tabs. -->

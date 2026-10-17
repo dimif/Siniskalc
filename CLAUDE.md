@@ -3,6 +3,10 @@
 These rules apply to everyone (people, Copilot, Claude).
 See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/FUTURE_IMPROVEMENTS.md` for planned work and handover notes.
 
+## Scope
+
+- **Every instruction here and in `docs/` applies to both games (HoMM3 and HoMM2) unless it names one game or clearly cannot apply to the other.** If you are in doubt whether a rule, a task or a change applies to both, ask before assuming.
+
 ## Code layout
 
 - **One top-level type per file, named after the file.** An enum, record, class or interface that other classes use lives in its own file.

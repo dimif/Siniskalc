@@ -35,6 +35,11 @@ namespace Siniskalc.Homm2.Data
             WriteBattleBonus(bytes, HeroLayout.BattleMorale, model.NextBattle.Morale, nameof(model.NextBattle));
             WriteBattleBonus(bytes, HeroLayout.BattleLuck, model.NextBattle.Luck, nameof(model.NextBattle));
             WriteVisited(bytes, model.Visited);
+            if (ByteBufferHelper.ReadUInt32(bytes, HeroLayout.Effects) != (uint)model.Effects)
+            {
+                ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Effects, (uint)model.Effects);
+            }
+
             WriteSecondarySkills(bytes, model.SecondarySkills);
             WriteArmy(bytes, model.Army);
 
@@ -107,6 +112,11 @@ namespace Siniskalc.Homm2.Data
                 {
                     ByteBufferHelper.WriteUInt32(bytes, HeroLayout.VisitedPlaces + (i * 4), sets[i]);
                 }
+            }
+
+            if (ByteBufferHelper.ReadUInt32(bytes, HeroLayout.VisitedXanadu) != visited.Xanadu)
+            {
+                ByteBufferHelper.WriteUInt32(bytes, HeroLayout.VisitedXanadu, visited.Xanadu);
             }
         }
 

@@ -13,13 +13,15 @@ namespace Siniskalc.Homm2.Runtime
         private readonly IBytesLoader loader;
         private readonly IHeaderReader headerReader;
         private readonly ISaveDocumentFactory documentFactory;
+        private readonly IMapPlacesReader placesReader;
 
-        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory)
+        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader)
         {
             this.locator = locator;
             this.loader = loader;
             this.headerReader = headerReader;
             this.documentFactory = documentFactory;
+            this.placesReader = placesReader;
         }
 
         /// <inheritdoc/>
@@ -36,8 +38,9 @@ namespace Siniskalc.Homm2.Runtime
                 bytes,
                 this.loader.LoadHeroChunks(bytes, layout),
                 this.loader.LoadPlayerChunks(bytes, layout),
-                this.loader.LoadCastleChunks(bytes, layout));
-            return new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name);
+                this.loader.LoadCastleChunks(bytes, layout),
+                this.loader.LoadObeliskChunks(bytes, layout));
+            return new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
         }
     }
 }

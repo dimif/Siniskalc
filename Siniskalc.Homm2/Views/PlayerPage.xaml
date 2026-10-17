@@ -5,6 +5,10 @@
       xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
       Title="Player">
 
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityTab"/>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -23,18 +27,19 @@
             <wpf:NavButton Text="Resources"/>
             <wpf:NavButton Text="Heroes"/>
             <wpf:NavButton Text="Towns"/>
+            <wpf:NavButton Text="Obelisks" Visibility="{Binding Obelisks.HasObelisks, Converter={StaticResource BoolToVisibilityTab}}"/>
             <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel3}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedTab}" Value="3">
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="4">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -58,6 +63,25 @@
                     <heroes:ItemsCard Heading="Towns" ItemsSource="{Binding Castles}" ItemTemplate="{StaticResource LinkTemplate}"
                                       HasItems="{Binding HasCastles}" EmptyText="This player has no towns"/>
                 </WrapPanel>
+
+                <!-- Obelisks -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
+                    <!-- The obelisks of the map and which of them this player has visited. Only for savegames in which they were found. -->
+                    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" DataContext="{Binding Obelisks}">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Right" Margin="16,0,0,0" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Visited obelisks"
+                                           ToolTip="The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the Ultimate Artifact."/>
+                            </DockPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                <Button Style="{StaticResource PillButtonStyle}" Content="Visit all" Command="{Binding VisitAllCommand}" ToolTip="This player has visited every obelisk"/>
+                                <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Content="None" Command="{Binding ClearAllCommand}" ToolTip="This player has visited no obelisk"/>
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding Obelisks}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

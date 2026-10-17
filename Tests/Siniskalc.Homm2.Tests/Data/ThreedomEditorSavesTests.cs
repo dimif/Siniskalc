@@ -52,6 +52,21 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
+        public void TheObelisksAreAllVisitedByBlueOnlyOneFortIsForgottenAndTheSourcesSetTheirBonus()
+        {
+            var obelisks = Open("T04OBELS").History.Current.Obelisks().GetModel()!;
+            Assert.That(obelisks.AllVisited(Color.Blue), Is.True);
+            Assert.That(obelisks.IsVisited(3, Color.Green), Is.True, "the others keep theirs");
+
+            Assert.That(Open("T05FORT").History.Current.Heroes().GetModel(50).Visited.Forts, Is.EqualTo(34u), "he had visited three forts and the second of the map is forgotten");
+
+            var heroes = Open("T06SRC").History.Current.Heroes();
+            Assert.That(heroes.GetModel(50).NextBattle, Is.EqualTo(new Siniskalc.Homm2.Models.NextBattleBonus(2, 1)));
+            Assert.That(heroes.GetModel(50).Effects.HasFlag(HeroEffects.Temple | HeroEffects.Fountain), Is.True);
+            Assert.That(heroes.GetModel(49).Effects & (HeroEffects.Arena | HeroEffects.Stables), Is.EqualTo(HeroEffects.None));
+        }
+
+        [Test]
         public void TheHeroesForgetTheirPlacesAndHaveTheBonusesOfTheNextBattle()
         {
             var forgotten = Open("T02FORGT").History.Current.Heroes();

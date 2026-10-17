@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.Data
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Collections.Generic;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -29,6 +30,29 @@ namespace Siniskalc.Homm2.Data
                 .Select(i => new PlayerChunk(((Color)i).ToString(), bytes.AsSpan(layout.PlayerStart(i), PlayerLayout.RecordSize).ToArray(), layout.PlayerStart(i)))
                 .ToList()
                 .AsReadOnly();
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<ObeliskChunk> LoadObeliskChunks(byte[] bytes, SaveLayout layout)
+        {
+            var tiles = MapTileTable.FindStart(bytes, layout);
+            if (tiles < 0)
+            {
+                return [];
+            }
+
+            var obelisks = MapTileTable.Find(MapTileTable.ObjectBytes(bytes, layout, tiles), layout.Width, ObeliskLayout.TileMarker)
+                .Take(ObeliskLayout.Capacity)
+                .ToList();
+            if (obelisks.Count == 0)
+            {
+                return [];
+            }
+
+            var start = layout.CastleTableStart + (Constants.Table.CastleSlotCount * CastleLayout.RecordSize) + ObeliskLayout.FlagsFromCastlesEnd;
+            return start + ObeliskLayout.Capacity <= bytes.Length
+                ? [new ObeliskChunk("Obelisks", bytes.AsSpan(start, ObeliskLayout.Capacity).ToArray(), start, obelisks)]
+                : [];
         }
 
         /// <inheritdoc/>

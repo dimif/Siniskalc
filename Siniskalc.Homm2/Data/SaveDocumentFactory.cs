@@ -17,6 +17,9 @@ namespace Siniskalc.Homm2.Data
         private readonly ICastleDeserializer castleDeserializer;
         private readonly ICastleSerializer castleSerializer;
         private readonly ICastleDiffer castleDiffer;
+        private readonly IObeliskDeserializer obeliskDeserializer;
+        private readonly IObeliskSerializer obeliskSerializer;
+        private readonly IObeliskDiffer obeliskDiffer;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -29,6 +32,9 @@ namespace Siniskalc.Homm2.Data
             ICastleDeserializer castleDeserializer,
             ICastleSerializer castleSerializer,
             ICastleDiffer castleDiffer,
+            IObeliskDeserializer obeliskDeserializer,
+            IObeliskSerializer obeliskSerializer,
+            IObeliskDiffer obeliskDiffer,
             ISavefileBytesPatcher patcher)
         {
             this.heroDeserializer = heroDeserializer;
@@ -40,17 +46,21 @@ namespace Siniskalc.Homm2.Data
             this.castleDeserializer = castleDeserializer;
             this.castleSerializer = castleSerializer;
             this.castleDiffer = castleDiffer;
+            this.obeliskDeserializer = obeliskDeserializer;
+            this.obeliskSerializer = obeliskSerializer;
+            this.obeliskDiffer = obeliskDiffer;
             this.patcher = patcher;
         }
 
         /// <inheritdoc/>
-        public SaveDocument Create(byte[] bytes, IEnumerable<HeroChunk> heroChunks, IEnumerable<PlayerChunk> playerChunks, IEnumerable<CastleChunk> castleChunks)
+        public SaveDocument Create(byte[] bytes, IEnumerable<HeroChunk> heroChunks, IEnumerable<PlayerChunk> playerChunks, IEnumerable<CastleChunk> castleChunks, IEnumerable<ObeliskChunk> obeliskChunks)
         {
             return Homm2SaveDocuments.Create(
                 bytes,
                 new HeroChunkCollection(heroChunks, this.heroDeserializer, this.heroSerializer, this.heroDiffer),
                 new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer),
                 new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
+                new ObeliskChunkCollection(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
                 this.patcher);
         }
     }

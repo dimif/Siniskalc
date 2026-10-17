@@ -169,7 +169,7 @@ namespace Siniskalc.Homm2.Tests
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue).Index;
                     var pages = new (Action Show, Func<PageViewModel> Page, int Tabs)[]
                     {
-                        (() => editor.ShowPlayer(Color.Blue), () => (PlayerViewModel)editor.CurrentPage!, 4),
+                        (() => editor.ShowPlayer(Color.Blue), () => (PlayerViewModel)editor.CurrentPage!, 5),
                         (() => editor.ShowHero(hero), () => (HeroViewModel)editor.CurrentPage!, 6),
                         (() => editor.ShowCastle(castle), () => (CastleViewModel)editor.CurrentPage!, 5),
                     };

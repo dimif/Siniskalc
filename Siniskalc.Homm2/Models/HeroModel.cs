@@ -79,6 +79,11 @@ namespace Siniskalc.Homm2.Models
         public NextBattleBonus NextBattle { get; init; }
 
         /// <summary>
+        /// Gets or sets what the hero remembers of the fountain, oasis, faerie ring, graveyard, temple, arena and stables it visited.
+        /// </summary>
+        public HeroEffects Effects { get; init; }
+
+        /// <summary>
         /// Gets or sets the places of the map the hero has visited and cannot get anything from again.
         /// </summary>
         public VisitedPlaces Visited { get; init; }

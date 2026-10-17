@@ -105,6 +105,8 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Next battle"/>
                             <ItemsControl ItemsSource="{Binding BattleBonus}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
+                            <TextBlock Margin="0,8,0,2" Foreground="{StaticResource MutedBrush}" Text="Given by"/>
+                            <ItemsControl ItemsSource="{Binding BattleSources}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
                                        Text="What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game."/>
                         </StackPanel>
@@ -115,15 +117,21 @@
                             <ItemsControl ItemsSource="{Binding VisitedPlaces}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="0,2" ToolTip="{Binding ToolTip}">
-                                            <TextBlock Width="130" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Name}"/>
-                                            <TextBlock Width="50" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Text}"/>
-                                            <Button Style="{StaticResource PillButtonStyle}" Content="Forget" Command="{Binding ForgetCommand}"
-                                                    ToolTip="The hero can visit them again. Not tried in the game."/>
-                                        </StackPanel>
+                                        <Expander Margin="0,2" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" ToolTip="{Binding ToolTip}">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Width="116" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Name}"/>
+                                                    <TextBlock Width="50" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Text}"/>
+                                                    <Button Style="{StaticResource PillButtonStyle}" Content="Forget all" Command="{Binding ForgetCommand}"
+                                                            ToolTip="The hero can visit them all again. Not tried in the game."/>
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsControl Margin="20,2,0,4" ItemsSource="{Binding Places}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+                                        </Expander>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding UsedOnce}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                         </StackPanel>
                     </Border>
                 </WrapPanel>

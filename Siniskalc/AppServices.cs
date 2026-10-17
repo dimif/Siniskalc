@@ -104,7 +104,11 @@ namespace Siniskalc
                         new H2Data.CastleDeserializer(),
                         new H2Data.SafeCastleSerializer(),
                         new H2Data.CastleDiffer(),
-                        this.BytesPatcher)),
+                        new H2Data.ObeliskDeserializer(),
+                        new H2Data.SafeObeliskSerializer(),
+                        new H2Data.ObeliskDiffer(),
+                        this.BytesPatcher),
+                    new H2Data.MapPlacesReader()),
                 new RawSavefileCodec(),
                 this.Backup);
             this.Homm2SaveRegionProvider = new H2Data.SaveRegionProvider(homm2Locator);

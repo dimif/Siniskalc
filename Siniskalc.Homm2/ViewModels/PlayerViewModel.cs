@@ -39,6 +39,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession((int)color);
+            this.Obelisks = new ObeliskVisitsViewModel(game.History, color);
             this.resources = ResourceOrder.Select(this.CreateRow).ToList();
             this.SetAllResourcesCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name != nameof(Resource.Gold)), Constants.Player.AllResourcesIncrease));
             this.SetRichCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name == nameof(Resource.Gold)), Constants.Player.GoldIncrease));
@@ -78,6 +79,11 @@ namespace Siniskalc.Homm2.ViewModels
         /// Gets the command that adds 100,000 gold.
         /// </summary>
         public ICommand SetRichCommand { get; }
+
+        /// <summary>
+        /// Gets the obelisks of the map and which of them this player has visited.
+        /// </summary>
+        public ObeliskVisitsViewModel Obelisks { get; }
 
         public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
 
@@ -124,6 +130,8 @@ namespace Siniskalc.Homm2.ViewModels
                 .OrderBy(c => c.Name)
                 .Select(c => new LinkViewModel(c.Name, c.Faction?.ToString() ?? string.Empty, new DelegateCommand(_ => this.openCastle(c.Index))))
                 .ToList();
+
+            this.Obelisks?.Refresh();
 
             foreach (var place in this.TavernPlaces)
             {

@@ -25,6 +25,8 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IReadOnlyList<AmountRowViewModel> facts;
         private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
+        private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
+        private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
@@ -53,13 +55,27 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
                 this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
             ];
+            this.battleSources =
+            [
+                this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
+                this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
+                this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
+                this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
+                this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
+            ];
+            this.usedOnce =
+            [
+                this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),
+                this.Remembered("Stables used this week", HeroEffects.Stables, "The stables give more movement points once a week for each hero; the game clears this at the start of a week"),
+            ];
             this.visitedPlaces =
             [
-                this.Visited("Gazebos", h => h.Visited.Gazebos, (h, bits) => h with { Visited = h.Visited with { Gazebos = bits } }, "A thousand experience points, once per hero"),
-                this.Visited("Forts", h => h.Visited.Forts, (h, bits) => h with { Visited = h.Visited with { Forts = bits } }, "A point of defense, once per hero"),
-                this.Visited("Witch doctor's huts", h => h.Visited.WitchDoctorHuts, (h, bits) => h with { Visited = h.Visited with { WitchDoctorHuts = bits } }, "A point of knowledge or a skill, once per hero"),
-                this.Visited("Mercenary camps", h => h.Visited.MercenaryCamps, (h, bits) => h with { Visited = h.Visited with { MercenaryCamps = bits } }, "A point of attack, once per hero"),
-                this.Visited("Standing stones", h => h.Visited.StandingStones, (h, bits) => h with { Visited = h.Visited with { StandingStones = bits } }, "A point of spell power, once per hero"),
+                this.Visited(game, PlaceKind.Gazebo, "Gazebos", "Gazebo", "A thousand experience points, once per hero"),
+                this.Visited(game, PlaceKind.Fort, "Forts", "Fort", "A point of defense, once per hero"),
+                this.Visited(game, PlaceKind.WitchDoctorHut, "Witch doctor's huts", "Witch doctor's hut", "A point of knowledge or a skill, once per hero"),
+                this.Visited(game, PlaceKind.MercenaryCamp, "Mercenary camps", "Mercenary camp", "A point of attack, once per hero"),
+                this.Visited(game, PlaceKind.StandingStones, "Standing stones", "Standing stones", "A point of spell power, once per hero"),
+                this.Visited(game, PlaceKind.Xanadu, "Xanadu", "Xanadu", "A point of every primary skill, once per hero"),
             ];
             this.ArmyEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -153,6 +169,17 @@ namespace Siniskalc.Homm2.ViewModels
         public IReadOnlyList<VisitedPlaceRowViewModel> VisitedPlaces => this.visitedPlaces;
 
         /// <summary>
+        /// Gets the places that gave the hero luck or morale for the next battle, with the bonus each gave: ticking one gives the hero the bonus,
+        /// clearing it takes it away.
+        /// </summary>
+        public IReadOnlyList<ToggleRowViewModel> BattleSources => this.battleSources;
+
+        /// <summary>
+        /// Gets the places that give something once to a hero (the arena) or once a week (the stables).
+        /// </summary>
+        public IReadOnlyList<ToggleRowViewModel> UsedOnce => this.usedOnce;
+
+        /// <summary>
         /// Gets the secondary skills of the hero: the slots of the hero screen and the list of every skill.
         /// </summary>
         public SecondarySkillsViewModel SkillsEditor { get; }
@@ -192,6 +219,11 @@ namespace Siniskalc.Homm2.ViewModels
                 row.Refresh();
             }
 
+            foreach (var row in this.battleSources.Concat(this.usedOnce))
+            {
+                row.Refresh();
+            }
+
             this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
@@ -221,11 +253,36 @@ namespace Siniskalc.Homm2.ViewModels
             this.OwnerField.Refresh();
         }
 
-        private VisitedPlaceRowViewModel Visited(string name, Func<HeroModel, uint> get, Func<HeroModel, uint, HeroModel> set, string toolTip) => new(
+        private ToggleRowViewModel Source(string name, HeroEffects effect, int morale, int luck, string toolTip) => new(
             name,
-            () => get(this.session.Current),
-            () => this.session.Update(h => set(h, 0)),
-            toolTip);
+            () => this.session.Current.Effects.HasFlag(effect),
+            on => this.session.Update(h => h with
+            {
+                Effects = on ? h.Effects | effect : h.Effects & ~effect,
+                NextBattle = new NextBattleBonus(
+                    (int)Math.Clamp(h.NextBattle.Morale + (on ? morale : -morale), Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus),
+                    (int)Math.Clamp(h.NextBattle.Luck + (on ? luck : -luck), Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus)),
+            }),
+            toolTip: toolTip + ". Sets what the game remembers and its morale or luck together. Not tried in the game.");
+
+        private ToggleRowViewModel Remembered(string name, HeroEffects effect, string toolTip) => new(
+            name,
+            () => this.session.Current.Effects.HasFlag(effect),
+            on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
+            toolTip: toolTip + ". Not tried in the game.");
+
+        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string single, string toolTip)
+        {
+            // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
+            var places = game.Places.Of(kind)
+                .Select((position, index) => new ToggleRowViewModel(
+                    $"{single} at {MapLevelText.Coordinates(position.X, position.Y)}",
+                    () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
+                    visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
+                    toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))
+                .ToList();
+            return new(name, () => this.session.Current.Visited.Of(kind), () => this.session.Update(h => h with { Visited = h.Visited.With(kind, 0) }), toolTip, places);
+        }
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,

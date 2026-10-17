@@ -252,7 +252,7 @@ Known before: 0x01 Mage Guild, 0x02 Thieves' Guild, 0x04 Tavern, 0x08 Shipyard, 
 - **+0x3D, +0x41, +0x45, +0x49, +0x4D: the places the hero has visited**, a 32 bit set each, a bit for each place of the kind in the order the map has them: gazebos (+0x3D, save 69 sets 0x04), forts (+0x41, saves 26, 36, 50: 0x04, then 0x06), witch doctor's huts (+0x45, saves 6 and 61: 0x02, 0x08), mercenary camps (+0x49, save 65: 0x04) and standing stones (+0x4D, saves 45 and 52: 0x02, 0x08). These are the places that give a hero something once per hero (an experience bonus, +1 defense, +1 knowledge or a skill, +1 attack, +1 spell power). Clearing a set lets the hero visit the places again; the editor has a button for it (T02FORGT). The places that give something once a week to the first visitor of any player (the windmill, the water mill) and the graveyard are not in the record of the hero: they are in the map.
 - The Price of Loyalty bytes +0xE3 to +0xE6 turn 0xFF one after the other as a hero carries more artifacts; what they are is not known.
 
-**Not decoded: the map (after the castle table, 108,843 bytes in this map)**
+**The map (after the castle table, 108,843 bytes in this map): see "The map part of Threedom" below for what was decoded afterwards. What was known when the first 71 saves were read:**
 
 What the saves showed, for the next person to try:
 
@@ -261,3 +261,37 @@ What the saves showed, for the next person to try:
 - Walking reveals rows of the explored area as runs of 6 to 9 bytes spaced 72 bytes apart in the 0x4000 to 0x4600 part (about 0x1000 bytes of the map part after the castle table).
 
 Decoding these needs a probe that changes one thing: for example a save of a hero standing next to one mine before and after the capture, with the positions of the mine written down.
+
+## The map part of Threedom (2026-10-17, saves 1 to 82)
+
+Offsets are from the end of the table of castles ("M"). Everything below was seen in the 82 saves of Threedom, and the structure that does not depend on the map (the table of tiles, the obelisk bytes, the mine records) was also looked for in the other maps of the test saves.
+
+**The table of tiles.** Somewhere after M the width and the height of the map are written again as two 32 bit numbers, and then the tiles follow: 12 bytes each, row by row from the top left, `width * height` of them (Threedom: at M+0x49B8). A tile is:
+
+| Byte | Meaning |
+|---|---|
+| 0, 1 | the ground picture |
+| 2, 3 | the kind and the picture of the object on the tile (the kind varies with the terrain, so it is not used to find objects) |
+| 4, 5 | flags of the tile (what it blocks, and 0x0188 or 0x0100 when a hero stands on it) |
+| 6, 7 | a second object, such as the flag of a mine: kind 0x38 and the picture 14 (0x0E) for a mine, 21 for an alchemist's lab, 28 (0x1C) for a sawmill, plus 0 to 5 for the colour of the owner |
+| **9** | **what the object a hero enters by is**; this is how the places are found. 0x99 obelisk, 0x8A gazebo, 0xBE fort, 0xC5 witch doctor's hut, 0xC9 mercenary camp, 0xC2 standing stones (two tiles), 0xD6 Xanadu, 0x9F shrine of the first circle, 0xCB of the third, 0xC6 temple, 0x89 fountain, 0xA8 windmill, 0x96 water mill, 0x8C graveyard, 0xA3 the gate of a castle. **On the tile of a hero the byte is 0xAA** and the hero's own record keeps the real one at +0x23 (from the name): that is why a place a hero stands on is not lost |
+| 10, 11 | a number that links the tile to an entry of the table of objects after the tiles |
+
+The counts of the bytes at 9 agree with the pictures where both were checked (the map of Threedom: 9 obelisks, 5 gazebos, 5 forts, 6 witch doctor's huts, 4 mercenary camps, 7 standing stones, 1 Xanadu), and the byte at 9 is better than the picture across terrains (the largest test map has 23 gazebos by the byte and only 21 by the picture).
+
+**Obelisks.** At M+0x538 are 48 records of 8 bytes (`id 00 00 00 00 00 FF 00`, the id counting from 0), then 48 bytes of 0xFF (or a few numbers), and at **M+0x6E8 one byte for each of 48 possible obelisks: a bit for every colour that visited it** (bit 0 Blue, 1 Green, 2 Red, 3 Yellow, 4 Orange, 5 Purple; the AI players set theirs as they walk). The obelisks are in the order of the map, row by row, and the obelisks are the tiles with 0x99 at byte 9. Saves 4, 12, 42, 54, 75 and 80 each set the bit of Blue of one obelisk, and the hero stood on it: the obelisk at 28, 29 is the fifth (Charity, save 75) and the one at 1, 62 the seventh (Colar Blau, save 80). The editor lists them on the player page, like Heroes of Might and Magic III.
+
+**What a hero remembers (the record of a hero, offsets from the name)**
+
+- +0x3D, +0x41, +0x45, +0x49, +0x4D: sets of the gazebos, forts, witch doctor's huts, mercenary camps and standing stones the hero visited, **a bit for each place in the order of the map and the first place is bit 1** (bit 0 is not used): the fort at 1, 4 is the first fort of the map (bit 1) and the one at 29, 18 the second (bit 2), and Colar Blau's and Charity's visits to them set exactly those. The standing stones are counted by the left tile of each. +0x55 is the same for Xanadu (save 82: Charity set bit 1 and got +1 in each primary skill). +0x51 was never set.
+- +0xD9 (32 bits): the game's memory of what a hero visited that gives a bonus for a while. Bits seen: 0x04 fountain (+1 luck), 0x08 oasis (+1 morale, and the maximum movement of the day went from 1,559 to 2,359), 0x10 faerie ring (+1 luck), 0x20 a graveyard that had been visited (-1 morale), +0x0100 temple (+2 morale); and for good or for a week 0x400000 the arena (a point to a skill, once per hero; Charity's defense went from 5 to 6) and 0x800000 the stables (the maximum movement went up by 400; the user says it ends at the start of the week). The game clears the first group with the bonus after a battle.
+- +0x3A and +0x3B: the morale and the luck (signed) that come from those. **`T03BONUS` of the editor set only these two bytes**: the troops showed the bonus (and kept it through later battles) but the hero's own screen did not, so the screen works from the bits of +0xD9 and the bytes are what the troops use. The editor now sets both together (T06SRC).
+
+**The mines (the records of 7 bytes from M+0x05).** `owner, kind, FF, FF, x, y, FF`: the owner is a colour (0 Blue) or FF, the kind is 0 sawmill, 1 alchemist's lab, 2 ore mine, 3 sulfur, 4 crystal, 5 gems, 6 gold; x and y are the position of the mine (the sawmill captured in save 13 is record 43, `00 00 FF FF 2C 38 FF`: 44, 56). Capturing a mine sets the owner here, adds the flag as the second object of a tile (bytes 6 and 7) and the income is recalculated at the start of the next day. Not edited: moving the owner would also have to move the flag.
+
+**Objects with a state of their own (not decoded, not editable yet).**
+
+- **Daemon cave** (save 73), **sphinx** (74) and the windmill and water mill (once a week): nothing changes in the record of the hero besides the reward; in the map part the pictures of the object change (an entry of the table of objects after the tiles goes from `5C 0C` to `5E 00`).
+- **The sphinx is in the first part of the map:** a block that starts with `D2 04 00 00` (1234), an id, then a byte that is 1 until the riddle is answered (it went from 1 to 0 at 0xDD1 when Colar Blau answered, save 74), the reward (8,000 gold, an artifact), the number of answers (2) and the answers (13 characters each: **"darkness" and "shadow"**; the sphinx of this map accepts those two), then the text of the riddle (at 0xE59 of the map part, and the messages of the map, signs and rumors after it, all in the savegame).
+- **Shrines:** a hero who visits one learns the spell, which is marked in its spell book (saves 78 and 79: Mass Haste, Mass Bless; the spell is part of the object, the second circle shrine is not in the test saves). A shrine is not used up.
+- Save 72 was made from `T03BONUS` of the editor, so Colar Blau already had +3 morale and +3 luck there and Charity -3 and -3; they are not from the arena.

@@ -12,5 +12,7 @@ namespace Siniskalc.Homm2.Data
         public static readonly ChunkKind Player = new("Player", 1);
 
         public static readonly ChunkKind Castle = new("Castle", 2);
+
+        public static readonly ChunkKind Obelisks = new("Obelisks", 3);
     }
 }

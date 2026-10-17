@@ -49,12 +49,14 @@ namespace Siniskalc.Homm2.Data
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
             {
                 NextBattle = new NextBattleBonus((sbyte)chunk.GetByteAt(HeroLayout.BattleMorale), (sbyte)chunk.GetByteAt(HeroLayout.BattleLuck)),
+                Effects = (HeroEffects)chunk.GetUInt32At(HeroLayout.Effects),
                 Visited = new VisitedPlaces(
                     chunk.GetUInt32At(HeroLayout.VisitedPlaces),
                     chunk.GetUInt32At(HeroLayout.VisitedPlaces + 4),
                     chunk.GetUInt32At(HeroLayout.VisitedPlaces + 8),
                     chunk.GetUInt32At(HeroLayout.VisitedPlaces + 12),
-                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 16)),
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 16),
+                    chunk.GetUInt32At(HeroLayout.VisitedXanadu)),
             };
         }
     }

@@ -45,6 +45,12 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int Destination = Name + 0x17;
 
+        /// <summary>
+        /// The byte 9 of the tile the hero stands on (what the tile is: 0x99 for an obelisk, 0xA3 the gate of a castle...). The table of tiles
+        /// holds a marker on the tile of a hero instead, so this is where the tile's own byte is kept while the hero is on it.
+        /// </summary>
+        public const int TileObject = Name + 0x23;
+
         public const int MaxMovement = Name + 0x27;
         public const int MovementLeft = Name + 0x2B;
         public const int Experience = Name + 0x2F;
@@ -61,6 +67,18 @@ namespace Siniskalc.Homm2.Data
         /// mercenary camps and standing stones (Threedom).
         /// </summary>
         public const int VisitedPlaces = Name + 0x3D;
+
+        /// <summary>
+        /// The set of the places called Xanadu the hero has visited (the sixth after the five of <see cref="VisitedPlaces"/>; the one in
+        /// front of it, at +0x51, was never set in the saves).
+        /// </summary>
+        public const int VisitedXanadu = Name + 0x55;
+
+        /// <summary>
+        /// 32 bits of what the hero remembers of the fountain, oasis, faerie ring, graveyard and temple it visited (cleared with their bonus),
+        /// the arena and the stables (<see cref="Entities.HeroEffects"/>). The Price of Loyalty adds bytes after them.
+        /// </summary>
+        public const int Effects = Name + 0xD9;
 
         /// <summary>
         /// Attack, defense, spell power and knowledge, a byte each.

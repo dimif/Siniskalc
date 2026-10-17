@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Runtime
+namespace Siniskalc.Homm2.Runtime
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -22,6 +22,11 @@
         }
 
         public SaveLayout Layout { get; }
+
+        /// <summary>
+        /// Gets where the places a hero can visit once are on the map.
+        /// </summary>
+        public MapPlaces Places { get; init; } = MapPlaces.None;
 
         public GameVersion GameVersion => this.Layout.Version;
 

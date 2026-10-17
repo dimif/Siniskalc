@@ -37,7 +37,11 @@ namespace Siniskalc.Homm2.Tests
                 CastleDeserializer,
                 CastleSerializer,
                 new CastleDiffer(),
-                new SavefileBytesPatcher()));
+                new ObeliskDeserializer(),
+                new SafeObeliskSerializer(),
+                new ObeliskDiffer(),
+                new SavefileBytesPatcher()),
+            new MapPlacesReader());
 
         /// <summary>
         /// Loads the savegame at <paramref name="path"/>.

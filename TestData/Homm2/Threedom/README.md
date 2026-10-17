@@ -78,3 +78,13 @@ The game only lists savegame names with at most 8 characters before the extensio
 | threedom_69_colar_blau_visits_gazebo | `69_GAZ.GX1` | Colar Blau visits a gazebo: +1000 experience, once per game |
 | threedom_70_charity_captures_sulfur_mine_2 | `70_SULF.GX1` | Charity captures a sulfur mine |
 | threedom_71_hillstone_captains_quarters_whiteshield_moat | `71_BUILD.GX1` | Hillstone builds the captain's quarters, Whiteshield the moat |
+| threedom_73_charity_visits_daemon_cave | `73_DAEMO.GX1` | Charity visits a daemon cave (gives its reward once per game, to any hero of any player) |
+| threedom_74_colar_blau_visits_sphinx | `74_SPHYN.GX1` | Colar Blau visits a sphinx and answers its riddle (once per game, any hero) |
+| threedom_75_charity_visits_obelisk_5 | `75_OBE.GX1` | Charity visits another obelisk that Blue had not found |
+| threedom_76_charity_visits_oasis | `76_OASIS.GX1` | Charity visits an oasis: some movement points (once a turn) and +1 morale for the next battle |
+| threedom_77_charity_visits_stables | `77_STABL.GX1` | Charity visits the stables: a flat bonus to movement points, once a week for each hero |
+| threedom_78_charity_visits_shrine_3_mass_haste | `78_SHRIN.GX1` | Charity visits a shrine of the third circle and learns the spell Mass Haste |
+| threedom_79_charity_visits_shrine_3_mass_bless | `79_MASSB.GX1` | Charity visits another shrine of the third circle and learns the spell Mass Bless |
+| threedom_80_colar_blau_visits_obelisk_6 | `80_OBE.GX1` | Colar Blau visits another obelisk, at his location |
+| threedom_81_colar_blau_visits_windmill_already_visited | `81_WIND.GX1` | Colar Blau visits a windmill that another hero or player already visited this week (it gives nothing) |
+| threedom_82_charity_visits_xanadu | `82_XANAD.GX1` | Charity visits Xanadu: +1 to each primary skill, for good, once per hero |

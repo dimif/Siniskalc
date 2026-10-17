@@ -12,5 +12,7 @@ namespace Siniskalc.Homm2.Data
         public static PlayerEditSession CreatePlayerSession(this SaveDocumentHistory history, int playerIndex) => new(history, playerIndex);
 
         public static CastleEditSession CreateCastleSession(this SaveDocumentHistory history, int castleIndex) => new(history, castleIndex);
+
+        public static ObeliskEditSession CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, index);
     }
 }

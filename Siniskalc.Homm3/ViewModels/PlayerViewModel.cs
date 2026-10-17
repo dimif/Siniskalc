@@ -201,7 +201,7 @@ namespace Siniskalc.Homm3.ViewModels
                 .Select((model, index) => (Index: index, Model: model))
                 .Where(c => c.Model.Owner == this.Color)
                 .OrderBy(c => c.Model.Name)
-                .Select(c => new CastleLinkViewModel(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index), _ => this.openCastle != null), CastleHeroRowViewModel.For(c.Model, current.Heroes(), this.openHero)))
+                .Select(c => CastleLinks.For(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index), _ => this.openCastle != null), CastleLinks.HeroesOf(c.Model, current.Heroes(), this.openHero)))
                 .ToList();
             this.RaisePropertyChanged(nameof(this.Heroes));
             this.RaisePropertyChanged(nameof(this.HasHeroes));

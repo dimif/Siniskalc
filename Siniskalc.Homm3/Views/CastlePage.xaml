@@ -7,6 +7,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
       xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
+      xmlns:wvm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels;assembly=Siniskalc.Heroes.Wpf"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CastlePage">
@@ -22,7 +23,7 @@
         </Style>
 
         <!-- A hero in the castle, on the title row: its role, and its name, which opens the hero. -->
-        <DataTemplate x:Key="CastleHeroTemplate" DataType="{x:Type vm:CastleHeroRowViewModel}">
+        <DataTemplate x:Key="CastleHeroTemplate" DataType="{x:Type wvm:CastleHeroRowViewModel}">
             <StackPanel Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Bottom">
                 <TextBlock VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding Role, StringFormat={}{0}:}"/>
                 <Button Style="{StaticResource LinkButtonStyle}" Margin="6,0,0,0" VerticalAlignment="Bottom" FontSize="14" Command="{Binding OpenCommand}" Content="{Binding Name}"

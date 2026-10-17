@@ -239,7 +239,7 @@ namespace Siniskalc.Homm3.ViewModels
                 .Select(slot => new GarrisonSlotRowViewModel(slot, this.Castle.Garrison.Slots[slot - 1]))
                 .ToList();
 
-            this.Heroes = CastleHeroRowViewModel.For(this.Castle, this.history.Current.Heroes(), this.openHero);
+            this.Heroes = CastleLinks.HeroesOf(this.Castle, this.history.Current.Heroes(), this.openHero);
 
             // The upgraded horde buildings (bits 19 and 25) are no buildings of the game: it sets the bits by itself when a growth building and the
             // upgrade of its dwelling both exist, and the growth building works on both dwellings. They are not listed or counted.
@@ -288,7 +288,7 @@ namespace Siniskalc.Homm3.ViewModels
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private CastleHeroRowViewModel? GarrisonedHeroRow => this.Heroes.FirstOrDefault(h => h.Kind == CastleHeroRole.Garrisoned);
+        private CastleHeroRowViewModel? GarrisonedHeroRow => this.Heroes.FirstOrDefault(h => h.Role == nameof(CastleHeroRole.Garrisoned));
 
         private HeroModel? GarrisonedHeroModel
         {

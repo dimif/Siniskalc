@@ -1,5 +1,6 @@
-﻿namespace Siniskalc
+namespace Siniskalc
 {
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using System.Diagnostics;
     using System.Reflection;
     using System.Text;
@@ -194,7 +195,7 @@
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder());
+        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder(), this.BanishingText);
 
         private static AboutInfo CreateAboutInfo()
         {

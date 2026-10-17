@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,21 +6,28 @@
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// A player's card in the overview: what the player owns and the heroes that belong to the player.
+    /// A player's card in the overview: what the player owns and the heroes and castles that belong to the player.
     /// </summary>
     public sealed class PlayerCardViewModel
     {
-        public PlayerCardViewModel(PlayerColor color, ResourceSet? resources, IReadOnlyList<HeroLinkViewModel> heroes, ICommand open, PlayerType? control = null, bool isCurrent = false, IReadOnlyList<CastleLinkViewModel>? castles = null, string banishingText = "", bool isBanished = false)
+        /// <param name="name">What the player is called.</param>
+        /// <param name="colorHex">The colour of the marker beside the name.</param>
+        /// <param name="resources">What the player owns, or <c>null</c> when the savefile has nothing for the player.</param>
+        /// <param name="heroes">The heroes of the player.</param>
+        /// <param name="open">Opens the page of the player; does nothing for a player without one.</param>
+        /// <param name="controlText">"Human" or "Computer", or nothing when the savefile does not tell.</param>
+        /// <param name="castles">The castles of the player.</param>
+        /// <param name="banishingText">The pill of a player who owns no town, or nothing.</param>
+        /// <param name="isBanished">Whether the player is out of the game.</param>
+        public PlayerCardViewModel(string name, string colorHex, ResourceSet? resources, IReadOnlyList<ILink> heroes, ICommand open, string controlText = "", IReadOnlyList<CastleLinkViewModel>? castles = null, string banishingText = "", bool isBanished = false)
         {
-            this.ControlText = PlayerTypeText.Describe(control, isCurrent);
-            this.Name = color.ToString();
+            this.ControlText = controlText;
+            this.Name = name;
             this.BanishingText = banishingText;
             this.IsBanished = isBanished;
-            this.ColorHex = PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color));
+            this.ColorHex = colorHex;
             this.Heroes = heroes;
             this.Castles = castles ?? [];
             this.OpenCommand = open;
@@ -58,7 +65,7 @@
         /// </summary>
         public string OtherResources { get; }
 
-        public IReadOnlyList<HeroLinkViewModel> Heroes { get; }
+        public IReadOnlyList<ILink> Heroes { get; }
 
         public bool HasHeroes => this.Heroes.Count > 0;
 

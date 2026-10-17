@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.ObjectModel;
@@ -13,7 +15,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// <summary>
     /// What the savefile contains, with a way into each player and hero.
     /// </summary>
-    public sealed class OverviewViewModel : AbstractViewModelBase
+    public sealed class OverviewViewModel : AbstractViewModelBase, IOverviewPage
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -93,6 +95,8 @@ namespace Siniskalc.Homm3.ViewModels
 
         public ObservableCollection<PlayerCardViewModel> Players { get; } = new ObservableCollection<PlayerCardViewModel>();
 
+        System.Collections.Generic.IReadOnlyList<PlayerCardViewModel> IOverviewPage.Players => this.Players;
+
         /// <summary>
         /// Gets a line about the savefile, e.g. "7 players · 12 heroes · Difficulty: Queen (160%) · 5 obelisks".
         /// </summary>
@@ -135,9 +139,9 @@ namespace Siniskalc.Homm3.ViewModels
                 var ownCastles = castles
                     .Where(c => c.Model.Owner == color)
                     .OrderBy(c => c.Model.Name)
-                    .Select(c => new CastleLinkViewModel(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index)), CastleHeroRowViewModel.For(c.Model, this.game.History.Current.Heroes(), this.openHero)))
+                    .Select(c => CastleLinks.For(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index)), CastleLinks.HeroesOf(c.Model, this.game.History.Current.Heroes(), this.openHero)))
                     .ToList();
-                this.Players.Add(new PlayerCardViewModel(color, resources, heroes, open, this.game.GetControl(color), this.game.CurrentPlayer == color, ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
+                this.Players.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color)), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 
             var unowned = summaries.Count(s => s.Owner == null);

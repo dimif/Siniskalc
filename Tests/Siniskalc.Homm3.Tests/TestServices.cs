@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Wpf.ViewModels;
 using Moq;
 using Siniskalc;
 using Siniskalc.Core.Data;

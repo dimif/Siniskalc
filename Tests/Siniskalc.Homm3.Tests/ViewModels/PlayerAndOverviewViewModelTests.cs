@@ -1,4 +1,5 @@
-﻿using Siniskalc;
+using Siniskalc.Heroes.Wpf.ViewModels;
+using Siniskalc;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,15 +18,17 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class Homm2EditorViewModel : EditorViewModelBase<Game>
     {
         private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly BanishingTextProvider banishingText;
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
 
-        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
+        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.byteEditTargets = byteEditTargets;
+            this.banishingText = banishingText;
         }
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         /// <inheritdoc/>
-        protected override object? PrepareGame(Game game) => new OverviewViewModel(game, color => this.ShowPlayer(color));
+        protected override object? PrepareGame(Game game) => new OverviewViewModel(game, this.banishingText, color => this.ShowPlayer(color), this.ShowHero, this.ShowCastle);
 
         /// <inheritdoc/>
         protected override void CloseGame()

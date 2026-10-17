@@ -67,8 +67,8 @@ namespace Siniskalc.Homm2.Tests
 
             var editor = (Homm2EditorViewModel)this.shell.Editor;
             Assert.That(editor.Overview!.MapName, Is.EqualTo("Arrax the Jerk"));
-            Assert.That(editor.Overview.Version, Is.EqualTo("Price of Loyalty"));
-            Assert.That(editor.Overview.Players.Select(p => p.Color), Is.EqualTo(new[] { Color.Blue, Color.Green }));
+            Assert.That(editor.Overview.VersionName, Is.EqualTo("Price of Loyalty"));
+            Assert.That(editor.Overview.Players.Select(p => p.Name), Is.EqualTo(new[] { "Blue", "Green" }));
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Siniskalc.Homm2.Tests
                     this.shell.IsPendingChangesOpen = true;
                     Pump();
                     Assert.That(this.shell.PendingChanges, Has.Count.EqualTo(1));
-                    Assert.That(editor.Overview!.Players.First(p => p.Color == Color.Blue).Gold, Is.EqualTo(1));
+                    Assert.That(editor.Overview!.Players.First(p => p.Name == "Blue").Gold, Is.EqualTo("1"));
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;

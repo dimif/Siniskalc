@@ -44,7 +44,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             var players = game.Children.Where(n => n.Kind == NavNodeKind.Player).ToList();
 
-            Assert.That(players.Select(p => p.Title), Is.EqualTo(this.editor.Overview!.Players.Select(p => p.Color.ToString())));
+            Assert.That(players.Select(p => p.Title), Is.EqualTo(this.editor.Overview!.Players.Select(p => p.Name)));
             foreach (var player in players)
             {
                 var color = (Color)player.Index;
@@ -104,9 +104,23 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void EachPlayerCardOfTheOverviewHoldsTheResourcesHeroesAndCastlesOfThePlayer()
+        {
+            var document = this.editor.CurrentGame!.History.Current;
+            var blue = this.editor.Overview!.Players.Single(p => p.Name == "Blue");
+            var model = document.Players().GetModel((int)Color.Blue);
+
+            Assert.That(blue.HasResources, Is.True);
+            Assert.That(blue.Gold, Is.EqualTo(model.Resources.Gold.ToString("N0")));
+            Assert.That(blue.Heroes.Select(h => h.Name), Is.EquivalentTo(document.Heroes().GetModels().Where(h => h.Owner == Color.Blue).Select(h => h.Name)));
+            Assert.That(blue.Castles.Select(c => c.Name), Is.EquivalentTo(document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == Color.Blue).Select(c => c.Name)));
+            Assert.That(blue.Castles.Select(c => c.Status), Has.All.Not.Empty);
+        }
+
+        [Test]
         public void TheOverviewOpensThePageOfAPlayer()
         {
-            this.editor.Overview!.OpenPlayerCommand.Execute(Color.Green);
+            this.editor.Overview!.Players.Single(p => p.Name == "Green").OpenCommand.Execute(null);
 
             Assert.That(((PlayerViewModel)this.editor.CurrentPage!).Color, Is.EqualTo(Color.Green));
         }

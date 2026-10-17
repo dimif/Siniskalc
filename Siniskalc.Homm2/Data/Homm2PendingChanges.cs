@@ -20,6 +20,15 @@ namespace Siniskalc.Homm2.Data
             return new PendingChange(playerName, change, Homm2ChunkKinds.Player, playerIndex, history => history.CreatePlayerSession(playerIndex).Update(revert));
         }
 
+        /// <summary>
+        /// Makes the pending change of a mine, a shrine or a sphinx (the objects of the map).
+        /// </summary>
+        public static PendingChange ForMapObject<TModel>(ChunkKind kind, string name, int index, Change change, Func<TModel, TModel> revert)
+            where TModel : class
+        {
+            return new PendingChange(name, change, kind, index, history => new MapObjectEditSession<TModel>(history, kind, index).Update(revert));
+        }
+
         public static PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits, ObeliskVisits> revert)
         {
             return new PendingChange("Obelisks", change, Homm2ChunkKinds.Obelisks, index, history => history.CreateObeliskSession(index).Update(revert));

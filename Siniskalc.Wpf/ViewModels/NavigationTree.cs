@@ -41,6 +41,11 @@ namespace Siniskalc.Wpf.ViewModels
         public NavNodeViewModel? Overview { get; private set; }
 
         /// <summary>
+        /// Gets the node of the page of the map's objects, or <c>null</c> when the game has none.
+        /// </summary>
+        public NavNodeViewModel? MapNode { get; private set; }
+
+        /// <summary>
         /// Gets the nodes of the players, by the player's number.
         /// </summary>
         public IEnumerable<KeyValuePair<int, NavNodeViewModel>> PlayerNodes => this.playerNodes;
@@ -68,6 +73,7 @@ namespace Siniskalc.Wpf.ViewModels
         {
             this.Nodes.Clear();
             this.Overview = null;
+            this.MapNode = null;
             this.heroNodes.Clear();
             this.playerNodes.Clear();
             this.playerTabNodes.Clear();
@@ -91,6 +97,9 @@ namespace Siniskalc.Wpf.ViewModels
         {
             switch (node.Kind)
             {
+                case NavNodeKind.Map:
+                    this.MapNode = node;
+                    break;
                 case NavNodeKind.Hero:
                     this.heroNodes[node.Index] = node;
                     break;

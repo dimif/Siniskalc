@@ -5,6 +5,7 @@ namespace Siniskalc
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.ViewModels;
     using H2Data = Siniskalc.Homm2.Data;
+    using H2Models = Siniskalc.Homm2.Models;
     using H2Runtime = Siniskalc.Homm2.Runtime;
 
     /// <summary>
@@ -40,8 +41,12 @@ namespace Siniskalc
                         new H2Data.ObeliskDeserializer(),
                         new H2Data.SafeObeliskSerializer(),
                         new H2Data.ObeliskDiffer(),
+                        new H2Data.MapObjectKit<H2Models.MineModel>(new H2Data.MineDeserializer(), new H2Data.SafeMineSerializer(), new H2Data.MineDiffer()),
+                        new H2Data.MapObjectKit<H2Models.ShrineModel>(new H2Data.ShrineDeserializer(), new H2Data.SafeShrineSerializer(), new H2Data.ShrineDiffer()),
+                        new H2Data.MapObjectKit<H2Models.SphinxModel>(new H2Data.SphinxDeserializer(), new H2Data.SafeSphinxSerializer(), new H2Data.SphinxDiffer()),
                         bytesPatcher),
-                    new H2Data.MapPlacesReader()),
+                    new H2Data.MapPlacesReader(),
+                    new H2Data.MapObjectsReader()),
                 new RawSavefileCodec(),
                 backup);
             this.SaveRegionProvider = new H2Data.SaveRegionProvider(locator);

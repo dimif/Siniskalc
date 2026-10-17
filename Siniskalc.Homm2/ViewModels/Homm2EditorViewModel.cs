@@ -23,6 +23,7 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
+        private MapViewModel? map;
 
         public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText)
             : base(gameService, saveRegions, navigationBuilder)
@@ -53,6 +54,15 @@ namespace Siniskalc.Homm2.ViewModels
 
             player.SelectedTab = tab;
             this.SetCurrentPage(player);
+        }
+
+        /// <summary>
+        /// Shows the page of the objects of the map: its mines, shrines and sphinxes.
+        /// </summary>
+        public void ShowMap()
+        {
+            this.map ??= new MapViewModel(this.Loaded());
+            this.SetCurrentPage(this.map);
         }
 
         /// <summary>
@@ -99,6 +109,8 @@ namespace Siniskalc.Homm2.ViewModels
             this.players.Clear();
             this.heroes.Clear();
             this.castles.Clear();
+            this.map?.Dispose();
+            this.map = null;
             this.overview?.Dispose();
         }
 
@@ -116,6 +128,7 @@ namespace Siniskalc.Homm2.ViewModels
             PlayerViewModel player => this.Navigation.PlayerTabNode((int)player.Color, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.HeroId),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
+            MapViewModel => this.Navigation.MapNode,
             _ => null,
         };
 
@@ -138,6 +151,9 @@ namespace Siniskalc.Homm2.ViewModels
                     break;
                 case NavNodeKind.Castle:
                     this.ShowCastle(node.Index);
+                    break;
+                case NavNodeKind.Map:
+                    this.ShowMap();
                     break;
             }
         }

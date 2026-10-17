@@ -33,7 +33,43 @@ namespace Siniskalc.Homm2.Tests
                     $"The forts of Colar Blau: {FortsOf(game)}. Visit the fort at 29, 18 with him: it should give +1 defense again (he had visited it), and the forts still ticked should give nothing.", Latest),
                 Make("T06SRC", "Colar Blau has a temple and a fountain behind him, Charity has not used the arena or the stables (from save 82)", SourcesAndForgetfulness, game =>
                     "Colar Blau shows +2 morale and +1 luck in his hero screen (the temple and the fountain, set together with their bonus: T03BONUS set the numbers only and the screen did not show them). Charity can use the arena and the stables again.", Latest),
+                Make("T07MINES", "Blue gets the neutral sawmill at 22, 29, the gold mine at 65, 31 and the alchemist's lab at 23, 2; the crystal mine at 44, 6 goes to Red (from save 82)", ChangeMines, game =>
+                    $"On the map the flags of the sawmill and the gold mine are Blue's, the crystal mine's flag is Red's, the alchemist's lab has no flag in the savegame. {MinesOf(game)}. Pass a day: the income of Blue should gain 2 wood and 1,000 gold (and 1 mercury) and lose 1 crystal, Red gain 1 crystal. Tell me what the flags and the incomes show.", Latest),
+                Make("T08SHRIN", "Three shrines teach other spells: 45, 7 Fireball, 22, 49 Mass Haste (it was Haste), 19, 16 Mass Bless (from save 82)", ChangeShrines, game =>
+                    $"{ShrinesOf(game)}. Visit them with a hero that does not know the spell (Colar Blau, who has only Haste): the spell book gets the new one. Tell me what each teaches.", Latest),
+                Make("T09SPHNX", "The sphinx can be answered again, with the answer \"shade\", and gives 5,000 gold and 5 gems (from save 82)", ChangeSphinx, game =>
+                    "The sphinx at 13, 31 asks its riddle again: answer \"shade\" (or \"darkness\" or \"shadow\") and Blue gets 5,000 gold and 5 gems. Tell me whether it asks, accepts the answers and gives the reward, and whether the sphinx is used up afterwards.", Latest),
             ];
+        }
+
+        private static void ChangeMines(Game game)
+        {
+            var mines = new MapViewModel(game).Mines;
+            mines.Single(m => m.PositionText == "X: 22, Y: 29").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "X: 65, Y: 31").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "X: 23, Y: 2").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "X: 44, Y: 6").OwnerField.Selected = "Red";
+        }
+
+        private static string MinesOf(Game game) => string.Join(", ", new MapViewModel(game).Mines.Where(m => new[] { "X: 22, Y: 29", "X: 65, Y: 31", "X: 23, Y: 2", "X: 44, Y: 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
+
+        private static void ChangeShrines(Game game)
+        {
+            var shrines = new MapViewModel(game).Shrines;
+            shrines.Single(s => s.PositionText == "X: 45, Y: 7").SpellField.Selected = "Fireball";
+            shrines.Single(s => s.PositionText == "X: 22, Y: 49").SpellField.Selected = "Mass Haste";
+            shrines.Single(s => s.PositionText == "X: 19, Y: 16").SpellField.Selected = "Mass Bless";
+        }
+
+        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "X: 45, Y: 7", "X: 22, Y: 49", "X: 19, Y: 16" }.Contains(s.PositionText)).Select(s => $"the shrine at {s.PositionText} teaches {s.SpellField.Selected}"));
+
+        private static void ChangeSphinx(Game game)
+        {
+            var sphinx = new MapViewModel(game).Sphinxes.Single();
+            sphinx.ActiveToggle.IsChecked = true;
+            sphinx.Answers[2].Text = "shade";
+            sphinx.Reward.Single(r => r.Name == "Gold").Value = 5000;
+            sphinx.Reward.Single(r => r.Name == "Gems").Value = 5;
         }
 
         private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, Color.Blue, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);

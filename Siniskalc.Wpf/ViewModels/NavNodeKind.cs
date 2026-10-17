@@ -20,6 +20,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>A castle's page.</summary>
         Castle,
 
+        /// <summary>The page of what the game keeps about the objects of the map (its mines, shrines, sphinxes).</summary>
+        Map,
+
         /// <summary>The "Heroes" or "Towns" group of a player: the player's page, on the tab with that list.</summary>
         PlayerTab,
     }

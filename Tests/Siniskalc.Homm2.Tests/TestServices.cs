@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
 
     /// <summary>
@@ -23,6 +24,12 @@ namespace Siniskalc.Homm2.Tests
 
         public static ICastleSerializer CastleSerializer { get; } = new SafeCastleSerializer();
 
+        public static IMapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
+
+        public static IMapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(), new SafeShrineSerializer());
+
+        public static IMapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(), new SafeSphinxSerializer());
+
         public static ISavegameParser Parser { get; } = new SavegameParser(
             Locator,
             new BytesLoader(),
@@ -40,8 +47,12 @@ namespace Siniskalc.Homm2.Tests
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
                 new ObeliskDiffer(),
+                new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
+                new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
+                new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
                 new SavefileBytesPatcher()),
-            new MapPlacesReader());
+            new MapPlacesReader(),
+            new MapObjectsReader());
 
         /// <summary>
         /// Loads the savegame at <paramref name="path"/>.

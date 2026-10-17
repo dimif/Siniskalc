@@ -67,6 +67,22 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
+        public void TheMinesTheShrinesAndTheSphinxAreEditedAsTheEditSays()
+        {
+            var mines = Open("T07MINES").History.Current.Mines().GetModels();
+            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(22, 29)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.Color.Blue));
+            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(44, 6)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.Color.Red));
+
+            var shrines = Open("T08SHRIN").History.Current.Shrines().GetModels();
+            Assert.That(shrines.Single(s => s.Position == new Siniskalc.Heroes.Models.MapPosition(45, 7)).Spell, Is.EqualTo(Siniskalc.Homm2.Entities.Spell.Fireball));
+
+            var sphinx = Open("T09SPHNX").History.Current.Sphinxes().GetModel(0);
+            Assert.That(sphinx.IsActive, Is.True);
+            Assert.That(sphinx.Answers, Does.Contain("shade"));
+            Assert.That(sphinx.Reward, Is.EqualTo(new[] { 0, 0, 0, 0, 0, 5, 5000 }));
+        }
+
+        [Test]
         public void TheHeroesForgetTheirPlacesAndHaveTheBonusesOfTheNextBattle()
         {
             var forgotten = Open("T02FORGT").History.Current.Heroes();

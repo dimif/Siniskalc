@@ -48,6 +48,15 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             {
                 overview.Children.Add(this.CreateGroup(tree, game, owner));
             }
+
+            this.AddExtraNodes(tree, game, overview);
+        }
+
+        /// <summary>
+        /// Adds the nodes a game has besides its players, under the node of the game. None by default.
+        /// </summary>
+        protected virtual void AddExtraNodes(NavigationTree tree, TGame game, NavNodeViewModel overview)
+        {
         }
 
         /// <inheritdoc/>

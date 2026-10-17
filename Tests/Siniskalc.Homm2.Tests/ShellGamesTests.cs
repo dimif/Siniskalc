@@ -167,11 +167,12 @@ namespace Siniskalc.Homm2.Tests
                     this.shell.IsAdvancedMode = true;
                     var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue).HeroId;
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue).Index;
-                    var pages = new (Action Show, Func<PageViewModel> Page, int Tabs)[]
+                    var pages = new (Action Show, Func<TabbedPageViewModelBase> Page, int Tabs)[]
                     {
                         (() => editor.ShowPlayer(Color.Blue), () => (PlayerViewModel)editor.CurrentPage!, 5),
                         (() => editor.ShowHero(hero), () => (HeroViewModel)editor.CurrentPage!, 6),
                         (() => editor.ShowCastle(castle), () => (CastleViewModel)editor.CurrentPage!, 5),
+                        (() => editor.ShowMap(), () => (MapViewModel)editor.CurrentPage!, 3),
                     };
                     foreach (var (show, page, tabs) in pages)
                     {

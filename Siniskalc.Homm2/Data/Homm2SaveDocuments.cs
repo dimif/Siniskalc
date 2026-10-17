@@ -2,13 +2,14 @@ namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Makes the document of a savegame and reads its collections.
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -16,6 +17,9 @@ namespace Siniskalc.Homm2.Data
                 [Homm2ChunkKinds.Player] = players,
                 [Homm2ChunkKinds.Castle] = castles,
                 [Homm2ChunkKinds.Obelisks] = obelisks,
+                [Homm2ChunkKinds.Mines] = mines,
+                [Homm2ChunkKinds.Shrines] = shrines,
+                [Homm2ChunkKinds.Sphinxes] = sphinxes,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -26,6 +30,12 @@ namespace Siniskalc.Homm2.Data
         public static PlayerChunkCollection Players(this SaveDocument document) => (PlayerChunkCollection)document.GetCollection(Homm2ChunkKinds.Player);
 
         public static CastleChunkCollection Castles(this SaveDocument document) => (CastleChunkCollection)document.GetCollection(Homm2ChunkKinds.Castle);
+
+        public static MapObjectChunkCollection<MineModel> Mines(this SaveDocument document) => (MapObjectChunkCollection<MineModel>)document.GetCollection(Homm2ChunkKinds.Mines);
+
+        public static MapObjectChunkCollection<ShrineModel> Shrines(this SaveDocument document) => (MapObjectChunkCollection<ShrineModel>)document.GetCollection(Homm2ChunkKinds.Shrines);
+
+        public static MapObjectChunkCollection<SphinxModel> Sphinxes(this SaveDocument document) => (MapObjectChunkCollection<SphinxModel>)document.GetCollection(Homm2ChunkKinds.Sphinxes);
 
         public static ObeliskChunkCollection Obelisks(this SaveDocument document) => (ObeliskChunkCollection)document.GetCollection(Homm2ChunkKinds.Obelisks);
     }

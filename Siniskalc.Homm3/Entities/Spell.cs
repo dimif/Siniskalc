@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
 
-    public sealed class Spell : Homm3Enumeration
+    public sealed class Spell : Homm3Enumeration, ISpell
     {
         public static readonly Spell SummonBoat = new("Summon Boat", 0, SpellSchool.Water, 1, SpellType.Adventure);
         public static readonly Spell ScuttleBoat = new("Scuttle Boat", 1, SpellSchool.Water, 2, SpellType.Adventure);

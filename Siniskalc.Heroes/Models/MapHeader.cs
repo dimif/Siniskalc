@@ -1,16 +1,15 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Heroes.Models
 {
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
 
     /// <summary>
-    /// What the savefile says about the map it was made on.
+    /// What the savefile says about the map it is played on.
     /// </summary>
     /// <param name="Name">The map's name.</param>
     /// <param name="Description">The map's description.</param>
     /// <param name="Difficulty">The difficulty the map was made with, which is not the difficulty the game was started at.</param>
     /// <param name="Size">The width of the map in tiles (it is square), or 0 when the savefile has a width that is not a standard size.</param>
-    /// <param name="HasUnderground">Whether the map has an underground level.</param>
+    /// <param name="HasUnderground">Whether the map has an underground level; a game that has none keeps it false.</param>
     public sealed record MapHeader(string Name, string Description, GameDifficulty Difficulty, int Size = 0, bool HasUnderground = false)
     {
         /// <summary>

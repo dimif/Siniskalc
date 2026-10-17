@@ -19,7 +19,7 @@
 
                 Assert.That(game.FileName, Is.EqualTo(path));
                 Assert.That(game.GameVersion, Is.EqualTo(GameVersion.BaseGame), path);
-                Assert.That(game.Map, Is.EqualTo(new MapHeader("Broken Alliance", game.Map.Description, GameDifficulty.Knight, 72, 72)), path);
+                Assert.That(game.Map, Is.EqualTo(new MapHeader("Broken Alliance", game.Map.Description, GameDifficulty.Knight, 72)), path);
                 Assert.That(game.Map.Description, Does.StartWith("The alliance has crumbled"), path);
                 Assert.That(game.History.Current.Heroes(), Has.Count.EqualTo(54), path);
                 Assert.That(game.History.Current.Players(), Has.Count.EqualTo(6), path);
@@ -36,7 +36,7 @@
 
             Assert.That(game.GameVersion, Is.EqualTo(GameVersion.PriceOfLoyalty));
             Assert.That(game.Map.Name, Is.EqualTo("Arrax the Jerk"));
-            Assert.That(game.Map.Width, Is.EqualTo(36));
+            Assert.That(game.Map.Size, Is.EqualTo(36));
             Assert.That(document.Heroes().GetName(16), Is.EqualTo("Bikko"));
             Assert.That(document.Heroes().GetName(17), Is.EqualTo("King Anthrax"));
             Assert.That(document.Heroes().GetOwners().Select((owner, index) => (owner, index)).Where(x => x.owner != null).Select(x => x.index), Is.EqualTo(new[] { 16, 17 }));

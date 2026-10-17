@@ -33,11 +33,12 @@ Done, each in its own commit with the whole suite run after it:
 | 4 | M9 `PlayerModelBase<TColor>`, M11 `HeroSummary<TColor>`, M14 `ExperienceTable` | `fae02c8` |
 | 5 | M4 `SpellSet<TSpell>` | `e488f67` |
 | 6 | E9 `MapPosition` | `da9bb07` |
+| 7 | M13 `MapHeader` | next commit after `62252ce` |
 
 **Not done, and why**
 
 - **E3 (skill level) and M3 (secondary skills):** left for later, as you decided. M3 needs E3.
-- **M13 (`MapHeader`):** you are changing the HoMM2 header at the moment (`HeaderReader`, `HeaderLayout`, `MapHeader`, `MapSizes`, the overview). A shared header record built now would collide with that work. Do it once it has landed; `GameDifficulty` and `MapSizes` are already in `Heroes`.
+- **M13 (`MapHeader`):** done once the HoMM2 header work landed (`MapHeader(Name, Description, Difficulty, Size, HasUnderground)` in `Heroes`; HoMM2 reads its square width as `Size`). `GameSetup` stays HoMM3's until the HoMM2 control masks are decoded (E12).
 - **M12 (`MageGuild`, `CreatureStock`):** looked at again, and it is not the small step the review said. The two castles do not store the same thing in a way a value can hide: HoMM2 keeps the guild level inside the `Dwellings` flags and the guild spells as 15 spell numbers, HoMM3 a level field and lists of `Spell`; HoMM2's upgraded-creature numbers carry a marker for the upgrade state that HoMM3's do not. A shared `MageGuild<TSpell>` would first need HoMM2's castle to hold the guild as a value (a model change with its serializer, differ and tests), and its only reader would be the two castle pages. Do it together with the shared mage guild view model, as the review said, not before. No new decoding is needed for it.
 - **E5 (`ISpell`):** still waits for a consumer (a shared spell row).
 

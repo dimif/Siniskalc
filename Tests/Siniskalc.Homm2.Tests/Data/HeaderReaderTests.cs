@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var map = Load(save).Map;
 
-            Assert.That((map.Width, map.Height), Is.EqualTo((size, size)));
+            Assert.That(map.Size, Is.EqualTo(size));
             Assert.That(map.SizeText, Is.EqualTo(text));
         }
 

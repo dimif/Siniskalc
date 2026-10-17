@@ -25,8 +25,7 @@ namespace Siniskalc.Homm2.Data
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
                 ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
-                layout.Width,
-                layout.Height);
+                layout.Width);
             return new SaveMetadata(date, map, ReadDifficulty(bytes[layout.DifficultyStart]));
         }
 

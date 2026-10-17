@@ -2,11 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// Static collection of all artifacts and their properties up to hota v1.8.1.
     /// </summary>
-    public sealed class Artifact : Homm3Enumeration
+    public sealed class Artifact : Homm3Enumeration, IArtifact
     {
         public static readonly Artifact HelmOfTheAlabasterUnicorn = new("Helm of the Alabaster Unicorn", 0x13, ArtifactClass.Treasure, 1000, ArtifactSlots.Helmet, new() { Kno = 1 });
         public static readonly Artifact SkullHelmet = new("Skull Helmet", 0x14, ArtifactClass.Treasure, 3000, ArtifactSlots.Helmet, new() { Kno = 2 }, 0x84);
@@ -440,6 +442,11 @@
             : this(name, code, artifactClass, cost, slot, effectInfo, blockedSlot, true, null, string.Empty, gameVersion)
         {
         }
+
+        /// <summary>
+        /// Gets what the artifact adds to the primary skills of the hero that wears it.
+        /// </summary>
+        public PrimarySkillBonus PrimarySkillBonus => new(this.EffectInfo.Atk, this.EffectInfo.Def, this.EffectInfo.Pow, this.EffectInfo.Kno);
 
         public ArtifactSlots Slot { get; }
 

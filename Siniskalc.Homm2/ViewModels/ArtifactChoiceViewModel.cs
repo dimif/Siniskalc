@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -12,7 +13,7 @@ namespace Siniskalc.Homm2.ViewModels
         public ArtifactChoiceViewModel(Artifact artifact)
         {
             this.Artifact = artifact;
-            this.Bonuses = Describe(ArtifactBonuses.Of(artifact));
+            this.Bonuses = Describe(artifact.PrimarySkillBonus);
         }
 
         public Artifact Artifact { get; }
@@ -27,7 +28,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gives what a set of bonuses adds, such as "+12 attack" or "+4 attack, +4 defense, +4 spell power, +4 knowledge".
         /// </summary>
-        public static string Describe(PrimarySkills bonus)
+        public static string Describe(PrimarySkillBonus bonus)
         {
             var parts = new List<string>();
             Add(parts, bonus.Attack, "attack");

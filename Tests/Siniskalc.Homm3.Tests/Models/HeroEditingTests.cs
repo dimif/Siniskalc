@@ -212,7 +212,7 @@ namespace Siniskalc.Homm3.Tests.Models
 
             session.Update(h => h with
             {
-                PrimarySkills = h.PrimarySkills with { Atk = 77 },
+                PrimarySkills = h.PrimarySkills with { Attack = 77 },
                 SpellPoints = 123,
                 Army = h.Army.Swap(1, 2).WithoutSlot(3),
                 SecondarySkills = h.SecondarySkills.WithoutSlot(0),
@@ -235,11 +235,11 @@ namespace Siniskalc.Homm3.Tests.Models
             var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));
             var original = session.Current;
 
-            session.Update(h => h with { PrimarySkills = h.PrimarySkills with { Atk = 77, Def = 66 }, SpellPoints = 123 });
+            session.Update(h => h with { PrimarySkills = h.PrimarySkills with { Attack = 77, Defense = 66 }, SpellPoints = 123 });
             game.History.GetPendingChanges().Single(c => c.Change.Description == "Attack").Revert(game.History);
 
-            Assert.That(session.Current.PrimarySkills.Atk, Is.EqualTo(original.PrimarySkills.Atk));
-            Assert.That(session.Current.PrimarySkills.Def, Is.EqualTo((byte)66));
+            Assert.That(session.Current.PrimarySkills.Attack, Is.EqualTo(original.PrimarySkills.Attack));
+            Assert.That(session.Current.PrimarySkills.Defense, Is.EqualTo((byte)66));
             Assert.That(session.Current.SpellPoints, Is.EqualTo((ushort)123));
             Assert.That(game.History.GetPendingChanges().Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Defense", "Spell points" }));
         }

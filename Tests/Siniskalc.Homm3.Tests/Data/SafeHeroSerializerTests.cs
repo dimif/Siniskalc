@@ -78,9 +78,9 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = ReadDump("hero_maximus_pre_hota.bin");
             var chunk = new HeroChunk("Maximus", bytes, 0);
 
-            var result = this.serializer.SerializePrimarySkills(chunk, new HeroPrimarySkills(1, 2, 3, 4));
+            var result = this.serializer.SerializePrimarySkills(chunk, new PrimarySkills(1, 2, 3, 4));
 
-            Assert.That(this.deserializer.DeserializePrimarySkills(result), Is.EqualTo(new HeroPrimarySkills(1, 2, 3, 4)));
+            Assert.That(this.deserializer.DeserializePrimarySkills(result), Is.EqualTo(new PrimarySkills(1, 2, 3, 4)));
             Assert.That(chunk.ToArray(), Is.EqualTo(bytes));
         }
 

@@ -238,39 +238,39 @@
 
         public byte Attack
         {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseAtk);
-            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s.WithBaseAtk(ClampSkill(value)));
+            get => ClampSkill(this.Hero.PrimarySkills.BaseAttack);
+            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s.WithBaseAttack(ClampSkill(value)));
         }
 
         public byte Defense
         {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseDef);
-            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s.WithBaseDef(ClampSkill(value)));
+            get => ClampSkill(this.Hero.PrimarySkills.BaseDefense);
+            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s.WithBaseDefense(ClampSkill(value)));
         }
 
         public byte SpellPower
         {
-            get => ClampSkill(this.Hero.PrimarySkills.BasePow);
-            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s.WithBasePow(ClampSkill(value)));
+            get => ClampSkill(this.Hero.PrimarySkills.BaseSpellPower);
+            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s.WithBaseSpellPower(ClampSkill(value)));
         }
 
         public byte Knowledge
         {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseKno);
-            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s.WithBaseKno(ClampSkill(value)));
+            get => ClampSkill(this.Hero.PrimarySkills.BaseKnowledge);
+            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s.WithBaseKnowledge(ClampSkill(value)));
         }
 
         /// <summary>
         /// Gets the attack skill with what the hero's artifacts add, which is what counts in the game and what the savefile holds.
         /// <see cref="Attack"/> is what is left without the artifacts.
         /// </summary>
-        public int AttackTotal => this.Hero.PrimarySkills.Atk;
+        public int AttackTotal => this.Hero.PrimarySkills.Attack;
 
-        public int DefenseTotal => this.Hero.PrimarySkills.Def;
+        public int DefenseTotal => this.Hero.PrimarySkills.Defense;
 
-        public int SpellPowerTotal => this.Hero.PrimarySkills.Pow;
+        public int SpellPowerTotal => this.Hero.PrimarySkills.SpellPower;
 
-        public int KnowledgeTotal => this.Hero.PrimarySkills.Kno;
+        public int KnowledgeTotal => this.Hero.PrimarySkills.Knowledge;
 
         /// <summary>
         /// Gets what the hero's artifacts add to the attack skill, such as "+2 from artifacts". Empty when they add nothing.
@@ -550,7 +550,7 @@
             }
         }
 
-        private void SetPrimarySkills(byte current, byte value, Func<HeroPrimarySkills, HeroPrimarySkills> edit)
+        private void SetPrimarySkills(byte current, byte value, Func<PrimarySkills, PrimarySkills> edit)
         {
             if (current != value)
             {

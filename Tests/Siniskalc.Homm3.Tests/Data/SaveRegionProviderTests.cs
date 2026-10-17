@@ -167,7 +167,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var game = Load(SavePaths[0]);
             var original = game.GetBytesToSave();
             var hero = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));
-            hero.Update(h => h with { PrimarySkills = new Siniskalc.Homm3.Models.HeroPrimarySkills(11, 12, 13, 14) });
+            hero.Update(h => h with { PrimarySkills = new Siniskalc.Heroes.Models.PrimarySkills(11, 12, 13, 14) });
 
             var dump = SaveHexDump.Create("test", game.History, TestServices.SaveRegions);
 

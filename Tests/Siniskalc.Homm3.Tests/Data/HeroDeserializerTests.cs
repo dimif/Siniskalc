@@ -22,7 +22,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_maximus_pre_hota.bin"));
             var bytesChunk = new HeroChunk("Maximus", bytes, 0);
 
-            var expectedSkills = new HeroPrimarySkills(27, 22, 16, 11);
+            var expectedSkills = new PrimarySkills(27, 22, 16, 11);
 
             var primarySkills = this.deserializer.DeserializePrimarySkills(bytesChunk);
 
@@ -78,7 +78,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Knight));
 
-            Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(32, 32, 35, 23)));
+            Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(32, 32, 35, 23)));
 
             var expectedSkills = new[]
             {

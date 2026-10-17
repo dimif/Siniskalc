@@ -14,7 +14,7 @@
     public sealed record HeroModel
     {
         private readonly IGrantedSpellsResolver grantedSpellsResolver;
-        private HeroPrimarySkills primarySkills;
+        private PrimarySkills primarySkills;
         private EquippedArtifacts equippedArtifacts;
         private SpellBook spellBook;
         private ArtifactEffectInfo artifactEffects;
@@ -23,7 +23,7 @@
             string name,
             IGrantedSpellsResolver grantedSpellsResolver,
             PlayerColor? owner,
-            HeroPrimarySkills primarySkills,
+            PrimarySkills primarySkills,
             HeroClass heroClass,
             HeroLevel level,
             HeroPosition position,
@@ -88,7 +88,7 @@
         /// Gets the primary skills: the values the savefile holds, which have what the equipped artifacts add in them. Setting the
         /// skills takes them as they are; setting the equipped artifacts moves them by what the artifacts add or no longer add.
         /// </summary>
-        public HeroPrimarySkills PrimarySkills
+        public PrimarySkills PrimarySkills
         {
             get => this.primarySkills;
             init

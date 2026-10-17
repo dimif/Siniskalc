@@ -125,8 +125,8 @@ namespace Siniskalc.Homm3.Tests.Models
             var hero = Hero(game, "Valeska");
             var armed = hero.WithEquippedArtifacts(hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Weapon, Artifact.TitansThunder));
 
-            Assert.That(armed.PrimarySkills.Atk, Is.EqualTo(hero.PrimarySkills.Atk + 9), "the game saves the skills with the artifact in them");
-            Assert.That(armed.PrimarySkills.BaseAtk, Is.EqualTo(hero.PrimarySkills.BaseAtk), "what the hero learned is the same");
+            Assert.That(armed.PrimarySkills.Attack, Is.EqualTo(hero.PrimarySkills.Attack + 9), "the game saves the skills with the artifact in them");
+            Assert.That(armed.PrimarySkills.BaseAttack, Is.EqualTo(hero.PrimarySkills.BaseAttack), "what the hero learned is the same");
             Assert.That(armed.PrimarySkills, Is.Not.EqualTo(hero.PrimarySkills));
             Assert.That(TestServices.SpellPoints.GetMaximum(game.GameVersion, armed), Is.GreaterThan(TestServices.SpellPoints.GetMaximum(game.GameVersion, hero)));
         }

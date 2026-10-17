@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Tests.Entities
 {
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Entities;
 
@@ -24,6 +25,14 @@ namespace Siniskalc.Homm2.Tests.Entities
             Assert.That(Factions<Faction>.All.Select(f => (f.Name, f.Code)), Is.EqualTo(Enum.GetValues<Faction>().Select(f => (f.ToString(), (byte)f))));
             Assert.That(Factions<Faction>.Of(null), Is.Null);
             Assert.That(Factions<Faction>.Of(Faction.Wizard)!.Name, Is.EqualTo("Wizard"));
+        }
+
+        [Test]
+        public void AnArtifactTellsWhatItAddsToThePrimarySkills()
+        {
+            Assert.That(((IArtifact)Artifact.UltimateSwordOfDominion).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
+            Assert.That(Artifact.UltimateSwordOfDominion.PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
+            Assert.That(Artifact.AmmoCart.PrimarySkillBonus, Is.EqualTo(PrimarySkillBonus.None));
         }
 
         [Test]

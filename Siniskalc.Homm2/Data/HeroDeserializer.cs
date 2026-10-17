@@ -21,6 +21,7 @@ namespace Siniskalc.Homm2.Data
             var bytes = chunk.ToArray();
             var counts = Enumerable.Range(0, Constants.ArmySlotCount).Select(i => (int)chunk.GetUInt16At(HeroLayout.ArmyCounts + (i * 2))).ToList();
             var types = chunk.GetBytesAt(HeroLayout.ArmyTypes, Constants.ArmySlotCount);
+            var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));
 
             return new HeroModel(
                 chunk.GetByteAt(HeroLayout.Id),
@@ -35,12 +36,16 @@ namespace Siniskalc.Homm2.Data
                     chunk.GetByteAt(HeroLayout.PrimarySkills),
                     chunk.GetByteAt(HeroLayout.PrimarySkills + 1),
                     chunk.GetByteAt(HeroLayout.PrimarySkills + 2),
-                    chunk.GetByteAt(HeroLayout.PrimarySkills + 3)),
+                    chunk.GetByteAt(HeroLayout.PrimarySkills + 3))
+                {
+                    // The savefile has the bonus of the artifacts in the skills.
+                    Bonus = artifacts.TotalBonus,
+                },
                 Bytes.SecondarySkills(
                     chunk.GetBytesAt(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount),
                     chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
                 Bytes.Army(types, counts),
-                new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact)),
+                artifacts,
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)));
         }
     }

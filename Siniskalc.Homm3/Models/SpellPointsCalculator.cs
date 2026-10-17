@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
     using System;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -28,7 +29,7 @@
         /// <inheritdoc/>
         public int GetMaximum(GameVersion version, HeroModel hero)
         {
-            return this.GetMaximum(version, hero.PrimarySkills.Kno, hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence));
+            return this.GetMaximum(version, hero.PrimarySkills.Knowledge, hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence));
         }
     }
 }

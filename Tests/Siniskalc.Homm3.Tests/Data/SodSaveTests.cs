@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Demoniac));
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)1));
-            Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(2, 2, 1, 1)));
+            Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(
                 hero.Army.Slots,
                 Is.EquivalentTo(new[]
@@ -181,7 +181,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             marius.Update(h => h with
             {
-                PrimarySkills = new HeroPrimarySkills(30, 20, 10, 5),
+                PrimarySkills = new PrimarySkills(30, 20, 10, 5),
                 Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
             });
 
@@ -197,7 +197,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
                 var reloaded = Load(path);
                 var hero = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Marius")).Current;
-                Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(30, 20, 10, 5)));
+                Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(30, 20, 10, 5)));
                 Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(Artifact.OrbOfInhibition));
                 Assert.That(hero.Army.Slots, Has.Length.EqualTo(2));
             }

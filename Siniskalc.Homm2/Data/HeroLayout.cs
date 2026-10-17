@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 namespace Siniskalc.Homm2.Data
 {
     /// <summary>

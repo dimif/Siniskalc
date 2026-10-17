@@ -91,18 +91,11 @@ namespace Siniskalc.Homm2.Models
         public HeroModel WithArtifact(int slot, Artifact? artifact)
         {
             var old = this.Artifacts.Slots[slot];
-            var skills = this.PrimarySkills;
-            if (old != null)
-            {
-                skills = Shift(skills, ArtifactBonuses.Of(old), -1);
-            }
+            var delta = (artifact?.PrimarySkillBonus ?? PrimarySkillBonus.None) - (old?.PrimarySkillBonus ?? PrimarySkillBonus.None);
+            var artifacts = this.Artifacts.WithSlot(slot, artifact);
 
-            if (artifact != null)
-            {
-                skills = Shift(skills, ArtifactBonuses.Of(artifact), 1);
-            }
-
-            return this with { Artifacts = this.Artifacts.WithSlot(slot, artifact), PrimarySkills = skills };
+            // The skills move by what the artifacts add or no longer add; the bonus is then worked out again from the artifacts the hero has.
+            return this with { Artifacts = artifacts, PrimarySkills = this.PrimarySkills.Shifted(delta) with { Bonus = artifacts.TotalBonus } };
         }
 
         /// <summary>
@@ -134,13 +127,5 @@ namespace Siniskalc.Homm2.Models
         /// Returns the hero without the Magic Book. The spells it had stay marked, as they do in the game.
         /// </summary>
         public HeroModel WithoutSpellBook() => this with { Artifacts = this.Artifacts.Remove(Artifact.MagicBook) };
-
-        private static PrimarySkills Shift(PrimarySkills skills, PrimarySkills bonus, int sign) => new(
-            Limit(skills.Attack + (sign * bonus.Attack)),
-            Limit(skills.Defense + (sign * bonus.Defense)),
-            Limit(skills.SpellPower + (sign * bonus.SpellPower)),
-            Limit(skills.Knowledge + (sign * bonus.Knowledge)));
-
-        private static int Limit(int skill) => (int)Math.Clamp(skill, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
     }
 }

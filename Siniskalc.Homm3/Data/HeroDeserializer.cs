@@ -206,9 +206,9 @@
             return new HeroPosition(x, y, z, facing);
         }
 
-        public HeroPrimarySkills DeserializePrimarySkills(HeroChunk chunk)
+        public PrimarySkills DeserializePrimarySkills(HeroChunk chunk)
         {
-            return new HeroPrimarySkills(
+            return new PrimarySkills(
                 chunk.GetByteAt(this.heroOffsets[HeroOffsetName.AttributeAtk]),
                 chunk.GetByteAt(this.heroOffsets[HeroOffsetName.AttributeDef]),
                 chunk.GetByteAt(this.heroOffsets[HeroOffsetName.AttributePow]),

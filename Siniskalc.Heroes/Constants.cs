@@ -13,6 +13,16 @@ namespace Siniskalc.Heroes
             public const int MinId = 0;
 
             public const int MaxId = 254;
+
+            /// <summary>
+            /// The lowest a primary skill can be saved as.
+            /// </summary>
+            public const long MinSavedPrimarySkill = 0;
+
+            /// <summary>
+            /// The highest a primary skill can be saved as: the savefile holds it in a byte, with the bonus of the artifacts in it.
+            /// </summary>
+            public const long MaxSavedPrimarySkill = 255;
         }
 
         /// <summary>

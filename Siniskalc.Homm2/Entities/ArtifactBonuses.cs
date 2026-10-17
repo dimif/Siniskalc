@@ -1,7 +1,7 @@
-namespace Siniskalc.Homm2.Models
+namespace Siniskalc.Homm2.Entities
 {
     using System.Collections.Generic;
-    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// What the artifacts add to the primary skills of the hero that carries them. The savegame keeps the sum (the base skills and
@@ -12,7 +12,7 @@ namespace Siniskalc.Homm2.Models
     /// </summary>
     public static class ArtifactBonuses
     {
-        private static readonly IReadOnlyDictionary<int, PrimarySkills> Table = new Dictionary<int, PrimarySkills>
+        private static readonly IReadOnlyDictionary<int, PrimarySkillBonus> Table = new Dictionary<int, PrimarySkillBonus>
         {
             [0] = new(0, 0, 0, 12), // ULTIMATE_BOOK
             [1] = new(12, 0, 0, 0), // ULTIMATE_SWORD
@@ -56,6 +56,6 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns what <paramref name="artifact"/> adds to attack, defense, spell power and knowledge (all zero for most artifacts).
         /// </summary>
-        public static PrimarySkills Of(Artifact artifact) => Table.TryGetValue(artifact.Code, out var bonus) ? bonus : new PrimarySkills(0, 0, 0, 0);
+        public static PrimarySkillBonus Of(Artifact artifact) => Table.TryGetValue(artifact.Code, out var bonus) ? bonus : PrimarySkillBonus.None;
     }
 }

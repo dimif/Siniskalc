@@ -63,7 +63,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(71483));
             Assert.That(hero.WarMachines, Is.Empty);
             Assert.That(hero.SpellBook.HasSpellBook, Is.True);
-            Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(21, 24, 11, 9)));
+            Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(21, 24, 11, 9)));
 
             AssertSecondarySkills(hero,
                 (SecondarySkill.Pathfinding, SkillLevel.Expert),
@@ -121,7 +121,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(779943));
             Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.FirstAidTent }));
             Assert.That(hero.SpellBook.HasSpellBook, Is.True);
-            Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(32, 32, 35, 23)));
+            Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(32, 32, 35, 23)));
 
             AssertSecondarySkills(hero,
                 (SecondarySkill.Wisdom, SkillLevel.Expert),
@@ -190,7 +190,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(32273));
             Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.Ballista }));
             Assert.That(hero.SpellBook.HasSpellBook, Is.True);
-            Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(24, 21, 19, 17)));
+            Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(24, 21, 19, 17)));
 
             AssertSecondarySkills(hero,
                 (SecondarySkill.Wisdom, SkillLevel.Expert),
@@ -222,7 +222,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             christian.Update(h => h with
             {
-                PrimarySkills = new HeroPrimarySkills(50, 40, 30, 20),
+                PrimarySkills = new PrimarySkills(50, 40, 30, 20),
                 EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
                 Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
                 WarMachines = [WarMachine.Ballista, WarMachine.AmmoCart],
@@ -242,7 +242,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 var reloaded = TestServices.GameService.LoadGameFromFile(path);
                 var hero = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Christian")).Current;
 
-                Assert.That(hero.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(50, 40, 30, 20)));
+                Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(50, 40, 30, 20)));
                 Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(Artifact.BootsOfLevitation));
                 Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Necklace), Is.EqualTo(Artifact.NecklaceOfDragonteeth));
                 Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(Artifact.OrbOfInhibition));

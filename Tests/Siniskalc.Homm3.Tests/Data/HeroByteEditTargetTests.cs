@@ -1,4 +1,5 @@
 ﻿using Siniskalc.Core.Data;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 
@@ -48,7 +49,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(this.target.WriteBytes(offset, [99]), Is.True);
             Assert.That(this.target.GetBytes()[offset], Is.EqualTo((byte)99));
-            Assert.That(this.session.Current.PrimarySkills.Atk, Is.EqualTo((byte)99));
+            Assert.That(this.session.Current.PrimarySkills.Attack, Is.EqualTo((byte)99));
 
             this.game.History.Undo();
             Assert.That(this.target.GetBytes(), Is.EqualTo(original));

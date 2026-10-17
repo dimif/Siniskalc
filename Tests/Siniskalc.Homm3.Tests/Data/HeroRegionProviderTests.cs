@@ -108,7 +108,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var edited = serializer.Serialize(this.chunk, model with
             {
-                PrimarySkills = new HeroPrimarySkills(11, 12, 13, 14),
+                PrimarySkills = new PrimarySkills(11, 12, 13, 14),
                 HeroLevel = new HeroLevel { Level = 30, Experience = 123456 },
                 Army = new Army([]).WithSlot(1, Creature.Pikeman, 10).WithSlot(7, Creature.Angel, 3),
                 SecondarySkills = model.SecondarySkills.WithoutSlot(0),

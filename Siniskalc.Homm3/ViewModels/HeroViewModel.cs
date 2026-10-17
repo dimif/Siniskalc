@@ -199,7 +199,7 @@
             set => this.Update(h => h with { MarkerPosition = value });
         }
 
-        public HeroPrimarySkills PrimarySkills
+        public PrimarySkills PrimarySkills
         {
             get => this.HeroModel.PrimarySkills;
             set => this.Update(h => h with { PrimarySkills = value });

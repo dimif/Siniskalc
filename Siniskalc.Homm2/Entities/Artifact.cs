@@ -1,6 +1,8 @@
 ﻿namespace Siniskalc.Homm2.Entities
 {
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// An artifact of Heroes of Might and Magic II. The code is the number the game keeps in a hero's artifact slot (0xFF is an empty
@@ -9,7 +11,7 @@
     /// and are checked against the savegames for the Medal of Courage, the Ice Cloak, the Ammo Cart and the Magic Book.
     /// The Price of Loyalty adds the artifacts from the Spell Scroll on.
     /// </summary>
-    public sealed class Artifact : Homm2Enumeration
+    public sealed class Artifact : Homm2Enumeration, IArtifact
     {
         public static readonly Artifact UltimateBookOfKnowledge = new("Ultimate Book of Knowledge", 0);
         public static readonly Artifact UltimateSwordOfDominion = new("Ultimate Sword of Dominion", 1);
@@ -120,6 +122,11 @@
             : base(name, code, gameVersion)
         {
         }
+
+        /// <summary>
+        /// Gets what the artifact adds to the primary skills of the hero that wears it (see <see cref="ArtifactBonuses"/>).
+        /// </summary>
+        public PrimarySkillBonus PrimarySkillBonus => ArtifactBonuses.Of(this);
 
         public static IReadOnlyList<Artifact> All => GetAll<Artifact>();
 

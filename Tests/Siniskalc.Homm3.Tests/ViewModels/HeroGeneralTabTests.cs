@@ -148,7 +148,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             general.CurrentSpellPoints = ushort.MaxValue;
             general.CurrentMovement = uint.MaxValue;
 
-            Assert.That(this.hero.HeroModel.PrimarySkills.Atk, Is.EqualTo(Constants.Hero.MaxPrimarySkill));
+            Assert.That(this.hero.HeroModel.PrimarySkills.Attack, Is.EqualTo(Constants.Hero.MaxPrimarySkill));
             Assert.That(this.hero.HeroModel.Position.X, Is.EqualTo(Constants.Map.MaxCoordinate));
             Assert.That(this.hero.HeroModel.MarkerPosition.Y, Is.EqualTo(Constants.Map.MinCoordinate));
             Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(Constants.Hero.MaxSpellPoints));

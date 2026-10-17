@@ -1,5 +1,6 @@
 ﻿using Siniskalc;
 using Siniskalc.Core.Data;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -18,8 +19,8 @@ namespace Siniskalc.Homm3.Tests.Data
             var session = new HeroEditSession(history, 0);
             var before = session.Current.PrimarySkills;
 
-            session.Update(h => h with { PrimarySkills = new HeroPrimarySkills(1, 2, 3, 4) });
-            Assert.That(session.Current.PrimarySkills, Is.EqualTo(new HeroPrimarySkills(1, 2, 3, 4)));
+            session.Update(h => h with { PrimarySkills = new PrimarySkills(1, 2, 3, 4) });
+            Assert.That(session.Current.PrimarySkills, Is.EqualTo(new PrimarySkills(1, 2, 3, 4)));
 
             history.Undo();
             Assert.That(session.Current.PrimarySkills, Is.EqualTo(before));

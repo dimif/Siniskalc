@@ -215,15 +215,22 @@
             });
         }
 
-        public HeroChunk SerializePrimarySkills(HeroChunk chunk, HeroPrimarySkills primarySkills)
+        public HeroChunk SerializePrimarySkills(HeroChunk chunk, PrimarySkills primarySkills)
         {
             return Edit(chunk, buffer =>
             {
-                buffer[this.heroOffsets[HeroOffsetName.AttributeAtk]] = primarySkills.Atk;
-                buffer[this.heroOffsets[HeroOffsetName.AttributeDef]] = primarySkills.Def;
-                buffer[this.heroOffsets[HeroOffsetName.AttributePow]] = primarySkills.Pow;
-                buffer[this.heroOffsets[HeroOffsetName.AttributeKno]] = primarySkills.Kno;
+                buffer[this.heroOffsets[HeroOffsetName.AttributeAtk]] = SkillByte(primarySkills.Attack);
+                buffer[this.heroOffsets[HeroOffsetName.AttributeDef]] = SkillByte(primarySkills.Defense);
+                buffer[this.heroOffsets[HeroOffsetName.AttributePow]] = SkillByte(primarySkills.SpellPower);
+                buffer[this.heroOffsets[HeroOffsetName.AttributeKno]] = SkillByte(primarySkills.Knowledge);
             });
+        }
+
+        // The savefile holds a skill, with the bonus of the artifacts in it, in a byte; more is refused and not cut.
+        private static byte SkillByte(int value)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxSavedPrimarySkill, "primarySkills");
+            return (byte)value;
         }
 
         public HeroChunk SerializeWarMachines(HeroChunk chunk, IReadOnlyList<WarMachine> warMachines)

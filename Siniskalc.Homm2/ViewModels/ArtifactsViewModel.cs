@@ -74,9 +74,7 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Slots[i].UpdateFromModel(hero.Artifacts.Slots[i]?.Name);
             }
 
-            var total = hero.Artifacts.Slots.OfType<Artifact>()
-                .Select(ArtifactBonuses.Of)
-                .Aggregate(new PrimarySkills(0, 0, 0, 0), (sum, b) => new PrimarySkills(sum.Attack + b.Attack, sum.Defense + b.Defense, sum.SpellPower + b.SpellPower, sum.Knowledge + b.Knowledge));
+            var total = hero.Artifacts.TotalBonus;
             this.bonuses = new (string Name, int Amount)[] { ("Attack", total.Attack), ("Defense", total.Defense), ("Spell power", total.SpellPower), ("Knowledge", total.Knowledge) }
                 .Where(b => b.Amount != 0)
                 .Select(b => new FactRow(b.Name, $"{(b.Amount > 0 ? "+" : string.Empty)}{b.Amount}"))

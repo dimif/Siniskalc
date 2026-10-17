@@ -105,7 +105,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             general.CurrentSpellPoints = 99;
             general.UpdateWarMachine("Ammo_Cart", true);
 
-            Assert.That(this.hero.HeroModel.PrimarySkills.Atk, Is.EqualTo((byte)42));
+            Assert.That(this.hero.HeroModel.PrimarySkills.Attack, Is.EqualTo((byte)42));
             Assert.That(general.WarMachinesChecked[3], Is.True);
             Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Is.SupersetOf(new[] { "Attack", "Spell points", "War machines" }));
         }
@@ -150,7 +150,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 SkillLevel.Expert => 100,
                 _ => 0,
             };
-            var knowledge = (int)hero.PrimarySkills.Kno;   // the saved knowledge has the bonus of the artifacts in it
+            var knowledge = (int)hero.PrimarySkills.Knowledge;   // the saved knowledge has the bonus of the artifacts in it
 
             general.CurrentSpellPoints = 0;
             general.ResetSpellPointsCommand.Execute(null);

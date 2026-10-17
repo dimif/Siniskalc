@@ -18,9 +18,9 @@ namespace Siniskalc.Homm3.Tests.Models
 
         private static HeroModel Hero(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name)).Current;
 
-        private static int[] Saved(HeroModel hero) => [hero.PrimarySkills.Atk, hero.PrimarySkills.Def, hero.PrimarySkills.Pow, hero.PrimarySkills.Kno];
+        private static int[] Saved(HeroModel hero) => [hero.PrimarySkills.Attack, hero.PrimarySkills.Defense, hero.PrimarySkills.SpellPower, hero.PrimarySkills.Knowledge];
 
-        private static int[] Base(HeroModel hero) => [hero.PrimarySkills.BaseAtk, hero.PrimarySkills.BaseDef, hero.PrimarySkills.BasePow, hero.PrimarySkills.BaseKno];
+        private static int[] Base(HeroModel hero) => [hero.PrimarySkills.BaseAttack, hero.PrimarySkills.BaseDefense, hero.PrimarySkills.BaseSpellPower, hero.PrimarySkills.BaseKnowledge];
 
         [TestCase("arts_00_before_arts", "Edric", new[] { 2, 2, 1, 1 })]
         [TestCase("arts_01_arts", "Edric", new[] { 11, 11, 9, 9 })]
@@ -67,7 +67,7 @@ namespace Siniskalc.Homm3.Tests.Models
         {
             var christian = Hero(Load("arts_01_arts"), "Christian");
 
-            var stronger = christian with { PrimarySkills = christian.PrimarySkills.WithBaseAtk(10).WithBaseKno(20) };
+            var stronger = christian with { PrimarySkills = christian.PrimarySkills.WithBaseAttack(10).WithBaseKnowledge(20) };
 
             Assert.That(Saved(stronger), Is.EqualTo(new[] { 13, 5, 4, 26 }));
             Assert.That(Base(stronger), Is.EqualTo(new[] { 10, 2, 1, 20 }));
@@ -78,9 +78,9 @@ namespace Siniskalc.Homm3.Tests.Models
         {
             var edric = Hero(Load("arts_01_arts"), "Edric");
 
-            var capped = edric with { PrimarySkills = edric.PrimarySkills.WithBaseAtk(250) };
+            var capped = edric with { PrimarySkills = edric.PrimarySkills.WithBaseAttack(250) };
 
-            Assert.That(capped.PrimarySkills.Atk, Is.EqualTo(255));
+            Assert.That(capped.PrimarySkills.Attack, Is.EqualTo(255));
         }
 
         [Test]

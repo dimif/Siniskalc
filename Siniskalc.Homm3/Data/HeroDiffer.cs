@@ -107,24 +107,24 @@
             var before = original.PrimarySkills;
             var after = current.PrimarySkills;
 
-            if (before.Atk != after.Atk)
+            if (before.Attack != after.Attack)
             {
-                changes.Add(ChangeAreas.PrimarySkills, "Attack", before.Atk.ToString(), after.Atk.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Atk = before.Atk } });
+                changes.Add(ChangeAreas.PrimarySkills, "Attack", before.Attack.ToString(), after.Attack.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Attack = before.Attack } });
             }
 
-            if (before.Def != after.Def)
+            if (before.Defense != after.Defense)
             {
-                changes.Add(ChangeAreas.PrimarySkills, "Defense", before.Def.ToString(), after.Def.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Def = before.Def } });
+                changes.Add(ChangeAreas.PrimarySkills, "Defense", before.Defense.ToString(), after.Defense.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Defense = before.Defense } });
             }
 
-            if (before.Pow != after.Pow)
+            if (before.SpellPower != after.SpellPower)
             {
-                changes.Add(ChangeAreas.PrimarySkills, "Spell power", before.Pow.ToString(), after.Pow.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Pow = before.Pow } });
+                changes.Add(ChangeAreas.PrimarySkills, "Spell power", before.SpellPower.ToString(), after.SpellPower.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { SpellPower = before.SpellPower } });
             }
 
-            if (before.Kno != after.Kno)
+            if (before.Knowledge != after.Knowledge)
             {
-                changes.Add(ChangeAreas.PrimarySkills, "Knowledge", before.Kno.ToString(), after.Kno.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Kno = before.Kno } });
+                changes.Add(ChangeAreas.PrimarySkills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Knowledge = before.Knowledge } });
             }
         }
 

@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Models
 {
     using System;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// The experience a hero needs for a level. The game works the level out from the experience (write test: level byte 1 with 50,000
@@ -16,45 +17,20 @@ namespace Siniskalc.Homm2.Models
             1442000, 1730500, 2076700, 2492100, 2990600,
         ];
 
+        private static readonly ExperienceTable Levels = new(Table, (int)Constants.Hero.MaxLevel, (previous, beforeThat) => previous + ((long)Math.Round((previous - beforeThat) * 1.2 / 100) * 100));
+
         /// <summary>
         /// Gets the experience with which a hero starts the given level.
         /// </summary>
         /// <param name="level">The level, 1 or more.</param>
         /// <returns>The experience.</returns>
-        public static long ExperienceOf(int level)
-        {
-            var index = Math.Max(level, 1) - 1;
-            if (index < Table.Length)
-            {
-                return Table[index];
-            }
-
-            long previous = Table[^1];
-            long beforeThat = Table[^2];
-            for (var i = Table.Length; i <= index; i++)
-            {
-                var next = previous + ((long)Math.Round((previous - beforeThat) * 1.2 / 100) * 100);
-                beforeThat = previous;
-                previous = next;
-            }
-
-            return previous;
-        }
+        public static long ExperienceOf(int level) => Levels.ExperienceOf(level);
 
         /// <summary>
         /// Gets the level a hero with the given experience has.
         /// </summary>
         /// <param name="experience">The experience.</param>
         /// <returns>The level.</returns>
-        public static int LevelOf(long experience)
-        {
-            var level = 1;
-            while (level < Constants.Hero.MaxLevel && experience >= ExperienceOf(level + 1))
-            {
-                level++;
-            }
-
-            return level;
-        }
+        public static int LevelOf(long experience) => Levels.LevelOf(experience);
     }
 }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -51,7 +52,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns a short summary of every hero. Reads only what the summary needs, so it is cheap enough to run for every hero.
         /// </summary>
-        public IReadOnlyList<HeroSummary> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
+        public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
 
         /// <summary>
         /// Returns the index of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or -1 if the savefile has no such hero.
@@ -61,7 +62,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns the summary of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or null if the savefile has no such hero.
         /// </summary>
-        public HeroSummary? FindById(int heroId)
+        public HeroSummary<PlayerColor>? FindById(int heroId)
         {
             var index = this.IndexOfId(heroId);
             return index < 0 ? null : this.GetSummary(index);
@@ -70,15 +71,15 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns the summary of the hero at <paramref name="index"/>.
         /// </summary>
-        public HeroSummary GetSummary(int index)
+        public HeroSummary<PlayerColor> GetSummary(int index)
         {
             var chunk = this[index];
-            return new HeroSummary(
+            return new HeroSummary<PlayerColor>(
                 index,
                 this.Deserializer.DeserializeHeroId(chunk),
                 chunk.Name,
                 this.Deserializer.DeserializeOwner(chunk),
-                this.Deserializer.DeserializeClass(chunk),
+                this.Deserializer.DeserializeClass(chunk).Name,
                 this.Deserializer.DeserializeLevel(chunk).Level);
         }
     }

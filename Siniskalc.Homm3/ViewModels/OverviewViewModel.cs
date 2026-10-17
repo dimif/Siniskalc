@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;

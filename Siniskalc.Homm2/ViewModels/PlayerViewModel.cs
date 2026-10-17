@@ -106,7 +106,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.heroes = allHeroes
                 .Where(h => h.Owner == this.Color)
                 .OrderBy(h => h.Name)
-                .Select(h => new LinkViewModel(h.Name, $"{h.Faction}, level {h.Level}", new DelegateCommand(_ => this.openHero(h.HeroId))))
+                .Select(h => new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.HeroId))))
                 .ToList();
 
             this.castles = document.Castles().GetModels()

@@ -165,8 +165,8 @@ namespace Siniskalc.Homm3
             /// The days a player with no town has left before being banished: 7 the day the last town is lost, 0 once banished.
             /// A player who owns a town has none (FF in the savefile).
             /// </summary>
-            public const int MinDaysLeft = 0;
-            public const int MaxDaysLeft = 7;
+            public const int MinDaysLeft = Heroes.Constants.Player.MinDaysLeft;
+            public const int MaxDaysLeft = Heroes.Constants.Player.MaxDaysLeft;
         }
 
         /// <summary>

@@ -140,7 +140,7 @@ namespace Siniskalc.Homm3.ViewModels
             node.Notes = NotesOf(garrisoned);
         }
 
-        private NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner, IReadOnlyList<HeroSummary> heroes, IReadOnlyList<(int Index, CastleModel Model)> castles)
+        private NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner, IReadOnlyList<HeroSummary<PlayerColor>> heroes, IReadOnlyList<(int Index, CastleModel Model)> castles)
         {
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
             var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner.Value);

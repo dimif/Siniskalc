@@ -79,6 +79,11 @@ namespace Siniskalc.Homm2.Models
         public Faction Faction => (Faction)Math.Min(this.HeroId / Constants.Hero.PerFaction, (int)Faction.Necromancer);
 
         /// <summary>
+        /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.
+        /// </summary>
+        public HeroSummary<Color> Summary => new(this.HeroId, this.HeroId, this.Name, this.Owner, this.Faction.ToString(), this.Level);
+
+        /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.
         /// </summary>
         public bool HasSpellBook => this.Artifacts.HasMagicBook;

@@ -1,5 +1,7 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Homm3.Entities;
     using System.Windows.Input;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Models;
@@ -9,7 +11,7 @@
     /// </summary>
     public sealed class HeroLinkViewModel : ILink
     {
-        public HeroLinkViewModel(HeroSummary summary, ICommand open)
+        public HeroLinkViewModel(HeroSummary<PlayerColor> summary, ICommand open)
         {
             this.Name = summary.Name;
             this.Detail = summary.Description;

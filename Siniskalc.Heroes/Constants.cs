@@ -26,6 +26,22 @@ namespace Siniskalc.Heroes
         }
 
         /// <summary>
+        /// The countdown of a player who owns no town.
+        /// </summary>
+        public static class Player
+        {
+            /// <summary>
+            /// The player is out of the game.
+            /// </summary>
+            public const int MinDaysLeft = 0;
+
+            /// <summary>
+            /// The days a player has to own a town again once the last one is lost.
+            /// </summary>
+            public const int MaxDaysLeft = 7;
+        }
+
+        /// <summary>
         /// The tavern of a player.
         /// </summary>
         public static class Tavern

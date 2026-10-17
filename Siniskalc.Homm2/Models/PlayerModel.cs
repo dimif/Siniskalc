@@ -28,6 +28,7 @@ namespace Siniskalc.Homm2.Models
         int? SelectedCastle,
         int? DaysLeft,
         TavernHeroes Tavern)
+        : PlayerModelBase<Color>(Color, Resources, Tavern, DaysLeft)
     {
         /// <summary>
         /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.
@@ -38,7 +39,7 @@ namespace Siniskalc.Homm2.Models
         /// The days a player has to own a castle again once the last one is lost (7 in the savegames: the day after the last castle of
         /// Blue was taken the count was 7, and the player is out of the game when it reaches 0).
         /// </summary>
-        public const int DaysToOwnACastle = 7;
+        public const int DaysToOwnACastle = Heroes.Constants.Player.MaxDaysLeft;
 
         /// <summary>
         /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one.

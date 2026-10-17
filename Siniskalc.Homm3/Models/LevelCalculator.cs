@@ -1,7 +1,9 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// Allows to calculate the level of a hero based on their experience points and vice versa.
@@ -88,40 +90,16 @@
             { 75, 1810034207 },
         };
 
-        public static short GetLevelFromXp(int experience)
-        {
-            short level = 1;
-            foreach (var kvp in LevelToExperienceThresholds)
-            {
-                if (experience >= kvp.Value)
-                {
-                    level = kvp.Key;
-                }
-                else
-                {
-                    break;
-                }
-            }
+        private static readonly ExperienceTable Levels = new([.. LevelToExperienceThresholds.OrderBy(t => t.Key).Select(t => (long)t.Value)], LevelToExperienceThresholds.Count);
 
-            return level;
-        }
+        public static short GetLevelFromXp(int experience) => (short)Levels.LevelOf(experience);
 
         /// <summary>
         /// Gets the level above the one <paramref name="experience"/> reaches, and the experience it needs.
         /// Null when the hero is already at the highest level.
         /// </summary>
-        public static (short Level, int Experience)? GetNextLevel(int experience)
-        {
-            foreach (var kvp in LevelToExperienceThresholds)
-            {
-                if (kvp.Value > experience)
-                {
-                    return (kvp.Key, kvp.Value);
-                }
-            }
-
-            return null;
-        }
+        public static (short Level, int Experience)? GetNextLevel(int experience) =>
+            Levels.NextLevel(experience) is { } next ? ((short)next.Level, (int)next.Experience) : null;
 
         public static int GetXpForLevel(short level)
         {

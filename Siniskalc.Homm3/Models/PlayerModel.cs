@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using Siniskalc.Core;
     using Siniskalc.Heroes.Models;
@@ -15,17 +15,8 @@
     /// The days before the player is banished for owning no town, 1 to 7, or 0 when the player has been banished; null while the player owns a town.
     /// </param>
     public sealed record PlayerModel(PlayerColor Color, ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft = null)
+        : PlayerModelBase<PlayerColor>(Color, Resources, Tavern, DaysLeft)
     {
-        /// <summary>
-        /// Gets whether the player is out of the game.
-        /// </summary>
-        public bool IsBanished => this.DaysLeft == Constants.Player.MinDaysLeft;
-
-        /// <summary>
-        /// Gets whether a countdown to banishing is running: the player has no town and is not out yet.
-        /// </summary>
-        public bool HasCountdown => this.DaysLeft is > Constants.Player.MinDaysLeft;
-
         /// <summary>
         /// Returns the player with <paramref name="days"/> left before banishing, 1 to 7. A banished player stays banished.
         /// </summary>

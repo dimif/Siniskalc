@@ -107,7 +107,7 @@ namespace Siniskalc.Homm2.ViewModels
                 owner == null ? -1 : (int)owner.Value,
                 owner != null,
                 status,
-                heroes.Select(h => new NavEntry(h.HeroId, h.Name, $"{h.Faction}, level {h.Level}")).ToList(),
+                heroes.Select(h => new NavEntry(h.HeroId, h.Name, h.Summary.Description)).ToList(),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction?.ToString() ?? string.Empty)).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
         }

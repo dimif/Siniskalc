@@ -48,5 +48,10 @@ namespace Siniskalc.Homm2.Tests
         /// Loads the save of Broken Alliance whose number is <paramref name="number"/>.
         /// </summary>
         public static Game LoadBrokenAlliance(int number) => Load(Saves.BrokenAllianceSave(number));
+
+        /// <summary>
+        /// Loads the save of Threedom whose number is <paramref name="number"/>.
+        /// </summary>
+        public static Game LoadThreedom(int number) => Load(Saves.ThreedomSave(number));
     }
 }

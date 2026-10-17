@@ -101,6 +101,31 @@
                             </StackPanel>
                         </StackPanel>
                     </Border>
+                    <Border Style="{StaticResource CardStyle}" Width="330">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Next battle"/>
+                            <ItemsControl ItemsSource="{Binding BattleBonus}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
+                                       Text="What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game."/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}" Width="330">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Places visited"/>
+                            <ItemsControl ItemsSource="{Binding VisitedPlaces}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,2" ToolTip="{Binding ToolTip}">
+                                            <TextBlock Width="130" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Name}"/>
+                                            <TextBlock Width="50" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Text}"/>
+                                            <Button Style="{StaticResource PillButtonStyle}" Content="Forget" Command="{Binding ForgetCommand}"
+                                                    ToolTip="The hero can visit them again. Not tried in the game."/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
                 </WrapPanel>
 
                 <!-- Skills -->

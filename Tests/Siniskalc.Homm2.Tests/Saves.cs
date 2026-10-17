@@ -12,17 +12,24 @@ namespace Siniskalc.Homm2.Tests
         public const string BrokenAlliance = "BrokenAlliance";
         public const string ArraxTheJerk = "ArraxTheJerk";
         public const string MapDifficultySize = "MapDifficultySize";
+        public const string Threedom = "Threedom";
 
         /// <summary>
         /// Returns the path of a save of a map, from its name without the extension (<c>broken_alliance_10_xabran_mage_guild_2__maximus_spell_book</c>).
         /// </summary>
-        public static string Path(string map, string name) => System.IO.Path.Combine("TestData", "Homm2", map, name + (map is ArraxTheJerk or MapDifficultySize ? ".GX1" : ".GM1"));
+        public static string Path(string map, string name) => System.IO.Path.Combine("TestData", "Homm2", map, name + (map is ArraxTheJerk or MapDifficultySize or Threedom ? ".GX1" : ".GM1"));
 
         /// <summary>
         /// Returns the path of the save of Broken Alliance whose number is <paramref name="number"/>.
         /// </summary>
         public static string BrokenAllianceSave(int number) =>
             Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2", BrokenAlliance), $"broken_alliance_{number:00}_*.GM1").Single();
+
+        /// <summary>
+        /// Returns the path of the save of Threedom whose number is <paramref name="number"/>.
+        /// </summary>
+        public static string ThreedomSave(int number) =>
+            Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2", Threedom), $"threedom_{number:00}_*.GX1").Single();
 
         public static IEnumerable<string> All() => Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2"), "*.G??", SearchOption.AllDirectories).OrderBy(f => f, System.StringComparer.Ordinal);
 

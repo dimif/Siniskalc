@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
     using System;
     using Siniskalc.Core;
@@ -32,6 +32,9 @@
             WriteNumber(bytes, HeroLayout.PrimarySkills + 1, 1, model.PrimarySkills.Defense, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));
             WriteNumber(bytes, HeroLayout.PrimarySkills + 2, 1, model.PrimarySkills.SpellPower, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));
             WriteNumber(bytes, HeroLayout.PrimarySkills + 3, 1, model.PrimarySkills.Knowledge, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));
+            WriteBattleBonus(bytes, HeroLayout.BattleMorale, model.NextBattle.Morale, nameof(model.NextBattle));
+            WriteBattleBonus(bytes, HeroLayout.BattleLuck, model.NextBattle.Luck, nameof(model.NextBattle));
+            WriteVisited(bytes, model.Visited);
             WriteSecondarySkills(bytes, model.SecondarySkills);
             WriteArmy(bytes, model.Army);
 
@@ -81,6 +84,29 @@
                 default:
                     ByteBufferHelper.WriteUInt32(bytes, offset, (uint)value);
                     break;
+            }
+        }
+
+        private static void WriteBattleBonus(byte[] bytes, int offset, int value, string name)
+        {
+            if ((sbyte)bytes[offset] == value)
+            {
+                return;
+            }
+
+            RangeGuard.ThrowIfOutOfRange(value, Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, name);
+            bytes[offset] = (byte)(sbyte)value;
+        }
+
+        private static void WriteVisited(byte[] bytes, VisitedPlaces visited)
+        {
+            uint[] sets = [visited.Gazebos, visited.Forts, visited.WitchDoctorHuts, visited.MercenaryCamps, visited.StandingStones];
+            for (var i = 0; i < sets.Length; i++)
+            {
+                if (ByteBufferHelper.ReadUInt32(bytes, HeroLayout.VisitedPlaces + (i * 4)) != sets[i])
+                {
+                    ByteBufferHelper.WriteUInt32(bytes, HeroLayout.VisitedPlaces + (i * 4), sets[i]);
+                }
             }
         }
 

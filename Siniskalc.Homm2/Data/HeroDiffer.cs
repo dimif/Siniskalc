@@ -50,6 +50,21 @@ namespace Siniskalc.Homm2.Data
                 Add(ChangeAreas.General, "Level", original.Level.ToString(), current.Level.ToString(), h => h with { Level = original.Level });
             }
 
+            if (original.NextBattle.Morale != current.NextBattle.Morale)
+            {
+                Add(ChangeAreas.General, "Morale, next battle", original.NextBattle.Morale.ToString("+0;-0;0"), current.NextBattle.Morale.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Morale = original.NextBattle.Morale } });
+            }
+
+            if (original.NextBattle.Luck != current.NextBattle.Luck)
+            {
+                Add(ChangeAreas.General, "Luck, next battle", original.NextBattle.Luck.ToString("+0;-0;0"), current.NextBattle.Luck.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Luck = original.NextBattle.Luck } });
+            }
+
+            if (original.Visited != current.Visited)
+            {
+                Add(ChangeAreas.General, "Places visited", original.Visited.Count.ToString(), current.Visited.Count.ToString(), h => h with { Visited = original.Visited });
+            }
+
             DiffPrimarySkills(original, current, Add);
             DiffSecondarySkills(original, current, Add);
 

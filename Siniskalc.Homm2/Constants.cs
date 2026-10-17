@@ -50,6 +50,12 @@ namespace Siniskalc.Homm2
             public const int ArtifactSlotCount = 14;
             public const int SecondarySkillCount = 14;
             public const int MaxSecondarySkills = 8;
+
+            /// <summary>
+            /// What the places of the map give a hero for its next battle was seen from -1 to 2; the game shows a total from -3 to 3.
+            /// </summary>
+            public const long MinBattleBonus = -3;
+            public const long MaxBattleBonus = 3;
             public const int SpellCount = 65;
 
             /// <summary>

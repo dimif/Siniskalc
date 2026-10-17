@@ -46,7 +46,16 @@ namespace Siniskalc.Homm2.Data
                     chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
                 Bytes.Army(types, counts),
                 artifacts,
-                Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)));
+                Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
+            {
+                NextBattle = new NextBattleBonus((sbyte)chunk.GetByteAt(HeroLayout.BattleMorale), (sbyte)chunk.GetByteAt(HeroLayout.BattleLuck)),
+                Visited = new VisitedPlaces(
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces),
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 4),
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 8),
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 12),
+                    chunk.GetUInt32At(HeroLayout.VisitedPlaces + 16)),
+            };
         }
     }
 }

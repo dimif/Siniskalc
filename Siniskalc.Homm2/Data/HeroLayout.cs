@@ -51,6 +51,18 @@ namespace Siniskalc.Homm2.Data
         public const int Level = Name + 0x33;
 
         /// <summary>
+        /// The morale (a signed byte) and the luck (the byte after it) the hero has for its next battle only (Threedom: a temple gave 2, a fountain 1).
+        /// </summary>
+        public const int BattleMorale = Name + 0x3A;
+        public const int BattleLuck = Name + 0x3B;
+
+        /// <summary>
+        /// Five 32 bit sets of the places the hero has visited, each a bit for a place of its kind: gazebos, forts, witch doctor's huts,
+        /// mercenary camps and standing stones (Threedom).
+        /// </summary>
+        public const int VisitedPlaces = Name + 0x3D;
+
+        /// <summary>
         /// Attack, defense, spell power and knowledge, a byte each.
         /// </summary>
         public const int PrimarySkills = Name + 0x35;

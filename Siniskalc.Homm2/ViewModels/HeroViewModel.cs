@@ -23,6 +23,8 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly HeroEditSession session;
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> facts;
+        private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
+        private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
@@ -45,6 +47,19 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Row("Experience", Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep, h => h.Experience, (h, v) => h with { Experience = v, Level = HeroLevels.LevelOf(v) }),
                 this.Row("Spell points", Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, 1, h => h.SpellPoints, (h, v) => h with { SpellPoints = (int)v }),
                 this.Row("Movement", Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep, h => h.MovementLeft, (h, v) => h with { MovementLeft = v }, () => $"of {this.hero.MaxMovement:N0} a day"),
+            ];
+            this.battleBonus =
+            [
+                this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
+                this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
+            ];
+            this.visitedPlaces =
+            [
+                this.Visited("Gazebos", h => h.Visited.Gazebos, (h, bits) => h with { Visited = h.Visited with { Gazebos = bits } }, "A thousand experience points, once per hero"),
+                this.Visited("Forts", h => h.Visited.Forts, (h, bits) => h with { Visited = h.Visited with { Forts = bits } }, "A point of defense, once per hero"),
+                this.Visited("Witch doctor's huts", h => h.Visited.WitchDoctorHuts, (h, bits) => h with { Visited = h.Visited with { WitchDoctorHuts = bits } }, "A point of knowledge or a skill, once per hero"),
+                this.Visited("Mercenary camps", h => h.Visited.MercenaryCamps, (h, bits) => h with { Visited = h.Visited with { MercenaryCamps = bits } }, "A point of attack, once per hero"),
+                this.Visited("Standing stones", h => h.Visited.StandingStones, (h, bits) => h with { Visited = h.Visited with { StandingStones = bits } }, "A point of spell power, once per hero"),
             ];
             this.ArmyEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -128,6 +143,16 @@ namespace Siniskalc.Homm2.ViewModels
         public IReadOnlyList<AmountRowViewModel> Facts => this.facts;
 
         /// <summary>
+        /// Gets the morale and the luck the hero has for its next battle only (a temple, a fountain, a faerie ring).
+        /// </summary>
+        public IReadOnlyList<AmountRowViewModel> BattleBonus => this.battleBonus;
+
+        /// <summary>
+        /// Gets the kinds of places the hero has visited and cannot get anything from a second time.
+        /// </summary>
+        public IReadOnlyList<VisitedPlaceRowViewModel> VisitedPlaces => this.visitedPlaces;
+
+        /// <summary>
         /// Gets the secondary skills of the hero: the slots of the hero screen and the list of every skill.
         /// </summary>
         public SecondarySkillsViewModel SkillsEditor { get; }
@@ -157,7 +182,12 @@ namespace Siniskalc.Homm2.ViewModels
             var hero = document.Heroes().GetModel(this.HeroId);
             this.hero = hero;
 
-            foreach (var row in this.primarySkills.Concat(this.facts))
+            foreach (var row in this.primarySkills.Concat(this.facts).Concat(this.battleBonus))
+            {
+                row.Refresh();
+            }
+
+            foreach (var row in this.visitedPlaces)
             {
                 row.Refresh();
             }
@@ -190,6 +220,12 @@ namespace Siniskalc.Homm2.ViewModels
             this.RaisePropertyChanged(nameof(this.HasNotice));
             this.OwnerField.Refresh();
         }
+
+        private VisitedPlaceRowViewModel Visited(string name, Func<HeroModel, uint> get, Func<HeroModel, uint, HeroModel> set, string toolTip) => new(
+            name,
+            () => get(this.session.Current),
+            () => this.session.Update(h => set(h, 0)),
+            toolTip);
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,

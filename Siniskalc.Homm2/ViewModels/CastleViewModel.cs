@@ -55,6 +55,7 @@ namespace Siniskalc.Homm2.ViewModels
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
+            var faction = this.castle.Faction;
             this.buildings =
             [
                 this.Building("Castle", TownBuildings.Castle, "A town becomes a castle when it is built."),
@@ -63,16 +64,25 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Building("Shipyard", TownBuildings.Shipyard),
                 this.Building("Well", TownBuildings.Well),
                 this.Building("Statue", TownBuildings.Statue),
+                this.Building("Marketplace", TownBuildings.Marketplace),
+                this.Building("Left turret", TownBuildings.LeftTurret),
+                this.Building("Right turret", TownBuildings.RightTurret),
+                this.Building("Moat", TownBuildings.Moat),
+                this.Building("Captain's quarters", TownBuildings.CaptainsQuarters),
+                this.Building(TownBuildingNames.SecondWellOf(faction), TownBuildings.SecondWell, "More creatures every week. Found in the savegames of Threedom; not tried in the game."),
             ];
 
-            if (this.castle.Faction == Faction.Wizard)
-            {
-                this.buildings = [.. this.buildings, new ToggleRowViewModel(
-                    "Library",
-                    () => this.session.Current.HasLibrary,
-                    built => this.session.Update(c => c.WithLibrary(built)),
-                    toolTip: "Gives each level of the Mage Guild a fourth spell. Not tried in the game: found by comparing the castles of the savegames.")];
-            }
+            this.buildings = faction == Faction.Wizard
+                ?
+                [
+                    .. this.buildings,
+                    new ToggleRowViewModel(
+                        TownBuildingNames.SpecialOf(faction),
+                        () => this.session.Current.HasLibrary,
+                        built => this.session.Update(c => c.WithLibrary(built)),
+                        toolTip: "Gives each level of the Mage Guild a fourth spell."),
+                ]
+                : [.. this.buildings, this.Building(TownBuildingNames.SpecialOf(faction), TownBuildings.Special, "The special building of the faction. Found in the savegames of Threedom; not tried in the game.")];
 
             this.GuildLevelField = new ChoiceFieldViewModel(
                 "Level",

@@ -119,3 +119,8 @@ What the shared models of `Siniskalc.Heroes` would hold for HoMM2 but the editor
 6. **Spell points maximum** (the editor lets a HoMM2 hero have any spell points up to a limit; the game's maximum is probably knowledge x 10). Save a hero with knowledge 5, 10 and 15 at full spell points after resting, with and without Wisdom, to check. Needed for: sharing `ISpellPointsCalculator` (M16).
 
 For each, once the bytes are known: a row in `HOMM2_SAVE_FORMAT.md`, a layout constant, the reader and the writer (separate classes), the model field, and tests that name the save (`TestData/Homm2/...README.md` says what each save holds).
+
+## Phase 8: the saves of Threedom (2026-10-17)
+
+Done: the 71 saves are in `TestData/Homm2/Threedom` with a README; the buildings of a town (turrets, marketplace, the second well, moat, the special building and the captain's quarters), the morale and luck of a hero for its next battle and the places it has visited are read, written and edited (`TownBuildings`, `NextBattleBonus`, `VisitedPlaces`, the hero page), with the tests in `ThreedomTests`. The savegames T01BLDS, T02FORGT and T03BONUS in `TestData/Homm2/out` are for the game.
+To test in the game: T01BLDS (the buildings), T02FORGT (a hero visits a fort or gazebo again after forgetting it), T03BONUS (morale and luck of the next battle). Not done: the map (flags of mines and towns, obelisks, the places that give something each week), the bytes +0xE3 to +0xE6 of a hero, the bit 0x4000 of the buildings.

@@ -7,8 +7,10 @@ namespace Siniskalc.Homm2.Entities
     /// What the artifacts add to the primary skills of the hero that carries them. The savegame keeps the sum (the base skills and
     /// the bonuses): when Maximus gave the Ultimate Sword of Dominion to Sir Gallant in the game, his attack fell from 15 to 3 and
     /// Gallant's rose from 2 to 14 (save E13ARTSW). So an edit that puts an artifact on a hero or takes it off must change the skills
-    /// by the same amount, as the game does. Only the +12 of that sword is checked against the game; the other values are the
-    /// bonuses of the open source engine fheroes2 (read only, GPL-2.0, no code copied). A curse is a negative number.
+    /// by the same amount, as the game does. Checked against the game: the +12 of that sword, and (saves of Threedom) the +3 attack of the Dragon
+    /// Sword of Dominion, the +1 defense of the Defender Helm of Protection, the +2 spell power of the Caster's Bracelet of Magic and the +5 defense
+    /// of the Breastplate of Anduran. The other values are the bonuses of the open source engine fheroes2 (read only, GPL-2.0, no code copied).
+    /// A curse is a negative number.
     /// </summary>
     public static class ArtifactBonuses
     {

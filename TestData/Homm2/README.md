@@ -9,5 +9,6 @@ They belong to `Siniskalc.Homm2.Tests`, whose project file copies them (see `doc
 | BrokenAlliance | 24 saves of one game on the base-game map "Broken Alliance" |
 | ArraxTheJerk | 1 save of the Price of Loyalty map "Arrax the Jerk" |
 | MapDifficultySize | 9 Price of Loyalty saves: the 5 game difficulties on one map, then maps of other difficulty and size |
+| Threedom | 71 Price of Loyalty saves of one game on a medium map: mines, obelisks, places a hero visits, every building of two towns |
 
 Naming follows `TestData/README.md`, and each folder's README gives the original name the game used (HoMM2 only accepts 8 characters before the extension).

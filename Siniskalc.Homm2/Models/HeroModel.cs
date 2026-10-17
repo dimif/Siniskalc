@@ -74,6 +74,16 @@ namespace Siniskalc.Homm2.Models
         }
 
         /// <summary>
+        /// Gets or sets the morale and luck the hero has for its next battle only.
+        /// </summary>
+        public NextBattleBonus NextBattle { get; init; }
+
+        /// <summary>
+        /// Gets or sets the places of the map the hero has visited and cannot get anything from again.
+        /// </summary>
+        public VisitedPlaces Visited { get; init; }
+
+        /// <summary>
         /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
         public Faction Faction => (Faction)Math.Min(this.HeroId / Constants.Hero.PerFaction, (int)Faction.Necromancer);

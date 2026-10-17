@@ -216,3 +216,48 @@ Saves E01 to E13 were made by editing the models, E14 to E26 with the editor its
 ## Maps with heroes of their own
 
 In `MapDifficultySize` save 07 (a scenario with heroes such as Famine, War and Pestilence) four heroes hold another number than their index in the byte that is the hero ID elsewhere (`HeroLayout.Id`), probably the portrait the map gave them. The locator therefore accepts a table when most heroes hold their index (and every castle holds its own). How the editor treats those heroes (it finds them by that byte) is not checked yet.
+
+## What the saves of Threedom showed (2026-10-17)
+
+`TestData/Homm2/Threedom`: 71 Price of Loyalty saves (`.GX1`, a medium map, 72 x 72, 131,550 bytes) of one game, a Necromancer (Hillstone) and a Wizard town captured later (Whiteshield), two heroes (Charity, Colar Blau). All 71 load and write back to the same bytes with the existing readers. The list of what was done in each is in the folder's README; below is what the differences between saves told.
+
+**Confirmed against the editor's model**
+
+- **Level and experience.** Seven (hero, save) pairs of levels 3 to 11 match the table of `HeroLevels` (Charity 2,500 = 3, 3,624 = 4, 5,339 = 5, 7,399 = 6, 9,999 = 8; Colar Blau 6,540 = 6, 8,050 = 7, 9,460 = 8, 12,780 = 9, 15,060 = 10, 18,205 = 11).
+- **Artifact bonuses.** The skills hold the bonuses: the Dragon Sword of Dominion is +3 attack, the Defender Helm of Protection +1 defense, the Caster's Bracelet of Magic +2 spell power and the Breastplate of Anduran +5 defense, as in the table of `ArtifactBonuses`. The Golden Bow, the Endless Sack of Gold, the Elemental Ring and the Fizbin of Misfortune add no skill.
+- **Mage Guild and dwellings.** The level is the number in the bits 16 to 18 (Hillstone 1 to 5 over saves 5 to 14), the dwellings of a Necromancer are the bits 0x08 (excavation), 0x10 (graveyard), 0x20 (pyramid), 0x40 (mansion), 0x80 (mausoleum), 0x100 (laboratory), and an upgrade replaces the bit (saves 40, 43, 53, 57: 0x80 to 0x1000, 0x40 to 0x800, 0x10 to 0x200, 0x20 to 0x400). The Library of the Wizard raises the spell counts of the guild from 3 to 4 as it is built (save 64).
+- **Daily income.** The income table of a player (6 numbers from +0xAC of the record, then the gold at +0xC4) is recalculated at the start of a day and counts the mines: 2 ore a day for each ore mine and 2 wood for each sawmill, 1 a day for each crystal, gem, sulfur and mercury mine, 1,000 gold for the gold mine, +250 for a statue (save 71: 3 ore mines gave 6, 2 sawmills 4, 3 crystal mines 3, 2 gem mines 2, 2 alchemist labs 2, 2 sulfur mines 2 - the third was captured that day - and gold 4,500 with the gold mine, the statue and the castles). A mine captured today does not count until tomorrow.
+- **Days.** The day, week and month (0x2BB) follow the play: save 16 and save 63 are the first day of a week.
+- **A captured town.** A hero that captures a town stands in the square in front of its entrance, which is the tile under the castle's tile (Whiteshield is at 30, 16, Colar Blau at 30, 17 in save 29), and the town has no visiting hero (+0x17 is 0xFF).
+
+**New: the buildings of a town (the 16 bits at +0x18)**
+
+Known before: 0x01 Mage Guild, 0x02 Thieves' Guild, 0x04 Tavern, 0x08 Shipyard, 0x10 Well, 0x20 town only, 0x40 Castle, 0x80 Statue. New, each seen in one save for the Necromancer and for the Wizard:
+
+| Bit | Building | Saves |
+|---|---|---|
+| 0x0100 | Left turret | 64 |
+| 0x0200 | Right turret | 66 |
+| 0x0400 | Marketplace | 62 |
+| 0x0800 | The second well of the faction (Knight: Farm, Barbarian: Garbage Heap, Sorceress: Crystal Garden, Warlock: Waterfall, Wizard: Orchard, Necromancer: Skull Pile) | 39 (Skull Pile), 62 (Orchard) |
+| 0x1000 | Moat | 68, 71 |
+| 0x2000 | The special building of the faction (Knight: Fortifications, Barbarian: Coliseum, Sorceress: Rainbow, Warlock: Dungeon, Wizard: Library, Necromancer: Storm) | 47 (Storm), 64 (Library) |
+| 0x8000 | Captain's quarters | 71 |
+
+0x4000 was not set by any save. A town that is only a town (0x20) built nothing of this before its castle; Whiteshield built its castle in save 35 (0x20 became 0x40). The editor shows all of these with the names of the faction; none is tried in the game yet (T01BLDS).
+
+**New: what a hero remembers (the record of a hero, offsets from the name)**
+
+- **+0x3A and +0x3B: morale and luck for the next battle only**, two signed bytes. A temple gave +2 morale (save 25), a fountain +1 luck (17), a faerie ring +1 luck (60), a graveyard visited for the second time -1 morale (37), a temple and a fountain together +2 and +1 (34). They are 0 again after the next battle (19, 38). The bytes +0xD9 and +0xDA (Price of Loyalty only) hold flags for the source of each (fountain 0x04, faerie ring 0x10, graveyard 0x20, temple 0x01 in +0xDA); the editor leaves them alone.
+- **+0x3D, +0x41, +0x45, +0x49, +0x4D: the places the hero has visited**, a 32 bit set each, a bit for each place of the kind in the order the map has them: gazebos (+0x3D, save 69 sets 0x04), forts (+0x41, saves 26, 36, 50: 0x04, then 0x06), witch doctor's huts (+0x45, saves 6 and 61: 0x02, 0x08), mercenary camps (+0x49, save 65: 0x04) and standing stones (+0x4D, saves 45 and 52: 0x02, 0x08). These are the places that give a hero something once per hero (an experience bonus, +1 defense, +1 knowledge or a skill, +1 attack, +1 spell power). Clearing a set lets the hero visit the places again; the editor has a button for it (T02FORGT). The places that give something once a week to the first visitor of any player (the windmill, the water mill) and the graveyard are not in the record of the hero: they are in the map.
+- The Price of Loyalty bytes +0xE3 to +0xE6 turn 0xFF one after the other as a hero carries more artifacts; what they are is not known.
+
+**Not decoded: the map (after the castle table, 108,843 bytes in this map)**
+
+What the saves showed, for the next person to try:
+
+- Capturing a mine, visiting an obelisk, picking up an artifact or capturing a town changes bytes only in the map part (and the owner's resources), never in the record of a player: the map holds who owns a mine, which obelisks a player has seen, and the flag of a town. Nothing about mines is in the player record besides the daily income table.
+- The map part starts with lists and arrays that are not one byte per tile (the first 0x1440 bytes are 0xFF for most positions with a few small numbers, then text: the messages of the map), then a part with one byte per tile of 0x80/0x00 flags (what a tile blocks, rows of 72 bytes), then a table of 7 byte entries (`class, index, flags, 0, 0xFF, link low, link high`; `62 0A 02 00 FF 00 00`) about 0x13C00 to 0x1A800, which is where the flags of the mines and towns live: capturing a mine rewrites a few entries, and the entries are moved around (so a captured mine shifts bytes elsewhere).
+- Walking reveals rows of the explored area as runs of 6 to 9 bytes spaced 72 bytes apart in the 0x4000 to 0x4600 part (about 0x1000 bytes of the map part after the castle table).
+
+Decoding these needs a probe that changes one thing: for example a save of a hero standing next to one mine before and after the capture, with the positions of the mine written down.

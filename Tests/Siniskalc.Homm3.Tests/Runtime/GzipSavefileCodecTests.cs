@@ -1,6 +1,7 @@
-namespace Siniskalc.Core.Tests.Runtime
+namespace Siniskalc.Homm3.Tests.Runtime
 {
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Homm3.Runtime;
 
     [TestFixture]
     internal sealed class GzipSavefileCodecTests

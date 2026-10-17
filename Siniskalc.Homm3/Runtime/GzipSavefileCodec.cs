@@ -1,7 +1,8 @@
-﻿namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
     using System;
     using System.IO;
+    using Siniskalc.Core.Runtime;
     using ICSharpCode.SharpZipLib;
     using ICSharpCode.SharpZipLib.GZip;
 

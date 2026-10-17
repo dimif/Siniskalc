@@ -17,108 +17,36 @@ namespace Siniskalc
     using H2Runtime = Siniskalc.Homm2.Runtime;
 
     /// <summary>
-    /// The composition root: builds each component once and hands it to the ones that use it. Nothing else creates a component
-    /// that another class depends on.
+    /// The composition root: builds each component once and hands it to the ones that use it. What the games share is built here;
+    /// what only a game uses is built by the factory of that game. Nothing else creates a component that another class depends on.
     /// </summary>
     public sealed class AppServices
     {
+        private readonly Homm3ModuleFactory homm3;
+        private readonly Homm2ModuleFactory homm2;
+
         /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
         public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null)
         {
-            var encoding = heroNameEncoding ?? Encoding.Latin1;
-
-            var dateLocator = new GameDateLocator();
-            var setupLocator = new PlayerControlLocator();
-            var mapHeaderLocator = new MapHeaderLocator();
-            this.VersionEntities = new VersionSpecificEntitiesProviderFactory(version => new GrantedSpellsResolver(version));
-            this.HeroRegions = new HeroRegionProvider(this.VersionEntities);
-            this.PlayerRegions = new PlayerRegionProvider();
-            this.CastleRegions = new CastleRegionProvider();
-
-            this.CastleDeserializer = new CastleDeserializer();
-            this.CastleSerializer = new SafeCastleSerializer();
-            this.PlayerDeserializer = new PlayerDeserializer();
             this.BytesPatcher = new SavefileBytesPatcher();
-            this.DocumentFactory = new SaveDocumentFactory(
-                this.VersionEntities,
-                new HeroDiffer(),
-                this.CastleDeserializer,
-                this.CastleSerializer,
-                new CastleDiffer(),
-                this.PlayerDeserializer,
-                new SafePlayerSerializer(),
-                new PlayerDiffer(),
-                new ObeliskDeserializer(),
-                new SafeObeliskSerializer(),
-                new ObeliskDiffer(),
-                this.BytesPatcher);
-
-            this.SavefileCodec = new GzipSavefileCodec();
             this.Settings = settingsPath is null
                 ? new SettingsStore(UserSettings.PathFor("Siniskalc"), UserSettings.PathFor("Heroes3Editor"))
                 : new SettingsStore(settingsPath);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
             this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
-            this.GameService = new GameService(
-                new SavegameParser(
-                new SavegameVersionDetector(),
-                new HeroBytesLoader(encoding),
-                new CastleBytesLoader(encoding),
-                new PlayerBytesLoader(),
-                new ObeliskBytesLoader(),
-                dateLocator,
-                setupLocator,
-                mapHeaderLocator,
-                this.DocumentFactory),
-                this.SavefileCodec,
-                this.Backup);
-            this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
-            this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions);
-            this.EffectLines = new EffectLineProvider();
             this.BanishingText = new BanishingTextProvider();
-            this.CastleBuildMessages = new CastleBuildMessageProvider();
-            this.SpellPoints = new SpellPointsCalculator();
             this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
             this.Messages = new WpfMessageService();
             this.FileDialogs = new WpfFileDialogs();
             this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
             this.About = CreateAboutInfo();
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
-            this.Homm3 = new Homm3Module(this.CreateHomm3Editor);
 
-            var homm2Locator = new H2Data.SaveLayoutLocator();
-            this.Homm2GameService = new H2Runtime.GameService(
-                new H2Runtime.SavegameParser(
-                    homm2Locator,
-                    new H2Data.BytesLoader(),
-                    new H2Data.HeaderReader(),
-                    new H2Data.SaveDocumentFactory(
-                        new H2Data.HeroDeserializer(),
-                        new H2Data.SafeHeroSerializer(),
-                        new H2Data.HeroDiffer(),
-                        new H2Data.PlayerDeserializer(),
-                        new H2Data.SafePlayerSerializer(),
-                        new H2Data.PlayerDiffer(),
-                        new H2Data.CastleDeserializer(),
-                        new H2Data.SafeCastleSerializer(),
-                        new H2Data.CastleDiffer(),
-                        new H2Data.ObeliskDeserializer(),
-                        new H2Data.SafeObeliskSerializer(),
-                        new H2Data.ObeliskDiffer(),
-                        this.BytesPatcher),
-                    new H2Data.MapPlacesReader()),
-                new RawSavefileCodec(),
-                this.Backup);
-            this.Homm2SaveRegionProvider = new H2Data.SaveRegionProvider(homm2Locator);
-            this.Homm2ByteEditTargets = new H2Data.ByteEditTargetFactory();
-            this.Homm2 = new H2Runtime.Homm2Module(homm2Locator, this.CreateHomm2Editor);
+            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
+            this.homm2 = new Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
         }
-
-        public IGameService GameService { get; }
-
-        public ISavefileCodec SavefileCodec { get; }
 
         public SettingsStore Settings { get; }
 
@@ -128,35 +56,9 @@ namespace Siniskalc
 
         public IFileBackupServiceProvider Backup { get; }
 
-        public ISaveDocumentFactory DocumentFactory { get; }
-
-        public ICastleDeserializer CastleDeserializer { get; }
-
-        public ICastleSerializer CastleSerializer { get; }
-
-        public IPlayerDeserializer PlayerDeserializer { get; }
-
         public ISavefileBytesPatcher BytesPatcher { get; }
 
-        public ISaveRegionProvider SaveRegionProvider { get; }
-
-        public IVersionSpecificEntitiesProviderFactory VersionEntities { get; }
-
-        public IHeroRegionProvider HeroRegions { get; }
-
-        public IPlayerRegionProvider PlayerRegions { get; }
-
-        public ICastleRegionProvider CastleRegions { get; }
-
-        public IByteEditTargetFactory ByteEditTargets { get; }
-
-        public EffectLineProvider EffectLines { get; }
-
         public BanishingTextProvider BanishingText { get; }
-
-        public CastleBuildMessageProvider CastleBuildMessages { get; }
-
-        public ISpellPointsCalculator SpellPoints { get; }
 
         public IUrlLauncher UrlLauncher { get; }
 
@@ -173,33 +75,63 @@ namespace Siniskalc
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic III.
         /// </summary>
-        public IGameModule<Homm3EditorViewModel> Homm3 { get; }
-
-        public H2Runtime.IGameService Homm2GameService { get; }
-
-        public ISaveRegionProvider Homm2SaveRegionProvider { get; }
-
-        public H2Data.IByteEditTargetFactory Homm2ByteEditTargets { get; }
+        public IGameModule<Homm3EditorViewModel> Homm3 => this.homm3.Module;
 
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic II.
         /// </summary>
-        public IGameModule<Homm2EditorViewModel> Homm2 { get; }
+        public IGameModule<Homm2EditorViewModel> Homm2 => this.homm2.Module;
+
+        public IGameService GameService => this.homm3.GameService;
+
+        public ISavefileCodec SavefileCodec => this.homm3.SavefileCodec;
+
+        public ISaveDocumentFactory DocumentFactory => this.homm3.DocumentFactory;
+
+        public ICastleDeserializer CastleDeserializer => this.homm3.CastleDeserializer;
+
+        public ICastleSerializer CastleSerializer => this.homm3.CastleSerializer;
+
+        public IPlayerDeserializer PlayerDeserializer => this.homm3.PlayerDeserializer;
+
+        public ISaveRegionProvider SaveRegionProvider => this.homm3.SaveRegionProvider;
+
+        public IVersionSpecificEntitiesProviderFactory VersionEntities => this.homm3.VersionEntities;
+
+        public IHeroRegionProvider HeroRegions => this.homm3.HeroRegions;
+
+        public IPlayerRegionProvider PlayerRegions => this.homm3.PlayerRegions;
+
+        public ICastleRegionProvider CastleRegions => this.homm3.CastleRegions;
+
+        public IByteEditTargetFactory ByteEditTargets => this.homm3.ByteEditTargets;
+
+        public EffectLineProvider EffectLines => this.homm3.EffectLines;
+
+        public CastleBuildMessageProvider CastleBuildMessages => this.homm3.CastleBuildMessages;
+
+        public ISpellPointsCalculator SpellPoints => this.homm3.SpellPoints;
+
+        public H2Runtime.IGameService Homm2GameService => this.homm2.GameService;
+
+        public ISaveRegionProvider Homm2SaveRegionProvider => this.homm2.SaveRegionProvider;
+
+        public H2Data.IByteEditTargetFactory Homm2ByteEditTargets => this.homm2.ByteEditTargets;
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
-        public Homm3EditorViewModel CreateHomm3Editor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new Siniskalc.Homm3.ViewModels.NavigationBuilder(this.BanishingText));
+        public Homm3EditorViewModel CreateHomm3Editor() => this.homm3.CreateEditor();
+
+        /// <summary>
+        /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
+        /// </summary>
+        public Homm2EditorViewModel CreateHomm2Editor() => this.homm2.CreateEditor();
 
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.
         /// </summary>
         public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);
-
-        /// <summary>
-        /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
-        /// </summary>
-        public Homm2EditorViewModel CreateHomm2Editor() => new(this.Homm2GameService, this.Homm2SaveRegionProvider, this.Homm2ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder(), this.BanishingText);
 
         private static AboutInfo CreateAboutInfo()
         {

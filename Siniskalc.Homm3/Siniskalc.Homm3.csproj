@@ -12,6 +12,7 @@
     <ProjectReference Include="..\Siniskalc.Heroes\Siniskalc.Heroes.csproj" />
     <ProjectReference Include="..\Siniskalc.Heroes.Wpf\Siniskalc.Heroes.Wpf.csproj" />
     <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
+    <ProjectReference Include="..\SharpZipLib.GZip\SharpZipLib.GZip.csproj" />
   </ItemGroup>
 
   <ItemGroup>

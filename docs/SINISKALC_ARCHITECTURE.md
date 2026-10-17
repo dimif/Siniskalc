@@ -40,7 +40,7 @@ It holds `App` and `AppServices`, the composition root that builds all the compo
 A game's data templates are merged in `App.xaml`.
 
 ```
-Siniskalc.Core         No game, no UI: chunks, history, codecs, settings, IGameModule / IGameEditor
+Siniskalc.Core         No game, no UI: chunks, history, raw codec, settings, IGameModule / IGameEditor
 Siniskalc.Wpf          No game: shell, base view models, controls, EditorViewModelBase, the navigation tree
 Siniskalc.Heroes       The series, no UI: shared values and the interfaces of the entities, links and owner
 Siniskalc.Heroes.Wpf   The series: the styles and blocks the pages are made of, the interfaces of the pages
@@ -53,8 +53,8 @@ Siniskalc.Homm3/
   Views/          XAML pages (one page per kind of edit)
   Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
 Siniskalc.Homm2/  The same folders for HoMM2
-Siniskalc/        The exe: App and AppServices (the composition root)
-SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code (see "Savegame format" in the README).
+Siniskalc/        The exe: App, AppServices (the composition root) and a module factory for each game
+SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code, used by Siniskalc.Homm3 only (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota, Homm2) and hero dumps used by the tests.
 docs/             Architecture, how things are located in a savefile, knowledge base, user guide, plans.

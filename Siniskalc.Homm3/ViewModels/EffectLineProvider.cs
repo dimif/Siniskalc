@@ -3,6 +3,8 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -19,10 +21,7 @@ namespace Siniskalc.Homm3.ViewModels
         {
             var lines = new List<EffectLine>();
 
-            Add("Attack", info.Atk);
-            Add("Defense", info.Def);
-            Add("Spell power", info.Pow);
-            Add("Knowledge", info.Kno);
+            lines.AddRange(PrimarySkillBonusText.Facts(new PrimarySkillBonus(info.Atk, info.Def, info.Pow, info.Kno)).Select(fact => new EffectLine(fact.Label, fact.Value)));
             Add("Morale", info.Morale);
             Add("Luck", info.Luck);
             Add("Land movement", info.LandMovement);

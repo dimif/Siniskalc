@@ -74,11 +74,7 @@ namespace Siniskalc.Homm2.ViewModels
                 this.Slots[i].UpdateFromModel(hero.Artifacts.Slots[i]?.Name);
             }
 
-            var total = hero.Artifacts.TotalBonus;
-            this.bonuses = new (string Name, int Amount)[] { ("Attack", total.Attack), ("Defense", total.Defense), ("Spell power", total.SpellPower), ("Knowledge", total.Knowledge) }
-                .Where(b => b.Amount != 0)
-                .Select(b => new FactRow(b.Name, $"{(b.Amount > 0 ? "+" : string.Empty)}{b.Amount}"))
-                .ToList();
+            this.bonuses = PrimarySkillBonusText.Facts(hero.Artifacts.TotalBonus);
 
             this.RaiseAllPropertiesChanged();
             this.Finder.Refresh();

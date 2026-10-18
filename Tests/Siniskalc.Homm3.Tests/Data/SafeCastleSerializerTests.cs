@@ -109,16 +109,33 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowIsKept()
+        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowReadsAsTheFirstCreatureAndKeepsItsNumberUntilTheModelChanges()
         {
-            var chunk = StillWater();
-            var bytes = chunk.ToArray();
-            System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(CastleLayout.GarrisonTypes + (3 * 4)), 250);
-            var unknown = chunk.WithBytes(bytes);
+            var unknown = WithUnknownCreature(StillWater());
+            var model = TestServices.CastleDeserializer.Deserialize(unknown);
+
+            var written = TestServices.SerializeCastle(unknown, model);
+
+            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(Creature.All[0]));
+            Assert.That(written.ToArray(), Is.EqualTo(unknown.ToArray()));
+            Assert.That(TestServices.SerializeCastle(unknown, model with { Garrison = model.Garrison.WithSlot(3, Creature.Angel, 2) }).GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(Creature.Angel.Code));
+        }
+
+        [Test]
+        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowIsEmptiedWhenTheModelEmptiesIt()
+        {
+            var unknown = WithUnknownCreature(StillWater());
 
             var written = TestServices.SerializeCastle(unknown, TestServices.CastleDeserializer.Deserialize(unknown) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
 
-            Assert.That(written.GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(250));
+            Assert.That(written.GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(-1));
+        }
+
+        private static CastleChunk WithUnknownCreature(CastleChunk chunk)
+        {
+            var bytes = chunk.ToArray();
+            System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(CastleLayout.GarrisonTypes + (3 * 4)), 250);
+            return chunk.WithBytes(bytes);
         }
 
         private static CastleChunk StillWater() =>

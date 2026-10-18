@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
@@ -24,10 +25,7 @@
             WriteBoat(bytes, model.Boat);
             bytes[CastleLayout.VisitingHero] = Bytes.IdByte(model.VisitingHero, bytes[CastleLayout.VisitingHero]);
 
-            for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
-            {
-                Bytes.WriteArmySlot(bytes, CastleLayout.GarrisonTypes + slot, CastleLayout.GarrisonCounts + (slot * 2), model.Garrison.Slots[slot], nameof(model.Garrison));
-            }
+            ArmyWriter.Write(bytes, CastleLayout.Garrison, model.Garrison, CreatureCodes.Instance, nameof(model.Garrison));
 
             RangeGuard.ThrowIfOutOfRange<long>((long)model.Town, 0, Constants.Castle.MaxTownBuildings, nameof(model.Town));
             ByteBufferHelper.WriteUInt16(bytes, CastleLayout.TownBuildings, (ushort)model.Town);

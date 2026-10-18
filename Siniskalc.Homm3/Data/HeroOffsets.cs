@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -16,6 +17,11 @@ namespace Siniskalc.Homm3.Data
         /// also what a castle holds to say which hero is in it. The same in every version.
         /// </summary>
         public const int HeroIdOffset = 36;
+
+        /// <summary>
+        /// Gets where the army is in a hero chunk of this version: a 32-bit type and a 32-bit count for each of its seven slots.
+        /// </summary>
+        public ArmyLayout Army => new(this[HeroOffsetName.Creatures], 4, this[HeroOffsetName.CreaturesAmounts], 4, Constants.CreatureSlotCount, uint.MaxValue);
 
         /// <summary>
         /// Where the flag of a hero that was put to sleep is in a Shadow of Death hero chunk: the sixth of the twelve bytes after the hero struct,

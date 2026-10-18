@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -64,25 +65,7 @@
             return x == byte.MaxValue && y == byte.MaxValue ? null : new MapPosition(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
-        public Army<Creature> DeserializeGarrison(CastleChunk chunk)
-        {
-            var slots = new ArmySlot<Creature>?[Constants.CreatureSlotCount];
-
-            for (var i = 0; i < Constants.CreatureSlotCount; i++)
-            {
-                var type = chunk.GetInt32At(CastleLayout.GarrisonTypes + (i * 4));
-                var creature = type < 0 || type > byte.MaxValue ? null : Creature.FromByte((byte)type);
-                if (creature == null)
-                {
-                    // TODO:LOG warning: the castle "{chunk.Name}" holds creature type {type} in garrison slot {i + 1}, which this editor does not know; the slot reads as empty and its bytes are kept (-1 is a slot that is empty, not to be logged).
-                    continue;
-                }
-
-                slots[i] = new ArmySlot<Creature>(creature, chunk.GetUInt32At(CastleLayout.GarrisonCounts + (i * 4)));
-            }
-
-            return new Army<Creature>(slots);
-        }
+        public Army<Creature> DeserializeGarrison(CastleChunk chunk) => ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance);
 
         /// <summary>
         /// Returns every building the castle has built, including the ones an upgrade has replaced.

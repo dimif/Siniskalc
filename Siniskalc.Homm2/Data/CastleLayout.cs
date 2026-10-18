@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
+
     /// <summary>
     /// Where the fields of a castle are in its record, from the start of the record. There are 72 records, and the number of a castle is its
     /// place in the table; the ones the map does not use are empty. A castle's name is at the end of its record.
@@ -26,6 +28,11 @@ namespace Siniskalc.Homm2.Data
 
         public const int GarrisonTypes = 0x08;
         public const int GarrisonCounts = 0x0D;
+
+        /// <summary>
+        /// The garrison: a byte for the type and 16 bits for the count of each of its five slots.
+        /// </summary>
+        public static readonly ArmyLayout Garrison = new(GarrisonTypes, 1, GarrisonCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
 
         /// <summary>
         /// The hero who is in the castle, or 0xFF.

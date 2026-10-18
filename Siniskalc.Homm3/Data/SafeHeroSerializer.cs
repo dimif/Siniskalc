@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -56,38 +57,7 @@
 
         public HeroChunk SerializeCreatures(HeroChunk chunk, Army<Creature> creatures)
         {
-            return Edit(chunk, buffer =>
-            {
-                for (var i = 0; i < Constants.CreatureSlotCount; i++)
-                {
-                    var codeOffset = this.heroOffsets[HeroOffsetName.Creatures] + (i * 4);
-                    var countOffset = this.heroOffsets[HeroOffsetName.CreaturesAmounts] + (i * 4);
-
-                    var currentCode = buffer[codeOffset];
-                    var currentlyPresent = currentCode != Constants.ByteOff && Creature.FromByte(currentCode) != null;
-
-                    var slot = creatures.Slots[i];
-
-                    if (slot == null)
-                    {
-                        if (currentlyPresent)
-                        {
-                            ByteBufferHelper.WriteUInt32(buffer, codeOffset, Constants.BlankId);
-                            ByteBufferHelper.WriteUInt32(buffer, countOffset, 0);
-                        }
-
-                        continue;
-                    }
-
-                    if (!currentlyPresent || currentCode != slot.Creature.Code)
-                    {
-                        ByteBufferHelper.WriteUInt32(buffer, codeOffset, slot.Creature.Code);
-                    }
-
-                    RangeGuard.ThrowIfOutOfRange<long>(slot.Count, 0, uint.MaxValue, nameof(creatures));
-                    ByteBufferHelper.WriteUInt32(buffer, countOffset, (uint)slot.Count);
-                }
-            });
+            return Edit(chunk, buffer => ArmyWriter.Write(buffer, this.heroOffsets.Army, creatures, CreatureCodes.Instance, nameof(creatures)));
         }
 
         public HeroChunk SerializeMovementPoints(HeroChunk chunk, MovementPoints movementPoints)

@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Data;
 using Siniskalc.Heroes.Models;
 namespace Siniskalc.Homm2.Data
 {
@@ -93,6 +94,11 @@ namespace Siniskalc.Homm2.Data
 
         public const int ArmyTypes = Name + 0x5B;
         public const int ArmyCounts = Name + 0x60;
+
+        /// <summary>
+        /// The army: a byte for the type and 16 bits for the count of each of its five slots.
+        /// </summary>
+        public static readonly ArmyLayout Army = new(ArmyTypes, 1, ArmyCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
 
         /// <summary>
         /// The level of each secondary skill, a byte each, by the number of the skill.

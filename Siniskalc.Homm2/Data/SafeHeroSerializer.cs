@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
@@ -46,7 +47,7 @@
             }
 
             WriteSecondarySkills(bytes, model.SecondarySkills);
-            WriteArmy(bytes, model.Army);
+            ArmyWriter.Write(bytes, HeroLayout.Army, model.Army, CreatureCodes.Instance, nameof(model.Army));
 
             for (var slot = 0; slot < Constants.Hero.ArtifactSlotCount; slot++)
             {
@@ -160,14 +161,6 @@
             levels.CopyTo(bytes, HeroLayout.SkillLevels);
             order.CopyTo(bytes, HeroLayout.SkillOrder);
             bytes[HeroLayout.SkillCount] = (byte)skills.SlotCount;
-        }
-
-        private static void WriteArmy(byte[] bytes, Army<Creature> army)
-        {
-            for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
-            {
-                Bytes.WriteArmySlot(bytes, HeroLayout.ArmyTypes + slot, HeroLayout.ArmyCounts + (slot * 2), army.Slots[slot], nameof(army));
-            }
         }
     }
 }

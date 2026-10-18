@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
@@ -32,7 +33,7 @@
             bytes[CastleLayout.MageGuildLevel] = (byte)castle.MageGuildLevel;
             bytes[CastleLayout.GarrisonedHero] = HeroByte(castle.GarrisonedHeroId, nameof(castle.GarrisonedHeroId));
             bytes[CastleLayout.VisitingHero] = HeroByte(castle.VisitingHeroId, nameof(castle.VisitingHeroId));
-            SerializeGarrison(bytes, castle.Garrison);
+            ArmyWriter.Write(bytes, CastleLayout.Garrison, castle.Garrison, CreatureCodes.Instance, nameof(castle.Garrison));
             SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.CreaturesAvailableFromNameEnd, castle.CreaturesAvailable);
             SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd, castle.UpgradedCreaturesAvailable);
 
@@ -110,35 +111,6 @@
             {
                 bytes[CastleLayout.BuiltThisTurn] = (byte)(builtThisTurn ? 1 : 0);
             }
-        }
-
-        private static void SerializeGarrison(byte[] bytes, Army<Creature> garrison)
-        {
-            for (var i = 0; i < Constants.CreatureSlotCount; i++)
-            {
-                var slot = garrison.Slots[i];
-                var typeOffset = CastleLayout.GarrisonTypes + (i * 4);
-                var countOffset = CastleLayout.GarrisonCounts + (i * 4);
-
-                if (slot != null)
-                {
-                    RangeGuard.ThrowIfOutOfRange<long>(slot.Count, 0, uint.MaxValue, nameof(garrison));
-                    ByteBufferHelper.WriteInt32(bytes, typeOffset, slot.Creature.Code);
-                    ByteBufferHelper.WriteUInt32(bytes, countOffset, (uint)slot.Count);
-                }
-                else if (HoldsKnownCreature(bytes, typeOffset))
-                {
-                    // Emptied. A slot that does not hold a creature this editor knows is empty or holds an unknown one: leave it.
-                    ByteBufferHelper.WriteInt32(bytes, typeOffset, -1);
-                    ByteBufferHelper.WriteUInt32(bytes, countOffset, 0u);
-                }
-            }
-        }
-
-        private static bool HoldsKnownCreature(byte[] bytes, int typeOffset)
-        {
-            var type = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(typeOffset));
-            return type >= 0 && type <= byte.MaxValue && Creature.FromByte((byte)type) != null;
         }
 
         private static void SerializeCreaturesAvailable(byte[] bytes, int offset, IReadOnlyList<int> counts)

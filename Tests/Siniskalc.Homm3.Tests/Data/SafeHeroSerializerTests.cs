@@ -116,6 +116,21 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
+        public void ACreatureTheEditorDoesNotKnowReadsAsTheFirstCreatureAndKeepsItsNumberUntilTheModelChanges()
+        {
+            var bytes = ReadDump("hero_maximus_hota.bin");
+            var slotAt = HotaOffsets[HeroOffsetName.Creatures];
+            bytes[slotAt] = 250;
+            bytes[slotAt + 1] = bytes[slotAt + 2] = bytes[slotAt + 3] = 0;
+            var chunk = new HeroChunk("Maximus", bytes, 0);
+            var creatures = this.deserializer.DeserializeCreatures(chunk);
+
+            Assert.That(creatures.Slots[0]?.Creature, Is.EqualTo(Creature.All[0]));
+            Assert.That(this.serializer.SerializeCreatures(chunk, creatures).GetByteAt(slotAt), Is.EqualTo(250));
+            Assert.That(this.serializer.SerializeCreatures(chunk, creatures.WithoutSlot(0)).GetUInt32At(slotAt), Is.EqualTo(Constants.BlankId));
+        }
+
+        [Test]
         public void RemovingASecondarySkillClearsItsSlotAndLevel()
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);

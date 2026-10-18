@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
@@ -19,8 +20,6 @@ namespace Siniskalc.Homm2.Data
         public HeroModel Deserialize(HeroChunk chunk)
         {
             var bytes = chunk.ToArray();
-            var counts = Enumerable.Range(0, Constants.ArmySlotCount).Select(i => (int)chunk.GetUInt16At(HeroLayout.ArmyCounts + (i * 2))).ToList();
-            var types = chunk.GetBytesAt(HeroLayout.ArmyTypes, Constants.ArmySlotCount);
             var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));
 
             return new HeroModel(
@@ -44,7 +43,7 @@ namespace Siniskalc.Homm2.Data
                 Bytes.SecondarySkills(
                     chunk.GetBytesAt(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount),
                     chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
-                Bytes.Army(types, counts),
+                ArmyReader.Read(chunk, HeroLayout.Army, CreatureCodes.Instance),
                 artifacts,
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
             {

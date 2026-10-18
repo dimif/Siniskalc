@@ -1,5 +1,6 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -100,32 +101,7 @@
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
-        public Army<Creature> DeserializeCreatures(HeroChunk chunk)
-        {
-            var slots = new ArmySlot<Creature>?[Constants.CreatureSlotCount];
-
-            for (var i = 0; i < Constants.CreatureSlotCount; i++)
-            {
-                var creatureCode = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Creatures] + (i * 4));
-                if (creatureCode == Constants.ByteOff)
-                {
-                    continue;
-                }
-
-                var creature = Creature.FromByte(creatureCode);
-                if (creature == null)
-                {
-                    // TODO:LOG warning: the hero "{chunk.Name}" has creature code {creatureCode} in slot {i + 1}, which this editor does not know; the slot reads as empty and its bytes are kept.
-                    continue;
-                }
-
-                var creatureCount = chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.CreaturesAmounts] + (i * 4));
-
-                slots[i] = new ArmySlot<Creature>(creature, creatureCount);
-            }
-
-            return new Army<Creature>(slots);
-        }
+        public Army<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance);
 
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {

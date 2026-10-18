@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using Siniskalc.Homm3.Entities;
 
@@ -51,6 +52,11 @@ namespace Siniskalc.Homm3.Data
         public const int GarrisonTypes = 9;
 
         public const int GarrisonCounts = 37;
+
+        /// <summary>
+        /// The garrison: a 32-bit type and a 32-bit count for each of its seven slots.
+        /// </summary>
+        public static readonly ArmyLayout Garrison = new(GarrisonTypes, 4, GarrisonCounts, 4, Constants.CreatureSlotCount, uint.MaxValue);
 
         /// <summary>The length of the name in bytes, as a 16-bit integer. The name follows at <see cref="Name"/>.</summary>
         public const int NameLength = 69;

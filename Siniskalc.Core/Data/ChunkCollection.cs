@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Core.Data
+namespace Siniskalc.Core.Data
 {
     using System;
     using System.Collections;
@@ -53,6 +53,17 @@
         /// Returns the collection with the chunk at <paramref name="index"/> replaced.
         /// </summary>
         public abstract ChunkCollection<TChunk> WithChunk(int index, TChunk chunk);
+
+        /// <summary>
+        /// Returns the index of the first chunk with the given name (case does not matter), or -1.
+        /// </summary>
+        public int FindByName(string name) => this.IndexOf(c => this.IsNamed(c) && string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>
+        /// Returns whether the chunk has a name that can be looked up. A game whose savefile holds records the map does not use (they have no
+        /// name) says so here.
+        /// </summary>
+        protected virtual bool IsNamed(TChunk chunk) => true;
 
         /// <summary>
         /// Returns the index of the first chunk that <paramref name="predicate"/> accepts, or -1.

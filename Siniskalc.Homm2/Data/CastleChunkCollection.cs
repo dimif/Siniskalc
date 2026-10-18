@@ -22,7 +22,8 @@ namespace Siniskalc.Homm2.Data
 
         public override CastleChunkCollection WithChunk(int index, CastleChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
-        public int FindByName(string name) => this.IndexOf(c => c.Name.Length > 0 && string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+        /// <inheritdoc/>
+        protected override bool IsNamed(CastleChunk chunk) => chunk.Name.Length > 0;
 
         /// <summary>
         /// Returns the numbers of the castles the map uses.

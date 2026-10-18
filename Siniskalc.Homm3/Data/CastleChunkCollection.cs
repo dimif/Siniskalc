@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -21,11 +21,6 @@
         }
 
         public override CastleChunkCollection WithChunk(int index, CastleChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
-
-        /// <summary>
-        /// Returns the index of the first castle with the given name, or -1.
-        /// </summary>
-        public int FindByName(string name) => this.IndexOf(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Returns who owns each castle, in the order of the collection. Reads the owner byte only.

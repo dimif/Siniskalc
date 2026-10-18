@@ -22,8 +22,6 @@ namespace Siniskalc.Homm2.Data
 
         public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
-        public int FindByName(string name) => this.IndexOf(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
-
         /// <summary>
         /// Returns the player each hero serves (<c>null</c> for the ones that serve nobody), by hero number.
         /// </summary>

@@ -1,11 +1,11 @@
-namespace Siniskalc
+﻿namespace Siniskalc
 {
-    using Siniskalc.Heroes.Wpf.ViewModels;
     using System.Diagnostics;
     using System.Reflection;
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
@@ -110,7 +110,7 @@ namespace Siniskalc
 
         public CastleBuildMessageProvider CastleBuildMessages => this.homm3.CastleBuildMessages;
 
-        public ISpellPointsCalculator SpellPoints => this.homm3.SpellPoints;
+        public ISpellPointsCalculatorFactory SpellPoints => this.homm3.SpellPoints;
 
         public H2Runtime.IGameService Homm2GameService => this.homm2.GameService;
 

@@ -1,9 +1,9 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -26,8 +26,11 @@ namespace Siniskalc.Homm2.Data
         /// <inheritdoc/>
         public IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, SaveLayout layout)
         {
+            // The records are in the order the players play, not in the order of the colours, so each one says which colour it is.
+            var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             return Enumerable.Range(0, Constants.Table.PlayerCount)
-                .Select(i => new PlayerChunk(((Color)i).ToString(), bytes.AsSpan(layout.PlayerStart(i), PlayerLayout.RecordSize).ToArray(), layout.PlayerStart(i)))
+                .Select(color => colors.ToList().IndexOf(color))
+                .Select(record => new PlayerChunk(((Color)colors[record]).ToString(), bytes.AsSpan(layout.PlayerStart(record), PlayerLayout.RecordSize).ToArray(), layout.PlayerStart(record)))
                 .ToList()
                 .AsReadOnly();
         }

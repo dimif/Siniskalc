@@ -390,6 +390,31 @@
             </Border>
         </DataTemplate>
 
+        <!-- A player in the order of play: its colour and name; the one whose turn it is lit in bronze, like a ticked tile. -->
+        <ControlTemplate x:Key="OrderOfPlayButtonTemplate" TargetType="Button">
+            <Border x:Name="tile" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="4"
+                    Padding="12,7" SnapsToDevicePixels="True">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="12" Height="12" Margin="0,0,8,0" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
+                    <TextBlock x:Name="name" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Name}"/>
+                </StackPanel>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter TargetName="tile" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                    <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                    <Setter TargetName="name" Property="Foreground" Value="{StaticResource AccentBrush}"/>
+                </DataTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <DataTemplate x:Key="OrderOfPlayItemTemplate" DataType="{x:Type wvm:OrderOfPlayItemViewModel}">
+            <Button Template="{StaticResource OrderOfPlayButtonTemplate}" Margin="0,0,8,0" Cursor="Hand" Command="{Binding Command}" ToolTip="{Binding ToolTip}"
+                    AutomationProperties.Name="{Binding Name}"/>
+        </DataTemplate>
+
         <DataTemplate x:Key="PlayerCardTemplate" DataType="{x:Type wvm:PlayerCardViewModel}">
             <Border Style="{StaticResource CardStyle}" Width="300">
                 <StackPanel>
@@ -450,7 +475,7 @@
                     <!-- The top row: the savefile, then the map it was made on: its name, size and levels, and difficulty. -->
                     <WrapPanel>
                         <TextBlock Text="{Binding FileName}" FontSize="24" FontWeight="SemiBold" Margin="0,0,16,0" ToolTip="The savefile"/>
-                        <TextBlock Margin="0,0,16,3" VerticalAlignment="Bottom" FontSize="16" FontWeight="SemiBold" Text="{Binding MapName}" ToolTip="The map">
+                        <TextBlock Margin="0,0,8,3" VerticalAlignment="Bottom" FontSize="16" FontWeight="SemiBold" Text="{Binding MapName}" ToolTip="The map">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
@@ -461,26 +486,26 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock Margin="0,0,16,3" VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding MapSizeText}"
+                        <TextBlock Margin="0,0,8,3" VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding MapSizeText, StringFormat='· {0}'}"
                                    ToolTip="The size of the map and how many levels it has">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
-                                        <Trigger Property="Text" Value="">
+                                        <DataTrigger Binding="{Binding MapSizeText}" Value="">
                                             <Setter Property="Visibility" Value="Collapsed"/>
-                                        </Trigger>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBlock Margin="0,0,0,3" VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding MapDifficultyText}"
+                        <TextBlock Margin="0,0,0,3" VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding MapDifficultyText, StringFormat='· {0}'}"
                                    ToolTip="The difficulty rating the map was made with, not the difficulty the game was started at">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
-                                        <Trigger Property="Text" Value="">
+                                        <DataTrigger Binding="{Binding MapDifficultyText}" Value="">
                                             <Setter Property="Visibility" Value="Collapsed"/>
-                                        </Trigger>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
@@ -529,6 +554,31 @@
                             </Style>
                         </Border.Style>
                         <TextBlock TextWrapping="Wrap" Text="{Binding MapDescription}"/>
+                    </Border>
+
+                    <!-- Who plays after whom, and whose turn it is. -->
+                    <Border HorizontalAlignment="Stretch">
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                                <Setter Property="Margin" Value="0,12,0,0"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasOrderOfPlay}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Order of play"/>
+                            <ItemsControl ItemsSource="{Binding OrderOfPlay}" ItemTemplate="{StaticResource OrderOfPlayItemTemplate}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </StackPanel>
                     </Border>
 
                     <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Players}" ItemTemplate="{StaticResource PlayerCardTemplate}">

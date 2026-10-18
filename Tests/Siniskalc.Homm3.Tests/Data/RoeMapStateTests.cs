@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -225,7 +225,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc4), Is.EqualTo(Artifact.HeadOfLegion));
             Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(Artifact.ArmsOfLegion));
-            Assert.That(Castle(after, "7_Strong").VisitingHeroId, Is.EqualTo(crag.HeroId));
+            Assert.That(Castle(after, "7_Strong").VisitingHeroId, Is.EqualTo(crag.Id));
 
             var stronghold = Castle(before, "7_Strong");
             var withHero = Castle(after, "7_Strong");

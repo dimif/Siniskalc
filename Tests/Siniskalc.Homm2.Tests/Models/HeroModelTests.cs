@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests.Models
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -69,9 +70,9 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var skills = new SecondarySkills(
             [
-                new SkillEntry(SecondarySkill.Archery, SkillLevel.Basic),
+                new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner),
                 new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert),
-                new SkillEntry(SecondarySkill.Luck, SkillLevel.Advanced),
+                new SkillEntry(SecondarySkill.Luck, SkillLevel.Intermediate),
             ]);
 
             Assert.That(skills.Swap(0, 2).Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Luck, SecondarySkill.Wisdom, SecondarySkill.Archery }));

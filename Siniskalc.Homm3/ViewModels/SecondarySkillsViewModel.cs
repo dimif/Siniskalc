@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -73,9 +74,9 @@ namespace Siniskalc.Homm3.ViewModels
         protected override void SetLevelInSlot(int slot, string levelName)
         {
             var level = SkillLevelNames.ToLevel(levelName);
-            if (level != null)
+            if (level != SkillLevel.None)
             {
-                this.update(skills => skills.GetSkillInSlot(slot) is { } skill ? skills.WithSkill(skill, level.Value) : skills);
+                this.update(skills => skills.GetSkillInSlot(slot) is { } skill ? skills.WithSkill(skill, level) : skills);
             }
         }
 

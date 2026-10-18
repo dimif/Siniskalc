@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -123,7 +123,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var conflux = Castle(game, "Conflux");
 
             Assert.That(conflux.Buildings, Does.Contain(Building.ConfluxAuroraBorealis));
-            Assert.That(conflux.VisitingHeroId, Is.EqualTo(Hero(game, "Tazar").HeroId));
+            Assert.That(conflux.VisitingHeroId, Is.EqualTo(Hero(game, "Tazar").Id));
             Assert.That(Hero(game, "Tazar").Position, Is.EqualTo(new HeroPosition(50, 4, 0, FacingDirection.NorthEast)));
         }
 

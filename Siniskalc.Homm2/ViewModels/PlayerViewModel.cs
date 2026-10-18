@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -59,9 +59,9 @@ namespace Siniskalc.Homm2.ViewModels
         public string Name => this.Color.ToString();
 
         /// <summary>
-        /// Gets "Current turn" when it is the turn of the player, or nothing (the savegames do not say who is human yet).
+        /// Gets who plays the colour ("Human" or "Computer"), followed by "current turn" when it is the turn of the player.
         /// </summary>
-        public string ControlText => TurnText.Beside(string.Empty, this.Game.CurrentPlayer == this.Color);
+        public string ControlText => PlayerTypeText.Describe(this.Game.GetControl(this.Color), this.Game.CurrentPlayer == this.Color);
 
         public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.Color));
 
@@ -127,7 +127,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.heroes = allHeroes
                 .Where(h => h.Owner == this.Color)
                 .OrderBy(h => h.Name)
-                .Select(h => new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.HeroId))))
+                .Select(h => new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.Id))))
                 .ToList();
 
             this.castles = document.Castles().GetModels()

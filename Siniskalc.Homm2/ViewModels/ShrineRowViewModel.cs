@@ -29,7 +29,16 @@ namespace Siniskalc.Homm2.ViewModels
 
         public int Index => this.session.Index;
 
+        public int CircleNumber => this.session.Current.Circle;
+
         public string Circle => this.session.Current.Circle switch { 1 => "First circle", 2 => "Second circle", _ => "Third circle" };
+
+        
+        public string SpellName => this.session.Current.Spell?.Name ?? string.Empty;
+
+        public int X => this.session.Current.Position.X;
+
+        public int Y => this.session.Current.Position.Y;
 
         public string PositionText => MapLevelText.Coordinates(this.session.Current.Position.X, this.session.Current.Position.Y);
 

@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(orrin?.Name, Is.EqualTo("Orrin"));
             Assert.That(heroes.FindById(1000), Is.Null);
             Assert.That(heroes.GetSummaries().Select(s => s.HeroId), Is.Unique);
-            Assert.That(game.History.CreateHeroSession(ufretin!.Index).Current.HeroId, Is.EqualTo(17));
+            Assert.That(game.History.CreateHeroSession(ufretin!.Index).Current.Id, Is.EqualTo(17));
             Assert.That(heroes.GetSummary(orrin!.Index), Is.EqualTo(orrin));
         }
 

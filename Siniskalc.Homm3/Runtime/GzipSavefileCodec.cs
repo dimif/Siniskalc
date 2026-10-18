@@ -2,9 +2,9 @@
 {
     using System;
     using System.IO;
-    using Siniskalc.Core.Runtime;
     using ICSharpCode.SharpZipLib;
     using ICSharpCode.SharpZipLib.GZip;
+    using Siniskalc.Core.Runtime;
 
     /// <summary>
     /// Savefiles that are GZip files.

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(TestServices.Parser.Parse(Named("E02RESRC").Bytes, null).History.Current.Players().GetModel(0).Resources, Is.EqualTo(new ResourceSet(500, 500, 500, 500, 500, 500, 50_000)));
             Assert.That(Maximus("E03ARMY").Army.Slots.Select(s => s!.Creature.Name), Is.EqualTo(new[] { "Black Dragon", "Titan", "Phoenix", "Paladin", "Peasant" }));
             Assert.That(Maximus("E04SKILL").PrimarySkills, Is.EqualTo(new PrimarySkills(15, 15, 15, 15)));
-            Assert.That(Maximus("E05SKL2").SecondarySkills.Count, Is.EqualTo(8));
+            Assert.That(Maximus("E05SKL2").SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(Maximus("E06ARTI").Artifacts.Slots.Count(a => a != null), Is.EqualTo(6));
             Assert.That(Maximus("E06ARTI").HasSpellBook, Is.True);
             Assert.That(Maximus("E07BOOK").HasSpellBook, Is.True);

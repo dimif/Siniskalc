@@ -1,9 +1,9 @@
-namespace Siniskalc.Homm3.Models
+﻿namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Core.Models;
     using Siniskalc.Core;
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.Models
     /// village, town and city hall). Buildings of the savefile that this editor does not know are left out.
     /// </param>
     /// <param name="ShipyardLocation">The tile where the castle's boats appear, or <c>null</c> if the castle is not on the coast. Shown on the same level as the castle.</param>
-    /// <param name="GarrisonedHeroId">The id (see <see cref="HeroModel.HeroId"/>) of the hero inside the castle, or <c>null</c>.</param>
+    /// <param name="GarrisonedHeroId">The id (see <see cref="HeroModel.Id"/>) of the hero inside the castle, or <c>null</c>.</param>
     /// <param name="VisitingHeroId">The id of the hero at the gate of the castle, or <c>null</c>.</param>
     /// <param name="CurrentBuildings">The buildings that stand in the castle now: <paramref name="Buildings"/> without the ones an upgrade replaced.</param>
     /// <param name="SpellCounts">How many spells the Mage Guild holds for each of the five spell levels.</param>

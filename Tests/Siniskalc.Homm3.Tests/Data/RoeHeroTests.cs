@@ -123,7 +123,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var castles = game.History.Current.Castles();
             var dungeon = TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("6_Dung")]);
 
-            Assert.That(Hero(save, "Tazar").HeroId, Is.EqualTo(115));
+            Assert.That(Hero(save, "Tazar").Id, Is.EqualTo(115));
             Assert.That(dungeon.GarrisonedHeroId, Is.EqualTo(garrisoned));
             Assert.That(dungeon.VisitingHeroId, Is.EqualTo(visiting));
         }

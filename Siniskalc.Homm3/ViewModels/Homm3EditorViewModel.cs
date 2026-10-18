@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.Wpf.ViewModels;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Homm3.Runtime;
@@ -20,14 +20,14 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly EffectLineProvider effectLines;
         private readonly BanishingTextProvider banishingText;
         private readonly CastleBuildMessageProvider castleBuildMessages;
-        private readonly ISpellPointsCalculator spellPoints;
+        private readonly ISpellPointsCalculatorFactory spellPoints;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
 
-        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculator spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
+        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.effectLines = effectLines;
@@ -77,7 +77,7 @@ namespace Siniskalc.Homm3.ViewModels
 
             if (!this.heroes.TryGetValue(heroIndex, out var hero))
             {
-                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints, this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle);
+                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints.Create(game.History.Current.GameVersion()), this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle);
                 this.heroes[heroIndex] = hero;
             }
 

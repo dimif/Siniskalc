@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -27,10 +27,12 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
+        private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
+        private bool visionsActive;
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
-        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
             : base(game, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
         {
             this.HeroId = heroId;
@@ -59,6 +61,9 @@ namespace Siniskalc.Homm2.ViewModels
             this.usedOnce =
             [
                 this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),
+            ];
+            this.usedWeekly =
+            [
                 this.Remembered("Stables used this week", HeroEffects.Stables, "The stables give more movement points once a week for each hero; the game clears this at the start of a week"),
             ];
             this.visitedPlaces =
@@ -86,6 +91,15 @@ namespace Siniskalc.Homm2.ViewModels
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
+            // TODO:LOG warning: the active spell is kept in the view model only, as the savegames do not say where the game keeps it
+            this.ActiveSpells = new ActiveSpellsCardViewModel(
+            [
+                new ToggleRowViewModel(
+                    "Visions",
+                    () => this.visionsActive,
+                    active => this.visionsActive = active,
+                    toolTip: "The editor does not know yet where the game keeps this: the box is not read from the savegame and not saved."),
+            ]);
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
                 OwnerNames<Color>.Choices,
@@ -99,7 +113,8 @@ namespace Siniskalc.Homm2.ViewModels
                 new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
                 () => this.session.Current.SpellPoints,
                 value => this.session.Update(h => h with { SpellPoints = value }),
-                new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints));
+                new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints),
+                () => spellPoints.GetMaximum(this.session.Current));
             this.LevelAndClass = new LevelAndClassCardViewModel(
                 () => this.session.Current.Level,
                 value => this.session.Update(h => h with { Level = value, Experience = HeroLevels.ExperienceOf(value) }),
@@ -165,7 +180,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4".
         /// </summary>
-        public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
+        public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 
         /// <summary>
         /// Gets the name of the castle the hero is in, or nothing.
@@ -194,6 +209,11 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public MapPointCardViewModel Destination { get; }
 
+        /// <summary>
+        /// Gets the card of the adventure spells that are active on the hero this turn.
+        /// </summary>
+        public ActiveSpellsCardViewModel ActiveSpells { get; }
+
         public IReadOnlyList<AmountRowViewModel> PrimarySkills => this.primarySkills;
 
         /// <summary>
@@ -213,9 +233,24 @@ namespace Siniskalc.Homm2.ViewModels
         public IReadOnlyList<ToggleRowViewModel> BattleSources => this.battleSources;
 
         /// <summary>
-        /// Gets the places that give something once to a hero (the arena) or once a week (the stables).
+        /// Gets the places that give something once to a hero (the arena).
         /// </summary>
         public IReadOnlyList<ToggleRowViewModel> UsedOnce => this.usedOnce;
+
+        /// <summary>
+        /// Gets the places that give something once a week to a hero (the stables).
+        /// </summary>
+        public IReadOnlyList<ToggleRowViewModel> UsedWeekly => this.usedWeekly;
+
+        /// <summary>
+        /// Gets the card of the places that give something once to a hero, which HoMM3 could show too once its savefiles say which ones a hero visited.
+        /// </summary>
+        public VisitedPlacesCardViewModel PlacesVisited => new("Visited once per hero", this.visitedPlaces, this.usedOnce);
+
+        /// <summary>
+        /// Gets the card of the buildings that give something once a week: the game clears what they remember at the start of a week.
+        /// </summary>
+        public VisitedPlacesCardViewModel PlacesUsedWeekly => new("Used once a week", [], this.usedWeekly);
 
         /// <summary>
         /// Gets the secondary skills of the hero: the slots of the hero screen and the list of every skill.
@@ -257,7 +292,7 @@ namespace Siniskalc.Homm2.ViewModels
                 row.Refresh();
             }
 
-            foreach (var row in this.battleSources.Concat(this.usedOnce))
+            foreach (var row in this.battleSources.Concat(this.usedOnce).Concat(this.usedWeekly))
             {
                 row.Refresh();
             }
@@ -266,6 +301,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.LevelAndClass?.Refresh();
             this.Position?.Refresh();
             this.Destination?.Refresh();
+            this.ActiveSpells?.Refresh();
             this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
@@ -337,7 +373,14 @@ namespace Siniskalc.Homm2.ViewModels
                     visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
                     toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))
                 .ToList();
-            return new(name, () => this.session.Current.Visited.Of(kind), () => this.session.Update(h => h with { Visited = h.Visited.With(kind, 0) }), toolTip, places);
+            var allOnMap = places.Aggregate(0u, (mask, _) => (mask << 1) | 1u) << 1;
+            return new(
+                name,
+                () => System.Numerics.BitOperations.PopCount(this.session.Current.Visited.Of(kind)),
+                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, 0) }),
+                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, h.Visited.Of(kind) | allOnMap) }),
+                toolTip,
+                places);
         }
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(

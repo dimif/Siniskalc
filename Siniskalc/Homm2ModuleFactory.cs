@@ -1,10 +1,12 @@
-namespace Siniskalc
+﻿namespace Siniskalc
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.ViewModels;
     using H2Data = Siniskalc.Homm2.Data;
+    using H2Entities = Siniskalc.Homm2.Entities;
     using H2Models = Siniskalc.Homm2.Models;
     using H2Runtime = Siniskalc.Homm2.Runtime;
 
@@ -44,6 +46,7 @@ namespace Siniskalc
                         new H2Data.MapObjectKit<H2Models.MineModel>(new H2Data.MineDeserializer(), new H2Data.SafeMineSerializer(), new H2Data.MineDiffer()),
                         new H2Data.MapObjectKit<H2Models.ShrineModel>(new H2Data.ShrineDeserializer(), new H2Data.SafeShrineSerializer(), new H2Data.ShrineDiffer()),
                         new H2Data.MapObjectKit<H2Models.SphinxModel>(new H2Data.SphinxDeserializer(), new H2Data.SafeSphinxSerializer(), new H2Data.SphinxDiffer()),
+                        new H2Data.MapObjectKit<H2Models.TurnModel>(new H2Data.TurnDeserializer(), new H2Data.SafeTurnSerializer(), new H2Data.TurnDiffer()),
                         bytesPatcher),
                     new H2Data.MapPlacesReader(),
                     new H2Data.MapObjectsReader()),
@@ -51,6 +54,7 @@ namespace Siniskalc
                 backup);
             this.SaveRegionProvider = new H2Data.SaveRegionProvider(locator);
             this.ByteEditTargets = new H2Data.ByteEditTargetFactory();
+            this.SpellPoints = new H2Models.MaxSpellPointsCalculator();
             this.Module = new H2Runtime.Homm2Module(locator, this.CreateEditor);
         }
 
@@ -65,9 +69,11 @@ namespace Siniskalc
 
         public H2Data.IByteEditTargetFactory ByteEditTargets { get; }
 
+        public IMaxSpellPointsCalculator<H2Entities.SecondarySkill, H2Models.IHomm2SecondarySkills> SpellPoints { get; }
+
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder(), this.banishingText);
+        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new Siniskalc.Homm2.ViewModels.NavigationBuilder(), this.banishingText, this.SpellPoints);
     }
 }

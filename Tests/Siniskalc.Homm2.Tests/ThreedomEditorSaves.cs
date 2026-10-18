@@ -66,7 +66,7 @@ namespace Siniskalc.Homm2.Tests
         private static void ChangeSphinx(Game game)
         {
             var sphinx = new MapViewModel(game).Sphinxes.Single();
-            sphinx.ActiveToggle.IsChecked = true;
+            sphinx.SolvedToggle.IsChecked = false;
             sphinx.Answers[2].Text = "shade";
             sphinx.Reward.Single(r => r.Name == "Gold").Value = 5000;
             sphinx.Reward.Single(r => r.Name == "Gems").Value = 5;
@@ -91,7 +91,7 @@ namespace Siniskalc.Homm2.Tests
             colar.BattleSources.Single(r => r.Name == "Temple").IsChecked = true;
             colar.BattleSources.Single(r => r.Name == "Fountain").IsChecked = true;
             var charity = Hero(game, Charity);
-            foreach (var row in charity.UsedOnce)
+            foreach (var row in charity.UsedOnce.Concat(charity.UsedWeekly))
             {
                 row.IsChecked = false;
             }
@@ -142,7 +142,7 @@ namespace Siniskalc.Homm2.Tests
 
         private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { });
 
-        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { });
+        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
 
         private static string BuildingsOf(Game game, string castle) =>
             string.Join(", ", Castle(game, castle).Buildings.Where(b => b.IsChecked).Select(b => b.Name));

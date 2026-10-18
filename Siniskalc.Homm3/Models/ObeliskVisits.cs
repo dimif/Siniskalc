@@ -1,10 +1,10 @@
-namespace Siniskalc.Homm3.Models
+﻿namespace Siniskalc.Homm3.Models
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>

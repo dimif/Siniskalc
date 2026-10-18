@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -137,7 +137,7 @@ namespace Siniskalc.Homm3.Data
         public SecondarySkills DeserializeSecondarySkills(HeroChunk chunk)
         {
             var skills = this.entities.SecondarySkills;
-            var allSkillsToLevels = new Dictionary<SecondarySkill, SkillLevel?>();
+            var allSkillsToLevels = new Dictionary<SecondarySkill, SkillLevel>();
 
             // We read all the skills, rather than just the ones in the 8 slots, because the game supports more skills
             // being set than just the 8, and their effects will apply. This can be interesting for custom maps or mods.
@@ -146,7 +146,7 @@ namespace Siniskalc.Homm3.Data
                 var skillLevelByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Skills] + skill.Code);
 
                 // TODO:LOG info, when the byte is neither 0 nor a skill level: the hero has skill level byte {skillLevelByte} for {skill.Name}, which reads as no level and is kept.
-                allSkillsToLevels.Add(skill, ByteEnum.TryRead<SkillLevel>(skillLevelByte, out var skillLevel) ? skillLevel : null);
+                allSkillsToLevels.Add(skill, SkillLevel.Of(skillLevelByte));
             }
 
             // The slots table have one byte per skill. The index represents the skill's byte, and the value is the slot in which the skill is in.

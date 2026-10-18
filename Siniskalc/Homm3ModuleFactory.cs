@@ -66,7 +66,7 @@ namespace Siniskalc
             this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.EffectLines = new EffectLineProvider();
             this.CastleBuildMessages = new CastleBuildMessageProvider();
-            this.SpellPoints = new SpellPointsCalculator();
+            this.SpellPoints = new SpellPointsCalculatorFactory();
             this.Module = new Homm3Module(this.CreateEditor);
         }
 
@@ -107,7 +107,7 @@ namespace Siniskalc
 
         public CastleBuildMessageProvider CastleBuildMessages { get; }
 
-        public ISpellPointsCalculator SpellPoints { get; }
+        public ISpellPointsCalculatorFactory SpellPoints { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.

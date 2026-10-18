@@ -145,11 +145,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
             var hero = this.hero.HeroModel;
-            var percent = hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence) switch
+            var percent = hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence)?.Code switch
             {
-                SkillLevel.Beginner => 25,
-                SkillLevel.Intermediate => 50,
-                SkillLevel.Expert => 100,
+                1 => 25,
+                2 => 50,
+                3 => 100,
                 _ => 0,
             };
             var knowledge = (int)hero.PrimarySkills.Knowledge;   // the saved knowledge has the bonus of the artifacts in it
@@ -213,7 +213,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void LevelChoicesOfAMapWithoutAnUndergroundHaveOnlySurface()
         {
-            var general = new GeneralInfoPageViewModel(() => this.hero.HeroModel, edit => this.hero.Session.Update(edit), TestServices.SpellPoints, this.hero.GameVersion, hasUnderground: false);
+            var general = new GeneralInfoPageViewModel(() => this.hero.HeroModel, edit => this.hero.Session.Update(edit), TestServices.SpellPoints(this.hero.GameVersion), this.hero.GameVersion, hasUnderground: false);
 
             Assert.That(general.Position.LevelChoices.Select(c => c.Label), Is.EqualTo(new[] { "Surface (0)" }).Or.EqualTo(new[] { "Surface (0)", "None" }));
             Assert.That(this.hero.GeneralInfoViewModel.Position.LevelChoices.Select(c => c.Label), Does.Contain("Underground (1)"));

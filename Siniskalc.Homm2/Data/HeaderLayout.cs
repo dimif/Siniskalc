@@ -42,6 +42,48 @@ namespace Siniskalc.Homm2.Data
         public const int Difficulty = 0x1C4;
 
         /// <summary>
+        /// Which colours the map has: a byte for each colour (Blue first), 1 for a colour in the game. The bytes that follow (6 and 6) say
+        /// which colours a human may play and which a computer may play; they are what the map allows, not who plays.
+        /// </summary>
+        public const int ColorsInGame = 0x10;
+
+        /// <summary>
+        /// Who plays each colour: a byte for each colour (Blue first). 0x0A is the computer; a human has his number among the humans, from 0
+        /// (the colour of the human in a game of one, the colour itself in a game where every colour is human). Found in saves of one, four
+        /// and six humans (<c>TestData/Homm2/HumanCpu</c>).
+        /// </summary>
+        public const int Controls = 0x1BE;
+
+        /// <summary>
+        /// The byte of <see cref="Controls"/> that says a colour is played by the computer.
+        /// </summary>
+        public const byte ComputerControl = 0x0A;
+
+        /// <summary>
+        /// How many bytes in front of the date the mask of the human players is: a byte for each record of the table of players (not each
+        /// colour), 1 for a human. The game plays the humans from this mask, and the records of the humans come first; the controls at
+        /// <see cref="Controls"/> and the count at <see cref="HumanCount"/> only feed the scenario summary. Probes that changed only those
+        /// were ignored by the game; the ones that changed the mask were followed.
+        /// </summary>
+        public const int HumanMaskBeforeDate = 6;
+
+        /// <summary>
+        /// The number of humans (1, 2, 4 or 6 in the saves; it matches the last digit of the extension of a hot seat save).
+        /// </summary>
+        public const int HumanCount = 0x1DA;
+
+        /// <summary>
+        /// The faction of each colour (Knight 0, Barbarian 1, Sorceress 2, Warlock 3, Wizard 4, Necromancer 5): six bytes, Blue first.
+        /// </summary>
+        public const int Factions = 0x1B8;
+
+        /// <summary>
+        /// The number, among the humans, of the player whose turn it is (in a hot seat game of six humans it is the colour). It is the
+        /// <see cref="Controls"/> byte of that colour.
+        /// </summary>
+        public const int CurrentHuman = 0x2AD;
+
+        /// <summary>
         /// The name of the map: 16 bytes, zero terminated.
         /// </summary>
         public const int MapName = 0x42;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using Siniskalc.Core;
@@ -140,7 +140,7 @@ namespace Siniskalc.Homm2.Data
             ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination + 4, destination.Y < 0 ? uint.MaxValue : (uint)destination.Y);
         }
 
-        private static void WriteSecondarySkills(byte[] bytes, SecondarySkills skills)
+        private static void WriteSecondarySkills(byte[] bytes, IHomm2SecondarySkills skills)
         {
             var levels = bytes.AsSpan(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount).ToArray();
             var order = bytes.AsSpan(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount).ToArray();
@@ -153,13 +153,13 @@ namespace Siniskalc.Homm2.Data
             order.AsSpan().Clear();
             for (var i = 0; i < skills.Entries.Count; i++)
             {
-                levels[skills.Entries[i].Skill.Code] = (byte)skills.Entries[i].Level;
+                levels[skills.Entries[i].Skill.Code] = skills.Entries[i].Level.Code;
                 order[skills.Entries[i].Skill.Code] = (byte)(i + 1);
             }
 
             levels.CopyTo(bytes, HeroLayout.SkillLevels);
             order.CopyTo(bytes, HeroLayout.SkillOrder);
-            bytes[HeroLayout.SkillCount] = (byte)skills.Count;
+            bytes[HeroLayout.SkillCount] = (byte)skills.SlotCount;
         }
 
         private static void WriteArmy(byte[] bytes, Army<Creature> army)

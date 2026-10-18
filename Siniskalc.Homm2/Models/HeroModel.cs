@@ -1,16 +1,17 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// A hero of Heroes of Might and Magic II as the savegame has it. There are 54 heroes, nine for each faction and all in the savegame
     /// whether the map uses them or not; a hero that no player has is in the pool of those a tavern offers.
     /// </summary>
-    /// <param name="HeroId">The number of the hero, which is its place in the table of heroes (0 is Lord Kilburn).</param>
+    /// <param name="Id">The number of the hero, which is its place in the table of heroes (0 is Lord Kilburn).</param>
     /// <param name="Name">The name of the hero.</param>
     /// <param name="Owner">The player the hero serves, or <c>null</c> when it serves nobody.</param>
     /// <param name="Position">The tile the hero stands on (meaningless while it serves nobody).</param>
@@ -24,7 +25,7 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Artifacts">The fourteen artifact slots.</param>
     /// <param name="Spells">The spells of the spell book.</param>
     public sealed record HeroModel(
-        int HeroId,
+        int Id,
         string Name,
         Color? Owner,
         MapPosition Position,
@@ -33,10 +34,10 @@ namespace Siniskalc.Homm2.Models
         MovementPoints MovementPoints,
         HeroLevel HeroLevel,
         PrimarySkills PrimarySkills,
-        SecondarySkills SecondarySkills,
+        IHomm2SecondarySkills SecondarySkills,
         Army<Creature> Army,
         Artifacts Artifacts,
-        SpellSet<Spell> Spells)
+        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, IHomm2SecondarySkills>
     {
         /// <summary>
         /// Gets or sets the level of the hero (a <c>with</c> expression sets it, and leaves the experience as it is).
@@ -97,12 +98,12 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
-        public Faction Faction => (Faction)Math.Min(this.HeroId / Constants.Hero.PerFaction, (int)Faction.Necromancer);
+        public Faction Faction => (Faction)Math.Min(this.Id / Constants.Hero.PerFaction, (int)Faction.Necromancer);
 
         /// <summary>
         /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.
         /// </summary>
-        public HeroSummary<Color> Summary => new(this.HeroId, this.HeroId, this.Name, this.Owner, this.Faction.ToString(), this.Level);
+        public HeroSummary<Color> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.Level);
 
         /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.

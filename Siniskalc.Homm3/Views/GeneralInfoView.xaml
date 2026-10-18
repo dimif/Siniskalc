@@ -126,25 +126,7 @@
                 </StackPanel>
             </Border>
 
-            <Border Style="{StaticResource CardStyle}" Width="330">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Active adventure spell for this turn"/>                    
-                    <WrapPanel>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding DisguiseActive}">
-                            <TextBlock FontWeight="SemiBold" Text="Disguise"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding FlyActive}">
-                            <TextBlock FontWeight="SemiBold" Text="Fly"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding WaterWalkActive}">
-                            <TextBlock FontWeight="SemiBold" Text="Water Walk"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding VisionsActive}">
-                            <TextBlock FontWeight="SemiBold" Text="Visions"/>
-                        </CheckBox>
-                    </WrapPanel>
-                </StackPanel>
-            </Border>
+            <heroes:ActiveSpellsCard DataContext="{Binding ActiveSpells}"/>
 
             <Border Style="{StaticResource CardStyle}" Width="330">
                 <StackPanel>

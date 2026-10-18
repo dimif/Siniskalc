@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Views
+﻿namespace Siniskalc.Homm2.Tests.Views
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -73,7 +73,7 @@ namespace Siniskalc.Homm2.Tests.Views
                 var texts = Descendants<TextBlock>(Find<Page>(window)!).Where(t => t.IsVisible).Select(t => t.Text).ToList();
                 Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick add" }));
 
-                editor.ShowHero(hero.HeroId);
+                editor.ShowHero(hero.Id);
                 foreach (var tab in Enumerable.Range(0, 5))
                 {
                     ((HeroViewModel)editor.CurrentPage!).SelectedTab = tab;

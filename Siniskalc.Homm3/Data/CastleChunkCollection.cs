@@ -33,7 +33,7 @@
         public IReadOnlyList<PlayerColor?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
-        /// Returns the index of the castle that holds the hero with the given id (see <see cref="HeroModel.HeroId"/>) inside it, or -1.
+        /// Returns the index of the castle that holds the hero with the given id (see <see cref="HeroModel.Id"/>) inside it, or -1.
         /// </summary>
         public int FindByGarrisonedHero(int heroId) => this.IndexOf(c => c.GetByteAt(CastleLayout.GarrisonedHero) == heroId);
     }

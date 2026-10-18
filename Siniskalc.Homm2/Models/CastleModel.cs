@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Core.Models;
     using Siniskalc.Core;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
@@ -42,7 +42,6 @@ namespace Siniskalc.Homm2.Models
         Numbers GuildSpells,
         Numbers GuildSpellCounts)
     {
-        // The spells a level of the Mage Guild shows: 3, 3, 2, 2 and 1 (the savegames of Broken Alliance: Xabran with level 2, Dragontooth with level 3, Peacekeeper with level 5).
         private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
 
         /// <summary>

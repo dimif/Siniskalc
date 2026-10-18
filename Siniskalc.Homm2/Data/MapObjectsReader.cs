@@ -29,7 +29,8 @@ namespace Siniskalc.Homm2.Data
             return new MapObjectChunks(
                 tiles < 0 ? [] : ReadMines(bytes, layout, mapStart, tiles),
                 tiles < 0 ? [] : ReadShrines(bytes, layout, tiles, objects),
-                ReadSphinxes(bytes, mapStart, firstTable, sphinxTiles));
+                ReadSphinxes(bytes, mapStart, firstTable, sphinxTiles),
+                [new MapObjectChunk("Current turn", bytes.AsSpan(layout.CurrentHumanStart, 1).ToArray(), layout.CurrentHumanStart, null, 0, PlayerRecordOrder.Pack(PlayerRecordOrder.ColorsOf(bytes, layout)))]);
         }
 
         private static List<MapObjectChunk> ReadMines(byte[] bytes, SaveLayout layout, int mapStart, int tiles)

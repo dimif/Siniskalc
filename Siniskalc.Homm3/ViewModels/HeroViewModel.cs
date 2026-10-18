@@ -1,12 +1,12 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
-        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, ISpellPointsCalculator spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null)
+        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null)
             : base(session.Current.Name, session.History)
         {
             this.session = session;
@@ -120,7 +120,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4, Surface (0)".
         /// </summary>
-        public string SubtitleText => string.Join(" · ", new[] { this.HeroModel.HeroClass.Name, $"level {this.LevelNumber}", this.PositionText }.Where(t => t.Length > 0));
+        public string SubtitleText => string.Join(" · ", new[] { this.HeroModel.HeroClass.Name, $"Level {this.LevelNumber}", this.PositionText }.Where(t => t.Length > 0));
 
         private HeroModel OriginalModel => this.session.History.Original.Heroes().GetModel(this.session.HeroIndex);
 
@@ -288,7 +288,7 @@ namespace Siniskalc.Homm3.ViewModels
             get
             {
                 // Castles hold the id of the hero, which is not its place among the heroes.
-                return this.session.History.Current.Castles().FindByGarrisonedHero(this.HeroModel.HeroId);
+                return this.session.History.Current.Castles().FindByGarrisonedHero(this.HeroModel.Id);
             }
         }
 

@@ -1,10 +1,10 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -89,7 +89,7 @@ namespace Siniskalc.Homm2.ViewModels
                 owner == null ? -1 : (int)owner.Value,
                 owner != null,
                 player == null ? string.Empty : player.IsOut ? "out of the game" : player.DaysLeft is { } days ? $"{days} days left" : string.Empty,
-                heroes.Select(h => new NavEntry(h.HeroId, h.Name, h.Summary.Description)).ToList(),
+                heroes.Select(h => new NavEntry(h.Id, h.Name, h.Summary.Description)).ToList(),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction?.ToString() ?? string.Empty)).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
         }

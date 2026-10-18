@@ -31,6 +31,11 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string ResourceName => MineKinds.ResourceOf(this.session.Current.Kind).ToString();
 
+
+        public int X => this.session.Current.Position.X;
+
+        public int Y => this.session.Current.Position.Y;
+
         public string PositionText => MapLevelText.Coordinates(this.session.Current.Position.X, this.session.Current.Position.Y);
 
         public ChoiceFieldViewModel OwnerField { get; }

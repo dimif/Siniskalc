@@ -16,6 +16,6 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Gets what to show under the name of the hero: its kind and level.
         /// </summary>
-        public string Description => $"{this.Kind}, level {this.Level}";
+        public string Description => $"{this.Kind}, Level {this.Level}";
     }
 }

@@ -38,13 +38,14 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
-        public void WhoseTurnItIsStaysUnknownUntilTheSavegamesTellAndNothingIsShownForIt()
+        public void ThePlayerPageSaysWhoPlaysTheColourAndWhetherItIsHisTurn()
         {
             var game = TestServices.LoadBrokenAlliance(24);
             var player = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
 
-            Assert.That(game.CurrentPlayer, Is.Null);
-            Assert.That(player.ControlText, Is.Empty);
+            Assert.That(game.CurrentPlayer, Is.EqualTo(Color.Blue));
+            Assert.That(player.ControlText, Is.EqualTo("Human · current turn"));
+            Assert.That(new PlayerViewModel(game, Color.Red, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
         }
     }
 }

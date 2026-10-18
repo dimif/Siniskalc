@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -20,6 +20,7 @@ namespace Siniskalc.Homm2.Data
                 [Homm2ChunkKinds.Mines] = mines,
                 [Homm2ChunkKinds.Shrines] = shrines,
                 [Homm2ChunkKinds.Sphinxes] = sphinxes,
+                [Homm2ChunkKinds.Turn] = turn,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -36,6 +37,8 @@ namespace Siniskalc.Homm2.Data
         public static MapObjectChunkCollection<ShrineModel> Shrines(this SaveDocument document) => (MapObjectChunkCollection<ShrineModel>)document.GetCollection(Homm2ChunkKinds.Shrines);
 
         public static MapObjectChunkCollection<SphinxModel> Sphinxes(this SaveDocument document) => (MapObjectChunkCollection<SphinxModel>)document.GetCollection(Homm2ChunkKinds.Sphinxes);
+
+        public static MapObjectChunkCollection<TurnModel> Turn(this SaveDocument document) => (MapObjectChunkCollection<TurnModel>)document.GetCollection(Homm2ChunkKinds.Turn);
 
         public static ObeliskChunkCollection Obelisks(this SaveDocument document) => (ObeliskChunkCollection)document.GetCollection(Homm2ChunkKinds.Obelisks);
     }

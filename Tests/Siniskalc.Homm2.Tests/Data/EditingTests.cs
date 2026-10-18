@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -44,10 +44,10 @@ namespace Siniskalc.Homm2.Tests.Data
                 Experience = 12_345,
                 Level = 5,
                 PrimarySkills = new PrimarySkills(9, 8, 7, 6),
-                SecondarySkills = SecondarySkills.None
-                    .With(SecondarySkill.Wisdom, SkillLevel.Expert)
-                    .With(SecondarySkill.Estates, SkillLevel.Advanced)
-                    .With(SecondarySkill.Pathfinding, SkillLevel.Basic),
+                SecondarySkills = new SecondarySkills(Enumerable.Empty<SkillEntry>())
+                    .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
+                    .WithSkill(SecondarySkill.Estates, SkillLevel.Intermediate)
+                    .WithSkill(SecondarySkill.Pathfinding, SkillLevel.Beginner),
                 Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(Creature.Titan, 3)).WithSlot(4, new ArmySlot<Creature>(Creature.Peasant, 32_767)),
                 Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
                 Spells = new SpellSet<Spell>([Spell.Fireball, Spell.TownPortal]),

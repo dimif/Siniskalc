@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -20,12 +20,14 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private const int MinStackSize = 1;
 
+        private readonly GameVersion gameVersion;
         private readonly Func<Army<Creature>> getArmy;
         private readonly Action<Func<Army<Creature>, Army<Creature>>> update;
 
         public ArmyViewModel(GameVersion gameVersion, Func<Army<Creature>> getArmy, Action<Func<Army<Creature>, Army<Creature>>> update)
             : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList())
         {
+            this.gameVersion = gameVersion;
             this.getArmy = getArmy;
             this.update = update;
 
@@ -67,7 +69,7 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         protected override StackContent? ReadStack(int index) => this.getArmy().Slots[index] is { } slot
-            ? new StackContent(slot.Creature.Name, (int)slot.Count, _ => Facts(slot.Creature))
+            ? new StackContent(slot.Creature.Name, (int)slot.Count, _ => Facts(slot.Creature), this.UpgradesOf(slot.Creature))
             : null;
 
         protected override void PutStack(int index, string? creatureName, int amount)
@@ -86,6 +88,11 @@ namespace Siniskalc.Homm2.ViewModels
         protected override void ClearStack(int index) => this.update(army => army.WithSlot(index, null));
 
         protected override void SwapStacks(int first, int second) => this.update(army => army.Swap(first, second));
+
+        private System.Collections.Generic.IReadOnlyList<string> UpgradesOf(Creature creature) => Creature.All
+            .Where(c => c.BaseCreatureCode == creature.Code && c.IsAvailableIn(this.gameVersion))
+            .Select(c => c.Name)
+            .ToList();
 
         private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
         [

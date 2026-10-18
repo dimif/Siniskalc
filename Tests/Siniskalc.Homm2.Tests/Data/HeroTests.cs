@@ -1,5 +1,6 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -24,7 +25,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var maximus = Hero(1, Maximus);
 
             Assert.That(maximus.Name, Is.EqualTo("Maximus"));
-            Assert.That(maximus.HeroId, Is.EqualTo(Maximus));
+            Assert.That(maximus.Id, Is.EqualTo(Maximus));
             Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(maximus.Owner, Is.EqualTo(Color.Blue));
             Assert.That(maximus.Position, Is.EqualTo(new MapPosition(28, 27)));
@@ -34,8 +35,8 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(maximus.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(maximus.SecondarySkills.Entries, Is.EqualTo(new[]
             {
-                new SkillEntry(SecondarySkill.Leadership, SkillLevel.Basic),
-                new SkillEntry(SecondarySkill.Ballistics, SkillLevel.Basic),
+                new SkillEntry(SecondarySkill.Leadership, SkillLevel.Beginner),
+                new SkillEntry(SecondarySkill.Ballistics, SkillLevel.Beginner),
             }));
             Assert.That(maximus.Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(Creature.Peasant, 37), new ArmySlot<Creature>(Creature.Archer, 4), null, null, null }));
             Assert.That(maximus.Artifacts, Is.EqualTo(Artifacts.None));
@@ -111,8 +112,8 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(after.Level, Is.EqualTo(2));
             Assert.That(after.Experience, Is.EqualTo(1550));
             Assert.That(after.PrimarySkills.Defense, Is.EqualTo(before.PrimarySkills.Defense + 1));
-            Assert.That(after.SecondarySkills.Count, Is.EqualTo(before.SecondarySkills.Count + 1));
-            Assert.That(after.SecondarySkills.Entries[^1], Is.EqualTo(new SkillEntry(SecondarySkill.Pathfinding, SkillLevel.Basic)));
+            Assert.That(after.SecondarySkills.SlotCount, Is.EqualTo(before.SecondarySkills.SlotCount + 1));
+            Assert.That(after.SecondarySkills.Entries[^1], Is.EqualTo(new SkillEntry(SecondarySkill.Pathfinding, SkillLevel.Beginner)));
         }
 
         [Test]
@@ -155,7 +156,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var heroes = TestServices.LoadBrokenAlliance(1).History.Current.Heroes().GetModels();
 
             Assert.That(heroes, Has.Count.EqualTo(54));
-            Assert.That(heroes.Select(h => h.HeroId), Is.EqualTo(Enumerable.Range(0, 54)));
+            Assert.That(heroes.Select(h => h.Id), Is.EqualTo(Enumerable.Range(0, 54)));
             Assert.That(heroes[0].Name, Is.EqualTo("Lord Kilburn"));
             Assert.That(heroes[51].Name, Is.EqualTo("Roxana"));
             Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(Enum.GetValues<Faction>()));

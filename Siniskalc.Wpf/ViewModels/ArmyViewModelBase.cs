@@ -67,7 +67,7 @@ namespace Siniskalc.Wpf.ViewModels
                 for (var i = 0; i < this.CreatureSlots.Count; i++)
                 {
                     var stack = this.ReadStack(i);
-                    this.CreatureSlots[i].InitializeSlot(string.IsNullOrEmpty(stack?.CreatureName) ? null : stack.CreatureName, stack?.Amount ?? 0, i > 0, i < this.CreatureSlots.Count - 1, stack?.FactsOf);
+                    this.CreatureSlots[i].InitializeSlot(string.IsNullOrEmpty(stack?.CreatureName) ? null : stack.CreatureName, stack?.Amount ?? 0, i > 0, i < this.CreatureSlots.Count - 1, stack?.FactsOf, stack?.Upgrades);
                     this.AfterSlotRead(this.CreatureSlots[i], stack);
                 }
             }

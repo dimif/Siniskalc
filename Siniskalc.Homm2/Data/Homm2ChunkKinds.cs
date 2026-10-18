@@ -20,5 +20,7 @@ namespace Siniskalc.Homm2.Data
         public static readonly ChunkKind Shrines = new("Shrines", 5);
 
         public static readonly ChunkKind Sphinxes = new("Sphinxes", 6);
+
+        public static readonly ChunkKind Turn = new("Turn", 7);
     }
 }

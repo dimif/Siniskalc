@@ -15,8 +15,6 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class SphinxViewModel : AbstractViewModelBase
     {
-        private const string NoArtifact = "None";
-
         private static readonly Resource[] ResourceOrder = [Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems];
 
         private readonly MapObjectEditSession<SphinxModel> session;
@@ -24,19 +22,16 @@ namespace Siniskalc.Homm2.ViewModels
         public SphinxViewModel(MapObjectEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
         {
             this.session = session;
-            this.ActiveToggle = new ToggleRowViewModel(
-                "Not answered yet",
-                () => this.session.Current.IsActive,
-                active => this.session.Update(sphinx => sphinx with { IsActive = active }),
-                toolTip: "The game sets this off when the riddle is answered (and gives the reward); ticking it lets any hero answer again. Not tried in the game.");
+            this.SolvedToggle = new ToggleRowViewModel(
+                "Solved",
+                () => !this.session.Current.IsActive,
+                solved => this.session.Update(sphinx => sphinx with { IsActive = !solved }),
+                toolTip: "The game ticks this when a hero answers the riddle (and gives the reward); unticking it lets any hero answer again. Not tried in the game.");
             this.Reward = ResourceOrder.Select(this.CreateRewardRow).ToList();
-            var artifacts = new[] { NoArtifact }.Concat(Artifact.All.Where(a => a.IsAvailableIn(version) && a.Code != SphinxModel.NoArtifact).OrderBy(a => a.Name).Select(a => a.Name)).ToList();
-            this.ArtifactField = new ChoiceFieldViewModel(
+            this.ArtifactPicker = new ArtifactPickerViewModel(
                 "Artifact",
-                artifacts,
-                () => this.session.Current.ArtifactCode == SphinxModel.NoArtifact ? NoArtifact : Artifact.FromByte((byte)this.session.Current.ArtifactCode)?.Name ?? NoArtifact,
-                name => this.session.Update(sphinx => sphinx with { ArtifactCode = name == NoArtifact ? SphinxModel.NoArtifact : Artifact.All.First(a => a.Name == name).Code }),
-                toolTip: "The artifact an answer gives. Every sphinx of the test maps gives none (the code 96). Not tried in the game.");
+                onPick => new ArtifactFinderViewModel(version, string.Empty, "Choose", artifact => onPick(artifact.Name)),
+                name => this.session.Update(sphinx => sphinx with { ArtifactCode = name == null ? SphinxModel.NoArtifact : Artifact.All.First(a => a.Name == name).Code }));
             this.Answers = Enumerable.Range(0, MapObjectLayout.SphinxMaxAnswers).Select(this.CreateAnswerField).ToList();
             this.Riddle = new TextFieldViewModel(
                 "Riddle",
@@ -51,11 +46,14 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Title => this.session.Current.Name;
 
-        public ToggleRowViewModel ActiveToggle { get; }
+        public ToggleRowViewModel SolvedToggle { get; }
 
         public IReadOnlyList<AmountRowViewModel> Reward { get; }
 
-        public ChoiceFieldViewModel ArtifactField { get; }
+        /// <summary>
+        /// Gets the artifact an answer gives, picked like the artifact of a hero; empty when it gives none.
+        /// </summary>
+        public ArtifactPickerViewModel ArtifactPicker { get; }
 
         /// <summary>
         /// Gets the eight places for the answers: the answers in order, then empty places. Emptying a place takes the answer away; at least one stays.
@@ -66,8 +64,8 @@ namespace Siniskalc.Homm2.ViewModels
 
         public void Refresh()
         {
-            this.ActiveToggle.Refresh();
-            this.ArtifactField.Refresh();
+            this.SolvedToggle.Refresh();
+            this.ArtifactPicker.UpdateFromModel(this.session.Current.ArtifactCode == SphinxModel.NoArtifact ? null : Artifact.FromByte((byte)this.session.Current.ArtifactCode)?.Name);
             foreach (var row in this.Reward)
             {
                 row.Refresh();

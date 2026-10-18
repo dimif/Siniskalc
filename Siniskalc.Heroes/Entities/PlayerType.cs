@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Heroes.Entities
 {
     /// <summary>
     /// Who plays a colour in a game.

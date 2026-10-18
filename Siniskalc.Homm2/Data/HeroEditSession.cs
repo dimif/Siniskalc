@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -39,12 +39,12 @@ namespace Siniskalc.Homm2.Data
             var edits = new List<(int Player, PlayerModel Model)>();
             if (hero.Owner is { } previous)
             {
-                edits.Add(((int)previous, players.GetModel((int)previous).WithoutHero(hero.HeroId)));
+                edits.Add(((int)previous, players.GetModel((int)previous).WithoutHero(hero.Id)));
             }
 
             if (owner is { } next)
             {
-                edits.Add(((int)next, players.GetModel((int)next).WithHero(hero.HeroId)));
+                edits.Add(((int)next, players.GetModel((int)next).WithHero(hero.Id)));
             }
 
             var changed = owner == null ? hero with { Owner = null, Destination = MapPosition.None } : hero with { Owner = owner };

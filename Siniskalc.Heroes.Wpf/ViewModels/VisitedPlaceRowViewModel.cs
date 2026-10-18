@@ -1,30 +1,31 @@
-namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Numerics;
+    using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// One kind of place a hero remembers having visited (forts, gazebos...): how many, a command that makes the hero forget all of them so
-    /// that it can visit them again, and, when the row is expanded, a box for each place of the map with where it is, to forget or remember
-    /// them one at a time.
+    /// One kind of place a hero remembers having visited (forts, gazebos...): how many, commands that make the hero forget all of them (so
+    /// that it can visit them again) or remember all of them, and, when the row is expanded, a box for each place of the map with where it is, to forget or remember
+    /// them one at a time. It knows no game: the game says how many places the hero has visited and what each place is.
     /// </summary>
     public sealed class VisitedPlaceRowViewModel : AbstractViewModelBase
     {
-        private readonly Func<uint> get;
+        private readonly Func<int> visited;
         private readonly int onMap;
         private bool isExpanded;
 
-        public VisitedPlaceRowViewModel(string name, Func<uint> get, Action forget, string toolTip, IReadOnlyList<ToggleRowViewModel> places)
+        public VisitedPlaceRowViewModel(string name, Func<int> visited, Action forget, Action remember, string toolTip, IReadOnlyList<ToggleRowViewModel> places)
         {
             this.Name = name;
-            this.get = get;
+            this.visited = visited;
             this.ToolTip = toolTip;
             this.Places = places;
             this.onMap = places.Count;
-            this.ForgetCommand = new DelegateCommand(_ => forget(), _ => this.get() != 0);
+            this.ForgetCommand = new DelegateCommand(_ => forget(), _ => this.visited() != 0);
+            this.RememberCommand = new DelegateCommand(_ => remember(), _ => this.Places.Any(p => !p.IsChecked));
         }
 
         public string Name { get; }
@@ -55,10 +56,18 @@ namespace Siniskalc.Homm2.ViewModels
         /// Gets how many places of the kind the hero has visited, such as "2 of 5".
         /// </summary>
         public string Text => this.onMap > 0
-            ? $"{BitOperations.PopCount(this.get())} of {this.onMap}"
-            : BitOperations.PopCount(this.get()) switch { 0 => "none", var n => n.ToString() };
+            ? $"{this.visited()} of {this.onMap}"
+            : this.visited() switch { 0 => "none", var n => n.ToString() };
 
+        /// <summary>
+        /// Gets the command that makes the hero forget every place of the kind ("None").
+        /// </summary>
         public ICommand ForgetCommand { get; }
+
+        /// <summary>
+        /// Gets the command that makes the hero remember every place of the kind on the map ("All"); it does nothing when the map has none.
+        /// </summary>
+        public ICommand RememberCommand { get; }
 
         public void Refresh()
         {
@@ -69,6 +78,7 @@ namespace Siniskalc.Homm2.ViewModels
             }
 
             (this.ForgetCommand as DelegateCommand)?.RaiseCanExecuteChanged();
+            (this.RememberCommand as DelegateCommand)?.RaiseCanExecuteChanged();
         }
     }
 }

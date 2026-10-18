@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.globalconfig = .globalconfig
+		CLAUDE.md = CLAUDE.md
 		docs\ERROR_MODEL.md = docs\ERROR_MODEL.md
 		docs\FUTURE_IMPROVEMENTS.md = docs\FUTURE_IMPROVEMENTS.md
 		docs\HOMM2_PLAN.md = docs\HOMM2_PLAN.md
@@ -16,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docs\KNOWLEDGE_BASE.md = docs\KNOWLEDGE_BASE.md
 		docs\LOCATING_HOMM3_ENTITIES.md = docs\LOCATING_HOMM3_ENTITIES.md
 		README.md = README.md
+		docs\SHARING_REVIEW.md = docs\SHARING_REVIEW.md
 		docs\SINISKALC_ARCHITECTURE.md = docs\SINISKALC_ARCHITECTURE.md
 		docs\USER_GUIDE.md = docs\USER_GUIDE.md
 	EndProjectSection

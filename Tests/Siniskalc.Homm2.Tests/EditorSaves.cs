@@ -277,7 +277,7 @@ namespace Siniskalc.Homm2.Tests
 
         private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { });
 
-        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { });
+        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
 
         private static PlayerViewModel Player(Game game, Color color) => new(game, color, _ => { }, _ => { });
 

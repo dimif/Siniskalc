@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Entities;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Homm3.Entities;

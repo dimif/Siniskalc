@@ -1,7 +1,6 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.ViewModels
 {
-    using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// The words the UI uses for who plays a colour (<see cref="PlayerType"/>).

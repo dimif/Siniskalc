@@ -57,19 +57,20 @@
             <wpf:NavButton Text="Skills"/>
             <wpf:NavButton Text="Creatures"/>
             <wpf:NavButton Text="Spells"/>
+            <wpf:NavButton Text="Places"/>
             <wpf:NavButton Text="Artifacts"/>
             <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel5}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel6}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedTab}" Value="5">
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="6">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -88,6 +89,7 @@
                     </Border>
                     <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
                     <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
+                    <heroes:ActiveSpellsCard DataContext="{Binding ActiveSpells}"/>
                     <heroes:MapPointCard DataContext="{Binding Position}"/>
                     <Border Style="{StaticResource CardStyle}" Width="330">
                         <StackPanel>
@@ -97,29 +99,6 @@
                             <ItemsControl ItemsSource="{Binding BattleSources}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
                                        Text="What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game."/>
-                        </StackPanel>
-                    </Border>
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Places visited"/>
-                            <ItemsControl ItemsSource="{Binding VisitedPlaces}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Expander Margin="0,2" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" ToolTip="{Binding ToolTip}">
-                                            <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Width="116" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Name}"/>
-                                                    <TextBlock Width="50" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Text}"/>
-                                                    <Button Style="{StaticResource PillButtonStyle}" Content="Forget all" Command="{Binding ForgetCommand}"
-                                                            ToolTip="The hero can visit them all again. Not tried in the game."/>
-                                                </StackPanel>
-                                            </Expander.Header>
-                                            <ItemsControl Margin="20,2,0,4" ItemsSource="{Binding Places}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
-                                        </Expander>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding UsedOnce}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                         </StackPanel>
                     </Border>
                     <!-- Last, so that it is not stretched to the height of the tall card beside it. -->
@@ -141,8 +120,14 @@
                     <wpf:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
                 </StackPanel>
 
+                <!-- Places -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel4}">
+                    <heroes:VisitedPlacesCard DataContext="{Binding PlacesVisited}"/>
+                    <heroes:VisitedPlacesCard DataContext="{Binding PlacesUsedWeekly}"/>
+                </WrapPanel>
+
                 <!-- Artifacts -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel4}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel5}">
                     <local:ArtifactsView DataContext="{Binding ArtifactsEditor}"/>
                 </StackPanel>
             </Grid>

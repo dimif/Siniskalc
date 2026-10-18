@@ -1,8 +1,5 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -10,10 +7,13 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Windows.Input;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -28,13 +28,13 @@ namespace Siniskalc.Homm3.ViewModels
 
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
-        private readonly ISpellPointsCalculator spellPoints;
+        private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
         private readonly GameVersion gameVersion;
         private readonly bool hasUnderground;
         private readonly Func<bool> canSleep;
         private bool isRefreshing;
 
-        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, ISpellPointsCalculator spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null)
+        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null)
             : base("General Info")
         {
             this.getHero = getHero;
@@ -52,7 +52,7 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.Hero.SpellPoints,
                 value => this.Update(h => h with { SpellPoints = (ushort)value }),
                 new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, Constants.Hero.SpellPointsStep),
-                () => this.spellPoints.GetMaximum(this.gameVersion, this.Hero),
+                () => this.spellPoints.GetMaximum(this.Hero),
                 () => this.ArtifactEffects.LandMovement == 0 ? string.Empty : $"{this.ArtifactEffects.LandMovement:+0;-0} from artifacts");
             this.LevelAndClass = new LevelAndClassCardViewModel(
                 () => this.Hero.HeroLevel.Level,
@@ -69,6 +69,13 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.Hero.Gender?.ToString() ?? string.Empty,
                 this.SetGender);
             var coordinates = new NumberRange(Constants.Map.MinCoordinate, Constants.Map.MaxCoordinate);
+            this.ActiveSpells = new ActiveSpellsCardViewModel(
+            [
+                this.ActiveSpell("Disguise", ActiveAdventureSpells.Disguise),
+                this.ActiveSpell("Fly", ActiveAdventureSpells.Fly),
+                this.ActiveSpell("Water Walk", ActiveAdventureSpells.WaterWalk),
+                this.ActiveSpell("Visions", ActiveAdventureSpells.Visions),
+            ]);
             this.Position = MapPointCardViewModel.ForPosition(
                 () => this.Hero.Position,
                 position => this.Update(h => h with { Position = (HeroPosition)position }),
@@ -109,6 +116,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the card of the destination of the hero: the tile it is going to.
         /// </summary>
         public MapPointCardViewModel Destination { get; }
+
+        /// <summary>
+        /// Gets the card of the adventure spells that are active on the hero this turn.
+        /// </summary>
+        public ActiveSpellsCardViewModel ActiveSpells { get; }
 
         /// <summary>
         /// Gets the command that gives the hero every war machine it can have.
@@ -194,30 +206,6 @@ namespace Siniskalc.Homm3.ViewModels
             set => this.Update(h => h with { IsAsleep = value });
         }
 
-        public bool DisguiseActive
-        {
-            get => this.Hero.ActiveSpells.HasFlag(ActiveAdventureSpells.Disguise);
-            set => this.SetActive(ActiveAdventureSpells.Disguise, value);
-        }
-
-        public bool FlyActive
-        {
-            get => this.Hero.ActiveSpells.HasFlag(ActiveAdventureSpells.Fly);
-            set => this.SetActive(ActiveAdventureSpells.Fly, value);
-        }
-
-        public bool WaterWalkActive
-        {
-            get => this.Hero.ActiveSpells.HasFlag(ActiveAdventureSpells.WaterWalk);
-            set => this.SetActive(ActiveAdventureSpells.WaterWalk, value);
-        }
-
-        public bool VisionsActive
-        {
-            get => this.Hero.ActiveSpells.HasFlag(ActiveAdventureSpells.Visions);
-            set => this.SetActive(ActiveAdventureSpells.Visions, value);
-        }
-
         public bool StablesVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.Stables);
 
         public bool SwanPondVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.SwanPond);
@@ -277,6 +265,7 @@ namespace Siniskalc.Homm3.ViewModels
                 this.LevelAndClass.Refresh();
                 this.Position.Refresh();
                 this.Destination.Refresh();
+                this.ActiveSpells.Refresh();
 
                 this.RaiseAllPropertiesChanged();
             }
@@ -333,16 +322,11 @@ namespace Siniskalc.Homm3.ViewModels
 
         private static string FormatSigned(int value) => value.ToString("+0;-0;+0", System.Globalization.CultureInfo.InvariantCulture);
 
-        private int LeadershipBonus => (int)(this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Leadership) ?? 0);
+        private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Leadership).Code;
 
-        private int LuckSkillBonus => (int)(this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Luck) ?? 0);
+        private int LuckSkillBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Luck).Code;
 
         private int Clamp(int value) => Math.Clamp(value, -Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck);
-
-        private void SetActive(ActiveAdventureSpells spell, bool active)
-        {
-            this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell });
-        }
 
         private void SelectAllWarMachines()
         {
@@ -405,6 +389,11 @@ namespace Siniskalc.Homm3.ViewModels
 
             return choices;
         }
+
+        private ToggleRowViewModel ActiveSpell(string name, ActiveAdventureSpells spell) => new(
+            name,
+            () => this.Hero.ActiveSpells.HasFlag(spell),
+            active => this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell }));
 
         private void SetPrimarySkills(byte current, byte value, Func<PrimarySkills, PrimarySkills> edit)
         {

@@ -1,9 +1,9 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;

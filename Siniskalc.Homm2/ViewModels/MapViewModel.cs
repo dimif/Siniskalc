@@ -1,11 +1,13 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The objects of the map that have a state the savegame keeps: its mines (and who owns them), its shrines (and the spell each teaches)
@@ -21,15 +23,43 @@ namespace Siniskalc.Homm2.ViewModels
             this.game = game;
             var document = game.History.Current;
             var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
-            this.Mines = Enumerable.Range(0, document.Mines().Count).Select(i => new MineRowViewModel(game.History.CreateMineSession(i))).ToList();
-            this.Shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
+            var mines = Enumerable.Range(0, document.Mines().Count).Select(i => new MineRowViewModel(game.History.CreateMineSession(i))).ToList();
+            this.MineList = new SortableListViewModel<MineRowViewModel>(
+                mines,
+                new Dictionary<string, Func<MineRowViewModel, IComparable>>
+                {
+                    ["Resource"] = m => m.ResourceName,
+                    ["Owner"] = m => m.OwnerField.Selected,
+                    ["X"] = m => (m.X, m.Y),
+                    ["Y"] = m => (m.Y, m.X),
+                });
+            var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
+            this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
+                shrines,
+                new Dictionary<string, Func<ShrineRowViewModel, IComparable>>
+                {
+                    ["Name"] = s => s.CircleNumber,
+                    ["X"] = s => (s.X, s.Y),
+                    ["Y"] = s => (s.Y, s.X),
+                    ["Spell"] = s => s.SpellName,
+                });
             this.Sphinxes = Enumerable.Range(0, document.Sphinxes().Count).Select(i => new SphinxViewModel(game.History.CreateSphinxSession(i), game.GameVersion)).ToList();
             this.Refresh();
         }
 
-        public IReadOnlyList<MineRowViewModel> Mines { get; }
+        public IReadOnlyList<MineRowViewModel> Mines => this.MineList.Items;
 
-        public IReadOnlyList<ShrineRowViewModel> Shrines { get; }
+        public IReadOnlyList<ShrineRowViewModel> Shrines => this.ShrineList.Items;
+
+        /// <summary>
+        /// Gets the mines with the headings that sort them by resource, owner or either coordinate.
+        /// </summary>
+        public SortableListViewModel<MineRowViewModel> MineList { get; }
+
+        /// <summary>
+        /// Gets the shrines with the headings that sort them by name, either coordinate or spell.
+        /// </summary>
+        public SortableListViewModel<ShrineRowViewModel> ShrineList { get; }
 
         public IReadOnlyList<SphinxViewModel> Sphinxes { get; }
 

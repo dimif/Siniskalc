@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Models
+﻿namespace Siniskalc.Homm3.Models
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Models
     /// What the equipped artifacts add (spells the hero can cast, primary skill bonuses, the effects as a whole) is worked out
     /// here, every time the artifacts, the spell book or the primary skills are set, so it can never be stale.
     /// </summary>
-    public sealed record HeroModel
+    public sealed record HeroModel : IHeroModel<SecondarySkill, SecondarySkills>
     {
         private readonly IGrantedSpellsResolver grantedSpellsResolver;
         private PrimarySkills primarySkills;
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Models
             VisitedBuildingEffects visitEffects)
         {
             this.Name = name;
-            this.HeroId = heroId;
+            this.Id = heroId;
             this.Biography = biography;
             this.Gender = gender;
             this.MovedToday = movedToday;
@@ -80,7 +80,7 @@ namespace Siniskalc.Homm3.Models
         /// Gets the id of the hero: its place in the table of heroes of the savefile (0 Orrin, 1 Valeska, ...). A castle holds the
         /// ids of the heroes in it. It is read-only: it is never written back.
         /// </summary>
-        public int HeroId { get; init; }
+        public int Id { get; init; }
 
         public PlayerColor? Owner { get; init; }
 

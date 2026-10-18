@@ -51,7 +51,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             general.MovementAndSpellPoints.ResetSpellPointsCommand.Execute(null);
 
-            Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(TestServices.SpellPoints.GetMaximum(this.hero.GameVersion, this.hero.HeroModel)));
+            Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(TestServices.SpellPoints(this.hero.GameVersion).GetMaximum(this.hero.HeroModel)));
         }
 
         [Test]
@@ -59,15 +59,18 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
+            var fly = general.ActiveSpells.Spells.Single(t => t.Name == "Fly");
+            var visions = general.ActiveSpells.Spells.Single(t => t.Name == "Visions");
+
             general.MovedToday = true;
-            general.FlyActive = true;
-            general.VisionsActive = true;
-            general.FlyActive = false;
+            fly.IsChecked = true;
+            visions.IsChecked = true;
+            fly.IsChecked = false;
 
             Assert.That(this.hero.HeroModel.MovedToday, Is.True);
             Assert.That(this.hero.HeroModel.ActiveSpells, Is.EqualTo(ActiveAdventureSpells.Visions));
-            Assert.That(general.VisionsActive, Is.True);
-            Assert.That(general.FlyActive, Is.False);
+            Assert.That(visions.IsChecked, Is.True);
+            Assert.That(fly.IsChecked, Is.False);
         }
 
         [Test]

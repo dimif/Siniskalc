@@ -40,13 +40,5 @@ namespace Siniskalc.Homm2.Tests.Entities
         {
             Assert.That(SecondarySkill.All.Cast<ISecondarySkill>().Select(s => s.Code), Is.EqualTo(SecondarySkill.All.Select(s => s.Code)));
         }
-
-        [Test]
-        public void TheLevelsOfASkillAreRankedFromOneToThreeAndNoLevelIsNull()
-        {
-            Assert.That(new[] { SkillLevel.Basic, SkillLevel.Advanced, SkillLevel.Expert }.Select(l => SkillLevels.Of(l)!.Rank), Is.EqualTo(new[] { 1, 2, 3 }));
-            Assert.That(SkillLevels.All.Select(l => l.Name), Is.EqualTo(new[] { "Basic", "Advanced", "Expert" }));
-            Assert.That(SkillLevels.Of(SkillLevel.None), Is.Null);
-        }
     }
 }

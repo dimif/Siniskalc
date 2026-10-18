@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Core;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -126,18 +126,12 @@ namespace Siniskalc.Homm3.Data
                 {
                     var desiredLevel = secondarySkills.GetSkillLevel(skill);
                     var levelOffset = levelsOffset + skill.Code;
-                    var currentlyHasLevel = ByteEnum.TryRead<SkillLevel>(buffer[levelOffset], out var currentLevel);
+                    var currentLevel = SkillLevel.Of(buffer[levelOffset]);
 
-                    if (desiredLevel.HasValue)
+                    // A byte that is no level reads as none, so it is left alone while the hero has no level for the skill.
+                    if (currentLevel != desiredLevel)
                     {
-                        if (!currentlyHasLevel || currentLevel != desiredLevel.Value)
-                        {
-                            buffer[levelOffset] = ByteEnum.Write(desiredLevel.Value);
-                        }
-                    }
-                    else if (currentlyHasLevel)
-                    {
-                        buffer[levelOffset] = 0;
+                        buffer[levelOffset] = desiredLevel.Code;
                     }
 
                     var slotOffset = slotsOffset + skill.Code;

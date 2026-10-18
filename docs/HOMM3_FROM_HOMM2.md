@@ -90,3 +90,34 @@ For each place: hero A visits, save; hero A visits again, save; hero B visits, s
 4. Set C 16 (the mines, wanted since `FUTURE_IMPROVEMENTS.md` item 4).
 
 When a probe settles an offset, it goes into `HeroOffsets` with a test that names the save, as the others do.
+
+## 5. Checklist: saves for the places a HoMM3 hero visited
+
+Goal: find where a hero remembers the permanent-bonus places it visited (hero chunk, object record, or both), so that the hero page can list each place by its coordinates, as HoMM2 does (`VisitedPlacesCard`). This is Set B above, made exact.
+
+**Series:** `TestData/Sod/VisitedPlaces/` (Shadow of Death; repeat the Arena part in Horn of the Abyss if the bytes differ), files `visited_places_<NN>_<what changed>.GM1`, following the rules of `TestData/README.md` (two digits, the one thing that changed, `00_baseline` first). Add a `README.md` row for each. One map, one human player, **two heroes** (`tazar` and `orrin` are only examples: name the heroes in the file names) and **two copies of the same place** next to each other, so a bit per place in map order can show.
+
+| Save | What to do before saving |
+|---|---|
+| `visited_places_00_baseline` | The map as it is, both heroes in the same town, nothing visited. Save at the start of a day |
+| `visited_places_01_tazar_arena_first` | Tazar visits the first Arena (take attack) |
+| `visited_places_02_tazar_arena_again` | Tazar visits the same Arena again (the game refuses) |
+| `visited_places_03_orrin_arena_first` | Orrin visits the same Arena |
+| `visited_places_04_tazar_arena_second` | Tazar visits the **second** Arena of the map |
+| `visited_places_05_new_week` | End the week with nobody moving |
+| `visited_places_06_tazar_marletto_tower` | Tazar visits Marletto Tower (a place that gives defense) |
+| `visited_places_07_tazar_star_axis` | Tazar visits the Star Axis |
+| `visited_places_08_orrin_star_axis` | Orrin visits the same Star Axis |
+| `visited_places_09_tazar_learning_stone` | Tazar visits the Learning Stone |
+| `visited_places_10_tazar_mercenary_camp` | Tazar visits the Mercenary Camp |
+| `visited_places_11_tazar_witch_hut` | Tazar visits the Witch Hut (note the skill it gave) |
+| `visited_places_12_tazar_library_of_enlightenment` | Tazar visits the Library (note his skill levels) |
+
+Rules for the saves:
+- One step between two saves, and nothing else (no moves, no battles, no spending), so a diff of two files shows only that step.
+- Order matters: 01 to 05 decide the Arena first (hero chunk or object), the rest repeat it for one place of each kind.
+- Send the file names with the **names of the heroes and the coordinates of the places**; the editor lists each place by those.
+- The saves of HoMM2 that settled the same question are `TestData/Homm2/Threedom` (`docs/HOMM2_SAVE_FORMAT.md`): a set of bits in the hero's record, one bit per place in the order of the map.
+
+When a probe settles an offset, it goes into `HeroOffsets` with a test that names the save, and HoMM3 builds `VisitedPlaceRowViewModel`s from the objects of the map (`docs/FUTURE_IMPROVEMENTS.md`, item 9).
+

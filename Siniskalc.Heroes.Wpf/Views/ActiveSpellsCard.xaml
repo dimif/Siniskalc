@@ -1,0 +1,24 @@
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.ActiveSpellsCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- The data context is an ActiveSpellsCardViewModel. -->
+    <Border Style="{StaticResource CardStyle}" Width="330">
+        <StackPanel>
+            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Active adventure spell for this turn"/>
+            <ItemsControl ItemsSource="{Binding Spells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding IsChecked}" ToolTip="{Binding ToolTip}">
+                            <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
+                        </CheckBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>

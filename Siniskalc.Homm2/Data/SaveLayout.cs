@@ -41,6 +41,27 @@ namespace Siniskalc.Homm2.Data
         public int DifficultyStart => HeaderLayout.Difficulty + this.MarkerLength;
 
         /// <summary>
+        /// Gets where the byte is that says whether the first colour is in the game.
+        /// </summary>
+        public int ColorsInGameStart => HeaderLayout.ColorsInGame + this.MarkerLength;
+
+        /// <summary>
+        /// Gets where the byte is that says who plays the first colour.
+        /// </summary>
+        public int ControlsStart => HeaderLayout.Controls + this.MarkerLength;
+
+        /// <summary>
+        /// Gets where the mask of the human players is: a byte for each record of the table of players.
+        /// </summary>
+        public int HumanMaskStart => this.DateStart - HeaderLayout.HumanMaskBeforeDate;
+
+        /// <summary>
+        /// Gets where the number of the human whose turn it is is: a fixed distance in front of the date (the Price of Loyalty has the bytes between the
+        /// marker and the date 5 bytes further on, not 4).
+        /// </summary>
+        public int CurrentHumanStart => this.DateStart - (HeaderLayout.Date - HeaderLayout.CurrentHuman);
+
+        /// <summary>
         /// Gets where the name of the map begins: a 16-bit length, then the text.
         /// </summary>
         public int MapNameStart => HeaderLayout.MapName + this.MarkerLength;

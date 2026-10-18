@@ -36,14 +36,18 @@
                                     </DockPanel>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="190"/>
+                                            <ColumnDefinition Width="260"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <StackPanel Grid.Column="0">
-                                            <ComboBox Width="Auto" HorizontalAlignment="Stretch"
-                                                      ItemsSource="{Binding DataContext.AvailableCreatures, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                      SelectedItem="{Binding SelectedCreature}"/>
+                                            <DockPanel>
+                                                <Button DockPanel.Dock="Right" Margin="6,0,0,0" Padding="8,0" MinWidth="72" Content="{Binding UpgradeText}"
+                                                        IsEnabled="{Binding HasUpgrade}" ToolTip="{Binding UpgradeToolTip}" Click="UpgradeClicked"/>
+                                                <ComboBox Width="Auto" HorizontalAlignment="Stretch"
+                                                          ItemsSource="{Binding DataContext.AvailableCreatures, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                          SelectedItem="{Binding SelectedCreature}"/>
+                                            </DockPanel>
                                             <DockPanel Margin="0,6,0,0">
                                                 <TextBlock Text="Amount" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}"/>
                                                 <TextBox Width="Auto" Margin="8,0,0,0" HorizontalContentAlignment="Right"

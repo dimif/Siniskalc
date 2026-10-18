@@ -7,18 +7,18 @@
       xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
       Title="Map">
     <Page.Resources>
-        <!-- A mine: what it is, what it gives, where it is, and its owner. -->
+        <!-- A mine: what it gives, where it is, and its owner. -->
         <DataTemplate x:Key="MineTemplate" DataType="{x:Type vm:MineRowViewModel}">
-            <Grid Margin="0,2">
+            <Grid Margin="0,2" ToolTip="{Binding Kind}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="150"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="110"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding Kind}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding ResourceName}"/>
-                <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding PositionText}" ToolTip="Where the mine is on the map"/>
+                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding ResourceName}"/>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the mine on the map"/>
+                <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the mine on the map"/>
                 <ComboBox Grid.Column="3" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}" ToolTip="{Binding OwnerField.ToolTip}"/>
             </Grid>
         </DataTemplate>
@@ -28,16 +28,18 @@
             <StackPanel Margin="0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding Circle}"/>
-                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding PositionText}" ToolTip="Where the shrine is on the map"/>
-                    <ComboBox Grid.Column="2" HorizontalAlignment="Left" Width="200" ItemsSource="{Binding SpellField.Choices}" SelectedItem="{Binding SpellField.Selected}"
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the shrine on the map"/>
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the shrine on the map"/>
+                    <ComboBox Grid.Column="3" HorizontalAlignment="Left" Width="200" ItemsSource="{Binding SpellField.Choices}" SelectedItem="{Binding SpellField.Selected}"
                               IsEnabled="{Binding SpellField.IsEnabled}" ToolTip="{Binding SpellField.ToolTip}"/>
                 </Grid>
-                <TextBlock Margin="260,0,0,0" TextWrapping="Wrap" Text="{Binding Note}">
+                <TextBlock Margin="210,0,0,0" TextWrapping="Wrap" Text="{Binding Note}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -51,6 +53,24 @@
                 </TextBlock>
             </StackPanel>
         </DataTemplate>
+
+        <!-- The heading of a sortable column: a flat button with the name and the arrow. -->
+        <Style x:Key="SortHeadingStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0,2"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <!-- A text the user types: an answer or a riddle. -->
         <DataTemplate x:Key="TextFieldTemplate" DataType="{x:Type wpfvm:TextFieldViewModel}">
@@ -83,13 +103,13 @@
         <!-- A sphinx: whether it can be answered, the reward, the answers and the riddle. -->
         <DataTemplate x:Key="SphinxTemplate" DataType="{x:Type vm:SphinxViewModel}">
             <WrapPanel>
-                <Border Style="{StaticResource CardStyle}" Width="330">
+                <Border Style="{StaticResource CardStyle}" Width="380">
                     <StackPanel>
                         <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Title}"/>
-                        <ContentControl Content="{Binding ActiveToggle}" ContentTemplate="{StaticResource ToggleRowTemplate}"/>
+                        <ContentControl Content="{Binding SolvedToggle}" ContentTemplate="{StaticResource ToggleRowTemplate}"/>
                         <TextBlock Margin="0,8,0,2" Foreground="{StaticResource MutedBrush}" Text="An answer gives"/>
                         <ItemsControl ItemsSource="{Binding Reward}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
-                        <ContentControl Content="{Binding ArtifactField}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
+                        <ContentControl Content="{Binding ArtifactPicker}" ContentTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
                     </StackPanel>
                 </Border>
                 <Border Style="{StaticResource CardStyle}" Width="500">
@@ -130,8 +150,20 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Mines"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                                       Text="Who owns each mine of the map. The flag on the map follows the owner (an alchemist's lab has no flag in the savegame); the game works the income out at the start of the next day. Not tried in the game."/>
-                            <ItemsControl ItemsSource="{Binding Mines}" ItemTemplate="{StaticResource MineTemplate}"/>
+                                       Text="Who owns each mine on the map."/>
+                            <Grid Margin="0,0,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Resource].Label}" Command="{Binding MineList.Columns[Resource].SortCommand}" ToolTip="Sort by resource"/>
+                                <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[X].Label}" Command="{Binding MineList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
+                                <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Y].Label}" Command="{Binding MineList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
+                                <Button Grid.Column="3" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Owner].Label}" Command="{Binding MineList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding MineList.Items}" ItemTemplate="{StaticResource MineTemplate}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -142,8 +174,20 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Shrines"/>
                             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                                       Text="The spell each shrine teaches to a hero that visits it. A shrine is not used up. Not tried in the game."/>
-                            <ItemsControl ItemsSource="{Binding Shrines}" ItemTemplate="{StaticResource ShrineTemplate}"/>
+                                       Text="Spells taught in the shrines. Not yet tested."/>
+                            <Grid Margin="0,0,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding ShrineList.Columns[Name].Label}" Command="{Binding ShrineList.Columns[Name].SortCommand}" ToolTip="Sort by circle"/>
+                                <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding ShrineList.Columns[X].Label}" Command="{Binding ShrineList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
+                                <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding ShrineList.Columns[Y].Label}" Command="{Binding ShrineList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
+                                <Button Grid.Column="3" Style="{StaticResource SortHeadingStyle}" Content="{Binding ShrineList.Columns[Spell].Label}" Command="{Binding ShrineList.Columns[Spell].SortCommand}" ToolTip="Sort by spell"/>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding ShrineList.Items}" ItemTemplate="{StaticResource ShrineTemplate}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>

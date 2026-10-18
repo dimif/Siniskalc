@@ -79,6 +79,11 @@ namespace Siniskalc.Homm2
             public const long MinSpellPoints = 0;
             public const long MaxSpellPoints = 65_535;
 
+            /// <summary>
+            /// The spell points a hero can have for each point of knowledge.
+            /// </summary>
+            public const int SpellPointsPerKnowledge = 10;
+
             public const long MinMovementPoints = 0;
             public const long MaxMovementPoints = 99_999;
             public const long MovementStep = 100;

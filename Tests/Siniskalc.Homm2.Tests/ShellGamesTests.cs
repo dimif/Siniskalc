@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
     using System.Diagnostics;
     using System.Windows;
@@ -165,7 +165,7 @@ namespace Siniskalc.Homm2.Tests
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;
-                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue).HeroId;
+                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue).Id;
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue).Index;
                     var pages = new (Action Show, Func<TabbedPageViewModelBase> Page, int Tabs)[]
                     {

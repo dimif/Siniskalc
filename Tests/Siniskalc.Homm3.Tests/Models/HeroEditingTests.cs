@@ -1,4 +1,5 @@
 using Siniskalc;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -64,7 +65,7 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(cleared.SlotCount, Is.EqualTo(2));
             Assert.That(cleared.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Wisdom));
             Assert.That(cleared.GetSkillInSlot(1), Is.EqualTo(SecondarySkill.Luck));
-            Assert.That(cleared.GetSkillLevel(SecondarySkill.Archery), Is.Null);
+            Assert.That(cleared.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.None));
         }
 
         [Test]
@@ -123,8 +124,8 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(hidden.ExtraSkills, Is.EquivalentTo(new[] { SecondarySkill.Wisdom, SecondarySkill.Sorcery }));
 
             // No level removes the skill, wherever it is.
-            Assert.That(raised.WithSkillLevel(SecondarySkill.Sorcery, null).GetSkillLevel(SecondarySkill.Sorcery), Is.Null);
-            Assert.That(full.WithSkillLevel(SecondarySkill.Archery, null).GetSlotOf(SecondarySkill.Wisdom), Is.EqualTo(0));
+            Assert.That(raised.WithSkillLevel(SecondarySkill.Sorcery, SkillLevel.None).GetSkillLevel(SecondarySkill.Sorcery), Is.EqualTo(SkillLevel.None));
+            Assert.That(full.WithSkillLevel(SecondarySkill.Archery, SkillLevel.None).GetSlotOf(SecondarySkill.Wisdom), Is.EqualTo(0));
         }
 
         [Test]
@@ -195,7 +196,7 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(skills.SlotCount, Is.EqualTo(2));
             Assert.That(skills.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Luck));
             Assert.That(skills.GetSkillInSlot(1), Is.EqualTo(SecondarySkill.Archery));
-            Assert.That(skills.GetSkillLevel(SecondarySkill.Wisdom), Is.Null);
+            Assert.That(skills.GetSkillLevel(SecondarySkill.Wisdom), Is.EqualTo(SkillLevel.None));
         }
 
         [Test]
@@ -284,7 +285,7 @@ namespace Siniskalc.Homm3.Tests.Models
 
         private static SecondarySkills ThreeSkills()
         {
-            var empty = new SecondarySkills(new Dictionary<SecondarySkill, SkillLevel?>(), []);
+            var empty = new SecondarySkills(new Dictionary<SecondarySkill, SkillLevel>(), []);
             return empty
                 .WithSkill(SecondarySkill.Archery, SkillLevel.Beginner)
                 .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)

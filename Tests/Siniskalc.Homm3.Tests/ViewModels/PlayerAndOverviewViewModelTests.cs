@@ -243,7 +243,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(purple.Gold, Is.EqualTo(220976.ToString("N0")));
             Assert.That(purple.OtherResources, Does.Contain("153 mercury").And.Contain("28 wood"));
             Assert.That(purple.Heroes.Select(h => h.Name), Does.Contain("Christian").And.Contain("Maximus"));
-            Assert.That(purple.Heroes.Single(h => h.Name == "Maximus").Detail, Is.EqualTo("Knight, level 32"));
+            Assert.That(purple.Heroes.Single(h => h.Name == "Maximus").Detail, Is.EqualTo("Knight, Level 32"));
             Assert.That(overview.UnownedNote, Is.Not.Empty);
         }
 

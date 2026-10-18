@@ -1,48 +1,79 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// The secondary skills of a hero, in the order it learned them (a hero has at most eight). Compares by what it holds.
     /// </summary>
-    public sealed class SecondarySkills : IEquatable<SecondarySkills>
+    public sealed class SecondarySkills : IHomm2SecondarySkills
     {
         private readonly SkillEntry[] entries;
 
+        public static SecondarySkills None { get; } = new(Array.Empty<SkillEntry>());
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondarySkills"/> class.
+        /// </summary>
+        /// <param name="entries">
+        /// The skill entries.
+        /// </param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when the number of entries is outside the allowed range.
+        /// </exception>
         public SecondarySkills(IEnumerable<SkillEntry> entries)
         {
             this.entries = entries.Where(e => e.Level != SkillLevel.None).ToArray();
+
             RangeGuard.ThrowIfOutOfRange(this.entries.Length, 0, Constants.Hero.MaxSecondarySkills, nameof(entries));
+
             if (this.entries.Select(e => e.Skill).Distinct().Count() != this.entries.Length)
             {
                 throw new ArgumentException("A skill can be listed once.", nameof(entries));
             }
         }
 
-        public static SecondarySkills None { get; } = new([]);
-
-        /// <summary>
-        /// Gets the skills the hero has, in the order it learned them.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<SkillEntry> Entries => this.entries;
 
-        public int Count => this.entries.Length;
+        /// <inheritdoc/>
+        public int SlotCount => this.entries.Length;
 
+        /// <inheritdoc/>
         public bool IsFull => this.entries.Length >= Constants.Hero.MaxSecondarySkills;
 
-        public SkillLevel LevelOf(SecondarySkill skill) => this.entries.FirstOrDefault(e => e.Skill == skill)?.Level ?? SkillLevel.None;
+        /// <inheritdoc/>
+        public SecondarySkill GetSkillInSlot(int slotIndex)
+        {
+            RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));
+            return this.entries[slotIndex].Skill;
+        }
 
-        /// <summary>
-        /// Returns the skills with <paramref name="skill"/> at <paramref name="level"/>: learned last when the hero did not have it, changed
-        /// where it is when it did, and taken away (the ones after it move up) at <see cref="SkillLevel.None"/>.
-        /// </summary>
-        /// <exception cref="GameRuleException">The hero has eight skills and <paramref name="skill"/> is none of them.</exception>
-        public SecondarySkills With(SecondarySkill skill, SkillLevel level)
+        /// <inheritdoc/>
+        public int GetSlotOf(SecondarySkill skill) => this.entries.ToList().FindIndex(entry => entry.Skill == skill);
+
+        /// <inheritdoc/>
+        public SkillLevel GetSkillLevel(SecondarySkill skill) => this.entries.FirstOrDefault(e => e.Skill == skill)?.Level ?? SkillLevel.None;
+
+        /// <inheritdoc/>
+        public SecondarySkills Swap(int slotIndex, int otherSlotIndex)
+        {
+            RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));
+            RangeGuard.ThrowIfNotIndex(otherSlotIndex, this.entries.Length, nameof(otherSlotIndex));
+
+            var copy = (SkillEntry[])this.entries.Clone();
+            (copy[slotIndex], copy[otherSlotIndex]) = (copy[otherSlotIndex], copy[slotIndex]);
+
+            return new SecondarySkills(copy);
+        }
+
+        /// <inheritdoc/>
+        public SecondarySkills WithSkill(SecondarySkill skill, SkillLevel level)
         {
             var known = this.entries.Any(e => e.Skill == skill);
             if (!known)
@@ -61,39 +92,38 @@ namespace Siniskalc.Homm2.Models
         }
 
         /// <summary>
-        /// Returns the skills with the ones in two places swapped: the order is the order they were learned, which the hero screen shows.
+        /// Returns a copy without the skill in <paramref name="slotIndex"/>; later skills move up a slot.
         /// </summary>
-        public SecondarySkills Swap(int first, int second)
+        public SecondarySkills WithoutSlot(int slotIndex)
         {
-            RangeGuard.ThrowIfNotIndex(first, this.entries.Length, nameof(first));
-            RangeGuard.ThrowIfNotIndex(second, this.entries.Length, nameof(second));
-            var copy = (SkillEntry[])this.entries.Clone();
-            (copy[first], copy[second]) = (copy[second], copy[first]);
-            return new SecondarySkills(copy);
+            RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));
+
+            return new SecondarySkills(this.entries.Where((_, i) => i != slotIndex));
         }
 
-        /// <summary>
-        /// Returns the skills without the one in a place; the ones after it move up.
-        /// </summary>
-        public SecondarySkills WithoutSlot(int slot)
+        /// <inheritdoc/>
+        public SecondarySkills WithSkillInSlot(int slotIndex, SecondarySkill skill)
         {
-            RangeGuard.ThrowIfNotIndex(slot, this.entries.Length, nameof(slot));
-            return new SecondarySkills(this.entries.Where((_, i) => i != slot));
+            RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));
+
+            return this.entries.Any(e => e.Skill == skill) ? this : new SecondarySkills(this.entries.Select((e, i) => i == slotIndex ? e with { Skill = skill } : e));
         }
 
-        /// <summary>
-        /// Returns the skills with another skill in a place, at the level the place had. Nothing changes when the hero has the skill already.
-        /// </summary>
-        public SecondarySkills WithSkillInSlot(int slot, SecondarySkill skill)
-        {
-            RangeGuard.ThrowIfNotIndex(slot, this.entries.Length, nameof(slot));
-            return this.entries.Any(e => e.Skill == skill) ? this : new SecondarySkills(this.entries.Select((e, i) => i == slot ? e with { Skill = skill } : e));
-        }
+        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithSkill(SecondarySkill skill, SkillLevel level) => this.WithSkill(skill, level);
 
+        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.Swap(int slotIndex, int otherSlotIndex) => this.Swap(slotIndex, otherSlotIndex);
+
+        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithSkillInSlot(int slotIndex, SecondarySkill skill) => this.WithSkillInSlot(slotIndex, skill);
+
+        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithoutSlot(int slotIndex) => this.WithoutSlot(slotIndex);
+
+        /// <inheritdoc/>
         public bool Equals(SecondarySkills? other) => other is not null && this.entries.AsSpan().SequenceEqual(other.entries);
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => this.Equals(obj as SecondarySkills);
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             var hash = default(HashCode);
@@ -105,6 +135,8 @@ namespace Siniskalc.Homm2.Models
             return hash.ToHashCode();
         }
 
+        /// <inheritdoc/>
         public override string ToString() => string.Join(", ", this.entries.Select(e => $"{e.Level} {e.Skill.Name}"));
+
     }
 }

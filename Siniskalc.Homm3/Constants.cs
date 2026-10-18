@@ -54,6 +54,11 @@ namespace Siniskalc.Homm3
             public const long MinSpellPoints = 0;
             public const long MaxSpellPoints = 999;
             public const long SpellPointsStep = 10;
+
+            /// <summary>
+            /// The spell points a hero can have for each point of knowledge, before what Intelligence adds.
+            /// </summary>
+            public const int SpellPointsPerKnowledge = 10;
         }
 
         /// <summary>

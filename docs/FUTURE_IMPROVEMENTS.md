@@ -36,6 +36,9 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
    The Grail flag beside the date (`7F xx 02 yy`) is the same.
 7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known.
    The tavern has table about 250 bytes before the date that changes when a hero is defeated, so it's probably that one.
+9. **Places a HoMM3 hero visited**: the card is shared (`VisitedPlacesCard` in `Siniskalc.Heroes.Wpf`, used by HoMM2): a row for each kind of place that opens to its places by coordinates.
+   HoMM3 has nothing to put in it yet: the temporary effects are known (`VisitEffects`, shown as boxes without coordinates) but where a hero remembers the permanent places (Arena, Marletto Tower, Star Axis, Learning Stone, Mercenary Camp...) is not.
+   Probe set B of `docs/HOMM3_FROM_HOMM2.md` (saves 11 to 15) decides whether it is in the hero chunk, in the object, or both. Then HoMM3 builds `VisitedPlaceRowViewModel`s from the objects of the map, as HoMM2 does from `MapPlaces`.
 8. **Banishing, what is left** (the counter itself is found: byte 22 of the player struct, shown on the player page and editable; see `docs/KNOWLEDGE_BASE.md`, "Players").
    - Check in the game that a lower or higher number of days makes the game banish the player earlier or later.
    - The other bytes banishing changes are not decoded: the hero chunk of the player (owner `FF`, army emptied), a counter and an 8-byte record near the end of the save, and header bytes near 1313, 1356 and 12492.

@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -271,7 +271,7 @@ namespace Siniskalc.Homm3.Data
             var parts = Enumerable.Range(0, skills.SlotCount)
                 .Select(i => skills.GetSkillInSlot(i))
                 .OfType<SecondarySkill>()
-                .Select(skill => $"{skill.Name} ({skills.GetSkillLevel(skill)?.ToString() ?? "no level"})")
+                .Select(skill => $"{skill.Name} ({(skills.GetSkillLevel(skill) == SkillLevel.None ? "no level" : skills.GetSkillLevel(skill).Name)})")
                 .ToList();
 
             // Skills without a slot are applied by the game, but not shown on the hero screen.

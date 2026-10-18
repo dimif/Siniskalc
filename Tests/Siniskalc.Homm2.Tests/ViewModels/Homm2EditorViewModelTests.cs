@@ -1,5 +1,6 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -168,7 +169,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             var document = this.editor.CurrentGame!.History.Current;
             var hero = document.Heroes().GetModels().First(h => h.Owner == Color.Blue);
 
-            this.editor.CurrentGame.History.CreateHeroSession(hero.HeroId).Update(h => h with { Owner = Color.Green });
+            this.editor.CurrentGame.History.CreateHeroSession(hero.Id).Update(h => h with { Owner = Color.Green });
 
             var owner = Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Player && n.Index == (int)Color.Green);
             Assert.That(Titles(owner, "Heroes"), Does.Contain(hero.Name));
@@ -216,16 +217,16 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         {
             var game = this.editor.CurrentGame!;
             var blue = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
-            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner == null && !game.History.Current.Players().GetModel((int)Color.Blue).Tavern.Contains(h.HeroId));
+            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner == null && !game.History.Current.Players().GetModel((int)Color.Blue).Tavern.Contains(h.Id));
 
             Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
-            Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.HeroId));
+            Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.Id));
 
-            blue.TavernPlaces[0].SelectedKey = free.HeroId;
+            blue.TavernPlaces[0].SelectedKey = free.Id;
 
-            Assert.That(game.History.Current.Players().GetModel((int)Color.Blue).Tavern.First, Is.EqualTo(free.HeroId));
+            Assert.That(game.History.Current.Players().GetModel((int)Color.Blue).Tavern.First, Is.EqualTo(free.Id));
             Assert.That(blue.TavernPlaces[0].Selected!.Name, Is.EqualTo(free.Name));
-            Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.HeroId), "a hero is offered in one place only");
+            Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.Id), "a hero is offered in one place only");
         }
 
         [Test]
@@ -347,26 +348,26 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             this.editor.ShowHero(7);
             var skills = ((HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
             var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills;
-            var before = model().Count;
+            var before = model().SlotCount;
             Assert.That(skills.SlotSummary, Is.EqualTo($"{before} of 8 slots used"));
 
             var wisdom = skills.AllSkills.First(r => r.LevelName == SkillLevelText.None);
             var skill = SecondarySkill.All.Single(s => s.Name == wisdom.Name);
             wisdom.LevelName = SkillLevelText.Advanced;
-            Assert.That(model().LevelOf(skill), Is.EqualTo(SkillLevel.Advanced));
-            Assert.That(model().Count, Is.EqualTo(before + 1), "a new skill is learned last");
+            Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.Intermediate));
+            Assert.That(model().SlotCount, Is.EqualTo(before + 1), "a new skill is learned last");
 
             var slot = skills.Slots[before];
             Assert.That(slot.SkillName, Is.EqualTo(skill.Name));
             slot.LevelName = SkillLevelText.Expert;
-            Assert.That(model().LevelOf(skill), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.Expert));
 
             skills.MoveSkill(before, -1);
             Assert.That(model().Entries[before - 1].Skill, Is.EqualTo(skill));
 
             wisdom.LevelName = SkillLevelText.None;
-            Assert.That(model().LevelOf(skill), Is.EqualTo(SkillLevel.None));
-            Assert.That(model().Count, Is.EqualTo(before));
+            Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.None));
+            Assert.That(model().SlotCount, Is.EqualTo(before));
         }
 
         [Test]
@@ -379,7 +380,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
                 row.LevelName = SkillLevelText.Basic;
             }
 
-            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills.Count, Is.EqualTo(8));
+            Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(skills.AllSkills.Count(r => r.LevelName != SkillLevelText.None), Is.EqualTo(8), "the list shows what the hero has");
         }
 
@@ -583,7 +584,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(Color.Red));
         }
 
-        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).HeroId;
+        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).Id;
 
         private static IEnumerable<string> Titles(NavNodeViewModel player, string group) =>
             (player.Children.FirstOrDefault(c => c.Title == group)?.Children.Select(c => c.Title) ?? []).Order();

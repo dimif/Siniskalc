@@ -1,7 +1,8 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -113,7 +114,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(taken.Artifacts.Slots, Has.No.Member(Artifact.UltimateSwordOfDominion));
 
             var skills = Open("E21SKILL").Document.Heroes().GetModel(7).SecondarySkills;
-            Assert.That(skills.Count, Is.EqualTo(8));
+            Assert.That(skills.SlotCount, Is.EqualTo(8));
             Assert.That(skills.Entries.All(e => e.Level == SkillLevel.Expert), Is.True);
 
             var gallant = Open("E22BOOK").Document.Heroes().GetModel(1);
@@ -142,7 +143,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(all.Castles().GetModel(all.Castles().FindByName("Corackston")).Owner, Is.EqualTo(Color.Orange));
             Assert.That(all.Castles().GetModel(all.Castles().FindByName("Bloodreign")).Owner, Is.EqualTo(Color.Blue));
             Assert.That(all.Players().GetModel((int)Color.Red).DaysLeft, Is.EqualTo(7));
-            Assert.That(all.Heroes().GetModel(7).SecondarySkills.Count, Is.EqualTo(8));
+            Assert.That(all.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(all.Heroes().GetModel(7).Artifacts.IsFull, Is.True);
             Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));
             Assert.That(all.Players().GetModel(0).Resources.Gold, Is.EqualTo(999_999));

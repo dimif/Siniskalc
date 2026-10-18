@@ -1,9 +1,11 @@
-using Siniskalc.Heroes.Wpf.ViewModels;
+﻿using Siniskalc.Heroes.Wpf.ViewModels;
 using Moq;
 using Siniskalc;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Runtime;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
@@ -58,7 +60,12 @@ namespace Siniskalc.Homm3.Tests
 
         public static CastleBuildMessageProvider CastleBuildMessages => Services.CastleBuildMessages;
 
-        public static ISpellPointsCalculator SpellPoints => Services.SpellPoints;
+        public static ISpellPointsCalculatorFactory SpellPointsFactory => Services.SpellPoints;
+
+        /// <summary>
+        /// Returns the calculator of the spell points of a savefile of <paramref name="version"/>.
+        /// </summary>
+        public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints(GameVersion version) => Services.SpellPoints.Create(version);
 
         /// <summary>
         /// Returns the main window showing <paramref name="viewModel"/>, with a launcher that opens nothing and messages that show nothing.
@@ -95,6 +102,6 @@ namespace Siniskalc.Homm3.Tests
 
         public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateHomm3Editor();
 
-        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints, Services.ByteEditTargets);
+        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets);
     }
 }

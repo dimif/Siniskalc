@@ -1,10 +1,10 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -55,12 +55,12 @@ namespace Siniskalc.Homm3.Data
         public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
 
         /// <summary>
-        /// Returns the index of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or -1 if the savefile has no such hero.
+        /// Returns the index of the hero with the given id (see <see cref="HeroModel.Id"/>), or -1 if the savefile has no such hero.
         /// </summary>
         public int IndexOfId(int heroId) => this.IndexOf(c => this.Deserializer.DeserializeHeroId(c) == heroId);
 
         /// <summary>
-        /// Returns the summary of the hero with the given id (see <see cref="HeroModel.HeroId"/>), or null if the savefile has no such hero.
+        /// Returns the summary of the hero with the given id (see <see cref="HeroModel.Id"/>), or null if the savefile has no such hero.
         /// </summary>
         public HeroSummary<PlayerColor>? FindById(int heroId)
         {

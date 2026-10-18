@@ -1,12 +1,12 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -90,8 +90,13 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             var creature = stack.Creature;
-            return new StackContent(creature.Name, (int)stack.Count, amount => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts());
+            return new StackContent(creature.Name, (int)stack.Count, amount => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts(), this.UpgradesOf(creature));
         }
+
+        private IReadOnlyList<string> UpgradesOf(Creature creature) => Creature.All
+            .Where(c => c.BaseCreatureCode == creature.Code && c.IsAvailableIn(this.gameVersion))
+            .Select(c => c.Name)
+            .ToList();
 
         protected override void AfterSlotRead(ArmySlotViewModel slot, StackContent? stack)
         {

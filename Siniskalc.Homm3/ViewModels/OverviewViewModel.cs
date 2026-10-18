@@ -1,12 +1,13 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Heroes.Models;
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Runtime;
@@ -95,6 +96,28 @@ namespace Siniskalc.Homm3.ViewModels
 
         public ObservableCollection<PlayerCardViewModel> Players { get; } = new ObservableCollection<PlayerCardViewModel>();
 
+        /// <summary>
+        /// Gets the players in the order they play (the order of the colours), the one whose turn it is lit. The editor cannot change the turn here.
+        /// </summary>
+        public IReadOnlyList<OrderOfPlayItemViewModel> OrderOfPlay { get; private set; } = [];
+
+        // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
+        // (see PlayerControlLocator) and writing it is not built.
+        // TODO:LOG info: the turn was asked to be given to a player, and the editor does not write it for this game yet.
+        private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
+        {
+            var isCurrent = this.game.CurrentPlayer == color;
+            var isHuman = this.game.GetControl(color) == PlayerType.Human;
+            return new OrderOfPlayItemViewModel(
+                color.ToString(),
+                PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color)),
+                isCurrent,
+                isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
+                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
+        }
+
+        public bool HasOrderOfPlay => this.OrderOfPlay.Count > 0;
+
         System.Collections.Generic.IReadOnlyList<PlayerCardViewModel> IOverviewPage.Players => this.Players;
 
         /// <summary>
@@ -124,6 +147,7 @@ namespace Siniskalc.Homm3.ViewModels
                 .ToList();
             colors = colors.Concat(castles.Select(c => c.Model.Owner).OfType<PlayerColor>()).Distinct().OrderBy(c => c).ToList();
 
+            this.OrderOfPlay = colors.Select(this.OrderItemOf).ToList();
             this.Players.Clear();
             foreach (var color in colors)
             {

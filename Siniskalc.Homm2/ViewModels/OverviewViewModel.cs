@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -73,6 +73,14 @@ namespace Siniskalc.Homm2.ViewModels
         public IReadOnlyList<PlayerCardViewModel> Players { get; private set; } = [];
 
         /// <summary>
+        /// Gets the players in the order they play, which is the succession of the colours. The one whose turn it is is lit, and a button gives
+        /// the turn to another human.
+        /// </summary>
+        public IReadOnlyList<OrderOfPlayItemViewModel> OrderOfPlay { get; private set; } = [];
+
+        public bool HasOrderOfPlay => this.OrderOfPlay.Count > 0;
+
+        /// <summary>
         /// Reads the players again from the current document.
         /// </summary>
         public void Refresh()
@@ -82,10 +90,11 @@ namespace Siniskalc.Homm2.ViewModels
             var heroes = document.Heroes().GetModels();
 
             // A colour is in the game when it owns a castle or a hero, or the days of a player that was put out are counted.
-            this.Players = document.Players().GetModels()
+            var inGame = document.Players().GetModels()
                 .Where(player => player.CastleIds.Count > 0 || player.HeroIds.Count > 0 || player.DaysLeft != null)
-                .Select(player => this.CardOf(player, heroes, castles))
                 .ToList();
+            this.Players = inGame.Select(player => this.CardOf(player, heroes, castles)).ToList();
+            this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(this.OrderItemOf).ToList();
             var owned = heroes.Count(h => h.Owner != null);
             this.Summary = $"{OverviewText.Count(this.Players.Count, "player", "players")} · {OverviewText.Count(owned, "hero", "heroes")} · {this.DifficultyText}";
             this.RaiseAllPropertiesChanged();
@@ -93,13 +102,29 @@ namespace Siniskalc.Homm2.ViewModels
 
         public void Dispose() => this.game.History.Changed -= this.OnHistoryChanged;
 
+        private OrderOfPlayItemViewModel OrderItemOf(PlayerModel player)
+        {
+            var color = player.Color;
+            var isHuman = this.game.GetControl(color) == PlayerType.Human;
+            var isCurrent = this.game.CurrentPlayer == color;
+            var command = isHuman && !isCurrent
+                ? new DelegateCommand(_ => this.game.History.CreateTurnSession().Update(turn => turn with { Record = this.game.RecordOf(color), Color = color }))
+                : null;
+            return new OrderOfPlayItemViewModel(
+                color.ToString(),
+                PlayerPalette.Of(PlayerColors<Color>.Of(color)),
+                isCurrent,
+                command,
+                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player" : "A computer player: it plays after the humans, and cannot be given the turn");
+        }
+
         private PlayerCardViewModel CardOf(PlayerModel player, IReadOnlyList<HeroModel> allHeroes, IReadOnlyList<CastleModel> allCastles)
         {
             var color = player.Color;
             var heroes = allHeroes
                 .Where(h => h.Owner == color)
                 .OrderBy(h => h.Name)
-                .Select(h => (ILink)new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.HeroId))))
+                .Select(h => (ILink)new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.Id))))
                 .ToList();
             var castles = allCastles
                 .Where(c => c.Owner == color)
@@ -112,7 +137,7 @@ namespace Siniskalc.Homm2.ViewModels
                 player.Resources,
                 heroes,
                 new DelegateCommand(_ => this.openPlayer(color)),
-                Siniskalc.Heroes.ViewModels.TurnText.Beside(string.Empty, this.game.CurrentPlayer == color),
+                Siniskalc.Heroes.ViewModels.PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color),
                 castles: castles,
                 banishingText: this.banishingText.Pill(player),
                 isBanished: player.IsBanished);

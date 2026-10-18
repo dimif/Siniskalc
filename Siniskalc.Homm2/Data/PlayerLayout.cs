@@ -8,6 +8,13 @@ namespace Siniskalc.Homm2.Data
     {
         public const int RecordSize = 0xCF;
 
+        /// <summary>
+        /// The colour of the player (Blue 0 to Purple 5). The records are not in the order of the colours: the humans come first, in
+        /// the order they play (a game with Green and Orange human has Green, Orange, Blue, Red, Yellow, Purple) - found in the saves of
+        /// <c>TestData/Homm2/HumanCpu</c>.
+        /// </summary>
+        public const int Color = 0x01;
+
         public const int HeroCount = 0x02;
 
         /// <summary>

@@ -1,8 +1,9 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
@@ -147,10 +148,10 @@ namespace Siniskalc.Homm2.Data
         {
             foreach (var skill in SecondarySkill.All)
             {
-                var (before, after) = (original.SecondarySkills.LevelOf(skill), current.SecondarySkills.LevelOf(skill));
+                var (before, after) = (original.SecondarySkills.GetSkillLevel(skill), current.SecondarySkills.GetSkillLevel(skill));
                 if (before != after)
                 {
-                    add(ChangeAreas.SecondarySkills, skill.Name, LevelText(before), LevelText(after), h => h with { SecondarySkills = h.SecondarySkills.With(skill, before) });
+                    add(ChangeAreas.SecondarySkills, skill.Name, LevelText(before), LevelText(after), h => h with { SecondarySkills = h.SecondarySkills.WithSkill(skill, before) });
                 }
             }
         }

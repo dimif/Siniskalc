@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void EverySavefileHasTheExtensionOfTheBaseGameOrOfThePriceOfLoyalty()
         {
-            var bad = Files().Where(f => Path.GetExtension(f) is not (".GM1" or ".GX1")).ToList();
+            var bad = Files().Where(f => Path.GetExtension(f) is not (".GM1" or ".GM2" or ".GM4" or ".GM6" or ".GX1")).ToList();
 
             Assert.That(bad, Is.Empty);
         }
@@ -71,7 +71,8 @@ namespace Siniskalc.Homm2.Tests.Data
                 var saves = Directory.GetFiles(folder);
 
                 Assert.That(saves.Select(s => Numbered().IsMatch(Path.GetFileNameWithoutExtension(s))), Is.All.True, folder);
-                Assert.That(saves.Select(s => Path.GetExtension(s)).Distinct().Count(), Is.EqualTo(1), folder);
+                // The last digit of the extension varies with the game that made the save (GM4, GM6 in HumanCpu); the first three characters say the game.
+                Assert.That(saves.Select(s => Path.GetExtension(s).Substring(0, 3)).Distinct().Count(), Is.EqualTo(1), folder);
             }
         }
     }

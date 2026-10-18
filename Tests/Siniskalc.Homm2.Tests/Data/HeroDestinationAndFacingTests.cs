@@ -61,7 +61,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void TheCardsOfThePageEditTheDestinationAndTheFacingAndWriteOnlyThoseBytes()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { });
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
 
             Assert.That(page.Position.Facing, Is.EqualTo(FacingDirection.West));
             Assert.That(page.Destination.RemoveCommand.CanExecute(null), Is.False, "there is none to take away");
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void ADestinationWithOnlyOnePartSetIsKeptAsItWasTyped()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { });
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
 
             page.Destination.X = 5;
 

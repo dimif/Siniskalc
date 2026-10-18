@@ -1,7 +1,9 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
 
@@ -11,6 +13,8 @@ namespace Siniskalc.Homm2.Tests
     internal static class TestServices
     {
         public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator();
+
+        public static IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
 
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
 
@@ -50,6 +54,7 @@ namespace Siniskalc.Homm2.Tests
                 new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
                 new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
                 new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
+                new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
             new MapObjectsReader());

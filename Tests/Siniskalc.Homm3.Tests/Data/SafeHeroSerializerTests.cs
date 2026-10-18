@@ -124,14 +124,14 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var levels = SecondarySkill.All
                 .Where(s => s.IsAvailableIn(GameVersion.HornOfTheAbyss))
-                .ToDictionary(s => s, s => s == removed ? null : skills.GetSkillLevel(s));
+                .ToDictionary(s => s, s => s == removed ? SkillLevel.None : skills.GetSkillLevel(s));
             var slots = Enumerable.Range(0, skills.SlotCount - 1).Select(skills.GetSkillInSlot).OfType<SecondarySkill>().ToArray();
 
             var result = this.serializer.SerializeSecondarySkills(chunk, new SecondarySkills(levels, slots));
             var read = this.deserializer.DeserializeSecondarySkills(result);
 
             Assert.That(read.SlotCount, Is.EqualTo(skills.SlotCount - 1));
-            Assert.That(read.GetSkillLevel(removed), Is.Null);
+            Assert.That(read.GetSkillLevel(removed), Is.EqualTo(SkillLevel.None));
             Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.SkillSlots] + removed.Code), Is.EqualTo(0));
             Assert.That(Enumerable.Range(0, read.SlotCount).Select(read.GetSkillInSlot), Is.EqualTo(slots));
         }

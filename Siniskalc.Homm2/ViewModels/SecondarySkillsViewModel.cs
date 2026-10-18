@@ -1,8 +1,9 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -14,22 +15,22 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class SecondarySkillsViewModel : SecondarySkillsViewModelBase
     {
-        private readonly Func<SecondarySkills> getSkills;
-        private readonly Action<Func<SecondarySkills, SecondarySkills>> update;
+        private readonly Func<IHomm2SecondarySkills> getSkills;
+        private readonly Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update;
         private readonly IReadOnlyList<SecondarySkill> knownSkills;
 
         public SecondarySkillsViewModel(
             GameVersion gameVersion,
-            Func<SecondarySkills> getSkills,
-            Action<Func<SecondarySkills, SecondarySkills>> update)
+            Func<IHomm2SecondarySkills> getSkills,
+            Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update)
             : this(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), getSkills, update)
         {
         }
 
         private SecondarySkillsViewModel(
             IReadOnlyList<SecondarySkill> knownSkills,
-            Func<SecondarySkills> getSkills,
-            Action<Func<SecondarySkills, SecondarySkills>> update)
+            Func<IHomm2SecondarySkills> getSkills,
+            Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update)
             : base(knownSkills.Select(s => s.Name).ToList(), Constants.Hero.MaxSecondarySkills)
         {
             this.knownSkills = knownSkills;
@@ -41,13 +42,13 @@ namespace Siniskalc.Homm2.ViewModels
 
         public override string AllSkillsNote => "A hero can learn eight of the fourteen skills. They are shown in the order they were learned.";
 
-        protected override int UsedSlots => this.getSkills().Count;
+        protected override int UsedSlots => this.getSkills().SlotCount;
 
         protected override string? SkillInSlot(int slot) => this.getSkills().Entries[slot].Skill.Name;
 
-        protected override string LevelInSlot(int slot) => SkillLevelText.FromNumber((int)this.getSkills().Entries[slot].Level);
+        protected override string LevelInSlot(int slot) => SkillLevelText.FromNumber(this.getSkills().Entries[slot].Level.Code);
 
-        protected override string LevelOf(string skillName) => SkillLevelText.FromNumber((int)this.getSkills().LevelOf(this.Find(skillName)));
+        protected override string LevelOf(string skillName) => SkillLevelText.FromNumber(this.getSkills().GetSkillLevel(this.Find(skillName)).Code);
 
         protected override int SlotOf(string skillName)
         {
@@ -73,22 +74,22 @@ namespace Siniskalc.Homm2.ViewModels
         protected override void AddSkill(string skillName)
         {
             var skill = this.Find(skillName);
-            this.update(skills => skills.IsFull ? skills : skills.With(skill, SkillLevel.Basic));
+            this.update(skills => skills.IsFull ? skills : skills.WithSkill(skill, SkillLevel.Beginner));
         }
 
         protected override void SetLevelInSlot(int slot, string levelName)
         {
-            var level = (SkillLevel)SkillLevelText.ToNumber(levelName);
-            this.update(skills => skills.With(skills.Entries[slot].Skill, level));
+            var level = SkillLevel.Of((byte)SkillLevelText.ToNumber(levelName));
+            this.update(skills => skills.WithSkill(skills.Entries[slot].Skill, level));
         }
 
         protected override void SetLevelOf(string skillName, string levelName)
         {
             var skill = this.Find(skillName);
-            var level = (SkillLevel)SkillLevelText.ToNumber(levelName);
+            var level = SkillLevel.Of((byte)SkillLevelText.ToNumber(levelName));
 
             // A hero that has eight skills cannot learn a ninth; the row goes back to what it was.
-            this.update(skills => level != SkillLevel.None && skills.IsFull && skills.LevelOf(skill) == SkillLevel.None ? skills : skills.With(skill, level));
+            this.update(skills => level != SkillLevel.None && skills.IsFull && skills.GetSkillLevel(skill) == SkillLevel.None ? skills : skills.WithSkill(skill, level));
         }
 
         protected override void SwapSlots(int first, int second) => this.update(skills => skills.Swap(first, second));

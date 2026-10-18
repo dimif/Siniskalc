@@ -1,5 +1,6 @@
 using System.Text;
 using Siniskalc;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -286,7 +287,7 @@ namespace Siniskalc.Homm3.Tests.Data
             }
 
             var slotted = expected.Select(e => e.Skill).ToHashSet();
-            var unslottedWithLevel = SecondarySkill.All.Where(s => !slotted.Contains(s) && skills.GetSkillLevel(s) != null);
+            var unslottedWithLevel = SecondarySkill.All.Where(s => !slotted.Contains(s) && skills.GetSkillLevel(s) != SkillLevel.None);
             Assert.That(unslottedWithLevel, Is.Empty);
         }
 

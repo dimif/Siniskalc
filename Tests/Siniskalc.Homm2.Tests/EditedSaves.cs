@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
@@ -48,14 +48,14 @@ namespace Siniskalc.Homm2.Tests
                 Make("E05SKL2", 5, "Maximus's secondary skills", "Maximus has eight skills: Expert Wisdom, Expert Mysticism, Expert Logistics, Expert Pathfinding, Advanced Archery, Advanced Leadership, Basic Luck and Basic Estates.", game => Hero(game, 7, h => h with
                 {
                     SecondarySkills = SecondarySkills.None
-                        .With(SecondarySkill.Wisdom, SkillLevel.Expert)
-                        .With(SecondarySkill.Mysticism, SkillLevel.Expert)
-                        .With(SecondarySkill.Logistics, SkillLevel.Expert)
-                        .With(SecondarySkill.Pathfinding, SkillLevel.Expert)
-                        .With(SecondarySkill.Archery, SkillLevel.Advanced)
-                        .With(SecondarySkill.Leadership, SkillLevel.Advanced)
-                        .With(SecondarySkill.Luck, SkillLevel.Basic)
-                        .With(SecondarySkill.Estates, SkillLevel.Basic),
+                        .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
+                        .WithSkill(SecondarySkill.Mysticism, SkillLevel.Expert)
+                        .WithSkill(SecondarySkill.Logistics, SkillLevel.Expert)
+                        .WithSkill(SecondarySkill.Pathfinding, SkillLevel.Expert)
+                        .WithSkill(SecondarySkill.Archery, SkillLevel.Intermediate)
+                        .WithSkill(SecondarySkill.Leadership, SkillLevel.Intermediate)
+                        .WithSkill(SecondarySkill.Luck, SkillLevel.Beginner)
+                        .WithSkill(SecondarySkill.Estates, SkillLevel.Beginner),
                 })),
                 Make("E06ARTI", 10, "Maximus's artifacts", "Maximus (who has the spell book) also carries the Ultimate Sword of Dominion, the Thunder Mace of Dominion, the Ice Cloak, the Evercold Icicle and the Ammo Cart, and his attack is 15 (2 and the 12 and 1 of the two weapons; the game keeps the bonuses in the skills).", game => Hero(game, 7, h => h
                     .WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.ThunderMaceOfDominion).WithArtifact(Artifact.IceCloak).WithArtifact(Artifact.EvercoldIcicle).WithArtifact(Artifact.AmmoCart))),
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm2.Tests
                     {
                         PrimarySkills = new PrimarySkills(15, 15, 15, 15),
                         Army = new Army<Creature>([new ArmySlot<Creature>(Creature.BlackDragon, 7), new ArmySlot<Creature>(Creature.Titan, 3), null, null, null]),
-                        SecondarySkills = h.SecondarySkills.With(SecondarySkill.Wisdom, SkillLevel.Expert),
+                        SecondarySkills = h.SecondarySkills.WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert),
                     });
                     Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)) });
                 }),

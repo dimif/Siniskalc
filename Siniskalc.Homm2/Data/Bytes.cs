@@ -1,14 +1,14 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Siniskalc.Core.Models;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -63,7 +63,7 @@ namespace Siniskalc.Homm2.Data
         public static byte ArtifactByte(Artifact? artifact, byte existing) => ReadArtifact(existing) == artifact ? existing : artifact?.Code ?? Empty;
 
         // TODO:LOG warning: a skill level above Expert was read as Expert.
-        public static SkillLevel ReadSkillLevel(byte code) => (SkillLevel)Math.Min(code, (byte)SkillLevel.Expert);
+        public static SkillLevel ReadSkillLevel(byte code) => SkillLevel.Of(Math.Min(code, SkillLevel.Expert.Code));
 
         /// <summary>
         /// Reads the secondary skills from the table of levels and the table of the order they were learned in: the skills with a level,

@@ -46,5 +46,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         string MapDescription { get; }
 
         IReadOnlyList<PlayerCardViewModel> Players { get; }
+
+        /// <summary>
+        /// Gets the players in the order they play, the one whose turn it is lit. Empty when the savefile does not tell, and then the card is not shown.
+        /// </summary>
+        IReadOnlyList<OrderOfPlayItemViewModel> OrderOfPlay { get; }
+
+        bool HasOrderOfPlay { get; }
     }
 }

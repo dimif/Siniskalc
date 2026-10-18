@@ -24,6 +24,40 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheMinesAreSortedByResourceOwnerOrLocationFromTheHeadings()
+        {
+            var page = new MapViewModel(TestServices.LoadThreedom(71));
+
+            page.MineList.Columns["X"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.X), Is.Ordered);
+            Assert.That(page.Mines[0].X, Is.LessThanOrEqualTo(page.Mines[1].X));
+
+            page.MineList.Columns["X"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.X), Is.Ordered.Descending);
+
+            page.MineList.Columns["Resource"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.ResourceName), Is.Ordered);
+
+            page.MineList.Columns["Owner"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.OwnerField.Selected), Is.Ordered);
+        }
+
+        [Test]
+        public void TheShrinesAreSortedByCircleLocationOrSpellFromTheHeadings()
+        {
+            var page = new MapViewModel(TestServices.LoadThreedom(77));
+
+            page.ShrineList.Columns["Name"].SortCommand.Execute(null);
+            Assert.That(page.Shrines.Select(s => s.CircleNumber), Is.Ordered);
+
+            page.ShrineList.Columns["Spell"].SortCommand.Execute(null);
+            Assert.That(page.Shrines.Select(s => s.SpellName), Is.Ordered);
+
+            page.ShrineList.Columns["X"].SortCommand.Execute(null);
+            Assert.That(page.Shrines.Select(s => s.X), Is.Ordered);
+        }
+
+        [Test]
         public void PickingAnOwnerForAMineChangesItsRecordAndFlagAndTheCountAndCanBeReset()
         {
             var game = TestServices.LoadThreedom(71);
@@ -61,10 +95,10 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             var game = TestServices.LoadThreedom(74);
             var sphinx = new MapViewModel(game).Sphinxes.Single();
 
-            Assert.That(sphinx.ActiveToggle.IsChecked, Is.False);
+            Assert.That(sphinx.SolvedToggle.IsChecked, Is.True);
             Assert.That(sphinx.Answers.Select(a => a.Text).Take(3), Is.EqualTo(new[] { "darkness", "shadow", string.Empty }));
 
-            sphinx.ActiveToggle.IsChecked = true;
+            sphinx.SolvedToggle.IsChecked = false;
             sphinx.Answers[2].Text = "shade";
             sphinx.Answers[0].Text = string.Empty;
             sphinx.Reward.Single(r => r.Name == "Gold").Value = 5000;

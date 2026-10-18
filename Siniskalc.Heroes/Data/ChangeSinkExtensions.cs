@@ -1,0 +1,64 @@
+namespace Siniskalc.Heroes.Data
+{
+    using System;
+    using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
+
+    /// <summary>
+    /// The changes that every game's differs report in the same way: who owns a record, and what is in the slots of an army.
+    /// </summary>
+    public static class ChangeSinkExtensions
+    {
+        /// <summary>
+        /// Adds the change of the owner of a record, if the owner differs. The text is "Neutral" or the name of the colour.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the record.</typeparam>
+        /// <typeparam name="TColor">The colour of the game.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The owner as loaded.</param>
+        /// <param name="after">The owner now.</param>
+        /// <param name="withOwner">Returns the model with the given owner.</param>
+        public static void AddOwner<TModel, TColor>(this ChangeSink<TModel> sink, TColor? before, TColor? after, Func<TModel, TColor?, TModel> withOwner)
+            where TColor : struct, Enum
+        {
+            if (Nullable.Equals(before, after))
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Owner", OwnerNames<TColor>.Of(before), OwnerNames<TColor>.Of(after), model => withOwner(model, before));
+        }
+
+        /// <summary>
+        /// Adds a change for each slot of an army that differs: "Slot n", with the stack as it was and as it is now.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the record that holds the army.</typeparam>
+        /// <typeparam name="TCreature">The creature of the game.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="area">The area the changes are listed under, such as Creatures or Garrison.</param>
+        /// <param name="before">The army as loaded.</param>
+        /// <param name="after">The army now.</param>
+        /// <param name="getArmy">Gets the army of a model.</param>
+        /// <param name="withArmy">Returns the model with the given army.</param>
+        public static void AddArmy<TModel, TCreature>(
+            this ChangeSink<TModel> sink,
+            ChangeArea area,
+            Army<TCreature> before,
+            Army<TCreature> after,
+            Func<TModel, Army<TCreature>> getArmy,
+            Func<TModel, Army<TCreature>, TModel> withArmy)
+            where TCreature : class, IGameEntity
+        {
+            for (var slot = 0; slot < before.Slots.Count && slot < after.Slots.Count; slot++)
+            {
+                var (was, now, index) = (before.Slots[slot], after.Slots[slot], slot);
+                if (was != now)
+                {
+                    sink.Add(area, $"Slot {slot + 1}", was?.ToString() ?? ChangeText.Empty, now?.ToString() ?? ChangeText.Empty, model => withArmy(model, getArmy(model).WithSlot(index, was)));
+                }
+            }
+        }
+    }
+}

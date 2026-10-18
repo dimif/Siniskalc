@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -22,10 +23,7 @@ namespace Siniskalc.Homm2.Data
 
             var changes = new ChangeSink<HeroModel>((change, revert) => Homm2PendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
-            if (original.Owner != current.Owner)
-            {
-                changes.Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), h => h with { Owner = original.Owner });
-            }
+            changes.AddOwner(original.Owner, current.Owner, (h, owner) => h with { Owner = owner });
 
             if (original.Position != current.Position)
             {
@@ -85,14 +83,7 @@ namespace Siniskalc.Homm2.Data
             DiffPrimarySkills(original, current, changes);
             DiffSecondarySkills(original, current, changes);
 
-            for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
-            {
-                var (before, after, index) = (original.Army.Slots[slot], current.Army.Slots[slot], slot);
-                if (before != after)
-                {
-                    changes.Add(ChangeAreas.Creatures, $"Slot {slot + 1}", SlotText(before), SlotText(after), h => h with { Army = h.Army.WithSlot(index, before) });
-                }
-            }
+            changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });
 
             for (var slot = 0; slot < Constants.Hero.ArtifactSlotCount; slot++)
             {

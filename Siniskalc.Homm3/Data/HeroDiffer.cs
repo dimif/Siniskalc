@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -141,28 +142,8 @@ namespace Siniskalc.Homm3.Data
             }
         }
 
-        private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
-        {
-            for (var index = 0; index < Constants.CreatureSlotCount; index++)
-            {
-                var slotIndex = index;
-                var slotNumber = index + 1;
-                var before = original.Army.Slots[index];
-                var after = current.Army.Slots[index];
-
-                if (before == after)
-                {
-                    continue;
-                }
-
-                changes.Add(
-                    ChangeAreas.Creatures,
-                    $"Slot {slotNumber}",
-                    FormatCreatureSlot(before),
-                    FormatCreatureSlot(after),
-                    h => h with { Army = h.Army.WithSlot(slotIndex, before) });
-            }
-        }
+        private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });
 
         private static void DiffWarMachines(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
@@ -254,16 +235,6 @@ namespace Siniskalc.Homm3.Data
         private static string NameOfEquipped(Artifact? artifact, Spell? spell)
         {
             return spell != null ? SpellScroll.NameOf(spell) : artifact?.Name ?? ChangeText.Empty;
-        }
-
-        private static string FormatCreatureSlot(ArmySlot<Creature>? slot)
-        {
-            if (slot == null)
-            {
-                return ChangeText.Empty;
-            }
-
-            return $"{slot.Count:N0} {slot.Creature.Name}";
         }
 
         private static string FormatSecondarySkills(SecondarySkills skills)

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -20,19 +21,9 @@ namespace Siniskalc.Homm2.Data
 
             var changes = new ChangeSink<CastleModel>((change, revert) => Homm2PendingChanges.ForCastle(current.Name, castleIndex, change, revert));
 
-            if (original.Owner != current.Owner)
-            {
-                changes.Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), c => c with { Owner = original.Owner });
-            }
+            changes.AddOwner(original.Owner, current.Owner, (c, owner) => c with { Owner = owner });
 
-            for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
-            {
-                var (before, after, index) = (original.Garrison.Slots[slot], current.Garrison.Slots[slot], slot);
-                if (before != after)
-                {
-                    changes.Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? ChangeText.Empty, after?.ToString() ?? ChangeText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
-                }
-            }
+            changes.AddArmy(ChangeAreas.Garrison, original.Garrison, current.Garrison, c => c.Garrison, (c, army) => c with { Garrison = army });
 
             foreach (var building in Enum.GetValues<TownBuildings>().Where(b => b != TownBuildings.None && b != TownBuildings.MageGuild))
             {

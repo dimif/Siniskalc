@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
@@ -15,15 +16,15 @@ namespace Siniskalc.Homm3.Data
     {
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
-            var changes = new List<PendingChange>();
+            var changes = new ChangeSink<CastleModel>((change, revert) => Homm3PendingChanges.ForCastle(current.Name, castleIndex, change, revert));
 
-            DiffGeneral(castleIndex, original, current, changes);
-            DiffGarrison(castleIndex, original, current, changes);
-            this.DiffBuildings(castleIndex, original, current, changes);
-            DiffDwellings(castleIndex, original, current, changes);
-            DiffMageGuildSpells(castleIndex, original, current, changes);
+            DiffGeneral(original, current, changes);
+            DiffGarrison(original, current, changes);
+            this.DiffBuildings(original, current, changes);
+            DiffDwellings(original, current, changes);
+            DiffMageGuildSpells(original, current, changes);
 
-            return changes;
+            return changes.All;
         }
 
         /// <summary>
@@ -76,49 +77,20 @@ namespace Siniskalc.Homm3.Data
             return restored with { CreaturesAvailable = new Numbers(creatures), UpgradedCreaturesAvailable = new Numbers(upgraded), SpellCounts = new Numbers(spells) };
         }
 
-        private static void DiffGeneral(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
+        private static void DiffGeneral(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
         {
-            if (original.Owner != current.Owner)
-            {
-                changes.Add(Homm3PendingChanges.ForCastle(
-                    current.Name,
-                    castleIndex,
-                    new Change(ChangeAreas.General, "Owner", OwnerNames<PlayerColor>.Of(original.Owner), OwnerNames<PlayerColor>.Of(current.Owner)),
-                    c => c with { Owner = original.Owner }));
-            }
+            changes.AddOwner(original.Owner, current.Owner, (c, owner) => c with { Owner = owner });
 
             if (original.BuiltThisTurn != current.BuiltThisTurn)
             {
-                changes.Add(Homm3PendingChanges.ForCastle(
-                    current.Name,
-                    castleIndex,
-                    new Change(ChangeAreas.General, "Built this turn", ChangeText.YesNo(original.BuiltThisTurn), ChangeText.YesNo(current.BuiltThisTurn)),
-                    c => c with { BuiltThisTurn = original.BuiltThisTurn }));
+                changes.Add(ChangeAreas.General, "Built this turn", ChangeText.YesNo(original.BuiltThisTurn), ChangeText.YesNo(current.BuiltThisTurn), c => c with { BuiltThisTurn = original.BuiltThisTurn });
             }
         }
 
-        private static void DiffGarrison(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
-        {
-            for (var index = 0; index < Constants.CreatureSlotCount; index++)
-            {
-                var number = index + 1;
-                var slot = index;
-                var before = original.Garrison.Slots[index];
-                var after = current.Garrison.Slots[index];
-                if (before == after)
-                {
-                    continue;
-                }
+        private static void DiffGarrison(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes) =>
+            changes.AddArmy(ChangeAreas.Garrison, original.Garrison, current.Garrison, c => c.Garrison, (c, army) => c with { Garrison = army });
 
-                changes.Add(Homm3PendingChanges.ForCastle(
-                    current.Name,
-                    castleIndex,
-                    new Change(ChangeAreas.Garrison, $"Slot {number}", SlotText(before), SlotText(after)),
-                    c => c with { Garrison = c.Garrison.WithSlot(slot, before) }));
-            }
-        }
-
-        private static void DiffDwellings(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
+        private static void DiffDwellings(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
         {
             for (var level = 0; level < original.CreaturesAvailable.Count; level++)
             {
@@ -137,15 +109,11 @@ namespace Siniskalc.Homm3.Data
                 }
 
                 var index = level;
-                changes.Add(Homm3PendingChanges.ForCastle(
-                    current.Name,
-                    castleIndex,
-                    new Change(ChangeAreas.Dwellings, $"{dwelling.Name} creatures", before.ToString("N0"), after.ToString("N0")),
-                    c => CastleBuilder.DwellingOf(c, index) == null ? c : CastleBuilder.SetCreaturesWaiting(c, index, before)));
+                changes.Add(ChangeAreas.Dwellings, $"{dwelling.Name} creatures", before.ToString("N0"), after.ToString("N0"), c => CastleBuilder.DwellingOf(c, index) == null ? c : CastleBuilder.SetCreaturesWaiting(c, index, before));
             }
         }
 
-        private static void DiffMageGuildSpells(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
+        private static void DiffMageGuildSpells(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
         {
             for (var level = 1; level <= original.MageGuildSpells.Count && level <= current.MageGuildSpells.Count; level++)
             {
@@ -159,19 +127,12 @@ namespace Siniskalc.Homm3.Data
                     }
 
                     var (spellLevel, index, originalSpell) = (level, slot, before[slot]);
-                    changes.Add(Homm3PendingChanges.ForCastle(
-                        current.Name,
-                        castleIndex,
-                        new Change(ChangeAreas.Spells, $"Mage Guild level {level}, spell {slot + 1}", before[slot].Name, after[slot].Name),
-                        c => c.MageGuildSpells.Count >= spellLevel && c.MageGuildSpells[spellLevel - 1].Count > index ? c.WithMageGuildSpell(spellLevel, index, originalSpell) : c));
+                    changes.Add(ChangeAreas.Spells, $"Mage Guild level {level}, spell {slot + 1}", before[slot].Name, after[slot].Name, c => c.MageGuildSpells.Count >= spellLevel && c.MageGuildSpells[spellLevel - 1].Count > index ? c.WithMageGuildSpell(spellLevel, index, originalSpell) : c);
                 }
             }
         }
 
-        private static string SlotText(ArmySlot<Creature>? slot) =>
-            slot == null ? ChangeText.Empty : slot.ToString();
-
-        private void DiffBuildings(int castleIndex, CastleModel original, CastleModel current, List<PendingChange> changes)
+        private void DiffBuildings(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
         {
             // The upgraded horde buildings are built by the game together with the building they belong to, so they are not listed.
             foreach (var building in current.Buildings.Except(original.Buildings).Concat(original.Buildings.Except(current.Buildings))
@@ -179,11 +140,7 @@ namespace Siniskalc.Homm3.Data
                 .OrderBy(b => b.Code))
             {
                 var built = current.HasBuilt(building);
-                changes.Add(Homm3PendingChanges.ForCastle(
-                    current.Name,
-                    castleIndex,
-                    new Change(ChangeAreas.Buildings, building.Name, built ? "not built" : "built", built ? "built" : "not built"),
-                    c => this.RestoreBuilding(c, building, original)));
+                changes.Add(ChangeAreas.Buildings, building.Name, built ? "not built" : "built", built ? "built" : "not built", c => this.RestoreBuilding(c, building, original));
             }
         }
     }

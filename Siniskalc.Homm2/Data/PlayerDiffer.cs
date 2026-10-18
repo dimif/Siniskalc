@@ -18,13 +18,9 @@ namespace Siniskalc.Homm2.Data
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int playerIndex, PlayerModel original, PlayerModel current)
         {
-            var changes = new List<PendingChange>();
             var name = current.Color.ToString();
 
-            void Add(ChangeArea area, string what, string before, string after, Func<PlayerModel, PlayerModel> revert)
-            {
-                changes.Add(Homm2PendingChanges.ForPlayer(name, playerIndex, new Change(area, what, before, after), revert));
-            }
+            var changes = new ChangeSink<PlayerModel>((change, revert) => Homm2PendingChanges.ForPlayer(name, playerIndex, change, revert));
 
             foreach (var resource in Enum.GetValues<Resource>())
             {
@@ -32,41 +28,41 @@ namespace Siniskalc.Homm2.Data
                 if (before != after)
                 {
                     var which = resource;
-                    Add(ChangeAreas.Resources, which.ToString(), before.ToString("N0"), after.ToString("N0"), p => p with { Resources = p.Resources.With(which, before) });
+                    changes.Add(ChangeAreas.Resources, which.ToString(), before.ToString("N0"), after.ToString("N0"), p => p with { Resources = p.Resources.With(which, before) });
                 }
             }
 
             if (!original.HeroIds.Equals(current.HeroIds))
             {
-                Add(ChangeAreas.Heroes, "Heroes", List(original.HeroIds), List(current.HeroIds), p => p with { HeroIds = original.HeroIds });
+                changes.Add(ChangeAreas.Heroes, "Heroes", List(original.HeroIds), List(current.HeroIds), p => p with { HeroIds = original.HeroIds });
             }
 
             if (!original.CastleIds.Equals(current.CastleIds))
             {
-                Add(ChangeAreas.Castles, "Castles", List(original.CastleIds), List(current.CastleIds), p => p with { CastleIds = original.CastleIds });
+                changes.Add(ChangeAreas.Castles, "Castles", List(original.CastleIds), List(current.CastleIds), p => p with { CastleIds = original.CastleIds });
             }
 
             if (original.DaysLeft != current.DaysLeft)
             {
-                Add(ChangeAreas.General, "Days left without a castle", DaysText(original.DaysLeft), DaysText(current.DaysLeft), p => p with { DaysLeft = original.DaysLeft });
+                changes.Add(ChangeAreas.General, "Days left without a castle", DaysText(original.DaysLeft), DaysText(current.DaysLeft), p => p with { DaysLeft = original.DaysLeft });
             }
 
             if (original.SelectedHero != current.SelectedHero)
             {
-                Add(ChangeAreas.General, "Selected hero", ChangeText.Number(original.SelectedHero), ChangeText.Number(current.SelectedHero), p => p with { SelectedHero = original.SelectedHero });
+                changes.Add(ChangeAreas.General, "Selected hero", ChangeText.Number(original.SelectedHero), ChangeText.Number(current.SelectedHero), p => p with { SelectedHero = original.SelectedHero });
             }
 
             if (original.SelectedCastle != current.SelectedCastle)
             {
-                Add(ChangeAreas.General, "Selected castle", ChangeText.Number(original.SelectedCastle), ChangeText.Number(current.SelectedCastle), p => p with { SelectedCastle = original.SelectedCastle });
+                changes.Add(ChangeAreas.General, "Selected castle", ChangeText.Number(original.SelectedCastle), ChangeText.Number(current.SelectedCastle), p => p with { SelectedCastle = original.SelectedCastle });
             }
 
             if (original.Tavern != current.Tavern)
             {
-                Add(ChangeAreas.Heroes, "Tavern", TavernText(original.Tavern), TavernText(current.Tavern), p => p with { Tavern = original.Tavern });
+                changes.Add(ChangeAreas.Heroes, "Tavern", TavernText(original.Tavern), TavernText(current.Tavern), p => p with { Tavern = original.Tavern });
             }
 
-            return changes;
+            return changes.All;
         }
 
         private static string List(Numbers ids) => ids.Count == 0 ? "none" : string.Join(", ", ids);

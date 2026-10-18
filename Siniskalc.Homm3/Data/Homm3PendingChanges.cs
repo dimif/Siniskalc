@@ -12,12 +12,12 @@ namespace Siniskalc.Homm3.Data
     {
         public static PendingChange ForHero(string heroName, int heroIndex, Change change, Func<HeroModel, HeroModel> revert)
         {
-            return new PendingChange(heroName, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).Update(revert));
+            return ChunkPendingChange.For<HeroChunk, HeroModel>(Homm3ChunkKinds.Hero, heroName, heroIndex, change, revert);
         }
 
         public static PendingChange ForCastle(string castleName, int castleIndex, Change change, Func<CastleModel, CastleModel> revert)
         {
-            return new PendingChange(castleName, change, Homm3ChunkKinds.Castle, castleIndex, history => history.CreateCastleSession(castleIndex).Update(revert));
+            return ChunkPendingChange.For<CastleChunk, CastleModel>(Homm3ChunkKinds.Castle, castleName, castleIndex, change, revert);
         }
 
         public static PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits, ObeliskVisits> revert)
@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Data
 
         public static PendingChange ForPlayer(string playerName, int playerIndex, Change change, Func<PlayerModel, PlayerModel> revert)
         {
-            return new PendingChange(playerName, change, Homm3ChunkKinds.Player, playerIndex, history => history.CreatePlayerSession(playerIndex).Update(revert));
+            return ChunkPendingChange.For<PlayerChunk, PlayerModel>(Homm3ChunkKinds.Player, playerName, playerIndex, change, revert);
         }
     }
 }

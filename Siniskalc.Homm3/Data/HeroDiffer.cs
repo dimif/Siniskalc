@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int heroIndex, HeroModel original, HeroModel current)
         {
-            var changes = new HeroChanges(current.Name, heroIndex);
+            var changes = new ChangeSink<HeroModel>((change, revert) => Homm3PendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
             DiffGeneral(original, current, changes);
             DiffPrimarySkills(original, current, changes);
@@ -32,7 +32,7 @@
             return changes.All;
         }
 
-        private static void DiffGeneral(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffGeneral(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             if (original.HeroClass != current.HeroClass)
             {
@@ -103,7 +103,7 @@
             }
         }
 
-        private static void DiffPrimarySkills(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             var before = original.PrimarySkills;
             var after = current.PrimarySkills;
@@ -129,7 +129,7 @@
             }
         }
 
-        private static void DiffSecondarySkills(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             // Skills are slots in an order, so they are shown, and reverted, as one list.
             var before = FormatSecondarySkills(original.SecondarySkills);
@@ -141,7 +141,7 @@
             }
         }
 
-        private static void DiffCreatures(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             for (var index = 0; index < Constants.CreatureSlotCount; index++)
             {
@@ -164,7 +164,7 @@
             }
         }
 
-        private static void DiffWarMachines(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffWarMachines(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             if (original.WarMachines.OrderBy(w => w.Code).SequenceEqual(current.WarMachines.OrderBy(w => w.Code)))
             {
@@ -179,7 +179,7 @@
                 h => h with { WarMachines = original.WarMachines });
         }
 
-        private static void DiffEquipped(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffEquipped(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             foreach (var slot in Enum.GetValues<ArtifactSlots>().Where(EquippedArtifacts.IsSingleSlot))
             {
@@ -203,7 +203,7 @@
             }
         }
 
-        private static void DiffBackpack(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffBackpack(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             for (var i = 0; i < Math.Min(original.Backpack.All.Count, current.Backpack.All.Count); i++)
             {
@@ -225,7 +225,7 @@
             }
         }
 
-        private static void DiffSpells(HeroModel original, HeroModel current, HeroChanges changes)
+        private static void DiffSpells(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             if (original.SpellBook.HasSpellBook != current.SpellBook.HasSpellBook)
             {
@@ -302,16 +302,5 @@
         /// <summary>
         /// The pending changes of one hero as they are found.
         /// </summary>
-        private sealed class HeroChanges(string heroName, int heroIndex)
-        {
-            private readonly List<PendingChange> changes = [];
-
-            public IReadOnlyList<PendingChange> All => this.changes;
-
-            public void Add(ChangeArea area, string description, string before, string after, Func<HeroModel, HeroModel> revert)
-            {
-                this.changes.Add(Homm3PendingChanges.ForHero(heroName, heroIndex, new Change(area, description, before, after), revert));
-            }
-        }
     }
 }

@@ -12,7 +12,7 @@ namespace Siniskalc.Core.Data
     /// <typeparam name="TModel">The model a record is read as.</typeparam>
     /// <typeparam name="TDeserializer">What reads a chunk.</typeparam>
     /// <typeparam name="TSerializer">What writes a model into a chunk.</typeparam>
-    public abstract class ModelChunkCollection<TChunk, TModel, TDeserializer, TSerializer> : ChunkCollection<TChunk>
+    public abstract class ModelChunkCollection<TChunk, TModel, TDeserializer, TSerializer> : ChunkCollection<TChunk>, IModelChunkCollection<TChunk, TModel>
         where TChunk : BytesChunk
         where TDeserializer : IDeserializer<TChunk, TModel>
         where TSerializer : ISerializer<TChunk, TModel>
@@ -36,6 +36,10 @@ namespace Siniskalc.Core.Data
         public TDeserializer Deserializer { get; }
 
         public TSerializer Serializer { get; }
+
+        IDeserializer<TChunk, TModel> IModelChunkCollection<TChunk, TModel>.ChunkDeserializer => this.Deserializer;
+
+        ISerializer<TChunk, TModel> IModelChunkCollection<TChunk, TModel>.ChunkSerializer => this.Serializer;
 
         public string GetName(int index) => this[index].Name;
 

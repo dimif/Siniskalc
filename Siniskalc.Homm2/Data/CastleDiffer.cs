@@ -17,16 +17,12 @@ namespace Siniskalc.Homm2.Data
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
-            var changes = new List<PendingChange>();
 
-            void Add(ChangeArea area, string what, string before, string after, Func<CastleModel, CastleModel> revert)
-            {
-                changes.Add(Homm2PendingChanges.ForCastle(current.Name, castleIndex, new Change(area, what, before, after), revert));
-            }
+            var changes = new ChangeSink<CastleModel>((change, revert) => Homm2PendingChanges.ForCastle(current.Name, castleIndex, change, revert));
 
             if (original.Owner != current.Owner)
             {
-                Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), c => c with { Owner = original.Owner });
+                changes.Add(ChangeAreas.General, "Owner", OwnerNames<Color>.Of(original.Owner), OwnerNames<Color>.Of(current.Owner), c => c with { Owner = original.Owner });
             }
 
             for (var slot = 0; slot < Constants.ArmySlotCount; slot++)
@@ -34,7 +30,7 @@ namespace Siniskalc.Homm2.Data
                 var (before, after, index) = (original.Garrison.Slots[slot], current.Garrison.Slots[slot], slot);
                 if (before != after)
                 {
-                    Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? ChangeText.Empty, after?.ToString() ?? ChangeText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
+                    changes.Add(ChangeAreas.Garrison, $"Slot {slot + 1}", before?.ToString() ?? ChangeText.Empty, after?.ToString() ?? ChangeText.Empty, c => c with { Garrison = c.Garrison.WithSlot(index, before) });
                 }
             }
 
@@ -44,7 +40,7 @@ namespace Siniskalc.Homm2.Data
                 if (had != has)
                 {
                     var which = building;
-                    Add(ChangeAreas.Buildings, which.ToString(), had ? "built" : "not built", has ? "built" : "not built", c => c with { Town = had ? c.Town | which : c.Town & ~which });
+                    changes.Add(ChangeAreas.Buildings, which.ToString(), had ? "built" : "not built", has ? "built" : "not built", c => c with { Town = had ? c.Town | which : c.Town & ~which });
                 }
             }
 
@@ -55,13 +51,13 @@ namespace Siniskalc.Homm2.Data
                 var number = dwelling;
                 if (!current.HasSameDwelling(original, number))
                 {
-                    Add(ChangeAreas.Dwellings, $"Dwelling {number}", DwellingText(original, number), DwellingText(current, number), c => c.WithDwellingFrom(original, number));
+                    changes.Add(ChangeAreas.Dwellings, $"Dwelling {number}", DwellingText(original, number), DwellingText(current, number), c => c.WithDwellingFrom(original, number));
                 }
             }
 
             if (!current.HasSameMageGuild(original))
             {
-                Add(ChangeAreas.MageGuild, "Mage Guild", MageGuildText(original), MageGuildText(current), c => c.WithMageGuildFrom(original));
+                changes.Add(ChangeAreas.MageGuild, "Mage Guild", MageGuildText(original), MageGuildText(current), c => c.WithMageGuildFrom(original));
             }
 
             for (var slot = 0; slot < original.GuildSpells.Count && slot < current.GuildSpells.Count; slot++)
@@ -70,11 +66,11 @@ namespace Siniskalc.Homm2.Data
                 if (before != after)
                 {
                     var level = (slot / Constants.Castle.MageGuildSlotsPerLevel) + 1;
-                    Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { GuildSpells = c.GuildSpells.With(index, before) });
+                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { GuildSpells = c.GuildSpells.With(index, before) });
                 }
             }
 
-            return changes;
+            return changes.All;
         }
 
         private static string DwellingText(CastleModel castle, int dwelling) =>

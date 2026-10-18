@@ -32,6 +32,15 @@ namespace Siniskalc.Core.Data
             this.Index = index;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditSession{TChunk, TModel}"/> class on a record whose chunks are a
+        /// <see cref="IModelChunkCollection{TChunk, TModel}"/>, which gives the deserializer and the serializer.
+        /// </summary>
+        public EditSession(SaveDocumentHistory history, ChunkKind kind, int index)
+            : this(history, kind, index, ModelsOf(history, kind).ChunkDeserializer, ModelsOf(history, kind).ChunkSerializer)
+        {
+        }
+
         public SaveDocumentHistory History { get; }
 
         public ChunkKind Kind { get; }
@@ -110,6 +119,10 @@ namespace Siniskalc.Core.Data
 
             this.History.Apply(document.WithChunk(this.Kind, this.Index, newChunk));
         }
+
+        private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
+            history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
+            ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
 
         private sealed record Cache(SaveDocument Document, TModel Model);
     }

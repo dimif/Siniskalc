@@ -15,6 +15,25 @@ namespace Siniskalc.Core.Data
             return Enum.IsDefined(result);
         }
 
+        /// <summary>
+        /// Reads a byte as a value of the enumeration, or <c>null</c> when it is none of its values (a "nobody" byte such as 0xFF, say).
+        /// </summary>
+        public static TEnum? ReadOrNull<TEnum>(byte value)
+            where TEnum : struct, Enum
+        {
+            return TryRead<TEnum>(value, out var result) ? result : null;
+        }
+
+        /// <summary>
+        /// Gives the byte to write for an optional value: the byte that is already there while it reads as <paramref name="value"/> (so a byte
+        /// the editor does not understand is left alone), otherwise the value's own, or <paramref name="none"/> for <c>null</c>.
+        /// </summary>
+        public static byte WriteKeeping<TEnum>(TEnum? value, byte existing, byte none)
+            where TEnum : struct, Enum
+        {
+            return Nullable.Equals(ReadOrNull<TEnum>(existing), value) ? existing : value is null ? none : Write(value.Value);
+        }
+
         public static byte Write<TEnum>(TEnum value)
             where TEnum : struct, Enum
         {

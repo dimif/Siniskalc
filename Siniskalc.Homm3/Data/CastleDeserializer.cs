@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Data
         public PlayerColor? DeserializeOwner(CastleChunk chunk)
         {
             // TODO:LOG info, when the byte is neither a colour nor FF: the castle "{chunk.Name}" has owner byte {value}, which reads as no owner and is kept.
-            return ByteEnum.TryRead<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner), out var owner) ? owner : null;
+            return ByteEnum.ReadOrNull<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner));
         }
 
         public MapPosition DeserializePosition(CastleChunk chunk)

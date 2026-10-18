@@ -270,12 +270,12 @@ namespace Siniskalc.Homm3.Data
         {
             var playerByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Owner]);
 
-            return ByteEnum.TryRead<PlayerColor>(playerByte, out var player) ? player : null;
+            return ByteEnum.ReadOrNull<PlayerColor>(playerByte);
         }
 
         public HeroGender? DeserializeGender(HeroChunk chunk)
         {
-            return ByteEnum.TryRead<HeroGender>(chunk.GetHeaderByteAt(this.heroOffsets[HeroOffsetName.Gender]), out var gender) ? gender : null;
+            return ByteEnum.ReadOrNull<HeroGender>(chunk.GetHeaderByteAt(this.heroOffsets[HeroOffsetName.Gender]));
         }
 
         public bool DeserializeHasSpellBook(HeroChunk chunk)

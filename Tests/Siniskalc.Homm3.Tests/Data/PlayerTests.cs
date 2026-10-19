@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var colors = game.History.Current.Players().Select(c => TestServices.PlayerDeserializer.DeserializeColor(c)).ToList();
 
-            Assert.That(colors, Is.EqualTo(Enum.GetValues<PlayerColor>()));
+            Assert.That(colors, Is.EqualTo(PlayerColor.All));
 
             // A player's struct starts with its heroes, 97 bytes before its resources, so Pink, the last, ends where the castles begin.
             var chunks = game.History.Current.Players();

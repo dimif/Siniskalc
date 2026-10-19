@@ -65,7 +65,7 @@
                 {
                     Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue | TownBuildings.Well,
                     Dwellings = c.Dwellings | Dwellings.Dwelling3 | Dwellings.Dwelling4,
-                    Creatures = Numbers.Of(20, 20, 20, 20, 20, 20),
+                    CreaturesAvailable = Numbers.Of(20, 20, 20, 20, 20, 20),
                 })),
                 Make("E10GARR", 5, "Xabran's garrison", "Xabran has a garrison of 10 Paladins, 20 Cavalry and 5 Champions; open the castle to see it.", game => Castle(game, 3, c => c with
                 {

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Runtime
+﻿namespace Siniskalc.Homm2.Tests.Runtime
 {
     using Moq;
     using Siniskalc.Core.Runtime;
@@ -12,7 +12,7 @@ namespace Siniskalc.Homm2.Tests.Runtime
     internal sealed class SaveNameTests
     {
         private string folder = string.Empty;
-        private AppServices services = null!;
+        private TestApplicationServices services = null!;
         private ShellViewModel shell = null!;
         private readonly List<string> warnings = [];
         private string? nextPath;
@@ -23,8 +23,8 @@ namespace Siniskalc.Homm2.Tests.Runtime
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-save-names-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"));
-            this.shell = this.services.CreateShellViewModel();
+            this.services = new TestApplicationServices(settingsPath: Path.Combine(this.folder, "settings.json"));
+            this.shell = this.services.CreateShell();
             this.warnings.Clear();
             var dialogs = new Mock<IFileDialogs>();
             dialogs.Setup(d => d.PickFileToSave(It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string?>())).Returns(() => this.nextPath);
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Tests.Runtime
         [TestCase("A.GX1")]
         [TestCase("my_save.gm1")]
         [TestCase("SAVE-1.GM1")]
-        public void NamesTheGameListsAreAccepted(string name) => Assert.That(this.services.Homm2.ValidateSavegameName(name), Is.Null);
+        public void NamesTheGameListsAreAccepted(string name) => Assert.That(this.services.Module.ValidateSavegameName(name), Is.Null);
 
         [TestCase("123456789.GM1")]
         [TestCase("broken_alliance_05.GM1")]
@@ -51,15 +51,11 @@ namespace Siniskalc.Homm2.Tests.Runtime
         [TestCase(".GM1")]
         [TestCase("sa+e.GM1")]
         public void NamesTheGameDoesNotListAreRefusedWithAReason(string name) =>
-            Assert.That(this.services.Homm2.ValidateSavegameName(name), Does.Contain("would not show in the game"));
+            Assert.That(this.services.Module.ValidateSavegameName(name), Does.Contain("would not show in the game"));
 
         [Test]
         public void TheExtensionIsNotCountedInTheLength() =>
-            Assert.That(this.services.Homm2.ValidateSavegameName("ABCDEFGH.GM1"), Is.Null);
-
-        [Test]
-        public void HeroesOfMightAndMagicIIIAcceptsAnyName() =>
-            Assert.That(this.services.Homm3.ValidateSavegameName("a very long name for a savegame.GM1"), Is.Null);
+            Assert.That(this.services.Module.ValidateSavegameName("ABCDEFGH.GM1"), Is.Null);
 
         [Test]
         public void SaveAsWithALongNameWarnsAndWritesNothing()

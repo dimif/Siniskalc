@@ -36,14 +36,14 @@ namespace Siniskalc.Homm2.Data
         }
 
         // TODO:LOG warning: a colour byte that is no player colour was read as nobody.
-        public static Color? ReadColor(byte code) => ByteEnum.ReadOrNull<Color>(code);
+        public static Color? ReadColor(byte code) => ByteEnumerations.Read<Color>(code);
 
-        public static byte ColorByte(Color? color, byte existing) => ByteEnum.WriteKeeping(color, existing, Empty);
+        public static byte ColorByte(Color? color, byte existing) => ByteEnumerations.WriteKeeping(color, existing, Empty);
 
         // TODO:LOG warning: a faction byte that is no faction was read as none.
-        public static Faction? ReadFaction(byte code) => ByteEnum.ReadOrNull<Faction>(code);
+        public static Faction? ReadFaction(byte code) => ByteEnumerations.Read<Faction>(code);
 
-        public static byte FactionByte(Faction? faction, byte existing) => ByteEnum.WriteKeeping(faction, existing, Empty);
+        public static byte FactionByte(Faction? faction, byte existing) => ByteEnumerations.WriteKeeping(faction, existing, Empty);
 
         /// <summary>
         /// Reads a number of a hero, a castle or a tile that is 0xFF when there is none.

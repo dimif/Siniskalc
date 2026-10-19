@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -110,7 +110,7 @@
             var isHuman = this.game.GetControl(color) == PlayerType.Human;
             return new OrderOfPlayItemViewModel(
                 color.ToString(),
-                PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color)),
+                PlayerPalette.Of(color),
                 isCurrent,
                 isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
                 isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
@@ -165,7 +165,7 @@
                     .OrderBy(c => c.Model.Name)
                     .Select(c => CastleLinks.For(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index)), CastleLinks.HeroesOf(c.Model, this.game.History.Current.Heroes(), this.openHero)))
                     .ToList();
-                this.Players.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(PlayerColors<PlayerColor>.Of(color)), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
+                this.Players.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 
             var unowned = summaries.Count(s => s.Owner == null);

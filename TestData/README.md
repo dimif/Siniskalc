@@ -1,7 +1,7 @@
-# TestData: savefiles and how they are named
+﻿# TestData: savefiles and how they are named
 
 Real savegames (and a few raw chunks) that the tests read.
-**Read this before adding or renaming a file.** `TestDataNamesTests` fails when a file breaks the rules below, and `SeriesSaves` (in `Tests/Siniskalc.Tests/Data`) finds the saves of a series by these names.
+**Read this before adding or renaming a file.** `TestDataNamesTests` fails when a file breaks the rules below, and `SeriesSaves` (in `Tests/Siniskalc.Homm3.Tests/Data`) finds the saves of a series by these names.
 
 Each folder has its own `README.md` that says what the saves hold and which tests use them.
 Add a row there for every save you add.
@@ -13,7 +13,7 @@ TestData/<Version>/<Series folder>/<series>_<NN>_<what changed>.GM1
 ```
 
 - **`Roe`, `Sod`, `Hota`** hold the saves of that game version.
-  **`Homm2`** holds Heroes of Might and Magic II saves (`.GM1`, and `.GX1` for Price of Loyalty), one folder per map. They are read by `Siniskalc.Homm2.Tests` only: the HoMM3 tests parse every `*.GM?` under `TestData`, so the Homm2 saves are not linked into `Siniskalc.Tests`. HoMM2 only lists savegames of at most 8 characters before the extension, so each Homm2 folder's README also gives the name the game used.
+  **`Homm2`** holds Heroes of Might and Magic II saves (`.GM1`, and `.GX1` for Price of Loyalty), one folder per map. They are read by `Siniskalc.Homm2.Tests` only: the HoMM3 tests parse every `*.GM?` under `TestData`, so the Homm2 saves are not linked into `Siniskalc.Homm3.Tests` (`Siniskalc.Tests`, the tests of the exe, links one save of each game). HoMM2 only lists savegames of at most 8 characters before the extension, so each Homm2 folder's README also gives the name the game used.
   `Heroes` holds raw hero chunks (`.bin`), not savegames.
 - **A series is a run of saves made one after the other** in one game, each differing from the one before by one thing.
   A series with many saves gets its own folder (`Hota/Rampart`, `Hota/Bulwark`); a short one may stay in the version folder (`Hota/castles_00_baseline`).
@@ -60,5 +60,5 @@ They are not savegames and have no number.
 2. Add its row to the folder's `README.md`: what it is, which tests use it.
 3. Refer to it in a test by its full name (`"roe_42_tazar_garrisoned"`), never by its number alone.
    A test that walks a series uses `SeriesSaves.Names(folder, series)`, which orders by number and branch letter; it does not parse the name itself.
-4. If the test project does not already copy the folder (`Tests/Siniskalc.Tests/Siniskalc.Tests.csproj`), add it there.
+4. If the test project does not already copy the folder (`Tests/Siniskalc.Homm3.Tests/Siniskalc.Homm3.Tests.csproj`), add it there.
 5. Run the whole suite, as the test of one area can be affected by a save added to another (some tests read every file in `TestData`).

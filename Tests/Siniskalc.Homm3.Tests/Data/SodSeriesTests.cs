@@ -1,4 +1,4 @@
-﻿using Siniskalc.Heroes.Entities;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -46,7 +46,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var game = Load("conflux_00_baseline");
 
             Assert.That(game.GameVersion, Is.EqualTo(GameVersion.ShadowOfDeath));
-            Assert.That(game.History.Current.Players().GetColors(), Is.EqualTo(Enum.GetValues<PlayerColor>().Where(c => c != PlayerColor.Teal)));
+            Assert.That(game.History.Current.Players().GetColors(), Is.EqualTo(PlayerColor.All.Where(c => c != PlayerColor.Teal)));
             Assert.That(game.History.Current.Castles(), Has.Count.EqualTo(10));
 
             var conflux = Castle(game, "Conflux");
@@ -101,19 +101,18 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(after.Buildings.Except(before.Buildings).Select(b => b.Name), Is.EquivalentTo(added));
         }
 
-        [TestCase("conflux_19_dwelling_1", "20,0,0,0,0,0,0", "0,0,0,0,0,0,0")]
-        [TestCase("conflux_21_dwelling_3", "20,6,6,0,0,0,0", "0,0,0,0,0,0,0")]
-        [TestCase("conflux_22_dwelling_4", "60,18,18,5,0,0,0", "0,0,0,0,0,0,0")]
-        [TestCase("conflux_25_dwelling_7", "60,18,18,5,4,2,2", "0,0,0,0,0,0,0")]
-        [TestCase("conflux_27_upg_dwelling_1", "0,18,18,5,4,2,2", "60,0,0,0,0,0,0")]
-        [TestCase("conflux_29_upg_dwelling_3", "0,0,0,15,12,6,6", "110,30,30,0,0,0,0")]
-        [TestCase("conflux_33_upg_dwelling_7", "0,0,0,0,0,0,0", "110,30,30,15,12,6,6")]
-        public void TheCreaturesWaitingInTheConfluxDwellingsFollowTheWeeklyGrowth(string save, string waiting, string upgraded)
+        [TestCase("conflux_19_dwelling_1", "20,0,0,0,0,0,0")]
+        [TestCase("conflux_21_dwelling_3", "20,6,6,0,0,0,0")]
+        [TestCase("conflux_22_dwelling_4", "60,18,18,5,0,0,0")]
+        [TestCase("conflux_25_dwelling_7", "60,18,18,5,4,2,2")]
+        [TestCase("conflux_27_upg_dwelling_1", "60,18,18,5,4,2,2")]
+        [TestCase("conflux_29_upg_dwelling_3", "110,30,30,15,12,6,6")]
+        [TestCase("conflux_33_upg_dwelling_7", "110,30,30,15,12,6,6")]
+        public void TheCreaturesWaitingInTheConfluxDwellingsFollowTheWeeklyGrowth(string save, string waiting)
         {
             var castle = Castle(Load(save), "Conflux");
 
             Assert.That(string.Join(",", castle.CreaturesAvailable), Is.EqualTo(waiting));
-            Assert.That(string.Join(",", castle.UpgradedCreaturesAvailable), Is.EqualTo(upgraded));
         }
 
         [Test]
@@ -241,18 +240,19 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(after.EquippedArtifacts.GetEquippedArtifacts().Select(t => t.Item2), Does.Contain(Artifact.TomeOfFireMagic).And.Contain(Artifact.TomeOfWaterMagic));
         }
 
-        [TestCase(PlayerColor.Red, "conflux_00_baseline", 77, 123)]
-        [TestCase(PlayerColor.Red, "conflux_07_marketplace", 77, 123)]
-        [TestCase(PlayerColor.Red, "conflux_08_resource_silo", 64, 12)]
-        [TestCase(PlayerColor.Red, "conflux_14_town_hall", 64, 12)]
-        [TestCase(PlayerColor.Red, "conflux_15_city_hall", 64, 2)]
-        [TestCase(PlayerColor.Red, "conflux_22_dwelling_4", 75, 111)]
-        [TestCase(PlayerColor.Red, "conflux_29_upg_dwelling_3", 76, 119)]
-        [TestCase(PlayerColor.Blue, "conflux_00_baseline", 31, 127)]
-        [TestCase(PlayerColor.Blue, "conflux_08_resource_silo", 16, 75)]
-        [TestCase(PlayerColor.Pink, "conflux_29_upg_dwelling_3", 118, 142)]
-        public void TheTavernsOfAllColoursOfTheGameChangeAtTheStartOfAWeek(PlayerColor color, string save, int first, int second)
+        [TestCase("Red", "conflux_00_baseline", 77, 123)]
+        [TestCase("Red", "conflux_07_marketplace", 77, 123)]
+        [TestCase("Red", "conflux_08_resource_silo", 64, 12)]
+        [TestCase("Red", "conflux_14_town_hall", 64, 12)]
+        [TestCase("Red", "conflux_15_city_hall", 64, 2)]
+        [TestCase("Red", "conflux_22_dwelling_4", 75, 111)]
+        [TestCase("Red", "conflux_29_upg_dwelling_3", 76, 119)]
+        [TestCase("Blue", "conflux_00_baseline", 31, 127)]
+        [TestCase("Blue", "conflux_08_resource_silo", 16, 75)]
+        [TestCase("Pink", "conflux_29_upg_dwelling_3", 118, 142)]
+        public void TheTavernsOfAllColoursOfTheGameChangeAtTheStartOfAWeek(string colorName, string save, int first, int second)
         {
+            var color = PlayerColor.All.Single(c => c.Name == colorName);
             var game = Load(save);
             var tavern = game.History.Current.Players().GetModel(game.History.Current.Players().FindByColor(color)).Tavern;
 

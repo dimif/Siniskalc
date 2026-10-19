@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests
         [Test]
         public void TheColourCountIsTheNumberOfPlayerColours()
         {
-            Assert.That(Constants.Player.ColorCount, Is.EqualTo(Enum.GetValues<Siniskalc.Homm3.Entities.PlayerColor>().Length));
+            Assert.That(Constants.Player.ColorCount, Is.EqualTo(Siniskalc.Homm3.Entities.PlayerColor.All.Count));
         }
 
         [Test]

@@ -1,9 +1,10 @@
-namespace Siniskalc.Heroes.Data
+﻿namespace Siniskalc.Heroes.Data
 {
     using System;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
 
     /// <summary>
@@ -21,9 +22,9 @@ namespace Siniskalc.Heroes.Data
         /// <param name="after">The owner now.</param>
         /// <param name="withOwner">Returns the model with the given owner.</param>
         public static void AddOwner<TModel, TColor>(this ChangeSink<TModel> sink, TColor? before, TColor? after, Func<TModel, TColor?, TModel> withOwner)
-            where TColor : struct, Enum
+            where TColor : AbstractEnumeration, IPlayerColor
         {
-            if (Nullable.Equals(before, after))
+            if (before == after)
             {
                 return;
             }

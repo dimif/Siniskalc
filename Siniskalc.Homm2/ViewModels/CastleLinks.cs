@@ -22,26 +22,16 @@ namespace Siniskalc.Homm2.ViewModels
         /// <param name="heroes">The heroes of the savegame, which a castle names by number.</param>
         /// <param name="open">Opens the page of the castle.</param>
         /// <param name="openHero">Opens the page of the hero with a number.</param>
-        public static CastleLinkViewModel For(CastleModel castle, IReadOnlyList<HeroModel> heroes, ICommand open, Action<int> openHero) => new(
-            castle.Name,
-            castle.Faction?.ToString() ?? string.Empty,
-            open,
-            StatusOf(castle),
-            heroes: VisitorOf(castle, heroes, openHero));
-
-        private static string StatusOf(CastleModel castle)
-        {
-            var dwellings = Enumerable.Range(1, Constants.Castle.DwellingCount).Count(d => castle.DwellingLevel(d) > 0);
-            return string.Join(" · ", new[]
-            {
-                castle.HasCastle ? "Castle" : "Town",
-                castle.MageGuildLevel > 0 ? $"Mage Guild {castle.MageGuildLevel}" : string.Empty,
-                OverviewText.Count(dwellings, "dwelling", "dwellings"),
-            }.Where(t => t.Length > 0));
-        }
+        public static CastleLinkViewModel For(CastleModel castle, IReadOnlyList<HeroModel> heroes, ICommand open, Action<int> openHero) =>
+            CastleLinkViewModel.For(
+                castle,
+                open,
+                [castle.HasCastle ? "Castle" : "Town"],
+                Enumerable.Range(1, Constants.Castle.DwellingCount).Count(d => castle.DwellingLevel(d) > 0),
+                heroes: VisitorOf(castle, heroes, openHero));
 
         private static IReadOnlyList<CastleHeroRowViewModel> VisitorOf(CastleModel castle, IReadOnlyList<HeroModel> heroes, Action<int> openHero) =>
-            castle.VisitingHero is { } id && id >= 0 && id < heroes.Count
+            castle.VisitingHeroId is { } id && id >= 0 && id < heroes.Count
                 ? [new CastleHeroRowViewModel("Visiting", heroes[id].Name, new DelegateCommand(_ => openHero(id)))]
                 : [];
     }

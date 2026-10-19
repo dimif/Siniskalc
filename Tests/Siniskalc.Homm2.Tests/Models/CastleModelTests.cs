@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Tests.Models
 {
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -37,11 +38,11 @@ namespace Siniskalc.Homm2.Tests.Models
 
             var built = before.WithDwelling(3, true);
             Assert.That(built.HasDwelling(3), Is.True);
-            Assert.That(built.Creatures[2], Is.EqualTo(20));
+            Assert.That(built.CreaturesAvailable[2], Is.EqualTo(20));
 
             var down = built.WithDwelling(3, false);
             Assert.That(down.HasDwelling(3), Is.False);
-            Assert.That(down.Creatures[2], Is.EqualTo(20));
+            Assert.That(down.CreaturesAvailable[2], Is.EqualTo(20));
             Assert.That(() => before.WithDwelling(7, true), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
@@ -112,21 +113,28 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
-        public void TheCreaturesOfAnUpgradedDwellingWaitInTheirOwnListAsInTheSaves()
+        public void ACastleTellsWhatEveryGameCastleHasThroughTheSharedInterface()
+        {
+            ICastleModel<Color, Creature> castle = Xabran();
+
+            Assert.That((castle.Name, castle.Faction?.Name, castle.Owner), Is.EqualTo(("Xabran", "Knight", (Color?)Color.Blue)));
+            Assert.That((castle.MageGuildLevel, castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((0, 6, 5)));
+        }
+
+        [Test]
+        public void TheCreaturesOfAnUpgradedDwellingAreTheSameCountAsTheOnesOfTheDwelling()
         {
             var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();
 
             var hillstone = castles.GetModel(castles.FindByName("Hillstone"));
-            Assert.That((hillstone.DwellingLevel(2), hillstone.Waiting(2), hillstone.Creatures[1]), Is.EqualTo((2, 10, 0)));
+            Assert.That((hillstone.DwellingLevel(2), hillstone.Waiting(2), hillstone.CreaturesAvailable[1]), Is.EqualTo((2, 10, 10)));
 
-            var moved = Xabran().WithWaiting(2, 7).WithDwellingLevel(2, 2);
-            Assert.That((moved.Waiting(2), moved.Creatures[1], moved.UpgradedCreatures[0]), Is.EqualTo((7, 0, 7)));
-            Assert.That(moved.WithDwellingLevel(2, 1).Waiting(2), Is.EqualTo(7));
+            var upgraded = Xabran().WithWaiting(2, 7).WithDwellingLevel(2, 2);
+            Assert.That((upgraded.Waiting(2), upgraded.CreaturesAvailable[1]), Is.EqualTo((7, 7)));
+            Assert.That(upgraded.WithDwellingLevel(2, 1).Waiting(2), Is.EqualTo(7));
 
             var dragons = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1).WithDwellingLevel(6, 2).WithWaiting(6, 3);
-            var black = dragons.WithDwellingLevel(6, 3);
-            Assert.That((black.Waiting(6), black.UpgradedCreatures[4], black.UpgradedCreatures[5]), Is.EqualTo((3, 3, 3)), "the Black Dragon waits in the sixth place and the game has 3 in the fifth as well");
-            Assert.That(black.WithDwellingLevel(6, 1).UpgradedCreatures, Is.EqualTo(Numbers.Of(0, 0, 0, 0, 0, 0)));
+            Assert.That(dragons.WithDwellingLevel(6, 3).Waiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
         }
     }
 }

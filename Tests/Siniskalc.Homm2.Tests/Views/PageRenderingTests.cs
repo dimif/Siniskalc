@@ -35,14 +35,10 @@
         [Test]
         public void ThePagesShowTheirHeaderTheirResourcesAndTheirCardsOnEveryTab()
         {
-            if (Application.Current == null)
-            {
-                var app = new App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                app.InitializeComponent();
-            }
+            TestApplication.Ensure();
 
-            var services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"));
-            var shell = services.CreateShellViewModel();
+            var services = new TestApplicationServices(settingsPath: Path.Combine(this.folder, "settings.json"));
+            var shell = services.CreateShell();
             shell.LoadGame(Saves.BrokenAllianceSave(24));
             var editor = (Homm2EditorViewModel)shell.Editor;
             var window = new ShellWindow(

@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Tests
                 Make("E14GIVE", "Corackston given to Orange through the owner box", GiveCorackston, game =>
                     $"Corackston belongs to Orange (it was Blue's). Blue lists {Towns(game, Color.Blue)}, Orange lists {Towns(game, Color.Orange)}."),
                 Make("E15LAST", "Red's only town (Bloodreign) given to Blue", GiveBloodreign, game =>
-                    $"Blue owns Bloodreign too. Red owns no town and has {game.History.Current.Players().GetModel((int)Color.Red).DaysLeft} days to get one (his heroes are still there)."),
+                    $"Blue owns Bloodreign too. Red owns no town and has {game.History.Current.Players().GetModel(Color.Red.Code).DaysLeft} days to get one (his heroes are still there)."),
                 Make("E16BLDG", "Xabran: the statue and the well taken down, the shipyard built", ChangeXabranBuildings, game =>
                     $"Xabran has: {BuildingsOf(game, "Xabran")}."),
                 Make("E17DWEL", "Whiteshield: dwelling 4 taken back from Minotaur King to Minotaur, dragons upgraded to Red, creatures set in the dwellings", ChangeWhiteshieldDwellings, game =>
@@ -284,7 +284,7 @@ namespace Siniskalc.Homm2.Tests
         private static string Towns(Game game, Color color)
         {
             var document = game.History.Current;
-            var names = document.Players().GetModel((int)color).CastleIds.Select(i => document.Castles().GetModel(i).Name).ToList();
+            var names = document.Players().GetModel(color.Code).CastleIds.Select(i => document.Castles().GetModel(i).Name).ToList();
             return $"{names.Count} ({string.Join(", ", names)})";
         }
 

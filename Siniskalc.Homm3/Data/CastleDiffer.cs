@@ -1,10 +1,10 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -14,9 +14,17 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class CastleDiffer : ICastleDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public CastleDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
-            var changes = new ChangeSink<CastleModel>((change, revert) => Homm3PendingChanges.ForCastle(current.Name, castleIndex, change, revert));
+            var changes = new ChangeSink<CastleModel>((change, revert) => this.pendingChanges.ForCastle(current.Name, castleIndex, change, revert));
 
             DiffGeneral(original, current, changes);
             DiffGarrison(original, current, changes);
@@ -56,7 +64,6 @@ namespace Siniskalc.Homm3.Data
 
             // The creatures and spells of the building's level are what the original had, whatever the build moved.
             var creatures = restored.CreaturesAvailable.ToArray();
-            var upgraded = restored.UpgradedCreaturesAvailable.ToArray();
             var spells = restored.SpellCounts.ToArray();
             if (dwellingLevel != null)
             {
@@ -65,7 +72,6 @@ namespace Siniskalc.Homm3.Data
                 if (CastleBuilder.DwellingOf(restored, level) != holderBefore)
                 {
                     creatures[level] = original.CreaturesAvailable[level];
-                    upgraded[level] = original.UpgradedCreaturesAvailable[level];
                 }
             }
             else if (building.IsMageGuild)
@@ -74,7 +80,7 @@ namespace Siniskalc.Homm3.Data
                 spells[spellLevel] = original.SpellCounts[spellLevel];
             }
 
-            return restored with { CreaturesAvailable = new Numbers(creatures), UpgradedCreaturesAvailable = new Numbers(upgraded), SpellCounts = new Numbers(spells) };
+            return restored with { CreaturesAvailable = new Numbers(creatures), SpellCounts = new Numbers(spells) };
         }
 
         private static void DiffGeneral(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)

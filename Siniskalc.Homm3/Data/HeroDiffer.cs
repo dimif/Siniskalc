@@ -1,11 +1,10 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -16,10 +15,18 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int heroIndex, HeroModel original, HeroModel current)
         {
-            var changes = new ChangeSink<HeroModel>((change, revert) => Homm3PendingChanges.ForHero(current.Name, heroIndex, change, revert));
+            var changes = new ChangeSink<HeroModel>((change, revert) => this.pendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
             DiffGeneral(original, current, changes);
             DiffPrimarySkills(original, current, changes);

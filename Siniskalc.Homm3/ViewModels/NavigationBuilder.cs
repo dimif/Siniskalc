@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -109,12 +109,12 @@
                 .OrderBy(c => c.Model.Name)
                 .ToList();
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
-            var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner.Value);
+            var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner);
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
             var node = OwnerNavGroup.Create(
                 tree,
                 OwnerNames<PlayerColor>.Of(owner),
-                PlayerPalette.Of(PlayerColors<PlayerColor>.Of(owner)),
+                PlayerPalette.Of(owner),
                 playerIndex,
                 owner != null,
                 string.Empty,

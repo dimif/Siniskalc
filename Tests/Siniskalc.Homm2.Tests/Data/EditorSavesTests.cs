@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -63,12 +63,12 @@
             var give = Open("E14GIVE");
             var corackston = give.Document.Castles().FindByName("Corackston");
             Assert.That(give.Document.Castles().GetModel(corackston).Owner, Is.EqualTo(Color.Orange));
-            Assert.That(give.Document.Players().GetModel((int)Color.Orange).CastleIds, Does.Contain(corackston));
-            Assert.That(give.Document.Players().GetModel((int)Color.Blue).CastleIds, Does.Not.Contain(corackston));
+            Assert.That(give.Document.Players().GetModel(Color.Orange.Code).CastleIds, Does.Contain(corackston));
+            Assert.That(give.Document.Players().GetModel(Color.Blue.Code).CastleIds, Does.Not.Contain(corackston));
 
             var last = Open("E15LAST").Document;
-            Assert.That(last.Players().GetModel((int)Color.Red).CastleIds, Is.Empty);
-            Assert.That(last.Players().GetModel((int)Color.Red).DaysLeft, Is.EqualTo(7));
+            Assert.That(last.Players().GetModel(Color.Red.Code).CastleIds, Is.Empty);
+            Assert.That(last.Players().GetModel(Color.Red.Code).DaysLeft, Is.EqualTo(7));
         }
 
         [Test]
@@ -81,7 +81,7 @@
             var whiteshield = Open("E17DWEL").Document.Castles().GetModel(Open("E17DWEL").Document.Castles().FindByName("Whiteshield"));
             Assert.That(whiteshield.DwellingLevel(4), Is.EqualTo(1), "the Minotaur King went back to the Minotaur");
             Assert.That(whiteshield.DwellingLevel(6), Is.EqualTo(2), "the Green Dragon became the Red Dragon");
-            Assert.That(whiteshield.Creatures[3], Is.EqualTo(30));
+            Assert.That(whiteshield.CreaturesAvailable[3], Is.EqualTo(30));
 
             var upgraded = Open("E27DWUPG").Document;
             Assert.That(Enumerable.Range(1, 6).Select(d => upgraded.Castles().GetModel(upgraded.Castles().FindByName("Xabran")).DwellingLevel(d)), Is.EqualTo(new[] { 1, 2, 1, 2, 1, 2 }));
@@ -142,7 +142,7 @@
 
             Assert.That(all.Castles().GetModel(all.Castles().FindByName("Corackston")).Owner, Is.EqualTo(Color.Orange));
             Assert.That(all.Castles().GetModel(all.Castles().FindByName("Bloodreign")).Owner, Is.EqualTo(Color.Blue));
-            Assert.That(all.Players().GetModel((int)Color.Red).DaysLeft, Is.EqualTo(7));
+            Assert.That(all.Players().GetModel(Color.Red.Code).DaysLeft, Is.EqualTo(7));
             Assert.That(all.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(all.Heroes().GetModel(7).Artifacts.IsFull, Is.True);
             Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));

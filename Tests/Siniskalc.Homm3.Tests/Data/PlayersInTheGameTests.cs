@@ -61,7 +61,7 @@ namespace Siniskalc.Homm3.Tests.Data
         private static IReadOnlyList<PlayerType> Controls(PlayerColor color, PlayerType type)
         {
             var controls = Enumerable.Repeat(PlayerType.Human, 8).ToList();
-            controls[(int)color] = type;
+            controls[color.Code] = type;
             return controls;
         }
 

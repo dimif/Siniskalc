@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -123,7 +123,7 @@
                 value => this.session.Update(h => h with { Experience = value, Level = HeroLevels.LevelOf(value) }),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
-                Enum.GetNames<Faction>(),
+                Faction.All.Select(f => f.Name).ToList(),
                 () => this.session.Current.Faction.ToString());
             this.Position = MapPointCardViewModel.ForPosition(
                 () => this.session.Current.Position,
@@ -164,7 +164,7 @@
 
         public string Name => this.hero.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.hero.Owner));
+        public string ColorHex => PlayerPalette.Of(this.hero.Owner);
 
         public string FactionName => this.hero.Faction.ToString();
 
@@ -309,7 +309,7 @@
 
             this.ArtifactsEditor?.Refresh();
 
-            var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHero == this.HeroId);
+            var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHeroId == this.HeroId);
             this.castleIndex = castle?.Index ?? -1;
             this.castleName = castle?.Name ?? string.Empty;
         }
@@ -385,7 +385,7 @@
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,
-            PlayerPalette.Of(PlayerColors<Color>.Of(this.hero?.Owner)),
+            PlayerPalette.Of(this.hero?.Owner),
             minimum,
             maximum,
             step,

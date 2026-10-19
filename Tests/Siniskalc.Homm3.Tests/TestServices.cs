@@ -1,6 +1,6 @@
 ﻿using Siniskalc.Heroes.Wpf.ViewModels;
 using Moq;
-using Siniskalc;
+using System.Text;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Heroes.Models;
@@ -21,7 +21,23 @@ namespace Siniskalc.Homm3.Tests
     /// </summary>
     internal static class TestServices
     {
-        private static readonly AppServices Services = new(settingsPath: Path.Combine(Path.GetTempPath(), "siniskalc-tests", "settings.json"));
+        private const string ApplicationName = "Siniskalc";
+
+        private static readonly SettingsStore Settings = new(Path.Combine(Path.GetTempPath(), "siniskalc-tests", "settings.json"));
+
+        private static readonly ISavefileBytesPatcher Patcher = new SavefileBytesPatcher();
+
+        private static readonly BanishingTextProvider Banishing = new();
+
+        private static readonly Homm3ModuleFactory Services = new(
+            Encoding.Latin1,
+            new FileBackupServiceProvider(Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
+            Patcher,
+            Banishing);
+
+        private static readonly AboutInfo About = new(ApplicationName, "test", "A savegame editor.", "https://example.invalid", "https://example.invalid", "MIT", []);
+
+        private static readonly HelpLinks Help = new("https://example.invalid", "https://example.invalid");
 
         public static IGameService GameService => Services.GameService;
 
@@ -40,7 +56,7 @@ namespace Siniskalc.Homm3.Tests
 
         public static IPlayerDeserializer PlayerDeserializer => Services.PlayerDeserializer;
 
-        public static ISavefileBytesPatcher BytesPatcher => Services.BytesPatcher;
+        public static ISavefileBytesPatcher BytesPatcher => Patcher;
 
         public static ISaveRegionProvider SaveRegions => Services.SaveRegionProvider;
 
@@ -56,7 +72,7 @@ namespace Siniskalc.Homm3.Tests
 
         public static EffectLineProvider EffectLines => Services.EffectLines;
 
-        public static BanishingTextProvider BanishingText => Services.BanishingText;
+        public static BanishingTextProvider BanishingText => Banishing;
 
         public static CastleBuildMessageProvider CastleBuildMessages => Services.CastleBuildMessages;
 
@@ -75,7 +91,7 @@ namespace Siniskalc.Homm3.Tests
             var recentFiles = CreateRecentFiles();
             var shownMessages = messages ?? CancellingMessages();
             var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages);
-            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), Services.About, Services.Help, shownMessages, files) { DataContext = shell };
+            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), About, Help, shownMessages, files) { DataContext = shell };
         }
 
         private static IMessageService CancellingMessages()
@@ -86,21 +102,21 @@ namespace Siniskalc.Homm3.Tests
         }
 
         /// <summary>
-        /// Returns the shell of the application as the user has it, with the editor of every game it can edit.
+        /// Returns a shell with the HoMM3 module only; the shell with both games is tested in the tests of the application.
         /// </summary>
-        public static ShellViewModel CreateShell() => Services.CreateShellViewModel();
+        public static ShellViewModel CreateShell() => new([Services.Module], Settings, ApplicationName);
 
         /// <summary>
         /// Returns a shell whose HoMM3 editor is <paramref name="editor"/>, so a test can load a game into the editor and look at the window.
         /// </summary>
-        public static ShellViewModel CreateShell(Homm3EditorViewModel editor) => new([new Homm3Module(() => editor)], Services.Settings, AppInfo.Name);
+        public static ShellViewModel CreateShell(Homm3EditorViewModel editor) => new([new Homm3Module(() => editor)], Settings, ApplicationName);
 
         /// <summary>
         /// Writes <paramref name="castle"/> to <paramref name="chunk"/>.
         /// </summary>
         public static CastleChunk SerializeCastle(CastleChunk chunk, CastleModel castle) => CastleSerializer.Serialize(chunk, castle);
 
-        public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateHomm3Editor();
+        public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateEditor();
 
         public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets);
     }

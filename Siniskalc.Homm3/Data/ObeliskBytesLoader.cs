@@ -23,7 +23,7 @@ namespace Siniskalc.Homm3.Data
             var firstColor = players[0].Color;
 
             // The struct of Red, which is in front of the first colour's if that is not Red (a table of players is a struct for every colour).
-            var red = players[0].StartIndex - (players[0].Layout.Stride * (int)firstColor);
+            var red = players[0].StartIndex - (players[0].Layout.Stride * firstColor.Code);
             var start = red - ObeliskLayout.BeforeFirstPlayer;
             if (start < 0)
             {

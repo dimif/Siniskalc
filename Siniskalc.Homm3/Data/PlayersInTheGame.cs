@@ -29,8 +29,8 @@ namespace Siniskalc.Homm3.Data
         private static bool IsOutOfTheGame(PlayerChunk player, IReadOnlyList<PlayerType>? controls)
         {
             return controls != null
-                && (int)player.Color < controls.Count
-                && controls[(int)player.Color] == PlayerType.NotInGame
+                && player.Color.Code < controls.Count
+                && controls[player.Color.Code] == PlayerType.NotInGame
                 && player.GetByteAt(PlayerLayout.HeroCount) == 0
                 && player.GetByteAt(PlayerLayout.TownCount) == 0;
         }

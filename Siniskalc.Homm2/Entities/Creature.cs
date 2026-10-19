@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Entities
+namespace Siniskalc.Homm2.Entities
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -113,7 +113,7 @@
 
         bool ICreature.IsUpgrade => this.BaseCreatureCode != null;
 
-        IFaction? ICreature.Faction => Factions<Faction>.Of(this.Faction);
+        IFaction? ICreature.Faction => this.Faction;
 
         /// <summary>
         /// Gets the dwelling flag of its castle that recruits the creature: the dwelling of a creature, the upgraded dwelling of an upgraded

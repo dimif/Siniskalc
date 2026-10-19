@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -111,7 +111,7 @@
             set => this.BuiltThisTurn = !value;
         }
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<PlayerColor>.Of(this.Castle.Owner));
+        public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
         /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".
@@ -188,7 +188,7 @@
         /// <summary>
         /// Gets where the boats of the castle appear, or that the castle is not on the coast.
         /// </summary>
-        public string ShipyardText => this.Castle.ShipyardLocation is { } tile ? $"Boats appear at X {tile.X}, Y {tile.Y}" : "Not on the coast, so no boats";
+        public string ShipyardText => this.Castle.ShipyardPosition is { } tile ? $"Boats appear at X {tile.X}, Y {tile.Y}" : "Not on the coast, so no boats";
 
         /// <summary>
         /// Gets a line about the buildings, such as "9 of 40 buildings built".
@@ -393,7 +393,7 @@
                 var upgraded = available.FirstOrDefault(b => b.Faction != null && b.Code == 37 + level);
                 if (upgraded != null && this.Castle.HasBuilt(upgraded))
                 {
-                    var count = this.Castle.UpgradedCreaturesAvailable[level];
+                    var count = this.Castle.CreaturesAvailable[level];
                     rows.Add(new DwellingRowViewModel(level + 1, upgraded.Name, "Upgraded", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: true)));
                 }
                 else if (this.Castle.HasBuilt(dwelling))
@@ -433,7 +433,7 @@
                 return upgraded != null && this.Castle.HasBuilt(upgraded) ? null : this.Castle.CreaturesAvailable[building.DwellingLevel!.Value];
             }
 
-            return building.IsUpgradedDwelling ? this.Castle.UpgradedCreaturesAvailable[building.DwellingLevel!.Value] : null;
+            return building.IsUpgradedDwelling ? this.Castle.CreaturesAvailable[building.DwellingLevel!.Value] : null;
         }
 
         private void UpdateIsDirty()

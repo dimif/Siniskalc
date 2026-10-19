@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string ControlText { get; }
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<PlayerColor>.Of(this.Color));
+        public string ColorHex => PlayerPalette.Of(this.Color);
 
         /// <summary>
         /// Gets the resources, gold first (the game lists it last, but it is what players look for first).

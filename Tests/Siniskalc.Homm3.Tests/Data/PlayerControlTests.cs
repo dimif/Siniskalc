@@ -1,4 +1,4 @@
-﻿using Siniskalc;
+using Siniskalc;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -48,10 +48,11 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(game.GetControl(PlayerColor.Tan), Is.EqualTo(PlayerType.Human));
         }
 
-        [TestCase("empire_of_the_world_01_m5w4d6", PlayerColor.Purple)]
-        [TestCase("bios_standard", PlayerColor.Red)]
-        public void TheHumanOfOtherSavegamesIsRead(string save, PlayerColor human)
+        [TestCase("empire_of_the_world_01_m5w4d6", "Purple")]
+        [TestCase("bios_standard", "Red")]
+        public void TheHumanOfOtherSavegamesIsRead(string save, string humanName)
         {
+            var human = PlayerColor.All.Single(c => c.Name == humanName);
             var game = Load(save);
 
             Assert.That((game.PlayerControls ?? []).Count(c => c == PlayerType.Human), Is.EqualTo(1));
@@ -68,12 +69,13 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(Load(save).Difficulty, Is.EqualTo(GameDifficulty.Queen));
         }
 
-        [TestCase("players_human_red", PlayerColor.Red)]
-        [TestCase("players_human_tan", PlayerColor.Tan)]
-        [TestCase("players_human_red_and_tan", PlayerColor.Red)]
-        [TestCase("empire_of_the_world_01_m5w4d6", PlayerColor.Purple)]
-        public void TheColourWhoseTurnItIsIsRead(string save, PlayerColor current)
+        [TestCase("players_human_red", "Red")]
+        [TestCase("players_human_tan", "Tan")]
+        [TestCase("players_human_red_and_tan", "Red")]
+        [TestCase("empire_of_the_world_01_m5w4d6", "Purple")]
+        public void TheColourWhoseTurnItIsIsRead(string save, string currentName)
         {
+            var current = PlayerColor.All.Single(c => c.Name == currentName);
             Assert.That(Load(save).CurrentPlayer, Is.EqualTo(current));
         }
 

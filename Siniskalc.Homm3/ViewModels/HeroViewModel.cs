@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -126,7 +126,7 @@
 
         public string Name => this.HeroModel.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<PlayerColor>.Of(this.HeroModel.Owner));
+        public string ColorHex => PlayerPalette.Of(this.HeroModel.Owner);
 
         /// <summary>
         /// Gets the owners to pick from: "Neutral" and the eight player colours.

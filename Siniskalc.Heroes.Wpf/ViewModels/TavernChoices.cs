@@ -1,5 +1,6 @@
 namespace Siniskalc.Heroes.Wpf.ViewModels
 {
+    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -19,7 +20,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="place">The place, 0 for the first.</param>
         /// <param name="heroes">Every hero of the savefile.</param>
         public static IReadOnlyList<HeroChoiceViewModel> For<TColor>(TavernHeroes tavern, int place, IEnumerable<HeroSummary<TColor>> heroes)
-            where TColor : struct
+            where TColor : class, IPlayerColor
         {
             var inPlace = tavern.Ids[place];
             var inOther = tavern.Ids[TavernHeroes.Places - 1 - place];

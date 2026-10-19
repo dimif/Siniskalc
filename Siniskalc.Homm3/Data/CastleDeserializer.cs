@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -18,6 +18,7 @@ namespace Siniskalc.Homm3.Data
         public CastleModel Deserialize(CastleChunk chunk)
         {
             var faction = this.DeserializeFaction(chunk);
+            var built = DeserializeBuildings(chunk, faction, CastleLayout.BuiltBuildingsFromNameEnd);
 
             return new CastleModel(
                 chunk.Name,
@@ -25,15 +26,14 @@ namespace Siniskalc.Homm3.Data
                 this.DeserializeOwner(chunk),
                 this.DeserializePosition(chunk),
                 this.DeserializeGarrison(chunk),
-                DeserializeBuildings(chunk, faction, CastleLayout.BuiltBuildingsFromNameEnd),
+                built,
                 this.DeserializeShipyardLocation(chunk),
                 DeserializeHeroIndex(chunk, CastleLayout.GarrisonedHero),
                 DeserializeHeroIndex(chunk, CastleLayout.VisitingHero),
                 DeserializeBuildings(chunk, faction, CastleLayout.EnabledBuildingsFromNameEnd),
                 chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
                 chunk.GetByteAt(CastleLayout.MageGuildLevel),
-                DeserializeCreaturesAvailable(chunk, CastleLayout.CreaturesAvailableFromNameEnd),
-                DeserializeCreaturesAvailable(chunk, CastleLayout.UpgradedCreaturesAvailableFromNameEnd),
+                DeserializeCreaturesAvailable(chunk, faction, built),
                 DeserializeBuildings(chunk, faction, CastleLayout.CurrentBuildingsFromNameEnd),
                 DeserializeSpellCounts(chunk),
                 DeserializeMageGuildSpells(chunk));
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Data
         public PlayerColor? DeserializeOwner(CastleChunk chunk)
         {
             // TODO:LOG info, when the byte is neither a colour nor FF: the castle "{chunk.Name}" has owner byte {value}, which reads as no owner and is kept.
-            return ByteEnum.ReadOrNull<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner));
+            return ByteEnumerations.Read<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner));
         }
 
         public MapPosition DeserializePosition(CastleChunk chunk)
@@ -131,12 +131,15 @@ namespace Siniskalc.Homm3.Data
             return levels;
         }
 
-        private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, int offsetFromNameEnd)
+        // The savefile has a count for the dwelling and one for its upgrade of each level, and keeps the count in the one that is built.
+        private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, Faction? faction, IReadOnlySet<Building> built)
         {
             var counts = new int[CastleLayout.CreatureLevelCount];
             for (var level = 0; level < counts.Length; level++)
             {
-                counts[level] = chunk.GetUInt16At(chunk.NameEnd + offsetFromNameEnd + (level * 2));
+                var upgrade = faction == null ? null : Building.FromDwellingLevel(faction, level, upgraded: true);
+                var from = upgrade != null && built.Contains(upgrade) ? CastleLayout.UpgradedCreaturesAvailableFromNameEnd : CastleLayout.CreaturesAvailableFromNameEnd;
+                counts[level] = chunk.GetUInt16At(chunk.NameEnd + from + (level * 2));
             }
 
             return new Numbers(counts);

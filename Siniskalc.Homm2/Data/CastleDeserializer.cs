@@ -1,9 +1,9 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Data;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -21,6 +21,7 @@ namespace Siniskalc.Homm2.Data
         {
             var bytes = chunk.ToArray();
             var boatX = chunk.GetByteAt(CastleLayout.Boat);
+            var dwellings = (Dwellings)chunk.GetUInt32At(CastleLayout.Dwellings);
 
             return new CastleModel(
                 chunk.GetByteAt(CastleLayout.Index),
@@ -32,9 +33,8 @@ namespace Siniskalc.Homm2.Data
                 ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance),
                 Bytes.Id(chunk.GetByteAt(CastleLayout.VisitingHero)),
                 (TownBuildings)chunk.GetUInt16At(CastleLayout.TownBuildings),
-                (Dwellings)chunk.GetUInt32At(CastleLayout.Dwellings),
-                new Numbers(Enumerable.Range(0, Constants.Castle.DwellingCount).Select(i => (int)chunk.GetUInt16At(CastleLayout.Creatures + (i * 2)))),
-                new Numbers(Enumerable.Range(0, Constants.Castle.DwellingCount).Select(i => (int)chunk.GetUInt16At(CastleLayout.UpgradedCreatures + (i * 2)))),
+                dwellings,
+                new Numbers(Enumerable.Range(1, Constants.Castle.DwellingCount).Select(d => (int)chunk.GetUInt16At(CastleLayout.CreaturesOffset(d, CastleModel.DwellingLevel(dwellings, d))))),
                 new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpells, Bytes.GuildSpellSlots).Select(Bytes.GuildSpellNumber)),
                 new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels).Select(b => (int)b)));
         }

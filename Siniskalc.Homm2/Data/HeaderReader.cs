@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -47,7 +47,7 @@
             }
 
             var turn = bytes[layout.CurrentHumanStart];
-            Color? current = turn < Constants.Table.PlayerCount && bytes[layout.HumanMaskStart + turn] != 0 ? (Color)colors[turn] : null;
+            Color? current = turn < Constants.Table.PlayerCount && bytes[layout.HumanMaskStart + turn] != 0 ? Color.All[colors[turn]] : null;
             return (controls, current);
         }
 

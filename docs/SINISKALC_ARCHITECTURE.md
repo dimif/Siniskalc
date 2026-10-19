@@ -1,4 +1,4 @@
-# Architecture
+﻿# Architecture
 
 ## Projects
 
@@ -36,7 +36,7 @@ It supplies what is specific to the game: where things sit in a savefile, how th
 **`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`), and `ViewModels` and `Views` (the overview, the player, hero and castle pages and the navigation builder). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
 
 **`Siniskalc`** is the exe, the host that starts the window.
-It holds `App` and `AppServices`, the composition root that builds all the components once and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), and `AppInfo` (the name and the web addresses).
+It holds `App` and `AppServices`, the composition root that builds all the components once and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), from the module factory that each game provides (`Homm3ModuleFactory`, `Homm2ModuleFactory`: the wiring of that game, built from what the games share), and `AppInfo` (the name and the web addresses).
 A game's data templates are merged in `App.xaml`.
 
 ```
@@ -53,7 +53,7 @@ Siniskalc.Homm3/
   Views/          XAML pages (one page per kind of edit)
   Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
 Siniskalc.Homm2/  The same folders for HoMM2
-Siniskalc/        The exe: App, AppServices (the composition root) and a module factory for each game
+Siniskalc/        The exe: App and AppServices (the composition root); each game has its module factory in its own Runtime folder
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code, used by Siniskalc.Homm3 only (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota, Homm2) and hero dumps used by the tests.
@@ -66,6 +66,8 @@ A game gets a project of its own that references the same libraries; HoMM2 is th
 A type carries no game prefix (`Siniskalc.Homm2.Models.HeroModel`): the namespace says the game, and the exe uses namespace aliases where it names both.
 
 Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests` (the blocks, rendered), and `Siniskalc.Homm3.Tests` and `Siniskalc.Homm2.Tests` (the real savegames, and the pages of each game opened in a window: `PageRenderingTests`).
+A game's tests reference only that game's project, so they build the game from its module factory and never see the other game or the exe (`Homm3LayeringTests`, `Homm2LayeringTests`).
+`Siniskalc.Tests` mirrors the exe: it references both games and tests the application as a whole (`AppServices`, the shell with both games), with a few savegames of each game.
 
 ## Adding a game
 

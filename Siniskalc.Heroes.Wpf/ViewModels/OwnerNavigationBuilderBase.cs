@@ -1,10 +1,12 @@
-namespace Siniskalc.Heroes.Wpf.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
@@ -16,7 +18,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// <typeparam name="TColor">The colour of the game, which is an enumeration of its own.</typeparam>
     public abstract class OwnerNavigationBuilderBase<TGame, TColor> : INavigationBuilder<TGame>
         where TGame : AbstractSavegame
-        where TColor : struct, Enum
+        where TColor : AbstractEnumeration, IPlayerColor
     {
         private readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> kinds;
 

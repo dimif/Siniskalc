@@ -49,25 +49,15 @@ namespace Siniskalc.Homm3.ViewModels
         /// <param name="castle">The castle.</param>
         /// <param name="open">Opens the page of the castle.</param>
         /// <param name="heroes">The heroes in the castle; see <see cref="HeroesOf"/>.</param>
-        public static CastleLinkViewModel For(CastleModel castle, ICommand open, IReadOnlyList<CastleHeroRowViewModel>? heroes = null)
-        {
-            var dwellings = castle.Buildings.Count(b => b.IsDwelling);
-            var status = string.Join(" · ", new[]
-            {
-                HallOf(castle),
-                FortOf(castle),
-                castle.MageGuildLevel > 0 ? $"Mage Guild {castle.MageGuildLevel}" : string.Empty,
-                $"{dwellings} {(dwellings == 1 ? "dwelling" : "dwellings")}",
-            }.Where(t => t.Length > 0));
-            return new CastleLinkViewModel(
-                castle.Name,
-                castle.Faction?.Name ?? string.Empty,
+        public static CastleLinkViewModel For(CastleModel castle, ICommand open, IReadOnlyList<CastleHeroRowViewModel>? heroes = null) =>
+            CastleLinkViewModel.For(
+                castle,
                 open,
-                status,
+                [HallOf(castle), FortOf(castle)],
+                castle.Buildings.Count(b => b.IsDwelling),
                 castle.HasBuilt(Building.Capitol),
                 castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name ?? string.Empty,
                 heroes);
-        }
 
         private static string HallOf(CastleModel castle)
         {

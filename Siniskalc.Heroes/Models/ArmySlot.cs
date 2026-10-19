@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Models
+﻿namespace Siniskalc.Heroes.Models
 {
     using Siniskalc.Core.Entities;
 
@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Models
     public sealed record ArmySlot<TCreature>(TCreature Creature, long Count)
         where TCreature : class, IGameEntity
     {
+        /// <inheritdoc/>
         public override string ToString() => $"{this.Creature.Name} × {this.Count:N0}";
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace Siniskalc.Homm2.Models
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -17,13 +17,12 @@
     /// <param name="Owner">The player who owns the castle, or <c>null</c> for nobody.</param>
     /// <param name="Faction">The faction of the town, or <c>null</c> when the savegame has a number that is no faction.</param>
     /// <param name="Position">The tile of the castle.</param>
-    /// <param name="Boat">The tile a ship built in the castle appears on, or <c>null</c> for a castle that is not on the coast.</param>
+    /// <param name="ShipyardPosition">The tile a ship built in the castle appears on, or <c>null</c> for a castle that is not on the coast.</param>
     /// <param name="Garrison">The five slots of the army that defends the castle when no hero is in it.</param>
-    /// <param name="VisitingHero">The number of the hero in the castle, or <c>null</c> (a hero only visits: there are no garrison heroes).</param>
+    /// <param name="VisitingHeroId">The number of the hero in the castle, or <c>null</c> (a hero only visits: there are no garrison heroes).</param>
     /// <param name="Town">The buildings that are not dwellings.</param>
     /// <param name="Dwellings">The dwellings and the level of the Mage Guild.</param>
-    /// <param name="Creatures">The creatures that wait in each of the six dwellings, while they are not upgraded.</param>
-    /// <param name="UpgradedCreatures">The creatures that wait in the dwellings 2 to 6 once they are upgraded, and in the sixth upgraded twice (an upgraded dwelling keeps its count here).</param>
+    /// <param name="CreaturesAvailable">The creatures that wait in each of the six dwellings, whether it is built as it was or upgraded: the savegame keeps the count in the list of its own or in the one of the upgraded dwellings, which is up to the level the dwelling is built to.</param>
     /// <param name="GuildSpells">The spell numbers (1 to 65, 0 for none) of the Mage Guild: four for each of the five levels, the first level first.</param>
     /// <param name="GuildSpellCounts">How many of the four spells of each level the guild shows.</param>
     public sealed record CastleModel(
@@ -32,16 +31,19 @@
         Color? Owner,
         Faction? Faction,
         MapPosition Position,
-        MapPosition? Boat,
+        MapPosition? ShipyardPosition,
         Army<Creature> Garrison,
-        int? VisitingHero,
+        int? VisitingHeroId,
         TownBuildings Town,
         Dwellings Dwellings,
-        Numbers Creatures,
-        Numbers UpgradedCreatures,
+        Numbers CreaturesAvailable,
         Numbers GuildSpells,
         Numbers GuildSpellCounts)
+        : ICastleModel<Color, Creature>
     {
+        /// <inheritdoc/>
+        IFaction? ICastleModel<Color, Creature>.Faction => this.Faction;
+
         private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
 
         /// <summary>
@@ -69,17 +71,23 @@
         public static int MaxDwellingLevel(Faction? faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction.Value).Count(c => c.Tier == dwelling), 1, 3);
+            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction).Count(c => c.Tier == dwelling), 1, 3);
         }
 
         /// <summary>
         /// Gets how far dwelling <paramref name="dwelling"/> (1 to 6) is built: 0 when it is not, 1 for the dwelling, 2 once it is upgraded and
         /// 3 for the sixth when it is upgraded twice.
         /// </summary>
-        public int DwellingLevel(int dwelling)
+        public int DwellingLevel(int dwelling) => DwellingLevel(this.Dwellings, dwelling);
+
+        /// <summary>
+        /// Gets how far dwelling <paramref name="dwelling"/> (1 to 6) is built in a mask of the dwellings: 0 when it is not, 1 for the dwelling,
+        /// 2 once it is upgraded and 3 for the sixth when it is upgraded twice.
+        /// </summary>
+        public static int DwellingLevel(Dwellings dwellings, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            var bits = (uint)this.Dwellings;
+            var bits = (uint)dwellings;
             return dwelling == 6 && (bits & (uint)Dwellings.Dwelling6UpgradedTwice) != 0 ? 3
                 : dwelling >= 2 && (bits & (0x100u << (dwelling - 1))) != 0 ? 2
                 : (bits & (0x08u << (dwelling - 1))) != 0 ? 1
@@ -94,17 +102,10 @@
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
             var clear = DwellingBits(dwelling);
-            var upgraded = this.UpgradedCreatures;
-            foreach (var place in UpgradedPlaces(dwelling))
-            {
-                upgraded = upgraded.With(place, source.UpgradedCreatures[place]);
-            }
-
             return this with
             {
                 Dwellings = (Dwellings)(((uint)this.Dwellings & ~clear) | ((uint)source.Dwellings & clear)),
-                Creatures = this.Creatures.With(dwelling - 1, source.Creatures[dwelling - 1]),
-                UpgradedCreatures = upgraded,
+                CreaturesAvailable = this.CreaturesAvailable.With(dwelling - 1, source.CreaturesAvailable[dwelling - 1]),
             };
         }
 
@@ -176,26 +177,7 @@
                 2 => 0x100u << (dwelling - 1),
                 _ => (uint)Dwellings.Dwelling6UpgradedTwice,
             };
-            var waiting = this.Waiting(dwelling);
-            var changed = this with { Dwellings = (Dwellings)(((uint)this.Dwellings & ~clear) | bit) };
-            if (level == 0)
-            {
-                return changed;
-            }
-
-            // the count moves with the dwelling: an upgraded one keeps it in its own list and leaves 0 in the other places
-            var moved = changed.WithWaiting(dwelling, waiting);
-            var plain = level == 1 ? moved.Creatures : moved.Creatures.With(dwelling - 1, 0);
-            var upgraded = moved.UpgradedCreatures;
-            for (var place = 0; place < upgraded.Count; place++)
-            {
-                if (dwelling >= 2 && (level == 1 || place != UpgradedPlace(dwelling, level)) && (place == dwelling - 2 || (dwelling == 6 && place == 5)))
-                {
-                    upgraded = upgraded.With(place, 0);
-                }
-            }
-
-            return moved with { Creatures = plain, UpgradedCreatures = WithMarker(upgraded, level) };
+            return this with { Dwellings = (Dwellings)(((uint)this.Dwellings & ~clear) | bit) };
         }
 
         /// <summary>
@@ -205,43 +187,17 @@
         public CastleModel WithDwelling(int dwelling, bool built) =>
             built ? (this.DwellingLevel(dwelling) > 0 ? this : this.WithDwellingLevel(dwelling, 1)) : this.WithDwellingLevel(dwelling, 0);
 
-        // The place of the upgraded list that the game also fills for the dragons upgraded twice (3 in the saves it made, 0 in E35 where the dragons did not show).
-        private const int SecondUpgradeMarker = 4;
-        private const int SecondUpgradeMarkerValue = 3;
-
-        // E35, E36, E37: the game shows no dragons of a dwelling upgraded twice while the fifth place is 0.
-        private static Numbers WithMarker(Numbers upgraded, int level) =>
-            level >= 3 && upgraded[SecondUpgradeMarker] == 0 ? upgraded.With(SecondUpgradeMarker, SecondUpgradeMarkerValue) : upgraded;
-
         // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
         private static uint DwellingBits(int dwelling) =>
             (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
-
-        // The places of the list of upgraded creatures that belong to a dwelling: its own and, for the sixth, the one of the second upgrade.
-        private static IEnumerable<int> UpgradedPlaces(int dwelling)
-        {
-            if (dwelling >= 2)
-            {
-                yield return dwelling - 2;
-            }
-
-            if (dwelling == 6)
-            {
-                yield return 5;
-            }
-        }
-
-        // Where the creatures of an upgraded dwelling wait: the dwellings 2 to 6 have a place each, the dragons upgraded a second time the sixth
-        // (E34DWUP2: the Black Dragon had none in the fifth).
-        private static int UpgradedPlace(int dwelling, int level) => level >= 3 ? 5 : dwelling - 2;
 
         /// <summary>
         /// Gets the creatures that wait in dwelling <paramref name="dwelling"/> (1 to 6), wherever the savegame keeps them for its level.
         /// </summary>
         public int Waiting(int dwelling)
         {
-            var level = this.DwellingLevel(dwelling);
-            return level >= 2 ? this.UpgradedCreatures[UpgradedPlace(dwelling, level)] : this.Creatures[dwelling - 1];
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            return this.CreaturesAvailable[dwelling - 1];
         }
 
         /// <summary>
@@ -249,13 +205,8 @@
         /// </summary>
         public CastleModel WithWaiting(int dwelling, int count)
         {
-            var level = this.DwellingLevel(dwelling);
-            if (level < 2)
-            {
-                return this with { Creatures = this.Creatures.With(dwelling - 1, count) };
-            }
-
-            return this with { UpgradedCreatures = WithMarker(this.UpgradedCreatures.With(UpgradedPlace(dwelling, level), count), level) };
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            return this with { CreaturesAvailable = this.CreaturesAvailable.With(dwelling - 1, count) };
         }
 
         /// <summary>

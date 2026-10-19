@@ -84,6 +84,6 @@ namespace Siniskalc.Homm2.Models
             return hash.ToHashCode();
         }
 
-        private static int Bit(Color color) => 1 << (int)color;
+        private static int Bit(Color color) => 1 << color.Code;
     }
 }

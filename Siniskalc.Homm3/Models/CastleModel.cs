@@ -4,6 +4,7 @@
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
@@ -19,7 +20,7 @@
     /// Every building the castle has built, including the ones an upgrade has replaced (a castle with a capitol also has the
     /// village, town and city hall). Buildings of the savefile that this editor does not know are left out.
     /// </param>
-    /// <param name="ShipyardLocation">The tile where the castle's boats appear, or <c>null</c> if the castle is not on the coast. Shown on the same level as the castle.</param>
+    /// <param name="ShipyardPosition">The tile where the castle's boats appear, or <c>null</c> if the castle is not on the coast. Shown on the same level as the castle.</param>
     /// <param name="GarrisonedHeroId">The id (see <see cref="HeroModel.Id"/>) of the hero inside the castle, or <c>null</c>.</param>
     /// <param name="VisitingHeroId">The id of the hero at the gate of the castle, or <c>null</c>.</param>
     /// <param name="CurrentBuildings">The buildings that stand in the castle now: <paramref name="Buildings"/> without the ones an upgrade replaced.</param>
@@ -33,10 +34,10 @@
     /// <param name="BuiltThisTurn">Whether something has been built in the castle this turn.</param>
     /// <param name="MageGuildLevel">The level of the Mage Guild, 0 when there is none.</param>
     /// <param name="CreaturesAvailable">
-    /// The creatures waiting in the dwellings, seven counts for the creatures of level 1 to 7. Once a dwelling is upgraded
-    /// its count is in <paramref name="UpgradedCreaturesAvailable"/>.
+    /// The creatures waiting in the dwellings, seven counts for the creatures of level 1 to 7. The count is shared by the dwelling and its
+    /// upgrade: 10 waiting means 10 of the creature or of its upgrade, in any proportion. The savefile keeps it in the slot of the dwelling
+    /// or in the one of the upgrade, whichever is built.
     /// </param>
-    /// <param name="UpgradedCreaturesAvailable">The same for the upgraded dwellings.</param>
     public sealed record CastleModel(
         string Name,
         Faction? Faction,
@@ -44,18 +45,21 @@
         MapPosition Position,
         Army<Creature> Garrison,
         IReadOnlySet<Building> Buildings,
-        MapPosition? ShipyardLocation,
+        MapPosition? ShipyardPosition,
         int? GarrisonedHeroId,
         int? VisitingHeroId,
         IReadOnlySet<Building> EnabledBuildings,
         bool BuiltThisTurn,
         int MageGuildLevel,
         Numbers CreaturesAvailable,
-        Numbers UpgradedCreaturesAvailable,
         IReadOnlySet<Building> CurrentBuildings,
         Numbers SpellCounts,
         IReadOnlyList<IReadOnlyList<Spell>> MageGuildSpells)
+        : ICastleModel<PlayerColor, Creature>
     {
+        /// <inheritdoc/>
+        IFaction? ICastleModel<PlayerColor, Creature>.Faction => this.Faction;
+
         /// <summary>
         /// Returns whether the castle has built <paramref name="building"/>, or a building that replaced it.
         /// </summary>

@@ -1,5 +1,7 @@
 namespace Siniskalc.Heroes.Models
 {
+    using Siniskalc.Heroes.Entities;
+
     /// <summary>
     /// The few things about a hero that the navigation tree and the lists of heroes show.
     /// </summary>
@@ -11,7 +13,7 @@ namespace Siniskalc.Heroes.Models
     /// <param name="Kind">What the hero is: its class in the games that have classes, its faction in the others.</param>
     /// <param name="Level">The hero's level.</param>
     public sealed record HeroSummary<TColor>(int Index, int HeroId, string Name, TColor? Owner, string Kind, int Level)
-        where TColor : struct
+        where TColor : class, IPlayerColor
     {
         /// <summary>
         /// Gets what to show under the name of the hero: its kind and level.

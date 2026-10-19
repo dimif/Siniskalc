@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -123,7 +123,7 @@
         /// <summary>
         /// Returns the colour of the player whose colour byte is <paramref name="colorByte"/>, which is the colour plus one.
         /// </summary>
-        public static PlayerColor ColorFromByte(byte colorByte) => (PlayerColor)(colorByte - 1);
+        public static PlayerColor ColorFromByte(byte colorByte) => PlayerColor.FromByte((byte)(colorByte - 1)) ?? PlayerColor.All[0];
 
         public static int OffsetOf(Resource resource) => ResourcesOffset + ((int)resource * ResourceSize);
     }

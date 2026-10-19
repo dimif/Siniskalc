@@ -307,7 +307,7 @@ HoMM3 `CastleModel`: name, faction, owner, position, garrison, a set of `Buildin
 
 **What is the same and can be shared as values:**
 - `MageGuild<TSpell>(int Level, spells by level, counts by level)` in `Heroes.Models`: the guild level, the spells held in each level's slots and how many slots each level shows. Both pages have a level selector and per-level slot lists (`GuildLevelViewModel` / `MageGuildLevelRowViewModel`), so a shared view model could follow.
-- `CreatureStock(Numbers Base, Numbers Upgraded)`: the creatures waiting in each dwelling level, in the base and upgraded forms.
+- `CreatureStock`: now simply `CreaturesAvailable`, one count for each dwelling level in both games. The models no longer keep the dwelling and its upgrade apart (the game shares the count); the serializers choose the slot of the savefile, so nothing is left to share but the `Numbers`.
 Both are values the castle record holds, so each game's castle changes one field type, not its shape.
 **Value:** medium; do it when the castle page's mage guild and available-creatures cards are shared as view models.
 

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Models
+namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Linq;
@@ -98,7 +98,7 @@
         /// <summary>
         /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
         /// </summary>
-        public Faction Faction => (Faction)Math.Min(this.Id / Constants.Hero.PerFaction, (int)Faction.Necromancer);
+        public Faction Faction => Faction.All[Math.Min(this.Id / Constants.Hero.PerFaction, Faction.All.Count - 1)];
 
         /// <summary>
         /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.

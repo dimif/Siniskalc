@@ -1,4 +1,4 @@
-﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -52,7 +52,6 @@ namespace Siniskalc.Homm3.Tests.Data
             var castle = Lakenshire("baseline");
 
             Assert.That(castle.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 0, 0, 0, 0 }));
-            Assert.That(castle.UpgradedCreaturesAvailable, Is.All.EqualTo(0));
         }
 
         [Test]
@@ -75,18 +74,17 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void UpgradingADwellingMovesItsCreaturesToTheUpgradedList()
+        public void UpgradingADwellingKeepsItsCreatures()
         {
             var nymphs = Lakenshire("upg_nymph_waterfall");
             var shack = Lakenshire("upg_shack");
 
             Assert.That(nymphs.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CoveUpgNymphWaterfall }));
-            Assert.That(nymphs.CreaturesAvailable, Is.EqualTo(new[] { 0, 9, 0, 0, 0, 0, 0 }));
-            Assert.That(nymphs.UpgradedCreaturesAvailable, Is.EqualTo(new[] { 16, 0, 0, 0, 0, 0, 0 }));
+            Assert.That(nymphs.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 0, 0, 0, 0 }));
             Assert.That(Current("upg_nymph_waterfall"), Does.Contain(Building.CoveUpgNymphWaterfall).And.Not.Contain(Building.CoveNymphWaterfall));
 
             Assert.That(shack.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CoveUpgShack }));
-            Assert.That(shack.UpgradedCreaturesAvailable, Is.EqualTo(new[] { 0, 9, 0, 0, 0, 0, 0 }));
+            Assert.That(shack.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 0, 0, 0, 0 }));
         }
 
         [Test]
@@ -99,7 +97,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var expected = new[] { 0, 1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 };
             Assert.That(castle.Buildings.Select(b => (int)b.Code), Is.EquivalentTo(expected));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(4));
-            Assert.That(castle.UpgradedCreaturesAvailable, Is.EqualTo(new[] { 16, 9, 7, 4, 3, 2, 1 }));
+            Assert.That(castle.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 7, 4, 3, 2, 1 }));
             Assert.That(castle.Buildings, Does.Contain(Building.CoveUpgMaelstrom).And.Contain(Building.MagesGuild4).And.Not.Contain(Building.MagesGuild5));
         }
 
@@ -166,9 +164,9 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
             Assert.That(castle.Owner, Is.Null);
             Assert.That(castle.Buildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
-            Assert.That(castle.ShipyardLocation, Is.EqualTo(new MapPosition(55, 16, 0)));
+            Assert.That(castle.ShipyardPosition, Is.EqualTo(new MapPosition(55, 16, 0)));
             Assert.That(castle.EnabledBuildings, Does.Contain(Building.Shipyard));
-            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").ShipyardLocation, Is.Null);
+            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").ShipyardPosition, Is.Null);
             Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(Building.Shipyard));
             Assert.That(disabled.EnabledBuildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
             Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(Building.Fort));

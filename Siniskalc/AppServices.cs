@@ -23,7 +23,7 @@
     public sealed class AppServices
     {
         private readonly Homm3ModuleFactory homm3;
-        private readonly Homm2ModuleFactory homm2;
+        private readonly H2Runtime.Homm2ModuleFactory homm2;
 
         /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
@@ -45,7 +45,7 @@
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
 
             this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
-            this.homm2 = new Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
+            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
         }
 
         public SettingsStore Settings { get; }

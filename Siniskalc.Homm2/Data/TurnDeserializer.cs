@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
         public TurnModel Deserialize(MapObjectChunk chunk)
         {
             var record = chunk.GetByteAt(0);
-            return new TurnModel(chunk.Index, record, record < Constants.Table.PlayerCount ? (Color)PlayerRecordOrder.Unpack(chunk.Tag, record) : null);
+            return new TurnModel(chunk.Index, record, record < Constants.Table.PlayerCount ? Color.All[PlayerRecordOrder.Unpack(chunk.Tag, record)] : null);
         }
     }
 }

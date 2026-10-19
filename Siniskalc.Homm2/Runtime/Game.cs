@@ -48,12 +48,12 @@ namespace Siniskalc.Homm2.Runtime
         /// <summary>
         /// Gets the number of the record of a player in the table of players, which is what the savegame keeps of whose turn it is.
         /// </summary>
-        public int RecordOf(Color color) => (this.History.Current.Players()[(int)color].StartIndex - this.Layout.PlayerTableStart) / PlayerLayout.RecordSize;
+        public int RecordOf(Color color) => (this.History.Current.Players()[color.Code].StartIndex - this.Layout.PlayerTableStart) / PlayerLayout.RecordSize;
 
         /// <summary>
         /// Gets who plays a colour: a human, the computer, or nobody (the colour is not in the game). <c>null</c> when the savegame does not say.
         /// </summary>
-        public PlayerType? GetControl(Color color) => this.Metadata.PlayerControls is { } controls && (int)color < controls.Count ? controls[(int)color] : null;
+        public PlayerType? GetControl(Color color) => this.Metadata.PlayerControls is { } controls && color.Code < controls.Count ? controls[color.Code] : null;
 
         public MapHeader Map => this.Metadata.Map;
 

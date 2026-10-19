@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryRaceHasNineCreaturesInSixLevelsAndTheNeutralOnesHaveNoRace()
         {
-            foreach (var faction in Enum.GetValues<Faction>())
+            foreach (var faction in Faction.All)
             {
                 var creatures = Creature.ForFaction(faction);
 

@@ -1,9 +1,0 @@
-namespace Siniskalc.Heroes.Entities
-{
-    /// <summary>
-    /// A colour of a player, for what works with the colours of every game.
-    /// </summary>
-    /// <param name="Name">The name of the colour.</param>
-    /// <param name="Code">The number the savegame holds for it.</param>
-    public sealed record PlayerColorInfo(string Name, byte Code) : IPlayerColor;
-}

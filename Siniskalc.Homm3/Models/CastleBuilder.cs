@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using System;
     using System.Collections.Generic;
@@ -251,7 +251,7 @@
         public static int? CreaturesWaiting(CastleModel castle, int level)
         {
             var dwelling = DwellingOf(castle, level);
-            return dwelling == null ? null : dwelling.IsUpgradedDwelling ? castle.UpgradedCreaturesAvailable[level] : castle.CreaturesAvailable[level];
+            return dwelling == null ? null : castle.CreaturesAvailable[level];
         }
 
         /// <summary>
@@ -267,11 +267,12 @@
                 nameof(count),
                 $"A dwelling holds {Constants.Castle.MinDwellingCreatures} to {Constants.Castle.MaxDwellingCreatures} creatures.");
 
-            var dwelling = DwellingOf(castle, level) ?? throw new GameRuleException($"No dwelling is built for the creatures of level {level + 1}.");
+            if (DwellingOf(castle, level) == null)
+            {
+                throw new GameRuleException($"No dwelling is built for the creatures of level {level + 1}.");
+            }
 
-            return dwelling.IsUpgradedDwelling
-                ? castle with { UpgradedCreaturesAvailable = castle.UpgradedCreaturesAvailable.With(level, count) }
-                : castle with { CreaturesAvailable = castle.CreaturesAvailable.With(level, count) };
+            return castle with { CreaturesAvailable = castle.CreaturesAvailable.With(level, count) };
         }
 
         /// <summary>
@@ -288,19 +289,18 @@
             var buildings = castle.Buildings.ToHashSet();
             var current = castle.CurrentBuildings.ToHashSet();
             var creatures = castle.CreaturesAvailable.ToArray();
-            var upgraded = castle.UpgradedCreaturesAvailable.ToArray();
             var spells = castle.SpellCounts.ToArray();
 
             if (built)
             {
-                Add(castle.Faction, building, buildings, current, creatures, upgraded, spells);
+                Add(castle.Faction, building, buildings, current, creatures, spells);
 
                 // What the game adds by itself once the building and what it works with both exist.
                 foreach (var automatic in Building.ForFaction(castle.Faction).Where(b => IsAutomatic(b) && !buildings.Contains(b)))
                 {
                     if (automatic.Prerequisites.All(buildings.Contains))
                     {
-                        Add(castle.Faction, automatic, buildings, current, creatures, upgraded, spells);
+                        Add(castle.Faction, automatic, buildings, current, creatures, spells);
                     }
                 }
             }
@@ -311,7 +311,7 @@
 
                 foreach (var gone in removed)
                 {
-                    Remove(gone, buildings, current, creatures, upgraded, spells);
+                    Remove(gone, buildings, current, creatures, spells);
                 }
 
                 // The buildings that were hidden by the removed ones stand again, unless another building still covers them.
@@ -329,7 +329,6 @@
                 Buildings = buildings,
                 CurrentBuildings = current,
                 CreaturesAvailable = new Numbers(creatures),
-                UpgradedCreaturesAvailable = new Numbers(upgraded),
                 SpellCounts = new Numbers(spells),
                 MageGuildLevel = mageGuild,
             };
@@ -359,7 +358,7 @@
             return result;
         }
 
-        private static void Add(Faction faction, Building building, HashSet<Building> buildings, HashSet<Building> current, int[] creatures, int[] upgraded, int[] spells)
+        private static void Add(Faction faction, Building building, HashSet<Building> buildings, HashSet<Building> current, int[] creatures, int[] spells)
         {
             // A building that an upgrade already took the place of does not stand when it is built later.
             var covered = buildings.SelectMany(Replaced).Contains(building);
@@ -377,20 +376,13 @@
                 var creature = Creature.ForFaction(faction).FirstOrDefault(c => c.Tier == level + 1);
                 creatures[level] = creature?.Info.Growth ?? 0;
             }
-            else if (building.IsUpgradedDwelling)
-            {
-                // The creatures waiting move to the upgraded dwelling.
-                var level = building.DwellingLevel!.Value;
-                upgraded[level] = creatures[level];
-                creatures[level] = 0;
-            }
             else if (building.IsMageGuild)
             {
                 spells[building.MageGuildLevel!.Value - 1] = Building.MageGuildLevelCount - building.MageGuildLevel.Value + 1;
             }
         }
 
-        private static void Remove(Building building, HashSet<Building> buildings, HashSet<Building> current, int[] creatures, int[] upgraded, int[] spells)
+        private static void Remove(Building building, HashSet<Building> buildings, HashSet<Building> current, int[] creatures, int[] spells)
         {
             buildings.Remove(building);
             current.Remove(building);
@@ -398,12 +390,6 @@
             if (building.IsDwelling)
             {
                 creatures[building.DwellingLevel!.Value] = 0;
-            }
-            else if (building.IsUpgradedDwelling)
-            {
-                var level = building.DwellingLevel!.Value;
-                creatures[level] = upgraded[level];
-                upgraded[level] = 0;
             }
             else if (building.IsMageGuild)
             {

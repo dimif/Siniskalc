@@ -14,17 +14,23 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryColourOfTheGameIsAnIPlayerColorWithItsNameAndCodeAndItsOwnHexValue()
         {
-            Assert.That(PlayerColors<Color>.All.Select(c => (c.Name, c.Code)), Is.EqualTo(Enum.GetValues<Color>().Select(c => (c.ToString(), (byte)c))));
-            Assert.That(PlayerColors<Color>.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
-            Assert.That(PlayerColors<Color>.Of(null), Is.Null);
+            Assert.That(Color.All.Cast<IPlayerColor>().Select(c => (c.Name, c.Code)), Is.EqualTo(Color.All.Select(c => (c.ToString(), c.Code))));
+            Assert.That(Color.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
+            Assert.That(PlayerPalette.Of(null), Is.EqualTo(PlayerPalette.NoPlayer));
+        }
+
+        [Test]
+        public void AColourIsFoundByItsCodeAndANumberThatIsNoColourIsNone()
+        {
+            Assert.That(Color.FromByte(Color.All[1].Code), Is.SameAs(Color.All[1]));
+            Assert.That(Color.FromByte(200), Is.Null);
         }
 
         [Test]
         public void EveryFactionOfTheGameIsAnIFactionWithItsNameAndCode()
         {
-            Assert.That(Factions<Faction>.All.Select(f => (f.Name, f.Code)), Is.EqualTo(Enum.GetValues<Faction>().Select(f => (f.ToString(), (byte)f))));
-            Assert.That(Factions<Faction>.Of(null), Is.Null);
-            Assert.That(Factions<Faction>.Of(Faction.Wizard)!.Name, Is.EqualTo("Wizard"));
+            Assert.That(Faction.All.Cast<IFaction>().Select(f => (f.Name, f.Code)), Is.EqualTo(Faction.All.Select(f => (f.ToString(), f.Code))));
+            Assert.That(Faction.FromByte(4), Is.SameAs(Faction.Wizard));
         }
 
         [Test]

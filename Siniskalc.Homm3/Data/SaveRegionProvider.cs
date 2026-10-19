@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -159,7 +159,7 @@
             }
 
             const string group = "Game setup";
-            var colors = Enum.GetValues<PlayerColor>();
+            var colors = PlayerColor.All;
             var parts = new List<ByteRegion>
             {
                 new(

@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// A structure of a town. The <see cref="AbstractEnumeration.Code"/> is the position of the building's bit in the

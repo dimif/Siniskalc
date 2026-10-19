@@ -127,15 +127,14 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheUpgradedDwellingHoldsItsOwnCount()
+        public void TheUpgradedDwellingHoldsTheSameCountAsTheDwelling()
         {
             this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgCentaurStables));
-            var moved = this.still.Current.UpgradedCreaturesAvailable[0];
+            var moved = this.still.Current.CreaturesAvailable[0];
 
             this.still.Update(c => CastleBuilder.SetCreaturesWaiting(c, 0, moved + 10));
 
-            Assert.That(this.still.Current.UpgradedCreaturesAvailable[0], Is.EqualTo(moved + 10));
-            Assert.That(this.still.Current.CreaturesAvailable[0], Is.EqualTo(0));
+            Assert.That(this.still.Current.CreaturesAvailable[0], Is.EqualTo(moved + 10));
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Upg. Centaur Stables" }));
         }
 

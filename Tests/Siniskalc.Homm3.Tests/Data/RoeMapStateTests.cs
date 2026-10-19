@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -229,7 +229,6 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var stronghold = Castle(before, "7_Strong");
             var withHero = Castle(after, "7_Strong");
-            Assert.That(withHero.UpgradedCreaturesAvailable, Is.EquivalentTo(stronghold.UpgradedCreaturesAvailable));
             Assert.That(withHero.CreaturesAvailable, Is.EquivalentTo(stronghold.CreaturesAvailable));
             Assert.That(withHero.Buildings, Is.EquivalentTo(stronghold.Buildings));
         }
@@ -242,12 +241,12 @@ namespace Siniskalc.Homm3.Tests.Data
             // Crag Hack visits with Arms of Legion (described as +2 on level 5) and Head of Legion (+1 on level 6), is ahead of them by 3 and 1 on those
             // two levels. The one extra creature on level 5 is not explained. Nothing of this is stored: the growth is worked out when the week begins.
             var week = Load("roe_76_tazar_before_dig");
-            var stronghold = Castle(week, "7_Strong").UpgradedCreaturesAvailable;
+            var stronghold = Castle(week, "7_Strong").CreaturesAvailable;
 
             Assert.That(Castle(week, "7_Strong").VisitingHeroId, Is.EqualTo(102));
             foreach (var other in new[] { "6_Dung", "8_Fort", "5_necropolis" })
             {
-                var growth = Castle(week, other).UpgradedCreaturesAvailable;
+                var growth = Castle(week, other).CreaturesAvailable;
                 Assert.That(stronghold[4] - growth[4], Is.EqualTo(3), other);
                 Assert.That(stronghold[5] - growth[5], Is.EqualTo(1), other);
                 Assert.That(stronghold[6] - growth[6], Is.EqualTo(0), other);

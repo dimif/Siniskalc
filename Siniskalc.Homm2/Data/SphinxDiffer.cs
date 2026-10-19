@@ -1,9 +1,10 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
 
@@ -12,6 +13,14 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class SphinxDiffer : IMapObjectDiffer<SphinxModel>
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public SphinxDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         private static readonly string[] Resources = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"];
 
         public IReadOnlyList<PendingChange> Diff(int index, SphinxModel original, SphinxModel current)
@@ -19,7 +28,7 @@ namespace Siniskalc.Homm2.Data
             var changes = new List<PendingChange>();
 
             void Add(string what, string before, string after, System.Func<SphinxModel, SphinxModel> revert) =>
-                changes.Add(Homm2PendingChanges.ForMapObject<SphinxModel>(Homm2ChunkKinds.Sphinxes, current.Name, index, new Change(ChangeAreas.General, what, before, after), revert));
+                changes.Add(this.pendingChanges.ForMapObject<SphinxModel>(Homm2ChunkKinds.Sphinxes, current.Name, index, new Change(ChangeAreas.General, what, before, after), revert));
 
             if (original.IsActive != current.IsActive)
             {

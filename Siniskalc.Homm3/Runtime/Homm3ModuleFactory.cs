@@ -1,4 +1,4 @@
-namespace Siniskalc
+namespace Siniskalc.Homm3.Runtime
 {
     using System.Text;
     using Siniskalc.Core.Data;
@@ -6,7 +6,6 @@ namespace Siniskalc
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Homm3.Runtime;
     using Siniskalc.Homm3.ViewModels;
 
     /// <summary>
@@ -34,18 +33,19 @@ namespace Siniskalc
             this.CastleDeserializer = new CastleDeserializer();
             this.CastleSerializer = new SafeCastleSerializer();
             this.PlayerDeserializer = new PlayerDeserializer();
+            var pendingChanges = new Homm3PendingChangesFactory();
             this.DocumentFactory = new SaveDocumentFactory(
                 this.VersionEntities,
-                new HeroDiffer(),
+                new HeroDiffer(pendingChanges),
                 this.CastleDeserializer,
                 this.CastleSerializer,
-                new CastleDiffer(),
+                new CastleDiffer(pendingChanges),
                 this.PlayerDeserializer,
                 new SafePlayerSerializer(),
-                new PlayerDiffer(),
+                new PlayerDiffer(pendingChanges),
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
-                new ObeliskDiffer(),
+                new ObeliskDiffer(pendingChanges),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
@@ -112,6 +112,6 @@ namespace Siniskalc
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
-        public Homm3EditorViewModel CreateEditor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new Siniskalc.Homm3.ViewModels.NavigationBuilder(this.BanishingText));
+        public Homm3EditorViewModel CreateEditor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.BanishingText));
     }
 }

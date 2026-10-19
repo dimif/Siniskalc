@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -25,7 +25,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase(5, TownBuildings.MageGuild)]
         [TestCase(18, TownBuildings.ThievesGuild)]
         [TestCase(23, TownBuildings.Well)]
-        [TestCase(39, TownBuildings.SecondWell)]
+        [TestCase(39, TownBuildings.GrowthBuilding)]
         [TestCase(47, TownBuildings.Special)]
         [TestCase(51, TownBuildings.Statue)]
         [TestCase(62, TownBuildings.Marketplace)]
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase(35, TownBuildings.Castle)]
         [TestCase(43, TownBuildings.MageGuild)]
         [TestCase(53, TownBuildings.Well)]
-        [TestCase(62, TownBuildings.SecondWell)]
+        [TestCase(62, TownBuildings.GrowthBuilding)]
         [TestCase(64, TownBuildings.Special)]
         [TestCase(66, TownBuildings.Tavern)]
         [TestCase(68, TownBuildings.Statue)]

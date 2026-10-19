@@ -282,11 +282,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         private static void EnsureApplication()
         {
-            if (Application.Current == null)
-            {
-                var app = new Siniskalc.App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                app.InitializeComponent();
-            }
+            TestApplication.Ensure();
         }
 
         private static void Pump()

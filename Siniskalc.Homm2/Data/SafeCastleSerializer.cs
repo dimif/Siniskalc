@@ -1,10 +1,12 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
+    using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -22,8 +24,8 @@ namespace Siniskalc.Homm2.Data
             bytes[CastleLayout.Faction] = Bytes.FactionByte(model.Faction, bytes[CastleLayout.Faction]);
             bytes[CastleLayout.X] = ToByte(model.Position.X, nameof(model.Position));
             bytes[CastleLayout.Y] = ToByte(model.Position.Y, nameof(model.Position));
-            WriteBoat(bytes, model.Boat);
-            bytes[CastleLayout.VisitingHero] = Bytes.IdByte(model.VisitingHero, bytes[CastleLayout.VisitingHero]);
+            WriteBoat(bytes, model.ShipyardPosition);
+            bytes[CastleLayout.VisitingHero] = Bytes.IdByte(model.VisitingHeroId, bytes[CastleLayout.VisitingHero]);
 
             ArmyWriter.Write(bytes, CastleLayout.Garrison, model.Garrison, CreatureCodes.Instance, nameof(model.Garrison));
 
@@ -31,25 +33,7 @@ namespace Siniskalc.Homm2.Data
             ByteBufferHelper.WriteUInt16(bytes, CastleLayout.TownBuildings, (ushort)model.Town);
             ByteBufferHelper.WriteUInt32(bytes, CastleLayout.Dwellings, (uint)model.Dwellings);
 
-            for (var dwelling = 0; dwelling < Constants.Castle.DwellingCount; dwelling++)
-            {
-                var offset = CastleLayout.Creatures + (dwelling * 2);
-                if (BitConverter.ToUInt16(bytes, offset) != model.Creatures[dwelling])
-                {
-                    RangeGuard.ThrowIfOutOfRange<long>(model.Creatures[dwelling], Constants.Castle.MinCreatures, Constants.Castle.MaxCreatures, nameof(model.Creatures));
-                    ByteBufferHelper.WriteUInt16(bytes, offset, (ushort)model.Creatures[dwelling]);
-                }
-            }
-
-            for (var upgraded = 0; upgraded < Constants.Castle.DwellingCount; upgraded++)
-            {
-                var offset = CastleLayout.UpgradedCreatures + (upgraded * 2);
-                if (BitConverter.ToUInt16(bytes, offset) != model.UpgradedCreatures[upgraded])
-                {
-                    RangeGuard.ThrowIfOutOfRange<long>(model.UpgradedCreatures[upgraded], Constants.Castle.MinCreatures, Constants.Castle.MaxCreatures, nameof(model.UpgradedCreatures));
-                    ByteBufferHelper.WriteUInt16(bytes, offset, (ushort)model.UpgradedCreatures[upgraded]);
-                }
-            }
+            WriteCreatures(chunk, bytes, model);
 
             for (var slot = 0; slot < Bytes.GuildSpellSlots; slot++)
             {
@@ -63,6 +47,42 @@ namespace Siniskalc.Homm2.Data
             }
 
             return chunk.WithBytes(bytes);
+        }
+
+        // The creatures of a dwelling wait in the list of its own or in the one of its upgrade, whichever its level says. The count is written
+        // there. When the level changed the count moves: the other places of the dwelling are emptied, as the game does, and the dragons upgraded
+        // twice get the mark the game shows them with. A place the count was not in is left as it is while the level stays.
+        private static void WriteCreatures(CastleChunk chunk, byte[] bytes, CastleModel model)
+        {
+            var before = (Dwellings)chunk.GetUInt32At(CastleLayout.Dwellings);
+            for (var dwelling = 1; dwelling <= Constants.Castle.DwellingCount; dwelling++)
+            {
+                var count = model.CreaturesAvailable[dwelling - 1];
+                RangeGuard.ThrowIfOutOfRange<long>(count, Constants.Castle.MinCreatures, Constants.Castle.MaxCreatures, nameof(model.CreaturesAvailable));
+                var level = model.DwellingLevel(dwelling);
+                var active = CastleLayout.CreaturesOffset(dwelling, level);
+                var moved = CastleModel.DwellingLevel(before, dwelling) != level;
+                var changed = moved || BitConverter.ToUInt16(bytes, active) != count;
+
+                if (moved)
+                {
+                    foreach (var other in CastleLayout.CreaturesOffsets(dwelling).Where(offset => offset != active))
+                    {
+                        ByteBufferHelper.WriteUInt16(bytes, other, 0);
+                    }
+                }
+
+                if (BitConverter.ToUInt16(bytes, active) != count)
+                {
+                    ByteBufferHelper.WriteUInt16(bytes, active, (ushort)count);
+                }
+
+                var mark = CastleLayout.UpgradedCreatures + (CastleLayout.SecondUpgradeMarker * 2);
+                if (level >= 3 && changed && BitConverter.ToUInt16(bytes, mark) == 0)
+                {
+                    ByteBufferHelper.WriteUInt16(bytes, mark, CastleLayout.SecondUpgradeMarkerValue);
+                }
+            }
         }
 
         private static byte ToByte(int value, string name)

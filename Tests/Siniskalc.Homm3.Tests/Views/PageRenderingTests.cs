@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -114,11 +114,7 @@ namespace Siniskalc.Homm3.Tests.Views
 
         private static void EnsureApplication()
         {
-            if (Application.Current == null)
-            {
-                var app = new Siniskalc.App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                app.InitializeComponent();
-            }
+            TestApplication.Ensure();
         }
 
         private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);

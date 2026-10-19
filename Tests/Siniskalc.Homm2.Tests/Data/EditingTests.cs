@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -86,7 +86,7 @@
                 Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)),
                 Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue,
                 Dwellings = c.Dwellings | Dwellings.Dwelling3 | Dwellings.MageGuild2,
-                Creatures = c.Creatures.With(2, 4),
+                CreaturesAvailable = c.CreaturesAvailable.With(2, 4),
             });
 
             var castle = TestServices.Parser.Parse(this.game.GetBytesToSave(), null).History.Current.Castles().GetModel(3);
@@ -95,7 +95,7 @@
             Assert.That(castle.Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.Tavern | TownBuildings.Statue));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(2));
             Assert.That(castle.HasDwelling(3), Is.True);
-            Assert.That(castle.Creatures[2], Is.EqualTo(4));
+            Assert.That(castle.CreaturesAvailable[2], Is.EqualTo(4));
         }
 
         [Test]
@@ -120,7 +120,7 @@
 
             var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 1)), Owner = Color.Blue }).ToArray();
             Assert.That(changed[HeroLayout.ArmyTypes], Is.EqualTo(Creature.Archer.Code));
-            Assert.That(changed[HeroLayout.Owner], Is.EqualTo((byte)Color.Blue));
+            Assert.That(changed[HeroLayout.Owner], Is.EqualTo(Color.Blue.Code));
         }
 
         [Test]
@@ -175,7 +175,7 @@
         [Test]
         public void SavingMarksTheEditsAsTheNewStartingPoint()
         {
-            this.game.History.CreateCastleSession(3).Update(c => c with { Creatures = c.Creatures.With(0, 99) });
+            this.game.History.CreateCastleSession(3).Update(c => c with { CreaturesAvailable = c.CreaturesAvailable.With(0, 99) });
             Assert.That(this.game.History.GetPendingChanges().Single().Path, Is.EqualTo("Xabran › Dwellings"));
 
             this.game.History.MarkSaved();

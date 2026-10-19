@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -33,12 +33,12 @@
         private string status = string.Empty;
 
         public PlayerViewModel(Game game, Color color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Player, (int)color, byteEditTargets)
+            : base(game, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
         {
             this.Color = color;
             this.openHero = openHero;
             this.openCastle = openCastle;
-            this.session = game.History.CreatePlayerSession((int)color);
+            this.session = game.History.CreatePlayerSession(color.Code);
             this.Obelisks = new ObeliskVisitsViewModel(game.History, color);
             this.resources = ResourceOrder.Select(this.CreateRow).ToList();
             this.SetAllResourcesCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name != nameof(Resource.Gold)), Constants.Player.AllResourcesIncrease));
@@ -63,7 +63,7 @@
         /// </summary>
         public string ControlText => PlayerTypeText.Describe(this.Game.GetControl(this.Color), this.Game.CurrentPlayer == this.Color);
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.Color));
+        public string ColorHex => PlayerPalette.Of(this.Color);
 
         /// <summary>
         /// Gets what the player is up to: out of the game, counting the days to own a castle, or nothing.
@@ -112,7 +112,7 @@
         protected override void Read()
         {
             var document = this.Game.History.Current;
-            var player = document.Players().GetModel((int)this.Color);
+            var player = document.Players().GetModel(this.Color.Code);
             var allHeroes = document.Heroes().GetModels();
 
             this.status = player.IsOut
@@ -154,7 +154,7 @@
                 gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
                 gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,
                 () => this.session.Current.Resources[resource],
-                () => this.Game.History.Original.Players().GetModel((int)this.Color).Resources[resource],
+                () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources[resource],
                 amount => this.session.Update(player => player with { Resources = player.Resources.With(resource, amount) }),
                 () => this.IncomeNote(resource));
         }

@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -270,7 +270,7 @@ namespace Siniskalc.Homm3.Data
         {
             var playerByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Owner]);
 
-            return ByteEnum.ReadOrNull<PlayerColor>(playerByte);
+            return ByteEnumerations.Read<PlayerColor>(playerByte);
         }
 
         public HeroGender? DeserializeGender(HeroChunk chunk)

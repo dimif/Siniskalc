@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -13,12 +14,20 @@
     /// </summary>
     public sealed class ObeliskDiffer : IObeliskDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public ObeliskDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         public IReadOnlyList<PendingChange> Diff(int index, ObeliskVisits original, ObeliskVisits current)
         {
             var changes = new List<PendingChange>();
             for (var i = 0; i < original.Count && i < current.Count; i++)
             {
-                foreach (var color in Enum.GetValues<PlayerColor>())
+                foreach (var color in PlayerColor.All)
                 {
                     var before = original.IsVisited(i, color);
                     var after = current.IsVisited(i, color);
@@ -29,7 +38,7 @@
 
                     var obelisk = i;
                     var who = color;
-                    changes.Add(Homm3PendingChanges.ForObelisks(
+                    changes.Add(this.pendingChanges.ForObelisks(
                         index,
                         new Change(ChangeAreas.General, $"Obelisk {i + 1}, {color}", Text(before), Text(after)),
                         visits => visits.WithVisited(obelisk, who, before)));

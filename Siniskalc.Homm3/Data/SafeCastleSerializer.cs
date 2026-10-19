@@ -1,12 +1,12 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -34,8 +34,7 @@ namespace Siniskalc.Homm3.Data
             bytes[CastleLayout.GarrisonedHero] = HeroByte(castle.GarrisonedHeroId, nameof(castle.GarrisonedHeroId));
             bytes[CastleLayout.VisitingHero] = HeroByte(castle.VisitingHeroId, nameof(castle.VisitingHeroId));
             ArmyWriter.Write(bytes, CastleLayout.Garrison, castle.Garrison, CreatureCodes.Instance, nameof(castle.Garrison));
-            SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.CreaturesAvailableFromNameEnd, castle.CreaturesAvailable);
-            SerializeCreaturesAvailable(bytes, nameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd, castle.UpgradedCreaturesAvailable);
+            SerializeCreaturesAvailable(bytes, nameEnd, castle);
 
             for (var level = 0; level < CastleLayout.SpellLevelCount && level < castle.SpellCounts.Count; level++)
             {
@@ -94,14 +93,10 @@ namespace Siniskalc.Homm3.Data
             return (byte)id;
         }
 
+        // A byte that is no player's colour reads as no owner, and is left alone while the owner stays none.
         private static void SerializeOwner(byte[] bytes, PlayerColor? owner)
         {
-            // A byte that is no player's colour reads as no owner, and is left alone while the owner stays none.
-            var hasOwner = ByteEnum.TryRead<PlayerColor>(bytes[CastleLayout.Owner], out var current);
-            if (owner == null ? hasOwner : !hasOwner || current != owner.Value)
-            {
-                bytes[CastleLayout.Owner] = owner == null ? Constants.ByteOff : (byte)owner.Value;
-            }
+            bytes[CastleLayout.Owner] = ByteEnumerations.WriteKeeping(owner, bytes[CastleLayout.Owner], Constants.ByteOff);
         }
 
         private static void SerializeBuiltThisTurn(byte[] bytes, bool builtThisTurn)
@@ -113,12 +108,25 @@ namespace Siniskalc.Homm3.Data
             }
         }
 
-        private static void SerializeCreaturesAvailable(byte[] bytes, int offset, IReadOnlyList<int> counts)
+        // The count of a level is kept in the slot of the dwelling or in the one of its upgrade, whichever is built. It is written there, and
+        // when it was in the other slot (the dwelling was upgraded, or the upgrade taken down) it is moved: the other slot is emptied. A
+        // slot the count was not in is left as it is.
+        private static void SerializeCreaturesAvailable(byte[] bytes, int nameEnd, CastleModel castle)
         {
-            for (var level = 0; level < CastleLayout.CreatureLevelCount && level < counts.Count; level++)
+            for (var level = 0; level < CastleLayout.CreatureLevelCount && level < castle.CreaturesAvailable.Count; level++)
             {
-                RangeGuard.ThrowIfOutOfRange<long>(counts[level], Constants.Castle.MinDwellingCreatures, Constants.Castle.MaxDwellingCreatures, nameof(counts));
-                ByteBufferHelper.WriteUInt16(bytes, offset + (level * 2), (ushort)counts[level]);
+                RangeGuard.ThrowIfOutOfRange<long>(castle.CreaturesAvailable[level], Constants.Castle.MinDwellingCreatures, Constants.Castle.MaxDwellingCreatures, nameof(castle.CreaturesAvailable));
+                var upgrade = castle.Faction == null ? null : Building.FromDwellingLevel(castle.Faction, level, upgraded: true);
+                var upgraded = upgrade != null && castle.HasBuilt(upgrade);
+                var active = nameEnd + (upgraded ? CastleLayout.UpgradedCreaturesAvailableFromNameEnd : CastleLayout.CreaturesAvailableFromNameEnd) + (level * 2);
+                var other = nameEnd + (upgraded ? CastleLayout.CreaturesAvailableFromNameEnd : CastleLayout.UpgradedCreaturesAvailableFromNameEnd) + (level * 2);
+
+                var movedHere = BitConverter.ToUInt16(bytes, active) == 0 && BitConverter.ToUInt16(bytes, other) != 0;
+                ByteBufferHelper.WriteUInt16(bytes, active, (ushort)castle.CreaturesAvailable[level]);
+                if (movedHere)
+                {
+                    ByteBufferHelper.WriteUInt16(bytes, other, 0);
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests
+namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
@@ -34,6 +34,8 @@
 
         public static IMapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(), new SafeSphinxSerializer());
 
+        private static readonly Homm2PendingChangesFactory PendingChanges = new();
+
         public static ISavegameParser Parser { get; } = new SavegameParser(
             Locator,
             new BytesLoader(),
@@ -41,20 +43,20 @@
             new SaveDocumentFactory(
                 HeroDeserializer,
                 HeroSerializer,
-                new HeroDiffer(),
+                new HeroDiffer(PendingChanges),
                 PlayerDeserializer,
                 PlayerSerializer,
-                new PlayerDiffer(),
+                new PlayerDiffer(PendingChanges),
                 CastleDeserializer,
                 CastleSerializer,
-                new CastleDiffer(),
+                new CastleDiffer(PendingChanges),
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
-                new ObeliskDiffer(),
-                new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
-                new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
-                new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
-                new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
+                new ObeliskDiffer(PendingChanges),
+                new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer(PendingChanges)),
+                new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer(PendingChanges)),
+                new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer(PendingChanges)),
+                new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer(PendingChanges)),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
             new MapObjectsReader());

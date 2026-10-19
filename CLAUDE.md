@@ -1,4 +1,4 @@
-# Repo rules
+﻿# Repo rules
 
 These rules apply to everyone (people, Copilot, Claude).
 See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/FUTURE_IMPROVEMENTS.md` for planned work and handover notes.
@@ -23,7 +23,8 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - **A type carries no game prefix**: the namespace says the game (`Siniskalc.Homm2.Models.HeroModel`, not `Homm2HeroModel`).
   The exceptions are the wrappers of generic Core types (`Homm3Enumeration`, `Homm2EditSessions`, `Homm2PendingChanges`, `Homm2SaveDocuments`, `Homm2ChunkKinds`) and the entry points the exe and the shell name side by side (`Homm2Module`/`Homm3Module`, `Homm2EditorViewModel`/`Homm3EditorViewModel`, `Homm2EditorView`/`Homm3EditorView`).
   Code that sees both games (`AppServices`) uses namespace aliases.
-- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`); a test goes with the project of the class it tests.
+- Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`, and `Siniskalc.Tests` for the exe); a test goes with the project of the class it tests.
+  **A game's test project references only that game's project** (never the other game or the exe `Siniskalc`; the `...LayeringTests` of each game check it) and builds what it needs from the game's module factory (`Homm3ModuleFactory`, `Homm2ModuleFactory`) and the shared components. A test that needs the whole application (both games, `AppServices`) goes in `Siniskalc.Tests`.
 - **A control that is styled by a resource dictionary is tested by what it shows**, not only by its bindings: a template that did not apply leaves the control empty and raises no binding error (`PageRenderingTests`, `PageContractTests`).
 - A view model is called `...ViewModel` (also when it is a node of a tree: `NavNodeViewModel`).
 

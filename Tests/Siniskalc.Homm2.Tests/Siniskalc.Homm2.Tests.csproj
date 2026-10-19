@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Siniskalc\Siniskalc.csproj" />
     <ProjectReference Include="..\..\Siniskalc.Homm2\Siniskalc.Homm2.csproj" />
   </ItemGroup>
 

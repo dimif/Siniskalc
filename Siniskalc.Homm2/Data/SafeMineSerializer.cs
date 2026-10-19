@@ -25,11 +25,11 @@ namespace Siniskalc.Homm2.Data
             {
                 // A flag that already shows the new owner is left as it is.
                 var wanted = model.Owner is { } owner
-                    ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(model.Kind) + (int)owner) }
+                    ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(model.Kind) + owner.Code) }
                     : [MapObjectLayout.NoClass, MapObjectLayout.NoPicture];
                 var current = chunk.Parts[i].Bytes;
                 var showsOwner = model.Owner is { } shown
-                    ? current[0] == MapObjectLayout.FlagClass && current[1] == MineKinds.FlagPicture(model.Kind) + (int)shown
+                    ? current[0] == MapObjectLayout.FlagClass && current[1] == MineKinds.FlagPicture(model.Kind) + shown.Code
                     : current[0] == MapObjectLayout.NoClass && current[1] == MapObjectLayout.NoPicture;
                 if (!showsOwner)
                 {

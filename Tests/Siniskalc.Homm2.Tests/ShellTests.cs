@@ -15,14 +15,14 @@
     using Color = Siniskalc.Homm2.Entities.Color;
 
     /// <summary>
-    /// The application with both games: opening a savegame of Heroes of Might and Magic II switches the shell to its editor and its title.
+    /// The shell with the Heroes of Might and Magic II editor: opening a savegame shows its editor and its title. The shell with both games is tested in Siniskalc.Tests.
     /// </summary>
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    internal sealed class ShellGamesTests
+    internal sealed class ShellTests
     {
         private string folder = string.Empty;
-        private AppServices services = null!;
+        private TestApplicationServices services = null!;
         private ShellViewModel shell = null!;
 
         [SetUp]
@@ -30,20 +30,12 @@
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-shell-games-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"));
-            this.shell = this.services.CreateShellViewModel();
+            this.services = new TestApplicationServices(settingsPath: Path.Combine(this.folder, "settings.json"));
+            this.shell = this.services.CreateShell();
         }
 
         [TearDown]
         public void DeleteFolder() => Directory.Delete(this.folder, recursive: true);
-
-        [Test]
-        public void TheShellStartsOnTheFirstGameAndKnowsBoth()
-        {
-            Assert.That(this.shell.Modules.Select(m => m.Name), Is.EqualTo(new[] { "Heroes of Might and Magic III", "Heroes of Might and Magic II" }));
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic III"));
-            Assert.That(this.shell.OpenFilter, Does.StartWith("Savegames |*.CGM;*.GM*;*.GM?;*.GX?|"));
-        }
 
         [Test]
         public void OpeningAHeroes2SavegameSwitchesTheTitleAndTheEditorToThoseOfTheGame()
@@ -53,7 +45,7 @@
             this.shell.LoadGame(path);
 
             Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
-            Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Homm2));
+            Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Module));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
             Assert.That(this.shell.IsGameLoaded, Is.True);
             Assert.That(this.shell.File, Is.EqualTo(path));
@@ -128,11 +120,7 @@
 
             try
             {
-                if (Application.Current == null)
-                {
-                    var app = new App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                    app.InitializeComponent();
-                }
+                TestApplication.Ensure();
 
                 var window = new ShellWindow(
                     new RecentFilesMenuViewModel(this.services.RecentFiles),
@@ -146,7 +134,6 @@
                 try
                 {
                     Pump();
-                    Assert.That(window.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic III"));
 
                     this.shell.LoadGame(Saves.BrokenAllianceSave(24));
                     Pump();

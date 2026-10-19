@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -66,7 +66,7 @@
                     : value == ComputerByte ? PlayerType.Computer : PlayerType.Human;
             }
 
-            PlayerColor? current = humanFlags >= 0 ? (PlayerColor)BitConverter.ToInt32(bytes, humanFlags + HumanFlagsLength) : null;
+            PlayerColor? current = humanFlags >= 0 ? PlayerColor.FromByte((byte)BitConverter.ToInt32(bytes, humanFlags + HumanFlagsLength)) : null;
             return new GameSetup(result, Difficulties[bytes[location.DifficultyAt]], current);
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Models
+namespace Siniskalc.Homm3.Models
 {
     using System;
     using System.Collections.Generic;
@@ -94,6 +94,6 @@
             return hash.ToHashCode();
         }
 
-        private static int Bit(PlayerColor color) => 1 << (int)color;
+        private static int Bit(PlayerColor color) => 1 << color.Code;
     }
 }

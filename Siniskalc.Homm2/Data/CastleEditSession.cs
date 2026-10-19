@@ -39,12 +39,12 @@ namespace Siniskalc.Homm2.Data
             var edits = new List<(int Player, PlayerModel Model)>();
             if (castle.Owner is { } previous)
             {
-                edits.Add(((int)previous, players.GetModel((int)previous).WithoutCastle(this.CastleIndex)));
+                edits.Add((previous.Code, players.GetModel(previous.Code).WithoutCastle(this.CastleIndex)));
             }
 
             if (owner is { } next)
             {
-                edits.Add(((int)next, players.GetModel((int)next).WithCastle(this.CastleIndex)));
+                edits.Add((next.Code, players.GetModel(next.Code).WithCastle(this.CastleIndex)));
             }
 
             var updated = document.WithChunk(Homm2ChunkKinds.Castle, this.CastleIndex, castles.Serializer.Serialize(castles[this.CastleIndex], castle with { Owner = owner }));

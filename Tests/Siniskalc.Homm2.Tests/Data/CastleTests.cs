@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -27,13 +27,13 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(xabran.Owner, Is.EqualTo(Color.Blue));
             Assert.That(xabran.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(xabran.Position, Is.EqualTo(new MapPosition(28, 25)));
-            Assert.That(xabran.Boat, Is.Null);
+            Assert.That(xabran.ShipyardPosition, Is.Null);
             Assert.That(xabran.HasCastle, Is.True);
             Assert.That(xabran.Dwellings, Is.EqualTo(Dwellings.Dwelling1));
             Assert.That(xabran.Town, Is.EqualTo(TownBuildings.Castle));
-            Assert.That(xabran.Creatures[0], Is.EqualTo(12));
+            Assert.That(xabran.CreaturesAvailable[0], Is.EqualTo(12));
             Assert.That(xabran.MageGuildLevel, Is.Zero);
-            Assert.That(xabran.VisitingHero, Is.Null);
+            Assert.That(xabran.VisitingHeroId, Is.Null);
             Assert.That(xabran.Garrison.Slots, Is.All.Null);
         }
 
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(after.HasDwelling(1), Is.True);
             Assert.That(after.HasDwelling(2), Is.True);
             Assert.That(after.Dwellings, Is.EqualTo(Dwellings.Dwelling1 | Dwellings.Dwelling2));
-            Assert.That(after.Creatures.Take(2), Is.EqualTo(new[] { 12, 8 }));
+            Assert.That(after.CreaturesAvailable.Take(2), Is.EqualTo(new[] { 12, 8 }));
         }
 
         [Test]
@@ -72,8 +72,8 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(Castle(11, Xabran).Town.HasFlag(TownBuildings.Statue), Is.True);
             Assert.That(Castle(12, Xabran).Town.HasFlag(TownBuildings.Well), Is.True);
             Assert.That(Castle(13, Xabran).Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.MageGuild | TownBuildings.Statue | TownBuildings.Well | TownBuildings.Tavern | TownBuildings.ThievesGuild));
-            Assert.That(Castle(11, Xabran).Creatures.Take(2), Is.EqualTo(new[] { 12, 8 }));
-            Assert.That(Castle(12, Xabran).Creatures.Take(2), Is.EqualTo(new[] { 26, 18 }));
+            Assert.That(Castle(11, Xabran).CreaturesAvailable.Take(2), Is.EqualTo(new[] { 12, 8 }));
+            Assert.That(Castle(12, Xabran).CreaturesAvailable.Take(2), Is.EqualTo(new[] { 26, 18 }));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(captured.HasCastle, Is.False);
             Assert.That(captured.Town, Is.EqualTo(TownBuildings.TownOnly));
             Assert.That(captured.Dwellings, Is.EqualTo(Dwellings.Dwelling1));
-            Assert.That(captured.VisitingHero, Is.EqualTo(7));
+            Assert.That(captured.VisitingHeroId, Is.EqualTo(7));
         }
 
         [Test]
@@ -110,11 +110,11 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(shipyard.Faction, Is.EqualTo(Faction.Warlock));
             Assert.That(shipyard.Town.HasFlag(TownBuildings.Shipyard), Is.True);
-            Assert.That(shipyard.Boat, Is.EqualTo(new MapPosition(62, 10)));
+            Assert.That(shipyard.ShipyardPosition, Is.EqualTo(new MapPosition(62, 10)));
             Assert.That(Castle(19, Whiteshield).Town.HasFlag(TownBuildings.Shipyard), Is.False);
             Assert.That(shipyard.HasDwelling(6), Is.False);
             Assert.That(tower.HasDwelling(6), Is.True);
-            Assert.That(tower.Creatures[5], Is.EqualTo(1));
+            Assert.That(tower.CreaturesAvailable[5], Is.EqualTo(1));
             Assert.That(tower.Owner, Is.EqualTo(Color.Blue));
         }
 

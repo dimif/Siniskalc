@@ -1,12 +1,9 @@
 namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Data;
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -17,11 +14,18 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int heroIndex, HeroModel original, HeroModel current)
         {
-
-            var changes = new ChangeSink<HeroModel>((change, revert) => Homm2PendingChanges.ForHero(current.Name, heroIndex, change, revert));
+            var changes = new ChangeSink<HeroModel>((change, revert) => this.pendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
             changes.AddOwner(original.Owner, current.Owner, (h, owner) => h with { Owner = owner });
 

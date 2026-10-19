@@ -46,7 +46,7 @@
                 game.GameVersion,
                 () => this.session.Current.Garrison,
                 edit => this.session.Update(c => c with { Garrison = edit(c.Garrison) }));
-            this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHero!.Value), _ => this.castle?.VisitingHero != null);
+            this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHeroId!.Value), _ => this.castle?.VisitingHeroId != null);
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
@@ -69,7 +69,7 @@
                 this.Building("Right turret", TownBuildings.RightTurret),
                 this.Building("Moat", TownBuildings.Moat),
                 this.Building("Captain's quarters", TownBuildings.CaptainsQuarters),
-                this.Building(TownBuildingNames.SecondWellOf(faction), TownBuildings.SecondWell, "More creatures every week. Found in the savegames of Threedom; not tried in the game."),
+                this.Building(TownBuildingNames.SecondWellOf(faction), TownBuildings.GrowthBuilding, "More creatures every week. Found in the savegames of Threedom; not tried in the game."),
             ];
 
             this.buildings = faction == Faction.Wizard
@@ -115,7 +115,7 @@
 
         public string Name => this.castle.Name;
 
-        public string ColorHex => PlayerPalette.Of(PlayerColors<Color>.Of(this.castle.Owner));
+        public string ColorHex => PlayerPalette.Of(this.castle.Owner);
 
         public string FactionName => this.castle.Faction?.ToString() ?? "Unknown faction";
 
@@ -162,7 +162,7 @@
         /// <summary>
         /// Gets where a boat appears when the castle is on a coast, or says there is no coast.
         /// </summary>
-        public string ShipyardText => this.castle.Boat is { } boat ? $"Boat appears at {boat}" : "No coast";
+        public string ShipyardText => this.castle.ShipyardPosition is { } boat ? $"Boat appears at {boat}" : "No coast";
 
         /// <summary>
         /// Gets the hero in the castle, as a link that opens it: none, or one.
@@ -193,7 +193,7 @@
             this.castle = castle;
             var heroes = document.Heroes().GetModels();
 
-            this.visitingHeroName = castle.VisitingHero is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
+            this.visitingHeroName = castle.VisitingHeroId is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
 
             this.heroes = this.visitingHeroName.Length > 0 ? [new LinkViewModel(this.visitingHeroName, "Visiting", this.OpenHeroCommand)] : [];
 

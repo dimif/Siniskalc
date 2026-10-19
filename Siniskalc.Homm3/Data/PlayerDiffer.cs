@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
@@ -12,6 +13,14 @@
     /// </summary>
     public sealed class PlayerDiffer : IPlayerDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public PlayerDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         private const string NoHero = "(none)";
 
         public IReadOnlyList<PendingChange> Diff(int playerIndex, PlayerModel original, PlayerModel current, Func<int, string> heroName)
@@ -27,7 +36,7 @@
                     continue;
                 }
 
-                changes.Add(Homm3PendingChanges.ForPlayer(
+                changes.Add(this.pendingChanges.ForPlayer(
                     current.Color.ToString(),
                     playerIndex,
                     new Change(ChangeAreas.Resources, resource.ToString(), before.ToString("N0"), after.ToString("N0")),
@@ -44,7 +53,7 @@
                 }
 
                 var index = place;
-                changes.Add(Homm3PendingChanges.ForPlayer(
+                changes.Add(this.pendingChanges.ForPlayer(
                     current.Color.ToString(),
                     playerIndex,
                     new Change(ChangeAreas.General, $"Tavern hero {place + 1}", before is { } b ? heroName(b) : NoHero, after is { } a ? heroName(a) : NoHero),

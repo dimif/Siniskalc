@@ -1,4 +1,4 @@
-﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
@@ -51,8 +51,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var castle = Gantry("factory_22b_upg_catacombs");
 
             Assert.That(castle.Buildings, Does.Contain(Building.FactoryUpgCatacombs).And.Contain(Building.FactoryUpgGantry));
-            Assert.That(castle.UpgradedCreaturesAvailable[4], Is.EqualTo(6));
-            Assert.That(castle.CreaturesAvailable[4], Is.EqualTo(0));
+            Assert.That(castle.CreaturesAvailable[4], Is.EqualTo(6));
         }
 
         [Test]

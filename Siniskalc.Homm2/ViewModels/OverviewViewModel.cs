@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -112,7 +112,7 @@
                 : null;
             return new OrderOfPlayItemViewModel(
                 color.ToString(),
-                PlayerPalette.Of(PlayerColors<Color>.Of(color)),
+                PlayerPalette.Of(color),
                 isCurrent,
                 command,
                 isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player" : "A computer player: it plays after the humans, and cannot be given the turn");
@@ -133,7 +133,7 @@
                 .ToList();
             return new PlayerCardViewModel(
                 color.ToString(),
-                PlayerPalette.Of(PlayerColors<Color>.Of(color)),
+                PlayerPalette.Of(color),
                 player.Resources,
                 heroes,
                 new DelegateCommand(_ => this.openPlayer(color)),

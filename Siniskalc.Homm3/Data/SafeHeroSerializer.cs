@@ -1,11 +1,11 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -311,19 +311,7 @@ namespace Siniskalc.Homm3.Data
             return Edit(chunk, buffer =>
             {
                 var offset = this.heroOffsets[HeroOffsetName.Owner];
-                var currentlyHasOwner = ByteEnum.TryRead<PlayerColor>(buffer[offset], out var currentOwner);
-
-                if (owner.HasValue)
-                {
-                    if (!currentlyHasOwner || currentOwner != owner.Value)
-                    {
-                        buffer[offset] = (byte)owner.Value;
-                    }
-                }
-                else if (currentlyHasOwner)
-                {
-                    buffer[offset] = Constants.ByteOff;
-                }
+                buffer[offset] = ByteEnumerations.WriteKeeping(owner, buffer[offset], Constants.ByteOff);
             });
         }
 

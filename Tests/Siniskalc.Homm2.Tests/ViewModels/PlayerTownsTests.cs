@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -27,9 +27,9 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         public void ATownWithAHeroInItListsTheHeroAsVisiting()
         {
             var game = TestServices.LoadBrokenAlliance(24);
-            var castles = game.History.Current.Castles().GetModels().Where(c => c.IsUsed && c.VisitingHero != null).ToList();
+            var castles = game.History.Current.Castles().GetModels().Where(c => c.IsUsed && c.VisitingHeroId != null).ToList();
             Assert.That(castles, Is.Not.Empty, "the save has a hero in a town");
-            var owner = castles.First(c => c.Owner != null).Owner!.Value;
+            var owner = castles.First(c => c.Owner != null).Owner!;
 
             var player = new PlayerViewModel(game, owner, _ => { }, _ => { });
 

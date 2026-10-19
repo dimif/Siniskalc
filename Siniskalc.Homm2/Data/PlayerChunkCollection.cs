@@ -20,8 +20,8 @@ namespace Siniskalc.Homm2.Data
 
         public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
-        public Color GetColor(int index) => (Color)index;
+        public Color GetColor(int index) => Color.All[index];
 
-        public int FindByColor(Color color) => (int)color;
+        public int FindByColor(Color color) => color.Code;
     }
 }

@@ -1,10 +1,8 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Builds a <see cref="SaveDocument"/>. The hero reader and writer depend on the game version, so they are made here, once

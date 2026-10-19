@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -81,12 +81,12 @@
             var heroes = allHeroes.Where(h => h.Owner == owner).OrderBy(h => h.Name).ToList();
             var castles = document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == owner).OrderBy(c => c.Name).ToList();
             var castleModels = castles.ToDictionary(c => c.Index);
-            var player = owner is { } color ? document.Players().GetModel((int)color) : null;
+            var player = owner is { } color ? document.Players().GetModel(color.Code) : null;
             return OwnerNavGroup.Create(
                 tree,
                 OwnerNames<Color>.Of(owner),
-                PlayerPalette.Of(PlayerColors<Color>.Of(owner)),
-                owner == null ? -1 : (int)owner.Value,
+                PlayerPalette.Of(owner),
+                owner == null ? -1 : owner.Code,
                 owner != null,
                 player == null ? string.Empty : player.IsOut ? "out of the game" : player.DaysLeft is { } days ? $"{days} days left" : string.Empty,
                 heroes.Select(h => new NavEntry(h.Id, h.Name, h.Summary.Description)).ToList(),
@@ -97,6 +97,6 @@
         private static IReadOnlyList<string> NotesOf(string visitor) => visitor.Length > 0 ? [visitor] : [];
 
         private static string VisitorName(IReadOnlyList<HeroModel> heroes, CastleModel castle) =>
-            castle.VisitingHero is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
+            castle.VisitingHeroId is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
     }
 }

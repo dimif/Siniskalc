@@ -95,7 +95,7 @@
 
             var castle = TestServices.Parser.Parse(Named("E09CAST").Bytes, null).History.Current.Castles().GetModel(3);
             Assert.That(castle.HasDwelling(4), Is.True);
-            Assert.That(castle.Creatures, Is.EqualTo(Numbers.Of(20, 20, 20, 20, 20, 20)));
+            Assert.That(castle.CreaturesAvailable, Is.EqualTo(Numbers.Of(20, 20, 20, 20, 20, 20)));
             Assert.That(TestServices.Parser.Parse(Named("E10GARR").Bytes, null).History.Current.Castles().GetModel(3).Garrison.Slots.Count(s => s != null), Is.EqualTo(3));
 
             var owned = TestServices.Parser.Parse(Named("E11OWNR").Bytes, null).History.Current;

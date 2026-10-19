@@ -84,9 +84,7 @@
             return this.skillSlots[slotIndex];
         }
 
-        /// <summary>
-        /// Returns the slot containing <paramref name="skill"/>, or -1 when it is not in a slot.
-        /// </summary>
+        /// <inheritdoc/>
         public int GetSlotOf(SecondarySkill skill)
         {
             return Array.IndexOf(this.skillSlots, skill);

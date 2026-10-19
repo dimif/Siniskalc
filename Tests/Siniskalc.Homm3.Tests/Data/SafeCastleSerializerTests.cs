@@ -1,3 +1,4 @@
+using Siniskalc.Core.Data;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -93,7 +94,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var written = TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd));
 
             Assert.That(written.GetByteAt(CastleLayout.Owner), Is.EqualTo(0x09));
-            Assert.That(TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd) with { Owner = PlayerColor.Red }).GetByteAt(CastleLayout.Owner), Is.EqualTo((byte)PlayerColor.Red));
+            Assert.That(TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd) with { Owner = PlayerColor.Red }).GetByteAt(CastleLayout.Owner), Is.EqualTo(PlayerColor.Red.Code));
         }
 
         [Test]
@@ -136,6 +137,40 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = chunk.ToArray();
             System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(CastleLayout.GarrisonTypes + (3 * 4)), 250);
             return chunk.WithBytes(bytes);
+        }
+
+        [Test]
+        public void UpgradingADwellingMovesItsCreaturesToTheSlotOfTheUpgradeInTheBytes()
+        {
+            var (_, upgraded) = WithBuiltAndUpgradedStables();
+            var waiting = TestServices.CastleDeserializer.Deserialize(upgraded).CreaturesAvailable[0];
+
+            Assert.That(waiting, Is.GreaterThan(0));
+            Assert.That(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(waiting));
+            Assert.That(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ACountLeftInTheSlotOfTheDwellingBesideItsUpgradeIsReadFromTheUpgradeAndKept()
+        {
+            var (_, upgraded) = WithBuiltAndUpgradedStables();
+            var bytes = upgraded.ToArray();
+            ByteBufferHelper.WriteUInt16(bytes, upgraded.NameEnd + CastleLayout.CreaturesAvailableFromNameEnd, 5);
+            var both = upgraded.WithBytes(bytes);
+            var model = TestServices.CastleDeserializer.Deserialize(both);
+
+            Assert.That(model.CreaturesAvailable[0], Is.EqualTo(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd)));
+            Assert.That(TestServices.SerializeCastle(both, model).ToArray(), Is.EqualTo(both.ToArray()));
+        }
+
+        // Still Water with the Centaur Stables built and then upgraded, each written into the bytes.
+        private static (CastleChunk Built, CastleChunk Upgraded) WithBuiltAndUpgradedStables()
+        {
+            var chunk = StillWater();
+            var built = CastleBuilder.Build(TestServices.CastleDeserializer.Deserialize(chunk), Building.RampartCentaurStables);
+            var builtChunk = TestServices.SerializeCastle(chunk, built);
+            var upgradedChunk = TestServices.SerializeCastle(builtChunk, CastleBuilder.Build(built, Building.RampartUpgCentaurStables));
+            return (builtChunk, upgradedChunk);
         }
 
         private static CastleChunk StillWater() =>
@@ -189,7 +224,7 @@ namespace Siniskalc.Homm3.Tests.Data
             a.Name == b.Name && a.Faction == b.Faction && a.Owner == b.Owner && a.Position == b.Position && a.BuiltThisTurn == b.BuiltThisTurn
             && a.MageGuildLevel == b.MageGuildLevel && a.Buildings.SetEquals(b.Buildings) && a.CurrentBuildings.SetEquals(b.CurrentBuildings)
             && a.EnabledBuildings.SetEquals(b.EnabledBuildings) && a.CreaturesAvailable.SequenceEqual(b.CreaturesAvailable)
-            && a.UpgradedCreaturesAvailable.SequenceEqual(b.UpgradedCreaturesAvailable) && a.SpellCounts.SequenceEqual(b.SpellCounts)
+            && a.SpellCounts.SequenceEqual(b.SpellCounts)
             && a.Garrison.Equals(b.Garrison)
             && a.GarrisonedHeroId == b.GarrisonedHeroId && a.VisitingHeroId == b.VisitingHeroId;
     }

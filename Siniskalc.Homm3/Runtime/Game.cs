@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Runtime
+namespace Siniskalc.Homm3.Runtime
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -70,7 +70,7 @@
         /// </summary>
         public PlayerType? GetControl(PlayerColor color)
         {
-            var index = (int)color;
+            var index = color.Code;
             return this.PlayerControls != null && index < this.PlayerControls.Count ? this.PlayerControls[index] : null;
         }
     }

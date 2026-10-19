@@ -1,15 +1,15 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Homm2.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
+    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
     using Siniskalc.Wpf.ViewModels;
 
@@ -50,10 +50,10 @@
         public void ShowPlayer(Color color, int tab = 0)
         {
             var game = this.Loaded();
-            if (!this.players.TryGetValue((int)color, out var player))
+            if (!this.players.TryGetValue(color.Code, out var player))
             {
                 player = new PlayerViewModel(game, color, this.ShowHero, this.ShowCastle, this.byteEditTargets);
-                this.players[(int)color] = player;
+                this.players[color.Code] = player;
             }
 
             player.SelectedTab = tab;
@@ -129,7 +129,7 @@
         protected override NavNodeViewModel? NodeOf(object page) => page switch
         {
             OverviewViewModel => this.Navigation.Overview,
-            PlayerViewModel player => this.Navigation.PlayerTabNode((int)player.Color, player.SelectedTab),
+            PlayerViewModel player => this.Navigation.PlayerTabNode(player.Color.Code, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.HeroId),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
             MapViewModel => this.Navigation.MapNode,
@@ -145,10 +145,10 @@
                     this.ShowOverview();
                     break;
                 case NavNodeKind.Player:
-                    this.ShowPlayer((Color)node.Index);
+                    this.ShowPlayer(Color.All[node.Index]);
                     break;
                 case NavNodeKind.PlayerTab:
-                    this.ShowPlayer((Color)node.Index, node.Tab);
+                    this.ShowPlayer(Color.All[node.Index], node.Tab);
                     break;
                 case NavNodeKind.Hero:
                     this.ShowHero(node.Index);

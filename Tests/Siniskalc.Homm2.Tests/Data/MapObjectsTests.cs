@@ -44,7 +44,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 var mine = TestServices.Mines.Deserialize(chunk);
                 foreach (var part in chunk.Parts)
                 {
-                    var expected = mine.Owner is { } owner ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(mine.Kind) + (int)owner) } : [MapObjectLayout.NoClass, MapObjectLayout.NoPicture];
+                    var expected = mine.Owner is { } owner ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(mine.Kind) + owner.Code) } : [MapObjectLayout.NoClass, MapObjectLayout.NoPicture];
                     Assert.That(part.Bytes, Is.EqualTo(expected), mine.Name);
                 }
             }
@@ -65,8 +65,8 @@ namespace Siniskalc.Homm2.Tests.Data
             var saved = game.GetBytesToSave();
             var changed = Enumerable.Range(0, saved.Length).Where(i => saved[i] != game.Bytes[i]).ToList();
             Assert.That(changed, Has.Count.EqualTo(2));
-            Assert.That(saved[chunk.StartIndex], Is.EqualTo((byte)Color.Green));
-            Assert.That(saved[chunk.Parts[0].StartIndex + 1], Is.EqualTo((byte)(14 + (int)Color.Green)));
+            Assert.That(saved[chunk.StartIndex], Is.EqualTo(Color.Green.Code));
+            Assert.That(saved[chunk.Parts[0].StartIndex + 1], Is.EqualTo((byte)(14 + Color.Green.Code)));
 
             var again = TestServices.Parser.Parse(saved, null).History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53));
             Assert.That(again.Owner, Is.EqualTo(Color.Green));

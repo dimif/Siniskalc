@@ -201,14 +201,12 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void AnUpgradedDwellingMovesItsCreaturesToTheUpgradedList()
+        public void AnUpgradedDwellingHoldsItsCreaturesInTheSameCountAsTheDwelling()
         {
-            var before = Castle("roe_29_all_grails", "6_Dung");
             var after = Castle("roe_30_upg_dwelling_1", "6_Dung");
 
-            Assert.That(before.UpgradedCreaturesAvailable.Sum(), Is.EqualTo(0));
-            Assert.That(after.UpgradedCreaturesAvailable, Is.EqualTo(new[] { 122, 0, 0, 0, 0, 0, 0 }));
-            Assert.That(after.CreaturesAvailable[0], Is.EqualTo(0));
+            Assert.That(after.CreaturesAvailable[0], Is.EqualTo(122));
+            Assert.That(after.HasBuilt(Building.FromDwellingLevel(after.Faction!, 0, upgraded: true)!), Is.True);
         }
 
         [Test]
@@ -218,8 +216,8 @@ namespace Siniskalc.Homm3.Tests.Data
             {
                 var castle = Castle("roe_40_upg_dwelling_5", name);
 
-                Assert.That(castle.UpgradedCreaturesAvailable.Take(5).All(c => c > 0), Is.True, name);
-                Assert.That(castle.UpgradedCreaturesAvailable.Skip(5), Is.All.EqualTo(0), name);
+                Assert.That(castle.CreaturesAvailable.Take(5).All(c => c > 0), Is.True, name);
+                Assert.That(Enumerable.Range(5, 2).Select(level => castle.HasBuilt(Building.FromDwellingLevel(castle.Faction!, level, upgraded: true)!)), Is.All.False, name);
             }
         }
 
@@ -249,12 +247,11 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheUpgradedSeventhDwellingsHoldTheirCreaturesInTheUpgradedList()
+        public void TheUpgradedSeventhDwellingsHoldTheirCreatures()
         {
             var dungeon = Castle("roe_45_upg_dwelling_7", "6_Dung");
 
-            Assert.That(dungeon.CreaturesAvailable, Is.All.EqualTo(0));
-            Assert.That(dungeon.UpgradedCreaturesAvailable, Is.EqualTo(new[] { 174, 88, 63, 36, 27, 18, 9 }));
+            Assert.That(dungeon.CreaturesAvailable, Is.EqualTo(new[] { 174, 88, 63, 36, 27, 18, 9 }));
         }
 
         [Test]
@@ -271,8 +268,8 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void RecruitingTheCreaturesEmptiesTheDwellingsOfThoseCastles()
         {
-            Assert.That(Castle("roe_47_garrisons", "6_Dung").UpgradedCreaturesAvailable, Is.All.EqualTo(0));
-            Assert.That(Castle("roe_47_garrisons", "1_Castle").UpgradedCreaturesAvailable, Is.EqualTo(new[] { 154, 99, 71, 36, 27, 18, 9 }));
+            Assert.That(Castle("roe_47_garrisons", "6_Dung").CreaturesAvailable, Is.All.EqualTo(0));
+            Assert.That(Castle("roe_47_garrisons", "1_Castle").CreaturesAvailable, Is.EqualTo(new[] { 154, 99, 71, 36, 27, 18, 9 }));
         }
 
         [TestCase("roe_48_castle_capitol", "1_Castle", "2_Rampart")]

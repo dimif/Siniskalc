@@ -1,5 +1,6 @@
 namespace Siniskalc.Heroes.Tests.Models
 {
+    using Siniskalc.Heroes.Tests.Entities;
     using Siniskalc.Heroes.Models;
 
     /// <summary>
@@ -11,7 +12,7 @@ namespace Siniskalc.Heroes.Tests.Models
         [Test]
         public void TheDescriptionIsTheKindAndTheLevel()
         {
-            var summary = new HeroSummary<ConsoleColor>(3, 17, "Gem", null, "Wizard", 12);
+            var summary = new HeroSummary<TestColor>(3, 17, "Gem", null, "Wizard", 12);
 
             Assert.That(summary.Description, Is.EqualTo("Wizard, Level 12"));
         }

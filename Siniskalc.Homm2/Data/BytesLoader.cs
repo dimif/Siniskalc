@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Data
+namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -30,7 +30,7 @@
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             return Enumerable.Range(0, Constants.Table.PlayerCount)
                 .Select(color => colors.ToList().IndexOf(color))
-                .Select(record => new PlayerChunk(((Color)colors[record]).ToString(), bytes.AsSpan(layout.PlayerStart(record), PlayerLayout.RecordSize).ToArray(), layout.PlayerStart(record)))
+                .Select(record => new PlayerChunk(Color.All[colors[record]].ToString(), bytes.AsSpan(layout.PlayerStart(record), PlayerLayout.RecordSize).ToArray(), layout.PlayerStart(record)))
                 .ToList()
                 .AsReadOnly();
         }

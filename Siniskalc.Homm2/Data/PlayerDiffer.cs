@@ -1,13 +1,12 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -15,12 +14,20 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class PlayerDiffer : IPlayerDiffer
     {
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+
+        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
+        public PlayerDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        {
+            this.pendingChanges = pendingChanges;
+        }
+
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int playerIndex, PlayerModel original, PlayerModel current)
         {
             var name = current.Color.ToString();
 
-            var changes = new ChangeSink<PlayerModel>((change, revert) => Homm2PendingChanges.ForPlayer(name, playerIndex, change, revert));
+            var changes = new ChangeSink<PlayerModel>((change, revert) => this.pendingChanges.ForPlayer(name, playerIndex, change, revert));
 
             foreach (var resource in Enum.GetValues<Resource>())
             {

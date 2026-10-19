@@ -11,6 +11,9 @@
     /// <typeparam name="TSelf">
     /// The type of the implementing class, used for fluent methods.
     /// </typeparam>
+    /// <remarks>
+    /// CRTP.
+    /// </remarks>
     public interface ISecondarySkills<TSecondarySkill, TSelf>
         where TSecondarySkill : ISecondarySkill
         where TSelf : ISecondarySkills<TSecondarySkill, TSelf>
@@ -53,6 +56,12 @@
         /// <summary>
         /// Returns the slot containing <paramref name="skill"/>, or -1 when it is not in a slot.
         /// </summary>
+        /// <param name="skill">
+        /// The skill to look up.
+        /// </param>
+        /// <returns>
+        /// The slot containing the skill, or -1 when the skill is not in the skillset.
+        /// </returns>
         int GetSlotOf(TSecondarySkill skill);
 
         /// <summary>

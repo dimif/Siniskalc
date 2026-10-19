@@ -1,4 +1,4 @@
-﻿using static Siniskalc.Homm3.Tests.Data.CastleMasks;
+using static Siniskalc.Homm3.Tests.Data.CastleMasks;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void UpgradingADwellingMovesTheCreaturesWaiting()
+        public void UpgradingADwellingKeepsTheCreaturesWaiting()
         {
             var before = Castle("Bulwark", "bulwark_24_nothing__fair", "Jotunngard");
             var after = Castle("Bulwark", "bulwark_25_mystic_pond__upg_colliery", "Jotunngard");
@@ -82,12 +82,10 @@ namespace Siniskalc.Homm3.Tests.Data
             var upgraded = CastleBuilder.Build(before, Building.BulwarkUpgColliery);
 
             Assert.That(upgraded.CreaturesAvailable, Is.EqualTo(after.CreaturesAvailable));
-            Assert.That(upgraded.UpgradedCreaturesAvailable, Is.EqualTo(after.UpgradedCreaturesAvailable));
             Assert.That(upgraded.CurrentBuildings, Is.EquivalentTo(after.CurrentBuildings));
 
             var back = CastleBuilder.Unbuild(upgraded, Building.BulwarkUpgColliery);
             Assert.That(back.CreaturesAvailable, Is.EqualTo(before.CreaturesAvailable));
-            Assert.That(back.UpgradedCreaturesAvailable, Is.All.EqualTo(0));
         }
 
         [Test]

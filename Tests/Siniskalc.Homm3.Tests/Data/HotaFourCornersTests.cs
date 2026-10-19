@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var game = Load();
 
-            Assert.That(game.PlayerControls![(int)PlayerColor.Tan], Is.EqualTo(PlayerType.NotInGame));
+            Assert.That(game.PlayerControls![PlayerColor.Tan.Code], Is.EqualTo(PlayerType.NotInGame));
             Assert.That(game.History.Current.Players().GetColors(), Is.EqualTo(new[] { PlayerColor.Red, PlayerColor.Blue, PlayerColor.Green, PlayerColor.Teal }));
         }
 

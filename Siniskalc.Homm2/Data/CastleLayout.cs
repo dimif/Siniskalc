@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using System.Collections.Generic;
     using Siniskalc.Heroes.Data;
 
     /// <summary>
@@ -59,6 +60,30 @@ namespace Siniskalc.Homm2.Data
         /// above is 0 (seen in the castles of Broken Alliance: Hillstone, Dragontooth, Bloodreign, Woodhaven and Vertigo).
         /// </summary>
         public const int UpgradedCreatures = 0x2A;
+
+        /// <summary>
+        /// The place of the list of upgraded creatures the game also fills (with <see cref="SecondUpgradeMarkerValue"/>) for the dragons upgraded
+        /// twice: 3 in the saves it made, 0 in E35 where the dragons did not show.
+        /// </summary>
+        public const int SecondUpgradeMarker = 4;
+
+        public const int SecondUpgradeMarkerValue = 3;
+
+        /// <summary>
+        /// Gets where the creatures of dwelling <paramref name="dwelling"/> (1 to 6) wait in the savegame when it is built to
+        /// <paramref name="level"/> (0 for not built, 1 for the dwelling, 2 once it is upgraded, 3 for the sixth when it is upgraded twice): in its
+        /// own list until it is upgraded, then in the list of the upgraded ones, the dragons upgraded a second time in the sixth place (E34DWUP2:
+        /// the Black Dragon had none in the fifth).
+        /// </summary>
+        public static int CreaturesOffset(int dwelling, int level) =>
+            level >= 2 ? UpgradedCreatures + ((level >= 3 ? 5 : dwelling - 2) * 2) : Creatures + ((dwelling - 1) * 2);
+
+        /// <summary>
+        /// Gets every place the savegame can keep creatures of dwelling <paramref name="dwelling"/> (1 to 6) in: its own, its upgrade and, for the
+        /// sixth, the one of the second upgrade.
+        /// </summary>
+        public static IReadOnlyList<int> CreaturesOffsets(int dwelling) =>
+            [Creatures + ((dwelling - 1) * 2), .. dwelling >= 2 ? new[] { UpgradedCreatures + ((dwelling - 2) * 2) } : [], .. dwelling == 6 ? new[] { UpgradedCreatures + (5 * 2) } : []];
 
         /// <summary>
         /// The spells of the Mage Guild: four bytes for each of its five levels, each the number of the spell minus one.

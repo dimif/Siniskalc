@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Models;
@@ -21,7 +21,7 @@
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-homm2-editor-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.editor = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json")).CreateHomm2Editor();
+            this.editor = new TestApplicationServices(settingsPath: Path.Combine(this.folder, "settings.json")).CreateEditor();
             this.editor.LoadGame(Saves.BrokenAllianceSave(24));
         }
 
@@ -48,7 +48,7 @@
             Assert.That(players.Select(p => p.Title), Is.EqualTo(this.editor.Overview!.Players.Select(p => p.Name)));
             foreach (var player in players)
             {
-                var color = (Color)player.Index;
+                var color = Color.All[player.Index];
                 var heroes = document.Heroes().GetModels().Where(h => h.Owner == color).Select(h => h.Name).Order();
                 var towns = document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == color).Select(c => c.Name).Order();
                 Assert.That(Titles(player, "Heroes"), Is.EqualTo(heroes), color.ToString());
@@ -88,7 +88,7 @@
             tab.IsSelected = true;
 
             var page = (PlayerViewModel)this.editor.CurrentPage!;
-            Assert.That(page.Color, Is.EqualTo((Color)tab.Index));
+            Assert.That(page.Color, Is.EqualTo(Color.All[tab.Index]));
             Assert.That(page.SelectedTab, Is.EqualTo(1));
         }
 
@@ -109,7 +109,7 @@
         {
             var document = this.editor.CurrentGame!.History.Current;
             var blue = this.editor.Overview!.Players.Single(p => p.Name == "Blue");
-            var model = document.Players().GetModel((int)Color.Blue);
+            var model = document.Players().GetModel(Color.Blue.Code);
 
             Assert.That(blue.HasResources, Is.True);
             Assert.That(blue.Gold, Is.EqualTo(model.Resources.Gold.ToString("N0")));
@@ -171,7 +171,7 @@
 
             this.editor.CurrentGame.History.CreateHeroSession(hero.Id).Update(h => h with { Owner = Color.Green });
 
-            var owner = Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Player && n.Index == (int)Color.Green);
+            var owner = Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Player && n.Index == Color.Green.Code);
             Assert.That(Titles(owner, "Heroes"), Does.Contain(hero.Name));
         }
 
@@ -179,7 +179,7 @@
         public void ALoadedGameWithoutAHeroOrATownOfAPlayerSaysSo()
         {
             var document = this.editor.CurrentGame!.History.Current;
-            var color = Enum.GetValues<Color>().First(c => document.Heroes().GetModels().All(h => h.Owner != c) && document.Castles().GetModels().All(t => t.Owner != c));
+            var color = Color.All.First(c => document.Heroes().GetModels().All(h => h.Owner != c) && document.Castles().GetModels().All(t => t.Owner != c));
             var player = new PlayerViewModel(this.editor.CurrentGame!, color, _ => { }, _ => { });
 
             Assert.That(player.HasHeroes, Is.False);
@@ -193,23 +193,23 @@
             this.editor.ShowHero(7);
             var hero = (HeroViewModel)this.editor.CurrentPage!;
             var document = () => this.editor.CurrentGame!.History.Current;
-            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetModel(Color.Blue.Code).HeroIds.Contains(7), Is.True);
 
             hero.SelectedOwner = "Neutral";
 
             Assert.That(document().Heroes().GetModel(7).Owner, Is.Null);
             Assert.That(document().Heroes().GetModel(7).Destination, Is.EqualTo(MapPosition.None));
-            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.False);
+            Assert.That(document().Players().GetModel(Color.Blue.Code).HeroIds.Contains(7), Is.False);
 
             hero.SelectedOwner = "Green";
 
             Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(Color.Green));
-            Assert.That(document().Players().GetModel((int)Color.Green).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetModel(Color.Green.Code).HeroIds.Contains(7), Is.True);
 
             this.editor.CurrentGame!.History.Undo();
             this.editor.CurrentGame!.History.Undo();
             Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(Color.Blue));
-            Assert.That(document().Players().GetModel((int)Color.Blue).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetModel(Color.Blue.Code).HeroIds.Contains(7), Is.True);
         }
 
         [Test]
@@ -217,14 +217,14 @@
         {
             var game = this.editor.CurrentGame!;
             var blue = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
-            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner == null && !game.History.Current.Players().GetModel((int)Color.Blue).Tavern.Contains(h.Id));
+            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner == null && !game.History.Current.Players().GetModel(Color.Blue.Code).Tavern.Contains(h.Id));
 
             Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
             Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.Id));
 
             blue.TavernPlaces[0].SelectedKey = free.Id;
 
-            Assert.That(game.History.Current.Players().GetModel((int)Color.Blue).Tavern.First, Is.EqualTo(free.Id));
+            Assert.That(game.History.Current.Players().GetModel(Color.Blue.Code).Tavern.First, Is.EqualTo(free.Id));
             Assert.That(blue.TavernPlaces[0].Selected!.Name, Is.EqualTo(free.Name));
             Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.Id), "a hero is offered in one place only");
         }
@@ -235,7 +235,7 @@
             var green = new PlayerViewModel(this.editor.CurrentGame!, Color.Green, _ => { }, _ => { });
             var blue = new PlayerViewModel(this.editor.CurrentGame!, Color.Blue, _ => { }, _ => { });
 
-            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel((int)Color.Green).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
+            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel(Color.Green.Code).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
             Assert.That(green.Resources.Select(r => r.Note), Is.All.Empty);
             Assert.That(blue.Resources.Select(r => r.Note), Has.Some.Not.Empty);
         }
@@ -250,7 +250,7 @@
 
             gold.Value = before + 5_000;
 
-            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel((int)Color.Blue).Resources.Gold, Is.EqualTo(before + 5_000));
+            Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel(Color.Blue.Code).Resources.Gold, Is.EqualTo(before + 5_000));
             Assert.That(gold.IsChanged, Is.True);
             Assert.That(gold.DeltaText, Is.EqualTo("+5,000 from save"));
             Assert.That(page.HasPendingChanges, Is.True);
@@ -552,8 +552,8 @@
         {
             var page = this.OpenCastleOf(Color.Red);
             var document = () => this.editor.CurrentGame!.History.Current;
-            var red = () => document().Players().GetModel((int)Color.Red);
-            var blue = () => document().Players().GetModel((int)Color.Blue);
+            var red = () => document().Players().GetModel(Color.Red.Code);
+            var blue = () => document().Players().GetModel(Color.Blue.Code);
             var blueBefore = blue().CastleIds.Count;
             Assert.That(red().CastleIds, Does.Contain(page.CastleIndex));
 
@@ -576,7 +576,7 @@
         public void ACastleCannotGoToAPlayerWhoseListOfCastlesIsFull()
         {
             var page = this.OpenCastleOf(Color.Red);
-            this.editor.CurrentGame!.History.CreatePlayerSession((int)Color.Blue).Update(p => p with { CastleIds = new Numbers(Enumerable.Range(40, Constants.Player.CastleListSize)) });
+            this.editor.CurrentGame!.History.CreatePlayerSession(Color.Blue.Code).Update(p => p with { CastleIds = new Numbers(Enumerable.Range(40, Constants.Player.CastleListSize)) });
 
             page.OwnerField.Selected = "Blue";
 

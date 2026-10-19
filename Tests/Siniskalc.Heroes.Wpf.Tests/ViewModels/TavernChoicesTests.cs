@@ -9,11 +9,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [TestFixture]
     internal sealed class TavernChoicesTests
     {
-        private static readonly HeroSummary<ConsoleColor>[] Heroes =
+        private static readonly HeroSummary<TestColor>[] Heroes =
         [
             new(0, 10, "Ann", null, "Knight", 1),
             new(1, 11, "Bob", null, "Knight", 1),
-            new(2, 12, "Cid", ConsoleColor.Red, "Knight", 1),
+            new(2, 12, "Cid", TestColor.Red, "Knight", 1),
             new(3, 13, "Bob", null, "Wizard", 1),
         ];
 

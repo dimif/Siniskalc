@@ -20,7 +20,7 @@ namespace Siniskalc.Heroes.Tests.Data
         {
             var sink = NewSink();
 
-            sink.AddOwner<Holder, TestColor>(null, TestColor.Red, (h, owner) => h with { Owner = owner });
+            sink.AddOwner<Holder, TestColor>(TestColor.Neutral, TestColor.Red, (h, owner) => h with { Owner = owner });
 
             Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Owner", "Neutral", "Red") }));
         }
@@ -49,6 +49,6 @@ namespace Siniskalc.Heroes.Tests.Data
                 Is.EqualTo(new[] { ("Slot 1", "Peasant × 10", "Peasant × 12"), ("Slot 3", "Archer × 3", "empty") }));
         }
 
-        private sealed record Holder(TestColor? Owner, Army<Creature> Army);
+        private sealed record Holder(TestColor Owner, IArmy<Creature> Army);
     }
 }

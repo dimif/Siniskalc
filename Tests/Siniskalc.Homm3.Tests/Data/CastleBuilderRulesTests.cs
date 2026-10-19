@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Data
                         var unbuilt = CastleBuilder.Unbuild(saved, building);
                         var removed = saved.Buildings.Except(unbuilt.Buildings).ToList();
 
-                        var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, CurrentBuildings = new HashSet<Building> { Building.VillageHall } };
+                        var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, VisibleBuildings = new HashSet<Building> { Building.VillageHall } };
                         var empty = TestServices.SerializeCastle(chunk, model);
                         foreach (var kept in saved.Buildings.Except(removed).Where(b => b != Building.VillageHall && !CastleBuilder.IsAutomatic(b)))
                         {
@@ -82,7 +82,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var upgraded = CastleBuilder.Build(before, Building.BulwarkUpgColliery);
 
             Assert.That(upgraded.CreaturesAvailable, Is.EqualTo(after.CreaturesAvailable));
-            Assert.That(upgraded.CurrentBuildings, Is.EquivalentTo(after.CurrentBuildings));
+            Assert.That(upgraded.VisibleBuildings, Is.EquivalentTo(after.VisibleBuildings));
 
             var back = CastleBuilder.Unbuild(upgraded, Building.BulwarkUpgColliery);
             Assert.That(back.CreaturesAvailable, Is.EqualTo(before.CreaturesAvailable));
@@ -109,7 +109,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var built = CastleBuilder.SetMageGuildLevel(Castle("Bulwark", before, "Still Water"), level);
 
             Assert.That(built.MageGuildLevel, Is.EqualTo(level));
-            Assert.That(built.SpellCounts, Is.EqualTo(next.SpellCounts));
+            Assert.That(built.MageGuildSpellCounts, Is.EqualTo(next.MageGuildSpellCounts));
         }
 
         [Test]
@@ -118,17 +118,17 @@ namespace Siniskalc.Homm3.Tests.Data
             var baseline = Castle("Bulwark", "bulwark_08_resource_silo", "Still Water");
 
             var guild = CastleBuilder.SetMageGuildLevel(baseline, 5);
-            Assert.That(guild.SpellCounts, Is.EqualTo(new[] { 5, 4, 3, 2, 1 }));
-            Assert.That(guild.CurrentBuildings, Does.Contain(Building.MagesGuild5).And.Not.Contain(Building.MagesGuild4));
+            Assert.That(guild.MageGuildSpellCounts, Is.EqualTo(new[] { 5, 4, 3, 2, 1 }));
+            Assert.That(guild.VisibleBuildings, Does.Contain(Building.MagesGuild5).And.Not.Contain(Building.MagesGuild4));
 
             var smaller = CastleBuilder.SetMageGuildLevel(guild, 2);
             Assert.That(smaller.MageGuildLevel, Is.EqualTo(2));
-            Assert.That(smaller.SpellCounts, Is.EqualTo(new[] { 5, 4, 0, 0, 0 }));
-            Assert.That(smaller.CurrentBuildings, Does.Contain(Building.MagesGuild2).And.Not.Contain(Building.MagesGuild3));
+            Assert.That(smaller.MageGuildSpellCounts, Is.EqualTo(new[] { 5, 4, 0, 0, 0 }));
+            Assert.That(smaller.VisibleBuildings, Does.Contain(Building.MagesGuild2).And.Not.Contain(Building.MagesGuild3));
 
             var none = CastleBuilder.SetMageGuildLevel(smaller, 0);
-            Assert.That(none.CurrentBuildings, Is.EquivalentTo(baseline.CurrentBuildings));
-            Assert.That(none.SpellCounts, Is.All.EqualTo(0));
+            Assert.That(none.VisibleBuildings, Is.EquivalentTo(baseline.VisibleBuildings));
+            Assert.That(none.MageGuildSpellCounts, Is.All.EqualTo(0));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var rampart = Castle("Rampart", "rampart_00_baseline", "Fortune Keep");
             var village = new HashSet<Building> { Building.VillageHall };
-            var castle = rampart with { Faction = Faction.Castle, Buildings = village, CurrentBuildings = village, EnabledBuildings = Building.ForFaction(Faction.Castle).ToHashSet() };
+            var castle = rampart with { Faction = Faction.Castle, Buildings = village, VisibleBuildings = village, EnabledBuildings = Building.ForFaction(Faction.Castle).ToHashSet() };
 
             // The lighthouse works without a shipyard, and the other way round.
             Assert.That(CastleBuilder.GetBuildFailureReason(castle, Building.CastleLighthouse), Is.EqualTo(CastleBuildFailureReason.None));
@@ -191,7 +191,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(CastleBuilder.GetBuildFailureReason(castle, Building.CastleGuardhouse), Is.EqualTo(CastleBuildFailureReason.None));
 
             // An upgraded dwelling needs its dwelling.
-            var rampartVillage = rampart with { Buildings = village, CurrentBuildings = village };
+            var rampartVillage = rampart with { Buildings = village, VisibleBuildings = village };
             Assert.That(TestServices.CastleBuildMessages.DescribeBuild(rampartVillage, Building.RampartUpgDwarfCottage), Is.EqualTo("Requires Dwarf Cottage"));
             Assert.Throws<GameRuleException>(() => CastleBuilder.Build(rampartVillage, Building.RampartUpgDwarfCottage));
 
@@ -208,14 +208,14 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var hordeFirst = CastleBuilder.Build(CastleBuilder.Build(castle, Building.RampartMinersGuild), Building.RampartUpgDwarfCottage);
             Assert.That(hordeFirst.Buildings, Does.Contain(Building.RampartUpgMinersGuild));
-            Assert.That(hordeFirst.CurrentBuildings, Does.Contain(Building.RampartUpgMinersGuild).And.Not.Contain(Building.RampartMinersGuild).And.Not.Contain(Building.RampartUpgDwarfCottage));
+            Assert.That(hordeFirst.VisibleBuildings, Does.Contain(Building.RampartUpgMinersGuild).And.Not.Contain(Building.RampartMinersGuild).And.Not.Contain(Building.RampartUpgDwarfCottage));
 
             var upgradeFirst = CastleBuilder.SetBuilt(CastleBuilder.SetBuilt(castle, Building.RampartUpgDwarfCottage, true), Building.RampartMinersGuild, true);
-            Assert.That(upgradeFirst.CurrentBuildings, Is.EquivalentTo(hordeFirst.CurrentBuildings));
+            Assert.That(upgradeFirst.VisibleBuildings, Is.EquivalentTo(hordeFirst.VisibleBuildings));
 
             var removed = CastleBuilder.Unbuild(hordeFirst, Building.RampartMinersGuild);
             Assert.That(removed.Buildings, Does.Not.Contain(Building.RampartUpgMinersGuild));
-            Assert.That(removed.CurrentBuildings, Does.Contain(Building.RampartUpgDwarfCottage));
+            Assert.That(removed.VisibleBuildings, Does.Contain(Building.RampartUpgDwarfCottage));
         }
     }
 }

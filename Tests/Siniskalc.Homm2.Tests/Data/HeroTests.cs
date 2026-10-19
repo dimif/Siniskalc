@@ -27,11 +27,11 @@
             Assert.That(maximus.Name, Is.EqualTo("Maximus"));
             Assert.That(maximus.Id, Is.EqualTo(Maximus));
             Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
-            Assert.That(maximus.Owner, Is.EqualTo(Color.Blue));
+            Assert.That(maximus.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(maximus.Position, Is.EqualTo(new MapPosition(28, 27)));
             Assert.That(maximus.Destination, Is.EqualTo(MapPosition.None));
-            Assert.That(maximus.Level, Is.EqualTo(1));
-            Assert.That(maximus.Experience, Is.Zero);
+            Assert.That(maximus.HeroLevel.Level, Is.EqualTo(1));
+            Assert.That(maximus.HeroLevel.Experience, Is.Zero);
             Assert.That(maximus.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(maximus.SecondarySkills.Entries, Is.EqualTo(new[]
             {
@@ -42,7 +42,7 @@
             Assert.That(maximus.Artifacts, Is.EqualTo(Artifacts.None));
             Assert.That(maximus.HasSpellBook, Is.False);
             Assert.That(maximus.Spells.Count, Is.Zero);
-            Assert.That((maximus.MaxMovement, maximus.MovementLeft), Is.EqualTo((1000L, 1000L)));
+            Assert.That((maximus.MovementPoints.Max, maximus.MovementPoints.Current), Is.EqualTo((1000L, 1000L)));
             Assert.That(maximus.SpellPoints, Is.EqualTo(10));
         }
 
@@ -61,7 +61,7 @@
             var moved = Hero(3, Maximus);
 
             Assert.That(moved.Position, Is.EqualTo(new MapPosition(29, 28)));
-            Assert.That(moved.MovementLeft, Is.EqualTo(888));
+            Assert.That(moved.MovementPoints.Current, Is.EqualTo(888));
         }
 
         [Test]
@@ -69,7 +69,7 @@
         {
             var tired = Hero(5, Maximus);
 
-            Assert.That(tired.MovementLeft, Is.Zero);
+            Assert.That(tired.MovementPoints.Current, Is.Zero);
             Assert.That(tired.Destination, Is.EqualTo(new MapPosition(23, 23)));
         }
 
@@ -97,8 +97,8 @@
             var hired = Hero(8, SirGallant);
             var before = Hero(7, SirGallant);
 
-            Assert.That(before.Owner, Is.Null);
-            Assert.That(hired.Owner, Is.EqualTo(Color.Blue));
+            Assert.That(before.Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(hired.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(hired.Position, Is.EqualTo(new MapPosition(28, 25)));
         }
 
@@ -108,9 +108,9 @@
             var before = Hero(8, SirGallant);
             var after = Hero(9, SirGallant);
 
-            Assert.That(before.Level, Is.EqualTo(1));
-            Assert.That(after.Level, Is.EqualTo(2));
-            Assert.That(after.Experience, Is.EqualTo(1550));
+            Assert.That(before.HeroLevel.Level, Is.EqualTo(1));
+            Assert.That(after.HeroLevel.Level, Is.EqualTo(2));
+            Assert.That(after.HeroLevel.Experience, Is.EqualTo(1550));
             Assert.That(after.PrimarySkills.Defense, Is.EqualTo(before.PrimarySkills.Defense + 1));
             Assert.That(after.SecondarySkills.SlotCount, Is.EqualTo(before.SecondarySkills.SlotCount + 1));
             Assert.That(after.SecondarySkills.Entries[^1], Is.EqualTo(new SkillEntry(SecondarySkill.Pathfinding, SkillLevel.Beginner)));
@@ -143,9 +143,9 @@
             var before = Hero(15, Natasha);
             var after = Hero(16, Natasha);
 
-            Assert.That(before.Owner, Is.EqualTo(Color.Red));
+            Assert.That(before.Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(before.Artifacts.Slots.Take(2), Is.EqualTo(new[] { Artifact.MagicBook, Artifact.IceCloak }));
-            Assert.That(after.Owner, Is.Null);
+            Assert.That(after.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(after.Artifacts.Slots.Take(2), Is.EqualTo(new Artifact?[] { Artifact.MagicBook, null }));
             Assert.That(after.SpellPoints, Is.EqualTo(27));
         }
@@ -161,7 +161,7 @@
             Assert.That(heroes[51].Name, Is.EqualTo("Roxana"));
             Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(Faction.All));
             Assert.That(heroes.GroupBy(h => h.Faction).Select(g => g.Count()), Is.All.EqualTo(9));
-            Assert.That(heroes.Where(h => h.Owner == Color.Blue).Select(h => h.Name), Is.EqualTo(new[] { "Maximus" }));
+            Assert.That(heroes.Where(h => h.Owner == PlayerColor.Blue).Select(h => h.Name), Is.EqualTo(new[] { "Maximus" }));
         }
 
         [Test]

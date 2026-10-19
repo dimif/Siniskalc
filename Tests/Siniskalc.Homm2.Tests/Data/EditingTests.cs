@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -40,9 +40,8 @@ namespace Siniskalc.Homm2.Tests.Data
             var edited = session.Current with
             {
                 SpellPoints = 77,
-                MovementLeft = 500,
-                Experience = 12_345,
-                Level = 5,
+                MovementPoints = session.Current.MovementPoints with { Current = 500 },
+                HeroLevel = new HeroLevel(12_345, 5),
                 PrimarySkills = new PrimarySkills(9, 8, 7, 6),
                 SecondarySkills = new SecondarySkills(Enumerable.Empty<SkillEntry>())
                     .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
@@ -51,7 +50,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(Creature.Titan, 3)).WithSlot(4, new ArmySlot<Creature>(Creature.Peasant, 32_767)),
                 Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
                 Spells = new SpellSet<Spell>([Spell.Fireball, Spell.TownPortal]),
-                Owner = Color.Red,
+                Owner = PlayerColor.Red,
                 Destination = new MapPosition(3, 4),
             };
 
@@ -82,7 +81,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             session.Update(c => c with
             {
-                Owner = Color.Green,
+                Owner = PlayerColor.Green,
                 Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)),
                 Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue,
                 Dwellings = c.Dwellings | Dwellings.Dwelling3 | Dwellings.MageGuild2,
@@ -90,7 +89,7 @@ namespace Siniskalc.Homm2.Tests.Data
             });
 
             var castle = TestServices.Parser.Parse(this.game.GetBytesToSave(), null).History.Current.Castles().GetModel(3);
-            Assert.That(castle.Owner, Is.EqualTo(Color.Green));
+            Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Green));
             Assert.That(castle.Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Paladin, 10)));
             Assert.That(castle.Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.Tavern | TownBuildings.Statue));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(2));
@@ -111,16 +110,16 @@ namespace Siniskalc.Homm2.Tests.Data
             var model = TestServices.HeroDeserializer.Deserialize(chunk);
             Assert.That(model.Army.Slots[0]!.Creature, Is.EqualTo(Creature.Peasant));
             Assert.That(model.Artifacts.Slots[5], Is.EqualTo(Artifact.UltimateBookOfKnowledge));
-            Assert.That(model.Owner, Is.Null);
+            Assert.That(model.Owner, Is.EqualTo(PlayerColor.Neutral));
 
             var untouched = TestServices.HeroSerializer.Serialize(chunk, model).ToArray();
             Assert.That(untouched[HeroLayout.ArmyTypes], Is.EqualTo(0xC8));
             Assert.That(untouched[HeroLayout.Artifacts + 5], Is.EqualTo(0xC9));
             Assert.That(untouched[HeroLayout.Owner], Is.EqualTo(0x77));
 
-            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 1)), Owner = Color.Blue }).ToArray();
+            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 1)), Owner = PlayerColor.Blue }).ToArray();
             Assert.That(changed[HeroLayout.ArmyTypes], Is.EqualTo(Creature.Archer.Code));
-            Assert.That(changed[HeroLayout.Owner], Is.EqualTo(Color.Blue.Code));
+            Assert.That(changed[HeroLayout.Owner], Is.EqualTo(PlayerColor.Blue.Code));
         }
 
         [Test]
@@ -128,7 +127,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var game = TestServices.Load(Saves.Path(Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));
             var chunk = game.History.Current.Heroes()[16];
-            var model = TestServices.HeroDeserializer.Deserialize(chunk) with { Experience = 5000, Level = 3 };
+            var model = TestServices.HeroDeserializer.Deserialize(chunk) with { HeroLevel = new HeroLevel(5000, 3) };
 
             var written = TestServices.HeroSerializer.Serialize(chunk, model).ToArray();
 
@@ -142,7 +141,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var session = this.game.History.CreatePlayerSession(0);
 
             Assert.That(() => session.Update(p => p with { Resources = p.Resources.With(Resource.Gold, -1) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
-            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Level = 300 }), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { HeroLevel = h.HeroLevel with { Level = 300 } }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Peasant, 70_000)) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(this.game.History.CanUndo, Is.False);
         }

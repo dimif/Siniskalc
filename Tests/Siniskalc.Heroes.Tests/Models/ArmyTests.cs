@@ -22,6 +22,15 @@ namespace Siniskalc.Heroes.Tests.Models
         }
 
         [Test]
+        public void AnArmyTellsItsSlotsAndItsStacksThroughTheInterface()
+        {
+            IArmy<Unit> army = new Army<Unit>(5).WithSlot(1, Pikeman, 3);
+
+            Assert.That(army.Slots, Has.Count.EqualTo(5));
+            Assert.That(army.Filled.Select(s => s.Creature), Is.EqualTo(new[] { Pikeman }));
+        }
+
+        [Test]
         public void PuttingAStackInASlotLeavesTheOriginalArmyAlone()
         {
             var army = new Army<Unit>(5);

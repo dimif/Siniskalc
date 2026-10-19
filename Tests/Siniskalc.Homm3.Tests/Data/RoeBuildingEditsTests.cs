@@ -38,7 +38,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static ulong[] Masks(CastleChunk chunk) =>
         [
-            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.CurrentBuildingsFromNameEnd) & ~IgnoredBits,
+            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.VisibleBuildingsFromNameEnd) & ~IgnoredBits,
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.BuiltBuildingsFromNameEnd) & ~IgnoredBits,
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.EnabledBuildingsFromNameEnd) & ~IgnoredBits,
         ];
@@ -100,7 +100,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 var model = TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
 
                 Assert.That(model.Buildings.Contains(Building.Capitol), Is.EqualTo(name == with), name);
-                Assert.That(model.CurrentBuildings.Contains(Building.CityHall), Is.EqualTo(name != with), name);
+                Assert.That(model.VisibleBuildings.Contains(Building.CityHall), Is.EqualTo(name != with), name);
             }
         }
     }

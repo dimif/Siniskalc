@@ -8,5 +8,9 @@ namespace Siniskalc.Heroes.Entities
     /// </summary>
     public interface IPlayerColor : IGameEntity
     {
+        /// <summary>
+        /// Gets whether this is the owner of what no player owns: a castle, a hero or a mine nobody has.
+        /// </summary>
+        bool IsNeutral { get; }
     }
 }

@@ -37,13 +37,13 @@
 
             for (var slot = 0; slot < Bytes.GuildSpellSlots; slot++)
             {
-                bytes[CastleLayout.GuildSpells + slot] = Bytes.GuildSpellByte(model.GuildSpells[slot], bytes[CastleLayout.GuildSpells + slot]);
+                bytes[CastleLayout.GuildSpells + slot] = Bytes.GuildSpellByte(model.MageGuildSpells[slot], bytes[CastleLayout.GuildSpells + slot]);
             }
 
             for (var level = 0; level < Constants.Castle.MageGuildLevels; level++)
             {
-                RangeGuard.ThrowIfOutOfRange<long>(model.GuildSpellCounts[level], Constants.Castle.MinGuildSpellCount, Constants.Castle.MaxGuildSpellCount, nameof(model.GuildSpellCounts));
-                bytes[CastleLayout.GuildSpellCounts + level] = (byte)model.GuildSpellCounts[level];
+                RangeGuard.ThrowIfOutOfRange<long>(model.MageGuildSpellCounts[level], Constants.Castle.MinGuildSpellCount, Constants.Castle.MaxGuildSpellCount, nameof(model.MageGuildSpellCounts));
+                bytes[CastleLayout.GuildSpellCounts + level] = (byte)model.MageGuildSpellCounts[level];
             }
 
             return chunk.WithBytes(bytes);

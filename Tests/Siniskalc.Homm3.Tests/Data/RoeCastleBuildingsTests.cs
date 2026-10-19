@@ -167,14 +167,14 @@ namespace Siniskalc.Homm3.Tests.Data
         [TestCase("roe_45_upg_dwelling_7", "2_Rampart", "Dragon Cliffs")]
         [TestCase("roe_48_castle_capitol", "1_Castle", "City Hall")]
         [TestCase("roe_48b_rampart_capitol", "2_Rampart", "City Hall")]
-        public void AnUpgradeReplacesTheBuildingsItListsInTheCurrentBuildings(string save, string castle, string replaced)
+        public void AnUpgradeReplacesTheBuildingsItListsInTheVisibleBuildings(string save, string castle, string replaced)
         {
             var model = Castle(save, castle);
 
             foreach (var name in replaced.Split('|'))
             {
                 Assert.That(model.Buildings.Select(b => b.Name), Does.Contain(name));
-                Assert.That(model.CurrentBuildings.Select(b => b.Name), Does.Not.Contain(name));
+                Assert.That(model.VisibleBuildings.Select(b => b.Name), Does.Not.Contain(name));
             }
         }
 
@@ -187,7 +187,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 var castle = Castle(save, name);
 
                 Assert.That(castle.MageGuildLevel, Is.EqualTo(level), name);
-                Assert.That(string.Join(",", castle.SpellCounts), Is.EqualTo(name == "3_Tower" ? towerSpells : spells), name);
+                Assert.That(string.Join(",", castle.MageGuildSpellCounts), Is.EqualTo(name == "3_Tower" ? towerSpells : spells), name);
             }
         }
 
@@ -229,7 +229,7 @@ namespace Siniskalc.Homm3.Tests.Data
             foreach (var name in RedCastles.Where(n => !capped.Contains(n) && !(level == 5 && n == "1_Castle")))
             {
                 Assert.That(Castle(save, name).MageGuildLevel, Is.EqualTo(level), name);
-                Assert.That(string.Join(",", Castle(save, name).SpellCounts), Is.EqualTo(name == "3_Tower" ? towerSpells : spells), name);
+                Assert.That(string.Join(",", Castle(save, name).MageGuildSpellCounts), Is.EqualTo(name == "3_Tower" ? towerSpells : spells), name);
             }
         }
 
@@ -277,9 +277,9 @@ namespace Siniskalc.Homm3.Tests.Data
         public void OnlyTheCastleThatBuiltTheCapitolHasItAndItReplacesTheCityHall(string save, string withCapitol, string without)
         {
             Assert.That(Castle(save, withCapitol).Buildings, Does.Contain(Building.Capitol));
-            Assert.That(Castle(save, withCapitol).CurrentBuildings, Does.Contain(Building.Capitol).And.Not.Contain(Building.CityHall));
+            Assert.That(Castle(save, withCapitol).VisibleBuildings, Does.Contain(Building.Capitol).And.Not.Contain(Building.CityHall));
             Assert.That(Castle(save, without).Buildings, Does.Not.Contain(Building.Capitol));
-            Assert.That(Castle(save, without).CurrentBuildings, Does.Contain(Building.CityHall));
+            Assert.That(Castle(save, without).VisibleBuildings, Does.Contain(Building.CityHall));
         }
 
         [Test]

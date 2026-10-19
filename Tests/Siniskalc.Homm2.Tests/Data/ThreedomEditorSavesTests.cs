@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -55,8 +55,8 @@ namespace Siniskalc.Homm2.Tests.Data
         public void TheObelisksAreAllVisitedByBlueOnlyOneFortIsForgottenAndTheSourcesSetTheirBonus()
         {
             var obelisks = Open("T04OBELS").History.Current.Obelisks().GetModel()!;
-            Assert.That(obelisks.AllVisited(Color.Blue), Is.True);
-            Assert.That(obelisks.IsVisited(3, Color.Green), Is.True, "the others keep theirs");
+            Assert.That(obelisks.AllVisited(PlayerColor.Blue), Is.True);
+            Assert.That(obelisks.IsVisited(3, PlayerColor.Green), Is.True, "the others keep theirs");
 
             Assert.That(Open("T05FORT").History.Current.Heroes().GetModel(50).Visited.Forts, Is.EqualTo(34u), "he had visited three forts and the second of the map is forgotten");
 
@@ -70,8 +70,8 @@ namespace Siniskalc.Homm2.Tests.Data
         public void TheMinesTheShrinesAndTheSphinxAreEditedAsTheEditSays()
         {
             var mines = Open("T07MINES").History.Current.Mines().GetModels();
-            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(22, 29)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.Color.Blue));
-            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(44, 6)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.Color.Red));
+            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(22, 29)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.PlayerColor.Blue));
+            Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(44, 6)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.PlayerColor.Red));
 
             var shrines = Open("T08SHRIN").History.Current.Shrines().GetModels();
             Assert.That(shrines.Single(s => s.Position == new Siniskalc.Heroes.Models.MapPosition(45, 7)).Spell, Is.EqualTo(Siniskalc.Homm2.Entities.Spell.Fireball));

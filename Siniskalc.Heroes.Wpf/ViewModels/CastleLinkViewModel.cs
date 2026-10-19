@@ -37,6 +37,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <typeparam name="TColor">The colour of the game.</typeparam>
         /// <typeparam name="TCreature">The creature of the game.</typeparam>
+        /// <typeparam name="TFaction">The faction of the game.</typeparam>
         /// <param name="castle">The castle.</param>
         /// <param name="open">Opens the page of the castle.</param>
         /// <param name="settlement">What the game calls the settlement, such as "City" and "Citadel", or "Castle".</param>
@@ -44,8 +45,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="isCapital">Whether the castle is a capital, which marks it.</param>
         /// <param name="grailText">The name of the Grail structure that is built, or nothing.</param>
         /// <param name="heroes">The heroes in the castle.</param>
-        public static CastleLinkViewModel For<TColor, TCreature>(
-            ICastleModel<TColor, TCreature> castle,
+        public static CastleLinkViewModel For<TColor, TCreature, TFaction>(
+            ICastleModel<TColor, TCreature, TFaction> castle,
             ICommand open,
             IEnumerable<string> settlement,
             int dwellings,
@@ -54,6 +55,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             IReadOnlyList<CastleHeroRowViewModel>? heroes = null)
             where TColor : class, IPlayerColor
             where TCreature : class, IGameEntity
+            where TFaction : class, IFaction
         {
             var status = string.Join(
                 " · ",
@@ -61,7 +63,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                     .Append(castle.MageGuildLevel > 0 ? $"Mage Guild {castle.MageGuildLevel}" : string.Empty)
                     .Append(OverviewText.Count(dwellings, "dwelling", "dwellings"))
                     .Where(text => text.Length > 0));
-            return new CastleLinkViewModel(castle.Name, castle.Faction?.Name ?? string.Empty, open, status, isCapital, grailText, heroes);
+            return new CastleLinkViewModel(castle.Name, castle.Faction.Name, open, status, isCapital, grailText, heroes);
         }
 
         public string Name { get; }

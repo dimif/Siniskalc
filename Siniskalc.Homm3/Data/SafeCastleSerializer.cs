@@ -29,17 +29,16 @@
 
             SerializeOwner(bytes, castle.Owner);
             SerializeBuiltThisTurn(bytes, castle.BuiltThisTurn);
-            RangeGuard.ThrowIfOutOfRange<long>(castle.MageGuildLevel, 0, Constants.Castle.MaxMageGuildLevel, nameof(castle.MageGuildLevel));
             bytes[CastleLayout.MageGuildLevel] = (byte)castle.MageGuildLevel;
             bytes[CastleLayout.GarrisonedHero] = HeroByte(castle.GarrisonedHeroId, nameof(castle.GarrisonedHeroId));
             bytes[CastleLayout.VisitingHero] = HeroByte(castle.VisitingHeroId, nameof(castle.VisitingHeroId));
             ArmyWriter.Write(bytes, CastleLayout.Garrison, castle.Garrison, CreatureCodes.Instance, nameof(castle.Garrison));
             SerializeCreaturesAvailable(bytes, nameEnd, castle);
 
-            for (var level = 0; level < CastleLayout.SpellLevelCount && level < castle.SpellCounts.Count; level++)
+            for (var level = 0; level < CastleLayout.SpellLevelCount && level < castle.MageGuildSpellCounts.Count; level++)
             {
-                RangeGuard.ThrowIfOutOfRange<long>(castle.SpellCounts[level], 0, Constants.Castle.MaxSpellsOfALevel, nameof(castle.SpellCounts));
-                bytes[nameEnd + CastleLayout.SpellCountsFromNameEnd + level] = (byte)castle.SpellCounts[level];
+                RangeGuard.ThrowIfOutOfRange<long>(castle.MageGuildSpellCounts[level], 0, Constants.Castle.MaxSpellsOfALevel, nameof(castle.MageGuildSpellCounts));
+                bytes[nameEnd + CastleLayout.SpellCountsFromNameEnd + level] = (byte)castle.MageGuildSpellCounts[level];
             }
 
             SerializeMageGuildSpells(chunk, bytes, castle);
@@ -93,10 +92,10 @@
             return (byte)id;
         }
 
-        // A byte that is no player's colour reads as no owner, and is left alone while the owner stays none.
-        private static void SerializeOwner(byte[] bytes, PlayerColor? owner)
+        // A byte that is no player's colour reads as neutral, and is left alone while the owner stays neutral.
+        private static void SerializeOwner(byte[] bytes, PlayerColor owner)
         {
-            bytes[CastleLayout.Owner] = ByteEnumerations.WriteKeeping(owner, bytes[CastleLayout.Owner], Constants.ByteOff);
+            bytes[CastleLayout.Owner] = ByteEnumerations.WriteKeeping(owner, bytes[CastleLayout.Owner], PlayerColor.Neutral);
         }
 
         private static void SerializeBuiltThisTurn(byte[] bytes, bool builtThisTurn)
@@ -116,7 +115,7 @@
             for (var level = 0; level < CastleLayout.CreatureLevelCount && level < castle.CreaturesAvailable.Count; level++)
             {
                 RangeGuard.ThrowIfOutOfRange<long>(castle.CreaturesAvailable[level], Constants.Castle.MinDwellingCreatures, Constants.Castle.MaxDwellingCreatures, nameof(castle.CreaturesAvailable));
-                var upgrade = castle.Faction == null ? null : Building.FromDwellingLevel(castle.Faction, level, upgraded: true);
+                var upgrade = castle.Faction == Faction.Neutral ? null : Building.FromDwellingLevel(castle.Faction, level, upgraded: true);
                 var upgraded = upgrade != null && castle.HasBuilt(upgrade);
                 var active = nameEnd + (upgraded ? CastleLayout.UpgradedCreaturesAvailableFromNameEnd : CastleLayout.CreaturesAvailableFromNameEnd) + (level * 2);
                 var other = nameEnd + (upgraded ? CastleLayout.CreaturesAvailableFromNameEnd : CastleLayout.UpgradedCreaturesAvailableFromNameEnd) + (level * 2);
@@ -132,14 +131,14 @@
 
         private static void SerializeBuildings(CastleChunk chunk, byte[] bytes, CastleModel castle)
         {
-            if (castle.Faction == null)
+            if (castle.Faction == Faction.Neutral)
             {
                 return;
             }
 
             var nameEnd = chunk.NameEnd;
             var builtOffset = nameEnd + CastleLayout.BuiltBuildingsFromNameEnd;
-            var currentOffset = nameEnd + CastleLayout.CurrentBuildingsFromNameEnd;
+            var currentOffset = nameEnd + CastleLayout.VisibleBuildingsFromNameEnd;
             var enabledOffset = nameEnd + CastleLayout.EnabledBuildingsFromNameEnd;
 
             var built = ByteBufferHelper.ReadUInt64(bytes, builtOffset);
@@ -156,7 +155,7 @@
                 }
 
                 built = WithBit(built, building.Code, castle.Buildings.Contains(building));
-                current = WithBit(current, building.Code, castle.CurrentBuildings.Contains(building));
+                current = WithBit(current, building.Code, castle.VisibleBuildings.Contains(building));
                 enabled = WithBit(enabled, building.Code, castle.EnabledBuildings.Contains(building));
             }
 

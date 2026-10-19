@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Siniskalc.Homm2.Data
             for (var offset = mapStart + MapObjectLayout.MineTable; offset + MapObjectLayout.MineRecordSize <= mapStart + MapObjectLayout.MineTableEnd; offset += MapObjectLayout.MineRecordSize)
             {
                 var (owner, kind, x, y) = (bytes[offset], bytes[offset + 1], bytes[offset + 4], bytes[offset + 5]);
-                if (bytes[offset + 2] != 0xFF || bytes[offset + 3] != 0xFF || bytes[offset + 6] != 0xFF || x >= size || y >= size || kind > (byte)MineKind.GoldMine || (owner != 0xFF && owner > Color.Purple.Code))
+                if (bytes[offset + 2] != 0xFF || bytes[offset + 3] != 0xFF || bytes[offset + 6] != 0xFF || x >= size || y >= size || kind > (byte)MineKind.GoldMine || (owner != 0xFF && owner > PlayerColor.Purple.Code))
                 {
                     continue;
                 }

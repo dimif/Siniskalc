@@ -14,7 +14,7 @@
     public sealed class HeroDeserializer : IHeroDeserializer
     {
         /// <inheritdoc/>
-        public Color? DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
+        public PlayerColor DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
 
         /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
@@ -28,9 +28,9 @@
                 this.DeserializeOwner(chunk),
                 new MapPosition(Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.X)), Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.Y))),
                 Bytes.Destination(chunk.GetUInt32At(HeroLayout.Destination), chunk.GetUInt32At(HeroLayout.Destination + 4)),
-                chunk.GetUInt16At(HeroLayout.SpellPoints),
                 new MovementPoints(chunk.GetUInt32At(HeroLayout.MovementLeft), chunk.GetUInt32At(HeroLayout.MaxMovement)),
                 new HeroLevel(chunk.GetUInt32At(HeroLayout.Experience), chunk.GetByteAt(HeroLayout.Level)),
+                chunk.GetUInt16At(HeroLayout.SpellPoints),
                 new PrimarySkills(
                     chunk.GetByteAt(HeroLayout.PrimarySkills),
                     chunk.GetByteAt(HeroLayout.PrimarySkills + 1),

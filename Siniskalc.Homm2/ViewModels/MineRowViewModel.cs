@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -19,9 +19,9 @@ namespace Siniskalc.Homm2.ViewModels
             this.session = session;
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames<Color>.Choices,
-                () => OwnerNames<Color>.Of(this.session.Current.Owner),
-                name => this.session.Update(mine => mine with { Owner = OwnerNames<Color>.Parse(name) }),
+                OwnerNames<PlayerColor>.Choices,
+                () => OwnerNames<PlayerColor>.Of(this.session.Current.Owner),
+                name => this.session.Update(mine => mine with { Owner = OwnerNames<PlayerColor>.Parse(name) }),
                 toolTip: "Who owns the mine. The flag on the map and the daily income change with it: the game works the income out at the start of the next day. Not tried in the game.");
         }
 

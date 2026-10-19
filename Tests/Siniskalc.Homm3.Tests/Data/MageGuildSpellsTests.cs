@@ -52,7 +52,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var tower = Castle("Roe", save, "3_Tower");
 
-            Assert.That(tower.SpellCounts[0], Is.EqualTo(count));
+            Assert.That(tower.MageGuildSpellCounts[0], Is.EqualTo(count));
             Assert.That(Names(tower, 1), Has.Length.EqualTo(count));
             Assert.That(Names(tower, 1).Contains("Stone Skin"), Is.EqualTo(count == 6));
         }
@@ -62,7 +62,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var dungeon = Castle("Roe", "roe_00_baseline", "6_Dung");
 
-            Assert.That(dungeon.SpellCounts, Is.All.EqualTo(0));
+            Assert.That(dungeon.MageGuildSpellCounts, Is.All.EqualTo(0));
             Assert.That(dungeon.MageGuildSpells.Select(level => level.Count), Is.EqualTo(new[] { 5, 4, 3, 2, 1 }));
             Assert.That(Names(dungeon, 1), Is.EqualTo(new[] { "View Air", "Summon Boat", "Dispel", "Magic Arrow", "View Earth" }));
         }

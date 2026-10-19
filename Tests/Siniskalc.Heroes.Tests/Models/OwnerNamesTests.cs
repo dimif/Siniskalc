@@ -7,19 +7,19 @@ namespace Siniskalc.Heroes.Tests.Models
     internal sealed class OwnerNamesTests
     {
         [Test]
-        public void AnOwnerIsNamedAfterItsTestColorAndNoOwnerIsNeutral()
+        public void AnOwnerIsNamedAfterItsTestColorAndNeutralIsNamedNeutral()
         {
             Assert.That(OwnerNames<TestColor>.Of(TestColor.Blue), Is.EqualTo("Blue"));
-            Assert.That(OwnerNames<TestColor>.Of(null), Is.EqualTo("Neutral"));
+            Assert.That(OwnerNames<TestColor>.Of(TestColor.Neutral), Is.EqualTo("Neutral"));
         }
 
         [Test]
-        public void ANameIsReadBackAsItsTestColorAndAnythingElseIsNoOwner()
+        public void ANameIsReadBackAsItsTestColorAndAnythingElseIsNeutral()
         {
             Assert.That(OwnerNames<TestColor>.Parse("Blue"), Is.EqualTo(TestColor.Blue));
-            Assert.That(OwnerNames<TestColor>.Parse("Neutral"), Is.Null);
-            Assert.That(OwnerNames<TestColor>.Parse("99"), Is.Null);
-            Assert.That(OwnerNames<TestColor>.Parse(null), Is.Null);
+            Assert.That(OwnerNames<TestColor>.Parse("Neutral"), Is.EqualTo(TestColor.Neutral));
+            Assert.That(OwnerNames<TestColor>.Parse("99"), Is.EqualTo(TestColor.Neutral));
+            Assert.That(OwnerNames<TestColor>.Parse(null), Is.EqualTo(TestColor.Neutral));
         }
 
         [Test]

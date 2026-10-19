@@ -11,6 +11,6 @@
     public sealed class MaxSpellPointsCalculator : IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills>
     {
         /// <inheritdoc/>
-        public int GetMaximum(IHeroModel<SecondarySkill, IHomm2SecondarySkills> hero) => Math.Max(0, hero.PrimarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge;
+        public int GetMaximum(PrimarySkills primarySkills, IHomm2SecondarySkills secondarySkills) => Math.Max(0, primarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge;
     }
 }

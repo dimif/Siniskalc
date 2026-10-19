@@ -53,10 +53,10 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ACastleCanBecomeNeutral()
         {
-            this.still.Update(c => c with { Owner = null });
+            this.still.Update(c => c with { Owner = PlayerColor.Neutral });
 
             Assert.That(this.history.GetPendingChanges().Single().Change.After, Is.EqualTo("Neutral"));
-            Assert.That(this.Reloaded("Still Water").Owner, Is.Null);
+            Assert.That(this.Reloaded("Still Water").Owner, Is.EqualTo(PlayerColor.Neutral));
         }
 
         [Test]
@@ -158,8 +158,8 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Mage Guild, level 3", "Mage Guild, level 4" }));
             var reloaded = this.Reloaded("Still Water");
             Assert.That(reloaded.MageGuildLevel, Is.EqualTo(2));
-            Assert.That(reloaded.SpellCounts, Is.EqualTo(new[] { 5, 4, 0, 0, 0 }));
-            Assert.That(reloaded.CurrentBuildings, Does.Contain(Building.MagesGuild2).And.Not.Contain(Building.MagesGuild3));
+            Assert.That(reloaded.MageGuildSpellCounts, Is.EqualTo(new[] { 5, 4, 0, 0, 0 }));
+            Assert.That(reloaded.VisibleBuildings, Does.Contain(Building.MagesGuild2).And.Not.Contain(Building.MagesGuild3));
 
             this.history.GetPendingChanges().First().Revert(this.history);
             Assert.That(this.still.Current.MageGuildLevel, Is.EqualTo(3));

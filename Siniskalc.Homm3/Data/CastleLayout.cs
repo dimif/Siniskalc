@@ -86,7 +86,7 @@ namespace Siniskalc.Homm3.Data
         /// a 64-bit integer with one bit per <see cref="Siniskalc.Homm3.Entities.Building.Code"/>. A building that was replaced by
         /// an upgrade (the village hall by the town hall, a dwelling by its upgrade) is not in this one.
         /// </summary>
-        public const int CurrentBuildingsFromNameEnd = 89;
+        public const int VisibleBuildingsFromNameEnd = 89;
 
         /// <summary>
         /// The offset of the mask of every building that has been built, including the ones that were replaced by an upgrade.

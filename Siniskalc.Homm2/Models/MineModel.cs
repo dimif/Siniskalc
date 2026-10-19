@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Kind">What the mine gives.</param>
     /// <param name="Position">The tile of the mine.</param>
     /// <param name="Owner">The player that owns it, or <c>null</c> for nobody.</param>
-    public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, Color? Owner)
+    public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, PlayerColor Owner)
     {
         public string Name => $"{MineKinds.NameOf(this.Kind)} at X: {this.Position.X}, Y: {this.Position.Y}";
     }

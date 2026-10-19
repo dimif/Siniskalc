@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.Tests.Data
     {
         private static Game Load(string name) => TestServices.Load(Directory.GetFiles(Path.Combine("TestData", "Homm2", "HumanCpu"), name + ".*").Single());
 
-        private static string Controls(Game game) => string.Join(" ", Color.All.Select(c => game.GetControl(c) switch { PlayerType.Human => "H", PlayerType.Computer => "C", _ => "-" }));
+        private static string Controls(Game game) => string.Join(" ", PlayerColor.All.Select(c => game.GetControl(c) switch { PlayerType.Human => "H", PlayerType.Computer => "C", _ => "-" }));
 
         [TestCase("human_cpu_02_blue_human", "H C C C C C", "Blue")]
         [TestCase("human_cpu_03_green_human", "C H C C C C", "Green")]
@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("human_cpu_01_four_humans", "H H H H C C", "Blue")]
         public void TheHumanPlayersAndTheCurrentOneAreReadFromTheHeader(string save, string controls, string currentName)
         {
-            var current = Color.All.Single(c => c.Name == currentName);
+            var current = PlayerColor.All.Single(c => c.Name == currentName);
             var game = Load(save);
 
             Assert.That(Controls(game), Is.EqualTo(controls));
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("human_cpu_17_autosave_green_turn_day_2", "Green")]
         public void InAHotSeatGameOfTwoHumansTheTurnPassesFromOneToTheOther(string save, string currentName)
         {
-            var current = Color.All.Single(c => c.Name == currentName);
+            var current = PlayerColor.All.Single(c => c.Name == currentName);
             var game = Load(save);
 
             Assert.That(Controls(game), Is.EqualTo("H H C C C C"));
@@ -50,7 +50,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("human_cpu_22_green_orange_green_turn_day_3", "Green")]
         public void TheCurrentPlayerIsTheHumanWhoseNumberTheByteHoldsNotTheColour(string save, string currentName)
         {
-            var current = Color.All.Single(c => c.Name == currentName);
+            var current = PlayerColor.All.Single(c => c.Name == currentName);
             var game = Load(save);
 
             Assert.That(Controls(game), Is.EqualTo("C H C C H C"), "Green is human 0 and Orange human 1: the turn byte is 0 and 1, not 1 and 4");
@@ -66,7 +66,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("human_cpu_11_autosave_orange_turn", "Orange")]
         public void InAGameOfSixHumansTheTurnGoesRoundTheColours(string save, string currentName)
         {
-            var current = Color.All.Single(c => c.Name == currentName);
+            var current = PlayerColor.All.Single(c => c.Name == currentName);
             var game = Load(save);
 
             Assert.That(Controls(game), Is.EqualTo("H H H H H H"));
@@ -78,13 +78,13 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("human_cpu_18_green_orange_green_turn_day_1", "Orange", 1)]
         public void TheRecordsOfThePlayersAreInTheOrderTheyPlayAndEachSaysItsColour(string save, string colorName, int record)
         {
-            var color = Color.All.Single(c => c.Name == colorName);
+            var color = PlayerColor.All.Single(c => c.Name == colorName);
             var game = Load(save);
             var players = game.History.Current.Players();
 
             Assert.That(players.GetModel(color.Code).Color, Is.EqualTo(color));
             Assert.That(players[color.Code].StartIndex, Is.EqualTo(game.Layout.PlayerStart(record)), "the human colours come first in the table");
-            Assert.That(players.GetModels().Select(p => p.Color), Is.EqualTo(Color.All));
+            Assert.That(players.GetModels().Select(p => p.Color), Is.EqualTo(PlayerColor.All));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace Siniskalc.Homm2.Tests.Data
             {
                 var players = TestServices.Load(path).History.Current.Players();
 
-                Assert.That(players.GetModels().Select(p => p.Color), Is.EqualTo(Color.All), path);
+                Assert.That(players.GetModels().Select(p => p.Color), Is.EqualTo(PlayerColor.All), path);
             }
         }
 
@@ -122,15 +122,15 @@ namespace Siniskalc.Homm2.Tests.Data
 
             overview.OrderOfPlay.Single(i => i.Name == "Orange").Command!.Execute(null);
 
-            Assert.That(game.CurrentPlayer, Is.EqualTo(Color.Orange));
+            Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Orange));
             Assert.That(overview.OrderOfPlay.Single(i => i.IsCurrent).Name, Is.EqualTo("Orange"));
             Assert.That(overview.TurnText, Is.EqualTo("Current turn: Orange"));
             Assert.That(game.GetBytesToSave()[game.Layout.CurrentHumanStart], Is.EqualTo(1), "Orange is the second record");
             Assert.That(game.History.GetPendingChanges().Single().Change.After, Is.EqualTo("Orange"));
-            Assert.That(TestServices.Parser.Parse(game.GetBytesToSave(), null).CurrentPlayer, Is.EqualTo(Color.Orange));
+            Assert.That(TestServices.Parser.Parse(game.GetBytesToSave(), null).CurrentPlayer, Is.EqualTo(PlayerColor.Orange));
 
             game.History.GetPendingChanges().Single().Revert(game.History);
-            Assert.That(game.CurrentPlayer, Is.EqualTo(Color.Green));
+            Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Green));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 Assert.That(game.GetControl(game.CurrentPlayer!), Is.EqualTo(PlayerType.Human), path);
             }
 
-            Assert.That(TestServices.LoadThreedom(1).CurrentPlayer, Is.EqualTo(Color.Blue));
+            Assert.That(TestServices.LoadThreedom(1).CurrentPlayer, Is.EqualTo(PlayerColor.Blue));
         }
     }
 }

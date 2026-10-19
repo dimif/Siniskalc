@@ -91,7 +91,7 @@
             Assert.That(Maximus("E06ARTI").HasSpellBook, Is.True);
             Assert.That(Maximus("E07BOOK").HasSpellBook, Is.True);
             Assert.That(Maximus("E07BOOK").Spells.Count, Is.EqualTo(65));
-            Assert.That((Maximus("E08LEVEL").Level, Maximus("E08LEVEL").Experience, Maximus("E08LEVEL").MovementLeft), Is.EqualTo((10, 14_700L, 1000L)));
+            Assert.That((Maximus("E08LEVEL").HeroLevel.Level, Maximus("E08LEVEL").HeroLevel.Experience, Maximus("E08LEVEL").MovementPoints.Current), Is.EqualTo((10, 14_700L, 1000L)));
 
             var castle = TestServices.Parser.Parse(Named("E09CAST").Bytes, null).History.Current.Castles().GetModel(3);
             Assert.That(castle.HasDwelling(4), Is.True);
@@ -99,7 +99,7 @@
             Assert.That(TestServices.Parser.Parse(Named("E10GARR").Bytes, null).History.Current.Castles().GetModel(3).Garrison.Slots.Count(s => s != null), Is.EqualTo(3));
 
             var owned = TestServices.Parser.Parse(Named("E11OWNR").Bytes, null).History.Current;
-            Assert.That(owned.Castles().GetModel(2).Owner, Is.EqualTo(Color.Blue));
+            Assert.That(owned.Castles().GetModel(2).Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(owned.Players().GetModel(0).CastleIds, Is.EqualTo(Numbers.Of(3, 2)));
         }
 

@@ -52,7 +52,7 @@
                 () => this.Hero.SpellPoints,
                 value => this.Update(h => h with { SpellPoints = (ushort)value }),
                 new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, Constants.Hero.SpellPointsStep),
-                () => this.spellPoints.GetMaximum(this.Hero),
+                () => this.spellPoints.GetMaximum(this.Hero.PrimarySkills, this.Hero.SecondarySkills),
                 () => this.ArtifactEffects.LandMovement == 0 ? string.Empty : $"{this.ArtifactEffects.LandMovement:+0;-0} from artifacts");
             this.LevelAndClass = new LevelAndClassCardViewModel(
                 () => this.Hero.HeroLevel.Level,

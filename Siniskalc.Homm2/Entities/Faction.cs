@@ -1,6 +1,7 @@
-namespace Siniskalc.Homm2.Entities
+﻿namespace Siniskalc.Homm2.Entities
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
@@ -14,14 +15,21 @@ namespace Siniskalc.Homm2.Entities
         public static readonly Faction Warlock = new("Warlock", 3);
         public static readonly Faction Wizard = new("Wizard", 4);
         public static readonly Faction Necromancer = new("Necromancer", 5);
+        public static readonly Faction Neutral = new("Neutral", 99);
 
         private Faction(string name, byte code)
             : base(name, code)
         {
         }
 
-        public static IReadOnlyList<Faction> All => GetAll<Faction>();
+        /// <summary>
+        /// Gets the six towns, which leaves out <see cref="Neutral"/>.
+        /// </summary>
+        public static IReadOnlyList<Faction> All => GetAll<Faction>().Where(f => f != Neutral).ToList();
 
-        public static Faction? FromByte(byte code) => FromCode<Faction>(code);
+        /// <summary>
+        /// Returns the town of a byte of a savefile; a byte that is no town reads as <see cref="Neutral"/>.
+        /// </summary>
+        public static Faction FromByte(byte code) => FromCode<Faction>(code) ?? Neutral;
     }
 }

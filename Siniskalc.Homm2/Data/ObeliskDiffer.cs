@@ -27,7 +27,7 @@
             var changes = new List<PendingChange>();
             for (var i = 0; i < original.Count && i < current.Count; i++)
             {
-                foreach (var color in Color.All)
+                foreach (var color in PlayerColor.All)
                 {
                     var before = original.IsVisited(i, color);
                     var after = current.IsVisited(i, color);

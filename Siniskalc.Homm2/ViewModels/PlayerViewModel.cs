@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.ViewModels
         private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string status = string.Empty;
 
-        public PlayerViewModel(Game game, Color color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        public PlayerViewModel(Game game, PlayerColor color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
             : base(game, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
         {
             this.Color = color;
@@ -54,7 +54,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
-        public Color Color { get; }
+        public PlayerColor Color { get; }
 
         public string Name => this.Color.ToString();
 

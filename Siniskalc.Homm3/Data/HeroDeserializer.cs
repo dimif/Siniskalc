@@ -26,23 +26,23 @@
         {
             var equippedArtifacts = this.DeserializeEquippedArtifacts(chunk);
             return new HeroModel(
+                this.DeserializeHeroId(chunk),
                 chunk.Name,
-                this.entities.GrantedSpellsResolver,
                 this.DeserializeOwner(chunk),
-                this.DeserializePrimarySkills(chunk),
-                this.DeserializeClass(chunk),
-                this.DeserializeLevel(chunk),
                 this.DeserializePosition(chunk),
                 this.DeserializeDestination(chunk),
                 this.DeserializeMovementPoints(chunk),
+                this.DeserializeLevel(chunk),
+                this.DeserializeSpellPoints(chunk),
+                this.DeserializePrimarySkills(chunk),
                 this.DeserializeSecondarySkills(chunk),
+                this.DeserializeCreatures(chunk),
+                this.entities.GrantedSpellsResolver,
+                this.DeserializeClass(chunk),
                 this.DeserializeBackpack(chunk),
                 equippedArtifacts,
                 this.DeserializeWarMachines(chunk),
-                this.DeserializeSpellPoints(chunk),
-                this.DeserializeCreatures(chunk),
                 this.DeserializeSpellBook(chunk, equippedArtifacts),
-                this.DeserializeHeroId(chunk),
                 chunk.Biography,
                 this.DeserializeGender(chunk),
                 this.DeserializeMovedToday(chunk),
@@ -101,7 +101,7 @@
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
-        public Army<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance);
+        public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance);
 
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {
@@ -266,11 +266,11 @@
             return new EquippedArtifacts(slotsToArtifacts, scrollSpells);
         }
 
-        public PlayerColor? DeserializeOwner(HeroChunk chunk)
+        public PlayerColor DeserializeOwner(HeroChunk chunk)
         {
             var playerByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Owner]);
 
-            return ByteEnumerations.Read<PlayerColor>(playerByte);
+            return PlayerColor.FromByte(playerByte);
         }
 
         public HeroGender? DeserializeGender(HeroChunk chunk)

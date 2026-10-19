@@ -10,7 +10,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     [TestFixture]
     internal sealed class ArmyUpgradeTests
     {
-        private static (ArmyViewModel View, Func<Army<Creature>> Army) Create(Creature creature)
+        private static (ArmyViewModel View, Func<IArmy<Creature>> Army) Create(Creature creature)
         {
             var army = new Army<Creature>(5).WithSlot(0, creature, 7);
             var view = new ArmyViewModel(GameVersion.PriceOfLoyalty, () => army, change => army = change(army));

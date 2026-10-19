@@ -14,7 +14,7 @@ namespace Siniskalc.Heroes.Data
         /// <summary>
         /// Reads the army that the tables of <paramref name="layout"/> hold.
         /// </summary>
-        public static Army<TCreature> Read<TCreature>(BytesChunk chunk, ArmyLayout layout, ICreatureCodes<TCreature> codes)
+        public static IArmy<TCreature> Read<TCreature>(BytesChunk chunk, ArmyLayout layout, ICreatureCodes<TCreature> codes)
             where TCreature : class, IGameEntity
         {
             var slots = new ArmySlot<TCreature>?[layout.SlotCount];

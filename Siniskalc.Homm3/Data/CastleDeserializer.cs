@@ -25,29 +25,28 @@
                 faction,
                 this.DeserializeOwner(chunk),
                 this.DeserializePosition(chunk),
-                this.DeserializeGarrison(chunk),
-                built,
                 this.DeserializeShipyardLocation(chunk),
-                DeserializeHeroIndex(chunk, CastleLayout.GarrisonedHero),
+                this.DeserializeGarrison(chunk),
                 DeserializeHeroIndex(chunk, CastleLayout.VisitingHero),
-                DeserializeBuildings(chunk, faction, CastleLayout.EnabledBuildingsFromNameEnd),
-                chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
-                chunk.GetByteAt(CastleLayout.MageGuildLevel),
                 DeserializeCreaturesAvailable(chunk, faction, built),
-                DeserializeBuildings(chunk, faction, CastleLayout.CurrentBuildingsFromNameEnd),
+                DeserializeHeroIndex(chunk, CastleLayout.GarrisonedHero),
+                DeserializeBuildings(chunk, faction, CastleLayout.EnabledBuildingsFromNameEnd),
+                built,
+                DeserializeBuildings(chunk, faction, CastleLayout.VisibleBuildingsFromNameEnd),
+                chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
                 DeserializeSpellCounts(chunk),
                 DeserializeMageGuildSpells(chunk));
         }
 
-        public Faction? DeserializeFaction(CastleChunk chunk)
+        public Faction DeserializeFaction(CastleChunk chunk)
         {
-            return AbstractEnumeration.FromCode<Faction>(chunk.GetByteAt(CastleLayout.Faction));
+            return Faction.FromByte(chunk.GetByteAt(CastleLayout.Faction));
         }
 
-        public PlayerColor? DeserializeOwner(CastleChunk chunk)
+        public PlayerColor DeserializeOwner(CastleChunk chunk)
         {
-            // TODO:LOG info, when the byte is neither a colour nor FF: the castle "{chunk.Name}" has owner byte {value}, which reads as no owner and is kept.
-            return ByteEnumerations.Read<PlayerColor>(chunk.GetByteAt(CastleLayout.Owner));
+            // TODO:LOG info, when the byte is neither a colour nor FF: the castle "{chunk.Name}" has owner byte {value}, which reads as neutral and is kept.
+            return PlayerColor.FromByte(chunk.GetByteAt(CastleLayout.Owner));
         }
 
         public MapPosition DeserializePosition(CastleChunk chunk)
@@ -65,7 +64,7 @@
             return x == byte.MaxValue && y == byte.MaxValue ? null : new MapPosition(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
-        public Army<Creature> DeserializeGarrison(CastleChunk chunk) => ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance);
+        public IArmy<Creature> DeserializeGarrison(CastleChunk chunk) => ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance);
 
         /// <summary>
         /// Returns every building the castle has built, including the ones an upgrade has replaced.
@@ -78,9 +77,9 @@
         /// <summary>
         /// Returns the buildings that are in the castle now, which leaves out the ones an upgrade has replaced.
         /// </summary>
-        public IReadOnlySet<Building> DeserializeCurrentBuildings(CastleChunk chunk)
+        public IReadOnlySet<Building> DeserializeVisibleBuildings(CastleChunk chunk)
         {
-            return DeserializeBuildings(chunk, this.DeserializeFaction(chunk), CastleLayout.CurrentBuildingsFromNameEnd);
+            return DeserializeBuildings(chunk, this.DeserializeFaction(chunk), CastleLayout.VisibleBuildingsFromNameEnd);
         }
 
         private static int? DeserializeHeroIndex(CastleChunk chunk, int offset)
@@ -132,12 +131,12 @@
         }
 
         // The savefile has a count for the dwelling and one for its upgrade of each level, and keeps the count in the one that is built.
-        private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, Faction? faction, IReadOnlySet<Building> built)
+        private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, Faction faction, IReadOnlySet<Building> built)
         {
             var counts = new int[CastleLayout.CreatureLevelCount];
             for (var level = 0; level < counts.Length; level++)
             {
-                var upgrade = faction == null ? null : Building.FromDwellingLevel(faction, level, upgraded: true);
+                var upgrade = faction == Faction.Neutral ? null : Building.FromDwellingLevel(faction, level, upgraded: true);
                 var from = upgrade != null && built.Contains(upgrade) ? CastleLayout.UpgradedCreaturesAvailableFromNameEnd : CastleLayout.CreaturesAvailableFromNameEnd;
                 counts[level] = chunk.GetUInt16At(chunk.NameEnd + from + (level * 2));
             }
@@ -145,12 +144,12 @@
             return new Numbers(counts);
         }
 
-        private static HashSet<Building> DeserializeBuildings(CastleChunk chunk, Faction? faction, int offsetFromNameEnd)
+        private static HashSet<Building> DeserializeBuildings(CastleChunk chunk, Faction faction, int offsetFromNameEnd)
         {
             var mask = chunk.GetUInt64At(chunk.NameEnd + offsetFromNameEnd);
             var buildings = new HashSet<Building>();
 
-            if (faction == null)
+            if (faction == Faction.Neutral)
             {
                 return buildings;
             }

@@ -60,7 +60,7 @@
                 Make("E06ARTI", 10, "Maximus's artifacts", "Maximus (who has the spell book) also carries the Ultimate Sword of Dominion, the Thunder Mace of Dominion, the Ice Cloak, the Evercold Icicle and the Ammo Cart, and his attack is 15 (2 and the 12 and 1 of the two weapons; the game keeps the bonuses in the skills).", game => Hero(game, 7, h => h
                     .WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.ThunderMaceOfDominion).WithArtifact(Artifact.IceCloak).WithArtifact(Artifact.EvercoldIcicle).WithArtifact(Artifact.AmmoCart))),
                 Make("E07BOOK", 1, "A spell book and every spell for Maximus", "Maximus has a spell book with all 65 spells (the save starts without a book).", game => Hero(game, 7, h => h.WithSpellBook() with { Spells = new SpellSet<Spell>(Spell.All) })),
-                Make("E08LEVEL", 5, "Maximus's level, experience and movement", "Maximus is level 10 with 14,700 experience, and has all his movement points (1,000) although he has none left in the original.", game => Hero(game, 7, h => h with { Level = 10, Experience = 14_700, MovementLeft = h.MaxMovement })),
+                Make("E08LEVEL", 5, "Maximus's level, experience and movement", "Maximus is level 10 with 14,700 experience, and has all his movement points (1,000) although he has none left in the original.", game => Hero(game, 7, h => h with { HeroLevel = new HeroLevel(14_700, 10), MovementPoints = h.MovementPoints with { Current = h.MovementPoints.Max } })),
                 Make("E09CAST", 5, "Xabran's buildings and creatures", "Xabran has the dwellings 3 and 4 built on top of the first two (hut, archery range, blacksmith, armory), a tavern, a statue and a well, and 20 creatures wait in each dwelling that is built.", game => Castle(game, 3, c => c with
                 {
                     Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue | TownBuildings.Well,
@@ -76,7 +76,7 @@
                 })),
                 Make("E11OWNR", 13, "Corackston given to Blue", "Blue owns Corackston (a town without a castle) as well as Xabran; it is in the list of Blue's castles. Its garrison is the neutral one.", game =>
                 {
-                    Castle(game, 2, c => c with { Owner = Color.Blue });
+                    Castle(game, 2, c => c with { Owner = PlayerColor.Blue });
                     Player(game, 0, p => p with { CastleIds = Numbers.Of(3, 2) });
                 }),
                 Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills (15 each, the sword included), secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>

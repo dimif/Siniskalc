@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Heroes.Models
 {
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
@@ -11,9 +12,11 @@
     /// <typeparam name="TSecondarySkills">
     /// The type of secondary skills collection.
     /// </typeparam>
-    public interface IHeroModel<TSecondarySkill, TSecondarySkills>
+    /// <typeparam name="TCreature">The creature of the game.</typeparam>
+    public interface IHeroModel<TSecondarySkill, TSecondarySkills, TCreature>
         where TSecondarySkill : ISecondarySkill
         where TSecondarySkills : ISecondarySkills<TSecondarySkill, TSecondarySkills>
+        where TCreature : class, IGameEntity
     {
         /// <summary>
         /// Gets the name of the hero.
@@ -34,5 +37,15 @@
         /// Gets the secondary skills of the hero.
         /// </summary>
         TSecondarySkills SecondarySkills { get; }
+
+        /// <summary>
+        /// Gets the army of the hero.
+        /// </summary>
+        IArmy<TCreature> Army { get; }
+
+        /// <summary>
+        /// Gets the current spell points of the hero.
+        /// </summary>
+        int SpellPoints { get; }
     }
 }

@@ -24,7 +24,7 @@
 
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));
             Assert.That(xabran.Index, Is.EqualTo(Xabran));
-            Assert.That(xabran.Owner, Is.EqualTo(Color.Blue));
+            Assert.That(xabran.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(xabran.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(xabran.Position, Is.EqualTo(new MapPosition(28, 25)));
             Assert.That(xabran.ShipyardPosition, Is.Null);
@@ -60,9 +60,9 @@
             Assert.That(one.Town.HasFlag(TownBuildings.MageGuild), Is.True);
             Assert.That(two.MageGuildLevel, Is.EqualTo(2));
             Assert.That(two.Dwellings.HasFlag(Dwellings.MageGuild1), Is.False);
-            Assert.That(two.GuildSpellCounts.Take(3), Is.EqualTo(new[] { 3, 3, 0 }));
-            Assert.That(Enumerable.Range(0, 3).Select(slot => two.GuildSpell(1, slot)), Is.EqualTo(new[] { Spell.MagicArrow, Spell.ViewResources, Spell.Cure }));
-            Assert.That(Enumerable.Range(0, 3).Select(slot => two.GuildSpell(2, slot)), Is.EqualTo(new[] { Spell.DisruptingRay, Spell.ViewArtifacts, Spell.Steelskin }));
+            Assert.That(two.MageGuildSpellCounts.Take(3), Is.EqualTo(new[] { 3, 3, 0 }));
+            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(1, slot)), Is.EqualTo(new[] { Spell.MagicArrow, Spell.ViewResources, Spell.Cure }));
+            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(2, slot)), Is.EqualTo(new[] { Spell.DisruptingRay, Spell.ViewArtifacts, Spell.Steelskin }));
         }
 
         [Test]
@@ -82,10 +82,10 @@
             var neutral = Castle(13, Corackston);
             var captured = Castle(14, Corackston);
 
-            Assert.That(neutral.Owner, Is.Null);
+            Assert.That(neutral.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(neutral.Faction, Is.EqualTo(Faction.Wizard));
             Assert.That(neutral.Garrison.Slots.Count(s => s != null), Is.EqualTo(3));
-            Assert.That(captured.Owner, Is.EqualTo(Color.Blue));
+            Assert.That(captured.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(captured.Garrison.Slots, Is.All.Null);
             Assert.That(captured.HasCastle, Is.False);
             Assert.That(captured.Town, Is.EqualTo(TownBuildings.TownOnly));
@@ -98,7 +98,7 @@
         {
             var lost = Castle(18, Corackston);
 
-            Assert.That(lost.Owner, Is.EqualTo(Color.Yellow));
+            Assert.That(lost.Owner, Is.EqualTo(PlayerColor.Yellow));
             Assert.That(lost.Garrison.Slots.Count(s => s != null), Is.EqualTo(1));
         }
 
@@ -115,7 +115,7 @@
             Assert.That(shipyard.HasDwelling(6), Is.False);
             Assert.That(tower.HasDwelling(6), Is.True);
             Assert.That(tower.CreaturesAvailable[5], Is.EqualTo(1));
-            Assert.That(tower.Owner, Is.EqualTo(Color.Blue));
+            Assert.That(tower.Owner, Is.EqualTo(PlayerColor.Blue));
         }
 
         [Test]
@@ -129,7 +129,7 @@
             Assert.That(castles.FindByName("xabran"), Is.EqualTo(Xabran));
             Assert.That(castles.FindByName(string.Empty), Is.EqualTo(-1));
             Assert.That(castles.GetModels().Where(c => c.IsUsed).Select(c => c.Name).Take(4), Is.EqualTo(new[] { "Willow", "Whiteshield", "Corackston", "Xabran" }));
-            Assert.That(castles.GetOwners()[Xabran], Is.EqualTo(Color.Blue));
+            Assert.That(castles.GetOwners()[Xabran], Is.EqualTo(PlayerColor.Blue));
         }
     }
 }

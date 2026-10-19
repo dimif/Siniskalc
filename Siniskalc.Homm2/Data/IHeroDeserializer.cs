@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Entities;
@@ -12,6 +12,6 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Reads only the player the hero serves, which is cheaper than the whole model.
         /// </summary>
-        Color? DeserializeOwner(HeroChunk chunk);
+        PlayerColor DeserializeOwner(HeroChunk chunk);
     }
 }

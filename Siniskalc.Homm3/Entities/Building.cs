@@ -258,8 +258,7 @@
         public static readonly Building ConfluxVaultOfAshes = new("Vault of Ashes", BuildingType.Horde2, 24, Faction.Conflux, GameVersion.ArmageddonsBlade, upgrades: ConfluxPyre);
         public static readonly Building ConfluxUpgVaultOfAshes = new("Upg. Vault of Ashes", BuildingType.UpgradedHorde2, 25, Faction.Conflux, GameVersion.ArmageddonsBlade, upgrades: ConfluxUpgPyre, requires: [ConfluxVaultOfAshes]);
 
-        // Horn of the Abyss factions. Their bits are known; the names come from the building trees of https://heroes.thelazy.net and some
-        // prerequisites may still be missing.
+        // Horn of the Abyss factions. Their bits are known; the names come from the building trees of https://heroes.thelazy.net. Some prerequisites may still be missing.
         // Cove
         public static readonly Building CoveThievesGuild = new("Thieves' Guild", BuildingType.Special3, 22, Faction.Cove, GameVersion.HornOfTheAbyss);
         public static readonly Building CoveGrotto = new("Grotto", BuildingType.Special4, 23, Faction.Cove, GameVersion.HornOfTheAbyss, requires: [Marketplace]);

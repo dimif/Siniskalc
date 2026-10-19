@@ -64,7 +64,7 @@ namespace Siniskalc.Homm3.Data
 
             // The creatures and spells of the building's level are what the original had, whatever the build moved.
             var creatures = restored.CreaturesAvailable.ToArray();
-            var spells = restored.SpellCounts.ToArray();
+            var spells = restored.MageGuildSpellCounts.ToArray();
             if (dwellingLevel != null)
             {
                 // Counts edited on a dwelling that kept standing are their own pending change, so they are left alone.
@@ -77,10 +77,10 @@ namespace Siniskalc.Homm3.Data
             else if (building.IsMageGuild)
             {
                 var spellLevel = building.MageGuildLevel!.Value - 1;
-                spells[spellLevel] = original.SpellCounts[spellLevel];
+                spells[spellLevel] = original.MageGuildSpellCounts[spellLevel];
             }
 
-            return restored with { CreaturesAvailable = new Numbers(creatures), SpellCounts = new Numbers(spells) };
+            return restored with { CreaturesAvailable = new Numbers(creatures), MageGuildSpellCounts = new Numbers(spells) };
         }
 
         private static void DiffGeneral(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)

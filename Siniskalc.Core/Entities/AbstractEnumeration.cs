@@ -13,6 +13,18 @@
     /// </remarks>
     public abstract class AbstractEnumeration : IGameEntity, IComparable, IEquatable<AbstractEnumeration>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractEnumeration"/> class.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the enumeration.
+        /// </param>
+        /// <param name="code">
+        /// The byte code associated with the enumeration.
+        /// </param>
+        /// <param name="availableFrom">
+        /// The a number that represents what version of the game was this entity introduced in.
+        /// </param>
         protected AbstractEnumeration(string name, byte code, int availableFrom)
         {
             this.Name = name;
@@ -20,13 +32,24 @@
             this.AvailableFrom = availableFrom;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractEnumeration"/> class.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the enumeration.
+        /// </param>
+        /// <param name="code">
+        /// The byte code associated with the enumeration.
+        /// </param>
         protected AbstractEnumeration(string name, byte code)
             : this(name, code, 0)
         {
         }
 
+        /// <inheritdoc />
         public string Name { get; }
 
+        /// <inheritdoc />
         public byte Code { get; }
 
         /// <summary>
@@ -39,13 +62,46 @@
 
         public static bool operator !=(AbstractEnumeration? left, AbstractEnumeration? right) => !(left == right);
 
+        /// <summary>
+        /// Returns all of the enumerations.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of enumeration to return.
+        /// </typeparam>
+        /// <returns>
+        /// A read-only collection of the enumerated entities.
+        /// </returns>
         public static IReadOnlyList<T> GetAll<T>()
             where T : AbstractEnumeration => Values<T>.All;
 
+        /// <summary>
+        /// Returns the enumerable entity matching the code, or <c>null</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of enumeration to return.
+        /// </typeparam>
+        /// <param name="code">
+        /// The code associated with the entity.
+        /// </param>
+        /// <returns>
+        /// The entity, or <c>null</c>.
+        /// </returns>
         public static T? FromCode<T>(byte code)
             where T : AbstractEnumeration
             => Values<T>.ByCode.TryGetValue(code, out var value) ? value : null;
 
+        /// <summary>
+        /// Returns the enumerable entity matching the name, or <c>null</c>.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of enumeration to return.
+        /// </typeparam>
+        /// <param name="name">
+        /// The name associated with the entity.
+        /// </param>
+        /// <returns>
+        /// The entity, or <c>null</c>.
+        /// </returns>
         public static T? FromName<T>(string name)
             where T : AbstractEnumeration
             => GetAll<T>().FirstOrDefault(e => string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase));
@@ -56,15 +112,20 @@
         /// </summary>
         public bool IsAvailableIn(int tier) => this.AvailableFrom <= tier;
 
+        /// <inheritdoc />
         public override string ToString() => this.Name;
 
+        /// <inheritdoc />
         public virtual bool Equals(AbstractEnumeration? other)
             => other is not null && this.GetType() == other.GetType() && this.Code == other.Code;
 
+        /// <inheritdoc />
         public override bool Equals(object? obj) => this.Equals(obj as AbstractEnumeration);
 
+        /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(this.GetType(), this.Code);
 
+        /// <inheritdoc />
         public int CompareTo(object? obj) => this.Code.CompareTo(((AbstractEnumeration)obj!).Code);
 
         /// <summary>

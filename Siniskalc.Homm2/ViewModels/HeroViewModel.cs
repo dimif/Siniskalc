@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -102,25 +102,25 @@ namespace Siniskalc.Homm2.ViewModels
             ]);
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames<Color>.Choices,
-                () => OwnerNames<Color>.Of(this.session.Current.Owner),
+                OwnerNames<PlayerColor>.Choices,
+                () => OwnerNames<PlayerColor>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish.");
             this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
-                () => this.session.Current.MovementLeft,
-                value => this.session.Update(h => h with { MovementLeft = value }),
-                () => this.session.Current.MaxMovement,
+                () => this.session.Current.MovementPoints.Current,
+                value => this.session.Update(h => h with { MovementPoints = h.MovementPoints with { Current = value } }),
+                () => this.session.Current.MovementPoints.Max,
                 new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
                 () => this.session.Current.SpellPoints,
                 value => this.session.Update(h => h with { SpellPoints = value }),
                 new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints),
-                () => spellPoints.GetMaximum(this.session.Current));
+                () => spellPoints.GetMaximum(this.session.Current.PrimarySkills, this.session.Current.SecondarySkills));
             this.LevelAndClass = new LevelAndClassCardViewModel(
-                () => this.session.Current.Level,
-                value => this.session.Update(h => h with { Level = value, Experience = HeroLevels.ExperienceOf(value) }),
+                () => this.session.Current.HeroLevel.Level,
+                value => this.session.Update(h => h with { HeroLevel = new HeroLevel(HeroLevels.ExperienceOf(value), value) }),
                 new NumberRange(Constants.Hero.MinLevel, Constants.Hero.MaxLevel),
-                () => this.session.Current.Experience,
-                value => this.session.Update(h => h with { Experience = value, Level = HeroLevels.LevelOf(value) }),
+                () => this.session.Current.HeroLevel.Experience,
+                value => this.session.Update(h => h with { HeroLevel = new HeroLevel(value, HeroLevels.LevelOf(value)) }),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
                 Faction.All.Select(f => f.Name).ToList(),
@@ -168,14 +168,14 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string FactionName => this.hero.Faction.ToString();
 
-        public int Level => this.hero.Level;
+        public int Level => this.hero.HeroLevel.Level;
 
-        public string OwnerText => OwnerNames<Color>.Of(this.hero.Owner);
+        public string OwnerText => OwnerNames<PlayerColor>.Of(this.hero.Owner);
 
         /// <summary>
         /// Gets where the hero is on the map, or nothing for a hero that serves nobody.
         /// </summary>
-        public string PositionText => this.hero.Owner == null ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
+        public string PositionText => this.hero.Owner.IsNeutral ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
 
         /// <summary>
         /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4".
@@ -316,7 +316,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private string NextLevelNote()
         {
-            var level = this.session.Current.Level;
+            var level = this.session.Current.HeroLevel.Level;
             if (level >= Constants.Hero.MaxLevel)
             {
                 return string.Empty;
@@ -325,7 +325,7 @@ namespace Siniskalc.Homm2.ViewModels
             var next = HeroLevels.ExperienceOf(level + 1);
             return string.Create(
                 System.Globalization.CultureInfo.CurrentCulture,
-                $"{next - this.session.Current.Experience:N0} XP to level {level + 1} (at {next:N0})");
+                $"{next - this.session.Current.HeroLevel.Experience:N0} XP to level {level + 1} (at {next:N0})");
         }
 
         private void ChangeOwner(string name)
@@ -333,7 +333,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.Notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(OwnerNames<Color>.Parse(name));
+                this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
             catch (GameRuleException)
             {

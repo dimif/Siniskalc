@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Models
+﻿namespace Siniskalc.Homm2.Tests.Models
 {
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
@@ -65,18 +65,18 @@ namespace Siniskalc.Homm2.Tests.Models
             var five = two.WithMageGuildLevel(5);
             Assert.That(five.MageGuildLevel, Is.EqualTo(5));
             Assert.That((uint)five.Dwellings & 0x70000, Is.EqualTo(0x50000u), "the level is a number in three bits, as in Peacekeeper");
-            Assert.That(five.GuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
-            Assert.That(five.WithMageGuildLevel(2).GuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 0, 0, 0)));
+            Assert.That(five.MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
+            Assert.That(five.WithMageGuildLevel(2).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 0, 0, 0)));
         }
 
         [Test]
         public void ASpellOfTheGuildIsChangedByLevelAndPlace()
         {
-            var castle = Xabran().WithGuildSpell(2, 1, Spell.Fireball);
+            var castle = Xabran().WithMageGuildSpell(2, 1, Spell.Fireball);
 
-            Assert.That(castle.GuildSpell(2, 1), Is.EqualTo(Spell.Fireball));
-            Assert.That(castle.WithGuildSpell(2, 1, null).GuildSpell(2, 1), Is.Null);
-            Assert.That(castle.GuildSpell(1, 1), Is.EqualTo(Xabran().GuildSpell(1, 1)), "the other levels stay");
+            Assert.That(castle.MageGuildSpell(2, 1), Is.EqualTo(Spell.Fireball));
+            Assert.That(castle.WithMageGuildSpell(2, 1, null).MageGuildSpell(2, 1), Is.Null);
+            Assert.That(castle.MageGuildSpell(1, 1), Is.EqualTo(Xabran().MageGuildSpell(1, 1)), "the other levels stay");
         }
 
         [Test]
@@ -102,22 +102,22 @@ namespace Siniskalc.Homm2.Tests.Models
             var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();
 
             var peacekeeper = castles.GetModel(castles.FindByName("Peacekeeper"));
-            Assert.That((peacekeeper.MageGuildLevel, peacekeeper.GuildSpellCounts), Is.EqualTo((5, Numbers.Of(3, 3, 2, 2, 1))));
+            Assert.That((peacekeeper.MageGuildLevel, peacekeeper.MageGuildSpellCounts), Is.EqualTo((5, Numbers.Of(3, 3, 2, 2, 1))));
             var dragontooth = castles.GetModel(castles.FindByName("Dragontooth"));
-            Assert.That((dragontooth.MageGuildLevel, dragontooth.GuildSpellCounts), Is.EqualTo((3, Numbers.Of(3, 3, 2, 0, 0))));
+            Assert.That((dragontooth.MageGuildLevel, dragontooth.MageGuildSpellCounts), Is.EqualTo((3, Numbers.Of(3, 3, 2, 0, 0))));
             var vertigo = castles.GetModel(castles.FindByName("Vertigo"));
-            Assert.That((vertigo.MageGuildLevel, vertigo.HasLibrary, vertigo.GuildSpellCounts), Is.EqualTo((5, true, Numbers.Of(4, 4, 3, 3, 2))));
+            Assert.That((vertigo.MageGuildLevel, vertigo.HasLibrary, vertigo.MageGuildSpellCounts), Is.EqualTo((5, true, Numbers.Of(4, 4, 3, 3, 2))));
             Assert.That(castles.GetModel(castles.FindByName("Woodhaven")).HasLibrary, Is.False);
-            Assert.That(vertigo.WithLibrary(false).GuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
+            Assert.That(vertigo.WithLibrary(false).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
             Assert.That(Xabran().WithLibrary(true), Is.EqualTo(Xabran()), "only a Wizard has a Library");
         }
 
         [Test]
         public void ACastleTellsWhatEveryGameCastleHasThroughTheSharedInterface()
         {
-            ICastleModel<Color, Creature> castle = Xabran();
+            ICastleModel<PlayerColor, Creature, Faction> castle = Xabran();
 
-            Assert.That((castle.Name, castle.Faction?.Name, castle.Owner), Is.EqualTo(("Xabran", "Knight", (Color?)Color.Blue)));
+            Assert.That((castle.Name, castle.Faction.Name, castle.Owner), Is.EqualTo(("Xabran", "Knight", (PlayerColor?)PlayerColor.Blue)));
             Assert.That((castle.MageGuildLevel, castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((0, 6, 5)));
         }
 

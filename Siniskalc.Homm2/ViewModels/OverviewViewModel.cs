@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -21,11 +21,11 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
-        private readonly Action<Color> openPlayer;
+        private readonly Action<PlayerColor> openPlayer;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
 
-        public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<Color> openPlayer, Action<int> openHero, Action<int> openCastle)
+        public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<PlayerColor> openPlayer, Action<int> openHero, Action<int> openCastle)
         {
             this.game = game;
             this.banishingText = banishingText;
@@ -95,7 +95,7 @@ namespace Siniskalc.Homm2.ViewModels
                 .ToList();
             this.Players = inGame.Select(player => this.CardOf(player, heroes, castles)).ToList();
             this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(this.OrderItemOf).ToList();
-            var owned = heroes.Count(h => h.Owner != null);
+            var owned = heroes.Count(h => !h.Owner.IsNeutral);
             this.Summary = $"{OverviewText.Count(this.Players.Count, "player", "players")} · {OverviewText.Count(owned, "hero", "heroes")} · {this.DifficultyText}";
             this.RaiseAllPropertiesChanged();
         }

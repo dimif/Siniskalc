@@ -40,10 +40,10 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<PlayerColor?> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
+        protected override IReadOnlyList<PlayerColor> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<PlayerColor?> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
+        protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
         // A player is listed when the savefile has the player's data or one of the player's heroes.
         /// <inheritdoc/>
@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <inheritdoc/>
-        protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor? owner)
+        protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor owner)
         {
             var summaries = game.History.Current.Heroes().GetSummaries();
             var heroes = summaries.Where(s => s.Owner == owner).OrderBy(s => s.Name).ToList();
@@ -109,17 +109,17 @@ namespace Siniskalc.Homm3.ViewModels
                 .OrderBy(c => c.Model.Name)
                 .ToList();
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
-            var playerIndex = owner == null ? -1 : game.History.Current.Players().FindByColor(owner);
+            var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
             var node = OwnerNavGroup.Create(
                 tree,
                 OwnerNames<PlayerColor>.Of(owner),
                 PlayerPalette.Of(owner),
                 playerIndex,
-                owner != null,
+                !owner.IsNeutral,
                 string.Empty,
                 heroes.Select(h => new NavEntry(h.Index, h.Name, h.Description)).ToList(),
-                castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction?.Name ?? string.Empty)).ToList(),
+                castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction.Name)).ToList(),
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]));
             if (playerIndex >= 0)
             {

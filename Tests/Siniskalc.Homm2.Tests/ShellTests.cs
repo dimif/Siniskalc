@@ -12,7 +12,7 @@
     using Siniskalc.Homm2.Views;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
-    using Color = Siniskalc.Homm2.Entities.Color;
+    using PlayerColor = Siniskalc.Homm2.Entities.PlayerColor;
 
     /// <summary>
     /// The shell with the Heroes of Might and Magic II editor: opening a savegame shows its editor and its title. The shell with both games is tested in Siniskalc.Tests.
@@ -152,11 +152,11 @@
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;
-                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue).Id;
-                    var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue).Index;
+                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue).Id;
+                    var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == PlayerColor.Blue).Index;
                     var pages = new (Action Show, Func<TabbedPageViewModelBase> Page, int Tabs)[]
                     {
-                        (() => editor.ShowPlayer(Color.Blue), () => (PlayerViewModel)editor.CurrentPage!, 5),
+                        (() => editor.ShowPlayer(PlayerColor.Blue), () => (PlayerViewModel)editor.CurrentPage!, 5),
                         (() => editor.ShowHero(hero), () => (HeroViewModel)editor.CurrentPage!, 6),
                         (() => editor.ShowCastle(castle), () => (CastleViewModel)editor.CurrentPage!, 5),
                         (() => editor.ShowMap(), () => (MapViewModel)editor.CurrentPage!, 3),

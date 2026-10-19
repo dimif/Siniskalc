@@ -21,10 +21,10 @@
         private const int MinStackSize = 1;
 
         private readonly GameVersion gameVersion;
-        private readonly Func<Army<Creature>> getArmy;
-        private readonly Action<Func<Army<Creature>, Army<Creature>>> update;
+        private readonly Func<IArmy<Creature>> getArmy;
+        private readonly Action<Func<IArmy<Creature>, IArmy<Creature>>> update;
 
-        public ArmyViewModel(GameVersion gameVersion, Func<Army<Creature>> getArmy, Action<Func<Army<Creature>, Army<Creature>>> update)
+        public ArmyViewModel(GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
             : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList())
         {
             this.gameVersion = gameVersion;

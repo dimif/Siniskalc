@@ -10,7 +10,7 @@ namespace Siniskalc.Heroes.Tests.Data
     [TestFixture]
     internal sealed class ArmyWriterTests
     {
-        private static Army<Creature> Empty(int slots) => new(slots);
+        private static IArmy<Creature> Empty(int slots) => new Army<Creature>(slots);
 
         [Test]
         public void AStackIsWrittenIntoItsSlotAndTheOthersStayEmpty()

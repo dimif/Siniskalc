@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -31,10 +31,10 @@ namespace Siniskalc.Homm2.Tests.Data
             var visits = Visits(77);
 
             Assert.That(visits.Masks, Is.EqualTo(new byte[] { 1, 1, 1, 2, 5, 1, 2, 4, 0 }));
-            Assert.That(visits.VisitedCount(Color.Blue), Is.EqualTo(5));
-            Assert.That(visits.IsVisited(3, Color.Green), Is.True);
-            Assert.That(visits.IsVisited(4, Color.Red), Is.True);
-            Assert.That(visits.IsVisited(8, Color.Blue), Is.False);
+            Assert.That(visits.VisitedCount(PlayerColor.Blue), Is.EqualTo(5));
+            Assert.That(visits.IsVisited(3, PlayerColor.Green), Is.True);
+            Assert.That(visits.IsVisited(4, PlayerColor.Red), Is.True);
+            Assert.That(visits.IsVisited(8, PlayerColor.Blue), Is.False);
         }
 
         [Test]
@@ -42,11 +42,11 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             // Charity stood at 28, 29 in save 75 and Colar Blau at 1, 62 in save 80.
             var (before, after) = (Visits(74), Visits(75));
-            Assert.That(Enumerable.Range(0, 9).Where(i => before.IsVisited(i, Color.Blue) != after.IsVisited(i, Color.Blue)), Is.EqualTo(new[] { 4 }));
+            Assert.That(Enumerable.Range(0, 9).Where(i => before.IsVisited(i, PlayerColor.Blue) != after.IsVisited(i, PlayerColor.Blue)), Is.EqualTo(new[] { 4 }));
             Assert.That(after.PositionOf(4), Is.EqualTo(new MapPosition(28, 29)));
 
             var (before80, after80) = (Visits(79), Visits(80));
-            Assert.That(Enumerable.Range(0, 9).Where(i => before80.IsVisited(i, Color.Blue) != after80.IsVisited(i, Color.Blue)), Is.EqualTo(new[] { 6 }));
+            Assert.That(Enumerable.Range(0, 9).Where(i => before80.IsVisited(i, PlayerColor.Blue) != after80.IsVisited(i, PlayerColor.Blue)), Is.EqualTo(new[] { 6 }));
             Assert.That(after80.PositionOf(6), Is.EqualTo(new MapPosition(1, 62)));
         }
 
@@ -54,7 +54,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void ObeliskVisitsAreEditedThroughThePageOfAPlayerAndWrittenBackWithoutTouchingTheOtherColours()
         {
             var game = TestServices.LoadThreedom(77);
-            var page = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
+            var page = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
             var obelisks = page.Obelisks;
 
             Assert.That(obelisks.HasObelisks, Is.True);

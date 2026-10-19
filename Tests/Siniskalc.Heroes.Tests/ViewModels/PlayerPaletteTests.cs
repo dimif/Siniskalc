@@ -9,7 +9,10 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     [TestFixture]
     internal sealed class PlayerPaletteTests
     {
-        private sealed record Color(string Name, byte Code) : IPlayerColor;
+        private sealed record Color(string Name, byte Code) : IPlayerColor
+        {
+            public bool IsNeutral => false;
+        }
 
         [Test]
         public void EachColourHasItsOwnHexValue()

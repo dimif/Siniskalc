@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var blue = Player(1, Blue);
 
-            Assert.That(blue.Color, Is.EqualTo(Color.Blue));
+            Assert.That(blue.Color, Is.EqualTo(PlayerColor.Blue));
             Assert.That(blue.Resources, Is.EqualTo(new ResourceSet(20, 5, 20, 5, 5, 5, 7500)));
             Assert.That(blue.HeroIds, Is.EqualTo(new[] { 7 }));
             Assert.That(blue.SelectedHero, Is.EqualTo(7));

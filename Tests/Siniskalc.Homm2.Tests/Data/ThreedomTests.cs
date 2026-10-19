@@ -59,8 +59,8 @@
         [Test]
         public void TheLibraryOfTheWizardWasBuiltWithTheFourthSpellOfEachLevel()
         {
-            Assert.That(Castle(63, Whiteshield).GuildSpellCounts[0], Is.EqualTo(3));
-            Assert.That(Castle(64, Whiteshield).GuildSpellCounts[0], Is.EqualTo(4));
+            Assert.That(Castle(63, Whiteshield).MageGuildSpellCounts[0], Is.EqualTo(3));
+            Assert.That(Castle(64, Whiteshield).MageGuildSpellCounts[0], Is.EqualTo(4));
             Assert.That(Castle(64, Whiteshield).HasLibrary, Is.True);
         }
 
@@ -147,7 +147,7 @@
         {
             var hero = Hero(save, Charity);
 
-            Assert.That((hero.Experience, hero.Level, HeroLevels.LevelOf(hero.Experience)), Is.EqualTo((experience, level, level)));
+            Assert.That((hero.HeroLevel.Experience, hero.HeroLevel.Level, HeroLevels.LevelOf(hero.HeroLevel.Experience)), Is.EqualTo((experience, level, level)));
         }
     }
 }

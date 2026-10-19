@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(conflux.Position, Is.EqualTo(new MapPosition(50, 4, 0)));
             Assert.That(conflux.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
             Assert.That(Castle(game, "8_Fort").Owner, Is.EqualTo(PlayerColor.Pink));
-            Assert.That(Castle(game, "Marishen").Owner, Is.Null);
+            Assert.That(Castle(game, "Marishen").Owner, Is.EqualTo(PlayerColor.Neutral));
         }
 
         [TestCase("conflux_02_fort", "Fort")]
@@ -144,7 +144,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static ulong[] Masks(CastleChunk chunk) =>
         [
-            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.CurrentBuildingsFromNameEnd) & ~IgnoredBits,
+            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.VisibleBuildingsFromNameEnd) & ~IgnoredBits,
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.BuiltBuildingsFromNameEnd) & ~IgnoredBits,
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.EnabledBuildingsFromNameEnd) & ~IgnoredBits,
         ];

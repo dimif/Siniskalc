@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -21,19 +21,19 @@ namespace Siniskalc.Homm2.Tests.Data
             var mines = TestServices.LoadThreedom(71).History.Current.Mines().GetModels();
 
             Assert.That(mines, Has.Count.EqualTo(41));
-            Assert.That(mines[0], Is.EqualTo(new MineModel(0, MineKind.SulfurMine, new MapPosition(67, 1), Color.Blue)));
-            Assert.That(Mine(71, 44, 56), Is.EqualTo(new MineModel(32, MineKind.Sawmill, new MapPosition(44, 56), Color.Blue)).Using<MineModel>((a, b) => a.Kind == b.Kind && a.Position == b.Position && a.Owner == b.Owner));
-            Assert.That(Mine(71, 63, 43).Owner, Is.EqualTo(Color.Red));
-            Assert.That(Mine(71, 55, 29).Owner, Is.Null);
+            Assert.That(mines[0], Is.EqualTo(new MineModel(0, MineKind.SulfurMine, new MapPosition(67, 1), PlayerColor.Blue)));
+            Assert.That(Mine(71, 44, 56), Is.EqualTo(new MineModel(32, MineKind.Sawmill, new MapPosition(44, 56), PlayerColor.Blue)).Using<MineModel>((a, b) => a.Kind == b.Kind && a.Position == b.Position && a.Owner == b.Owner));
+            Assert.That(Mine(71, 63, 43).Owner, Is.EqualTo(PlayerColor.Red));
+            Assert.That(Mine(71, 55, 29).Owner, Is.EqualTo(PlayerColor.Neutral));
         }
 
         [Test]
         public void ACapturedMineChangesOwnerInTheSaveOfItsCapture()
         {
-            Assert.That(Mine(6, 34, 53).Owner, Is.Null);
-            Assert.That(Mine(7, 34, 53).Owner, Is.EqualTo(Color.Blue), "Colar Blau captured the ore mine under him in save 7");
-            Assert.That(Mine(12, 44, 56).Owner, Is.Null);
-            Assert.That(Mine(13, 44, 56).Owner, Is.EqualTo(Color.Blue), "and the sawmill in save 13");
+            Assert.That(Mine(6, 34, 53).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Mine(7, 34, 53).Owner, Is.EqualTo(PlayerColor.Blue), "Colar Blau captured the ore mine under him in save 7");
+            Assert.That(Mine(12, 44, 56).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Mine(13, 44, 56).Owner, Is.EqualTo(PlayerColor.Blue), "and the sawmill in save 13");
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 var mine = TestServices.Mines.Deserialize(chunk);
                 foreach (var part in chunk.Parts)
                 {
-                    var expected = mine.Owner is { } owner ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(mine.Kind) + owner.Code) } : [MapObjectLayout.NoClass, MapObjectLayout.NoPicture];
+                    var expected = mine.Owner.IsNeutral ? [MapObjectLayout.NoClass, MapObjectLayout.NoPicture] : new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(mine.Kind) + mine.Owner.Code) };
                     Assert.That(part.Bytes, Is.EqualTo(expected), mine.Name);
                 }
             }
@@ -60,18 +60,18 @@ namespace Siniskalc.Homm2.Tests.Data
             var chunk = game.History.Current.Mines().Single(c => c.Position == new MapPosition(34, 53));
             var index = game.History.Current.Mines().ToList().IndexOf(chunk);
 
-            game.History.CreateMineSession(index).Update(m => m with { Owner = Color.Green });
+            game.History.CreateMineSession(index).Update(m => m with { Owner = PlayerColor.Green });
 
             var saved = game.GetBytesToSave();
             var changed = Enumerable.Range(0, saved.Length).Where(i => saved[i] != game.Bytes[i]).ToList();
             Assert.That(changed, Has.Count.EqualTo(2));
-            Assert.That(saved[chunk.StartIndex], Is.EqualTo(Color.Green.Code));
-            Assert.That(saved[chunk.Parts[0].StartIndex + 1], Is.EqualTo((byte)(14 + Color.Green.Code)));
+            Assert.That(saved[chunk.StartIndex], Is.EqualTo(PlayerColor.Green.Code));
+            Assert.That(saved[chunk.Parts[0].StartIndex + 1], Is.EqualTo((byte)(14 + PlayerColor.Green.Code)));
 
             var again = TestServices.Parser.Parse(saved, null).History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53));
-            Assert.That(again.Owner, Is.EqualTo(Color.Green));
+            Assert.That(again.Owner, Is.EqualTo(PlayerColor.Green));
 
-            game.History.CreateMineSession(index).Update(m => m with { Owner = null });
+            game.History.CreateMineSession(index).Update(m => m with { Owner = PlayerColor.Neutral });
             var none = game.GetBytesToSave();
             Assert.That(none[chunk.StartIndex], Is.EqualTo((byte)0xFF));
             Assert.That(none[chunk.Parts[0].StartIndex], Is.EqualTo(MapObjectLayout.NoClass));

@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", $"cove_inland_{save}.GM1"));
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.DeserializeCurrentBuildings(castles[castles.FindByName("Lakenshire")]);
+            return TestServices.CastleDeserializer.DeserializeVisibleBuildings(castles[castles.FindByName("Lakenshire")]);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void ThePubIsBitEighteenAndFlagsTheTurnAndHidesTheShackInTheCurrentBuildings()
+        public void ThePubIsBitEighteenAndFlagsTheTurnAndHidesTheShackInTheVisibleBuildings()
         {
             var castle = Lakenshire("pub");
 
@@ -117,7 +117,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheRoostReplacesTheNestInTheCurrentBuildings()
+        public void TheRoostReplacesTheNestInTheVisibleBuildings()
         {
             Assert.That(Current("roost"), Does.Contain(Building.CoveRoost).And.Not.Contain(Building.CoveNest));
         }
@@ -162,7 +162,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var disabled = Named("neutral_cove_and_factory_castles", "Cove Castle D");
 
             Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
-            Assert.That(castle.Owner, Is.Null);
+            Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(castle.Buildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
             Assert.That(castle.ShipyardPosition, Is.EqualTo(new MapPosition(55, 16, 0)));
             Assert.That(castle.EnabledBuildings, Does.Contain(Building.Shipyard));

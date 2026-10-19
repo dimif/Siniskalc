@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -66,10 +66,10 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             mine.OwnerField.Selected = "Green";
 
-            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(Color.Green));
+            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(PlayerColor.Green));
             Assert.That(page.HasPendingChanges, Is.True);
             page.ResetCommand.Execute(null);
-            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(Color.Blue));
+            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(page.HasPendingChanges, Is.False);
         }
 

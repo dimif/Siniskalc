@@ -49,19 +49,19 @@ namespace Siniskalc.Homm2.Data
                 changes.Add(ChangeAreas.General, "Spell points", original.SpellPoints.ToString("N0"), current.SpellPoints.ToString("N0"), h => h with { SpellPoints = original.SpellPoints });
             }
 
-            if (original.MovementLeft != current.MovementLeft)
+            if (original.MovementPoints.Current != current.MovementPoints.Current)
             {
-                changes.Add(ChangeAreas.General, "Movement points left", original.MovementLeft.ToString("N0"), current.MovementLeft.ToString("N0"), h => h with { MovementLeft = original.MovementLeft });
+                changes.Add(ChangeAreas.General, "Movement points left", original.MovementPoints.Current.ToString("N0"), current.MovementPoints.Current.ToString("N0"), h => h with { MovementPoints = h.MovementPoints with { Current = original.MovementPoints.Current } });
             }
 
-            if (original.Experience != current.Experience)
+            if (original.HeroLevel.Experience != current.HeroLevel.Experience)
             {
-                changes.Add(ChangeAreas.General, "Experience", original.Experience.ToString("N0"), current.Experience.ToString("N0"), h => h with { Experience = original.Experience });
+                changes.Add(ChangeAreas.General, "Experience", original.HeroLevel.Experience.ToString("N0"), current.HeroLevel.Experience.ToString("N0"), h => h with { HeroLevel = h.HeroLevel with { Experience = original.HeroLevel.Experience } });
             }
 
-            if (original.Level != current.Level)
+            if (original.HeroLevel.Level != current.HeroLevel.Level)
             {
-                changes.Add(ChangeAreas.General, "Level", original.Level.ToString(), current.Level.ToString(), h => h with { Level = original.Level });
+                changes.Add(ChangeAreas.General, "Level", original.HeroLevel.Level.ToString(), current.HeroLevel.Level.ToString(), h => h with { HeroLevel = h.HeroLevel with { Level = original.HeroLevel.Level } });
             }
 
             if (original.NextBattle.Morale != current.NextBattle.Morale)

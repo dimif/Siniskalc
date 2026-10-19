@@ -1,10 +1,11 @@
-namespace Siniskalc.Homm3.Entities
+﻿namespace Siniskalc.Homm3.Entities
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
-    /// The colours of the players of a game.
+    /// The colours of the players of a game mapped to their byte value in the savefiles.
     /// </summary>
     public sealed class PlayerColor : Homm3Enumeration, IPlayerColor
     {
@@ -16,14 +17,24 @@ namespace Siniskalc.Homm3.Entities
         public static readonly PlayerColor Purple = new("Purple", 5);
         public static readonly PlayerColor Teal = new("Teal", 6);
         public static readonly PlayerColor Pink = new("Pink", 7);
+        public static readonly PlayerColor Neutral = new("Neutral", 255);
 
         private PlayerColor(string name, byte code)
             : base(name, code)
         {
         }
 
-        public static IReadOnlyList<PlayerColor> All => GetAll<PlayerColor>();
+        /// <summary>
+        /// Gets the colours of the players, which leaves out <see cref="Neutral"/>.
+        /// </summary>
+        public static IReadOnlyList<PlayerColor> All => GetAll<PlayerColor>().Where(c => c != Neutral).ToList();
 
-        public static PlayerColor? FromByte(byte code) => FromCode<PlayerColor>(code);
+        /// <inheritdoc/>
+        public bool IsNeutral => this == Neutral;
+
+        /// <summary>
+        /// Returns the colour of a byte of a savefile; a byte that is no colour reads as <see cref="Neutral"/>.
+        /// </summary>
+        public static PlayerColor FromByte(byte code) => FromCode<PlayerColor>(code) ?? Neutral;
     }
 }

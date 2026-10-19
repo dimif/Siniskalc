@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Entities;
@@ -12,6 +12,6 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Reads only the player who owns the castle, which is cheaper than the whole model.
         /// </summary>
-        Color? DeserializeOwner(CastleChunk chunk);
+        PlayerColor DeserializeOwner(CastleChunk chunk);
     }
 }

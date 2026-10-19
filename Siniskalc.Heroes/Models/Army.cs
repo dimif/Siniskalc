@@ -11,7 +11,7 @@ namespace Siniskalc.Heroes.Models
     /// in HoMM3) and slots are numbered from 0. Compares by what it holds.
     /// </summary>
     /// <typeparam name="TCreature">The creature of the game.</typeparam>
-    public sealed class Army<TCreature> : IEquatable<Army<TCreature>>
+    public sealed class Army<TCreature> : IArmy<TCreature>, IEquatable<Army<TCreature>>
         where TCreature : class, IGameEntity
     {
         private readonly ArmySlot<TCreature>?[] slots;
@@ -42,7 +42,7 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns the army with the slot at <paramref name="index"/> replaced, by <c>null</c> to empty it.
         /// </summary>
-        public Army<TCreature> WithSlot(int index, ArmySlot<TCreature>? slot)
+        public IArmy<TCreature> WithSlot(int index, ArmySlot<TCreature>? slot)
         {
             RangeGuard.ThrowIfNotIndex(index, this.slots.Length, nameof(index));
             var copy = (ArmySlot<TCreature>?[])this.slots.Clone();
@@ -50,14 +50,14 @@ namespace Siniskalc.Heroes.Models
             return new Army<TCreature>(copy);
         }
 
-        public Army<TCreature> WithSlot(int index, TCreature creature, long count) => this.WithSlot(index, new ArmySlot<TCreature>(creature, count));
+        public IArmy<TCreature> WithSlot(int index, TCreature creature, long count) => this.WithSlot(index, new ArmySlot<TCreature>(creature, count));
 
-        public Army<TCreature> WithoutSlot(int index) => this.WithSlot(index, null);
+        public IArmy<TCreature> WithoutSlot(int index) => this.WithSlot(index, null);
 
         /// <summary>
         /// Returns the army with the contents of the two slots swapped. Swapping with an empty slot moves the stack.
         /// </summary>
-        public Army<TCreature> Swap(int index, int otherIndex)
+        public IArmy<TCreature> Swap(int index, int otherIndex)
         {
             RangeGuard.ThrowIfNotIndex(index, this.slots.Length, nameof(index));
             RangeGuard.ThrowIfNotIndex(otherIndex, this.slots.Length, nameof(otherIndex));

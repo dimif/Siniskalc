@@ -4,7 +4,6 @@
     using System.Linq;
     using Siniskalc.Core;
     using Siniskalc.Core.Models;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -12,38 +11,35 @@
     /// A castle or a town of Heroes of Might and Magic II as the savegame has it. The table has 72 records and a map uses the first few;
     /// the others are empty (no name).
     /// </summary>
-    /// <param name="Index">The number of the castle, which is its place in the table.</param>
     /// <param name="Name">The name of the castle, empty for a record the map does not use.</param>
-    /// <param name="Owner">The player who owns the castle, or <c>null</c> for nobody.</param>
-    /// <param name="Faction">The faction of the town, or <c>null</c> when the savegame has a number that is no faction.</param>
+    /// <param name="Faction">The faction of the town; a savegame number that is no faction reads as the faction <c>Neutral</c>.</param>
+    /// <param name="Owner">The player who owns the castle, or the colour <c>Neutral</c> for nobody.</param>
     /// <param name="Position">The tile of the castle.</param>
     /// <param name="ShipyardPosition">The tile a ship built in the castle appears on, or <c>null</c> for a castle that is not on the coast.</param>
     /// <param name="Garrison">The five slots of the army that defends the castle when no hero is in it.</param>
     /// <param name="VisitingHeroId">The number of the hero in the castle, or <c>null</c> (a hero only visits: there are no garrison heroes).</param>
+    /// <param name="CreaturesAvailable">The creatures that wait in each of the six dwellings, whether it is built as it was or upgraded: the savegame keeps the count in the list of its own or in the one of the upgraded dwellings, which is up to the level the dwelling is built to.</param>
+    /// <param name="Index">The number of the castle, which is its place in the table.</param>
     /// <param name="Town">The buildings that are not dwellings.</param>
     /// <param name="Dwellings">The dwellings and the level of the Mage Guild.</param>
-    /// <param name="CreaturesAvailable">The creatures that wait in each of the six dwellings, whether it is built as it was or upgraded: the savegame keeps the count in the list of its own or in the one of the upgraded dwellings, which is up to the level the dwelling is built to.</param>
-    /// <param name="GuildSpells">The spell numbers (1 to 65, 0 for none) of the Mage Guild: four for each of the five levels, the first level first.</param>
-    /// <param name="GuildSpellCounts">How many of the four spells of each level the guild shows.</param>
+    /// <param name="MageGuildSpellCounts">How many of the four spells of each level the guild shows.</param>
+    /// <param name="MageGuildSpells">The spell numbers (1 to 65, 0 for none) of the Mage Guild: four for each of the five levels, the first level first.</param>
     public sealed record CastleModel(
-        int Index,
         string Name,
-        Color? Owner,
-        Faction? Faction,
+        Faction Faction,
+        PlayerColor Owner,
         MapPosition Position,
         MapPosition? ShipyardPosition,
-        Army<Creature> Garrison,
+        IArmy<Creature> Garrison,
         int? VisitingHeroId,
+        Numbers CreaturesAvailable,
+        int Index,
         TownBuildings Town,
         Dwellings Dwellings,
-        Numbers CreaturesAvailable,
-        Numbers GuildSpells,
-        Numbers GuildSpellCounts)
-        : ICastleModel<Color, Creature>
+        Numbers MageGuildSpellCounts,
+        Numbers MageGuildSpells)
+        : ICastleModel<PlayerColor, Creature, Faction>
     {
-        /// <inheritdoc/>
-        IFaction? ICastleModel<Color, Creature>.Faction => this.Faction;
-
         private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
 
         /// <summary>
@@ -68,10 +64,10 @@
         /// Gets the most levels a dwelling can have in a town of the faction: the creatures of that level, one for the dwelling and one more for
         /// each upgrade (the first dwelling has none).
         /// </summary>
-        public static int MaxDwellingLevel(Faction? faction, int dwelling)
+        public static int MaxDwellingLevel(Faction faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            return faction is null || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction).Count(c => c.Tier == dwelling), 1, 3);
+            return faction == Entities.Faction.Neutral || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction).Count(c => c.Tier == dwelling), 1, 3);
         }
 
         /// <summary>
@@ -123,7 +119,7 @@
         {
             Dwellings = (Dwellings)(((uint)this.Dwellings & ~(uint)Dwellings.MageGuildLevelMask) | ((uint)source.Dwellings & (uint)Dwellings.MageGuildLevelMask)),
             Town = (this.Town & ~TownBuildings.MageGuild) | (source.Town & TownBuildings.MageGuild),
-            GuildSpellCounts = source.GuildSpellCounts,
+            MageGuildSpellCounts = source.MageGuildSpellCounts,
         };
 
         /// <summary>
@@ -159,7 +155,7 @@
             }
 
             var town = this.WithBuilding(TownBuildings.Special, built);
-            return town with { GuildSpellCounts = GuildCounts(town.MageGuildLevel, built) };
+            return town with { MageGuildSpellCounts = GuildCounts(town.MageGuildLevel, built) };
         }
 
         /// <summary>
@@ -222,18 +218,18 @@
             {
                 Dwellings = (Dwellings)dwellings,
                 Town = level == 0 ? this.Town & ~TownBuildings.MageGuild : this.Town | TownBuildings.MageGuild,
-                GuildSpellCounts = GuildCounts(level, this.HasLibrary),
+                MageGuildSpellCounts = GuildCounts(level, this.HasLibrary),
             };
         }
 
         /// <summary>
         /// Returns the castle with another spell (or none) in a place of the Mage Guild, at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3).
         /// </summary>
-        public CastleModel WithGuildSpell(int level, int slot, Spell? spell)
+        public CastleModel WithMageGuildSpell(int level, int slot, Spell? spell)
         {
             RangeGuard.ThrowIfOutOfRange(level, 1, Constants.Castle.MageGuildLevels, nameof(level));
             RangeGuard.ThrowIfOutOfRange(slot, 0, Constants.Castle.MageGuildSlotsPerLevel - 1, nameof(slot));
-            return this with { GuildSpells = this.GuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
+            return this with { MageGuildSpells = this.MageGuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
         }
 
         private static Numbers GuildCounts(int level, bool library) =>
@@ -242,6 +238,6 @@
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.
         /// </summary>
-        public Spell? GuildSpell(int level, int slot) => Spell.FromByte((byte)this.GuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
+        public Spell? MageGuildSpell(int level, int slot) => Spell.FromByte((byte)this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
     }
 }

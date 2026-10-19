@@ -12,6 +12,16 @@ namespace Siniskalc.Homm2.Tests.Models
         private static HeroModel Maximus() => TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModel(7);
 
         [Test]
+        public void AHeroTellsItsArmyThroughTheSharedInterface()
+        {
+            var maximus = Maximus();
+
+            IHeroModel<SecondarySkill, IHomm2SecondarySkills, Creature> hero = maximus;
+
+            Assert.That(hero.Army, Is.SameAs(maximus.Army));
+        }
+
+        [Test]
         public void AnArtifactThatGivesSkillsAddsThemWhenItIsGivenAndTakesThemOffWhenItIsTakenAway()
         {
             var maximus = Maximus();

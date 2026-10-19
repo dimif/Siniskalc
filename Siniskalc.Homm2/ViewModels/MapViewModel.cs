@@ -76,7 +76,7 @@ namespace Siniskalc.Homm2.ViewModels
         {
             get
             {
-                var owned = this.game.History.Current.Mines().GetModels().Count(m => m.Owner != null);
+                var owned = this.game.History.Current.Mines().GetModels().Count(m => !m.Owner.IsNeutral);
                 return $"{this.Mines.Count} mines, {owned} of them owned";
             }
         }

@@ -59,13 +59,13 @@
                 changes.Add(ChangeAreas.MageGuild, "Mage Guild", MageGuildText(original), MageGuildText(current), c => c.WithMageGuildFrom(original));
             }
 
-            for (var slot = 0; slot < original.GuildSpells.Count && slot < current.GuildSpells.Count; slot++)
+            for (var slot = 0; slot < original.MageGuildSpells.Count && slot < current.MageGuildSpells.Count; slot++)
             {
-                var (before, after, index) = (original.GuildSpells[slot], current.GuildSpells[slot], slot);
+                var (before, after, index) = (original.MageGuildSpells[slot], current.MageGuildSpells[slot], slot);
                 if (before != after)
                 {
                     var level = (slot / Constants.Castle.MageGuildSlotsPerLevel) + 1;
-                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { GuildSpells = c.GuildSpells.With(index, before) });
+                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { MageGuildSpells = c.MageGuildSpells.With(index, before) });
                 }
             }
 
@@ -77,7 +77,7 @@
             + (castle.DwellingLevel(dwelling) > 0 ? $", {castle.Waiting(dwelling):N0} waiting" : string.Empty);
 
         private static string MageGuildText(CastleModel castle) =>
-            castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.GuildSpellCounts)}";
+            castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.MageGuildSpellCounts)}";
 
         private static string SpellText(int number) => number == 0 ? "none" : Spell.NameOf((byte)number);
     }

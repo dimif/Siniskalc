@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.ViewModels
     /// Fills the navigation tree with the game (what the savefile contains), which holds one node per player (and one for what nobody
     /// owns). A player's node is its resources page, and holds a "Heroes" group and a "Towns" group.
     /// </summary>
-    public sealed class NavigationBuilder : OwnerNavigationBuilderBase<Game, Color>
+    public sealed class NavigationBuilder : OwnerNavigationBuilderBase<Game, PlayerColor>
     {
         private static readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> Kinds = new Dictionary<NavNodeKind, ChunkKind>
         {
@@ -58,22 +58,22 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<Color?> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
+        protected override IReadOnlyList<PlayerColor> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<Color?> CastleOwnersInUse(Game game) => game.History.Current.Castles().GetModels().Where(c => c.IsUsed).Select(c => c.Owner).ToList();
+        protected override IReadOnlyList<PlayerColor> CastleOwnersInUse(Game game) => game.History.Current.Castles().GetModels().Where(c => c.IsUsed).Select(c => c.Owner).ToList();
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<Color?> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
+        protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
         // A player is listed when it has a castle, a hero, or days left to get a castle.
         /// <inheritdoc/>
-        protected override IEnumerable<Color> PlayersInGame(Game game) => game.History.Current.Players().GetModels()
+        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetModels()
             .Where(p => p.CastleIds.Count > 0 || p.HeroIds.Count > 0 || p.DaysLeft != null)
             .Select(p => p.Color);
 
         /// <inheritdoc/>
-        protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, Color? owner)
+        protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor owner)
         {
             // A colour is a page of its own (the resources); what nobody owns only holds its heroes and towns.
             var document = game.History.Current;
@@ -81,16 +81,16 @@ namespace Siniskalc.Homm2.ViewModels
             var heroes = allHeroes.Where(h => h.Owner == owner).OrderBy(h => h.Name).ToList();
             var castles = document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == owner).OrderBy(c => c.Name).ToList();
             var castleModels = castles.ToDictionary(c => c.Index);
-            var player = owner is { } color ? document.Players().GetModel(color.Code) : null;
+            var player = owner.IsNeutral ? null : document.Players().GetModel(owner.Code);
             return OwnerNavGroup.Create(
                 tree,
-                OwnerNames<Color>.Of(owner),
+                OwnerNames<PlayerColor>.Of(owner),
                 PlayerPalette.Of(owner),
-                owner == null ? -1 : owner.Code,
-                owner != null,
+                owner.IsNeutral ? -1 : owner.Code,
+                !owner.IsNeutral,
                 player == null ? string.Empty : player.IsOut ? "out of the game" : player.DaysLeft is { } days ? $"{days} days left" : string.Empty,
                 heroes.Select(h => new NavEntry(h.Id, h.Name, h.Summary.Description)).ToList(),
-                castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction?.ToString() ?? string.Empty)).ToList(),
+                castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
         }
 

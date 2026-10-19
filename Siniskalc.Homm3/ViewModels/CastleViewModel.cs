@@ -61,7 +61,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the name of the faction, or "Unknown faction".
         /// </summary>
-        public string FactionText => this.Castle.Faction?.Name ?? "Unknown faction";
+        public string FactionText => this.Castle.Faction == Faction.Neutral ? "Unknown faction" : this.Castle.Faction.Name;
 
         /// <summary>
         /// Gets a line such as "Mage Guild level 4 · built this turn".
@@ -243,7 +243,7 @@ namespace Siniskalc.Homm3.ViewModels
 
             // The upgraded horde buildings (bits 19 and 25) are no buildings of the game: it sets the bits by itself when a growth building and the
             // upgrade of its dwelling both exist, and the growth building works on both dwellings. They are not listed or counted.
-            IReadOnlyList<Building> available = this.Castle.Faction == null ? [] : Building.ForFaction(this.Castle.Faction).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
+            IReadOnlyList<Building> available = this.Castle.Faction == Faction.Neutral ? [] : Building.ForFaction(this.Castle.Faction).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
             BuildingGroupViewModel Group(string title, Func<Building, bool> filter) => new(
                 title,
                 available.Where(filter).Select(this.CreateBuildingRow(available)).ToList());
@@ -269,14 +269,14 @@ namespace Siniskalc.Homm3.ViewModels
             if (this.MageGuildLevels.Count != maximum || this.MageGuildLevels.Any(row => row.Slots.Count != this.Castle.MageGuildSpells[row.Level - 1].Count))
             {
                 this.MageGuildLevels = Enumerable.Range(1, maximum)
-                    .Select(level => new MageGuildLevelRowViewModel(level, level <= this.Castle.MageGuildLevel, this.Castle.SpellCounts[level - 1], this.CreateSpellSlots(level)))
+                    .Select(level => new MageGuildLevelRowViewModel(level, level <= this.Castle.MageGuildLevel, this.Castle.MageGuildSpellCounts[level - 1], this.CreateSpellSlots(level)))
                     .ToList();
             }
             else
             {
                 foreach (var row in this.MageGuildLevels)
                 {
-                    row.Update(row.Level <= this.Castle.MageGuildLevel, this.Castle.SpellCounts[row.Level - 1]);
+                    row.Update(row.Level <= this.Castle.MageGuildLevel, this.Castle.MageGuildSpellCounts[row.Level - 1]);
                 }
             }
 
@@ -358,7 +358,7 @@ namespace Siniskalc.Homm3.ViewModels
                     this.Castle.Buildings,
                     this.Castle.EnabledBuildings.Contains(b),
                     this.CreaturesAvailable(b, available),
-                    isBuilt && !this.Castle.CurrentBuildings.Contains(b),
+                    isBuilt && !this.Castle.VisibleBuildings.Contains(b),
                     build => this.Edit(castle => build ? CastleBuilder.Build(castle, b) : CastleBuilder.Unbuild(castle, b)),
                     isBuilt ? this.buildMessages.DescribeUnbuild(this.Castle, b) : this.buildMessages.DescribeBuild(this.Castle, b),
                     isChild,

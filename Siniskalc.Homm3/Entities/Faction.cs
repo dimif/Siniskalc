@@ -29,5 +29,10 @@
         }
 
         public static IReadOnlyList<Faction> All => GetAll<Faction>();
+
+        /// <summary>
+        /// Returns the faction of a byte of a savefile; a byte that is no faction reads as <see cref="Neutral"/>.
+        /// </summary>
+        public static Faction FromByte(byte code) => FromCode<Faction>(code) ?? Neutral;
     }
 }

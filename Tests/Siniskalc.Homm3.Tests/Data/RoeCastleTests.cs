@@ -88,8 +88,8 @@ namespace Siniskalc.Homm3.Tests.Data
             var townHall = Castle("roe_09_town_hall", "2_Rampart");
             var cityHall = Castle("roe_11_city_hall", "2_Rampart");
 
-            Assert.That(townHall.CurrentBuildings, Does.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));
-            Assert.That(cityHall.CurrentBuildings, Does.Contain(Building.CityHall).And.Not.Contain(Building.TownHall));
+            Assert.That(townHall.VisibleBuildings, Does.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));
+            Assert.That(cityHall.VisibleBuildings, Does.Contain(Building.CityHall).And.Not.Contain(Building.TownHall));
             Assert.That(cityHall.Buildings, Does.Contain(Building.VillageHall).And.Contain(Building.TownHall));
         }
 
@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var castle = Castle(save, "Elfwind");
 
             Assert.That(castle.Faction, Is.EqualTo(Faction.Rampart));
-            Assert.That(castle.Owner, Is.Null);
+            Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(castle.Buildings, Has.Count.EqualTo(4));
         }
 

@@ -38,7 +38,7 @@
                 Slots("Upgraded creatures available", nameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd, CastleLayout.CreatureLevelCount, 2, ByteRegionKind.Creatures, "Level", "The count moves here when the dwelling is upgraded"),
                 Slots("Mage guild spell counts", nameEnd + CastleLayout.SpellCountsFromNameEnd, CastleLayout.SpellLevelCount, 1, ByteRegionKind.Spells, "Level", "The number of spells in the Mage Guild for each of the five spell levels"),
                 Make("Mage guild spells", nameEnd + CastleLayout.SpellListsFromNameEnd, CastleLayout.SpellListsLength, ByteRegionKind.Spells, "Five lists of 32-bit spell codes, one per spell level, each 24 bytes apart; the guild shows the first of each as many as its count says"),
-                Make("Buildings now", nameEnd + CastleLayout.CurrentBuildingsFromNameEnd, MaskSize, ByteRegionKind.Other, "One bit per building; not the ones an upgrade replaced"),
+                Make("Buildings now", nameEnd + CastleLayout.VisibleBuildingsFromNameEnd, MaskSize, ByteRegionKind.Other, "One bit per building; not the ones an upgrade replaced"),
                 Make("Buildings built", nameEnd + CastleLayout.BuiltBuildingsFromNameEnd, MaskSize, ByteRegionKind.Other, "One bit per building, including the ones an upgrade replaced"),
                 Make("Buildings allowed", nameEnd + CastleLayout.EnabledBuildingsFromNameEnd, MaskSize, ByteRegionKind.Other, "One bit per building the map allows"),
             };

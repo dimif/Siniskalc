@@ -51,7 +51,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             general.MovementAndSpellPoints.ResetSpellPointsCommand.Execute(null);
 
-            Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(TestServices.SpellPoints(this.hero.GameVersion).GetMaximum(this.hero.HeroModel)));
+            Assert.That(this.hero.HeroModel.SpellPoints, Is.EqualTo(TestServices.SpellPoints(this.hero.GameVersion).GetMaximum(this.hero.HeroModel.PrimarySkills, this.hero.HeroModel.SecondarySkills)));
         }
 
         [Test]

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm2.Tests
             sphinx.Reward.Single(r => r.Name == "Gems").Value = 5;
         }
 
-        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, Color.Blue, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);
+        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);
 
         private static void ForgetOneFort(Game game)
         {

@@ -6,30 +6,30 @@ namespace Siniskalc.Heroes.Models
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
-    /// The names of the owners a hero, a castle or a mine can have in a game: "Neutral" for nobody, and the colours of its players.
+    /// The names of the owners a hero, a castle or a mine can have in a game: neutral for nobody, and the colours of its players.
     /// </summary>
     /// <typeparam name="TColor">The colour of the game.</typeparam>
     public static class OwnerNames<TColor>
         where TColor : AbstractEnumeration, IPlayerColor
     {
         /// <summary>
-        /// The name of nobody.
+        /// Gets the owner of what no player owns.
         /// </summary>
-        public const string Neutral = "Neutral";
+        public static TColor Neutral { get; } = AbstractEnumeration.GetAll<TColor>().Single(c => c.IsNeutral);
 
         /// <summary>
-        /// Gets the owners to pick from: "Neutral" and the player colours.
+        /// Gets the owners to pick from: neutral first, then the player colours.
         /// </summary>
-        public static IReadOnlyList<string> Choices { get; } = [Neutral, .. AbstractEnumeration.GetAll<TColor>().Select(c => c.Name)];
+        public static IReadOnlyList<string> Choices { get; } = [Neutral.Name, .. AbstractEnumeration.GetAll<TColor>().Where(c => !c.IsNeutral).Select(c => c.Name)];
 
         /// <summary>
-        /// Returns the name of an owner, "Neutral" for nobody.
+        /// Returns the name of an owner.
         /// </summary>
-        public static string Of(TColor? owner) => owner?.Name ?? Neutral;
+        public static string Of(TColor owner) => owner.Name;
 
         /// <summary>
-        /// Returns the colour of a name, or <c>null</c> for "Neutral" and for a name that is no colour.
+        /// Returns the colour of a name, or neutral for a name that is no colour.
         /// </summary>
-        public static TColor? Parse(string? name) => name is null ? null : AbstractEnumeration.FromName<TColor>(name);
+        public static TColor Parse(string? name) => name is null ? Neutral : AbstractEnumeration.FromName<TColor>(name) ?? Neutral;
     }
 }

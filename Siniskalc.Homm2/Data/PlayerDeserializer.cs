@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Linq;
@@ -20,7 +20,7 @@ namespace Siniskalc.Homm2.Data
             var income = Enumerable.Range(0, Constants.Player.ResourceCount - 1).Select(i => (long)chunk.GetUInt32At(PlayerLayout.Income + (i * 4))).ToArray();
 
             return new PlayerModel(
-                Color.All.First(c => c.Name == chunk.Name),
+                PlayerColor.All.First(c => c.Name == chunk.Name),
                 new ResourceSet(resources[0], resources[1], resources[2], resources[3], resources[4], resources[5], resources[6]),
                 new ResourceSet(income[0], income[1], income[2], income[3], income[4], income[5], chunk.GetUInt32At(PlayerLayout.GoldIncome)),
                 Bytes.IdList(bytes, PlayerLayout.Heroes, Constants.Player.HeroListSize),

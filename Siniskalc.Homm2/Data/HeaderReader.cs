@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace Siniskalc.Homm2.Data
         }
 
         // The game plays the humans the mask marks, in the order of the records, and the byte of the turn is the number of the record.
-        private static (List<PlayerType> Controls, Color? Current) ReadPlayers(byte[] bytes, SaveLayout layout)
+        private static (List<PlayerType> Controls, PlayerColor? Current) ReadPlayers(byte[] bytes, SaveLayout layout)
         {
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             var controls = Enumerable.Repeat(PlayerType.NotInGame, Constants.Table.PlayerCount).ToList();
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm2.Data
             }
 
             var turn = bytes[layout.CurrentHumanStart];
-            Color? current = turn < Constants.Table.PlayerCount && bytes[layout.HumanMaskStart + turn] != 0 ? Color.All[colors[turn]] : null;
+            PlayerColor? current = turn < Constants.Table.PlayerCount && bytes[layout.HumanMaskStart + turn] != 0 ? PlayerColor.All[colors[turn]] : null;
             return (controls, current);
         }
 

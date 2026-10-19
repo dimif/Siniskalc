@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who owns each castle, in the order of the collection. Reads the owner byte only.
         /// </summary>
-        public IReadOnlyList<PlayerColor?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
+        public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
         /// Returns the index of the castle that holds the hero with the given id (see <see cref="HeroModel.Id"/>) inside it, or -1.

@@ -11,6 +11,12 @@
         /// <summary>
         /// Returns the calculator for a savefile of <paramref name="version"/>.
         /// </summary>
+        /// <param name="version">
+        /// The game version.
+        /// </param>
+        /// <returns>
+        /// A new spell points calculator.
+        /// </returns>
         IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> Create(GameVersion version);
     }
 }

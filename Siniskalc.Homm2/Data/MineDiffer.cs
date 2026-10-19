@@ -29,7 +29,7 @@
                     Homm2ChunkKinds.Mines,
                     current.Name,
                     index,
-                    new Change(ChangeAreas.General, "Owner", OwnerNames<Siniskalc.Homm2.Entities.Color>.Of(original.Owner), OwnerNames<Siniskalc.Homm2.Entities.Color>.Of(current.Owner)),
+                    new Change(ChangeAreas.General, "Owner", OwnerNames<Siniskalc.Homm2.Entities.PlayerColor>.Of(original.Owner), OwnerNames<Siniskalc.Homm2.Entities.PlayerColor>.Of(current.Owner)),
                     mine => mine with { Owner = original.Owner }));
             }
 

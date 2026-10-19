@@ -16,6 +16,6 @@ namespace Siniskalc.Homm3.Data
 
         HeroLevel DeserializeLevel(HeroChunk chunk);
 
-        PlayerColor? DeserializeOwner(HeroChunk chunk);
+        PlayerColor DeserializeOwner(HeroChunk chunk);
     }
 }

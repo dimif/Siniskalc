@@ -148,11 +148,11 @@ namespace Siniskalc.Homm3.ViewModels
                     return;
                 }
 
-                this.Update(h => owner != null
+                this.Update(h => !owner.IsNeutral
                     ? h with { Owner = owner }
                     : h with
                     {
-                        Owner = null,
+                        Owner = owner,
                         Position = new HeroPosition(MapPosition.None.X, MapPosition.None.Y, MapPosition.None.Level, FacingDirection.East),
                         Destination = MapPosition.None,
                     });
@@ -225,13 +225,13 @@ namespace Siniskalc.Homm3.ViewModels
             set => this.Update(h => h with { SpellBook = h.SpellBook.WithHasSpellBook(value) });
         }
 
-        public ushort CurrentSpellPoints
+        public int CurrentSpellPoints
         {
             get => this.HeroModel.SpellPoints;
             set => this.Update(h => h with { SpellPoints = value });
         }
 
-        public Army<Creature> Army
+        public IArmy<Creature> Army
         {
             get => this.HeroModel.Army;
             set => this.Update(h => h with { Army = value });

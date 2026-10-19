@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -36,14 +36,14 @@ namespace Siniskalc.Homm2.Data
         }
 
         // TODO:LOG warning: a colour byte that is no player colour was read as nobody.
-        public static Color? ReadColor(byte code) => ByteEnumerations.Read<Color>(code);
+        public static PlayerColor ReadColor(byte code) => PlayerColor.FromByte(code);
 
-        public static byte ColorByte(Color? color, byte existing) => ByteEnumerations.WriteKeeping(color, existing, Empty);
+        public static byte ColorByte(PlayerColor color, byte existing) => ByteEnumerations.WriteKeeping(color, existing, PlayerColor.Neutral);
 
         // TODO:LOG warning: a faction byte that is no faction was read as none.
-        public static Faction? ReadFaction(byte code) => ByteEnumerations.Read<Faction>(code);
+        public static Faction ReadFaction(byte code) => Faction.FromByte(code);
 
-        public static byte FactionByte(Faction? faction, byte existing) => ByteEnumerations.WriteKeeping(faction, existing, Empty);
+        public static byte FactionByte(Faction faction, byte existing) => ByteEnumerations.WriteKeeping(faction, existing, Faction.Neutral);
 
         /// <summary>
         /// Reads a number of a hero, a castle or a tile that is 0xFF when there is none.

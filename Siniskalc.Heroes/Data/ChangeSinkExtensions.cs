@@ -21,7 +21,7 @@
         /// <param name="before">The owner as loaded.</param>
         /// <param name="after">The owner now.</param>
         /// <param name="withOwner">Returns the model with the given owner.</param>
-        public static void AddOwner<TModel, TColor>(this ChangeSink<TModel> sink, TColor? before, TColor? after, Func<TModel, TColor?, TModel> withOwner)
+        public static void AddOwner<TModel, TColor>(this ChangeSink<TModel> sink, TColor before, TColor after, Func<TModel, TColor, TModel> withOwner)
             where TColor : AbstractEnumeration, IPlayerColor
         {
             if (before == after)
@@ -46,10 +46,10 @@
         public static void AddArmy<TModel, TCreature>(
             this ChangeSink<TModel> sink,
             ChangeArea area,
-            Army<TCreature> before,
-            Army<TCreature> after,
-            Func<TModel, Army<TCreature>> getArmy,
-            Func<TModel, Army<TCreature>, TModel> withArmy)
+            IArmy<TCreature> before,
+            IArmy<TCreature> after,
+            Func<TModel, IArmy<TCreature>> getArmy,
+            Func<TModel, IArmy<TCreature>, TModel> withArmy)
             where TCreature : class, IGameEntity
         {
             for (var slot = 0; slot < before.Slots.Count && slot < after.Slots.Count; slot++)

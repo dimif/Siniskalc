@@ -18,11 +18,12 @@ namespace Siniskalc.Homm3.Tests.Models
             var castles = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles();
             var model = TestServices.CastleDeserializer.Deserialize(castles.First(c => c.Name == "Still Water"));
 
-            ICastleModel<PlayerColor, Creature> castle = model;
+            ICastleModel<PlayerColor, Creature, Faction> castle = model;
 
             Assert.That((castle.Name, castle.Faction?.Name), Is.EqualTo(("Still Water", model.Faction!.Name)));
             Assert.That(castle.Faction, Is.SameAs(model.Faction));
             Assert.That((castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((7, 7)));
+            Assert.That(castle.Garrison, Is.SameAs(model.Garrison));
         }
     }
 }

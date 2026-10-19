@@ -137,7 +137,7 @@ namespace Siniskalc.Homm3.ViewModels
         {
             var summaries = this.game.History.Current.Heroes().GetSummaries();
             var colors = this.game.History.Current.Players().GetColors()
-                .Concat(summaries.Select(s => s.Owner).OfType<PlayerColor>())
+                .Concat(summaries.Select(s => s.Owner).Where(o => !o.IsNeutral))
                 .Distinct()
                 .OrderBy(c => c)
                 .ToList();
@@ -145,7 +145,7 @@ namespace Siniskalc.Homm3.ViewModels
             var castles = this.game.History.Current.Castles().GetModels()
                 .Select((model, index) => (Index: index, Model: model))
                 .ToList();
-            colors = colors.Concat(castles.Select(c => c.Model.Owner).OfType<PlayerColor>()).Distinct().OrderBy(c => c).ToList();
+            colors = colors.Concat(castles.Select(c => c.Model.Owner).Where(o => !o.IsNeutral)).Distinct().OrderBy(c => c).ToList();
 
             this.OrderOfPlay = colors.Select(this.OrderItemOf).ToList();
             this.Players.Clear();
@@ -168,7 +168,7 @@ namespace Siniskalc.Homm3.ViewModels
                 this.Players.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 
-            var unowned = summaries.Count(s => s.Owner == null);
+            var unowned = summaries.Count(s => s.Owner.IsNeutral);
             this.Summary = $"{OverviewText.Count(this.Players.Count, "player", "players")} · {OverviewText.Count(summaries.Count - unowned, "hero", "heroes")}";
             if (this.DifficultyText.Length > 0)
             {

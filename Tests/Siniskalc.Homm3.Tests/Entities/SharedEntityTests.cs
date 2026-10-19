@@ -20,10 +20,10 @@ namespace Siniskalc.Homm3.Tests.Entities
         }
 
         [Test]
-        public void AColourIsFoundByItsCodeAndANumberThatIsNoColourIsNone()
+        public void AColourIsFoundByItsCodeAndANumberThatIsNoColourIsNeutral()
         {
             Assert.That(PlayerColor.FromByte(PlayerColor.All[1].Code), Is.SameAs(PlayerColor.All[1]));
-            Assert.That(PlayerColor.FromByte(200), Is.Null);
+            Assert.That(PlayerColor.FromByte(200), Is.SameAs(PlayerColor.Neutral));
         }
 
         [Test]

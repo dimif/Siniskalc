@@ -99,12 +99,12 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheCurrentBuildingsLeaveOutWhatWasReplaced()
+        public void TheVisibleBuildingsLeaveOutWhatWasReplaced()
         {
             var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
             var haret = game.History.Current.Castles()[game.History.Current.Castles().FindByName("Castle Haret")];
 
-            var current = TestServices.CastleDeserializer.DeserializeCurrentBuildings(haret);
+            var current = TestServices.CastleDeserializer.DeserializeVisibleBuildings(haret);
 
             Assert.That(current, Does.Contain(Building.Capitol));
             Assert.That(current, Does.Not.Contain(Building.CityHall).And.Not.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));

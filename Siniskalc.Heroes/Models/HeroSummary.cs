@@ -12,7 +12,7 @@ namespace Siniskalc.Heroes.Models
     /// <param name="Owner">The player that owns the hero, or <c>null</c> if no player does.</param>
     /// <param name="Kind">What the hero is: its class in the games that have classes, its faction in the others.</param>
     /// <param name="Level">The hero's level.</param>
-    public sealed record HeroSummary<TColor>(int Index, int HeroId, string Name, TColor? Owner, string Kind, int Level)
+    public sealed record HeroSummary<TColor>(int Index, int HeroId, string Name, TColor Owner, string Kind, int Level)
         where TColor : class, IPlayerColor
     {
         /// <summary>

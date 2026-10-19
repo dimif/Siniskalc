@@ -11,18 +11,18 @@
     /// </summary>
     public interface ICastleDeserializer : IDeserializer<CastleChunk, CastleModel>
     {
-        Faction? DeserializeFaction(CastleChunk chunk);
+        Faction DeserializeFaction(CastleChunk chunk);
 
-        PlayerColor? DeserializeOwner(CastleChunk chunk);
+        PlayerColor DeserializeOwner(CastleChunk chunk);
 
         MapPosition DeserializePosition(CastleChunk chunk);
 
         MapPosition? DeserializeShipyardLocation(CastleChunk chunk);
 
-        Army<Creature> DeserializeGarrison(CastleChunk chunk);
+        IArmy<Creature> DeserializeGarrison(CastleChunk chunk);
 
         IReadOnlySet<Building> DeserializeBuiltBuildings(CastleChunk chunk);
 
-        IReadOnlySet<Building> DeserializeCurrentBuildings(CastleChunk chunk);
+        IReadOnlySet<Building> DeserializeVisibleBuildings(CastleChunk chunk);
     }
 }

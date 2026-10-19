@@ -14,7 +14,7 @@ namespace Siniskalc.Homm3.Models
     /// </summary>
     /// <remarks>
     /// What the savefiles of Rampart, Bulwark, Cove and Factory castles show about a build:
-    /// the building joins <see cref="CastleModel.Buildings"/> (everything ever built) and <see cref="CastleModel.CurrentBuildings"/>
+    /// the building joins <see cref="CastleModel.Buildings"/> (everything ever built) and <see cref="CastleModel.VisibleBuildings"/>
     /// (what stands now), and the buildings it <see cref="Building.Upgrades"/> leave the second set. A dwelling that is built
     /// starts with one week of creatures; when it is upgraded the creatures waiting move to the upgraded dwelling. When a horde
     /// building (Miners' Guild, Hay Bins, ...) and the upgrade of its dwelling both exist the game adds the upgraded horde building
@@ -44,7 +44,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleBuildFailureReason GetBuildFailureReason(CastleModel castle, Building building)
         {
-            if (castle.Faction == null || !building.IsAvailableFor(castle.Faction))
+            if (castle.Faction == Faction.Neutral || !building.IsAvailableFor(castle.Faction))
             {
                 return CastleBuildFailureReason.NotAvailableForTown;
             }
@@ -124,7 +124,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleBuildFailureReason GetSetAllowedFailureReason(CastleModel castle, Building building)
         {
-            if (castle.Faction == null || !building.IsAvailableFor(castle.Faction))
+            if (castle.Faction == Faction.Neutral || !building.IsAvailableFor(castle.Faction))
             {
                 return CastleBuildFailureReason.NotAvailableForTown;
             }
@@ -198,7 +198,7 @@ namespace Siniskalc.Homm3.Models
         public static CastleModel SetMageGuildLevel(CastleModel castle, int level)
         {
             var levels = new[] { Building.MagesGuild1, Building.MagesGuild2, Building.MagesGuild3, Building.MagesGuild4, Building.MagesGuild5 };
-            var maximum = castle.Faction == null ? 0 : levels.Count(l => l.IsAvailableFor(castle.Faction));
+            var maximum = castle.Faction == Faction.Neutral ? 0 : levels.Count(l => l.IsAvailableFor(castle.Faction));
             RangeGuard.ThrowIfOutOfRange(level, 0, int.MaxValue, nameof(level));
             if (level > maximum)
             {
@@ -230,7 +230,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static Building? DwellingOf(CastleModel castle, int level)
         {
-            if (castle.Faction == null || !RangeGuard.IsInRange(level, 0, castle.CreaturesAvailable.Count - 1))
+            if (castle.Faction == Faction.Neutral || !RangeGuard.IsInRange(level, 0, castle.CreaturesAvailable.Count - 1))
             {
                 return null;
             }
@@ -281,15 +281,15 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleModel SetBuilt(CastleModel castle, Building building, bool built)
         {
-            if (castle.Faction == null || castle.HasBuilt(building) == built)
+            if (castle.Faction == Faction.Neutral || castle.HasBuilt(building) == built)
             {
                 return castle;
             }
 
             var buildings = castle.Buildings.ToHashSet();
-            var current = castle.CurrentBuildings.ToHashSet();
+            var current = castle.VisibleBuildings.ToHashSet();
             var creatures = castle.CreaturesAvailable.ToArray();
-            var spells = castle.SpellCounts.ToArray();
+            var spells = castle.MageGuildSpellCounts.ToArray();
 
             if (built)
             {
@@ -322,15 +322,12 @@ namespace Siniskalc.Homm3.Models
                 }
             }
 
-            var mageGuild = buildings.Where(b => b.IsMageGuild).Select(b => b.MageGuildLevel!.Value).DefaultIfEmpty(0).Max();
-
             return castle with
             {
                 Buildings = buildings,
-                CurrentBuildings = current,
+                VisibleBuildings = current,
                 CreaturesAvailable = new Numbers(creatures),
-                SpellCounts = new Numbers(spells),
-                MageGuildLevel = mageGuild,
+                MageGuildSpellCounts = new Numbers(spells),
             };
         }
 

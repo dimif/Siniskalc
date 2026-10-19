@@ -50,8 +50,8 @@
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames<Color>.Choices,
-                () => OwnerNames<Color>.Of(this.session.Current.Owner),
+                OwnerNames<PlayerColor>.Choices,
+                () => OwnerNames<PlayerColor>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
@@ -99,9 +99,9 @@
                         .Select(slot => new ChoiceFieldViewModel(
                             $"Spell {slot + 1}",
                             spellNames,
-                            () => this.session.Current.GuildSpell(level, slot)?.Name ?? NoSpell,
-                            name => this.session.Update(c => c.WithGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Spell>(name))),
-                            () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.GuildSpellCounts[level - 1],
+                            () => this.session.Current.MageGuildSpell(level, slot)?.Name ?? NoSpell,
+                            name => this.session.Update(c => c.WithMageGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Spell>(name))),
+                            () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.MageGuildSpellCounts[level - 1],
                             "The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
                         .ToList()))
                 .ToList();
@@ -117,7 +117,7 @@
 
         public string ColorHex => PlayerPalette.Of(this.castle.Owner);
 
-        public string FactionName => this.castle.Faction?.ToString() ?? "Unknown faction";
+        public string FactionName => this.castle.Faction == Faction.Neutral ? "Unknown faction" : this.castle.Faction.ToString();
 
         /// <summary>
         /// Gets what the settlement is: a castle, or a town that has none built.
@@ -155,7 +155,7 @@
         /// <summary>
         /// Gets who owns the castle, as "Neutral" or the name of a colour.
         /// </summary>
-        public string OwnerText => OwnerNames<Color>.Of(this.castle.Owner);
+        public string OwnerText => OwnerNames<PlayerColor>.Of(this.castle.Owner);
 
         public string PositionText => MapLevelText.Coordinates(this.castle.Position.X, this.castle.Position.Y);
 
@@ -225,7 +225,7 @@
         private DwellingRowViewModel CreateDwelling(int dwelling)
         {
             // The creatures of the level, in the order of the table: the dwelling, then what its upgrades make.
-            var creatures = this.castle.Faction is { } faction ? Creature.ForFaction(faction).Where(c => c.Tier == dwelling).Select(c => c.Name).ToList() : [];
+            var creatures = this.castle.Faction != Faction.Neutral ? Creature.ForFaction(this.castle.Faction).Where(c => c.Tier == dwelling).Select(c => c.Name).ToList() : [];
             var levels = new List<string> { NotBuilt };
             levels.AddRange(Enumerable.Range(0, CastleModel.MaxDwellingLevel(this.castle.Faction, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
             return new DwellingRowViewModel(
@@ -252,7 +252,7 @@
             this.notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(OwnerNames<Color>.Parse(name));
+                this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
             catch (GameRuleException)
             {

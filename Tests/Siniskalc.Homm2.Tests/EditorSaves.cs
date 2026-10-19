@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -24,9 +24,9 @@ namespace Siniskalc.Homm2.Tests
             return
             [
                 Make("E14GIVE", "Corackston given to Orange through the owner box", GiveCorackston, game =>
-                    $"Corackston belongs to Orange (it was Blue's). Blue lists {Towns(game, Color.Blue)}, Orange lists {Towns(game, Color.Orange)}."),
+                    $"Corackston belongs to Orange (it was Blue's). Blue lists {Towns(game, PlayerColor.Blue)}, Orange lists {Towns(game, PlayerColor.Orange)}."),
                 Make("E15LAST", "Red's only town (Bloodreign) given to Blue", GiveBloodreign, game =>
-                    $"Blue owns Bloodreign too. Red owns no town and has {game.History.Current.Players().GetModel(Color.Red.Code).DaysLeft} days to get one (his heroes are still there)."),
+                    $"Blue owns Bloodreign too. Red owns no town and has {game.History.Current.Players().GetModel(PlayerColor.Red.Code).DaysLeft} days to get one (his heroes are still there)."),
                 Make("E16BLDG", "Xabran: the statue and the well taken down, the shipyard built", ChangeXabranBuildings, game =>
                     $"Xabran has: {BuildingsOf(game, "Xabran")}."),
                 Make("E17DWEL", "Whiteshield: dwelling 4 taken back from Minotaur King to Minotaur, dragons upgraded to Red, creatures set in the dwellings", ChangeWhiteshieldDwellings, game =>
@@ -46,13 +46,13 @@ namespace Siniskalc.Homm2.Tests
                 Make("E24STACK", "Sir Gallant's army: a stack of 65,535, a neutral creature and a dragon", GallantArmy, game =>
                     $"Sir Gallant has {ArmyOf(game, 1)}. Look at how the 65,535 is shown."),
                 Make("E25STATS", "Sir Gallant: skills 20, level 20, experience 50,000, spell points 99, all his movement", GallantStats, game =>
-                    $"Sir Gallant is level 20 with 50,000 experience, skills {SkillsOf(game, 1)}, 99 spell points and {game.History.Current.Heroes().GetModel(1).MovementLeft:N0} movement points."),
+                    $"Sir Gallant is level 20 with 50,000 experience, skills {SkillsOf(game, 1)}, 99 spell points and {game.History.Current.Heroes().GetModel(1).MovementPoints.Current:N0} movement points."),
                 Make("E27DWUPG", "Xabran: dwellings upgraded (Ranger, Master Swordsman, Crusader) and built; Whiteshield: the dragons upgraded twice", UpgradeDwellings, game =>
                     $"Xabran has the dwellings {DwellingsOf(game, "Xabran")}; Whiteshield's sixth is the Black Dragon. Look at the creatures each dwelling offers and whether they can be hired."),
                 Make("E28GLD5", "Xabran: the Mage Guild at level 5", GuildLevelFive, game =>
-                    $"Xabran has a level 5 Mage Guild: it shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Xabran")).GuildSpellCounts)} spells at its levels (3, 3, 2, 2, 1 as in the castles of the saves)."),
+                    $"Xabran has a level 5 Mage Guild: it shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Xabran")).MageGuildSpellCounts)} spells at its levels (3, 3, 2, 2, 1 as in the castles of the saves)."),
                 Make("E29LIBRY", "Corackston (a Wizard castle): the Library built and the Mage Guild at level 3", WizardLibrary, game =>
-                    $"Corackston has the Library and a level 3 guild that shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Corackston")).GuildSpellCounts)} spells (4, 4, 3 with the Library)."),
+                    $"Corackston has the Library and a level 3 guild that shows {string.Join(", ", game.History.Current.Castles().GetModel(game.History.Current.Castles().FindByName("Corackston")).MageGuildSpellCounts)} spells (4, 4, 3 with the Library)."),
                 Make("E30XP50K", "Sir Gallant: level 1 but 50,000 experience", ExperienceOnly, _ =>
                     "Sir Gallant has the level byte at 1 and 50,000 experience. Tell me the level the game shows (it showed 14 for level 20 and 50,000 in E25STATS)."),
                 Make("E31LV20", "Sir Gallant: level 20 but 0 experience", LevelOnly, _ =>
@@ -139,13 +139,13 @@ namespace Siniskalc.Homm2.Tests
         }
 
         private static void ExperienceOnly(Game game) =>
-            game.History.CreateHeroSession(1).Update(h => h with { Level = 1, Experience = 50_000 }); // raw: the page keeps the two in step
+            game.History.CreateHeroSession(1).Update(h => h with { HeroLevel = new HeroLevel(50_000, 1) }); // raw: the page keeps the two in step
 
         private static void LevelOnly(Game game) =>
-            game.History.CreateHeroSession(1).Update(h => h with { Level = 20, Experience = 0 }); // raw: the page keeps the two in step
+            game.History.CreateHeroSession(1).Update(h => h with { HeroLevel = new HeroLevel(0, 20) }); // raw: the page keeps the two in step
 
         private static void BigExperience(Game game) =>
-            game.History.CreateHeroSession(1).Update(h => h with { Level = 1, Experience = 200_000 }); // raw: the page keeps the two in step
+            game.History.CreateHeroSession(1).Update(h => h with { HeroLevel = new HeroLevel(200_000, 1) }); // raw: the page keeps the two in step
 
         private static void BigStacks(Game game)
         {
@@ -219,7 +219,7 @@ namespace Siniskalc.Homm2.Tests
 
         private static void BlueAtTheLimits(Game game)
         {
-            foreach (var row in Player(game, Color.Blue).Resources)
+            foreach (var row in Player(game, PlayerColor.Blue).Resources)
             {
                 row.Value = row.Maximum;
             }
@@ -279,9 +279,9 @@ namespace Siniskalc.Homm2.Tests
 
         private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
 
-        private static PlayerViewModel Player(Game game, Color color) => new(game, color, _ => { }, _ => { });
+        private static PlayerViewModel Player(Game game, PlayerColor color) => new(game, color, _ => { }, _ => { });
 
-        private static string Towns(Game game, Color color)
+        private static string Towns(Game game, PlayerColor color)
         {
             var document = game.History.Current;
             var names = document.Players().GetModel(color.Code).CastleIds.Select(i => document.Castles().GetModel(i).Name).ToList();

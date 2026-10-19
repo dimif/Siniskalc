@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Models
 
     /// <summary>
     /// Which of the obelisks of the map each player has visited: a byte for each obelisk with a bit for every colour that visited it (bit 0 is
-    /// Blue, in the order of <see cref="Color"/>), in the order of the obelisks on the map.
+    /// Blue, in the order of <see cref="PlayerColor"/>), in the order of the obelisks on the map.
     /// </summary>
     public sealed record ObeliskVisits
     {
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public MapPosition? PositionOf(int index) => index >= 0 && index < this.positions.Length ? this.positions[index] : null;
 
-        public bool IsVisited(int index, Color color)
+        public bool IsVisited(int index, PlayerColor color)
         {
             RangeGuard.ThrowIfNotIndex(index, this.Count, nameof(index));
             return (this.masks[index] & Bit(color)) != 0;
@@ -45,11 +45,11 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Gets how many obelisks <paramref name="color"/> has visited.
         /// </summary>
-        public int VisitedCount(Color color) => this.masks.Count(m => (m & Bit(color)) != 0);
+        public int VisitedCount(PlayerColor color) => this.masks.Count(m => (m & Bit(color)) != 0);
 
-        public bool AllVisited(Color color) => this.VisitedCount(color) == this.Count;
+        public bool AllVisited(PlayerColor color) => this.VisitedCount(color) == this.Count;
 
-        public ObeliskVisits WithVisited(int index, Color color, bool visited)
+        public ObeliskVisits WithVisited(int index, PlayerColor color, bool visited)
         {
             RangeGuard.ThrowIfNotIndex(index, this.Count, nameof(index));
             var changed = (byte[])this.masks.Clone();
@@ -60,7 +60,7 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns a copy in which <paramref name="color"/> has visited every obelisk, or none of them. The bits of the other colours stay.
         /// </summary>
-        public ObeliskVisits WithAll(Color color, bool visited)
+        public ObeliskVisits WithAll(PlayerColor color, bool visited)
         {
             var result = this;
             for (var i = 0; i < this.Count; i++)
@@ -84,6 +84,6 @@ namespace Siniskalc.Homm2.Models
             return hash.ToHashCode();
         }
 
-        private static int Bit(Color color) => 1 << color.Code;
+        private static int Bit(PlayerColor color) => 1 << color.Code;
     }
 }

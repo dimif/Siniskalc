@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Runtime
+﻿namespace Siniskalc.Homm2.Runtime
 {
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
@@ -14,5 +14,5 @@ namespace Siniskalc.Homm2.Runtime
     /// <param name="Difficulty">The difficulty the game was started with.</param>
     /// <param name="CurrentPlayer">The colour whose turn it was, or <c>null</c> when the savegame does not say.</param>
     /// <param name="PlayerControls">Who plays each colour, Blue first, or <c>null</c> when not known.</param>
-    public sealed record SaveMetadata(GameDate Date, MapHeader Map, GameDifficulty Difficulty, Color? CurrentPlayer = null, IReadOnlyList<PlayerType>? PlayerControls = null);
+    public sealed record SaveMetadata(GameDate Date, MapHeader Map, GameDifficulty Difficulty, PlayerColor? CurrentPlayer = null, IReadOnlyList<PlayerType>? PlayerControls = null);
 }

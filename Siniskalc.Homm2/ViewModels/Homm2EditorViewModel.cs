@@ -47,7 +47,7 @@
         /// <summary>
         /// Shows the page of the player of <paramref name="color"/>, on the tab <paramref name="tab"/>.
         /// </summary>
-        public void ShowPlayer(Color color, int tab = 0)
+        public void ShowPlayer(PlayerColor color, int tab = 0)
         {
             var game = this.Loaded();
             if (!this.players.TryGetValue(color.Code, out var player))
@@ -145,10 +145,10 @@
                     this.ShowOverview();
                     break;
                 case NavNodeKind.Player:
-                    this.ShowPlayer(Color.All[node.Index]);
+                    this.ShowPlayer(PlayerColor.All[node.Index]);
                     break;
                 case NavNodeKind.PlayerTab:
-                    this.ShowPlayer(Color.All[node.Index], node.Tab);
+                    this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
                     break;
                 case NavNodeKind.Hero:
                     this.ShowHero(node.Index);

@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Entities
+﻿namespace Siniskalc.Core.Entities
 {
     using System;
 
@@ -10,6 +10,18 @@ namespace Siniskalc.Core.Entities
     public abstract class VersionedEnumeration<TVersion> : AbstractEnumeration
         where TVersion : struct, Enum
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VersionedEnumeration{TVersion}"/> class.
+        /// </summary>
+        /// <param name="name">
+        /// The name of the enumeration.
+        /// </param>
+        /// <param name="code">
+        /// The byte code associated with the enumeration.
+        /// </param>
+        /// <param name="gameVersion">
+        /// The a number that represents what version of the game was this entity introduced in.
+        /// </param>
         protected VersionedEnumeration(string name, byte code, TVersion gameVersion)
             : base(name, code, Convert.ToInt32(gameVersion))
         {

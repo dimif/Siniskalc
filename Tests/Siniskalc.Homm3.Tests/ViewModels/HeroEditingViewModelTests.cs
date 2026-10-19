@@ -202,7 +202,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             this.hero.SelectedOwner = "Neutral";
 
-            Assert.That(this.hero.HeroModel.Owner, Is.Null);
+            Assert.That(this.hero.HeroModel.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(this.hero.HeroModel.Position, Is.EqualTo(new HeroPosition(-1, -1, -1, FacingDirection.East)));
             Assert.That(this.hero.HeroModel.Destination, Is.EqualTo(new MapPosition(-1, -1, -1)));
 

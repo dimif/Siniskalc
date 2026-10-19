@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -25,6 +25,6 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns the player each hero serves (<c>null</c> for the ones that serve nobody), by hero number.
         /// </summary>
-        public IReadOnlyList<Color?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
+        public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
     }
 }

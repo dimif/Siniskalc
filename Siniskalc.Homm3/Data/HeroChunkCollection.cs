@@ -42,7 +42,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who owns each hero, in the order of the collection. Reads the owner byte only.
         /// </summary>
-        public IReadOnlyList<PlayerColor?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
+        public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
         /// Returns a short summary of every hero. Reads only what the summary needs, so it is cheap enough to run for every hero.

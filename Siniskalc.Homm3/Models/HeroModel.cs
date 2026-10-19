@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
-    using System;
     using System.Collections.Generic;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -11,7 +10,7 @@
     /// What the equipped artifacts add (spells the hero can cast, primary skill bonuses, the effects as a whole) is worked out
     /// here, every time the artifacts, the spell book or the primary skills are set, so it can never be stale.
     /// </summary>
-    public sealed record HeroModel : IHeroModel<SecondarySkill, SecondarySkills>
+    public sealed record HeroModel : IHeroModel<SecondarySkill, SecondarySkills, Creature>
     {
         private readonly IGrantedSpellsResolver grantedSpellsResolver;
         private PrimarySkills primarySkills;
@@ -20,23 +19,23 @@
         private ArtifactEffectInfo artifactEffects;
 
         public HeroModel(
+            int id,
             string name,
-            IGrantedSpellsResolver grantedSpellsResolver,
-            PlayerColor? owner,
-            PrimarySkills primarySkills,
-            HeroClass heroClass,
-            HeroLevel level,
+            PlayerColor owner,
             HeroPosition position,
             MapPosition destination,
             MovementPoints movementPoints,
+            HeroLevel heroLevel,
+            int spellPoints,
+            PrimarySkills primarySkills,
             SecondarySkills secondarySkills,
+            IArmy<Creature> army,
+            IGrantedSpellsResolver grantedSpellsResolver,
+            HeroClass heroClass,
             Backpack backpack,
             EquippedArtifacts equippedArtifacts,
             IReadOnlyList<WarMachine> warMachines,
-            ushort spellPoints,
-            Army<Creature> army,
             SpellBook spellBook,
-            int heroId,
             string? biography,
             HeroGender? gender,
             bool movedToday,
@@ -47,7 +46,7 @@
             VisitedBuildingEffects visitEffects)
         {
             this.Name = name;
-            this.Id = heroId;
+            this.Id = id;
             this.Biography = biography;
             this.Gender = gender;
             this.MovedToday = movedToday;
@@ -60,7 +59,7 @@
             this.Owner = owner;
             this.primarySkills = primarySkills;
             this.HeroClass = heroClass;
-            this.HeroLevel = level;
+            this.HeroLevel = heroLevel;
             this.Position = position;
             this.Destination = destination;
             this.MovementPoints = movementPoints;
@@ -74,6 +73,7 @@
             this.Reconcile(keepSkills: true);
         }
 
+        /// <inheritdoc/>
         public string Name { get; init; }
 
         /// <summary>
@@ -82,7 +82,7 @@
         /// </summary>
         public int Id { get; init; }
 
-        public PlayerColor? Owner { get; init; }
+        public PlayerColor Owner { get; init; }
 
         /// <summary>
         /// Gets the primary skills: the values the savefile holds, which have what the equipped artifacts add in them. Setting the
@@ -108,6 +108,7 @@
 
         public MovementPoints MovementPoints { get; init; }
 
+        /// <inheritdoc/>
         public SecondarySkills SecondarySkills { get; init; }
 
         public Backpack Backpack { get; init; }
@@ -134,9 +135,11 @@
 
         public IReadOnlyList<WarMachine> WarMachines { get; init; }
 
-        public ushort SpellPoints { get; init; }
+        /// <inheritdoc/>
+        public int SpellPoints { get; init; }
 
-        public Army<Creature> Army { get; init; }
+        /// <inheritdoc/>
+        public IArmy<Creature> Army { get; init; }
 
         /// <summary>
         /// Gets the hero's spell book: whether it has one, the spells it learned and the ones artifacts let it cast.

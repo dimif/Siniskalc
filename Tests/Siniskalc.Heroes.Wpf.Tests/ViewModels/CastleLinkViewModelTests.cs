@@ -13,7 +13,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [TestFixture]
     internal sealed class CastleLinkViewModelTests
     {
-        private static TestCastle Castle(int mageGuildLevel, IFaction? faction = null) => new("Stronghold", faction, mageGuildLevel);
+        private static TestCastle Castle(int mageGuildLevel, TestFaction faction) => new("Stronghold", faction, mageGuildLevel);
 
         [Test]
         public void TheLinkNamesTheCastleAndItsFactionAndTellsWhatStandsInIt()
@@ -24,18 +24,18 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
-        public void ACastleWithoutAMageGuildOrAFactionLeavesThemOut()
+        public void ACastleWithoutAMageGuildLeavesItOutAndANeutralFactionIsNamedNeutral()
         {
-            var link = CastleLinkViewModel.For(Castle(0), new DelegateCommand(_ => { }), ["Town"], 1);
+            var link = CastleLinkViewModel.For(Castle(0, new TestFaction("Neutral", 99)), new DelegateCommand(_ => { }), ["Town"], 1);
 
-            Assert.That((link.Detail, link.Status), Is.EqualTo((string.Empty, "Town · 1 dwelling")));
+            Assert.That((link.Detail, link.Status), Is.EqualTo(("Neutral", "Town · 1 dwelling")));
         }
 
         private sealed record TestFaction(string Name, byte Code) : IFaction;
 
         private sealed record TestCreature(string Name, byte Code) : IGameEntity;
 
-        private sealed record TestCastle(string Name, IFaction? Faction, int MageGuildLevel) : ICastleModel<TestColor, TestCreature>
+        private sealed record TestCastle(string Name, TestFaction Faction, int MageGuildLevel) : ICastleModel<TestColor, TestCreature, TestFaction>
         {
             public TestColor? Owner => null;
 
@@ -43,7 +43,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             public MapPosition? ShipyardPosition => null;
 
-            public Army<TestCreature> Garrison => new(5);
+            public IArmy<TestCreature> Garrison => new Army<TestCreature>(5);
 
             public int? VisitingHeroId => null;
 

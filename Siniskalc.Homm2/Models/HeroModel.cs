@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using System;
     using System.Linq;
@@ -13,12 +13,12 @@ namespace Siniskalc.Homm2.Models
     /// </summary>
     /// <param name="Id">The number of the hero, which is its place in the table of heroes (0 is Lord Kilburn).</param>
     /// <param name="Name">The name of the hero.</param>
-    /// <param name="Owner">The player the hero serves, or <c>null</c> when it serves nobody.</param>
+    /// <param name="Owner">The player the hero serves, or the colour <c>Neutral</c> when it serves nobody.</param>
     /// <param name="Position">The tile the hero stands on (meaningless while it serves nobody).</param>
     /// <param name="Destination">The tile the hero is going to (the game marks it on the map), or <see cref="MapPosition.None"/>.</param>
-    /// <param name="SpellPoints">The spell points the hero has now.</param>
     /// <param name="MovementPoints">The movement points the hero has left today, and the ones of a full day, which the game works out from the army, the skills and the artifacts.</param>
     /// <param name="HeroLevel">The level of the hero and its experience.</param>
+    /// <param name="SpellPoints">The spell points the hero has now.</param>
     /// <param name="PrimarySkills">The attack, the defense, the spell power and the knowledge.</param>
     /// <param name="SecondarySkills">The secondary skills, in the order they were learned.</param>
     /// <param name="Army">The five slots of the army.</param>
@@ -27,54 +27,18 @@ namespace Siniskalc.Homm2.Models
     public sealed record HeroModel(
         int Id,
         string Name,
-        Color? Owner,
+        PlayerColor Owner,
         MapPosition Position,
         MapPosition Destination,
-        int SpellPoints,
         MovementPoints MovementPoints,
         HeroLevel HeroLevel,
+        int SpellPoints,
         PrimarySkills PrimarySkills,
         IHomm2SecondarySkills SecondarySkills,
-        Army<Creature> Army,
+        IArmy<Creature> Army,
         Artifacts Artifacts,
-        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, IHomm2SecondarySkills>
+        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, IHomm2SecondarySkills, Creature>
     {
-        /// <summary>
-        /// Gets or sets the level of the hero (a <c>with</c> expression sets it, and leaves the experience as it is).
-        /// </summary>
-        public int Level
-        {
-            get => this.HeroLevel.Level;
-            init => this.HeroLevel = this.HeroLevel with { Level = value };
-        }
-
-        /// <summary>
-        /// Gets or sets the experience of the hero (a <c>with</c> expression sets it, and leaves the level as it is).
-        /// </summary>
-        public long Experience
-        {
-            get => this.HeroLevel.Experience;
-            init => this.HeroLevel = this.HeroLevel with { Experience = value };
-        }
-
-        /// <summary>
-        /// Gets or sets the movement points of a full day.
-        /// </summary>
-        public long MaxMovement
-        {
-            get => this.MovementPoints.Max;
-            init => this.MovementPoints = this.MovementPoints with { Max = value };
-        }
-
-        /// <summary>
-        /// Gets or sets the movement points the hero has left today.
-        /// </summary>
-        public long MovementLeft
-        {
-            get => this.MovementPoints.Current;
-            init => this.MovementPoints = this.MovementPoints with { Current = value };
-        }
-
         /// <summary>
         /// Gets or sets the direction the hero faces: the way of its last step (Heroes of Might and Magic II keeps eight directions, clockwise from north).
         /// </summary>
@@ -103,7 +67,7 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.
         /// </summary>
-        public HeroSummary<Color> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.Level);
+        public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
 
         /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.

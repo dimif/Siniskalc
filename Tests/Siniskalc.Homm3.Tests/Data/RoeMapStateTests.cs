@@ -259,7 +259,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var before = Load("roe_63_tazar_idle_of_fortune");
             var after = Load("roe_64_elfwind_captured");
 
-            Assert.That(Castle(before, "Elfwind").Owner, Is.Null);
+            Assert.That(Castle(before, "Elfwind").Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(Castle(before, "Elfwind").Garrison.Filled, Is.Not.Empty);
             Assert.That(Castle(after, "Elfwind").Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(Castle(after, "Elfwind").Garrison.Filled, Is.Empty);
@@ -292,8 +292,8 @@ namespace Siniskalc.Homm3.Tests.Data
             var gone = Load("roe_67_damacon_defeated");
 
             Assert.That(Hero(before, "Damacon").Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(Hero(fled, "Damacon").Owner, Is.Null);
-            Assert.That(Hero(gone, "Damacon").Owner, Is.Null);
+            Assert.That(Hero(fled, "Damacon").Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Hero(gone, "Damacon").Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(fled.Bytes[RedStart(fled) - 86], Is.EqualTo(Damacon), "back in the tavern after fleeing");
             Assert.That(gone.Bytes[RedStart(gone) - 86], Is.Not.EqualTo(Damacon), "after being hired again and defeated Solmyr took the place");
             Assert.That(gone.Bytes[HeroStart(gone, "Damacon") + HiddenFlagsInTail] & 0x40, Is.EqualTo(0x40));

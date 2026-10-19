@@ -20,14 +20,14 @@
     /// </summary>
     public sealed class ArmyViewModel : ArmyViewModelBase<ArmySlotViewModel>
     {
-        private readonly Func<Army<Creature>> getCreatures;
-        private readonly Action<Func<Army<Creature>, Army<Creature>>> update;
+        private readonly Func<IArmy<Creature>> getCreatures;
+        private readonly Action<Func<IArmy<Creature>, IArmy<Creature>>> update;
         private readonly GameVersion gameVersion;
 
         public ArmyViewModel(
             GameVersion gameVersion,
-            Func<Army<Creature>> getCreatures,
-            Action<Func<Army<Creature>, Army<Creature>>> update,
+            Func<IArmy<Creature>> getCreatures,
+            Action<Func<IArmy<Creature>, IArmy<Creature>>> update,
             Func<bool>? isReadOnly = null)
             : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(), isReadOnly)
         {
@@ -171,7 +171,7 @@
         /// <summary>
         /// Gets the first empty slot, from 0, or -1 when the army is full.
         /// </summary>
-        private static int FirstFreeSlot(Army<Creature> creatures)
+        private static int FirstFreeSlot(IArmy<Creature> creatures)
         {
             for (var slot = 0; slot < creatures.Slots.Count; slot++)
             {

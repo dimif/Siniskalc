@@ -30,10 +30,10 @@
                 bytes[HeroLayout.Facing] = (byte)model.Facing;
             }
 
-            WriteNumber(bytes, HeroLayout.MaxMovement, 4, model.MaxMovement, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MaxMovement));
-            WriteNumber(bytes, HeroLayout.MovementLeft, 4, model.MovementLeft, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementLeft));
-            WriteNumber(bytes, HeroLayout.Experience, 4, model.Experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(model.Experience));
-            WriteNumber(bytes, HeroLayout.Level, 1, model.Level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(model.Level));
+            WriteNumber(bytes, HeroLayout.MaxMovement, 4, model.MovementPoints.Max, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementPoints));
+            WriteNumber(bytes, HeroLayout.MovementLeft, 4, model.MovementPoints.Current, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementPoints));
+            WriteNumber(bytes, HeroLayout.Experience, 4, model.HeroLevel.Experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(model.HeroLevel));
+            WriteNumber(bytes, HeroLayout.Level, 1, model.HeroLevel.Level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(model.HeroLevel));
             WriteNumber(bytes, HeroLayout.PrimarySkills, 1, model.PrimarySkills.Attack, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));
             WriteNumber(bytes, HeroLayout.PrimarySkills + 1, 1, model.PrimarySkills.Defense, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));
             WriteNumber(bytes, HeroLayout.PrimarySkills + 2, 1, model.PrimarySkills.SpellPower, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, nameof(model.PrimarySkills));

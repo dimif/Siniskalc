@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Data
         /// the list of the player that has it now change together, as they do in the game. Does nothing when the owner is the same.
         /// </summary>
         /// <exception cref="GameRuleException">The new owner has the most castles the list holds.</exception>
-        public void ChangeOwner(Color? owner)
+        public void ChangeOwner(PlayerColor owner)
         {
             var document = this.History.Current;
             var castles = document.Castles();
@@ -37,14 +37,14 @@ namespace Siniskalc.Homm2.Data
 
             // The new list is made before anything is written, so a full list leaves the savegame as it was.
             var edits = new List<(int Player, PlayerModel Model)>();
-            if (castle.Owner is { } previous)
+            if (!castle.Owner.IsNeutral)
             {
-                edits.Add((previous.Code, players.GetModel(previous.Code).WithoutCastle(this.CastleIndex)));
+                edits.Add((castle.Owner.Code, players.GetModel(castle.Owner.Code).WithoutCastle(this.CastleIndex)));
             }
 
-            if (owner is { } next)
+            if (!owner.IsNeutral)
             {
-                edits.Add((next.Code, players.GetModel(next.Code).WithCastle(this.CastleIndex)));
+                edits.Add((owner.Code, players.GetModel(owner.Code).WithCastle(this.CastleIndex)));
             }
 
             var updated = document.WithChunk(Homm2ChunkKinds.Castle, this.CastleIndex, castles.Serializer.Serialize(castles[this.CastleIndex], castle with { Owner = owner }));

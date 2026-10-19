@@ -21,7 +21,7 @@ namespace Siniskalc.Heroes.Data
         /// <param name="codes">How the game numbers its creatures.</param>
         /// <param name="name">The name of the parameter the army came from, for the error of a count that does not fit.</param>
         /// <exception cref="ArgumentOutOfRangeException">A count is more than <see cref="ArmyLayout.MaxCount"/>.</exception>
-        public static void Write<TCreature>(byte[] bytes, ArmyLayout layout, Army<TCreature> army, ICreatureCodes<TCreature> codes, string name)
+        public static void Write<TCreature>(byte[] bytes, ArmyLayout layout, IArmy<TCreature> army, ICreatureCodes<TCreature> codes, string name)
             where TCreature : class, IGameEntity
         {
             for (var slot = 0; slot < layout.SlotCount; slot++)

@@ -10,7 +10,7 @@
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
-    using Color = Siniskalc.Homm2.Entities.Color;
+    using PlayerColor = Siniskalc.Homm2.Entities.PlayerColor;
 
     /// <summary>
     /// The pages are made of the blocks of Siniskalc.Heroes.Wpf (header, resources, cards). A binding that finds nothing does not stop a
@@ -53,10 +53,10 @@
             try
             {
                 Show(window);
-                var hero = editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner == Color.Blue);
-                var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == Color.Blue);
+                var hero = editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue);
+                var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == PlayerColor.Blue);
 
-                editor.ShowPlayer(Color.Blue);
+                editor.ShowPlayer(PlayerColor.Blue);
                 foreach (var tab in Enumerable.Range(0, 3))
                 {
                     ((PlayerViewModel)editor.CurrentPage!).SelectedTab = tab;

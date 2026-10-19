@@ -113,7 +113,7 @@ namespace Siniskalc.Homm3.Tests.Data
                     }
 
                     // Start from a town that has nothing but the village hall, with the hidden bits of the companions cleared.
-                    var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, CurrentBuildings = new HashSet<Building> { Building.VillageHall } };
+                    var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, VisibleBuildings = new HashSet<Building> { Building.VillageHall } };
                     var empty = TestServices.SerializeCastle(chunk, model);
                     var order = saved.Buildings.Where(b => b != Building.VillageHall && !CastleBuilder.IsAutomatic(b));
                     foreach (var building in descending ? order.OrderByDescending(b => b.Code) : order.OrderBy(b => b.Code))

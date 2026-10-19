@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
@@ -15,10 +15,10 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class ObeliskVisitsViewModel : ObeliskVisitsViewModelBase
     {
         private readonly SaveDocumentHistory history;
-        private readonly Color color;
+        private readonly PlayerColor color;
         private ObeliskEditSession? session;
 
-        public ObeliskVisitsViewModel(SaveDocumentHistory history, Color color)
+        public ObeliskVisitsViewModel(SaveDocumentHistory history, PlayerColor color)
             : base("The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the Ultimate Artifact.")
         {
             this.history = history;

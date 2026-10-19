@@ -63,10 +63,10 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
 
-            var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk) with { Owner = null });
+            var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk) with { Owner = PlayerColor.Neutral });
 
             Assert.That(written.GetByteAt(CastleLayout.Owner), Is.EqualTo(Constants.ByteOff));
-            Assert.That(TestServices.CastleDeserializer.DeserializeOwner(written), Is.Null);
+            Assert.That(TestServices.CastleDeserializer.DeserializeOwner(written), Is.SameAs(PlayerColor.Neutral));
         }
 
         [Test]
@@ -222,9 +222,9 @@ namespace Siniskalc.Homm3.Tests.Data
         /// <summary>The model holds sets and lists, which a record does not compare by value.</summary>
         internal static bool SameCastle(CastleModel a, CastleModel b) =>
             a.Name == b.Name && a.Faction == b.Faction && a.Owner == b.Owner && a.Position == b.Position && a.BuiltThisTurn == b.BuiltThisTurn
-            && a.MageGuildLevel == b.MageGuildLevel && a.Buildings.SetEquals(b.Buildings) && a.CurrentBuildings.SetEquals(b.CurrentBuildings)
+            && a.MageGuildLevel == b.MageGuildLevel && a.Buildings.SetEquals(b.Buildings) && a.VisibleBuildings.SetEquals(b.VisibleBuildings)
             && a.EnabledBuildings.SetEquals(b.EnabledBuildings) && a.CreaturesAvailable.SequenceEqual(b.CreaturesAvailable)
-            && a.SpellCounts.SequenceEqual(b.SpellCounts)
+            && a.MageGuildSpellCounts.SequenceEqual(b.MageGuildSpellCounts)
             && a.Garrison.Equals(b.Garrison)
             && a.GarrisonedHeroId == b.GarrisonedHeroId && a.VisitingHeroId == b.VisitingHeroId;
     }

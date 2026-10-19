@@ -1,6 +1,7 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Runtime;
 
@@ -47,7 +48,7 @@ namespace Siniskalc.Homm2.Tests.Data
             this.game.History.CreatePlayerSession(0).Update(p => p with { SelectedCastle = selected });
             this.game.History.MarkSaved();
 
-            this.game.History.CreateCastleSession(selected).ChangeOwner(null);
+            this.game.History.CreateCastleSession(selected).ChangeOwner(PlayerColor.Neutral);
 
             Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Selected castle"));
         }

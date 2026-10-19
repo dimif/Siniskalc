@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         public static (ulong Built, ulong Current, ulong Enabled) Masks(CastleChunk chunk) => (
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.BuiltBuildingsFromNameEnd) & ~Unexplained(chunk),
-            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.CurrentBuildingsFromNameEnd) & ~Unexplained(chunk),
+            chunk.GetUInt64At(chunk.NameEnd + CastleLayout.VisibleBuildingsFromNameEnd) & ~Unexplained(chunk),
             chunk.GetUInt64At(chunk.NameEnd + CastleLayout.EnabledBuildingsFromNameEnd));
 
         public static string Hex((ulong Built, ulong Current, ulong Enabled) masks) => $"built {masks.Built:X} current {masks.Current:X} enabled {masks.Enabled:X}";

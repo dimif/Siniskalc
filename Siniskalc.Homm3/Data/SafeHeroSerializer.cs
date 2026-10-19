@@ -55,7 +55,7 @@
             return chunk;
         }
 
-        public HeroChunk SerializeCreatures(HeroChunk chunk, Army<Creature> creatures)
+        public HeroChunk SerializeCreatures(HeroChunk chunk, IArmy<Creature> creatures)
         {
             return Edit(chunk, buffer => ArmyWriter.Write(buffer, this.heroOffsets.Army, creatures, CreatureCodes.Instance, nameof(creatures)));
         }
@@ -231,10 +231,11 @@
             });
         }
 
-        public HeroChunk SerializeSpellPoints(HeroChunk chunk, ushort spellPoints)
+        public HeroChunk SerializeSpellPoints(HeroChunk chunk, int spellPoints)
         {
+            RangeGuard.ThrowIfOutOfRange<long>(spellPoints, 0, ushort.MaxValue, nameof(spellPoints));
             return Edit(chunk, buffer =>
-                ByteBufferHelper.WriteUInt16(buffer, this.heroOffsets[HeroOffsetName.CurrentSpellPoints], spellPoints));
+                ByteBufferHelper.WriteUInt16(buffer, this.heroOffsets[HeroOffsetName.CurrentSpellPoints], (ushort)spellPoints));
         }
 
         public HeroChunk SerializeBackpack(HeroChunk chunk, Backpack backpack)
@@ -306,12 +307,12 @@
             });
         }
 
-        public HeroChunk SerializeOwner(HeroChunk chunk, PlayerColor? owner)
+        public HeroChunk SerializeOwner(HeroChunk chunk, PlayerColor owner)
         {
             return Edit(chunk, buffer =>
             {
                 var offset = this.heroOffsets[HeroOffsetName.Owner];
-                buffer[offset] = ByteEnumerations.WriteKeeping(owner, buffer[offset], Constants.ByteOff);
+                buffer[offset] = ByteEnumerations.WriteKeeping(owner, buffer[offset], PlayerColor.Neutral);
             });
         }
 

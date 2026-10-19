@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Models
+﻿namespace Siniskalc.Homm2.Models
 {
     using System.Linq;
     using Siniskalc.Core.Models;
@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.Models
     /// <param name="DaysLeft">How many days the player has left to own a castle or a town before being out of the game, or <c>null</c> while he owns one.</param>
     /// <param name="Tavern">The heroes the taverns offer.</param>
     public sealed record PlayerModel(
-        Color Color,
+        PlayerColor Color,
         ResourceSet Resources,
         ResourceSet Income,
         Numbers HeroIds,
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.Models
         int? SelectedCastle,
         int? DaysLeft,
         TavernHeroes Tavern)
-        : PlayerModelBase<Color>(Color, Resources, Tavern, DaysLeft)
+        : PlayerModelBase<PlayerColor>(Color, Resources, Tavern, DaysLeft)
     {
         /// <summary>
         /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.

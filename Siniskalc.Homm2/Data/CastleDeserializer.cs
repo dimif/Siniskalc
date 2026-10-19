@@ -14,7 +14,7 @@
     public sealed class CastleDeserializer : ICastleDeserializer
     {
         /// <inheritdoc/>
-        public Color? DeserializeOwner(CastleChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(CastleLayout.Owner));
+        public PlayerColor DeserializeOwner(CastleChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(CastleLayout.Owner));
 
         /// <inheritdoc/>
         public CastleModel Deserialize(CastleChunk chunk)
@@ -24,19 +24,19 @@
             var dwellings = (Dwellings)chunk.GetUInt32At(CastleLayout.Dwellings);
 
             return new CastleModel(
-                chunk.GetByteAt(CastleLayout.Index),
                 Bytes.ReadText(bytes, CastleLayout.Name, Constants.Castle.NameLength),
-                this.DeserializeOwner(chunk),
                 Bytes.ReadFaction(chunk.GetByteAt(CastleLayout.Faction)),
+                this.DeserializeOwner(chunk),
                 new MapPosition(chunk.GetByteAt(CastleLayout.X), chunk.GetByteAt(CastleLayout.Y)),
                 boatX == Bytes.Empty ? null : new MapPosition(boatX, chunk.GetByteAt(CastleLayout.Boat + 1)),
                 ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance),
                 Bytes.Id(chunk.GetByteAt(CastleLayout.VisitingHero)),
+                new Numbers(Enumerable.Range(1, Constants.Castle.DwellingCount).Select(d => (int)chunk.GetUInt16At(CastleLayout.CreaturesOffset(d, CastleModel.DwellingLevel(dwellings, d))))),
+                chunk.GetByteAt(CastleLayout.Index),
                 (TownBuildings)chunk.GetUInt16At(CastleLayout.TownBuildings),
                 dwellings,
-                new Numbers(Enumerable.Range(1, Constants.Castle.DwellingCount).Select(d => (int)chunk.GetUInt16At(CastleLayout.CreaturesOffset(d, CastleModel.DwellingLevel(dwellings, d))))),
-                new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpells, Bytes.GuildSpellSlots).Select(Bytes.GuildSpellNumber)),
-                new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels).Select(b => (int)b)));
+                new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels).Select(b => (int)b)),
+                new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpells, Bytes.GuildSpellSlots).Select(Bytes.GuildSpellNumber)));
         }
     }
 }

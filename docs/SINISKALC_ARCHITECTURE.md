@@ -17,7 +17,8 @@ A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `Lis
 
 **`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
 It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
-A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, HoMM3's `Faction`) implement the interface, and the enums (`Color`, `PlayerColor`, HoMM2's `Faction`, `SkillLevel`) stay enums in the models and the `Data` layer, with a small catalog (`PlayerColors<TColor>.Of(color)` in `Siniskalc.Heroes`, `SkillLevels.Of(level)`) that gives the view-model layer the interface.
+A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, both games' `Faction`, HoMM2's `Color`, HoMM3's `PlayerColor`) are `AbstractEnumeration`s that implement the interface and are used as such in the models, the `Data` layer and the view models; only `SkillLevel` is still an enum, with a small catalog (`SkillLevels.Of(level)`).
+A colour has a `Neutral` member (code 255, which is the byte of a savefile for what no player owns), and each game's `Faction` has one too (code 99); they are left out of HoMM2's `All`, and `FromByte` reads a byte that is none of them as `Neutral`, so the owner and the faction of a castle (and the owner of a hero or mine) are never `null`. `OwnerNames<TColor>` names the owners and `ByteEnumerations` reads and writes the byte (leaving one the editor does not understand alone).
 A level a hero has not learned is `null`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
@@ -61,7 +62,7 @@ docs/             Architecture, how things are located in a savefile, knowledge 
 ```
 
 Dependencies point one way: `Siniskalc` references the games and the libraries; `Siniskalc.Homm3` and `Siniskalc.Homm2` each reference `Siniskalc.Heroes.Wpf`, `Siniskalc.Heroes`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Heroes.Wpf` references `Siniskalc.Heroes` and `Siniskalc.Wpf`; `Siniskalc.Wpf` and `Siniskalc.Heroes` reference `Siniskalc.Core`.
-Nothing in Core, WPF or Heroes should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and each game wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChanges`, `Homm3Enumeration`, and the same for HoMM2).
+Nothing in Core, WPF or Heroes should refer to the types of a game: a game gives them its values (`ChunkKind`, `ChangeArea`, `ByteRegion`s, `GameVersion` as an availability tier) and its collaborators, and each game wraps the generic types (`Homm3SaveDocuments`, `Homm3EditSessions`, `Homm3PendingChangesFactory` (an `IPendingChangesFactory` of `Siniskalc.Heroes`), `Homm3Enumeration`, and the same for HoMM2).
 A game gets a project of its own that references the same libraries; HoMM2 is the second.
 A type carries no game prefix (`Siniskalc.Homm2.Models.HeroModel`): the namespace says the game, and the exe uses namespace aliases where it names both.
 

@@ -14,7 +14,7 @@
         public void EachTownOfAPlayerSaysWhatItIsItsMageGuildAndHowManyDwellingsStandInIt()
         {
             var game = TestServices.LoadBrokenAlliance(24);
-            var player = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
+            var player = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
 
             Assert.That(player.Castles, Is.Not.Empty);
             foreach (var castle in player.Castles)
@@ -41,11 +41,11 @@
         public void ThePlayerPageSaysWhoPlaysTheColourAndWhetherItIsHisTurn()
         {
             var game = TestServices.LoadBrokenAlliance(24);
-            var player = new PlayerViewModel(game, Color.Blue, _ => { }, _ => { });
+            var player = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
 
-            Assert.That(game.CurrentPlayer, Is.EqualTo(Color.Blue));
+            Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Blue));
             Assert.That(player.ControlText, Is.EqualTo("Human · current turn"));
-            Assert.That(new PlayerViewModel(game, Color.Red, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
+            Assert.That(new PlayerViewModel(game, PlayerColor.Red, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
         }
     }
 }

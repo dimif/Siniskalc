@@ -4,6 +4,8 @@ A review, component by component, of `Siniskalc.Homm2` and `Siniskalc.Homm3` (`E
 Each item has a verdict, what it would look like, and the reasons, so it can be accepted, changed or refused one at a time.
 The work was done in the order at the end; **"Status after the work"** below says what was done, what was not and why, and what the assessment looks like now. The sections further down are the review as it was written, kept for the reasoning.
 
+**Later (2026-10-19):** `PlayerColors<TColor>`, `Factions<TFaction>`, `PlayerColorInfo` and `FactionInfo` are gone. HoMM2's `Color` and `Faction` and HoMM3's `PlayerColor` are `AbstractEnumeration` classes that implement `IPlayerColor` / `IFaction` (so E2 below went the way of its "Option"), colours have a `Neutral` member instead of a `null` owner, and `ICastleModel<TColor, TCreature, TFaction>` is the shared view of a castle.
+
 Read from the working tree of 2026-10-16, which already has the work of `6f06ab7`, `aeb17a6` and what is not committed yet.
 What that work moved into `Heroes` is listed under "Already shared" and is not proposed again.
 

@@ -12,9 +12,13 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
         public static readonly TestColor Blue = new("Blue", 1);
 
+        public static readonly TestColor Neutral = new("Neutral", 255);
+
         private TestColor(string name, byte code)
             : base(name, code)
         {
         }
+
+        public bool IsNeutral => this == Neutral;
     }
 }

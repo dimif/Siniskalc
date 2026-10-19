@@ -20,9 +20,9 @@
         }
 
         /// <inheritdoc/>
-        public int GetMaximum(IHeroModel<SecondarySkill, SecondarySkills> hero)
+        public int GetMaximum(PrimarySkills primarySkills, SecondarySkills secondarySkills)
         {
-            var percent = hero.SecondarySkills.GetSkillLevel(SecondarySkill.Intelligence).Code switch
+            var percent = secondarySkills.GetSkillLevel(SecondarySkill.Intelligence).Code switch
             {
                 1 => this.hota ? 20 : 25,
                 2 => this.hota ? 35 : 50,
@@ -30,7 +30,7 @@
                 _ => 0,
             };
 
-            return Math.Max(0, hero.PrimarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge * (100 + percent) / 100;
+            return Math.Max(0, primarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge * (100 + percent) / 100;
         }
     }
 }

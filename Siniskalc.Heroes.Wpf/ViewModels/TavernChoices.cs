@@ -25,7 +25,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             var inPlace = tavern.Ids[place];
             var inOther = tavern.Ids[TavernHeroes.Places - 1 - place];
             var candidates = heroes
-                .Where(h => h.HeroId == inPlace || (h.Owner == null && h.HeroId != inOther))
+                .Where(h => h.HeroId == inPlace || (h.Owner.IsNeutral && h.HeroId != inOther))
                 .OrderBy(h => h.Name, StringComparer.CurrentCultureIgnoreCase)
                 .ThenBy(h => h.HeroId)
                 .ToList();

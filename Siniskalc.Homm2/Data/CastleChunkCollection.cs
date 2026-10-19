@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -33,6 +33,6 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns the player who owns each castle (<c>null</c> for nobody), by castle number.
         /// </summary>
-        public IReadOnlyList<Color?> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
+        public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
     }
 }

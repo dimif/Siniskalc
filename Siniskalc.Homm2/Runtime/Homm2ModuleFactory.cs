@@ -54,7 +54,7 @@
                 backup);
             this.SaveRegionProvider = new SaveRegionProvider(locator);
             this.ByteEditTargets = new ByteEditTargetFactory();
-            this.SpellPoints = new MaxSpellPointsCalculator();
+            this.MaxSpellPointsCalculator = new MaxSpellPointsCalculator();
             this.Module = new Homm2Module(locator, this.CreateEditor);
         }
 
@@ -69,11 +69,11 @@
 
         public IByteEditTargetFactory ByteEditTargets { get; }
 
-        public IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> SpellPoints { get; }
+        public IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> MaxSpellPointsCalculator { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(), this.banishingText, this.SpellPoints);
+        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(), this.banishingText, this.MaxSpellPointsCalculator);
     }
 }

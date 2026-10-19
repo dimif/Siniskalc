@@ -128,7 +128,7 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(armed.PrimarySkills.Attack, Is.EqualTo(hero.PrimarySkills.Attack + 9), "the game saves the skills with the artifact in them");
             Assert.That(armed.PrimarySkills.BaseAttack, Is.EqualTo(hero.PrimarySkills.BaseAttack), "what the hero learned is the same");
             Assert.That(armed.PrimarySkills, Is.Not.EqualTo(hero.PrimarySkills));
-            Assert.That(TestServices.SpellPoints(game.GameVersion).GetMaximum(armed), Is.GreaterThan(TestServices.SpellPoints(game.GameVersion).GetMaximum(hero)));
+            Assert.That(TestServices.SpellPoints(game.GameVersion).GetMaximum(armed.PrimarySkills, armed.SecondarySkills), Is.GreaterThan(TestServices.SpellPoints(game.GameVersion).GetMaximum(hero.PrimarySkills, hero.SecondarySkills)));
         }
 
         [Test]

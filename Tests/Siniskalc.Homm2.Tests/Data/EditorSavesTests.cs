@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -62,13 +62,13 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var give = Open("E14GIVE");
             var corackston = give.Document.Castles().FindByName("Corackston");
-            Assert.That(give.Document.Castles().GetModel(corackston).Owner, Is.EqualTo(Color.Orange));
-            Assert.That(give.Document.Players().GetModel(Color.Orange.Code).CastleIds, Does.Contain(corackston));
-            Assert.That(give.Document.Players().GetModel(Color.Blue.Code).CastleIds, Does.Not.Contain(corackston));
+            Assert.That(give.Document.Castles().GetModel(corackston).Owner, Is.EqualTo(PlayerColor.Orange));
+            Assert.That(give.Document.Players().GetModel(PlayerColor.Orange.Code).CastleIds, Does.Contain(corackston));
+            Assert.That(give.Document.Players().GetModel(PlayerColor.Blue.Code).CastleIds, Does.Not.Contain(corackston));
 
             var last = Open("E15LAST").Document;
-            Assert.That(last.Players().GetModel(Color.Red.Code).CastleIds, Is.Empty);
-            Assert.That(last.Players().GetModel(Color.Red.Code).DaysLeft, Is.EqualTo(7));
+            Assert.That(last.Players().GetModel(PlayerColor.Red.Code).CastleIds, Is.Empty);
+            Assert.That(last.Players().GetModel(PlayerColor.Red.Code).DaysLeft, Is.EqualTo(7));
         }
 
         [Test]
@@ -88,20 +88,20 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(upgraded.Castles().GetModel(upgraded.Castles().FindByName("Whiteshield")).DwellingLevel(6), Is.EqualTo(3));
 
             var five = Open("E28GLD5").Document.Castles().GetModel(Open("E28GLD5").Document.Castles().FindByName("Xabran"));
-            Assert.That((five.MageGuildLevel, five.GuildSpellCounts), Is.EqualTo((5, Numbers.Of(3, 3, 2, 2, 1))));
+            Assert.That((five.MageGuildLevel, five.MageGuildSpellCounts), Is.EqualTo((5, Numbers.Of(3, 3, 2, 2, 1))));
 
             var library = Open("E29LIBRY").Document.Castles().GetModel(Open("E29LIBRY").Document.Castles().FindByName("Corackston"));
-            Assert.That((library.HasLibrary, library.MageGuildLevel, library.GuildSpellCounts), Is.EqualTo((true, 3, Numbers.Of(4, 4, 3, 0, 0))));
+            Assert.That((library.HasLibrary, library.MageGuildLevel, library.MageGuildSpellCounts), Is.EqualTo((true, 3, Numbers.Of(4, 4, 3, 0, 0))));
 
-            Assert.That(Open("E30XP50K").Document.Heroes().GetModel(1), Has.Property("Level").EqualTo(1).And.Property("Experience").EqualTo(50_000L));
-            Assert.That(Open("E31LV20").Document.Heroes().GetModel(1), Has.Property("Level").EqualTo(20).And.Property("Experience").EqualTo(0L));
-            Assert.That(Open("E32BIGXP").Document.Heroes().GetModel(1).Experience, Is.EqualTo(200_000L));
+            Assert.That(Open("E30XP50K").Document.Heroes().GetModel(1), Has.Property("HeroLevel").EqualTo(new HeroLevel(50_000L, 1)));
+            Assert.That(Open("E31LV20").Document.Heroes().GetModel(1), Has.Property("HeroLevel").EqualTo(new HeroLevel(0L, 20)));
+            Assert.That(Open("E32BIGXP").Document.Heroes().GetModel(1).HeroLevel.Experience, Is.EqualTo(200_000L));
             Assert.That(Open("E33STACK").Document.Heroes().GetModel(1).Army.Slots.Select(s => s?.Count), Is.EqualTo(new int?[] { 32_767, 9_999, 1, null, null }));
 
             var guild = Open("E18GUILD").Document.Castles().GetModel(Open("E18GUILD").Document.Castles().FindByName("Xabran"));
             Assert.That(guild.MageGuildLevel, Is.EqualTo(2));
-            Assert.That(guild.GuildSpell(1, 0), Is.EqualTo(Spell.Fireball));
-            Assert.That(guild.GuildSpell(2, 0), Is.EqualTo(Spell.ChainLightning));
+            Assert.That(guild.MageGuildSpell(1, 0), Is.EqualTo(Spell.Fireball));
+            Assert.That(guild.MageGuildSpell(2, 0), Is.EqualTo(Spell.ChainLightning));
 
             var artifacts = Open("E19ARTS").Document.Heroes().GetModel(7);
             Assert.That(artifacts.Artifacts.IsFull, Is.True);
@@ -131,7 +131,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(army.Slots[2], Is.EqualTo(new ArmySlot<Creature>(Creature.BlackDragon, 1)));
 
             var stats = Open("E25STATS").Document.Heroes().GetModel(1);
-            Assert.That((stats.Level, stats.Experience, stats.SpellPoints, stats.MovementLeft), Is.EqualTo((17, 50_000L, 99, stats.MaxMovement)), "the level follows the experience");
+            Assert.That((stats.HeroLevel.Level, stats.HeroLevel.Experience, stats.SpellPoints, stats.MovementPoints.Current), Is.EqualTo((17, 50_000L, 99, stats.MovementPoints.Max)), "the level follows the experience");
             Assert.That(stats.PrimarySkills, Is.EqualTo(new PrimarySkills(20, 20, 20, 20)));
         }
 
@@ -140,9 +140,9 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var all = Open("E26ALL").Document;
 
-            Assert.That(all.Castles().GetModel(all.Castles().FindByName("Corackston")).Owner, Is.EqualTo(Color.Orange));
-            Assert.That(all.Castles().GetModel(all.Castles().FindByName("Bloodreign")).Owner, Is.EqualTo(Color.Blue));
-            Assert.That(all.Players().GetModel(Color.Red.Code).DaysLeft, Is.EqualTo(7));
+            Assert.That(all.Castles().GetModel(all.Castles().FindByName("Corackston")).Owner, Is.EqualTo(PlayerColor.Orange));
+            Assert.That(all.Castles().GetModel(all.Castles().FindByName("Bloodreign")).Owner, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(all.Players().GetModel(PlayerColor.Red.Code).DaysLeft, Is.EqualTo(7));
             Assert.That(all.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(all.Heroes().GetModel(7).Artifacts.IsFull, Is.True);
             Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));

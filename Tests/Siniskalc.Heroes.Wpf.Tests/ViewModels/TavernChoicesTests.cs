@@ -11,10 +11,10 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     {
         private static readonly HeroSummary<TestColor>[] Heroes =
         [
-            new(0, 10, "Ann", null, "Knight", 1),
-            new(1, 11, "Bob", null, "Knight", 1),
+            new(0, 10, "Ann", TestColor.Neutral, "Knight", 1),
+            new(1, 11, "Bob", TestColor.Neutral, "Knight", 1),
             new(2, 12, "Cid", TestColor.Red, "Knight", 1),
-            new(3, 13, "Bob", null, "Wizard", 1),
+            new(3, 13, "Bob", TestColor.Neutral, "Wizard", 1),
         ];
 
         [Test]

@@ -186,8 +186,6 @@ namespace Siniskalc.Homm3
             /// </summary>
             public const long MaxDwellingCreatures = ushort.MaxValue;
 
-            public const long MaxMageGuildLevel = 5;
-
             /// <summary>
             /// How many spells a level of the Mage Guild holds is a byte in the savefile.
             /// </summary>

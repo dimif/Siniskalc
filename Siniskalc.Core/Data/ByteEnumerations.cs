@@ -26,5 +26,18 @@ namespace Siniskalc.Core.Data
         {
             return Read<T>(existing) == value ? existing : value is null ? none : value.Code;
         }
+
+        /// <summary>
+        /// Gives the byte to write for an entity that has a stand-in for the bytes it does not know: the byte that is already there while it
+        /// reads as <paramref name="value"/>, otherwise the entity's own.
+        /// </summary>
+        /// <param name="value">The entity the model holds.</param>
+        /// <param name="existing">The byte that is in the savefile.</param>
+        /// <param name="standIn">What a byte that is no entity reads as.</param>
+        public static byte WriteKeeping<T>(T value, byte existing, T standIn)
+            where T : AbstractEnumeration
+        {
+            return (Read<T>(existing) ?? standIn) == value ? existing : value.Code;
+        }
     }
 }

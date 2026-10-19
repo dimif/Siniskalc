@@ -10,8 +10,10 @@ namespace Siniskalc.Heroes.Models
     /// </summary>
     /// <typeparam name="TColor">The colour of the game, which is an enumeration of its own.</typeparam>
     /// <typeparam name="TCreature">The creature of the game.</typeparam>
-    public interface ICastleModel<TColor, TCreature>
+    /// <typeparam name="TFaction">The faction of the game, which is an enumeration of its own.</typeparam>
+    public interface ICastleModel<TColor, TCreature, TFaction>
         where TColor : class, IPlayerColor
+        where TFaction : class, IFaction
         where TCreature : class, IGameEntity
     {
         /// <summary>
@@ -20,14 +22,14 @@ namespace Siniskalc.Heroes.Models
         string Name { get; }
 
         /// <summary>
-        /// Gets the faction of the town, or <c>null</c> when the savefile has a number that is no faction.
+        /// Gets the faction of the town; a savefile number that is no faction reads as the faction <c>Neutral</c>.
         /// </summary>
-        IFaction? Faction { get; }
+        TFaction Faction { get; }
 
         /// <summary>
-        /// Gets the player who owns the castle, or <c>null</c> for nobody.
+        /// Gets the player who owns the castle, or the colour <c>Neutral</c> for nobody.
         /// </summary>
-        TColor? Owner { get; }
+        TColor Owner { get; }
 
         /// <summary>
         /// Gets the place of the castle on the map.
@@ -42,7 +44,7 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Gets the army that defends the castle when no hero is in it.
         /// </summary>
-        Army<TCreature> Garrison { get; }
+        IArmy<TCreature> Garrison { get; }
 
         /// <summary>
         /// Gets the number of the hero that visits the castle, or <c>null</c>.

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Entities
+﻿namespace Siniskalc.Homm2.Tests.Entities
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -14,16 +14,16 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void EveryColourOfTheGameIsAnIPlayerColorWithItsNameAndCodeAndItsOwnHexValue()
         {
-            Assert.That(Color.All.Cast<IPlayerColor>().Select(c => (c.Name, c.Code)), Is.EqualTo(Color.All.Select(c => (c.ToString(), c.Code))));
-            Assert.That(Color.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
+            Assert.That(PlayerColor.All.Cast<IPlayerColor>().Select(c => (c.Name, c.Code)), Is.EqualTo(PlayerColor.All.Select(c => (c.ToString(), c.Code))));
+            Assert.That(PlayerColor.All.Select(PlayerPalette.Of), Is.Unique.And.None.EqualTo(PlayerPalette.NoPlayer));
             Assert.That(PlayerPalette.Of(null), Is.EqualTo(PlayerPalette.NoPlayer));
         }
 
         [Test]
-        public void AColourIsFoundByItsCodeAndANumberThatIsNoColourIsNone()
+        public void AColourIsFoundByItsCodeAndANumberThatIsNoColourIsNeutral()
         {
-            Assert.That(Color.FromByte(Color.All[1].Code), Is.SameAs(Color.All[1]));
-            Assert.That(Color.FromByte(200), Is.Null);
+            Assert.That(PlayerColor.FromByte(PlayerColor.All[1].Code), Is.SameAs(PlayerColor.All[1]));
+            Assert.That(PlayerColor.FromByte(200), Is.SameAs(PlayerColor.Neutral));
         }
 
         [Test]

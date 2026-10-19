@@ -24,13 +24,13 @@ namespace Siniskalc.Homm2.Data
             for (var i = 0; i < chunk.Parts.Count; i++)
             {
                 // A flag that already shows the new owner is left as it is.
-                var wanted = model.Owner is { } owner
-                    ? new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(model.Kind) + owner.Code) }
-                    : [MapObjectLayout.NoClass, MapObjectLayout.NoPicture];
+                var wanted = model.Owner.IsNeutral
+                    ? [MapObjectLayout.NoClass, MapObjectLayout.NoPicture]
+                    : new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(model.Kind) + model.Owner.Code) };
                 var current = chunk.Parts[i].Bytes;
-                var showsOwner = model.Owner is { } shown
-                    ? current[0] == MapObjectLayout.FlagClass && current[1] == MineKinds.FlagPicture(model.Kind) + shown.Code
-                    : current[0] == MapObjectLayout.NoClass && current[1] == MapObjectLayout.NoPicture;
+                var showsOwner = model.Owner.IsNeutral
+                    ? current[0] == MapObjectLayout.NoClass && current[1] == MapObjectLayout.NoPicture
+                    : current[0] == MapObjectLayout.FlagClass && current[1] == MineKinds.FlagPicture(model.Kind) + model.Owner.Code;
                 if (!showsOwner)
                 {
                     written = written.WithPart(i, wanted);

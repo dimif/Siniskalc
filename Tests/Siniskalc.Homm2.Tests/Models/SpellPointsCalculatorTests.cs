@@ -15,7 +15,7 @@
             var game = TestServices.LoadBrokenAlliance(24);
             var hero = game.History.Current.Heroes().GetModels().First();
 
-            var most = new MaxSpellPointsCalculator().GetMaximum(hero with { PrimarySkills = hero.PrimarySkills with { Knowledge = 7 } });
+            var most = new MaxSpellPointsCalculator().GetMaximum(hero.PrimarySkills with { Knowledge = 7 }, hero.SecondarySkills);
 
             Assert.That(most, Is.EqualTo(70));
         }

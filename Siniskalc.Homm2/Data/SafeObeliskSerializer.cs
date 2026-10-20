@@ -1,5 +1,8 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -8,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     public sealed class SafeObeliskSerializer : IObeliskSerializer
     {
         /// <inheritdoc/>
-        public ObeliskChunk Serialize(ObeliskChunk chunk, ObeliskVisits visits)
+        public ObeliskChunk Serialize(ObeliskChunk chunk, ObeliskVisits<PlayerColor> visits)
         {
             var bytes = chunk.ToArray();
             for (var i = 0; i < chunk.Positions.Count && i < visits.Count; i++)

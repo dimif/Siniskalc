@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
@@ -9,7 +11,7 @@
     /// <summary>
     /// Makes the pending changes of a Heroes of Might and Magic III hero, castle, player or the obelisks: a change and the way to put it back.
     /// </summary>
-    public sealed class Homm3PendingChangesFactory : IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits>
+    public sealed class Homm3PendingChangesFactory : IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>>
     {
         /// <inheritdoc/>
         public PendingChange ForHero(string heroName, int heroIndex, Change change, Func<HeroModel, HeroModel> revert)
@@ -30,7 +32,7 @@
         }
 
         /// <inheritdoc/>
-        public PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits, ObeliskVisits> revert)
+        public PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits<PlayerColor>, ObeliskVisits<PlayerColor>> revert)
         {
             return new PendingChange("Obelisks", change, Homm3ChunkKinds.Obelisks, index, history => history.CreateObeliskSession(index).Update(revert));
         }

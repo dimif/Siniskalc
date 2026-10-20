@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -16,7 +18,7 @@
     {
         private readonly SaveDocumentHistory history;
         private readonly PlayerColor color;
-        private ObeliskEditSession? session;
+        private ObeliskEditSession<PlayerColor>? session;
 
         public ObeliskVisitsViewModel(SaveDocumentHistory history, PlayerColor color)
             : base("The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the Ultimate Artifact.")
@@ -32,7 +34,7 @@
         /// <inheritdoc/>
         protected override int VisitedCount => this.Visits?.VisitedCount(this.color) ?? 0;
 
-        private ObeliskVisits? Visits => this.history.Current.Obelisks().GetModel();
+        private ObeliskVisits<PlayerColor>? Visits => this.history.Current.Obelisks().GetModel();
 
         /// <inheritdoc/>
         protected override void Prepare() => this.session = this.Visits == null ? null : this.session ?? this.history.CreateObeliskSession();

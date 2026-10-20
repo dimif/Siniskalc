@@ -1,5 +1,8 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
@@ -20,7 +23,7 @@
         private readonly IPlayerDiffer playerDiffer;
         private readonly IObeliskDeserializer obeliskDeserializer;
         private readonly IObeliskSerializer obeliskSerializer;
-        private readonly IObeliskDiffer obeliskDiffer;
+        private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -34,7 +37,7 @@
             IPlayerDiffer playerDiffer,
             IObeliskDeserializer obeliskDeserializer,
             IObeliskSerializer obeliskSerializer,
-            IObeliskDiffer obeliskDiffer,
+            IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -68,7 +71,7 @@
                 this.playerDiffer,
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
-            var obelisks = new ObeliskChunkCollection(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
+            var obelisks = new ObeliskChunkCollection<PlayerColor>(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
             return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, this.patcher);
         }
     }

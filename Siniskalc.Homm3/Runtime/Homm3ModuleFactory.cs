@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm3.Runtime
 {
+    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Data;
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -45,7 +47,7 @@ namespace Siniskalc.Homm3.Runtime
                 new PlayerDiffer(pendingChanges),
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
-                new ObeliskDiffer(pendingChanges),
+                new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();

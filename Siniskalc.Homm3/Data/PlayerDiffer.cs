@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Homm3.Entities;
     using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -13,10 +14,10 @@
     /// </summary>
     public sealed class PlayerDiffer : IPlayerDiffer
     {
-        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public PlayerDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        public PlayerDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
         {
             this.pendingChanges = pendingChanges;
         }

@@ -14,10 +14,10 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
-        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
         {
             this.pendingChanges = pendingChanges;
         }

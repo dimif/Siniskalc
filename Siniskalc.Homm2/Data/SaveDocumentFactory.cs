@@ -1,5 +1,8 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;
@@ -20,7 +23,7 @@ namespace Siniskalc.Homm2.Data
         private readonly ICastleDiffer castleDiffer;
         private readonly IObeliskDeserializer obeliskDeserializer;
         private readonly IObeliskSerializer obeliskSerializer;
-        private readonly IObeliskDiffer obeliskDiffer;
+        private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
         private readonly MapObjectKit<MineModel> mines;
         private readonly MapObjectKit<ShrineModel> shrines;
         private readonly MapObjectKit<SphinxModel> sphinxes;
@@ -39,7 +42,7 @@ namespace Siniskalc.Homm2.Data
             ICastleDiffer castleDiffer,
             IObeliskDeserializer obeliskDeserializer,
             IObeliskSerializer obeliskSerializer,
-            IObeliskDiffer obeliskDiffer,
+            IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
             MapObjectKit<MineModel> mines,
             MapObjectKit<ShrineModel> shrines,
             MapObjectKit<SphinxModel> sphinxes,
@@ -73,7 +76,7 @@ namespace Siniskalc.Homm2.Data
                 new HeroChunkCollection(heroChunks, this.heroDeserializer, this.heroSerializer, this.heroDiffer),
                 new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer),
                 new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
-                new ObeliskChunkCollection(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
+                new ObeliskChunkCollection<PlayerColor>(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
                 new MapObjectChunkCollection<MineModel>(objects.Mines, this.mines),
                 new MapObjectChunkCollection<ShrineModel>(objects.Shrines, this.shrines),
                 new MapObjectChunkCollection<SphinxModel>(objects.Sphinxes, this.sphinxes),

@@ -1,7 +1,9 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -9,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -40,6 +42,6 @@ namespace Siniskalc.Homm2.Data
 
         public static MapObjectChunkCollection<TurnModel> Turn(this SaveDocument document) => (MapObjectChunkCollection<TurnModel>)document.GetCollection(Homm2ChunkKinds.Turn);
 
-        public static ObeliskChunkCollection Obelisks(this SaveDocument document) => (ObeliskChunkCollection)document.GetCollection(Homm2ChunkKinds.Obelisks);
+        public static ObeliskChunkCollection<PlayerColor> Obelisks(this SaveDocument document) => (ObeliskChunkCollection<PlayerColor>)document.GetCollection(Homm2ChunkKinds.Obelisks);
     }
 }

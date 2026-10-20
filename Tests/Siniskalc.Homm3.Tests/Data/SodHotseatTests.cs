@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -101,7 +102,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void TheObeliskFlagsAreABitForEveryColourOfTheTeamThatVisited()
         {
             // Five teams: Red alone (Teal, which nobody plays, shares its team by default) and Blue alone. A visit marks the whole team, so Red's is 0x41.
-            Assert.That(Hotseat("five_teams_00_game_begin").History.Current.Obelisks().GetModel(), Is.EqualTo(ObeliskVisits.NoneVisited(7)));
+            Assert.That(Hotseat("five_teams_00_game_begin").History.Current.Obelisks().GetModel(), Is.EqualTo(ObeliskVisits<PlayerColor>.NoneVisited(7)));
             Assert.That(Hotseat("five_teams_01_red_two_obelisks").History.Current.Obelisks().GetModel()!.Masks, Is.EqualTo(new byte[] { 0x41, 0x41, 0, 0, 0, 0, 0 }));
             Assert.That(Hotseat("five_teams_02_blue_two_obelisks").History.Current.Obelisks().GetModel()!.Masks, Is.EqualTo(new byte[] { 0x43, 0x43, 0, 0, 0, 0, 0 }));
         }

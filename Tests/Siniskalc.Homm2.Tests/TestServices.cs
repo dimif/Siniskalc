@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Tests
 {
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -52,7 +53,7 @@ namespace Siniskalc.Homm2.Tests
                 new CastleDiffer(PendingChanges),
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
-                new ObeliskDiffer(PendingChanges),
+                new ObeliskDiffer<PlayerColor>(PlayerColor.All, PendingChanges.ForObelisks),
                 new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer(PendingChanges)),
                 new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer(PendingChanges)),
                 new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer(PendingChanges)),

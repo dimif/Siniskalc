@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
@@ -13,10 +14,10 @@
     /// </summary>
     public sealed class SphinxDiffer : IMapObjectDiffer<SphinxModel>
     {
-        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges;
+        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public SphinxDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits> pendingChanges)
+        public SphinxDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
         {
             this.pendingChanges = pendingChanges;
         }

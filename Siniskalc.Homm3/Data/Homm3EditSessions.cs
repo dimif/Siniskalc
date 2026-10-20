@@ -1,5 +1,9 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Homm3.Models;
+    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Core.Data;
 
     /// <summary>
@@ -25,6 +29,6 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Creates a view onto the visited obelisks of the savefile (its only obelisk chunk, so index 0); its edits are pushed onto this history.
         /// </summary>
-        public static ObeliskEditSession CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, index);
+        public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm3ChunkKinds.Obelisks, index);
     }
 }

@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 using System.Text;
 using System.Text.RegularExpressions;
 using Siniskalc.Homm3.Data;
@@ -19,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static IEnumerable<string> EverySavefile() => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal);
 
-        private static ObeliskVisits Visits(Game game) => game.History.Current.Obelisks().GetModel()!;
+        private static ObeliskVisits<PlayerColor> Visits(Game game) => game.History.Current.Obelisks().GetModel()!;
 
         [TestCase("roe_00_baseline", "")]
         [TestCase("roe_67_damacon_defeated", "")]

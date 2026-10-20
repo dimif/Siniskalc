@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Models;
     using System;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
@@ -9,7 +11,7 @@
     /// <summary>
     /// Makes the pending changes of a hero, a player, a castle, the obelisks or an object of the map: a change and the way to put it back.
     /// </summary>
-    public sealed class Homm2PendingChangesFactory : IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits>
+    public sealed class Homm2PendingChangesFactory : IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>>
     {
         /// <inheritdoc/>
         public PendingChange ForHero(string heroName, int heroIndex, Change change, Func<HeroModel, HeroModel> revert)
@@ -30,7 +32,7 @@
         }
 
         /// <inheritdoc/>
-        public PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits, ObeliskVisits> revert)
+        public PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits<PlayerColor>, ObeliskVisits<PlayerColor>> revert)
         {
             return new PendingChange("Obelisks", change, Homm2ChunkKinds.Obelisks, index, history => history.CreateObeliskSession(index).Update(revert));
         }

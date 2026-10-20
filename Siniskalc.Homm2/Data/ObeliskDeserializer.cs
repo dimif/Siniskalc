@@ -1,5 +1,8 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using System.Linq;
     using Siniskalc.Homm2.Models;
 
@@ -8,9 +11,9 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class ObeliskDeserializer : IObeliskDeserializer
     {
-        public ObeliskVisits Deserialize(ObeliskChunk chunk)
+        public ObeliskVisits<PlayerColor> Deserialize(ObeliskChunk chunk)
         {
-            return new ObeliskVisits(Enumerable.Range(0, chunk.Positions.Count).Select(i => chunk.GetByteAt(i)), chunk.Positions);
+            return new ObeliskVisits<PlayerColor>(Enumerable.Range(0, chunk.Positions.Count).Select(i => chunk.GetByteAt(i)), chunk.Positions);
         }
     }
 }

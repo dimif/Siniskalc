@@ -1,5 +1,8 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;
 
@@ -22,6 +25,6 @@ namespace Siniskalc.Homm2.Data
 
         public static MapObjectEditSession<SphinxModel> CreateSphinxSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Sphinxes, index);
 
-        public static ObeliskEditSession CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, index);
+        public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm2ChunkKinds.Obelisks, index);
     }
 }

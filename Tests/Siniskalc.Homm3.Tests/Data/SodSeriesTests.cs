@@ -284,7 +284,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             foreach (var save in Saves())
             {
-                Assert.That(Load(save).History.Current.Obelisks().GetModel(), Is.EqualTo(ObeliskVisits.NoneVisited(5)), save);
+                Assert.That(Load(save).History.Current.Obelisks().GetModel(), Is.EqualTo(ObeliskVisits<PlayerColor>.NoneVisited(5)), save);
             }
         }
     }

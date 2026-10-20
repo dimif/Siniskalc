@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
@@ -9,7 +10,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -37,7 +38,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Gets the visited obelisks: one chunk when the savefile has obelisks to show, otherwise none.
         /// </summary>
-        public static ObeliskChunkCollection Obelisks(this SaveDocument document) => (ObeliskChunkCollection)document.GetCollection(Homm3ChunkKinds.Obelisks);
+        public static ObeliskChunkCollection<PlayerColor> Obelisks(this SaveDocument document) => (ObeliskChunkCollection<PlayerColor>)document.GetCollection(Homm3ChunkKinds.Obelisks);
 
         /// <summary>
         /// Gets the game version that wrote the savefile.

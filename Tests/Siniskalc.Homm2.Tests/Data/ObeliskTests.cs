@@ -12,7 +12,7 @@
     [TestFixture]
     internal sealed class ObeliskTests
     {
-        private static ObeliskVisits Visits(int save) => TestServices.LoadThreedom(save).History.Current.Obelisks().GetModel()!;
+        private static ObeliskVisits<PlayerColor> Visits(int save) => TestServices.LoadThreedom(save).History.Current.Obelisks().GetModel()!;
 
         [Test]
         public void TheMapHasNineObelisksFoundInTheOrderOfTheMap()

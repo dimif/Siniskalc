@@ -127,10 +127,10 @@
                 () => this.session.Current.Faction.ToString());
             this.Position = MapPointCardViewModel.ForPosition(
                 () => this.session.Current.Position,
-                position => this.session.Update(h => h with { Position = position }),
+                position => this.session.Update(h => h with { Position = (HeroPosition)position }),
                 new NumberRange(Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate),
-                getFacing: () => this.session.Current.Facing,
-                setFacing: facing => this.session.Update(h => h with { Facing = facing }));
+                getFacing: () => this.session.Current.Position.FacingDirection,
+                setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.session.Current.Destination,
                 destination => this.session.Update(h => h with { Destination = destination }),

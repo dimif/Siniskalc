@@ -28,7 +28,7 @@
             Assert.That(maximus.Id, Is.EqualTo(Maximus));
             Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
             Assert.That(maximus.Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(maximus.Position, Is.EqualTo(new MapPosition(28, 27)));
+            Assert.That((maximus.Position.X, maximus.Position.Y), Is.EqualTo((28, 27)));
             Assert.That(maximus.Destination, Is.EqualTo(MapPosition.None));
             Assert.That(maximus.HeroLevel.Level, Is.EqualTo(1));
             Assert.That(maximus.HeroLevel.Experience, Is.Zero);
@@ -60,7 +60,7 @@
         {
             var moved = Hero(3, Maximus);
 
-            Assert.That(moved.Position, Is.EqualTo(new MapPosition(29, 28)));
+            Assert.That((moved.Position.X, moved.Position.Y), Is.EqualTo((29, 28)));
             Assert.That(moved.MovementPoints.Current, Is.EqualTo(888));
         }
 
@@ -99,7 +99,7 @@
 
             Assert.That(before.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(hired.Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(hired.Position, Is.EqualTo(new MapPosition(28, 25)));
+            Assert.That((hired.Position.X, hired.Position.Y), Is.EqualTo((28, 25)));
         }
 
         [Test]

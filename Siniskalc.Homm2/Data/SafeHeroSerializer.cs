@@ -25,9 +25,9 @@
             WriteNumber(bytes, HeroLayout.X, 4, model.Position.X, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
             WriteNumber(bytes, HeroLayout.Y, 4, model.Position.Y, Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate, nameof(model.Position));
             WriteDestination(bytes, model.Destination);
-            if (Bytes.Facing(bytes[HeroLayout.Facing]) != model.Facing)
+            if (Bytes.Facing(bytes[HeroLayout.Facing]) != model.Position.FacingDirection)
             {
-                bytes[HeroLayout.Facing] = (byte)model.Facing;
+                bytes[HeroLayout.Facing] = (byte)model.Position.FacingDirection;
             }
 
             WriteNumber(bytes, HeroLayout.MaxMovement, 4, model.MovementPoints.Max, Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, nameof(model.MovementPoints));

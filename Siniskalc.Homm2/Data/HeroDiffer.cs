@@ -29,14 +29,14 @@ namespace Siniskalc.Homm2.Data
 
             changes.AddOwner(original.Owner, current.Owner, (h, owner) => h with { Owner = owner });
 
-            if (original.Position != current.Position)
+            if (original.Position.X != current.Position.X || original.Position.Y != current.Position.Y)
             {
-                changes.Add(ChangeAreas.General, "Position", original.Position.ToString(), current.Position.ToString(), h => h with { Position = original.Position });
+                changes.Add(ChangeAreas.General, "Position", original.Position.ToString(), current.Position.ToString(), h => h with { Position = h.Position with { X = original.Position.X, Y = original.Position.Y } });
             }
 
-            if (original.Facing != current.Facing)
+            if (original.Position.FacingDirection != current.Position.FacingDirection)
             {
-                changes.Add(ChangeAreas.General, "Facing", original.Facing.ToString(), current.Facing.ToString(), h => h with { Facing = original.Facing });
+                changes.Add(ChangeAreas.General, "Facing", original.Position.FacingDirection.ToString(), current.Position.FacingDirection.ToString(), h => h with { Position = h.Position with { FacingDirection = original.Position.FacingDirection } });
             }
 
             if (original.Destination != current.Destination)

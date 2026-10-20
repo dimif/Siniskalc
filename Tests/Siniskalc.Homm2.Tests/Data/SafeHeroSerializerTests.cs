@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var game = TestServices.LoadBrokenAlliance(1);
 
-            game.History.CreateHeroSession(Hero).Update(h => h with { Position = new Siniskalc.Heroes.Models.MapPosition(12, 34) });
+            game.History.CreateHeroSession(Hero).Update(h => h with { Position = h.Position with { X = 12, Y = 34 } });
 
             var saved = game.GetBytesToSave();
             var start = game.Layout.HeroStart(Hero);

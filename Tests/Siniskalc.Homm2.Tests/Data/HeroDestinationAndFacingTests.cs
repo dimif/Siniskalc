@@ -29,9 +29,9 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var hero = Hero(save);
 
-            Assert.That(hero.Position, Is.EqualTo(new MapPosition(1, 65)));
+            Assert.That((hero.Position.X, hero.Position.Y), Is.EqualTo((1, 65)));
             Assert.That(hero.Destination, Is.EqualTo(new MapPosition(x, y)));
-            Assert.That(hero.Facing, Is.EqualTo(FacingDirection.East));
+            Assert.That(hero.Position.FacingDirection, Is.EqualTo(FacingDirection.East));
         }
 
         [TestCase(91, FacingDirection.West)]
@@ -42,7 +42,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var hero = Hero(save);
 
             Assert.That(hero.Destination, Is.EqualTo(MapPosition.None));
-            Assert.That(hero.Facing, Is.EqualTo(facing));
+            Assert.That(hero.Position.FacingDirection, Is.EqualTo(facing));
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(changed, Is.All.Matches<int>(i => (i >= start + HeroLayout.Destination && i < start + HeroLayout.Destination + 8) || i == start + HeroLayout.Facing), "nothing else of the record changes");
             Assert.That(changed, Does.Contain(start + HeroLayout.Facing));
             Assert.That(Hero(bytes).Destination, Is.EqualTo(new MapPosition(3, 4)));
-            Assert.That(Hero(bytes).Facing, Is.EqualTo(FacingDirection.South));
+            Assert.That(Hero(bytes).Position.FacingDirection, Is.EqualTo(FacingDirection.South));
 
             page.Destination.RemoveCommand.Execute(null);
             Assert.That(game.History.Current.Heroes().GetModel(ColarBlau).Destination, Is.EqualTo(MapPosition.None));

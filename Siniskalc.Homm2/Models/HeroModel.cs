@@ -28,7 +28,7 @@
         int Id,
         string Name,
         PlayerColor Owner,
-        MapPosition Position,
+        HeroPosition Position,
         MapPosition Destination,
         MovementPoints MovementPoints,
         HeroLevel HeroLevel,
@@ -39,11 +39,6 @@
         Artifacts Artifacts,
         SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, SecondarySkills, Creature>
     {
-        /// <summary>
-        /// Gets or sets the direction the hero faces: the way of its last step (Heroes of Might and Magic II keeps eight directions, clockwise from north).
-        /// </summary>
-        public FacingDirection Facing { get; init; } = FacingDirection.North;
-
         /// <summary>
         /// Gets or sets the morale and luck the hero has for its next battle only.
         /// </summary>

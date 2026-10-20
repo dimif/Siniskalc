@@ -1,7 +1,7 @@
 namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
+    using Moq;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -13,12 +13,22 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [TestFixture]
     internal sealed class CastleLinkViewModelTests
     {
-        private static TestCastle Castle(int mageGuildLevel, TestFaction faction) => new("Stronghold", faction, mageGuildLevel);
+        private static ICastleModel<TestColor, IGameEntity, IFaction> Castle(int mageGuildLevel, string faction)
+        {
+            var factionMock = new Mock<IFaction>();
+            factionMock.Setup(f => f.Name).Returns(faction);
+
+            var castle = new Mock<ICastleModel<TestColor, IGameEntity, IFaction>>();
+            castle.Setup(c => c.Name).Returns("Stronghold");
+            castle.Setup(c => c.Faction).Returns(factionMock.Object);
+            castle.Setup(c => c.MageGuildLevel).Returns(mageGuildLevel);
+            return castle.Object;
+        }
 
         [Test]
         public void TheLinkNamesTheCastleAndItsFactionAndTellsWhatStandsInIt()
         {
-            var link = CastleLinkViewModel.For(Castle(2, new TestFaction("Rampart", 1)), new DelegateCommand(_ => { }), ["City", "Citadel"], 3);
+            var link = CastleLinkViewModel.For(Castle(2, "Rampart"), new DelegateCommand(_ => { }), ["City", "Citadel"], 3);
 
             Assert.That((link.Name, link.Detail, link.Status), Is.EqualTo(("Stronghold", "Rampart", "City · Citadel · Mage Guild 2 · 3 dwellings")));
         }
@@ -26,28 +36,17 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void ACastleWithoutAMageGuildLeavesItOutAndANeutralFactionIsNamedNeutral()
         {
-            var link = CastleLinkViewModel.For(Castle(0, new TestFaction("Neutral", 99)), new DelegateCommand(_ => { }), ["Town"], 1);
+            var link = CastleLinkViewModel.For(Castle(0, "Neutral"), new DelegateCommand(_ => { }), ["Town"], 1);
 
             Assert.That((link.Detail, link.Status), Is.EqualTo(("Neutral", "Town · 1 dwelling")));
         }
 
-        private sealed record TestFaction(string Name, byte Code) : IFaction;
-
-        private sealed record TestCreature(string Name, byte Code) : IGameEntity;
-
-        private sealed record TestCastle(string Name, TestFaction Faction, int MageGuildLevel) : ICastleModel<TestColor, TestCreature, TestFaction>
+        [Test]
+        public void ACapitalAndItsGrailAreCarriedOntoTheLink()
         {
-            public TestColor? Owner => null;
+            var link = CastleLinkViewModel.For(Castle(1, "Castle"), new DelegateCommand(_ => { }), ["Capitol"], 2, isCapital: true, grailText: "Colossus");
 
-            public MapPosition Position => new(0, 0);
-
-            public MapPosition? ShipyardPosition => null;
-
-            public IArmy<TestCreature> Garrison => new Army<TestCreature>(5);
-
-            public int? VisitingHeroId => null;
-
-            public Numbers CreaturesAvailable => Numbers.Of(0, 0, 0, 0, 0, 0);
+            Assert.That((link.IsCapital, link.HasGrail, link.GrailText), Is.EqualTo((true, true, "Colossus")));
         }
     }
 }

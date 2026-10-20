@@ -17,7 +17,7 @@
     /// What the editor shows about the savegame that is open: the map, the date and a card for each player with its castles and heroes.
     /// It reads the models of the current document, so it is up to date after every edit, undo and redo.
     /// </summary>
-    public sealed class OverviewViewModel : AbstractViewModelBase, IOverviewPage, IDisposable
+    public sealed class OverviewViewModel : OverviewViewModelBase, IDisposable
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -26,6 +26,7 @@
         private readonly Action<int> openCastle;
 
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<PlayerColor> openPlayer, Action<int> openHero, Action<int> openCastle)
+            : base(game)
         {
             this.game = game;
             this.banishingText = banishingText;
@@ -36,49 +37,20 @@
             this.Refresh();
         }
 
-        public string FileName => string.IsNullOrEmpty(this.game.Name) ? "Savegame" : System.IO.Path.GetFileName(this.game.Name);
+        /// <inheritdoc/>
+        public override string VersionName => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
 
-        public string MapName => this.game.Map.Name.Trim();
+        /// <inheritdoc/>
+        protected override MapHeader? Map => this.game.Map;
 
-        public string MapDescription => this.game.Map.Description.Trim();
+        /// <inheritdoc/>
+        protected override GameDate? Date => this.game.Date;
 
-        public bool HasMapDescription => this.MapDescription.Length > 0;
+        /// <inheritdoc/>
+        protected override GameDifficulty? Difficulty => this.game.Difficulty;
 
-        public string MapSizeText => this.game.Map.SizeText;
-
-        /// <summary>
-        /// Gets the difficulty the map was made with, e.g. "Rating: Rook (130%)".
-        /// </summary>
-        public string MapDifficultyText => OverviewText.MapRating(this.game.Map.Difficulty);
-
-        public string VersionName => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
-
-        public string DateText => this.game.Date.ToString();
-
-        /// <summary>
-        /// Gets the difficulty, e.g. "Difficulty: Queen (160%)".
-        /// </summary>
-        public string DifficultyText => OverviewText.Difficulty(this.game.Difficulty);
-
-        /// <summary>
-        /// Gets whose turn it is, such as "Current turn: Red", or nothing while the savegames do not tell (see <see cref="SaveMetadata"/>).
-        /// </summary>
-        public string TurnText => Siniskalc.Heroes.ViewModels.TurnText.Overview(this.game.CurrentPlayer?.ToString());
-
-        /// <summary>
-        /// Gets a line about the savegame, e.g. "2 players · 3 heroes · Difficulty: Queen (160%)".
-        /// </summary>
-        public string Summary { get; private set; } = string.Empty;
-
-        public IReadOnlyList<PlayerCardViewModel> Players { get; private set; } = [];
-
-        /// <summary>
-        /// Gets the players in the order they play, which is the succession of the colours. The one whose turn it is is lit, and a button gives
-        /// the turn to another human.
-        /// </summary>
-        public IReadOnlyList<OrderOfPlayItemViewModel> OrderOfPlay { get; private set; } = [];
-
-        public bool HasOrderOfPlay => this.OrderOfPlay.Count > 0;
+        /// <inheritdoc/>
+        protected override string? CurrentPlayerName => this.game.CurrentPlayer?.ToString();
 
         /// <summary>
         /// Reads the players again from the current document.
@@ -96,7 +68,7 @@
             this.Players = inGame.Select(player => this.CardOf(player, heroes, castles)).ToList();
             this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(this.OrderItemOf).ToList();
             var owned = heroes.Count(h => !h.Owner.IsNeutral);
-            this.Summary = $"{OverviewText.Count(this.Players.Count, "player", "players")} · {OverviewText.Count(owned, "hero", "heroes")} · {this.DifficultyText}";
+            this.Summary = SummaryOf(this.Players.Count, owned, this.DifficultyText);
             this.RaiseAllPropertiesChanged();
         }
 

@@ -1,6 +1,6 @@
 # What can move into Siniskalc.Heroes(.Wpf): review of `ViewModels` and `Views`
 
-**2026-10-20:** the resources of a player (a row each, the "All" and "Gold" buttons, the limits) are `ResourcesEditorViewModel`, `ResourceRowViewModel` and `ResourceLimits` in `Siniskalc.Heroes.Wpf`; both `PlayerViewModel`s hold one and pass their own limits. A line-by-line comparison of the two games' view models found no other identical code: what is left (the hero, castle, overview and player pages) differs in structure, not text.
+**2026-10-20:** the resources of a player (a row each, the "All" and "Gold" buttons, the limits) are `ResourcesEditorViewModel`, `ResourceRowViewModel` and `ResourceLimits` in `Siniskalc.Heroes.Wpf`; both `PlayerViewModel`s hold one and pass their own limits. A line-by-line comparison of the two games' view models found no other identical code: what is left (the hero, castle and player pages) differs in structure, not text. The overview page of each game derives from `OverviewViewModelBase` (file name, map, date, difficulty, turn and the summary line); a game says where its facts are (`Map`, `Date`, `Difficulty`, `CurrentPlayerName`, nullable) and builds its cards.
 
 The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.
 Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was changed with this review.

@@ -57,14 +57,11 @@
                 () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources,
                 edit => this.session.Update(player => player with { Resources = edit(player.Resources) }),
                 this.IncomeNote);
-            this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
-                .Select(place => new TavernPlaceViewModel(
-                    place == 0 ? "First hero" : "Second hero",
-                    () => TavernChoices.For(this.session.Current.Tavern, place, this.Game.History.Current.Heroes().GetModels().Select(h => h.Summary)),
-                    () => this.session.Current.Tavern.Ids[place],
-                    heroId => this.session.Update(player => player with { Tavern = player.Tavern.With(place, heroId) }),
-                    heroId => this.openHero(heroId)))
-                .ToList();
+            this.TavernPlaces = TavernPlaceViewModel.ForTavern(
+                () => this.session.Current.Tavern,
+                edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
+                () => this.Game.History.Current.Heroes(),
+                this.openHero);
             this.Refresh();
         }
 

@@ -56,14 +56,11 @@ namespace Siniskalc.Homm3.ViewModels
                 .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
                 .ToList();
             this.Obelisks = new ObeliskVisitsViewModel(session.History, session.Current.Color);
-            this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
-                .Select(place => new TavernPlaceViewModel(
-                    place == 0 ? "First hero" : "Second hero",
-                    () => TavernChoices.For(this.session.Current.Tavern, place, this.session.History.Current.Heroes().GetSummaries()),
-                    () => this.session.Current.Tavern.Ids[place],
-                    heroId => this.session.Update(player => player with { Tavern = player.Tavern.With(place, heroId) }),
-                    heroId => this.OpenHeroById(heroId)))
-                .ToList();
+            this.TavernPlaces = TavernPlaceViewModel.ForTavern(
+                () => this.session.Current.Tavern,
+                edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
+                () => this.session.History.Current.Heroes(),
+                this.OpenHeroById);
 
             this.UpdateIsDirty();
             this.RefreshOwned();

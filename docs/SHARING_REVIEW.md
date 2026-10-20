@@ -6,6 +6,8 @@ The work was done in the order at the end; **"Status after the work"** below say
 
 **Later (2026-10-19):** `PlayerColors<TColor>`, `Factions<TFaction>`, `PlayerColorInfo` and `FactionInfo` are gone. HoMM2's `Color` and `Faction` and HoMM3's `PlayerColor` are `AbstractEnumeration` classes that implement `IPlayerColor` / `IFaction` (so E2 below went the way of its "Option"), colours have a `Neutral` member instead of a `null` owner, and `ICastleModel<TColor, TCreature, TFaction>` is the shared view of a castle.
 
+**2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `ObeliskEditSession<TColor>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`. Not done: sharing `Game` / `SaveMetadata` (HoMM2 has its date, map and difficulty always, HoMM3 may not; an interface over both would make HoMM2's nullable only for the interface).
+
 Read from the working tree of 2026-10-16, which already has the work of `6f06ab7`, `aeb17a6` and what is not committed yet.
 What that work moved into `Heroes` is listed under "Already shared" and is not proposed again.
 

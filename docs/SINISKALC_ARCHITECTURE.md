@@ -29,7 +29,7 @@ The creature, spell and artifact tables, positions and map headers are not share
 `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle`, `ResourcesPanel` (a card for each resource, the quick add buttons, a game's own cards in between), `ItemsCard` (a heading and a list, with a note for an empty one), `OwnerPicker` and `HeadedCard` (a card with a heading, a summary and content).
 A game's page puts its own content in the blocks: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
 A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the styles of the controls come last.
-The blocks bind to what `IResettablePage`, `IResourcesPage`, `IPlayerPage` and `ICastlePage` say a page has (`PageContractTests` puts them on pages that have nothing else).
+The blocks bind to what `IResettablePage`, `IResourcesPage`, `IPlayerPage`, `ICastlePage` and `IHeroPage` say a page has (`PageContractTests` puts them on pages that have nothing else).
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).
@@ -88,7 +88,7 @@ What a second savefile format of the same game (fheroes2 for HoMM2, VCMI for HoM
 SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Original, Undo/Redo, Changed event
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
-      HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer)
+      HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer; the obelisk one is shared, ObeliskEditSession<TColor>)
 Models / Entities               immutable models and game vocabulary (HeroModel, SpellBook, Artifact, ...)
 ViewModels                      hold immutable models, apply edits through reducers, never touch chunks
 Views                           XAML
@@ -128,7 +128,7 @@ They ask the collections of the current `SaveDocument` (`History.Current`, or `H
 Heroes   (HeroChunkCollection)     FindById(heroId), FindByName(name), GetSummaries(), GetSummary(index)     HeroSummary carries Index, HeroId, Name, Owner, ...
 Castles  (CastleChunkCollection)   GetModels() (read once per version of the collection), GetModel(i), GetName(i), FindByGarrisonedHero(heroId)
 Players  (PlayerChunkCollection)   GetModel(i), GetColor(i), GetColors(), FindByColor(color)
-Obelisks (ObeliskChunkCollection)  Any, GetModel() (the visited obelisks, or null when the savefile has none to show); edited with CreateObeliskSession()
+Obelisks (ObeliskChunkCollection<TColor>, in Siniskalc.Heroes, with ObeliskVisits<TColor>, ObeliskChunk, ObeliskDiffer<TColor> and ObeliskEditSession<TColor>)  Any, GetModel() (the visited obelisks, or null when the savefile has none to show); edited with CreateObeliskSession()
 SaveDocument.GameVersion
 EditSession.IsDirty                differs from the savefile as loaded or saved
 EditSession.Revision               an opaque token that changes when this struct is edited, so a view model can tell its own edits from others'

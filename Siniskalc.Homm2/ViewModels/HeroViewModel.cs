@@ -17,7 +17,7 @@
     /// <summary>
     /// The pages of a hero: what the hero is and has (general), the secondary skills, the army, the spell book and the artifacts.
     /// </summary>
-    public sealed class HeroViewModel : PageViewModel, IOwnerChoice
+    public sealed class HeroViewModel : PageViewModel, IHeroPage
     {
         private readonly Action<int> openCastle;
         private HeroModel hero = null!;

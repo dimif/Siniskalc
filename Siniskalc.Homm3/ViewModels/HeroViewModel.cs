@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// Reads the hero from a <see cref="HeroEditSession"/> and writes every change back through it, so edits land in
     /// the savefile's undo/redo history. Refreshes itself whenever that history changes.
     /// </summary>
-    public class HeroViewModel : ResettablePageViewModelBase, IOwnerChoice
+    public class HeroViewModel : ResettablePageViewModelBase, IHeroPage
     {
         private readonly HeroEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;

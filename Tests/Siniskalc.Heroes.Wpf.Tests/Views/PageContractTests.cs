@@ -4,6 +4,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using Moq;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Wpf.Views;
@@ -61,6 +62,32 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
 
             Assert.That(WpfTestApplication.Descendants<ComboBox>(grid).Single().SelectedItem, Is.EqualTo("Red"));
             Assert.That(WpfTestApplication.Descendants<TextBlock>(grid).Select(t => t.Text), Does.Contain("Castle Haret"));
+        }
+
+        [Test]
+        public void TheHeroBlocksNeedNothingMoreThanAHeroPageHas()
+        {
+            var page = new Mock<IHeroPage>();
+            page.Setup(p => p.Name).Returns("Ariel");
+            page.Setup(p => p.ColorHex).Returns("#C0392B");
+            page.Setup(p => p.SubtitleText).Returns("Knight, level 3");
+            page.Setup(p => p.OwnerChoices).Returns(["Neutral", "Red", "Blue"]);
+            page.Setup(p => p.SelectedOwner).Returns("Red");
+            page.Setup(p => p.ResetCommand).Returns(new NoCommand());
+            var grid = new Grid { DataContext = page.Object };
+            grid.Children.Add(new StackPanel
+            {
+                Children =
+                {
+                    new PageHeader { Title = page.Object.Name, ColorHex = page.Object.ColorHex },
+                    new OwnerPicker(),
+                },
+            });
+
+            using var hosted = WpfTestApplication.Show(grid);
+
+            Assert.That(WpfTestApplication.Descendants<ComboBox>(grid).Single().SelectedItem, Is.EqualTo("Red"));
+            Assert.That(WpfTestApplication.Descendants<TextBlock>(grid).Select(t => t.Text), Does.Contain("Ariel"));
         }
 
         private sealed class FakeLink(string name, string detail) : ILink

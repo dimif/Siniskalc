@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Core.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -19,6 +20,15 @@
     /// </summary>
     public sealed class PlayerViewModel : PageViewModel, IPlayerPage
     {
+        private static readonly ResourceLimits Limits = new(
+            Constants.Player.MinResource,
+            Constants.Player.MaxGold,
+            Constants.Player.MaxOther,
+            Constants.Player.GoldStep,
+            Constants.Player.OtherStep,
+            Constants.Player.AllResourcesIncrease,
+            Constants.Player.GoldIncrease);
+
         private static readonly Resource[] ResourceOrder =
         [
             Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems,
@@ -26,7 +36,7 @@
 
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
-        private readonly IReadOnlyList<AmountRowViewModel> resources;
+        private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
         private IReadOnlyList<LinkViewModel> heroes = [];
         private IReadOnlyList<CastleLinkViewModel> castles = [];
@@ -40,9 +50,13 @@
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
             this.Obelisks = new ObeliskVisitsViewModel(game.History, color);
-            this.resources = ResourceOrder.Select(this.CreateRow).ToList();
-            this.SetAllResourcesCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name != nameof(Resource.Gold)), Constants.Player.AllResourcesIncrease));
-            this.SetRichCommand = new DelegateCommand(_ => this.Add(this.resources.Where(r => r.Name == nameof(Resource.Gold)), Constants.Player.GoldIncrease));
+            this.resources = new ResourcesEditorViewModel(
+                ResourceOrder,
+                Limits,
+                () => this.session.Current.Resources,
+                () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources,
+                edit => this.session.Update(player => player with { Resources = edit(player.Resources) }),
+                this.IncomeNote);
             this.TavernPlaces = Enumerable.Range(0, TavernHeroes.Places)
                 .Select(place => new TavernPlaceViewModel(
                     place == 0 ? "First hero" : "Second hero",
@@ -73,17 +87,17 @@
         /// <summary>
         /// Gets the resources, gold first, each editable.
         /// </summary>
-        public IReadOnlyList<AmountRowViewModel> Resources => this.resources;
+        public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
 
         /// <summary>
         /// Gets the command that adds 99 of every resource but gold.
         /// </summary>
-        public ICommand SetAllResourcesCommand { get; }
+        public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
 
         /// <summary>
         /// Gets the command that adds 100,000 gold.
         /// </summary>
-        public ICommand SetRichCommand { get; }
+        public ICommand SetRichCommand => this.resources.SetRichCommand;
 
         /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited.
@@ -119,10 +133,7 @@
                 ? "Out of the game"
                 : player.DaysLeft is { } days ? $"{days} days left to own a castle" : string.Empty;
 
-            foreach (var row in this.resources)
-            {
-                row.Refresh();
-            }
+            this.resources.Refresh();
 
             this.heroes = allHeroes
                 .Where(h => h.Owner == this.Color)
@@ -144,36 +155,12 @@
             }
         }
 
-        private AmountRowViewModel CreateRow(Resource resource)
-        {
-            var gold = resource == Resource.Gold;
-            return new AmountRowViewModel(
-                resource.ToString(),
-                ResourcePalette.Of(resource.ToString()),
-                Constants.Player.MinResource,
-                gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
-                gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,
-                () => this.session.Current.Resources[resource],
-                () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources[resource],
-                amount => this.session.Update(player => player with { Resources = player.Resources.With(resource, amount) }),
-                () => this.IncomeNote(resource));
-        }
-
         // The game keeps no income for a player that was put out: what the table holds is a counter that walks over the resources
         // (1 wood, then 1 mercury, then 1 ore, on the days after Green was put out in the Broken Alliance saves 22 to 24).
         private string IncomeNote(Resource resource)
         {
             var player = this.session.Current;
             return !player.IsOut && player.Income[resource] > 0 ? $"+{player.Income[resource]:N0} a day" : string.Empty;
-        }
-
-        private void Add(IEnumerable<AmountRowViewModel> rows, int amount)
-        {
-            var kinds = rows.Select(r => Enum.Parse<Resource>(r.Name)).ToList();
-            this.session.Update(player => player with
-            {
-                Resources = kinds.Aggregate(player.Resources, (resources, kind) => resources.With(kind, Math.Min(resources[kind] + amount, kind == Resource.Gold ? Constants.Player.MaxGold : Constants.Player.MaxOther))),
-            });
         }
 
     }

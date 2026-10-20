@@ -20,6 +20,16 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class PlayerViewModel : ResettablePageViewModelBase, IPlayerPage
     {
+        private static readonly ResourceLimits Limits = new(
+            Constants.Resources.Min,
+            Constants.Resources.MaxGold,
+            Constants.Resources.MaxOther,
+            Constants.Resources.GoldStep,
+            Constants.Resources.OtherStep,
+            Constants.Resources.AllResourcesIncrease,
+            Constants.Resources.GoldIncrease);
+
+        private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
@@ -35,16 +45,12 @@ namespace Siniskalc.Homm3.ViewModels
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
-            this.Resources = ResourceSet.All
-                .OrderBy(resource => resource != Resource.Gold)
-                .Select(resource => new ResourceRowViewModel(
-                    resource,
-                    () => this.session.Current.Resources,
-                    () => this.Original.Resources,
-                    edit => this.session.Update(player => player with { Resources = edit(player.Resources) })))
-                .ToList();
-            this.SetAllResourcesCommand = new DelegateCommand(_ => this.AddResources(this.Resources.Where(r => !r.IsGold), Constants.Resources.AllResourcesIncrease));
-            this.SetRichCommand = new DelegateCommand(_ => this.AddResources(this.Resources.Where(r => r.IsGold), Constants.Resources.GoldIncrease));
+            this.resources = new ResourcesEditorViewModel(
+                ResourceSet.All.OrderBy(resource => resource != Resource.Gold),
+                Limits,
+                () => this.session.Current.Resources,
+                () => this.Original.Resources,
+                edit => this.session.Update(player => player with { Resources = edit(player.Resources) }));
             this.DayChoices = Enumerable.Range(Constants.Player.MinDaysLeft + 1, Constants.Player.MaxDaysLeft - Constants.Player.MinDaysLeft)
                 .Reverse()
                 .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
@@ -79,7 +85,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the resources, gold first (the game lists it last, but it is what players look for first).
         /// </summary>
-        public IReadOnlyList<ResourceRowViewModel> Resources { get; }
+        public IReadOnlyList<ResourceRowViewModel> Resources => this.resources.Rows;
 
         /// <summary>
         /// Gets the heroes of the player, by name.
@@ -133,9 +139,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IReadOnlyList<DaysLeftChoiceViewModel> DayChoices { get; }
 
-        public ICommand SetAllResourcesCommand { get; }
+        public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
 
-        public ICommand SetRichCommand { get; }
+        public ICommand SetRichCommand => this.resources.SetRichCommand;
 
 
         /// <summary>
@@ -151,23 +157,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gives the player <paramref name="amount"/> more of each resource of the rows, up to the most a resource can hold.
         /// </summary>
-        private void AddResources(IEnumerable<ResourceRowViewModel> rows, int amount)
-        {
-            var kinds = rows.Select(r => (r.Resource, r.Maximum)).ToList();
-            this.session.Update(player => player with
-            {
-                Resources = kinds.Aggregate(player.Resources, (resources, kind) => resources.With(kind.Resource, (int)Math.Min(resources[kind.Resource] + (long)amount, kind.Maximum))),
-            });
-        }
-
         protected override void Reset() => this.session.Update(_ => this.Original);
 
         protected override void OnHistoryChanged()
         {
-            foreach (var row in this.Resources)
-            {
-                row.Refresh();
-            }
+            this.resources.Refresh();
 
             this.UpdateIsDirty();
             this.RefreshOwned();

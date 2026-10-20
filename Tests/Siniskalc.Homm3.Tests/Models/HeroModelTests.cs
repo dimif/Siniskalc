@@ -18,9 +18,22 @@ namespace Siniskalc.Homm3.Tests.Models
             var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
             var hero = game.History.CreateHeroSession(0).Current;
 
-            IHeroModel<SecondarySkill, SecondarySkills, Creature> shared = hero;
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = hero;
 
             Assert.That(shared.Army, Is.SameAs(hero.Army));
+        }
+
+        [Test]
+        public void AHeroTellsWhoOwnsItWhereItStandsAndHowFarItHasComeThroughTheSharedInterface()
+        {
+            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
+            var hero = game.History.CreateHeroSession(0).Current;
+
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = hero;
+
+            Assert.That(
+                (shared.Owner, shared.Position, shared.Destination, shared.HeroLevel, shared.MovementPoints),
+                Is.EqualTo((hero.Owner, hero.Position, hero.Destination, hero.HeroLevel, hero.MovementPoints)));
         }
     }
 }

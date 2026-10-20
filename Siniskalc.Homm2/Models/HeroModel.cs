@@ -37,7 +37,7 @@
         SecondarySkills SecondarySkills,
         IArmy<Creature> Army,
         Artifacts Artifacts,
-        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, SecondarySkills, Creature>
+        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor>
     {
         /// <summary>
         /// Gets or sets the morale and luck the hero has for its next battle only.

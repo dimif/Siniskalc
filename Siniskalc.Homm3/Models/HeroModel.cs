@@ -10,7 +10,7 @@
     /// What the equipped artifacts add (spells the hero can cast, primary skill bonuses, the effects as a whole) is worked out
     /// here, every time the artifacts, the spell book or the primary skills are set, so it can never be stale.
     /// </summary>
-    public sealed record HeroModel : IHeroModel<SecondarySkill, SecondarySkills, Creature>
+    public sealed record HeroModel : IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor>
     {
         private readonly IGrantedSpellsResolver grantedSpellsResolver;
         private PrimarySkills primarySkills;

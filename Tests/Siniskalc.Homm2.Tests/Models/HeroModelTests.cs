@@ -16,9 +16,22 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var maximus = Maximus();
 
-            IHeroModel<SecondarySkill, SecondarySkills, Creature> hero = maximus;
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> hero = maximus;
 
             Assert.That(hero.Army, Is.SameAs(maximus.Army));
+        }
+
+        [Test]
+        public void AHeroTellsWhoOwnsItWhereItStandsAndHowFarItHasComeThroughTheSharedInterface()
+        {
+            var maximus = Maximus();
+
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> hero = maximus;
+
+            Assert.That(
+                (hero.Owner, hero.Position, hero.Destination, hero.HeroLevel, hero.MovementPoints),
+                Is.EqualTo((maximus.Owner, maximus.Position, maximus.Destination, maximus.HeroLevel, maximus.MovementPoints)));
+            Assert.That((hero.Position.Level, hero.Owner), Is.EqualTo((MapPosition.Above, PlayerColor.Blue)));
         }
 
         [Test]

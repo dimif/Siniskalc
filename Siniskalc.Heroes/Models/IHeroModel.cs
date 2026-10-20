@@ -13,10 +13,12 @@
     /// The type of secondary skills collection.
     /// </typeparam>
     /// <typeparam name="TCreature">The creature of the game.</typeparam>
-    public interface IHeroModel<TSecondarySkill, TSecondarySkills, TCreature>
+    /// <typeparam name="TColor">The colour of the game.</typeparam>
+    public interface IHeroModel<TSecondarySkill, TSecondarySkills, TCreature, TColor>
         where TSecondarySkill : ISecondarySkill
         where TSecondarySkills : ISecondarySkills<TSecondarySkill, TSecondarySkills>
         where TCreature : class, IGameEntity
+        where TColor : class, IPlayerColor
     {
         /// <summary>
         /// Gets the name of the hero.
@@ -27,6 +29,31 @@
         /// Gets the unique identifier associated with hero.
         /// </summary>
         int Id { get; }
+
+        /// <summary>
+        /// Gets the player that owns the hero, or the colour <c>Neutral</c> when no player does.
+        /// </summary>
+        TColor Owner { get; }
+
+        /// <summary>
+        /// Gets where the hero stands and which way it faces.
+        /// </summary>
+        HeroPosition Position { get; }
+
+        /// <summary>
+        /// Gets the tile the hero is going to, or <see cref="MapPosition.None"/>.
+        /// </summary>
+        MapPosition Destination { get; }
+
+        /// <summary>
+        /// Gets the level of the hero and its experience.
+        /// </summary>
+        HeroLevel HeroLevel { get; }
+
+        /// <summary>
+        /// Gets the movement points the hero has left today and the ones of a full day.
+        /// </summary>
+        MovementPoints MovementPoints { get; }
 
         /// <summary>
         /// Gets the primary skills of the hero.

@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
@@ -196,6 +197,19 @@
         /// Read-only: it is never written back.
         /// </summary>
         public VisitedBuildingEffects VisitEffects { get; init; }
+
+        /// <summary>
+        /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody leaves the map: its position and
+        /// destination become -1, -1, -1 (as the game stores a hero in a tavern) and it faces east.
+        /// </summary>
+        public HeroModel WithOwner(PlayerColor owner) => owner.IsNeutral
+            ? this with
+            {
+                Owner = owner,
+                Position = new HeroPosition(MapPosition.None.X, MapPosition.None.Y, MapPosition.None.Level, FacingDirection.East),
+                Destination = MapPosition.None,
+            }
+            : this with { Owner = owner };
 
         /// <summary>
         /// Returns a copy with <paramref name="artifacts"/> equipped. Besides what setting <see cref="EquippedArtifacts"/> does, an

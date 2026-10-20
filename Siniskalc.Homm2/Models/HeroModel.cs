@@ -62,6 +62,12 @@
         public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
 
         /// <summary>
+        /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody has no move to finish, so its destination
+        /// is cleared; the tile it stands on is left as the game leaves it (a defeated hero keeps the tile it fell on).
+        /// </summary>
+        public HeroModel WithOwner(PlayerColor owner) => owner.IsNeutral ? this with { Owner = owner, Destination = MapPosition.None } : this with { Owner = owner };
+
+        /// <summary>
         /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.
         /// </summary>
         public bool HasSpellBook => this.Artifacts.HasMagicBook;

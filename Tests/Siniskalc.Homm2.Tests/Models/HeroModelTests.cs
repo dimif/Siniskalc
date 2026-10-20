@@ -35,6 +35,26 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
+        public void AHeroThatServesNobodyHasNoMoveToFinishAndKeepsItsTile()
+        {
+            var moving = Maximus() with { Destination = new MapPosition(30, 30) };
+
+            var freed = moving.WithOwner(PlayerColor.Neutral);
+
+            Assert.That((freed.Owner, freed.Destination, freed.Position), Is.EqualTo((PlayerColor.Neutral, MapPosition.None, moving.Position)));
+        }
+
+        [Test]
+        public void AHeroGivenToAPlayerKeepsItsDestination()
+        {
+            var moving = Maximus() with { Destination = new MapPosition(30, 30) };
+
+            var given = moving.WithOwner(PlayerColor.Orange);
+
+            Assert.That((given.Owner, given.Destination), Is.EqualTo((PlayerColor.Orange, moving.Destination)));
+        }
+
+        [Test]
         public void TheFactionOfAHeroFollowsItsNumberNineToAFaction()
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();

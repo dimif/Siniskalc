@@ -148,14 +148,7 @@ namespace Siniskalc.Homm3.ViewModels
                     return;
                 }
 
-                this.Update(h => !owner.IsNeutral
-                    ? h with { Owner = owner }
-                    : h with
-                    {
-                        Owner = owner,
-                        Position = new HeroPosition(MapPosition.None.X, MapPosition.None.Y, MapPosition.None.Level, FacingDirection.East),
-                        Destination = MapPosition.None,
-                    });
+                this.Update(h => h.WithOwner(owner));
             }
         }
 

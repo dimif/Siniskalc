@@ -47,7 +47,7 @@
                 edits.Add((owner.Code, players.GetModel(owner.Code).WithHero(hero.Id)));
             }
 
-            var changed = owner.IsNeutral ? hero with { Owner = owner, Destination = MapPosition.None } : hero with { Owner = owner };
+            var changed = hero.WithOwner(owner);
             var updated = document.WithChunk(Homm2ChunkKinds.Hero, this.HeroIndex, heroes.Serializer.Serialize(heroes[this.HeroIndex], changed));
             foreach (var (player, model) in edits)
             {

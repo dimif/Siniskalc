@@ -46,20 +46,20 @@
 
             this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
                 () => this.Hero.MovementPoints.Current,
-                value => this.Update(h => h with { MovementPoints = h.MovementPoints with { Current = (uint)value } }),
+                value => this.Update(h => h.WithMovementLeft(value)),
                 () => this.Hero.MovementPoints.Max,
                 new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
                 () => this.Hero.SpellPoints,
-                value => this.Update(h => h with { SpellPoints = (ushort)value }),
+                value => this.Update(h => h.WithSpellPoints((int)value)),
                 new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints, Constants.Hero.SpellPointsStep),
                 () => this.spellPoints.GetMaximum(this.Hero.PrimarySkills, this.Hero.SecondarySkills),
                 () => this.ArtifactEffects.LandMovement == 0 ? string.Empty : $"{this.ArtifactEffects.LandMovement:+0;-0} from artifacts");
             this.LevelAndClass = new LevelAndClassCardViewModel(
                 () => this.Hero.HeroLevel.Level,
-                level => this.SetLevelAndExperience((short)level, LevelCalculator.GetXpForLevel((short)level)),
+                level => this.Update(h => h.WithLevel(level)),
                 new NumberRange(Constants.Hero.MinLevel, Constants.Hero.MaxLevel),
                 () => this.Hero.HeroLevel.Experience,
-                experience => this.SetLevelAndExperience(LevelCalculator.GetLevelFromXp((int)experience), (int)experience),
+                experience => this.Update(h => h.WithExperience(experience)),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
                 Entities.HeroClass.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(),
@@ -367,11 +367,6 @@
             {
                 this.Update(h => h with { Gender = gender });
             }
-        }
-
-        private void SetLevelAndExperience(short level, int experience)
-        {
-            this.Update(h => h with { HeroLevel = new HeroLevel { Level = level, Experience = experience } });
         }
 
         private IReadOnlyList<MapLevelChoice> LevelChoices(int current)

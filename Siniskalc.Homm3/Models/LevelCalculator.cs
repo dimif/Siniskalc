@@ -92,7 +92,10 @@ namespace Siniskalc.Homm3.Models
 
         private static readonly ExperienceTable Levels = new([.. LevelToExperienceThresholds.OrderBy(t => t.Key).Select(t => (long)t.Value)], LevelToExperienceThresholds.Count);
 
-        public static short GetLevelFromXp(int experience) => (short)Levels.LevelOf(experience);
+        /// <summary>
+        /// Gets the experience each level needs.
+        /// </summary>
+        public static ExperienceTable Table => Levels;
 
         /// <summary>
         /// Gets the level above the one <paramref name="experience"/> reaches, and the experience it needs.
@@ -101,10 +104,5 @@ namespace Siniskalc.Homm3.Models
         public static (short Level, int Experience)? GetNextLevel(int experience) =>
             Levels.NextLevel(experience) is { } next ? ((short)next.Level, (int)next.Experience) : null;
 
-        public static int GetXpForLevel(short level)
-        {
-            RangeGuard.ThrowIfOutOfRange<long>(level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(level), $"Invalid level: {level}. Level must be between {Constants.Hero.MinLevel} and {Constants.Hero.MaxLevel}.");
-            return LevelToExperienceThresholds[level];
-        }
     }
 }

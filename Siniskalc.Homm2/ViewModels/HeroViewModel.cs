@@ -108,19 +108,19 @@
                 toolTip: "Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish.");
             this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
                 () => this.session.Current.MovementPoints.Current,
-                value => this.session.Update(h => h with { MovementPoints = h.MovementPoints with { Current = value } }),
+                value => this.session.Update(h => h.WithMovementLeft(value)),
                 () => this.session.Current.MovementPoints.Max,
                 new NumberRange(Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints, Constants.Hero.MovementStep),
                 () => this.session.Current.SpellPoints,
-                value => this.session.Update(h => h with { SpellPoints = value }),
+                value => this.session.Update(h => h.WithSpellPoints((int)value)),
                 new NumberRange(Constants.Hero.MinSpellPoints, Constants.Hero.MaxSpellPoints),
                 () => spellPoints.GetMaximum(this.session.Current.PrimarySkills, this.session.Current.SecondarySkills));
             this.LevelAndClass = new LevelAndClassCardViewModel(
                 () => this.session.Current.HeroLevel.Level,
-                value => this.session.Update(h => h with { HeroLevel = new HeroLevel(HeroLevels.ExperienceOf(value), value) }),
+                value => this.session.Update(h => h.WithLevel((int)value)),
                 new NumberRange(Constants.Hero.MinLevel, Constants.Hero.MaxLevel),
                 () => this.session.Current.HeroLevel.Experience,
-                value => this.session.Update(h => h with { HeroLevel = new HeroLevel(value, HeroLevels.LevelOf(value)) }),
+                value => this.session.Update(h => h.WithExperience(value)),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
                 Faction.All.Select(f => f.Name).ToList(),

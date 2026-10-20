@@ -46,6 +46,29 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That((given.Owner, given.Position, given.Destination), Is.EqualTo((PlayerColor.Pink, hero.Position, hero.Destination)));
         }
 
+        private static HeroModel FirstHero() => CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.CreateHeroSession(0).Current;
+
+        [Test]
+        public void TheLevelAndTheExperienceOfAHeroAreSetTogetherFromTheTable()
+        {
+            var hero = FirstHero();
+
+            Assert.That(hero.WithLevel(10).HeroLevel, Is.EqualTo(new HeroLevel(LevelCalculator.Table.ExperienceOf(10), 10)));
+            Assert.That(hero.WithExperience(LevelCalculator.Table.ExperienceOf(20)).HeroLevel.Level, Is.EqualTo(20));
+            Assert.That(() => hero.WithLevel(76), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => hero.WithExperience(-1), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void TheMovementLeftAndTheSpellPointsAreSetWithoutTouchingTheRest()
+        {
+            var hero = FirstHero();
+
+            var changed = hero.WithMovementLeft(123).WithSpellPoints(45);
+
+            Assert.That((changed.MovementPoints.Current, changed.MovementPoints.Max, changed.SpellPoints), Is.EqualTo((123L, hero.MovementPoints.Max, 45)));
+        }
+
         [Test]
         public void AHeroTellsWhoOwnsItWhereItStandsAndHowFarItHasComeThroughTheSharedInterface()
         {

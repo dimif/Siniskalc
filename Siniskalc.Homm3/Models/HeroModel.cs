@@ -1,6 +1,8 @@
 ﻿namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using Siniskalc.Core;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -197,6 +199,34 @@
         /// Read-only: it is never written back.
         /// </summary>
         public VisitedBuildingEffects VisitEffects { get; init; }
+
+        /// <summary>
+        /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
+        /// </summary>
+        public HeroModel WithLevel(int level)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(level));
+            return this with { HeroLevel = HeroLevel.AtLevel(LevelCalculator.Table, level) };
+        }
+
+        /// <summary>
+        /// Returns the hero with <paramref name="experience"/> points, at the level the game gives that much experience.
+        /// </summary>
+        public HeroModel WithExperience(long experience)
+        {
+            RangeGuard.ThrowIfOutOfRange(experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(experience));
+            return this with { HeroLevel = HeroLevel.AtExperience(LevelCalculator.Table, experience) };
+        }
+
+        /// <summary>
+        /// Returns the hero with <paramref name="movement"/> movement points left today; the movement of a full day stays.
+        /// </summary>
+        public HeroModel WithMovementLeft(long movement) => this with { MovementPoints = this.MovementPoints with { Current = movement } };
+
+        /// <summary>
+        /// Returns the hero with <paramref name="spellPoints"/> spell points.
+        /// </summary>
+        public HeroModel WithSpellPoints(int spellPoints) => this with { SpellPoints = spellPoints };
 
         /// <summary>
         /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody leaves the map: its position and

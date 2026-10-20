@@ -55,6 +55,27 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
+        public void TheLevelAndTheExperienceOfAHeroAreSetTogetherFromTheTable()
+        {
+            var maximus = Maximus();
+
+            Assert.That(maximus.WithLevel(10).HeroLevel, Is.EqualTo(new HeroLevel(HeroLevels.ExperienceOf(10), 10)));
+            Assert.That(maximus.WithExperience(54_200).HeroLevel, Is.EqualTo(new HeroLevel(54_200, 18)));
+            Assert.That(() => maximus.WithLevel(0), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => maximus.WithExperience(-1), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
+
+        [Test]
+        public void TheMovementLeftAndTheSpellPointsAreSetWithoutTouchingTheRest()
+        {
+            var maximus = Maximus();
+
+            var changed = maximus.WithMovementLeft(123).WithSpellPoints(45);
+
+            Assert.That((changed.MovementPoints.Current, changed.MovementPoints.Max, changed.SpellPoints), Is.EqualTo((123L, maximus.MovementPoints.Max, 45)));
+        }
+
+        [Test]
         public void TheFactionOfAHeroFollowsItsNumberNineToAFaction()
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();

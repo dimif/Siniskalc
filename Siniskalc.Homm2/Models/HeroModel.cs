@@ -1,7 +1,9 @@
 ﻿namespace Siniskalc.Homm2.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
 
@@ -60,6 +62,34 @@
         /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.
         /// </summary>
         public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
+
+        /// <summary>
+        /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
+        /// </summary>
+        public HeroModel WithLevel(int level)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(level));
+            return this with { HeroLevel = HeroLevel.AtLevel(HeroLevels.Table, level) };
+        }
+
+        /// <summary>
+        /// Returns the hero with <paramref name="experience"/> points, at the level the game gives that much experience.
+        /// </summary>
+        public HeroModel WithExperience(long experience)
+        {
+            RangeGuard.ThrowIfOutOfRange(experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(experience));
+            return this with { HeroLevel = HeroLevel.AtExperience(HeroLevels.Table, experience) };
+        }
+
+        /// <summary>
+        /// Returns the hero with <paramref name="movement"/> movement points left today; the movement of a full day stays.
+        /// </summary>
+        public HeroModel WithMovementLeft(long movement) => this with { MovementPoints = this.MovementPoints with { Current = movement } };
+
+        /// <summary>
+        /// Returns the hero with <paramref name="spellPoints"/> spell points.
+        /// </summary>
+        public HeroModel WithSpellPoints(int spellPoints) => this with { SpellPoints = spellPoints };
 
         /// <summary>
         /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody has no move to finish, so its destination

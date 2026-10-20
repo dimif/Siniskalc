@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using System;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
@@ -16,14 +17,18 @@
         /// <inheritdoc/>
         public PlayerColor DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
 
+        // The heroes of each faction are numbered together, nine at a time; a number past the last faction belongs to the last one.
+        private static Faction FactionOf(int heroId) => Faction.All[Math.Min(heroId / Constants.Hero.PerFaction, Faction.All.Count - 1)];
+
         /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
         {
             var bytes = chunk.ToArray();
+            var id = chunk.GetByteAt(HeroLayout.Id);
             var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));
 
             return new HeroModel(
-                chunk.GetByteAt(HeroLayout.Id),
+                id,
                 Bytes.ReadText(bytes, HeroLayout.Name, HeroLayout.NameLength),
                 this.DeserializeOwner(chunk),
                 new HeroPosition(Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.X)), Bytes.ReadCoordinate(chunk.GetUInt32At(HeroLayout.Y)), Bytes.Facing(chunk.GetByteAt(HeroLayout.Facing))),
@@ -44,6 +49,7 @@
                     chunk.GetBytesAt(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount),
                     chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
                 ArmyReader.Read(chunk, HeroLayout.Army, CreatureCodes.Instance),
+                FactionOf(id),
                 artifacts,
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
             {

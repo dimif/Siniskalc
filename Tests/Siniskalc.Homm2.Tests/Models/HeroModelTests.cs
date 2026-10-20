@@ -35,6 +35,15 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
+        public void TheFactionOfAHeroFollowsItsNumberNineToAFaction()
+        {
+            var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();
+
+            Assert.That(heroes.Select(h => h.Faction), Is.EqualTo(heroes.Select(h => Faction.All[Math.Min(h.Id / 9, Faction.All.Count - 1)])));
+            Assert.That((heroes[0].Faction, heroes[9].Faction, heroes[53].Faction), Is.EqualTo((Faction.Knight, Faction.Barbarian, Faction.Necromancer)));
+        }
+
+        [Test]
         public void AnArtifactThatGivesSkillsAddsThemWhenItIsGivenAndTakesThemOffWhenItIsTakenAway()
         {
             var maximus = Maximus();

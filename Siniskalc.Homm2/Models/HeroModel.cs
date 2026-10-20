@@ -22,6 +22,7 @@
     /// <param name="PrimarySkills">The attack, the defense, the spell power and the knowledge.</param>
     /// <param name="SecondarySkills">The secondary skills, in the order they were learned.</param>
     /// <param name="Army">The five slots of the army.</param>
+    /// <param name="Faction">The faction of the hero: the heroes of each faction are numbered together, nine at a time. The savegame does not hold it.</param>
     /// <param name="Artifacts">The fourteen artifact slots.</param>
     /// <param name="Spells">The spells of the spell book.</param>
     public sealed record HeroModel(
@@ -36,6 +37,7 @@
         PrimarySkills PrimarySkills,
         SecondarySkills SecondarySkills,
         IArmy<Creature> Army,
+        Faction Faction,
         Artifacts Artifacts,
         SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor>
     {
@@ -53,11 +55,6 @@
         /// Gets or sets the places of the map the hero has visited and cannot get anything from again.
         /// </summary>
         public VisitedPlaces Visited { get; init; }
-
-        /// <summary>
-        /// Gets the faction of the hero: the heroes of each faction are numbered together, nine at a time.
-        /// </summary>
-        public Faction Faction => Faction.All[Math.Min(this.Id / Constants.Hero.PerFaction, Faction.All.Count - 1)];
 
         /// <summary>
         /// Gets the few things about the hero that the lists of heroes show. The number of the hero is its place in the list as well.

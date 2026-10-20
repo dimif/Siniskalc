@@ -111,31 +111,8 @@ namespace Siniskalc.Homm3.Data
             }
         }
 
-        private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
-        {
-            var before = original.PrimarySkills;
-            var after = current.PrimarySkills;
-
-            if (before.Attack != after.Attack)
-            {
-                changes.Add(ChangeAreas.PrimarySkills, "Attack", before.Attack.ToString(), after.Attack.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Attack = before.Attack } });
-            }
-
-            if (before.Defense != after.Defense)
-            {
-                changes.Add(ChangeAreas.PrimarySkills, "Defense", before.Defense.ToString(), after.Defense.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Defense = before.Defense } });
-            }
-
-            if (before.SpellPower != after.SpellPower)
-            {
-                changes.Add(ChangeAreas.PrimarySkills, "Spell power", before.SpellPower.ToString(), after.SpellPower.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { SpellPower = before.SpellPower } });
-            }
-
-            if (before.Knowledge != after.Knowledge)
-            {
-                changes.Add(ChangeAreas.PrimarySkills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), h => h with { PrimarySkills = h.PrimarySkills with { Knowledge = before.Knowledge } });
-            }
-        }
+        private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
         private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {

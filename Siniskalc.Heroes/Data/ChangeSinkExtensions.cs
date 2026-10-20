@@ -61,5 +61,42 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Adds a change for each primary skill that differs (attack, defense, spell power, knowledge), each put back on its own.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the record that holds the skills.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="before">The skills as loaded.</param>
+        /// <param name="after">The skills now.</param>
+        /// <param name="getSkills">Gets the skills of a model.</param>
+        /// <param name="withSkills">Returns the model with the given skills.</param>
+        public static void AddPrimarySkills<TModel>(
+            this ChangeSink<TModel> sink,
+            PrimarySkills before,
+            PrimarySkills after,
+            Func<TModel, PrimarySkills> getSkills,
+            Func<TModel, PrimarySkills, TModel> withSkills)
+        {
+            if (before.Attack != after.Attack)
+            {
+                sink.Add(ChangeAreas.PrimarySkills, "Attack", before.Attack.ToString(), after.Attack.ToString(), model => withSkills(model, getSkills(model) with { Attack = before.Attack }));
+            }
+
+            if (before.Defense != after.Defense)
+            {
+                sink.Add(ChangeAreas.PrimarySkills, "Defense", before.Defense.ToString(), after.Defense.ToString(), model => withSkills(model, getSkills(model) with { Defense = before.Defense }));
+            }
+
+            if (before.SpellPower != after.SpellPower)
+            {
+                sink.Add(ChangeAreas.PrimarySkills, "Spell power", before.SpellPower.ToString(), after.SpellPower.ToString(), model => withSkills(model, getSkills(model) with { SpellPower = before.SpellPower }));
+            }
+
+            if (before.Knowledge != after.Knowledge)
+            {
+                sink.Add(ChangeAreas.PrimarySkills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), model => withSkills(model, getSkills(model) with { Knowledge = before.Knowledge }));
+            }
+        }
     }
 }

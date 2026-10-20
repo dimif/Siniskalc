@@ -8,9 +8,9 @@
     /// <summary>
     /// A hero of Heroes of Might and Magic II can have ten spell points for each point of knowledge, and nothing adds to it.
     /// </summary>
-    public sealed class MaxSpellPointsCalculator : IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills>
+    public sealed class MaxSpellPointsCalculator : IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills>
     {
         /// <inheritdoc/>
-        public int GetMaximum(PrimarySkills primarySkills, IHomm2SecondarySkills secondarySkills) => Math.Max(0, primarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge;
+        public int GetMaximum(PrimarySkills primarySkills, SecondarySkills secondarySkills) => Math.Max(0, primarySkills.Knowledge) * Constants.Hero.SpellPointsPerKnowledge;
     }
 }

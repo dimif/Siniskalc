@@ -70,7 +70,7 @@
 
         public IByteEditTargetFactory ByteEditTargets { get; }
 
-        public IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> MaxSpellPointsCalculator { get; }
+        public IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> MaxSpellPointsCalculator { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.

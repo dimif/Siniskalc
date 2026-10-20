@@ -34,10 +34,10 @@
         HeroLevel HeroLevel,
         int SpellPoints,
         PrimarySkills PrimarySkills,
-        IHomm2SecondarySkills SecondarySkills,
+        SecondarySkills SecondarySkills,
         IArmy<Creature> Army,
         Artifacts Artifacts,
-        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, IHomm2SecondarySkills, Creature>
+        SpellSet<Spell> Spells) : IHeroModel<SecondarySkill, SecondarySkills, Creature>
     {
         /// <summary>
         /// Gets or sets the direction the hero faces: the way of its last step (Heroes of Might and Magic II keeps eight directions, clockwise from north).

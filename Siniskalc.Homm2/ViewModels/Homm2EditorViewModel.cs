@@ -21,14 +21,14 @@
     {
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
-        private readonly IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> spellPoints;
+        private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
         private MapViewModel? map;
 
-        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> spellPoints)
+        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.byteEditTargets = byteEditTargets;

@@ -141,7 +141,7 @@
             ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination + 4, destination.Y < 0 ? uint.MaxValue : (uint)destination.Y);
         }
 
-        private static void WriteSecondarySkills(byte[] bytes, IHomm2SecondarySkills skills)
+        private static void WriteSecondarySkills(byte[] bytes, SecondarySkills skills)
         {
             var levels = bytes.AsSpan(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount).ToArray();
             var order = bytes.AsSpan(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount).ToArray();

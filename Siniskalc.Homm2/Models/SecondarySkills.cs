@@ -11,7 +11,7 @@
     /// <summary>
     /// The secondary skills of a hero, in the order it learned them (a hero has at most eight). Compares by what it holds.
     /// </summary>
-    public sealed class SecondarySkills : IHomm2SecondarySkills
+    public sealed class SecondarySkills : ISecondarySkills<SecondarySkill, SecondarySkills>
     {
         private readonly SkillEntry[] entries;
 
@@ -108,14 +108,6 @@
 
             return this.entries.Any(e => e.Skill == skill) ? this : new SecondarySkills(this.entries.Select((e, i) => i == slotIndex ? e with { Skill = skill } : e));
         }
-
-        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithSkill(SecondarySkill skill, SkillLevel level) => this.WithSkill(skill, level);
-
-        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.Swap(int slotIndex, int otherSlotIndex) => this.Swap(slotIndex, otherSlotIndex);
-
-        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithSkillInSlot(int slotIndex, SecondarySkill skill) => this.WithSkillInSlot(slotIndex, skill);
-
-        IHomm2SecondarySkills ISecondarySkills<SecondarySkill, IHomm2SecondarySkills>.WithoutSlot(int slotIndex) => this.WithoutSlot(slotIndex);
 
         /// <inheritdoc/>
         public bool Equals(SecondarySkills? other) => other is not null && this.entries.AsSpan().SequenceEqual(other.entries);

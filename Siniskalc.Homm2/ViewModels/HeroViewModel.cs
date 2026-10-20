@@ -32,7 +32,7 @@
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
-        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
+        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
             : base(game, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
         {
             this.HeroId = heroId;

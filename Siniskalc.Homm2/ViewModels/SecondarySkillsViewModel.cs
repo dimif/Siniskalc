@@ -15,22 +15,22 @@
     /// </summary>
     public sealed class SecondarySkillsViewModel : SecondarySkillsViewModelBase
     {
-        private readonly Func<IHomm2SecondarySkills> getSkills;
-        private readonly Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update;
+        private readonly Func<SecondarySkills> getSkills;
+        private readonly Action<Func<SecondarySkills, SecondarySkills>> update;
         private readonly IReadOnlyList<SecondarySkill> knownSkills;
 
         public SecondarySkillsViewModel(
             GameVersion gameVersion,
-            Func<IHomm2SecondarySkills> getSkills,
-            Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update)
+            Func<SecondarySkills> getSkills,
+            Action<Func<SecondarySkills, SecondarySkills>> update)
             : this(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), getSkills, update)
         {
         }
 
         private SecondarySkillsViewModel(
             IReadOnlyList<SecondarySkill> knownSkills,
-            Func<IHomm2SecondarySkills> getSkills,
-            Action<Func<IHomm2SecondarySkills, IHomm2SecondarySkills>> update)
+            Func<SecondarySkills> getSkills,
+            Action<Func<SecondarySkills, SecondarySkills>> update)
             : base(knownSkills.Select(s => s.Name).ToList(), Constants.Hero.MaxSecondarySkills)
         {
             this.knownSkills = knownSkills;

@@ -16,7 +16,7 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var maximus = Maximus();
 
-            IHeroModel<SecondarySkill, IHomm2SecondarySkills, Creature> hero = maximus;
+            IHeroModel<SecondarySkill, SecondarySkills, Creature> hero = maximus;
 
             Assert.That(hero.Army, Is.SameAs(maximus.Army));
         }

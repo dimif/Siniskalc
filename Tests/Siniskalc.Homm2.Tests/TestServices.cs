@@ -15,7 +15,7 @@ namespace Siniskalc.Homm2.Tests
     {
         public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator();
 
-        public static IMaxSpellPointsCalculator<SecondarySkill, IHomm2SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
+        public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
 
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
 

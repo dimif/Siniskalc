@@ -201,6 +201,16 @@
         public VisitedBuildingEffects VisitEffects { get; init; }
 
         /// <summary>
+        /// Gets whether the hero carries a spell book.
+        /// </summary>
+        public bool HasSpellBook => this.SpellBook.HasSpellBook;
+
+        /// <summary>
+        /// Gets the spells the hero has learned, not counting the ones artifacts grant.
+        /// </summary>
+        public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.SpellBook.Learned];
+
+        /// <summary>
         /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
         /// </summary>
         public HeroModel WithLevel(int level)

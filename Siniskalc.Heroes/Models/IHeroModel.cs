@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Heroes.Models
 {
+    using System.Collections.Generic;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Entities;
 
@@ -54,6 +55,16 @@
         /// Gets the movement points the hero has left today and the ones of a full day.
         /// </summary>
         MovementPoints MovementPoints { get; }
+
+        /// <summary>
+        /// Gets whether the hero carries a spell book; without one the spells it knows have no effect.
+        /// </summary>
+        bool HasSpellBook { get; }
+
+        /// <summary>
+        /// Gets the spells the hero has learned, not counting the ones an artifact lets it cast.
+        /// </summary>
+        IReadOnlyCollection<ISpell> LearnedSpells { get; }
 
         /// <summary>
         /// Gets the primary skills of the hero.

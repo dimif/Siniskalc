@@ -64,6 +64,11 @@
         public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
 
         /// <summary>
+        /// Gets the spells the hero has learned.
+        /// </summary>
+        public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.Spells];
+
+        /// <summary>
         /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
         /// </summary>
         public HeroModel WithLevel(int level)

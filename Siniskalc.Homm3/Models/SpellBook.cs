@@ -45,6 +45,11 @@ namespace Siniskalc.Homm3.Models
         public bool HasSpellBook { get; }
 
         /// <summary>
+        /// Gets the spells the hero has learned, not counting the ones artifacts grant.
+        /// </summary>
+        public SpellSet<Spell> Learned => this.learnedSpells;
+
+        /// <summary>
         /// Gets whether an equipped artifact gives the hero a spell book (Titan's Thunder), so the book cannot be taken away.
         /// </summary>
         public bool IsSpellBookGranted { get; }

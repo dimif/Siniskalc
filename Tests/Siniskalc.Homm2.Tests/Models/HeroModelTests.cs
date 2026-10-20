@@ -76,6 +76,17 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
+        public void AHeroTellsWhetherItHasASpellBookAndWhatItHasLearnedThroughTheSharedInterface()
+        {
+            var maximus = Maximus().WithSpellBook() with { Spells = SpellSet<Spell>.None.With(Spell.Bless) };
+
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> hero = maximus;
+
+            Assert.That(hero.HasSpellBook, Is.True);
+            Assert.That(hero.LearnedSpells, Is.EqualTo(new[] { Spell.Bless }));
+        }
+
+        [Test]
         public void TheFactionOfAHeroFollowsItsNumberNineToAFaction()
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();

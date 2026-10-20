@@ -70,6 +70,18 @@ namespace Siniskalc.Homm3.Tests.Models
         }
 
         [Test]
+        public void AHeroTellsWhetherItHasASpellBookAndWhatItHasLearnedThroughTheSharedInterface()
+        {
+            var hero = FirstHero();
+            var withBook = hero with { SpellBook = hero.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
+
+            IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = withBook;
+
+            Assert.That(shared.HasSpellBook, Is.True);
+            Assert.That(shared.LearnedSpells, Does.Contain(Spell.Bless));
+        }
+
+        [Test]
         public void AHeroTellsWhoOwnsItWhereItStandsAndHowFarItHasComeThroughTheSharedInterface()
         {
             var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());

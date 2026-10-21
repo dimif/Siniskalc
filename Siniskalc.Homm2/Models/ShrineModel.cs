@@ -16,7 +16,7 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Gets the spell, or <c>null</c> when the tile holds a number that is no spell the editor knows.
         /// </summary>
-        public Spell? Spell => SpellCode is >= 0 and <= byte.MaxValue ? Entities.Spell.FromByte((byte)this.SpellCode) : null;
+        public Spell? Spell => this.SpellCode is >= 0 and <= byte.MaxValue ? Entities.Spell.FromByte((byte)this.SpellCode) : null;
 
         public string Name => $"Shrine of the {this.Circle switch { 1 => "first", 2 => "second", _ => "third" }} circle at X: {this.Position.X}, Y: {this.Position.Y}";
 

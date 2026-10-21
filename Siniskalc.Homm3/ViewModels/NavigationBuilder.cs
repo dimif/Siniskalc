@@ -106,6 +106,7 @@ namespace Siniskalc.Homm3.ViewModels
                 .Where(c => c.Model.Owner == owner)
                 .OrderBy(c => c.Model.Name)
                 .ToList();
+
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
             var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);

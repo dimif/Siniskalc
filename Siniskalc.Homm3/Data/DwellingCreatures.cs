@@ -4,7 +4,7 @@
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
-    /// Which creatures a creature dwelling of a castle serves, read from <see cref="Creature.Dwelling"/>. 
+    /// Which creatures a creature dwelling of a castle serves, read from <see cref="Creature.Dwelling"/>.
     /// A faction has one dwelling for each creature level and one upgraded dwelling.
     /// </summary>
     public static class DwellingCreatures

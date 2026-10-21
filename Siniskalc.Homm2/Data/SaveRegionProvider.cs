@@ -58,7 +58,7 @@ namespace Siniskalc.Homm2.Data
                 ByteRegionKind.Game,
                 "Header",
                 "The day of the week, the week and the month, a byte each with a byte between",
-                Enumerable.Range(0, 3).Select(i => new ByteRegion(new[] { "Day", "Week", "Month" }[i], layout.DateStart + (i * HeaderLayout.DateStep), 1, ByteRegionKind.Game, "Date")).ToList()));
+                Enumerable.Range(0, 3).Select(i => new ByteRegion(new[] { "Day", "Week", "Month" }.ElementAt(i), layout.DateStart + (i * HeaderLayout.DateStep), 1, ByteRegionKind.Game, "Date")).ToList()));
         }
 
         private static ByteRegion Record(BytesChunk chunk, string name, IReadOnlyList<ByteRegion> fields, ByteRegionKind kind)

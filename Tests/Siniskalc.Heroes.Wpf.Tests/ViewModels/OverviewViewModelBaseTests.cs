@@ -16,7 +16,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         private static AbstractSavegame Savegame(string? name)
         {
             // The overview only reads the name of the savegame; the bytes and the history are never touched.
-            return new Mock<AbstractSavegame>("ignored.GM1", Array.Empty<byte>(), null!, name).Object;
+            return new Mock<AbstractSavegame>("ignored.GM1", Array.Empty<byte>(), null!, name!).Object;
         }
 
         private static IGameInfo<TestColor> Info(MapHeader? map = null, GameDate? date = null, GameDifficulty? difficulty = null, TestColor? player = null)

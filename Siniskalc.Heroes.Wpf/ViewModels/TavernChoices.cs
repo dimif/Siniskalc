@@ -1,9 +1,9 @@
 namespace Siniskalc.Heroes.Wpf.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
 
     /// <summary>

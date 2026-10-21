@@ -26,7 +26,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="openHero">Opens the page of the hero with this id; the link does nothing without it or for a place that is empty.</param>
         public TavernPlaceViewModel(string label, Func<IReadOnlyList<HeroChoiceViewModel>> getChoices, Func<int?> getHeroId, Action<int?> setHeroId, Action<int>? openHero = null)
         {
-            this.OpenCommand = new DelegateCommand(_ => openHero?.Invoke(this.getHeroId()!.Value), _ => openHero != null && this.getHeroId() != null);
+            this.OpenCommand = new DelegateCommand(_ => openHero?.Invoke(getHeroId()!.Value), _ => openHero != null && getHeroId() != null);
             this.Label = label;
             this.getChoices = getChoices;
             this.getHeroId = getHeroId;

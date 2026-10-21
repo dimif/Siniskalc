@@ -1,7 +1,7 @@
 namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Data;
 
     /// <summary>
     /// Cuts the records of heroes, players and castles out of the bytes of a savegame, from where the layout says they are.

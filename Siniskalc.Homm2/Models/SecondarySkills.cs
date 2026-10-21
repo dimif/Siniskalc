@@ -139,6 +139,5 @@
 
         /// <inheritdoc/>
         public override string ToString() => string.Join(", ", this.entries.Select(e => $"{e.Level} {e.Skill.Name}"));
-
     }
 }

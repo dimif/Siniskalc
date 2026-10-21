@@ -1,10 +1,10 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Homm3.Models;
-    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Core.Data;
+    using Siniskalc.Homm3.Entities;
+    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Creates the edit sessions of a Heroes of Might and Magic III savefile on its <see cref="SaveDocumentHistory"/>.

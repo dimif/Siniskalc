@@ -1,10 +1,9 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Data;
     using System;
     using System.Collections.Generic;
-    using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>

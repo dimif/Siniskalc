@@ -37,6 +37,7 @@
         private static List<MapObjectChunk> ReadBuiltToday(byte[] bytes, int mapStart)
         {
             var start = mapStart + MapObjectLayout.BuiltToday;
+
             // TODO:LOG Warning: a savegame too short to hold the set of the castles that have built today
             return start + MapObjectLayout.BuiltTodaySize > bytes.Length ? [] : [new MapObjectChunk("Built this turn", bytes.AsSpan(start, MapObjectLayout.BuiltTodaySize).ToArray(), start, null, 0)];
         }

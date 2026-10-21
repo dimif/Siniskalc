@@ -103,6 +103,5 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static (short Level, int Experience)? GetNextLevel(int experience) =>
             Levels.NextLevel(experience) is { } next ? ((short)next.Level, (int)next.Experience) : null;
-
     }
 }

@@ -66,7 +66,7 @@
             this.RefreshOwned();
         }
 
-        public PlayerEditSession Session => this.session;
+        public new PlayerEditSession Session => this.session;
 
         public PlayerColor Color => this.session.Current.Color;
 

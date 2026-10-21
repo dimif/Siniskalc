@@ -1,7 +1,7 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
+    using Siniskalc.Heroes.Data;
 
     /// <summary>
     /// Finds the obelisks the player has visited in a savefile and loads them as an <see cref="ObeliskChunk"/>.

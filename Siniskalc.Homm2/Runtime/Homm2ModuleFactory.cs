@@ -1,8 +1,8 @@
 ﻿namespace Siniskalc.Homm2.Runtime
 {
-    using Siniskalc.Heroes.Data;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;

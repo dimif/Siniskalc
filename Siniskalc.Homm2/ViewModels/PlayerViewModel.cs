@@ -1,10 +1,10 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Core.Data;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -150,6 +150,5 @@
             var player = this.session.Current;
             return !player.IsOut && player.Income[resource] > 0 ? $"+{player.Income[resource]:N0} a day" : string.Empty;
         }
-
     }
 }

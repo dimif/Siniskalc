@@ -1,8 +1,8 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Heroes.Data;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Data;
 
     /// <summary>
     /// Builds a <see cref="SaveDocument"/> from the chunks found in a savefile, giving its collections what they read, write and

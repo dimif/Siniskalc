@@ -26,7 +26,6 @@
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
-
             var changes = new ChangeSink<CastleModel>((change, revert) => this.pendingChanges.ForCastle(current.Name, castleIndex, change, revert));
 
             changes.AddOwner(original.Owner, current.Owner, (c, owner) => c with { Owner = owner });

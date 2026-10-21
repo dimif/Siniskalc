@@ -49,7 +49,6 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.GarrisonedHeroModel?.Army ?? this.Castle.Garrison,
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
-
         }
 
         public int CastleIndex => this.castleIndex;
@@ -212,7 +211,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the command that puts the whole castle back to what the savegame had.
         /// </summary>
-
         private CastleModel Castle { get; set; }
 
         /// <summary>
@@ -261,6 +259,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.DwellingsSummary = $"{waiting:N0} Total";
 
             var maximum = available.Count(b => b.IsMageGuild);
+
             // The rows stay while the castle is edited, so that the list a spell is being picked from is not replaced under the user.
             if (this.MageGuildLevels.Count != maximum || this.MageGuildLevels.Any(row => row.Slots.Count != this.Castle.MageGuildSpells[row.Level - 1].Count))
             {

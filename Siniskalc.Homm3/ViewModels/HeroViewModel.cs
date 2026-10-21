@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the edit session for this hero.
         /// </summary>
-        public HeroEditSession Session => this.session;
+        public new HeroEditSession Session => this.session;
 
         /// <summary>
         /// Gets the hero as it is in the current document.

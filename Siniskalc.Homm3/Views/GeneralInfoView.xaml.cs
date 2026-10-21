@@ -20,7 +20,7 @@
             // Radio groups span the whole window, so each page needs its own or heroes would uncheck each other's machines.
             var artilleryGroup = $"Artillery{Guid.NewGuid():N}";
             this.BallistaRadio.GroupName = artilleryGroup;
-            this.Cannon.GroupName = artilleryGroup;
+            this.Cannon.GroupName = artilleryGroup;
         }
 
         // A radio button cannot be unticked by clicking it, but the ballista or the cannon can be taken away like the other machines.

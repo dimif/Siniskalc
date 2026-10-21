@@ -1,7 +1,8 @@
-using Siniskalc.Heroes.Data;
-using Siniskalc.Heroes.Models;
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Models;
+
     /// <summary>
     /// Where the fields of a hero are in its record, from the start of the record (which is where its header is). The record is 236 bytes
     /// in the base game and 250 in the Price of Loyalty, which adds 14 bytes at its end that the editor leaves as they are.
@@ -33,7 +34,6 @@ namespace Siniskalc.Homm2.Data
         public const int Owner = 3;
 
         // The body. Offsets are from the start of the name, which is 10 bytes into the record.
-
         public const int Name = 10;
         public const int NameLength = 14;
 

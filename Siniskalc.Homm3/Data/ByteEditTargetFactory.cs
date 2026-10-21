@@ -1,8 +1,8 @@
 namespace Siniskalc.Homm3.Data
 {
-    using Siniskalc.Homm3.Models;
     using System;
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Creates the byte edit targets of heroes, players and castles with the region providers they describe their bytes with.

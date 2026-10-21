@@ -1,11 +1,11 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -91,6 +91,7 @@
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
+
             // TODO:LOG warning: the active spell is kept in the view model only, as the savegames do not say where the game keeps it
             this.ActiveSpells = new ActiveSpellsCardViewModel(
             [

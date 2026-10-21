@@ -1,12 +1,12 @@
 namespace Siniskalc.Homm3.Runtime
 {
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Heroes.Data;
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
+    using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Homm3.ViewModels;
 

@@ -23,7 +23,7 @@
     {
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
-        
+
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
         private readonly MapObjectEditSession<BuiltTodayModel>? builtToday;

@@ -6,9 +6,9 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
+    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -46,6 +46,5 @@ namespace Siniskalc.Homm2.ViewModels
                 open,
                 [castle.HasCastle ? "Castle" : "Town"],
                 heroes: CastleHeroRows.For(castle, heroes, openHero));
-
     }
 }

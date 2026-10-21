@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Wpf.ViewModels;
@@ -87,6 +89,18 @@
         /// <summary>
         /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
         /// </summary>
+        /// <summary>
+        /// Returns the entry of each hero <paramref name="owner"/> owns, ordered by name.
+        /// </summary>
+        /// <param name="heroes">The heroes of the savefile.</param>
+        /// <param name="owner">The colour whose heroes are wanted.</param>
+        protected static IReadOnlyList<NavEntry> HeroEntriesOf(IHeroSummaries<TColor> heroes, TColor owner) =>
+            heroes.GetSummaries()
+                .Where(s => s.Owner == owner)
+                .OrderBy(s => s.Name)
+                .Select(s => new NavEntry(s.Index, s.Name, s.Description))
+                .ToList();
+
         protected abstract NavNodeViewModel CreateGroup(NavigationTree tree, TGame game, TColor owner);
 
         // A player is listed when the savefile has data for it or it owns a hero or a castle; what nobody owns comes last, as neutral has the highest code.

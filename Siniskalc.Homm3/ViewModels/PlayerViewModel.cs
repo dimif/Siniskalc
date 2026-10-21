@@ -192,17 +192,8 @@
         private void RefreshOwned()
         {
             var current = this.session.History.Current;
-            this.Heroes = current.Heroes().GetSummaries()
-                .Where(s => s.Owner == this.Color)
-                .OrderBy(s => s.Name)
-                .Select(s => new HeroLinkViewModel(s, new DelegateCommand(_ => this.openHero?.Invoke(s.Index), _ => this.openHero != null)))
-                .ToList();
-            this.Castles = current.Castles().GetModels()
-                .Select((model, index) => (Index: index, Model: model))
-                .Where(c => c.Model.Owner == this.Color)
-                .OrderBy(c => c.Model.Name)
-                .Select(c => CastleLinks.For(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index), _ => this.openCastle != null), CastleHeroRows.For(c.Model, current.Heroes(), this.openHero)))
-                .ToList();
+            this.Heroes = OwnedLinks.Heroes(current.Heroes(), this.Color, this.openHero);
+            this.Castles = CastleLinks.OwnedBy(current, this.Color, this.openCastle, this.openHero);
             this.RaisePropertyChanged(nameof(this.Heroes));
             this.RaisePropertyChanged(nameof(this.HasHeroes));
             this.RaisePropertyChanged(nameof(this.Castles));

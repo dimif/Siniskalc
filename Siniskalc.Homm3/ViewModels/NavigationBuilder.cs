@@ -101,8 +101,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor owner)
         {
-            var summaries = game.History.Current.Heroes().GetSummaries();
-            var heroes = summaries.Where(s => s.Owner == owner).OrderBy(s => s.Name).ToList();
             var castles = game.History.Current.Castles().GetModels()
                 .Select((model, index) => (Index: index, Model: model))
                 .Where(c => c.Model.Owner == owner)
@@ -118,7 +116,7 @@ namespace Siniskalc.Homm3.ViewModels
                 playerIndex,
                 !owner.IsNeutral,
                 string.Empty,
-                heroes.Select(h => new NavEntry(h.Index, h.Name, h.Description)).ToList(),
+                HeroEntriesOf(game.History.Current.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction.Name)).ToList(),
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]));
             if (playerIndex >= 0)

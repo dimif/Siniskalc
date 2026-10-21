@@ -112,17 +112,9 @@ namespace Siniskalc.Homm3.ViewModels
                 var playerIndex = this.game.History.Current.Players().FindByColor(color);
                 var player = playerIndex < 0 ? null : this.game.History.CreatePlayerSession(playerIndex).Current;
                 var resources = player?.Resources;
-                var heroes = summaries
-                    .Where(s => s.Owner == color)
-                    .OrderBy(s => s.Name)
-                    .Select(s => new HeroLinkViewModel(s, new DelegateCommand(_ => this.openHero(s.Index))))
-                    .ToList();
+                var heroes = OwnedLinks.Heroes(this.game.History.Current.Heroes(), color, this.openHero);
                 var open = new DelegateCommand(_ => this.openPlayer(playerIndex), _ => playerIndex >= 0);
-                var ownCastles = castles
-                    .Where(c => c.Model.Owner == color)
-                    .OrderBy(c => c.Model.Name)
-                    .Select(c => CastleLinks.For(c.Model, new DelegateCommand(_ => this.openCastle?.Invoke(c.Index)), CastleHeroRows.For(c.Model, this.game.History.Current.Heroes(), this.openHero)))
-                    .ToList();
+                var ownCastles = CastleLinks.OwnedBy(this.game.History.Current, color, this.openCastle, this.openHero);
                 cards.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 

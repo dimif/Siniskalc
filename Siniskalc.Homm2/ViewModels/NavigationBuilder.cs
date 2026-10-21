@@ -78,7 +78,6 @@
             // A colour is a page of its own (the resources); what nobody owns only holds its heroes and towns.
             var document = game.History.Current;
             var allHeroes = document.Heroes().GetModels();
-            var heroes = allHeroes.Where(h => h.Owner == owner).OrderBy(h => h.Name).ToList();
             var castles = document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == owner).OrderBy(c => c.Name).ToList();
             var castleModels = castles.ToDictionary(c => c.Index);
             var player = owner.IsNeutral ? null : document.Players().GetModel(owner.Code);
@@ -89,7 +88,7 @@
                 owner.IsNeutral ? -1 : owner.Code,
                 !owner.IsNeutral,
                 player == null ? string.Empty : player.IsOut ? "out of the game" : player.DaysLeft is { } days ? $"{days} days left" : string.Empty,
-                heroes.Select(h => new NavEntry(h.Id, h.Name, h.Summary.Description)).ToList(),
+                HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
         }

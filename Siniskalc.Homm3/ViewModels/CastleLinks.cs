@@ -17,6 +17,21 @@ namespace Siniskalc.Homm3.ViewModels
     public static class CastleLinks
     {
         /// <summary>
+        /// Returns the link of each castle <paramref name="owner"/> owns, ordered by name.
+        /// </summary>
+        /// <param name="document">The savefile.</param>
+        /// <param name="owner">The colour whose castles are wanted.</param>
+        /// <param name="openCastle">Opens the page of the castle at an index; the links do nothing without it.</param>
+        /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
+        public static IReadOnlyList<CastleLinkViewModel> OwnedBy(SaveDocument document, PlayerColor owner, Action<int>? openCastle, Action<int>? openHero) =>
+            document.Castles().GetModels()
+                .Select((model, index) => (Index: index, Model: model))
+                .Where(c => c.Model.Owner == owner)
+                .OrderBy(c => c.Model.Name)
+                .Select(c => For(c.Model, new DelegateCommand(_ => openCastle?.Invoke(c.Index), _ => openCastle != null), CastleHeroRows.For(c.Model, document.Heroes(), openHero)))
+                .ToList();
+
+        /// <summary>
         /// Returns the link to a castle, with the hall and fortification that stand in it.
         /// </summary>
         /// <param name="castle">The castle.</param>

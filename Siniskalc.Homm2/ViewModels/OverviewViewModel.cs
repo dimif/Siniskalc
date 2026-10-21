@@ -58,14 +58,13 @@
         public void Refresh()
         {
             var document = this.game.History.Current;
-            var castles = document.Castles().GetModels().Where(c => c.IsUsed).ToList();
             var heroes = document.Heroes().GetModels();
 
             // A colour is in the game when it owns a castle or a hero, or the days of a player that was put out are counted.
             var inGame = document.Players().GetModels()
                 .Where(player => player.CastleIds.Count > 0 || player.HeroIds.Count > 0 || player.DaysLeft != null)
                 .ToList();
-            this.Players = inGame.Select(player => this.CardOf(player, heroes, castles)).ToList();
+            this.Players = inGame.Select(player => this.CardOf(player)).ToList();
             this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(this.OrderItemOf).ToList();
             var owned = heroes.Count(h => !h.Owner.IsNeutral);
             this.Summary = SummaryOf(this.Players.Count, owned, this.DifficultyText);
@@ -90,19 +89,12 @@
                 isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player" : "A computer player: it plays after the humans, and cannot be given the turn");
         }
 
-        private PlayerCardViewModel CardOf(PlayerModel player, IReadOnlyList<HeroModel> allHeroes, IReadOnlyList<CastleModel> allCastles)
+        private PlayerCardViewModel CardOf(PlayerModel player)
         {
             var color = player.Color;
-            var heroes = allHeroes
-                .Where(h => h.Owner == color)
-                .OrderBy(h => h.Name)
-                .Select(h => (ILink)new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.Id))))
-                .ToList();
-            var castles = allCastles
-                .Where(c => c.Owner == color)
-                .OrderBy(c => c.Name)
-                .Select(c => CastleLinks.For(c, this.game.History.Current.Heroes(), new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
-                .ToList();
+            var document = this.game.History.Current;
+            var heroes = OwnedLinks.Heroes(document.Heroes(), color, this.openHero);
+            var castles = CastleLinks.OwnedBy(document, color, this.openCastle, this.openHero);
             return new PlayerCardViewModel(
                 color.ToString(),
                 PlayerPalette.Of(color),

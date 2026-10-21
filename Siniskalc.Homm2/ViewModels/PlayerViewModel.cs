@@ -38,7 +38,7 @@
         private readonly Action<int> openCastle;
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
-        private IReadOnlyList<LinkViewModel> heroes = [];
+        private IReadOnlyList<HeroLinkViewModel> heroes = [];
         private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string status = string.Empty;
 
@@ -98,7 +98,7 @@
         public ObeliskVisitsViewModel Obelisks { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
+        public IReadOnlyList<HeroLinkViewModel> Heroes => this.heroes;
 
         /// <inheritdoc/>
         public IReadOnlyList<CastleLinkViewModel> Castles => this.castles;
@@ -126,25 +126,14 @@
         {
             var document = this.Game.History.Current;
             var player = document.Players().GetModel(this.Color.Code);
-            var allHeroes = document.Heroes().GetModels();
-
             this.status = player.IsOut
                 ? "Out of the game"
                 : player.DaysLeft is { } days ? $"{days} days left to own a castle" : string.Empty;
 
             this.resources.Refresh();
 
-            this.heroes = allHeroes
-                .Where(h => h.Owner == this.Color)
-                .OrderBy(h => h.Name)
-                .Select(h => new LinkViewModel(h.Name, h.Summary.Description, new DelegateCommand(_ => this.openHero(h.Id))))
-                .ToList();
-
-            this.castles = document.Castles().GetModels()
-                .Where(c => c.IsUsed && c.Owner == this.Color)
-                .OrderBy(c => c.Name)
-                .Select(c => CastleLinks.For(c, document.Heroes(), new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
-                .ToList();
+            this.heroes = OwnedLinks.Heroes(document.Heroes(), this.Color, this.openHero);
+            this.castles = CastleLinks.OwnedBy(document, this.Color, this.openCastle, this.openHero);
 
             this.Obelisks?.Refresh();
 

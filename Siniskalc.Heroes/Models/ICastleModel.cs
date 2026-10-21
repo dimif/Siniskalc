@@ -52,6 +52,16 @@ namespace Siniskalc.Heroes.Models
         int? VisitingHeroId { get; }
 
         /// <summary>
+        /// Gets the number of the hero that garrisons the castle, or <c>null</c> (always, in a game whose castles have no garrison hero).
+        /// </summary>
+        int? GarrisonedHeroId { get; }
+
+        /// <summary>
+        /// Gets how many dwellings are built in the castle.
+        /// </summary>
+        int DwellingCount { get; }
+
+        /// <summary>
         /// Gets the level of the Mage Guild, 0 when there is none.
         /// </summary>
         int MageGuildLevel { get; }

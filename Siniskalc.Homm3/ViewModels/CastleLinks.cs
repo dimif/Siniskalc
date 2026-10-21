@@ -54,7 +54,6 @@ namespace Siniskalc.Homm3.ViewModels
                 castle,
                 open,
                 [HallOf(castle), FortOf(castle)],
-                castle.Buildings.Count(b => b.IsDwelling),
                 castle.HasBuilt(Building.Capitol),
                 castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name ?? string.Empty,
                 heroes);

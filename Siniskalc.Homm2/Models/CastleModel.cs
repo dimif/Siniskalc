@@ -50,6 +50,16 @@
         public bool HasCastle => this.Town.HasFlag(TownBuildings.Castle);
 
         /// <summary>
+        /// Gets the number of the hero that garrisons the castle: none, as the castles of Heroes of Might and Magic II have no garrison hero.
+        /// </summary>
+        public int? GarrisonedHeroId => null;
+
+        /// <summary>
+        /// Gets how many of the six dwellings are built, as the dwelling or as an upgrade of it.
+        /// </summary>
+        public int DwellingCount => Enumerable.Range(1, Constants.Castle.DwellingCount).Count(d => this.DwellingLevel(d) > 0);
+
+        /// <summary>
         /// Gets the level of the Mage Guild, 0 when there is none: the number in the bits 16 to 18 of the dwellings.
         /// </summary>
         public int MageGuildLevel => (int)(((uint)this.Dwellings & (uint)Dwellings.MageGuildLevelMask) >> 16);

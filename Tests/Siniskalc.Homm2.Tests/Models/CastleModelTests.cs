@@ -122,6 +122,20 @@
         }
 
         [Test]
+        public void ACastleCountsItsDwellingsAndHasNoGarrisonHero()
+        {
+            var castle = Xabran();
+
+            ICastleModel<PlayerColor, Creature, Faction> shared = castle;
+
+            Assert.That(shared.DwellingCount, Is.EqualTo(Enumerable.Range(1, 6).Count(castle.HasDwelling)));
+            var none = Enumerable.Range(1, 6).Aggregate(castle, (c, d) => c.WithDwelling(d, false));
+            var all = Enumerable.Range(1, 6).Aggregate(castle, (c, d) => c.WithDwelling(d, true));
+            Assert.That((none.DwellingCount, all.DwellingCount), Is.EqualTo((0, 6)));
+            Assert.That(shared.GarrisonedHeroId, Is.Null);
+        }
+
+        [Test]
         public void TheCreaturesOfAnUpgradedDwellingAreTheSameCountAsTheOnesOfTheDwelling()
         {
             var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();

@@ -55,6 +55,11 @@
         : ICastleModel<PlayerColor, Creature, Faction>
     {
         /// <summary>
+        /// Gets how many dwellings are built in the castle.
+        /// </summary>
+        public int DwellingCount => this.Buildings.Count(b => b.IsDwelling);
+
+        /// <summary>
         /// Gets the level of the Mage Guild, 0 when there is none: the highest level among the buildings. The savefile also holds it in a byte of its own.
         /// </summary>
         public int MageGuildLevel => this.Buildings.Where(b => b.IsMageGuild).Select(b => b.MageGuildLevel!.Value).DefaultIfEmpty(0).Max();

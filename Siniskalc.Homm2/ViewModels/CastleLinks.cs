@@ -27,7 +27,6 @@ namespace Siniskalc.Homm2.ViewModels
                 castle,
                 open,
                 [castle.HasCastle ? "Castle" : "Town"],
-                Enumerable.Range(1, Constants.Castle.DwellingCount).Count(d => castle.DwellingLevel(d) > 0),
                 heroes: VisitorOf(castle, heroes, openHero));
 
         private static IReadOnlyList<CastleHeroRowViewModel> VisitorOf(CastleModel castle, IReadOnlyList<HeroModel> heroes, Action<int> openHero) =>

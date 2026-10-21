@@ -41,7 +41,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="castle">The castle.</param>
         /// <param name="open">Opens the page of the castle.</param>
         /// <param name="settlement">What the game calls the settlement, such as "City" and "Citadel", or "Castle".</param>
-        /// <param name="dwellings">How many dwellings are built in the castle.</param>
         /// <param name="isCapital">Whether the castle is a capital, which marks it.</param>
         /// <param name="grailText">The name of the Grail structure that is built, or nothing.</param>
         /// <param name="heroes">The heroes in the castle.</param>
@@ -49,7 +48,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             ICastleModel<TColor, TCreature, TFaction> castle,
             ICommand open,
             IEnumerable<string> settlement,
-            int dwellings,
             bool isCapital = false,
             string grailText = "",
             IReadOnlyList<CastleHeroRowViewModel>? heroes = null)
@@ -61,7 +59,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 " · ",
                 settlement
                     .Append(castle.MageGuildLevel > 0 ? $"Mage Guild {castle.MageGuildLevel}" : string.Empty)
-                    .Append(OverviewText.Count(dwellings, "dwelling", "dwellings"))
+                    .Append(OverviewText.Count(castle.DwellingCount, "dwelling", "dwellings"))
                     .Where(text => text.Length > 0));
             return new CastleLinkViewModel(castle.Name, castle.Faction.Name, open, status, isCapital, grailText, heroes);
         }

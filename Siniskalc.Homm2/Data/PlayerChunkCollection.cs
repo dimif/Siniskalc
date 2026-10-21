@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using System;
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Entities;
@@ -11,15 +12,17 @@
     public sealed class PlayerChunkCollection : ModelChunkCollection<PlayerChunk, PlayerModel, IPlayerDeserializer, IPlayerSerializer>
     {
         private readonly IPlayerDiffer differ;
+        private readonly Func<int, string> heroName;
 
-        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ)
-            : base(chunks, deserializer, serializer, differ.Diff)
+        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ, Func<int, string> heroName)
+            : base(chunks, deserializer, serializer, (index, before, after) => differ.Diff(index, before, after, heroName))
         {
             this.differ = differ;
+            this.heroName = heroName;
         }
 
         /// <inheritdoc/>
-        public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
+        public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ, this.heroName);
 
         public PlayerColor GetColor(int index) => PlayerColor.All[index];
 

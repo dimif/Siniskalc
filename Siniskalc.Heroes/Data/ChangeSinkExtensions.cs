@@ -8,10 +8,12 @@
     using Siniskalc.Heroes.Models;
 
     /// <summary>
-    /// The changes that every game's differs report in the same way: who owns a record, and what is in the slots of an army.
+    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills of a hero, and the resources, the tavern and the countdown of a player.
     /// </summary>
     public static class ChangeSinkExtensions
     {
+        private const string NoHero = "(none)";
+
         /// <summary>
         /// Adds the change of the owner of a record, if the owner differs. The text is "Neutral" or the name of the colour.
         /// </summary>
@@ -98,5 +100,84 @@
                 sink.Add(ChangeAreas.PrimarySkills, "Knowledge", before.Knowledge.ToString(), after.Knowledge.ToString(), model => withSkills(model, getSkills(model) with { Knowledge = before.Knowledge }));
             }
         }
+
+        /// <summary>
+        /// Adds a change for each resource whose amount differs, each put back on its own.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the record that holds the resources.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="before">The resources as loaded.</param>
+        /// <param name="after">The resources now.</param>
+        /// <param name="getResources">Gets the resources of a model.</param>
+        /// <param name="withResources">Returns the model with the given resources.</param>
+        public static void AddResources<TModel>(
+            this ChangeSink<TModel> sink,
+            ResourceSet before,
+            ResourceSet after,
+            Func<TModel, ResourceSet> getResources,
+            Func<TModel, ResourceSet, TModel> withResources)
+        {
+            foreach (var resource in ResourceSet.All)
+            {
+                var (was, now, which) = (before[resource], after[resource], resource);
+                if (was != now)
+                {
+                    sink.Add(ChangeAreas.Resources, which.ToString(), was.ToString("N0"), now.ToString("N0"), model => withResources(model, getResources(model).With(which, was)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds a change for each place of the tavern whose hero differs, with the name of the hero.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the record that holds the tavern.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="before">The tavern as loaded.</param>
+        /// <param name="after">The tavern now.</param>
+        /// <param name="heroName">Gives the name of the hero with an id.</param>
+        /// <param name="getTavern">Gets the tavern of a model.</param>
+        /// <param name="withTavern">Returns the model with the given tavern.</param>
+        public static void AddTavern<TModel>(
+            this ChangeSink<TModel> sink,
+            TavernHeroes before,
+            TavernHeroes after,
+            Func<int, string> heroName,
+            Func<TModel, TavernHeroes> getTavern,
+            Func<TModel, TavernHeroes, TModel> withTavern)
+        {
+            for (var place = 0; place < TavernHeroes.Places; place++)
+            {
+                var (was, now, index) = (before.Ids[place], after.Ids[place], place);
+                if (was != now)
+                {
+                    sink.Add(
+                        ChangeAreas.General,
+                        $"Tavern hero {place + 1}",
+                        was is { } b ? heroName(b) : NoHero,
+                        now is { } a ? heroName(a) : NoHero,
+                        model => withTavern(model, getTavern(model).With(index, was)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds the change of the days a player has left to own a town, if they differ.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the player.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The days as loaded, or <c>null</c> when no countdown ran.</param>
+        /// <param name="after">The days now.</param>
+        /// <param name="withDaysLeft">Returns the model with the given days.</param>
+        public static void AddDaysLeft<TModel>(this ChangeSink<TModel> sink, int? before, int? after, Func<TModel, int?, TModel> withDaysLeft)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Days left without a castle", DaysText(before), DaysText(after), model => withDaysLeft(model, before));
+        }
+
+        private static string DaysText(int? days) => days?.ToString() ?? "not counting";
     }
 }

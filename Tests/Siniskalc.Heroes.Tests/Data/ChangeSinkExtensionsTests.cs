@@ -3,6 +3,7 @@ namespace Siniskalc.Heroes.Tests.Data
     using Siniskalc.Heroes.Tests.Entities;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using static Siniskalc.Heroes.Tests.Data.ArmySamples;
 
@@ -31,6 +32,55 @@ namespace Siniskalc.Heroes.Tests.Data
             var sink = NewSink();
 
             sink.AddOwner<Holder, TestColor>(TestColor.Red, TestColor.Red, (h, owner) => h with { Owner = owner });
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        private sealed record Player(ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft);
+
+        private static ChangeSink<Player> NewPlayerSink() =>
+            new((change, _) => new PendingChange("Player", change, new ChunkKind("Player", 0), 0, _ => { }));
+
+        [Test]
+        public void EachResourceThatDiffersIsListedWithItsAmountsBeforeAndAfter()
+        {
+            var sink = NewPlayerSink();
+            var before = new ResourceSet(1, 2, 3, 4, 5, 6, 1500);
+            var after = before.With(Resource.Gold, 2500).With(Resource.Ore, 9);
+
+            sink.AddResources(before, after, p => p.Resources, (p, resources) => p with { Resources = resources });
+
+            Assert.That(
+                sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)),
+                Is.EquivalentTo(new[] { ("Gold", "1,500", "2,500"), ("Ore", "3", "9") }));
+        }
+
+        [Test]
+        public void EachPlaceOfTheTavernThatDiffersIsListedWithTheNamesOfTheHeroes()
+        {
+            var sink = NewPlayerSink();
+
+            sink.AddTavern(new TavernHeroes(4, null), new TavernHeroes(4, 7), id => $"Hero {id}", p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Tavern hero 2", "(none)", "Hero 7") }));
+        }
+
+        [Test]
+        public void ChangedDaysLeftAreListedAndNoCountdownReadsAsNotCounting()
+        {
+            var sink = NewPlayerSink();
+
+            sink.AddDaysLeft(null, 5, (p, days) => p with { DaysLeft = days });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Days left without a castle", "not counting", "5") }));
+        }
+
+        [Test]
+        public void DaysLeftThatDidNotChangeAreNotListed()
+        {
+            var sink = NewPlayerSink();
+
+            sink.AddDaysLeft(3, 3, (p, days) => p with { DaysLeft = days });
 
             Assert.That(sink.All, Is.Empty);
         }

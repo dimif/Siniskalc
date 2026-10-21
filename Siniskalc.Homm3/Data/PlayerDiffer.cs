@@ -22,47 +22,14 @@
             this.pendingChanges = pendingChanges;
         }
 
-        private const string NoHero = "(none)";
-
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int playerIndex, PlayerModel original, PlayerModel current, Func<int, string> heroName)
         {
-            var changes = new List<PendingChange>();
-
-            foreach (var resource in ResourceSet.All)
-            {
-                var before = original.Resources[resource];
-                var after = current.Resources[resource];
-                if (before == after)
-                {
-                    continue;
-                }
-
-                changes.Add(this.pendingChanges.ForPlayer(
-                    current.Color.ToString(),
-                    playerIndex,
-                    new Change(ChangeAreas.Resources, resource.ToString(), before.ToString("N0"), after.ToString("N0")),
-                    p => p with { Resources = p.Resources.With(resource, before) }));
-            }
-
-            for (var place = 0; place < TavernHeroes.Places; place++)
-            {
-                var before = original.Tavern.Ids[place];
-                var after = current.Tavern.Ids[place];
-                if (before == after)
-                {
-                    continue;
-                }
-
-                var index = place;
-                changes.Add(this.pendingChanges.ForPlayer(
-                    current.Color.ToString(),
-                    playerIndex,
-                    new Change(ChangeAreas.General, $"Tavern hero {place + 1}", before is { } b ? heroName(b) : NoHero, after is { } a ? heroName(a) : NoHero),
-                    p => p with { Tavern = p.Tavern.With(index, before) }));
-            }
-
-            return changes;
+            var changes = new ChangeSink<PlayerModel>((change, revert) => this.pendingChanges.ForPlayer(current.Color.ToString(), playerIndex, change, revert));
+            changes.AddResources(original.Resources, current.Resources, p => p.Resources, (p, resources) => p with { Resources = resources });
+            changes.AddTavern(original.Tavern, current.Tavern, heroName, p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
+            changes.AddDaysLeft(original.DaysLeft, current.DaysLeft, (p, days) => p with { DaysLeft = days });
+            return changes.All;
         }
     }
 }

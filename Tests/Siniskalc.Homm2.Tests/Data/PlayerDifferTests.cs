@@ -25,11 +25,11 @@
             {
                 SelectedHero = p.SelectedHero == 5 ? 6 : 5,
                 SelectedCastle = p.SelectedCastle == 5 ? 6 : 5,
-                Tavern = new TavernHeroes(1, 2) == p.Tavern ? new TavernHeroes(3, 4) : new TavernHeroes(1, 2),
+                Tavern = new TavernHeroes((p.Tavern.First ?? 0) + 1, (p.Tavern.Second ?? 0) + 1),
             });
 
             var changes = this.game.History.GetPendingChanges();
-            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Selected hero", "Selected castle", "Tavern" }));
+            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Selected hero", "Selected castle", "Tavern hero 1", "Tavern hero 2" }));
 
             foreach (var change in changes)
             {

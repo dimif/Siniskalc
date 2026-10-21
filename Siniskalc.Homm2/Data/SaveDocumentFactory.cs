@@ -74,10 +74,11 @@ namespace Siniskalc.Homm2.Data
         /// <inheritdoc/>
         public SaveDocument Create(byte[] bytes, IEnumerable<HeroChunk> heroChunks, IEnumerable<PlayerChunk> playerChunks, IEnumerable<CastleChunk> castleChunks, IEnumerable<ObeliskChunk> obeliskChunks, MapObjectChunks objects)
         {
+            var heroes = new HeroChunkCollection(heroChunks, this.heroDeserializer, this.heroSerializer, this.heroDiffer);
             return Homm2SaveDocuments.Create(
                 bytes,
-                new HeroChunkCollection(heroChunks, this.heroDeserializer, this.heroSerializer, this.heroDiffer),
-                new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer),
+                heroes,
+                new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer, heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}"),
                 new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
                 new ObeliskChunkCollection<PlayerColor>(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
                 new MapObjectChunkCollection<MineModel>(objects.Mines, this.mines),

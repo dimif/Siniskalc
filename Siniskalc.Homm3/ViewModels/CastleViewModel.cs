@@ -125,7 +125,7 @@ namespace Siniskalc.Homm3.ViewModels
         public bool HasGarrisonedHero => this.Castle.GarrisonedHeroId != null;
 
         /// <summary>
-        /// Opens the page of the garrisoned hero.
+        /// Gets the command that opens the page of the garrisoned hero.
         /// </summary>
         public ICommand OpenGarrisonedHeroCommand => this.GarrisonedHeroRow?.OpenCommand ?? NoCommand;
 

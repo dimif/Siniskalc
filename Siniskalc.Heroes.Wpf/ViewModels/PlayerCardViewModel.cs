@@ -74,7 +74,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public bool HasCastles => this.Castles.Count > 0;
 
         /// <summary>
-        /// Opens the player's page. Does nothing for a player without one.
+        /// Gets the command that opens the player's page; it does nothing for a player without one.
         /// </summary>
         public ICommand OpenCommand { get; }
     }

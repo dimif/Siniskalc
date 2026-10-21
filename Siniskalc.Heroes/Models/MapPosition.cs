@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Models
+﻿namespace Siniskalc.Heroes.Models
 {
     /// <summary>
     /// A tile of the map, and the level of the map it is on.
@@ -23,6 +23,7 @@ namespace Siniskalc.Heroes.Models
         /// </summary>
         public static readonly MapPosition None = new(Constants.Map.NoCoordinate, Constants.Map.NoCoordinate, Constants.Map.NoCoordinate);
 
+        /// <inheritdoc/>
         public override string ToString() => this.Level == Above ? $"{this.X},{this.Y}" : $"{this.X},{this.Y},{this.Level}";
     }
 }

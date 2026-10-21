@@ -30,7 +30,15 @@
                 tiles < 0 ? [] : ReadMines(bytes, layout, mapStart, tiles),
                 tiles < 0 ? [] : ReadShrines(bytes, layout, tiles, objects),
                 ReadSphinxes(bytes, mapStart, firstTable, sphinxTiles),
-                [new MapObjectChunk("Current turn", bytes.AsSpan(layout.CurrentHumanStart, 1).ToArray(), layout.CurrentHumanStart, null, 0, PlayerRecordOrder.Pack(PlayerRecordOrder.ColorsOf(bytes, layout)))]);
+                [new MapObjectChunk("Current turn", bytes.AsSpan(layout.CurrentHumanStart, 1).ToArray(), layout.CurrentHumanStart, null, 0, PlayerRecordOrder.Pack(PlayerRecordOrder.ColorsOf(bytes, layout)))],
+                ReadBuiltToday(bytes, mapStart));
+        }
+
+        private static List<MapObjectChunk> ReadBuiltToday(byte[] bytes, int mapStart)
+        {
+            var start = mapStart + MapObjectLayout.BuiltToday;
+            // TODO:LOG Warning: a savegame too short to hold the set of the castles that have built today
+            return start + MapObjectLayout.BuiltTodaySize > bytes.Length ? [] : [new MapObjectChunk("Built this turn", bytes.AsSpan(start, MapObjectLayout.BuiltTodaySize).ToArray(), start, null, 0)];
         }
 
         private static List<MapObjectChunk> ReadMines(byte[] bytes, SaveLayout layout, int mapStart, int tiles)

@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, MapObjectChunkCollection<BuiltTodayModel> builtToday, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -23,6 +23,7 @@ namespace Siniskalc.Homm2.Data
                 [Homm2ChunkKinds.Shrines] = shrines,
                 [Homm2ChunkKinds.Sphinxes] = sphinxes,
                 [Homm2ChunkKinds.Turn] = turn,
+                [Homm2ChunkKinds.BuiltToday] = builtToday,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -41,6 +42,8 @@ namespace Siniskalc.Homm2.Data
         public static MapObjectChunkCollection<SphinxModel> Sphinxes(this SaveDocument document) => (MapObjectChunkCollection<SphinxModel>)document.GetCollection(Homm2ChunkKinds.Sphinxes);
 
         public static MapObjectChunkCollection<TurnModel> Turn(this SaveDocument document) => (MapObjectChunkCollection<TurnModel>)document.GetCollection(Homm2ChunkKinds.Turn);
+
+        public static MapObjectChunkCollection<BuiltTodayModel> BuiltToday(this SaveDocument document) => (MapObjectChunkCollection<BuiltTodayModel>)document.GetCollection(Homm2ChunkKinds.BuiltToday);
 
         public static ObeliskChunkCollection<PlayerColor> Obelisks(this SaveDocument document) => (ObeliskChunkCollection<PlayerColor>)document.GetCollection(Homm2ChunkKinds.Obelisks);
     }

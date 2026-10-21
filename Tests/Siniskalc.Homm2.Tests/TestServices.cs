@@ -58,6 +58,7 @@ namespace Siniskalc.Homm2.Tests
                 new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer(PendingChanges)),
                 new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer(PendingChanges)),
                 new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer(PendingChanges)),
+                new MapObjectKit<BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer(PendingChanges)),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
             new MapObjectsReader());
@@ -71,6 +72,11 @@ namespace Siniskalc.Homm2.Tests
         /// Loads the save of Broken Alliance whose number is <paramref name="number"/>.
         /// </summary>
         public static Game LoadBrokenAlliance(int number) => Load(Saves.BrokenAllianceSave(number));
+
+        /// <summary>
+        /// Loads the save of the folder <paramref name="folder"/> of TestData/Homm2 with this name (without the extension).
+        /// </summary>
+        public static Game LoadNamed(string folder, string name) => Load(Saves.Named(folder, name));
 
         /// <summary>
         /// Loads the save of Threedom whose number is <paramref name="number"/>.

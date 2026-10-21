@@ -27,6 +27,8 @@
                 <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" IsEnabled="{Binding IsBuilt}"
                              Value="{Binding Waiting.Value}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
                              ToolTip="How many creatures wait in the dwelling"/>
+                <TextBlock DockPanel.Dock="Right" Width="80" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding WeeklyGrowthText}"
+                           ToolTip="What the dwelling gains each week, with the Well and the second well"/>
                 <TextBlock DockPanel.Dock="Left" Width="60" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Label}"/>
                 <TextBlock x:Name="creature" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Selected}"/>
             </DockPanel>
@@ -119,7 +121,10 @@
                 <StackPanel Style="{StaticResource TabPanel0}">
                     <WrapPanel Margin="-6,0,0,0">
                         <heroes:HeadedCard Heading="Buildings">
-                            <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+                            <StackPanel>
+                                <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+                                <ContentControl Margin="0,8,0,0" Content="{Binding BuiltThisTurn}" ContentTemplate="{StaticResource ToggleRowTemplate}"/>
+                            </StackPanel>
                         </heroes:HeadedCard>
                         <heroes:HeadedCard Heading="Dwellings">
                             <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingBuiltTemplate}"/>

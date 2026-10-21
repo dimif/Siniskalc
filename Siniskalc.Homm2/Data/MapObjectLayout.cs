@@ -7,6 +7,14 @@ namespace Siniskalc.Homm2.Data
     public static class MapObjectLayout
     {
         /// <summary>
+        /// Where the set of the castles that have built today begins, from the end of the table of castles: a bit for each of the 72 castle
+        /// slots, 9 bytes (seen in the base game and in the Price of Loyalty, at the same distance).
+        /// </summary>
+        public const int BuiltToday = 0x48;
+
+        public const int BuiltTodaySize = 9;
+
+        /// <summary>
         /// Where the list of mines begins, from the end of the table of castles. A record is 7 bytes: the owner (a colour, 0xFF for nobody),
         /// the kind, two bytes of 0xFF, the column, the row and a byte of 0xFF; records that are not mines have other bytes in those places.
         /// </summary>

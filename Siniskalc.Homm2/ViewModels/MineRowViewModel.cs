@@ -31,7 +31,6 @@
 
         public string ResourceName => MineKinds.ResourceOf(this.session.Current.Kind).ToString();
 
-
         public int X => this.session.Current.Position.X;
 
         public int Y => this.session.Current.Position.Y;

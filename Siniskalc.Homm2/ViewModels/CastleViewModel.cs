@@ -26,6 +26,7 @@
         
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
+        private readonly MapObjectEditSession<BuiltTodayModel>? builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
@@ -41,6 +42,13 @@
             this.openHero = openHero;
             this.session = game.History.CreateCastleSession(castleIndex);
             this.castle = this.session.Current;
+            this.builtToday = game.History.Current.BuiltToday().Count > 0 ? game.History.CreateBuiltTodaySession() : null;
+            this.BuiltThisTurn = new ToggleRowViewModel(
+                "Built this turn",
+                () => this.builtToday?.Current.Has(this.CastleIndex) ?? false,
+                built => this.builtToday!.Update(set => set.With(this.CastleIndex, built)),
+                () => this.builtToday != null,
+                toolTip: "The game lets a castle build one thing a day. Tick it to stop the castle from building until the next day, or clear it to let it build again.");
 
             this.GarrisonEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -171,6 +179,11 @@
 
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
+        /// <summary>
+        /// Gets whether the castle has already built something today: the game allows one building a day, and clears this when a new day starts.
+        /// </summary>
+        public ToggleRowViewModel BuiltThisTurn { get; }
+
         public IReadOnlyList<DwellingRowViewModel> Dwellings => this.dwellings;
 
         /// <summary>
@@ -193,6 +206,7 @@
             this.visitingHeroName = this.heroes.FirstOrDefault()?.Name ?? string.Empty;
 
             this.OwnerField?.Refresh();
+            this.BuiltThisTurn?.Refresh();
             this.GuildLevelField?.Refresh();
             this.GarrisonEditor?.Refresh();
             foreach (var building in this.buildings ?? [])
@@ -239,7 +253,8 @@
                     () => this.session.Current.CreaturesWaiting(dwelling),
                     () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).CreaturesWaiting(dwelling),
                     count => this.session.Update(c => c.WithCreaturesWaiting(dwelling, (int)count))),
-                () => this.session.Current.DwellingLevel(dwelling) > 0);
+                () => this.session.Current.DwellingLevel(dwelling) > 0,
+                () => this.session.Current.WeeklyGrowth(dwelling));
         }
 
         private void ChangeOwner(string name)

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -33,7 +33,6 @@ namespace Siniskalc.Homm2.ViewModels
 
         public string Circle => this.session.Current.Circle switch { 1 => "First circle", 2 => "Second circle", _ => "Third circle" };
 
-        
         public string SpellName => this.session.Current.Spell?.Name ?? string.Empty;
 
         public int X => this.session.Current.Position.X;

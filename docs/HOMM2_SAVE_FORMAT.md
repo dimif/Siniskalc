@@ -323,3 +323,21 @@ The riddle and the answers are in the savegame, so they can be read and edited; 
 **Arena and stables.** Both tiles have 0xFA at byte 9 (7 tiles on the map of Threedom: the ones with `F4` at byte 2 and the ones with `F8`; the stables of save 77 is `F8 04`, the arena of save 72 `F4 46`). A visit changes only the hero's bits (0x400000 for the arena, 0x800000 for the stables of the field at +0xD9) and the skill: the map has no mark of who used an arena, so **the memory of an arena is one bit of the hero, not one for each arena**. Whether the game really gives a hero a bonus from each arena was not tried: it would need a hero that has used one arena visit another (probe saves: Charity, who has used the arena at 44, 28, at the arena at 58, 31; Colar Blau at 58, 31 and then at 19, 33).
 
 **The editor now lists them** (the Map page under the game, with a tab for the mines, the shrines and the sphinxes). Two things about the mines: a mine is also a flag on the map. The record's owner is the one the game counts; the flag is a picture (a second object of a tile, or an addon the tile links to) whose number is the first picture of the kind (14 for the mines, 21 for the alchemist's lab, 28 for the sawmill) plus the colour of the owner. The editor writes both, except for the alchemist's lab (the saves have no flag for it, even for the ones Blue captured). The flag of a mine that is nobody's is the empty object (class 0, picture 0xFF). A hero standing on a shrine hides its spell (the tile holds the marker of the hero): the shrine is listed but not editable until it moves.
+
+## Built this turn (2026-10-21)
+
+`TestData/Homm2/BuiltThisTurn`: the game lets a castle build one thing a day. It remembers it in **a set of 72 bits, one for each castle slot, 9 bytes that start 0x48 bytes after the end of the castle table** (table end = first record + 72 x 100): `0x5602` in the base-game map of those saves (108,635 bytes), and the same distance in Threedom (131,550 bytes, `0x58FB`, bit 0 for Hillstone and bit 3 for Whiteshield: `09` after Whiteshield's first build).
+
+- Bit *n* of the set (byte *n* / 8, bit *n* % 8) is set when castle *n* has built today. Blue's Xabran (slot 3) sets 0x08, Orange's Woodhaven (slot 7) sets 0x80, both Corackston (2) and Xabran (3) of one player set 0x0C.
+- A castle that built stays set through the turns of the other players; the whole set is cleared when the day changes, not when the turn does. The castle record itself holds nothing about it (only the building masks change).
+- Confirmed in the saves of Threedom (every build of Hillstone toggles bit 0 and every new day clears it) and in the 15 saves of BuiltThisTurn.
+
+## The Well and the second well (2026-10-21)
+
+`TestData/Homm2/SecondWell`, and the weekly counts of Threedom and BrokenAlliance. The creature counts of a dwelling (+0x1E) change only when a week starts, never when a building is built:
+
+- each week a **built** dwelling gains its creature's weekly growth; an unbuilt dwelling stays at 0 (Xabran, dwellings 3 to 6, with the Well);
+- the **Well** (0x10) adds **+2** to every built dwelling;
+- the **second well of the faction** (0x800: Farm, Garbage Heap, Crystal Garden, Waterfall, Orchard, Skull Pile) adds **+8 to the first dwelling only**.
+
+Seen: Xabran (Knight) 12 + 12 + 2 + 8 = 34 peasants and 8 + 8 + 2 = 18 archers; Hillstone (Necromancer, Threedom save 40) 18 skeletons; the Wizard, Barbarian, Sorceress and Necromancer castles of `second_well_02_next_week` 18 to 20 in the first dwelling and growth + 2 in the others. Confirmed for five factions; the Warlock was in none of these saves.

@@ -196,6 +196,26 @@
             (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
 
         /// <summary>
+        /// Gets how many creatures dwelling <paramref name="dwelling"/> (1 to 6) gains each week: the weekly growth of its creature, +2 from the
+        /// Well and, for the first dwelling, +8 from the second well of the faction. A dwelling that is not built gains nothing (seen in BrokenAlliance
+        /// and Threedom, and in the saves of SecondWell).
+        /// </summary>
+        public int WeeklyGrowth(int dwelling)
+        {
+            RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
+            var level = this.DwellingLevel(dwelling);
+            var creatures = this.Faction == Entities.Faction.Neutral ? [] : Creature.ForFaction(this.Faction).Where(c => c.Tier == dwelling).ToList();
+            if (level == 0 || creatures.Count == 0)
+            {
+                return 0;
+            }
+
+            return creatures[Math.Min(level, creatures.Count) - 1].Info.Growth
+                + (this.Town.HasFlag(TownBuildings.Well) ? Constants.Castle.WellGrowth : 0)
+                + (dwelling == 1 && this.Town.HasFlag(TownBuildings.GrowthBuilding) ? Constants.Castle.SecondWellGrowth : 0);
+        }
+
+        /// <summary>
         /// Gets the creatures that wait in dwelling <paramref name="dwelling"/> (1 to 6), wherever the savegame keeps them for its level.
         /// </summary>
         public int CreaturesWaiting(int dwelling)

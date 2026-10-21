@@ -145,6 +145,16 @@ namespace Siniskalc.Homm2
             /// The most creatures the editor lets wait in a dwelling. The savegame holds more, but the game was only seen with a few dozen.
             /// </summary>
             public const long MaxWaiting = 999;
+
+            /// <summary>
+            /// The creatures the Well adds each week to every dwelling that is built.
+            /// </summary>
+            public const int WellGrowth = 2;
+
+            /// <summary>
+            /// The creatures the second well of the faction (Farm, Skull Pile and so on) adds each week to the first dwelling only.
+            /// </summary>
+            public const int SecondWellGrowth = 8;
         }
     }
 }

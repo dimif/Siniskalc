@@ -23,6 +23,8 @@ namespace Siniskalc.Homm2.Data
 
         public static MapObjectEditSession<TurnModel> CreateTurnSession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.Turn, 0);
 
+        public static MapObjectEditSession<BuiltTodayModel> CreateBuiltTodaySession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.BuiltToday, 0);
+
         public static MapObjectEditSession<SphinxModel> CreateSphinxSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Sphinxes, index);
 
         public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm2ChunkKinds.Obelisks, index);

@@ -38,6 +38,12 @@ namespace Siniskalc.Homm2.Tests
         public static string MarkerFacingSave(int number) =>
             Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2", MarkerFacing), $"marker_facing_{number:00}_*.GX1").Single();
 
+        /// <summary>
+        /// Returns the path of a save of the folder <paramref name="folder"/> of TestData/Homm2, from its name without the extension (any of the game's own).
+        /// </summary>
+        public static string Named(string folder, string name) =>
+            Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2", folder), name + ".G??").Single();
+
         public static IEnumerable<string> All() => Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2"), "*.G??", SearchOption.AllDirectories).OrderBy(f => f, System.StringComparer.Ordinal);
 
         public static IEnumerable<string> AllOfBrokenAlliance() => All().Where(f => f.Contains(BrokenAlliance));

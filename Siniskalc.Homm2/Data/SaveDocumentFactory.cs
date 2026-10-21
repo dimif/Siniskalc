@@ -28,6 +28,7 @@ namespace Siniskalc.Homm2.Data
         private readonly MapObjectKit<ShrineModel> shrines;
         private readonly MapObjectKit<SphinxModel> sphinxes;
         private readonly MapObjectKit<TurnModel> turn;
+        private readonly MapObjectKit<BuiltTodayModel> builtToday;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -47,6 +48,7 @@ namespace Siniskalc.Homm2.Data
             MapObjectKit<ShrineModel> shrines,
             MapObjectKit<SphinxModel> sphinxes,
             MapObjectKit<TurnModel> turn,
+            MapObjectKit<BuiltTodayModel> builtToday,
             ISavefileBytesPatcher patcher)
         {
             this.heroDeserializer = heroDeserializer;
@@ -65,6 +67,7 @@ namespace Siniskalc.Homm2.Data
             this.shrines = shrines;
             this.sphinxes = sphinxes;
             this.turn = turn;
+            this.builtToday = builtToday;
             this.patcher = patcher;
         }
 
@@ -81,6 +84,7 @@ namespace Siniskalc.Homm2.Data
                 new MapObjectChunkCollection<ShrineModel>(objects.Shrines, this.shrines),
                 new MapObjectChunkCollection<SphinxModel>(objects.Sphinxes, this.sphinxes),
                 new MapObjectChunkCollection<TurnModel>(objects.Turn, this.turn),
+                new MapObjectChunkCollection<BuiltTodayModel>(objects.BuiltToday, this.builtToday),
                 this.patcher);
         }
     }

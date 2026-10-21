@@ -48,6 +48,7 @@
                         new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer(pendingChanges)),
                         new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer(pendingChanges)),
                         new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer(pendingChanges)),
+                        new MapObjectKit<BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer(pendingChanges)),
                         bytesPatcher),
                     new MapPlacesReader(),
                     new MapObjectsReader()),

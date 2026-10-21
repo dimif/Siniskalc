@@ -238,9 +238,9 @@
                     Constants.Castle.MinCreatures,
                     Constants.Castle.MaxWaiting,
                     1,
-                    () => this.session.Current.Waiting(dwelling),
-                    () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).Waiting(dwelling),
-                    count => this.session.Update(c => c.WithWaiting(dwelling, (int)count))),
+                    () => this.session.Current.CreaturesWaiting(dwelling),
+                    () => this.Game.History.Original.Castles().GetModel(this.CastleIndex).CreaturesWaiting(dwelling),
+                    count => this.session.Update(c => c.WithCreaturesWaiting(dwelling, (int)count))),
                 () => this.session.Current.DwellingLevel(dwelling) > 0);
         }
 

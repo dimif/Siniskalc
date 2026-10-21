@@ -74,7 +74,7 @@
 
         private static string DwellingText(CastleModel castle, int dwelling) =>
             castle.DwellingLevel(dwelling) switch { 0 => "not built", 1 => "built", 2 => "upgraded", _ => "upgraded twice" }
-            + (castle.DwellingLevel(dwelling) > 0 ? $", {castle.Waiting(dwelling):N0} waiting" : string.Empty);
+            + (castle.DwellingLevel(dwelling) > 0 ? $", {castle.CreaturesWaiting(dwelling):N0} waiting" : string.Empty);
 
         private static string MageGuildText(CastleModel castle) =>
             castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.MageGuildSpellCounts)}";

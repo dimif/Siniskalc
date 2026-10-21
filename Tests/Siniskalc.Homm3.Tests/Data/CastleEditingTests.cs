@@ -103,8 +103,8 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             // The Rampart dwelling of level 1 is still the centaur stables; in Bulwark the colliery is not upgraded yet.
             Assert.That(CastleBuilder.DwellingOf(this.still.Current, 0), Is.EqualTo(Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.SetCreaturesWaiting(c, 0, 99));
-            this.jotunngard.Update(c => CastleBuilder.SetCreaturesWaiting(c, 6, 1234));
+            this.still.Update(c => c.WithCreaturesWaiting(0, 99));
+            this.jotunngard.Update(c => c.WithCreaturesWaiting(6, 1234));
 
             Assert.That(this.history.GetPendingChanges().Select(c => (c.OwnerName, c.Change.Area, c.Change.Description, c.Change.After)), Is.EqualTo(new[]
             {
@@ -132,7 +132,7 @@ namespace Siniskalc.Homm3.Tests.Data
             this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgCentaurStables));
             var moved = this.still.Current.CreaturesAvailable[0];
 
-            this.still.Update(c => CastleBuilder.SetCreaturesWaiting(c, 0, moved + 10));
+            this.still.Update(c => c.WithCreaturesWaiting(0, moved + 10));
 
             Assert.That(this.still.Current.CreaturesAvailable[0], Is.EqualTo(moved + 10));
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Upg. Centaur Stables" }));
@@ -144,10 +144,10 @@ namespace Siniskalc.Homm3.Tests.Data
             var empty = CastleBuilder.Unbuild(this.still.Current, Building.RampartDragonCliffs);
 
             Assert.That(CastleBuilder.DwellingOf(empty, 6), Is.Null);
-            Assert.That(CastleBuilder.CreaturesWaiting(empty, 6), Is.Null);
-            Assert.Throws<GameRuleException>(() => CastleBuilder.SetCreaturesWaiting(empty, 6, 3));
-            Assert.Throws<ArgumentOutOfRangeException>(() => CastleBuilder.SetCreaturesWaiting(this.still.Current, 0, -1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => CastleBuilder.SetCreaturesWaiting(this.still.Current, 0, (int)Constants.Castle.MaxDwellingCreatures + 1));
+            Assert.That(empty.CreaturesWaiting(6), Is.Null);
+            Assert.Throws<GameRuleException>(() => empty.WithCreaturesWaiting(6, 3));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.still.Current.WithCreaturesWaiting(0, -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.still.Current.WithCreaturesWaiting(0, (int)Constants.Castle.MaxDwellingCreatures + 1));
         }
 
         [Test]

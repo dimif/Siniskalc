@@ -261,7 +261,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.BuildingsSummary = $"{built} of {available.Count} buildings built. {disabled} not allowed";
 
             this.Dwellings = this.CreateDwellings(available);
-            var waiting = Enumerable.Range(0, Building.DwellingLevelCount).Sum(level => CastleBuilder.CreaturesWaiting(this.Castle, level) ?? 0);
+            var waiting = Enumerable.Range(0, Building.DwellingLevelCount).Sum(level => this.Castle.CreaturesWaiting(level) ?? 0);
             this.DwellingsSummary = $"{waiting:N0} Total";
 
             var maximum = available.Count(b => b.IsMageGuild);
@@ -413,7 +413,7 @@ namespace Siniskalc.Homm3.ViewModels
 
         private void SetCreaturesWaiting(int level, int count)
         {
-            this.Edit(castle => CastleBuilder.SetCreaturesWaiting(castle, level, count));
+            this.Edit(castle => castle.WithCreaturesWaiting(level, count));
         }
 
         /// <summary>

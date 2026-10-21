@@ -200,7 +200,7 @@
         /// <summary>
         /// Gets the creatures that wait in dwelling <paramref name="dwelling"/> (1 to 6), wherever the savegame keeps them for its level.
         /// </summary>
-        public int Waiting(int dwelling)
+        public int CreaturesWaiting(int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
             return this.CreaturesAvailable[dwelling - 1];
@@ -209,7 +209,7 @@
         /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
         /// </summary>
-        public CastleModel WithWaiting(int dwelling, int count)
+        public CastleModel WithCreaturesWaiting(int dwelling, int count)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
             return this with { CreaturesAvailable = this.CreaturesAvailable.With(dwelling - 1, count) };

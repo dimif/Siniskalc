@@ -34,7 +34,7 @@
         [Test]
         public void ADwellingIsBuiltAndTakenDownWithoutTouchingTheCreaturesThatWait()
         {
-            var before = Xabran().WithWaiting(3, 20);
+            var before = Xabran().WithCreaturesWaiting(3, 20);
 
             var built = before.WithDwelling(3, true);
             Assert.That(built.HasDwelling(3), Is.True);
@@ -141,14 +141,14 @@
             var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();
 
             var hillstone = castles.GetModel(castles.FindByName("Hillstone"));
-            Assert.That((hillstone.DwellingLevel(2), hillstone.Waiting(2), hillstone.CreaturesAvailable[1]), Is.EqualTo((2, 10, 10)));
+            Assert.That((hillstone.DwellingLevel(2), hillstone.CreaturesWaiting(2), hillstone.CreaturesAvailable[1]), Is.EqualTo((2, 10, 10)));
 
-            var upgraded = Xabran().WithWaiting(2, 7).WithDwellingLevel(2, 2);
-            Assert.That((upgraded.Waiting(2), upgraded.CreaturesAvailable[1]), Is.EqualTo((7, 7)));
-            Assert.That(upgraded.WithDwellingLevel(2, 1).Waiting(2), Is.EqualTo(7));
+            var upgraded = Xabran().WithCreaturesWaiting(2, 7).WithDwellingLevel(2, 2);
+            Assert.That((upgraded.CreaturesWaiting(2), upgraded.CreaturesAvailable[1]), Is.EqualTo((7, 7)));
+            Assert.That(upgraded.WithDwellingLevel(2, 1).CreaturesWaiting(2), Is.EqualTo(7));
 
-            var dragons = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1).WithDwellingLevel(6, 2).WithWaiting(6, 3);
-            Assert.That(dragons.WithDwellingLevel(6, 3).Waiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
+            var dragons = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
+            Assert.That(dragons.WithDwellingLevel(6, 3).CreaturesWaiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
         }
     }
 }

@@ -107,15 +107,15 @@ namespace Siniskalc.Homm3.Data
                     continue;
                 }
 
-                var before = CastleBuilder.CreaturesWaiting(original, level)!.Value;
-                var after = CastleBuilder.CreaturesWaiting(current, level)!.Value;
+                var before = original.CreaturesWaiting(level)!.Value;
+                var after = current.CreaturesWaiting(level)!.Value;
                 if (before == after)
                 {
                     continue;
                 }
 
                 var index = level;
-                changes.Add(ChangeAreas.Dwellings, $"{dwelling.Name} creatures", before.ToString("N0"), after.ToString("N0"), c => CastleBuilder.DwellingOf(c, index) == null ? c : CastleBuilder.SetCreaturesWaiting(c, index, before));
+                changes.Add(ChangeAreas.Dwellings, $"{dwelling.Name} creatures", before.ToString("N0"), after.ToString("N0"), c => CastleBuilder.DwellingOf(c, index) == null ? c : c.WithCreaturesWaiting(index, before));
             }
         }
 

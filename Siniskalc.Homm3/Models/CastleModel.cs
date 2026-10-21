@@ -65,6 +65,32 @@
         public int MageGuildLevel => this.Buildings.Where(b => b.IsMageGuild).Select(b => b.MageGuildLevel!.Value).DefaultIfEmpty(0).Max();
 
         /// <summary>
+        /// Returns how many creatures of <paramref name="level"/> (0 to 6) wait in the castle, or null if no dwelling is built for them.
+        /// </summary>
+        public int? CreaturesWaiting(int level) => CastleBuilder.DwellingOf(this, level) == null ? null : this.CreaturesAvailable[level];
+
+        /// <summary>
+        /// Returns the castle with <paramref name="count"/> creatures of <paramref name="level"/> (0 to 6) waiting in the dwelling that
+        /// stands for them. Throws <see cref="GameRuleException"/> if there is no such dwelling.
+        /// </summary>
+        public CastleModel WithCreaturesWaiting(int level, int count)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(
+                count,
+                Constants.Castle.MinDwellingCreatures,
+                Constants.Castle.MaxDwellingCreatures,
+                nameof(count),
+                $"A dwelling holds {Constants.Castle.MinDwellingCreatures} to {Constants.Castle.MaxDwellingCreatures} creatures.");
+
+            if (CastleBuilder.DwellingOf(this, level) == null)
+            {
+                throw new GameRuleException($"No dwelling is built for the creatures of level {level + 1}.");
+            }
+
+            return this with { CreaturesAvailable = this.CreaturesAvailable.With(level, count) };
+        }
+
+        /// <summary>
         /// Returns whether the castle has built <paramref name="building"/>, or a building that replaced it.
         /// </summary>
         public bool HasBuilt(Building building) => this.Buildings.Contains(building);

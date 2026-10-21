@@ -246,36 +246,6 @@ namespace Siniskalc.Homm3.Models
         }
 
         /// <summary>
-        /// Returns how many creatures of <paramref name="level"/> (0 to 6) wait in the castle, or null if no dwelling is built for them.
-        /// </summary>
-        public static int? CreaturesWaiting(CastleModel castle, int level)
-        {
-            var dwelling = DwellingOf(castle, level);
-            return dwelling == null ? null : castle.CreaturesAvailable[level];
-        }
-
-        /// <summary>
-        /// Sets how many creatures of <paramref name="level"/> (0 to 6) wait in the dwelling that stands for them. Throws
-        /// <see cref="GameRuleException"/> if there is no such dwelling.
-        /// </summary>
-        public static CastleModel SetCreaturesWaiting(CastleModel castle, int level, int count)
-        {
-            RangeGuard.ThrowIfOutOfRange<long>(
-                count,
-                Constants.Castle.MinDwellingCreatures,
-                Constants.Castle.MaxDwellingCreatures,
-                nameof(count),
-                $"A dwelling holds {Constants.Castle.MinDwellingCreatures} to {Constants.Castle.MaxDwellingCreatures} creatures.");
-
-            if (DwellingOf(castle, level) == null)
-            {
-                throw new GameRuleException($"No dwelling is built for the creatures of level {level + 1}.");
-            }
-
-            return castle with { CreaturesAvailable = castle.CreaturesAvailable.With(level, count) };
-        }
-
-        /// <summary>
         /// Builds or removes <paramref name="building"/> without asking whether the game allows it, and follows with what the
         /// game does by itself. Used to put a single change back; <see cref="Build"/> and <see cref="Unbuild"/> check first.
         /// </summary>

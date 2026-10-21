@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var original = this.game.History.Current.Castles().GetModel(Xabran);
 
-            this.game.History.CreateCastleSession(Xabran).Update(c => c.WithDwellingLevel(2, 1).WithWaiting(2, 5).WithDwellingLevel(2, 2));
+            this.game.History.CreateCastleSession(Xabran).Update(c => c.WithDwellingLevel(2, 1).WithCreaturesWaiting(2, 5).WithDwellingLevel(2, 2));
 
             var change = this.game.History.GetPendingChanges().Single();
             Assert.That(change.Change.Description, Is.EqualTo("Dwelling 2"));
@@ -37,7 +37,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void ChangingTheCreaturesThatWaitInADwellingIsAChangeOfThatDwelling()
         {
-            this.game.History.CreateCastleSession(Xabran).Update(c => c.WithWaiting(1, 99));
+            this.game.History.CreateCastleSession(Xabran).Update(c => c.WithCreaturesWaiting(1, 99));
 
             var change = this.game.History.GetPendingChanges().Single();
 

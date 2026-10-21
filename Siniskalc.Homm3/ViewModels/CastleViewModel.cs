@@ -213,6 +213,23 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         private CastleModel Castle { get; set; }
 
+        private CastleHeroRowViewModel? GarrisonedHeroRow => this.Heroes.FirstOrDefault(h => h.Role == nameof(CastleHeroRole.Garrisoned));
+
+        private HeroModel? GarrisonedHeroModel
+        {
+            get
+            {
+                if (this.Castle.GarrisonedHeroId is not { } id)
+                {
+                    return null;
+                }
+
+                var heroes = this.history.Current.Heroes();
+                var index = heroes.IndexOfId(id);
+                return index < 0 ? null : heroes.GetModel(index);
+            }
+        }
+
         /// <summary>
         /// Gets the castle as the savegame had it when it was loaded or last saved.
         /// </summary>
@@ -283,21 +300,10 @@ namespace Siniskalc.Homm3.ViewModels
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private CastleHeroRowViewModel? GarrisonedHeroRow => this.Heroes.FirstOrDefault(h => h.Role == nameof(CastleHeroRole.Garrisoned));
-
-        private HeroModel? GarrisonedHeroModel
+        /// <inheritdoc/>
+        protected override void OnHistoryChanged()
         {
-            get
-            {
-                if (this.Castle.GarrisonedHeroId is not { } id)
-                {
-                    return null;
-                }
-
-                var heroes = this.history.Current.Heroes();
-                var index = heroes.IndexOfId(id);
-                return index < 0 ? null : heroes.GetModel(index);
-            }
+            this.Refresh();
         }
 
         /// <summary>
@@ -429,12 +435,6 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             return building.IsUpgradedDwelling ? this.Castle.CreaturesAvailable[building.DwellingLevel!.Value] : null;
-        }
-
-        /// <inheritdoc/>
-        protected override void OnHistoryChanged()
-        {
-            this.Refresh();
         }
     }
 }

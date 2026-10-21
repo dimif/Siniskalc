@@ -122,13 +122,6 @@
             });
         }
 
-        // The savefile holds a coordinate in 16 bits; one that does not fit is refused and not cut.
-        private static short Coordinate(int value, string name)
-        {
-            RangeGuard.ThrowIfOutOfRange<long>(value, short.MinValue, short.MaxValue, name);
-            return (short)value;
-        }
-
         public HeroChunk SerializeDestination(HeroChunk chunk, MapPosition destination)
         {
             return Edit(chunk, buffer =>
@@ -196,13 +189,6 @@
                 buffer[this.heroOffsets[HeroOffsetName.AttributePow]] = SkillByte(primarySkills.SpellPower);
                 buffer[this.heroOffsets[HeroOffsetName.AttributeKno]] = SkillByte(primarySkills.Knowledge);
             });
-        }
-
-        // The savefile holds a skill, with the bonus of the artifacts in it, in a byte; more is refused and not cut.
-        private static byte SkillByte(int value)
-        {
-            RangeGuard.ThrowIfOutOfRange<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxSavedPrimarySkill, "primarySkills");
-            return (byte)value;
         }
 
         public HeroChunk SerializeWarMachines(HeroChunk chunk, IReadOnlyList<WarMachine> warMachines)
@@ -409,6 +395,20 @@
                     buffer[this.heroOffsets[HeroOffsetName.AvailableSpells] + spell.Code] = spellBook.IsAvailable(spell) ? (byte)1 : (byte)0;
                 }
             });
+        }
+
+        // The savefile holds a coordinate in 16 bits; one that does not fit is refused and not cut.
+        private static short Coordinate(int value, string name)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(value, short.MinValue, short.MaxValue, name);
+            return (short)value;
+        }
+
+        // The savefile holds a skill, with the bonus of the artifacts in it, in a byte; more is refused and not cut.
+        private static byte SkillByte(int value)
+        {
+            RangeGuard.ThrowIfOutOfRange<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxSavedPrimarySkill, "primarySkills");
+            return (byte)value;
         }
 
         private static int BitCount(int value) => System.Numerics.BitOperations.PopCount((uint)value);

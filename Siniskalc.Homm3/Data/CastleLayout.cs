@@ -53,11 +53,6 @@ namespace Siniskalc.Homm3.Data
 
         public const int GarrisonCounts = 37;
 
-        /// <summary>
-        /// The garrison: a 32-bit type and a 32-bit count for each of its seven slots.
-        /// </summary>
-        public static readonly ArmyLayout Garrison = new(GarrisonTypes, 4, GarrisonCounts, 4, Constants.CreatureSlotCount, uint.MaxValue);
-
         /// <summary>The length of the name in bytes, as a 16-bit integer. The name follows at <see cref="Name"/>.</summary>
         public const int NameLength = 69;
 
@@ -155,6 +150,11 @@ namespace Siniskalc.Homm3.Data
         private const int TownHallBit = 27;
         private const int CityHallBit = 28;
         private const int CapitolBit = 29;
+
+        /// <summary>
+        /// The garrison: a 32-bit type and a 32-bit count for each of its seven slots.
+        /// </summary>
+        public static ArmyLayout Garrison { get; } = new(GarrisonTypes, 4, GarrisonCounts, 4, Constants.CreatureSlotCount, uint.MaxValue);
 
         /// <summary>
         /// Bits of the building masks that no <see cref="Building"/> stands for but that the game sets together with a building.

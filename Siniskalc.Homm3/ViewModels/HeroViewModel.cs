@@ -290,12 +290,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForHero(this.session);
 
-        private void Update(Func<HeroModel, HeroModel> edit)
-        {
-            // History.Changed refreshes the properties.
-            this.session.Update(edit);
-        }
-
         /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
@@ -323,6 +317,12 @@ namespace Siniskalc.Homm3.ViewModels
             this.SpellsViewModel.Refresh();
 
             this.RaiseAllPropertiesChanged();
+        }
+
+        private void Update(Func<HeroModel, HeroModel> edit)
+        {
+            // History.Changed refreshes the properties.
+            this.session.Update(edit);
         }
     }
 }

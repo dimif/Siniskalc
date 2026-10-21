@@ -39,16 +39,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.banishingText = banishingText;
         }
 
-        /// <inheritdoc/>
-        protected override IReadOnlyList<PlayerColor> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
-
-        /// <inheritdoc/>
-        protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
-
-        // A player is listed when the savefile has the player's data or one of the player's heroes.
-        /// <inheritdoc/>
-        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetColors();
-
         /// <summary>
         /// Shows the crown and the Grail mark of the castles and the days left of the players with no town as they are in
         /// <paramref name="game"/> now, after an edit or an undo.
@@ -70,33 +60,15 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
-        private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
+        /// <inheritdoc/>
+        protected override IReadOnlyList<PlayerColor> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
 
-        private static string GarrisonedHeroName(Game game, CastleModel castle) =>
-            castle.GarrisonedHeroId is { } id ? game.History.Current.Heroes().FindById(id)?.Name ?? $"Unknown hero {id}" : string.Empty;
+        /// <inheritdoc/>
+        protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
-        private void MarkCastle(NavNodeViewModel node, Game game, CastleModel castle)
-        {
-            var badges = new List<NavBadge>();
-            if (castle.HasBuilt(Building.Capitol))
-            {
-                badges.Add(new NavBadge(CapitalBadge, "♛", "Capital", NavBadgeTone.Accent));
-            }
-
-            if (castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name is { } grail)
-            {
-                badges.Add(new NavBadge(GrailBadge, "✦", $"Grail: {grail}", NavBadgeTone.Highlight));
-            }
-
-            var garrisoned = GarrisonedHeroName(game, castle);
-            if (garrisoned.Length > 0)
-            {
-                badges.Add(new NavBadge(GarrisonBadge, "⚔", $"Garrisoned: {garrisoned}", NavBadgeTone.Muted));
-            }
-
-            node.Badges = badges;
-            node.Notes = NotesOf(garrisoned);
-        }
+        // A player is listed when the savefile has the player's data or one of the player's heroes.
+        /// <inheritdoc/>
+        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetColors();
 
         /// <inheritdoc/>
         protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor owner)
@@ -126,6 +98,34 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             return node;
+        }
+
+        private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
+
+        private static string GarrisonedHeroName(Game game, CastleModel castle) =>
+            castle.GarrisonedHeroId is { } id ? game.History.Current.Heroes().FindById(id)?.Name ?? $"Unknown hero {id}" : string.Empty;
+
+        private void MarkCastle(NavNodeViewModel node, Game game, CastleModel castle)
+        {
+            var badges = new List<NavBadge>();
+            if (castle.HasBuilt(Building.Capitol))
+            {
+                badges.Add(new NavBadge(CapitalBadge, "♛", "Capital", NavBadgeTone.Accent));
+            }
+
+            if (castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name is { } grail)
+            {
+                badges.Add(new NavBadge(GrailBadge, "✦", $"Grail: {grail}", NavBadgeTone.Highlight));
+            }
+
+            var garrisoned = GarrisonedHeroName(game, castle);
+            if (garrisoned.Length > 0)
+            {
+                badges.Add(new NavBadge(GarrisonBadge, "⚔", $"Garrisoned: {garrisoned}", NavBadgeTone.Muted));
+            }
+
+            node.Badges = badges;
+            node.Notes = NotesOf(garrisoned);
         }
     }
 }

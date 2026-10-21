@@ -247,6 +247,10 @@
         /// </summary>
         public bool HasSingleBallista => !this.IsHota;
 
+        private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Leadership).Code;
+
+        private int LuckSkillBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Luck).Code;
+
         private HeroModel Hero => this.getHero();
 
         private ArtifactEffectInfo ArtifactEffects => this.Hero.ArtifactEffects;
@@ -320,10 +324,6 @@
             string.Join(", ", parts.Where(p => p.Value != 0).Select(p => $"{p.Name} {FormatSigned(p.Value)}"));
 
         private static string FormatSigned(int value) => value.ToString("+0;-0;+0", System.Globalization.CultureInfo.InvariantCulture);
-
-        private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Leadership).Code;
-
-        private int LuckSkillBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Luck).Code;
 
         private int Clamp(int value) => Math.Clamp(value, -Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck);
 

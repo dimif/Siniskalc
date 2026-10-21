@@ -19,11 +19,6 @@ namespace Siniskalc.Homm3.Data
         public const int HeroIdOffset = 36;
 
         /// <summary>
-        /// Gets where the army is in a hero chunk of this version: a 32-bit type and a 32-bit count for each of its seven slots.
-        /// </summary>
-        public ArmyLayout Army => new(this[HeroOffsetName.Creatures], 4, this[HeroOffsetName.CreaturesAmounts], 4, Constants.CreatureSlotCount, uint.MaxValue);
-
-        /// <summary>
         /// Where the flag of a hero that was put to sleep is in a Shadow of Death hero chunk: the sixth of the twelve bytes after the hero struct,
         /// which <see cref="HeroBytesLoader"/> includes in the chunk of that version (1 for a sleeping hero, 0 for one that is awake).
         /// </summary>
@@ -226,6 +221,11 @@ namespace Siniskalc.Homm3.Data
                 .Where(e => all.ContainsKey(e.Offset))
                 .ToDictionary(e => e.Slot, e => all[e.Offset]));
         }
+
+        /// <summary>
+        /// Gets where the army is in a hero chunk of this version: a 32-bit type and a 32-bit count for each of its seven slots.
+        /// </summary>
+        public ArmyLayout Army => new(this[HeroOffsetName.Creatures], 4, this[HeroOffsetName.CreaturesAmounts], 4, Constants.CreatureSlotCount, uint.MaxValue);
 
         public GameVersion GameVersion { get; }
 

@@ -52,26 +52,6 @@ namespace Siniskalc.Homm3.ViewModels
         public bool HasMap => this.game.Map != null;
 
         /// <summary>
-        /// Returns the size of the map and its number of levels, e.g. "Small (36 x 36) · 2 levels" for a map with an underground.
-        /// </summary>
-        protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
-
-        // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
-        // (see PlayerControlLocator) and writing it is not built.
-        // TODO:LOG info: the turn was asked to be given to a player, and the editor does not write it for this game yet.
-        private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
-        {
-            var isCurrent = this.game.CurrentPlayer == color;
-            var isHuman = this.game.GetControl(color) == PlayerType.Human;
-            return new OrderOfPlayItemViewModel(
-                color.ToString(),
-                PlayerPalette.Of(color),
-                isCurrent,
-                isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
-                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
-        }
-
-        /// <summary>
         /// Gets a note about the heroes that no player owns, or nothing when every hero has an owner.
         /// </summary>
         public string UnownedNote { get; private set; } = string.Empty;
@@ -113,6 +93,26 @@ namespace Siniskalc.Homm3.ViewModels
 
             this.UnownedNote = unowned == 0 ? string.Empty : $"{unowned} more {(unowned == 1 ? "hero belongs" : "heroes belong")} to no player; they are listed under \"Neutral\" on the left.";
             this.RaiseAllPropertiesChanged();
+        }
+
+        /// <summary>
+        /// Returns the size of the map and its number of levels, e.g. "Small (36 x 36) · 2 levels" for a map with an underground.
+        /// </summary>
+        protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
+
+        // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
+        // (see PlayerControlLocator) and writing it is not built.
+        // TODO:LOG info: the turn was asked to be given to a player, and the editor does not write it for this game yet.
+        private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
+        {
+            var isCurrent = this.game.CurrentPlayer == color;
+            var isHuman = this.game.GetControl(color) == PlayerType.Human;
+            return new OrderOfPlayItemViewModel(
+                color.ToString(),
+                PlayerPalette.Of(color),
+                isCurrent,
+                isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
+                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
         }
     }
 }

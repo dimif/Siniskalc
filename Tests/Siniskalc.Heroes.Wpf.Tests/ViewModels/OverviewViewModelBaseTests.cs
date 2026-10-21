@@ -4,6 +4,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Runtime;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
@@ -18,22 +19,32 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             return new Mock<AbstractSavegame>("ignored.GM1", Array.Empty<byte>(), null!, name).Object;
         }
 
+        private static IGameInfo<TestColor> Info(MapHeader? map = null, GameDate? date = null, GameDifficulty? difficulty = null, TestColor? player = null)
+        {
+            var info = new Mock<IGameInfo<TestColor>>();
+            info.Setup(i => i.Map).Returns(map);
+            info.Setup(i => i.Date).Returns(date);
+            info.Setup(i => i.Difficulty).Returns(difficulty);
+            info.Setup(i => i.CurrentPlayer).Returns(player);
+            return info.Object;
+        }
+
         [Test]
         public void ThePageNamesTheFileOfTheSavegameWithoutItsFolder()
         {
-            Assert.That(new TestOverview(Savegame(@"C:\saves\Arrax.GM1")).FileName, Is.EqualTo("Arrax.GM1"));
+            Assert.That(new TestOverview(Savegame(@"C:\saves\Arrax.GM1"), Info()).FileName, Is.EqualTo("Arrax.GM1"));
         }
 
         [Test]
         public void AnUnnamedSavegameIsCalledSavegame()
         {
-            Assert.That(new TestOverview(Savegame(string.Empty)).FileName, Is.EqualTo("Savegame"));
+            Assert.That(new TestOverview(Savegame(string.Empty), Info()).FileName, Is.EqualTo("Savegame"));
         }
 
         [Test]
         public void WhatTheSavefileDoesNotTellIsLeftEmpty()
         {
-            var page = new TestOverview(Savegame("a.GM1"));
+            var page = new TestOverview(Savegame("a.GM1"), Info());
 
             Assert.That(
                 new[] { page.MapName, page.MapDescription, page.MapSizeText, page.MapDifficultyText, page.DateText, page.TurnText },
@@ -44,7 +55,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void TheMapIsDescribedWithItsNameDescriptionSizeAndRating()
         {
-            var page = new TestOverview(Savegame("a.GM1")) { MapHeader = new MapHeader(" Arrax the Jerk ", " A map. ", GameDifficulty.Rook, 36) };
+            var page = new TestOverview(Savegame("a.GM1"), Info(map: new MapHeader(" Arrax the Jerk ", " A map. ", GameDifficulty.Rook, 36)));
 
             Assert.That(
                 (page.MapName, page.MapDescription, page.HasMapDescription, page.MapSizeText, page.MapDifficultyText),
@@ -54,7 +65,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void AGameCanAddToTheSizeOfTheMap()
         {
-            var page = new TestOverview(Savegame("a.GM1")) { MapHeader = new MapHeader("m", string.Empty, GameDifficulty.Pawn, 36), MoreSize = " · 2 levels" };
+            var page = new TestOverview(Savegame("a.GM1"), Info(map: new MapHeader("m", string.Empty, GameDifficulty.Pawn, 36))) { MoreSize = " · 2 levels" };
 
             Assert.That(page.MapSizeText, Is.EqualTo("Small (36 x 36) · 2 levels"));
         }
@@ -62,9 +73,9 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void TheDateTheDifficultyAndTheTurnAreSaidInWords()
         {
-            var page = new TestOverview(Savegame("a.GM1")) { GameDate = new GameDate(5, 4, 6), GameDifficulty = GameDifficulty.Queen, Player = "Tan" };
+            var page = new TestOverview(Savegame("a.GM1"), Info(date: new GameDate(5, 4, 6), difficulty: GameDifficulty.Queen, player: TestColor.Blue));
 
-            Assert.That((page.DateText, page.DifficultyText, page.TurnText), Is.EqualTo(("Month 5, Week 4, Day 6", "Difficulty: Queen (160%)", "Current turn: Tan")));
+            Assert.That((page.DateText, page.DifficultyText, page.TurnText), Is.EqualTo(("Month 5, Week 4, Day 6", "Difficulty: Queen (160%)", "Current turn: Blue")));
         }
 
         [Test]
@@ -73,27 +84,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That(TestOverview.Summarize(1, 3, string.Empty, "Difficulty: King (200%)"), Is.EqualTo("1 player · 3 heroes · Difficulty: King (200%)"));
         }
 
-        private sealed class TestOverview(AbstractSavegame savegame) : OverviewViewModelBase(savegame)
+        private sealed class TestOverview(AbstractSavegame savegame, IGameInfo<TestColor> info) : OverviewViewModelBase<TestColor>(savegame, info)
         {
-            public MapHeader? MapHeader { get; init; }
-
-            public GameDate? GameDate { get; init; }
-
-            public GameDifficulty? GameDifficulty { get; init; }
-
-            public string? Player { get; init; }
-
             public string MoreSize { get; init; } = string.Empty;
 
             public override string VersionName => "Test";
-
-            protected override MapHeader? Map => this.MapHeader;
-
-            protected override GameDate? Date => this.GameDate;
-
-            protected override GameDifficulty? Difficulty => this.GameDifficulty;
-
-            protected override string? CurrentPlayerName => this.Player;
 
             public static string Summarize(int players, int heroes, params string[] more) => SummaryOf(players, heroes, more);
 

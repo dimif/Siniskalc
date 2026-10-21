@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.ViewModels
     /// <summary>
     /// What the savefile contains, with a way into each player and hero.
     /// </summary>
-    public sealed class OverviewViewModel : OverviewViewModelBase
+    public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Action<int>? openCastle;
 
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
-            : base(game)
+            : base(game, game)
         {
             this.game = game;
             this.banishingText = banishingText;
@@ -50,18 +50,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets whether the savefile tells about the map. The other map properties are empty when it does not.
         /// </summary>
         public bool HasMap => this.game.Map != null;
-
-        /// <inheritdoc/>
-        protected override MapHeader? Map => this.game.Map;
-
-        /// <inheritdoc/>
-        protected override GameDate? Date => this.game.Date;
-
-        /// <inheritdoc/>
-        protected override GameDifficulty? Difficulty => this.game.Difficulty;
-
-        /// <inheritdoc/>
-        protected override string? CurrentPlayerName => this.game.CurrentPlayer?.ToString();
 
         /// <summary>
         /// Returns the size of the map and its number of levels, e.g. "Small (36 x 36) · 2 levels" for a map with an underground.
@@ -115,7 +103,7 @@ namespace Siniskalc.Homm3.ViewModels
                 var heroes = OwnedLinks.Heroes(this.game.History.Current.Heroes(), color, this.openHero);
                 var open = new DelegateCommand(_ => this.openPlayer(playerIndex), _ => playerIndex >= 0);
                 var ownCastles = CastleLinks.OwnedBy(this.game.History.Current, color, this.openCastle, this.openHero);
-                cards.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
+                cards.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, this.ControlTextOf(color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
             }
 
             this.Players = cards;

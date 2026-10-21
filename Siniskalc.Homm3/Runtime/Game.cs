@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.Runtime
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Data;
@@ -13,7 +14,7 @@ namespace Siniskalc.Homm3.Runtime
     /// A loaded savefile. Edits go through <see cref="AbstractSavegame.History"/>; <see cref="AbstractSavegame.Bytes"/> holds the loaded bytes.
     /// Loading and saving files is the job of <see cref="GameService"/>.
     /// </summary>
-    public sealed class Game : AbstractSavegame
+    public sealed class Game : AbstractSavegame, IGameInfo<PlayerColor>
     {
         public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata metadata)
             : base(file, bytes, history, name)

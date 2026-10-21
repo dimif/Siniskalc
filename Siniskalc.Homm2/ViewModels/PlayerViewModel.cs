@@ -73,7 +73,7 @@
         /// <summary>
         /// Gets who plays the colour ("Human" or "Computer"), followed by "current turn" when it is the turn of the player.
         /// </summary>
-        public string ControlText => PlayerTypeText.Describe(this.Game.GetControl(this.Color), this.Game.CurrentPlayer == this.Color);
+        public string ControlText => PlayerTypeText.Describe(this.Game, this.Color);
 
         /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.Color);

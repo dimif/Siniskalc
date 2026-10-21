@@ -17,7 +17,7 @@
     /// What the editor shows about the savegame that is open: the map, the date and a card for each player with its castles and heroes.
     /// It reads the models of the current document, so it is up to date after every edit, undo and redo.
     /// </summary>
-    public sealed class OverviewViewModel : OverviewViewModelBase, IDisposable
+    public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>, IDisposable
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -26,7 +26,7 @@
         private readonly Action<int> openCastle;
 
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<PlayerColor> openPlayer, Action<int> openHero, Action<int> openCastle)
-            : base(game)
+            : base(game, game)
         {
             this.game = game;
             this.banishingText = banishingText;
@@ -39,18 +39,6 @@
 
         /// <inheritdoc/>
         public override string VersionName => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
-
-        /// <inheritdoc/>
-        protected override MapHeader? Map => this.game.Map;
-
-        /// <inheritdoc/>
-        protected override GameDate? Date => this.game.Date;
-
-        /// <inheritdoc/>
-        protected override GameDifficulty? Difficulty => this.game.Difficulty;
-
-        /// <inheritdoc/>
-        protected override string? CurrentPlayerName => this.game.CurrentPlayer?.ToString();
 
         /// <summary>
         /// Reads the players again from the current document.
@@ -101,7 +89,7 @@
                 player.Resources,
                 heroes,
                 new DelegateCommand(_ => this.openPlayer(color)),
-                Siniskalc.Heroes.ViewModels.PlayerTypeText.Describe(this.game.GetControl(color), this.game.CurrentPlayer == color),
+                this.ControlTextOf(color),
                 castles: castles,
                 banishingText: this.banishingText.Pill(player),
                 isBanished: player.IsBanished);

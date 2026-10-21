@@ -2,6 +2,7 @@
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -12,7 +13,7 @@
     /// A loaded Heroes of Might and Magic II savefile. Edits go through <see cref="AbstractSavegame.History"/>; <see cref="AbstractSavegame.Bytes"/>
     /// holds the loaded bytes.
     /// </summary>
-    public sealed class Game : AbstractSavegame
+    public sealed class Game : AbstractSavegame, IGameInfo<PlayerColor>
     {
         public Game(string? file, byte[] bytes, SaveLayout layout, SaveDocumentHistory history, SaveMetadata metadata, string? name)
             : base(file, bytes, history, name)
@@ -38,7 +39,7 @@
         /// <summary>
         /// Gets the date in the game when the savefile was made.
         /// </summary>
-        public GameDate Date => this.Metadata.Date;
+        public GameDate? Date => this.Metadata.Date;
 
         /// <summary>
         /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when the savegame does not say.
@@ -60,6 +61,6 @@
         /// <summary>
         /// Gets the difficulty the game was started with.
         /// </summary>
-        public GameDifficulty Difficulty => this.Metadata.Difficulty;
+        public GameDifficulty? Difficulty => this.Metadata.Difficulty;
     }
 }

@@ -22,6 +22,11 @@ namespace Siniskalc.Heroes.Models
         string Name { get; }
 
         /// <summary>
+        /// Gets whether the map uses the castle: a record of the savefile that the map does not use has no name.
+        /// </summary>
+        bool IsUsed { get; }
+
+        /// <summary>
         /// Gets the faction of the town; a savefile number that is no faction reads as the faction <c>Neutral</c>.
         /// </summary>
         TFaction Faction { get; }

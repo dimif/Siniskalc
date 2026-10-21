@@ -24,6 +24,7 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(castle.Faction, Is.SameAs(model.Faction));
             Assert.That((castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((7, 7)));
             Assert.That(castle.Garrison, Is.SameAs(model.Garrison));
+            Assert.That(castle.IsUsed, Is.True);
             Assert.That(castle.DwellingCount, Is.EqualTo(model.Buildings.Count(b => b.IsDwelling)));
             Assert.That(castle.GarrisonedHeroId, Is.EqualTo(model.GarrisonedHeroId));
         }

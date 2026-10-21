@@ -122,6 +122,16 @@
         }
 
         [Test]
+        public void ACastleIsUsedByTheMapWhenItHasANameAndTheTableHoldsRecordsThatAreNot()
+        {
+            var castles = TestServices.LoadBrokenAlliance(10).History.Current.Castles().GetModels();
+
+            Assert.That(((ICastleModel<PlayerColor, Creature, Faction>)Xabran()).IsUsed, Is.True);
+            Assert.That(castles.Count(c => c.IsUsed), Is.GreaterThan(0).And.LessThan(castles.Count));
+            Assert.That(castles.Where(c => !c.IsUsed).Select(c => c.Name), Is.All.Empty);
+        }
+
+        [Test]
         public void ACastleCountsItsDwellingsAndHasNoGarrisonHero()
         {
             var castle = Xabran();

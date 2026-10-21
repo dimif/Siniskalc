@@ -55,6 +55,11 @@
         : ICastleModel<PlayerColor, Creature, Faction>
     {
         /// <summary>
+        /// Gets whether the map uses the castle: it has a name.
+        /// </summary>
+        public bool IsUsed => this.Name.Length > 0;
+
+        /// <summary>
         /// Gets how many dwellings are built in the castle.
         /// </summary>
         public int DwellingCount => this.Buildings.Count(b => b.IsDwelling);

@@ -10,7 +10,7 @@ namespace Siniskalc.Core.Data
     /// </summary>
     /// <typeparam name="TChunk">The chunk of the struct.</typeparam>
     /// <typeparam name="TModel">The model of the struct that is edited, which the session reads from the chunk and writes back.</typeparam>
-    public class EditSession<TChunk, TModel>
+    public class EditSession<TChunk, TModel> : IEditSession<TModel>
         where TChunk : BytesChunk
         where TModel : class
     {
@@ -56,6 +56,11 @@ namespace Siniskalc.Core.Data
         /// Gets the chunk as it was when the savefile was loaded or last saved.
         /// </summary>
         public TChunk OriginalChunk => this.History.Original.GetChunks<TChunk>(this.Kind)[this.Index];
+
+        /// <summary>
+        /// Gets the model of the chunk as it was loaded or last saved.
+        /// </summary>
+        public TModel Original => this.deserializer.Deserialize(this.OriginalChunk);
 
         /// <summary>
         /// Gets whether the struct differs from the savefile as it was loaded or last saved.

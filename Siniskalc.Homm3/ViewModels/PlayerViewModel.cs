@@ -18,7 +18,7 @@
     /// ViewModel that wraps a player for UI binding. Like <see cref="HeroViewModel"/>, it reads from a
     /// <see cref="PlayerEditSession"/>, writes every change back through it, and refreshes when the history changes.
     /// </summary>
-    public sealed class PlayerViewModel : ResettablePageViewModelBase, IPlayerPage
+    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage
     {
         private static readonly ResourceLimits Limits = new(
             Constants.Resources.Min,
@@ -37,7 +37,7 @@
         private readonly Action<int>? openCastle;
 
         public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
-            : base(session.Current.Color.ToString(), session.History)
+            : base(session.Current.Color.ToString(), session)
         {
             this.session = session;
             this.byteEditTargets = byteEditTargets;
@@ -49,7 +49,7 @@
                 ResourceSet.All.OrderBy(resource => resource != Resource.Gold),
                 Limits,
                 () => this.session.Current.Resources,
-                () => this.Original.Resources,
+                () => this.Session.Original.Resources,
                 edit => this.session.Update(player => player with { Resources = edit(player.Resources) }));
             this.DayChoices = Enumerable.Range(Constants.Player.MinDaysLeft + 1, Constants.Player.MaxDaysLeft - Constants.Player.MinDaysLeft)
                 .Reverse()
@@ -152,8 +152,6 @@
         /// <summary>
         /// Gets the player as the savefile had it when it was loaded or last saved.
         /// </summary>
-        private PlayerModel Original => this.session.History.Original.Players().GetModel(this.session.PlayerIndex);
-
         /// <summary>
         /// Creates the raw bytes of the player for the hex editor. The caller owns the target and disposes it.
         /// </summary>
@@ -162,8 +160,6 @@
         /// <summary>
         /// Gives the player <paramref name="amount"/> more of each resource of the rows, up to the most a resource can hold.
         /// </summary>
-        protected override void Reset() => this.session.Update(_ => this.Original);
-
         /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
@@ -210,11 +206,6 @@
             {
                 choice.Refresh();
             }
-        }
-
-        private void UpdateIsDirty()
-        {
-            this.HasPendingChanges = this.session.IsDirty;
         }
     }
 }

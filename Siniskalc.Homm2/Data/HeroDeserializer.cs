@@ -17,9 +17,6 @@
         /// <inheritdoc/>
         public PlayerColor DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
 
-        // The heroes of each faction are numbered together, nine at a time; a number past the last faction belongs to the last one.
-        private static Faction FactionOf(int heroId) => Faction.All[Math.Min(heroId / Constants.Hero.PerFaction, Faction.All.Count - 1)];
-
         /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
         {
@@ -64,5 +61,8 @@
                     chunk.GetUInt32At(HeroLayout.VisitedXanadu)),
             };
         }
+
+        // The heroes of each faction are numbered together, nine at a time; a number past the last faction belongs to the last one.
+        private static Faction FactionOf(int heroId) => Faction.All[Math.Min(heroId / Constants.Hero.PerFaction, Faction.All.Count - 1)];
     }
 }

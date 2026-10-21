@@ -77,43 +77,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.CanRemove = remove != null;
         }
 
-        /// <summary>
-        /// Makes the card of where a hero stands, with the direction it faces when the game gives one.
-        /// </summary>
-        /// <param name="get">Reads the position of the hero.</param>
-        /// <param name="set">Writes it.</param>
-        /// <param name="coordinates">The limits of a column and a row.</param>
-        /// <param name="levelChoices">Gives the levels of the map to pick from for the level the point is on now, or <c>null</c> in a game whose map has one level.</param>
-        /// <param name="getFacing">Reads the direction the hero faces, or <c>null</c> when the game has none.</param>
-        /// <param name="setFacing">Writes it.</param>
-        public static MapPointCardViewModel ForPosition(
-            Func<MapPosition> get,
-            Action<MapPosition> set,
-            NumberRange coordinates,
-            Func<int, IReadOnlyList<MapLevelChoice>>? levelChoices = null,
-            Func<FacingDirection>? getFacing = null,
-            Action<FacingDirection>? setFacing = null)
-        {
-            return Build("Position", get, set, coordinates, levelChoices, getFacing, setFacing, takeAway: false);
-        }
-
-        /// <summary>
-        /// Makes the card of the destination of a hero: the tile it is going to, which the game marks on the map. It can be taken away, which
-        /// sets every part of it to -1 (the game's "none").
-        /// </summary>
-        /// <param name="get">Reads the destination, <see cref="MapPosition.None"/> when there is none.</param>
-        /// <param name="set">Writes it.</param>
-        /// <param name="coordinates">The limits of a column and a row; the lowest is -1 for none.</param>
-        /// <param name="levelChoices">Gives the levels of the map to pick from for the level the point is on now, or <c>null</c> in a game whose map has one level.</param>
-        public static MapPointCardViewModel ForDestination(
-            Func<MapPosition> get,
-            Action<MapPosition> set,
-            NumberRange coordinates,
-            Func<int, IReadOnlyList<MapLevelChoice>>? levelChoices = null)
-        {
-            return Build("Destination", get, set, coordinates, levelChoices, null, null, takeAway: true);
-        }
-
         public string Heading { get; }
 
         public NumberRange Coordinates { get; }
@@ -180,6 +143,43 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public ICommand RemoveCommand { get; }
 
         public string RemoveToolTip { get; }
+
+        /// <summary>
+        /// Makes the card of where a hero stands, with the direction it faces when the game gives one.
+        /// </summary>
+        /// <param name="get">Reads the position of the hero.</param>
+        /// <param name="set">Writes it.</param>
+        /// <param name="coordinates">The limits of a column and a row.</param>
+        /// <param name="levelChoices">Gives the levels of the map to pick from for the level the point is on now, or <c>null</c> in a game whose map has one level.</param>
+        /// <param name="getFacing">Reads the direction the hero faces, or <c>null</c> when the game has none.</param>
+        /// <param name="setFacing">Writes it.</param>
+        public static MapPointCardViewModel ForPosition(
+            Func<MapPosition> get,
+            Action<MapPosition> set,
+            NumberRange coordinates,
+            Func<int, IReadOnlyList<MapLevelChoice>>? levelChoices = null,
+            Func<FacingDirection>? getFacing = null,
+            Action<FacingDirection>? setFacing = null)
+        {
+            return Build("Position", get, set, coordinates, levelChoices, getFacing, setFacing, takeAway: false);
+        }
+
+        /// <summary>
+        /// Makes the card of the destination of a hero: the tile it is going to, which the game marks on the map. It can be taken away, which
+        /// sets every part of it to -1 (the game's "none").
+        /// </summary>
+        /// <param name="get">Reads the destination, <see cref="MapPosition.None"/> when there is none.</param>
+        /// <param name="set">Writes it.</param>
+        /// <param name="coordinates">The limits of a column and a row; the lowest is -1 for none.</param>
+        /// <param name="levelChoices">Gives the levels of the map to pick from for the level the point is on now, or <c>null</c> in a game whose map has one level.</param>
+        public static MapPointCardViewModel ForDestination(
+            Func<MapPosition> get,
+            Action<MapPosition> set,
+            NumberRange coordinates,
+            Func<int, IReadOnlyList<MapLevelChoice>>? levelChoices = null)
+        {
+            return Build("Destination", get, set, coordinates, levelChoices, null, null, takeAway: true);
+        }
 
         /// <summary>
         /// Shows the hero again. Call after the hero changed.

@@ -96,11 +96,6 @@ namespace Siniskalc.Homm2.Data
         public const int ArmyCounts = Name + 0x60;
 
         /// <summary>
-        /// The army: a byte for the type and 16 bits for the count of each of its five slots.
-        /// </summary>
-        public static readonly ArmyLayout Army = new(ArmyTypes, 1, ArmyCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
-
-        /// <summary>
         /// The level of each secondary skill, a byte each, by the number of the skill.
         /// </summary>
         public const int SkillLevels = Name + 0x6A;
@@ -124,5 +119,10 @@ namespace Siniskalc.Homm2.Data
         /// The size of the part that is the same in both versions of the game.
         /// </summary>
         public const int SharedLength = Name + 0xD9;
+
+        /// <summary>
+        /// The army: a byte for the type and 16 bits for the count of each of its five slots.
+        /// </summary>
+        public static ArmyLayout Army { get; } = new(ArmyTypes, 1, ArmyCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
     }
 }

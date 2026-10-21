@@ -73,11 +73,6 @@ namespace Siniskalc.Homm2.Data
 
         public const int TileQuantity = 4;
 
-        /// <summary>
-        /// The block that starts the data of an object with state: 1234 as 32 bits, then the length of the payload in 16 bits.
-        /// </summary>
-        public static readonly byte[] BlockMarker = [0xD2, 0x04, 0x00, 0x00];
-
         public const int BlockHeader = 6;
 
         // The payload of a sphinx: the riddle is answered when the first byte is 0, then the 7 resources, the artifact, the answers and the riddle.
@@ -96,5 +91,10 @@ namespace Siniskalc.Homm2.Data
         public const int SphinxAnswerSize = 13;
 
         public const int SphinxRiddle = 136;
+
+        /// <summary>
+        /// The block that starts the data of an object with state: 1234 as 32 bits, then the length of the payload in 16 bits.
+        /// </summary>
+        public static byte[] BlockMarker { get; } = [0xD2, 0x04, 0x00, 0x00];
     }
 }

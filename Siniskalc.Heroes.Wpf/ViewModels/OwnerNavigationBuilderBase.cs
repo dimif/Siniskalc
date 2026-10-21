@@ -55,15 +55,30 @@
             this.AddExtraNodes(tree, game, overview);
         }
 
+        /// <inheritdoc/>
+        public abstract void RefreshMarks(NavigationTree tree, TGame game);
+
+        /// <summary>
+        /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
+        /// </summary>
+        /// <summary>
+        /// Returns the entry of each hero <paramref name="owner"/> owns, ordered by name.
+        /// </summary>
+        /// <param name="heroes">The heroes of the savefile.</param>
+        /// <param name="owner">The colour whose heroes are wanted.</param>
+        protected static IReadOnlyList<NavEntry> HeroEntriesOf(IHeroSummaries<TColor> heroes, TColor owner) =>
+            heroes.GetSummaries()
+                .Where(s => s.Owner == owner)
+                .OrderBy(s => s.Name)
+                .Select(s => new NavEntry(s.Index, s.Name, s.Description))
+                .ToList();
+
         /// <summary>
         /// Adds the nodes a game has besides its players, under the node of the game. None by default.
         /// </summary>
         protected virtual void AddExtraNodes(NavigationTree tree, TGame game, NavNodeViewModel overview)
         {
         }
-
-        /// <inheritdoc/>
-        public abstract void RefreshMarks(NavigationTree tree, TGame game);
 
         /// <summary>
         /// Gets the owner of each castle of the savefile, in the order of the castles.
@@ -84,21 +99,6 @@
         /// Gets the colours of the players the savefile has data for. A player listed here has a node, whether it owns anything or not.
         /// </summary>
         protected abstract IEnumerable<TColor> PlayersInGame(TGame game);
-
-        /// <summary>
-        /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
-        /// </summary>
-        /// <summary>
-        /// Returns the entry of each hero <paramref name="owner"/> owns, ordered by name.
-        /// </summary>
-        /// <param name="heroes">The heroes of the savefile.</param>
-        /// <param name="owner">The colour whose heroes are wanted.</param>
-        protected static IReadOnlyList<NavEntry> HeroEntriesOf(IHeroSummaries<TColor> heroes, TColor owner) =>
-            heroes.GetSummaries()
-                .Where(s => s.Owner == owner)
-                .OrderBy(s => s.Name)
-                .Select(s => new NavEntry(s.Index, s.Name, s.Description))
-                .ToList();
 
         protected abstract NavNodeViewModel CreateGroup(NavigationTree tree, TGame game, TColor owner);
 

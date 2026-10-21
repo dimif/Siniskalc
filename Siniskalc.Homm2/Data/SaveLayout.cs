@@ -72,6 +72,11 @@ namespace Siniskalc.Homm2.Data
         public int MapDescriptionStart => HeaderLayout.MapDescription + this.MarkerLength;
 
         /// <summary>
+        /// Gets the size the savegame has at least: the end of the table of castles.
+        /// </summary>
+        public int MinimumLength => this.CastleStart(Constants.Table.CastleSlotCount);
+
+        /// <summary>
         /// Gets the position in the savefile of the record of the player at <paramref name="index"/>.
         /// </summary>
         public int PlayerStart(int index) => this.PlayerTableStart + (index * PlayerLayout.RecordSize);
@@ -85,10 +90,5 @@ namespace Siniskalc.Homm2.Data
         /// Gets the position in the savefile of the record of the castle at <paramref name="index"/>.
         /// </summary>
         public int CastleStart(int index) => this.CastleTableStart + (index * CastleLayout.RecordSize);
-
-        /// <summary>
-        /// Gets the size the savegame has at least: the end of the table of castles.
-        /// </summary>
-        public int MinimumLength => this.CastleStart(Constants.Table.CastleSlotCount);
     }
 }

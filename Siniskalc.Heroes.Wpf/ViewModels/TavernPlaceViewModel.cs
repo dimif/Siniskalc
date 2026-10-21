@@ -34,31 +34,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.Refresh();
         }
 
-        /// <summary>
-        /// Makes the two places of the tavern of a player, each with the heroes it can be given to.
-        /// </summary>
-        /// <typeparam name="TColor">The colour of the game.</typeparam>
-        /// <param name="getTavern">Gives the tavern of the player as the savefile stands now.</param>
-        /// <param name="updateTavern">Changes the tavern of the player.</param>
-        /// <param name="heroes">Gives the heroes of the savefile as it stands now.</param>
-        /// <param name="openHero">Opens the page of the hero with this id; the links do nothing without it.</param>
-        public static IReadOnlyList<TavernPlaceViewModel> ForTavern<TColor>(
-            Func<TavernHeroes> getTavern,
-            Action<Func<TavernHeroes, TavernHeroes>> updateTavern,
-            Func<IHeroSummaries<TColor>> heroes,
-            Action<int>? openHero)
-            where TColor : class, IPlayerColor
-        {
-            return Enumerable.Range(0, TavernHeroes.Places)
-                .Select(place => new TavernPlaceViewModel(
-                    place == 0 ? "First hero" : "Second hero",
-                    () => TavernChoices.For(getTavern(), place, heroes().GetSummaries()),
-                    () => getTavern().Ids[place],
-                    heroId => updateTavern(tavern => tavern.With(place, heroId)),
-                    openHero))
-                .ToList();
-        }
-
         public string Label { get; }
 
         /// <summary>
@@ -100,6 +75,31 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                     this.setHeroId(heroId);
                 }
             }
+        }
+
+        /// <summary>
+        /// Makes the two places of the tavern of a player, each with the heroes it can be given to.
+        /// </summary>
+        /// <typeparam name="TColor">The colour of the game.</typeparam>
+        /// <param name="getTavern">Gives the tavern of the player as the savefile stands now.</param>
+        /// <param name="updateTavern">Changes the tavern of the player.</param>
+        /// <param name="heroes">Gives the heroes of the savefile as it stands now.</param>
+        /// <param name="openHero">Opens the page of the hero with this id; the links do nothing without it.</param>
+        public static IReadOnlyList<TavernPlaceViewModel> ForTavern<TColor>(
+            Func<TavernHeroes> getTavern,
+            Action<Func<TavernHeroes, TavernHeroes>> updateTavern,
+            Func<IHeroSummaries<TColor>> heroes,
+            Action<int>? openHero)
+            where TColor : class, IPlayerColor
+        {
+            return Enumerable.Range(0, TavernHeroes.Places)
+                .Select(place => new TavernPlaceViewModel(
+                    place == 0 ? "First hero" : "Second hero",
+                    () => TavernChoices.For(getTavern(), place, heroes().GetSummaries()),
+                    () => getTavern().Ids[place],
+                    heroId => updateTavern(tavern => tavern.With(place, heroId)),
+                    openHero))
+                .ToList();
         }
 
         /// <summary>

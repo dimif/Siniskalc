@@ -46,6 +46,13 @@
         /// </summary>
         public PlayerColor? CurrentPlayer => this.History.Current.Turn().GetModel(0) is { Color: { } color } && this.GetControl(color) == PlayerType.Human ? color : null;
 
+        public MapHeader Map => this.Metadata.Map;
+
+        /// <summary>
+        /// Gets the difficulty the game was started with.
+        /// </summary>
+        public GameDifficulty? Difficulty => this.Metadata.Difficulty;
+
         /// <summary>
         /// Gets the number of the record of a player in the table of players, which is what the savegame keeps of whose turn it is.
         /// </summary>
@@ -55,12 +62,5 @@
         /// Gets who plays a colour: a human, the computer, or nobody (the colour is not in the game). <c>null</c> when the savegame does not say.
         /// </summary>
         public PlayerType? GetControl(PlayerColor color) => this.Metadata.PlayerControls is { } controls && color.Code < controls.Count ? controls[color.Code] : null;
-
-        public MapHeader Map => this.Metadata.Map;
-
-        /// <summary>
-        /// Gets the difficulty the game was started with.
-        /// </summary>
-        public GameDifficulty? Difficulty => this.Metadata.Difficulty;
     }
 }

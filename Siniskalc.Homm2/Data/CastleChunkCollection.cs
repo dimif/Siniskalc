@@ -23,9 +23,6 @@
         /// <inheritdoc/>
         public override CastleChunkCollection WithChunk(int index, CastleChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
-        /// <inheritdoc/>
-        protected override bool IsNamed(CastleChunk chunk) => chunk.Name.Length > 0;
-
         /// <summary>
         /// Returns the numbers of the castles the map uses.
         /// </summary>
@@ -35,5 +32,8 @@
         /// Returns the player who owns each castle (<c>null</c> for nobody), by castle number.
         /// </summary>
         public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
+
+        /// <inheritdoc/>
+        protected override bool IsNamed(CastleChunk chunk) => chunk.Name.Length > 0;
     }
 }

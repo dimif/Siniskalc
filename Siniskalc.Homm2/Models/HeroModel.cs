@@ -67,6 +67,11 @@
         public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.Spells];
 
         /// <summary>
+        /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.
+        /// </summary>
+        public bool HasSpellBook => this.Artifacts.HasMagicBook;
+
+        /// <summary>
         /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
         /// </summary>
         public HeroModel WithLevel(int level)
@@ -99,11 +104,6 @@
         /// is cleared; the tile it stands on is left as the game leaves it (a defeated hero keeps the tile it fell on).
         /// </summary>
         public HeroModel WithOwner(PlayerColor owner) => owner.IsNeutral ? this with { Owner = owner, Destination = MapPosition.None } : this with { Owner = owner };
-
-        /// <summary>
-        /// Gets a value indicating whether the hero has a spell book: the Magic Book is one of its artifacts.
-        /// </summary>
-        public bool HasSpellBook => this.Artifacts.HasMagicBook;
 
         /// <summary>
         /// Returns the hero with <paramref name="artifact"/> in <paramref name="slot"/> (or the slot emptied for <c>null</c>). The

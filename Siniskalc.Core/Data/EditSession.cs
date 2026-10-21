@@ -115,6 +115,10 @@ namespace Siniskalc.Core.Data
             this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())));
         }
 
+        private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
+            history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
+            ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
+
         private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk)
         {
             if (newChunk.HasSameBytes(chunk))
@@ -124,10 +128,6 @@ namespace Siniskalc.Core.Data
 
             this.History.Apply(document.WithChunk(this.Kind, this.Index, newChunk));
         }
-
-        private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
-            history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
-            ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
 
         private sealed record Cache(SaveDocument Document, TModel Model);
     }

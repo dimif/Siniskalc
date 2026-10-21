@@ -49,9 +49,9 @@
         {
         }
 
+        public static IReadOnlyList<CreatureAbility> All => GetAll<CreatureAbility>();
+
         /// <inheritdoc/>
         public bool IsRanged => this == Ranged;
-
-        public static IReadOnlyList<CreatureAbility> All => GetAll<CreatureAbility>();
     }
 }

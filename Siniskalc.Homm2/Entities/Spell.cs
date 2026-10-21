@@ -86,6 +86,8 @@ namespace Siniskalc.Homm2.Entities
             this.Group = group;
         }
 
+        public static IReadOnlyList<Spell> All => GetAll<Spell>();
+
         /// <summary>
         /// Gets how many spell points casting the spell costs.
         /// </summary>
@@ -103,8 +105,6 @@ namespace Siniskalc.Homm2.Entities
         /// Gets the kind of spell some creatures resist: mind spells (the giants and the titans are immune to them) or elemental spells.
         /// </summary>
         public SpellGroup Group { get; }
-
-        public static IReadOnlyList<Spell> All => GetAll<Spell>();
 
         public static Spell? FromByte(byte code) => FromCode<Spell>(code);
 

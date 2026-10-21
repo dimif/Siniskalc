@@ -31,15 +31,15 @@
         : PlayerModelBase<PlayerColor>(Color, Resources, Tavern, DaysLeft)
     {
         /// <summary>
-        /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.
-        /// </summary>
-        public bool IsOut => this.DaysLeft == 0 && this.CastleIds.Count == 0 && this.HeroIds.Count == 0;
-
-        /// <summary>
         /// The days a player has to own a castle again once the last one is lost (7 in the savegames: the day after the last castle of
         /// Blue was taken the count was 7, and the player is out of the game when it reaches 0).
         /// </summary>
         public const int DaysToOwnACastle = Heroes.Constants.Player.MaxDaysLeft;
+
+        /// <summary>
+        /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.
+        /// </summary>
+        public bool IsOut => this.DaysLeft == 0 && this.CastleIds.Count == 0 && this.HeroIds.Count == 0;
 
         /// <summary>
         /// Returns the player with the hero in its list of heroes.

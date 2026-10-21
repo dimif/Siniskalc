@@ -20,8 +20,6 @@
             [Faction.Necromancer] = "Skull Pile",
         };
 
-        public static string SecondWellOf(Faction faction) => SecondWellNames.TryGetValue(faction, out var name) ? name : "Second well";
-
         /// <summary>
         /// Returns the name of the special building of the faction (<see cref="TownBuildings.Special"/>).
         /// </summary>
@@ -34,6 +32,8 @@
             [Faction.Wizard] = "Library",
             [Faction.Necromancer] = "Storm",
         };
+
+        public static string SecondWellOf(Faction faction) => SecondWellNames.TryGetValue(faction, out var name) ? name : "Second well";
 
         public static string SpecialOf(Faction faction) => SpecialNames.TryGetValue(faction, out var name) ? name : "Special building";
     }

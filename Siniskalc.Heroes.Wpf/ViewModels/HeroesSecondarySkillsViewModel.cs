@@ -43,6 +43,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected TSkills Skills => this.getSkills();
 
+        /// <inheritdoc/>
+        protected override int UsedSlots => this.Skills.SlotCount;
+
         /// <summary>
         /// Replaces the skills with what <paramref name="edit"/> makes of them.
         /// </summary>
@@ -54,9 +57,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="name">The name of the skill.</param>
         protected TSkill Find(string name) => this.knownSkills.First(s => s.Name == name);
-
-        /// <inheritdoc/>
-        protected override int UsedSlots => this.Skills.SlotCount;
 
         /// <inheritdoc/>
         protected override string? SkillInSlot(int slot) => slot < this.Skills.SlotCount ? this.Skills.GetSkillInSlot(slot).Name : null;

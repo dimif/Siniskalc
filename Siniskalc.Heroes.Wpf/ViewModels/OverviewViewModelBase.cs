@@ -85,6 +85,15 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         protected IGameInfo<TColor> Game => this.game;
 
         /// <summary>
+        /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,
+        /// separated by dots.
+        /// </summary>
+        protected static string SummaryOf(int players, int heroes, params string[] more)
+        {
+            return string.Join(" · ", new[] { OverviewText.Count(players, "player", "players"), OverviewText.Count(heroes, "hero", "heroes") }.Concat(more.Where(text => text.Length > 0)));
+        }
+
+        /// <summary>
         /// Returns who plays <paramref name="color"/>, followed by "current turn" when it is that colour's turn.
         /// </summary>
         /// <param name="color">The colour.</param>
@@ -94,14 +103,5 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Returns the size of the map as the page shows it; the size alone unless the game says more (HoMM3 adds its levels).
         /// </summary>
         protected virtual string SizeOf(MapHeader map) => map.SizeText;
-
-        /// <summary>
-        /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,
-        /// separated by dots.
-        /// </summary>
-        protected static string SummaryOf(int players, int heroes, params string[] more)
-        {
-            return string.Join(" · ", new[] { OverviewText.Count(players, "player", "players"), OverviewText.Count(heroes, "hero", "heroes") }.Concat(more.Where(text => text.Length > 0)));
-        }
     }
 }

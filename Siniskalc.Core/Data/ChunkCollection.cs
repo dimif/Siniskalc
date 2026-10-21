@@ -60,12 +60,6 @@ namespace Siniskalc.Core.Data
         public int FindByName(string name) => this.IndexOf(c => this.IsNamed(c) && string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
-        /// Returns whether the chunk has a name that can be looked up. A game whose savefile holds records the map does not use (they have no
-        /// name) says so here.
-        /// </summary>
-        protected virtual bool IsNamed(TChunk chunk) => true;
-
-        /// <summary>
         /// Returns the index of the first chunk that <paramref name="predicate"/> accepts, or -1.
         /// </summary>
         public int IndexOf(Func<TChunk, bool> predicate)
@@ -91,6 +85,12 @@ namespace Siniskalc.Core.Data
         public IEnumerator<TChunk> GetEnumerator() => this.chunks.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        /// <summary>
+        /// Returns whether the chunk has a name that can be looked up. A game whose savefile holds records the map does not use (they have no
+        /// name) says so here.
+        /// </summary>
+        protected virtual bool IsNamed(TChunk chunk) => true;
 
         /// <summary>
         /// Returns the changes that turn <paramref name="original"/> into <paramref name="current"/>, both being the chunk at <paramref name="index"/>.

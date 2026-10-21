@@ -18,11 +18,11 @@ namespace Siniskalc.Core.Models
             this.numbers = numbers.ToArray();
         }
 
-        public static Numbers Of(params int[] numbers) => new(numbers);
-
         public int Count => this.numbers.Length;
 
         public int this[int index] => this.numbers[index];
+
+        public static Numbers Of(params int[] numbers) => new(numbers);
 
         /// <summary>
         /// Returns the list with the number at <paramref name="index"/> replaced.

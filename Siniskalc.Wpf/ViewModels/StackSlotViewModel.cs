@@ -151,6 +151,11 @@ namespace Siniskalc.Wpf.ViewModels
             ((DelegateCommand)this.ClearCommand).RaiseCanExecuteChanged();
         }
 
+        /// <summary>
+        /// Tells the screen that what the stack is worth changed. A game that shows it in other properties raises them here too.
+        /// </summary>
+        protected virtual void RaiseFactsChanged() => this.RaisePropertyChanged(nameof(this.Facts));
+
         private void Upgrade(object? parameter)
         {
             var name = parameter as string ?? this.upgrades.FirstOrDefault();
@@ -159,10 +164,5 @@ namespace Siniskalc.Wpf.ViewModels
                 this.SelectedCreature = name;
             }
         }
-
-        /// <summary>
-        /// Tells the screen that what the stack is worth changed. A game that shows it in other properties raises them here too.
-        /// </summary>
-        protected virtual void RaiseFactsChanged() => this.RaisePropertyChanged(nameof(this.Facts));
     }
 }

@@ -123,10 +123,10 @@
         {
         }
 
+        public static IReadOnlyList<Artifact> All => GetAll<Artifact>();
+
         /// <inheritdoc/>
         public PrimarySkillBonus PrimarySkillBonus => ArtifactBonuses.Of(this);
-
-        public static IReadOnlyList<Artifact> All => GetAll<Artifact>();
 
         public static Artifact? FromByte(byte code) => FromCode<Artifact>(code);
 

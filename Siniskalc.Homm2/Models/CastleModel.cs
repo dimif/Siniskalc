@@ -191,10 +191,6 @@
         public CastleModel WithDwelling(int dwelling, bool built) =>
             built ? (this.DwellingLevel(dwelling) > 0 ? this : this.WithDwellingLevel(dwelling, 1)) : this.WithDwellingLevel(dwelling, 0);
 
-        // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
-        private static uint DwellingBits(int dwelling) =>
-            (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
-
         /// <summary>
         /// Gets how many creatures dwelling <paramref name="dwelling"/> (1 to 6) gains each week: the weekly growth of its creature, +2 from the
         /// Well and, for the first dwelling, +8 from the second well of the faction. A dwelling that is not built gains nothing (seen in BrokenAlliance
@@ -260,12 +256,16 @@
             return this with { MageGuildSpells = this.MageGuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
         }
 
-        private static Numbers GuildCounts(int level, bool library) =>
-            new(BaseGuildSpells.Select((count, i) => i < level ? count + (library ? 1 : 0) : 0));
-
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.
         /// </summary>
         public Spell? MageGuildSpell(int level, int slot) => Spell.FromByte((byte)this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
+
+        // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
+        private static uint DwellingBits(int dwelling) =>
+            (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
+
+        private static Numbers GuildCounts(int level, bool library) =>
+            new(BaseGuildSpells.Select((count, i) => i < level ? count + (library ? 1 : 0) : 0));
     }
 }

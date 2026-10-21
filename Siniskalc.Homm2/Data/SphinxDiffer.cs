@@ -14,6 +14,7 @@
     /// </summary>
     public sealed class SphinxDiffer : IMapObjectDiffer<SphinxModel>
     {
+        private static readonly string[] Resources = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"];
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
@@ -21,8 +22,6 @@
         {
             this.pendingChanges = pendingChanges;
         }
-
-        private static readonly string[] Resources = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"];
 
         public IReadOnlyList<PendingChange> Diff(int index, SphinxModel original, SphinxModel current)
         {

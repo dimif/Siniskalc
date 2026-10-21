@@ -15,8 +15,6 @@
     {
         private readonly SkillEntry[] entries;
 
-        public static SecondarySkills None { get; } = new(Array.Empty<SkillEntry>());
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SecondarySkills"/> class.
         /// </summary>
@@ -37,6 +35,8 @@
                 throw new ArgumentException("A skill can be listed once.", nameof(entries));
             }
         }
+
+        public static SecondarySkills None { get; } = new(Array.Empty<SkillEntry>());
 
         /// <inheritdoc/>
         public IReadOnlyList<SkillEntry> Entries => this.entries;

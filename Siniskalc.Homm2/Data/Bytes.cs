@@ -22,6 +22,11 @@
         public const byte Empty = Constants.Empty;
 
         /// <summary>
+        /// Gets how many spells a Mage Guild lists in all (four for each of its five levels).
+        /// </summary>
+        public static int GuildSpellSlots => Constants.Castle.MageGuildLevels * Constants.Castle.MageGuildSlotsPerLevel;
+
+        /// <summary>
         /// Reads a zero terminated text of at most <paramref name="maxLength"/> bytes.
         /// </summary>
         public static string ReadText(byte[] bytes, int offset, int maxLength)
@@ -83,11 +88,6 @@
         {
             return new SpellSet<Spell>(Spell.All.Where(spell => spell.Code < flags.Length && flags[spell.Code] != 0));
         }
-
-        /// <summary>
-        /// Gets how many spells a Mage Guild lists in all (four for each of its five levels).
-        /// </summary>
-        public static int GuildSpellSlots => Constants.Castle.MageGuildLevels * Constants.Castle.MageGuildSlotsPerLevel;
 
         /// <summary>
         /// Reads a spell of a Mage Guild, which the savegame lists by its number minus one (0 when the byte is no spell).

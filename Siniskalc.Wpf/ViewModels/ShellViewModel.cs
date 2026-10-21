@@ -159,6 +159,8 @@
             ? $"{this.modules[0].Name} savegames |{this.modules[0].OpenPattern}"
             : "Savegames |" + string.Join(";", this.modules.Select(m => m.OpenPattern)) + "|" + string.Join("|", this.modules.Select(m => $"{m.Name} savegames |{m.OpenPattern}"));
 
+        public string SaveFilter => $"{this.currentModule.Name} savegames |{this.currentModule.SavePattern}";
+
         /// <summary>
         /// Gets the file dialog filter for saving the game that is shown.
         /// </summary>
@@ -166,8 +168,6 @@
         /// Tells why the game of the current module cannot list a savegame called like <paramref name="path"/>, or <c>null</c> when it can.
         /// </summary>
         public string? ValidateSavegameName(string path) => this.currentModule.ValidateSavegameName(System.IO.Path.GetFileName(path));
-
-        public string SaveFilter => $"{this.currentModule.Name} savegames |{this.currentModule.SavePattern}";
 
         /// <summary>
         /// Returns the game whose savegame the file is, or <c>null</c> when none recognises it or it cannot be read.

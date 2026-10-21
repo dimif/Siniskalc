@@ -31,6 +31,34 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.Heroes = heroes ?? [];
         }
 
+        public string Name { get; }
+
+        public string Detail { get; }
+
+        /// <summary>
+        /// Gets what is told under the name: the hall and the fortification of a settlement, the Mage Guild and how many dwellings are built.
+        /// </summary>
+        public string Status { get; }
+
+        /// <summary>
+        /// Gets whether the castle is a capital, which is to say it has a Capitol.
+        /// </summary>
+        public bool IsCapital { get; }
+
+        /// <summary>
+        /// Gets the name of the Grail structure that is built, e.g. "Colossus", or nothing.
+        /// </summary>
+        public string GrailText { get; }
+
+        public bool HasGrail => this.GrailText.Length > 0;
+
+        /// <summary>
+        /// Gets the heroes in the castle, each as a link to the hero.
+        /// </summary>
+        public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; }
+
+        public ICommand OpenCommand { get; }
+
         /// <summary>
         /// Returns the link to a castle of any game: its name, its faction on the right, and under the name what stands in it (the words of the
         /// settlement, then the Mage Guild and how many dwellings are built).
@@ -63,33 +91,5 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                     .Where(text => text.Length > 0));
             return new CastleLinkViewModel(castle.Name, castle.Faction.Name, open, status, isCapital, grailText, heroes);
         }
-
-        public string Name { get; }
-
-        public string Detail { get; }
-
-        /// <summary>
-        /// Gets what is told under the name: the hall and the fortification of a settlement, the Mage Guild and how many dwellings are built.
-        /// </summary>
-        public string Status { get; }
-
-        /// <summary>
-        /// Gets whether the castle is a capital, which is to say it has a Capitol.
-        /// </summary>
-        public bool IsCapital { get; }
-
-        /// <summary>
-        /// Gets the name of the Grail structure that is built, e.g. "Colossus", or nothing.
-        /// </summary>
-        public string GrailText { get; }
-
-        public bool HasGrail => this.GrailText.Length > 0;
-
-        /// <summary>
-        /// Gets the heroes in the castle, each as a link to the hero.
-        /// </summary>
-        public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; }
-
-        public ICommand OpenCommand { get; }
     }
 }

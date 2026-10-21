@@ -5,6 +5,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public sealed class HeroChoiceViewModel
     {
+        /// <summary>
+        /// The <see cref="Key"/> of the choice of nobody; a hero id is a byte, so no hero has it.
+        /// </summary>
+        public const int NoneKey = -1;
+
         public HeroChoiceViewModel(int? heroId, string name)
         {
             this.HeroId = heroId;
@@ -15,11 +20,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets the id of the hero (see the hero number the savefile holds), or null for the choice of nobody.
         /// </summary>
         public int? HeroId { get; }
-
-        /// <summary>
-        /// The <see cref="Key"/> of the choice of nobody; a hero id is a byte, so no hero has it.
-        /// </summary>
-        public const int NoneKey = -1;
 
         /// <summary>
         /// Gets the id of the hero, or <see cref="NoneKey"/> for the choice of nobody, so that a combo box can select by value.

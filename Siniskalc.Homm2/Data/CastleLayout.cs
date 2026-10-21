@@ -31,11 +31,6 @@ namespace Siniskalc.Homm2.Data
         public const int GarrisonCounts = 0x0D;
 
         /// <summary>
-        /// The garrison: a byte for the type and 16 bits for the count of each of its five slots.
-        /// </summary>
-        public static readonly ArmyLayout Garrison = new(GarrisonTypes, 1, GarrisonCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
-
-        /// <summary>
         /// The hero who is in the castle, or 0xFF.
         /// </summary>
         public const int VisitingHero = 0x17;
@@ -70,6 +65,23 @@ namespace Siniskalc.Homm2.Data
         public const int SecondUpgradeMarkerValue = 3;
 
         /// <summary>
+        /// The spells of the Mage Guild: four bytes for each of its five levels, each the number of the spell minus one.
+        /// </summary>
+        public const int GuildSpells = 0x3C;
+
+        /// <summary>
+        /// How many spells each level of the Mage Guild offers, a byte each.
+        /// </summary>
+        public const int GuildSpellCounts = 0x50;
+
+        public const int Name = 0x57;
+
+        /// <summary>
+        /// The garrison: a byte for the type and 16 bits for the count of each of its five slots.
+        /// </summary>
+        public static ArmyLayout Garrison { get; } = new(GarrisonTypes, 1, GarrisonCounts, 2, Constants.ArmySlotCount, Constants.MaxCreatureCount);
+
+        /// <summary>
         /// Gets where the creatures of dwelling <paramref name="dwelling"/> (1 to 6) wait in the savegame when it is built to
         /// <paramref name="level"/> (0 for not built, 1 for the dwelling, 2 once it is upgraded, 3 for the sixth when it is upgraded twice): in its
         /// own list until it is upgraded, then in the list of the upgraded ones, the dragons upgraded a second time in the sixth place (E34DWUP2:
@@ -84,17 +96,5 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public static IReadOnlyList<int> CreaturesOffsets(int dwelling) =>
             [Creatures + ((dwelling - 1) * 2), .. dwelling >= 2 ? new[] { UpgradedCreatures + ((dwelling - 2) * 2) } : [], .. dwelling == 6 ? new[] { UpgradedCreatures + (5 * 2) } : []];
-
-        /// <summary>
-        /// The spells of the Mage Guild: four bytes for each of its five levels, each the number of the spell minus one.
-        /// </summary>
-        public const int GuildSpells = 0x3C;
-
-        /// <summary>
-        /// How many spells each level of the Mage Guild offers, a byte each.
-        /// </summary>
-        public const int GuildSpellCounts = 0x50;
-
-        public const int Name = 0x57;
     }
 }

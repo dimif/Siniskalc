@@ -80,6 +80,14 @@ namespace Siniskalc.Homm2.ViewModels
             this.RaiseAllPropertiesChanged();
         }
 
+        private static IReadOnlyList<string> WithAnswer(IReadOnlyList<string> answers, int place, string text)
+        {
+            var places = Enumerable.Range(0, MapObjectLayout.SphinxMaxAnswers).Select(i => i < answers.Count ? answers[i] : string.Empty).ToList();
+            places[place] = text.Trim();
+            var result = places.Where(a => a.Length > 0).ToList();
+            return result.Count > 0 ? result : answers;
+        }
+
         private AmountRowViewModel CreateRewardRow(Resource resource)
         {
             var gold = resource == Resource.Gold;
@@ -100,13 +108,5 @@ namespace Siniskalc.Homm2.ViewModels
             text => this.session.Update(sphinx => sphinx with { Answers = WithAnswer(sphinx.Answers, place, text) }),
             () => MapObjectLayout.SphinxAnswerSize - 1,
             toolTip: "An answer the sphinx accepts, in any case; at most 12 characters.");
-
-        private static IReadOnlyList<string> WithAnswer(IReadOnlyList<string> answers, int place, string text)
-        {
-            var places = Enumerable.Range(0, MapObjectLayout.SphinxMaxAnswers).Select(i => i < answers.Count ? answers[i] : string.Empty).ToList();
-            places[place] = text.Trim();
-            var result = places.Where(a => a.Length > 0).ToList();
-            return result.Count > 0 ? result : answers;
-        }
     }
 }

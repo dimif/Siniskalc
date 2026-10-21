@@ -20,7 +20,6 @@
     public sealed class HeroViewModel : PageViewModel, IHeroPage
     {
         private readonly Action<int> openCastle;
-        private HeroModel hero = null!;
         private readonly HeroEditSession session;
         private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
@@ -28,6 +27,7 @@
         private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
+        private HeroModel hero = null!;
         private bool visionsActive;
         private string castleName = string.Empty;
         private int castleIndex = -1;

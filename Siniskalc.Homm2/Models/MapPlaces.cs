@@ -13,11 +13,6 @@ namespace Siniskalc.Homm2.Models
     public sealed class MapPlaces
     {
         /// <summary>
-        /// Gets the places of a map in which none were found.
-        /// </summary>
-        public static readonly MapPlaces None = new(new Dictionary<PlaceKind, IReadOnlyList<MapPosition>>());
-
-        /// <summary>
         /// The most places of a kind a hero has a bit for (a bit is the 32 bit number of the kind, and bit 0 is not used).
         /// </summary>
         public const int MaxPerKind = 31;
@@ -28,6 +23,11 @@ namespace Siniskalc.Homm2.Models
         {
             this.places = places;
         }
+
+        /// <summary>
+        /// Gets the places of a map in which none were found.
+        /// </summary>
+        public static MapPlaces None { get; } = new(new Dictionary<PlaceKind, IReadOnlyList<MapPosition>>());
 
         /// <summary>
         /// Returns the places of a kind, the ones that have a bit, in the order of the bits (the first is bit 1).

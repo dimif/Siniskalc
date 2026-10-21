@@ -90,6 +90,8 @@ namespace Siniskalc.Homm2.Entities
             this.Dwelling = dwelling;
         }
 
+        public static IReadOnlyList<Creature> All => GetAll<Creature>();
+
         /// <summary>
         /// Gets the town the creature is recruited in, or <c>null</c> for a neutral creature.
         /// </summary>
@@ -118,8 +120,6 @@ namespace Siniskalc.Homm2.Entities
         /// creature, or <c>null</c> for a neutral creature that no castle recruits.
         /// </summary>
         public Dwellings? Dwelling { get; }
-
-        public static IReadOnlyList<Creature> All => GetAll<Creature>();
 
         public static IReadOnlyList<Creature> ForFaction(Faction faction) => All.Where(c => c.Faction == faction).ToList();
 

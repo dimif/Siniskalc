@@ -141,7 +141,7 @@
             this.castles = document.Castles().GetModels()
                 .Where(c => c.IsUsed && c.Owner == this.Color)
                 .OrderBy(c => c.Name)
-                .Select(c => CastleLinks.For(c, allHeroes, new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
+                .Select(c => CastleLinks.For(c, document.Heroes(), new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
                 .ToList();
 
             this.Obelisks?.Refresh();

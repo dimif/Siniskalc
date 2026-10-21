@@ -101,7 +101,7 @@
             var castles = allCastles
                 .Where(c => c.Owner == color)
                 .OrderBy(c => c.Name)
-                .Select(c => CastleLinks.For(c, allHeroes, new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
+                .Select(c => CastleLinks.For(c, this.game.History.Current.Heroes(), new DelegateCommand(_ => this.openCastle(c.Index)), this.openHero))
                 .ToList();
             return new PlayerCardViewModel(
                 color.ToString(),

@@ -30,7 +30,7 @@
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
         private CastleModel castle = null!;
-        private IReadOnlyList<LinkViewModel> heroes = [];
+        private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
         private string visitingHeroName = string.Empty;
         private string notice = string.Empty;
 
@@ -167,7 +167,7 @@
         /// <summary>
         /// Gets the hero in the castle, as a link that opens it: none, or one.
         /// </summary>
-        public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
+        public IReadOnlyList<CastleHeroRowViewModel> Heroes => this.heroes;
 
         IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
 
@@ -191,11 +191,8 @@
             var document = this.Game.History.Current;
             var castle = this.session.Current;
             this.castle = castle;
-            var heroes = document.Heroes().GetModels();
-
-            this.visitingHeroName = castle.VisitingHeroId is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;
-
-            this.heroes = this.visitingHeroName.Length > 0 ? [new LinkViewModel(this.visitingHeroName, "Visiting", this.OpenHeroCommand)] : [];
+            this.heroes = CastleHeroRows.For(castle, document.Heroes(), this.openHero);
+            this.visitingHeroName = this.heroes.FirstOrDefault()?.Name ?? string.Empty;
 
             this.OwnerField?.Refresh();
             this.GuildLevelField?.Refresh();

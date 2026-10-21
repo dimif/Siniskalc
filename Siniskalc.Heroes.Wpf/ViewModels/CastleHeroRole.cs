@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     /// <summary>
     /// Where a hero is in a castle.

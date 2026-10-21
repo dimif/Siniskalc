@@ -18,6 +18,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public int NameEnd => CastleLayout.Name + this.GetUInt16At(CastleLayout.NameLength);
 
+        /// <inheritdoc/>
         public override CastleChunk WithBytes(byte[] bytes)
         {
             return new CastleChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex);

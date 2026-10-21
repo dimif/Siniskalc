@@ -114,11 +114,13 @@
             return new HeroChunk(this.Name, this.ToArray(), this.StartIndex, this.Biography, header, this.HeaderIndex);
         }
 
+        /// <inheritdoc/>
         public override HeroChunk WithBytes(byte[] bytes)
         {
             return new HeroChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex, this.Biography, this.outsideHeader, this.HeaderIndex);
         }
 
+        /// <inheritdoc/>
         public override bool HasSameBytes(BytesChunk other)
         {
             return base.HasSameBytes(other)

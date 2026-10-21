@@ -67,6 +67,7 @@
 
         public PlayerColor Color { get; }
 
+        /// <inheritdoc/>
         public string Name => this.Color.ToString();
 
         /// <summary>

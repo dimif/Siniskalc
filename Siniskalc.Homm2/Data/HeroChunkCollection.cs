@@ -22,6 +22,7 @@
             this.differ = differ;
         }
 
+        /// <inheritdoc/>
         public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
         /// <summary>

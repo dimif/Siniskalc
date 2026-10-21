@@ -441,8 +441,10 @@ namespace Siniskalc.Homm3.ViewModels
             this.HasPendingChanges = this.session.IsDirty;
         }
 
+        /// <inheritdoc/>
         protected override void Reset() => this.session.Update(_ => this.Original);
 
+        /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
             this.Refresh();

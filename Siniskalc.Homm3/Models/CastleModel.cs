@@ -54,14 +54,10 @@
         IReadOnlyList<IReadOnlyList<Spell>> MageGuildSpells)
         : ICastleModel<PlayerColor, Creature, Faction>
     {
-        /// <summary>
-        /// Gets whether the map uses the castle: it has a name.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsUsed => this.Name.Length > 0;
 
-        /// <summary>
-        /// Gets how many dwellings are built in the castle.
-        /// </summary>
+        /// <inheritdoc/>
         public int DwellingCount => this.Buildings.Count(b => b.IsDwelling);
 
         /// <summary>

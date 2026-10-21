@@ -29,19 +29,13 @@ namespace Siniskalc.Heroes.Models
         {
         }
 
-        /// <summary>
-        /// Gets the slots, <c>null</c> for an empty one.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<ArmySlot<TCreature>?> Slots => this.slots;
 
-        /// <summary>
-        /// Gets the stacks the army holds, without the empty slots.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<ArmySlot<TCreature>> Filled => this.slots.OfType<ArmySlot<TCreature>>();
 
-        /// <summary>
-        /// Returns the army with the slot at <paramref name="index"/> replaced, by <c>null</c> to empty it.
-        /// </summary>
+        /// <inheritdoc/>
         public IArmy<TCreature> WithSlot(int index, ArmySlot<TCreature>? slot)
         {
             RangeGuard.ThrowIfNotIndex(index, this.slots.Length, nameof(index));
@@ -50,13 +44,13 @@ namespace Siniskalc.Heroes.Models
             return new Army<TCreature>(copy);
         }
 
+        /// <inheritdoc/>
         public IArmy<TCreature> WithSlot(int index, TCreature creature, long count) => this.WithSlot(index, new ArmySlot<TCreature>(creature, count));
 
+        /// <inheritdoc/>
         public IArmy<TCreature> WithoutSlot(int index) => this.WithSlot(index, null);
 
-        /// <summary>
-        /// Returns the army with the contents of the two slots swapped. Swapping with an empty slot moves the stack.
-        /// </summary>
+        /// <inheritdoc/>
         public IArmy<TCreature> Swap(int index, int otherIndex)
         {
             RangeGuard.ThrowIfNotIndex(index, this.slots.Length, nameof(index));

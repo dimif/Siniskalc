@@ -44,9 +44,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public string MapSizeText => this.Map is { } map ? this.SizeOf(map) : string.Empty;
 
-        /// <summary>
-        /// Gets the difficulty the map was made with, e.g. "Rating: Rook (130%)", or nothing when it is not known.
-        /// </summary>
+        /// <inheritdoc/>
         public string MapDifficultyText => this.Map is { } map ? OverviewText.MapRating(map.Difficulty) : string.Empty;
 
         /// <inheritdoc/>
@@ -62,9 +60,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string DifficultyText => this.Difficulty is { } difficulty ? OverviewText.Difficulty(difficulty) : string.Empty;
 
-        /// <summary>
-        /// Gets whose turn it was, e.g. "Current turn: Tan", or nothing when the savefile does not tell.
-        /// </summary>
+        /// <inheritdoc/>
         public string TurnText => Siniskalc.Heroes.ViewModels.TurnText.Overview(this.CurrentPlayerName);
 
         /// <inheritdoc/>

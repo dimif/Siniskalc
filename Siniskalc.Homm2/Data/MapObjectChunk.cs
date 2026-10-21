@@ -54,6 +54,7 @@ namespace Siniskalc.Homm2.Data
             }
         }
 
+        /// <inheritdoc/>
         public override MapObjectChunk WithBytes(byte[] bytes)
         {
             return new MapObjectChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex, this.Position, this.Index, this.Tag, this.Parts);
@@ -69,6 +70,7 @@ namespace Siniskalc.Homm2.Data
             return new MapObjectChunk(this.Name, this.ToArray(), this.StartIndex, this.Position, this.Index, this.Tag, parts);
         }
 
+        /// <inheritdoc/>
         public override bool HasSameBytes(BytesChunk other) =>
             base.HasSameBytes(other)
             && other is MapObjectChunk chunk

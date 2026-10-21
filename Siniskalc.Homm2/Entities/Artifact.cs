@@ -123,9 +123,7 @@
         {
         }
 
-        /// <summary>
-        /// Gets what the artifact adds to the primary skills of the hero that wears it (see <see cref="ArtifactBonuses"/>).
-        /// </summary>
+        /// <inheritdoc/>
         public PrimarySkillBonus PrimarySkillBonus => ArtifactBonuses.Of(this);
 
         public static IReadOnlyList<Artifact> All => GetAll<Artifact>();

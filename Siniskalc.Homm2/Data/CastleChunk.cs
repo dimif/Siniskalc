@@ -12,6 +12,7 @@
         {
         }
 
+        /// <inheritdoc/>
         public override CastleChunk WithBytes(byte[] bytes)
         {
             return new CastleChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex);

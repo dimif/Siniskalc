@@ -38,6 +38,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public bool SupportsAsleep => this.Offsets.AsleepOffset != null;
 
+        /// <inheritdoc/>
         public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.Deserializer, this.Serializer, this.differ);
 
         /// <summary>
@@ -55,9 +56,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public int IndexOfId(int heroId) => this.IndexOf(c => this.Deserializer.DeserializeHeroId(c) == heroId);
 
-        /// <summary>
-        /// Returns the summary of the hero with the given id (see <see cref="HeroModel.Id"/>), or null if the savefile has no such hero.
-        /// </summary>
+        /// <inheritdoc/>
         public HeroSummary<PlayerColor>? FindById(int heroId)
         {
             var index = this.IndexOfId(heroId);

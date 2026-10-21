@@ -42,29 +42,39 @@ namespace Siniskalc.Homm3.ViewModels
             this.Refresh();
         }
 
+        /// <inheritdoc/>
         public override bool SupportsHiding => true;
 
+        /// <inheritdoc/>
         public override int ExtraCount => this.getSkills().ExtraSkills.Count();
 
+        /// <inheritdoc/>
         public override string AllSkillsNote => "The game only allows a hero to learn eight skills, but it applies every skill that has a level.";
 
+        /// <inheritdoc/>
         protected override int UsedSlots => this.getSkills().SlotCount;
 
+        /// <inheritdoc/>
         protected override string? SkillInSlot(int slot) => this.getSkills().GetSkillInSlot(slot)?.Name;
 
+        /// <inheritdoc/>
         protected override string LevelInSlot(int slot) =>
             this.getSkills().GetSkillInSlot(slot) is { } skill ? SkillLevelNames.FromLevel(this.getSkills().GetSkillLevel(skill)) : SkillLevelNames.Basic;
 
+        /// <inheritdoc/>
         protected override string LevelOf(string skillName) => SkillLevelNames.FromLevel(this.getSkills().GetSkillLevel(this.Find(skillName)!));
 
+        /// <inheritdoc/>
         protected override int SlotOf(string skillName) => this.getSkills().GetSlotOf(this.Find(skillName)!);
 
+        /// <inheritdoc/>
         protected override void ReplaceSkillInSlot(int slot, string skillName)
         {
             var skill = this.Find(skillName)!;
             this.update(skills => skills.WithSkillInSlot(slot, skill));
         }
 
+        /// <inheritdoc/>
         protected override void AddSkill(string skillName)
         {
             var skill = this.Find(skillName)!;
@@ -80,6 +90,7 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
+        /// <inheritdoc/>
         protected override void SetLevelOf(string skillName, string levelName)
         {
             var skill = this.Find(skillName)!;
@@ -90,8 +101,10 @@ namespace Siniskalc.Homm3.ViewModels
 
         protected override void RemoveSlot(int slot) => this.update(skills => skills.WithoutSlot(slot));
 
+        /// <inheritdoc/>
         protected override void HideSlot(int slot) => this.update(skills => skills.WithSlotAsExtra(slot));
 
+        /// <inheritdoc/>
         protected override void ShowExtraSkill(string skillName)
         {
             var skill = this.Find(skillName)!;

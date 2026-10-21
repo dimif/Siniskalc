@@ -11,6 +11,7 @@
     /// </summary>
     public sealed record GrantedSpellsResolver(GameVersion GameVersion) : IGrantedSpellsResolver
     {
+        /// <inheritdoc/>
         public IReadOnlyDictionary<Spell, string> ResolveGrantedSpells(EquippedArtifacts artifacts)
         {
             var sources = new Dictionary<Spell, List<string>>();

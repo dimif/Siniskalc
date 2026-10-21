@@ -32,9 +32,7 @@
 
         private static readonly GameDifficulty[] Difficulties = [GameDifficulty.Pawn, GameDifficulty.Knight, GameDifficulty.Rook, GameDifficulty.Queen, GameDifficulty.King];
 
-        /// <summary>
-        /// Returns the map's header, or <c>null</c> when it cannot be found.
-        /// </summary>
+        /// <inheritdoc/>
         public MapHeader? Find(byte[] bytes, GameVersion gameVersion)
         {
             var location = this.Locate(bytes, gameVersion);
@@ -52,9 +50,7 @@
                 hasUnderground);
         }
 
-        /// <summary>
-        /// Returns where the map's header is, or <c>null</c> when it cannot be found.
-        /// </summary>
+        /// <inheritdoc/>
         public MapHeaderLocation? Locate(byte[] bytes, GameVersion gameVersion)
         {
             if (!gameVersion.HasGameSetup())

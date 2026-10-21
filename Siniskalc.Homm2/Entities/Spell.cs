@@ -96,9 +96,7 @@ namespace Siniskalc.Homm2.Entities
         /// </summary>
         public SpellType Type { get; }
 
-        /// <summary>
-        /// Gets the level of the spell, 1 to 5: the level of the Mage Guild that offers it.
-        /// </summary>
+        /// <inheritdoc/>
         public int Level { get; }
 
         /// <summary>

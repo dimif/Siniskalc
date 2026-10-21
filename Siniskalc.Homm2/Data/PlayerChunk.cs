@@ -12,6 +12,7 @@ namespace Siniskalc.Homm2.Data
         {
         }
 
+        /// <inheritdoc/>
         public override PlayerChunk WithBytes(byte[] bytes)
         {
             return new PlayerChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex);

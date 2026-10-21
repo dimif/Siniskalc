@@ -23,6 +23,7 @@ namespace Siniskalc.Homm3.Data
             this.heroName = heroName;
         }
 
+        /// <inheritdoc/>
         public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ, this.heroName);
 
         /// <summary>

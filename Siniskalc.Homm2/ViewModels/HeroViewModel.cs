@@ -162,8 +162,10 @@
 
         public bool HasNotice => this.Notice.Length > 0;
 
+        /// <inheritdoc/>
         public string Name => this.hero.Name;
 
+        /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.hero.Owner);
 
         public string FactionName => this.hero.Faction.ToString();

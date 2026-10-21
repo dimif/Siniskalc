@@ -18,8 +18,10 @@ namespace Siniskalc.Homm2.ViewModels
             this.StartFiltering();
         }
 
+        /// <inheritdoc/>
         public override bool AllowsMultiSelect => true;
 
+        /// <inheritdoc/>
         public override string Footer => "Shift-click or Ctrl-click to select several spells, then tick or untick one of them to change them all.";
 
         public override string Summary
@@ -43,6 +45,7 @@ namespace Siniskalc.Homm2.ViewModels
             new("Learned", nameof(SpellRowViewModel.IsLearned), new GridLength(90), FinderColumnKind.CheckBox),
         ];
 
+        /// <inheritdoc/>
         protected override bool Matches(SpellRowViewModel row) => this.TextMatches(row.Name, $"Level {row.Level}", row.Kind, row.Magic);
     }
 }

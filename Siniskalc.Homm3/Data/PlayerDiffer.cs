@@ -24,6 +24,7 @@
 
         private const string NoHero = "(none)";
 
+        /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int playerIndex, PlayerModel original, PlayerModel current, Func<int, string> heroName)
         {
             var changes = new List<PendingChange>();

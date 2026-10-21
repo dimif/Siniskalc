@@ -124,8 +124,10 @@ namespace Siniskalc.Homm3.ViewModels
 
         private HeroModel OriginalModel => this.session.History.Original.Heroes().GetModel(this.session.HeroIndex);
 
+        /// <inheritdoc/>
         public string Name => this.HeroModel.Name;
 
+        /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.HeroModel.Owner);
 
         /// <summary>
@@ -296,8 +298,10 @@ namespace Siniskalc.Homm3.ViewModels
             this.session.Update(edit);
         }
 
+        /// <inheritdoc/>
         protected override void Reset() => this.session.Update(_ => this.OriginalModel);
 
+        /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
             // Also raised after saving, which moves the baseline without touching the chunk.

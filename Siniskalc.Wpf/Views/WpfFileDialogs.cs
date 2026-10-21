@@ -7,12 +7,14 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public sealed class WpfFileDialogs : IFileDialogs
     {
+        /// <inheritdoc/>
         public string? PickFileToOpen(string filter)
         {
             var dialog = new OpenFileDialog { Filter = filter };
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
 
+        /// <inheritdoc/>
         public string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null)
         {
             var dialog = new SaveFileDialog { Filter = filter };

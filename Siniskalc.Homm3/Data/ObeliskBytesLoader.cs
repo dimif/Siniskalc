@@ -14,6 +14,7 @@ namespace Siniskalc.Homm3.Data
         private const byte MarkerByte = 0xFF;
         private const byte ObeliskObjectType = 57;
 
+        /// <inheritdoc/>
         public IReadOnlyList<ObeliskChunk> LoadObeliskChunks(byte[] bytes, IReadOnlyList<PlayerChunk> players)
         {
             if (players.Count == 0)

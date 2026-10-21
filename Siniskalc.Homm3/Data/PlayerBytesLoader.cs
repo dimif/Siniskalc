@@ -20,10 +20,7 @@
     {
         private const int SmallestRun = 2;
 
-        /// <param name="bytes">The savefile bytes.</param>
-        /// <param name="gameVersion">The version of the savefile.</param>
-        /// <param name="occupied">Chunks of other things (heroes, castles) found in the savefile. The last player of the table is
-        /// followed by other data, so its chunk is cut short where one of them begins.</param>
+        /// <inheritdoc/>
         public IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, GameVersion gameVersion, IEnumerable<BytesChunk>? occupied = null)
         {
             // Only the layouts of the versions that have been compared are known.

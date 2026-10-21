@@ -38,18 +38,21 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public override bool CanChangeSpellBook => !this.getSpellBook().IsSpellBookGranted;
 
+        /// <inheritdoc/>
         public override string SpellBookNote => "Without a spell book the hero cannot cast the learned spells. An artifact such as Titan's Thunder gives one.";
 
         protected override bool ReadHasSpellBook() => this.getSpellBook().HasSpellBook;
 
         protected override void WriteHasSpellBook(bool value) => this.update(book => book.WithHasSpellBook(value));
 
+        /// <inheritdoc/>
         protected override void ShowRow(SpellRowViewModel row)
         {
             var book = this.getSpellBook();
             row.Show(book.IsLearned(row.Spell), book.IsAvailable(row.Spell), book.Source(row.Spell));
         }
 
+        /// <inheritdoc/>
         protected override void SetLearned(IReadOnlyList<SpellRowViewModel> rows, bool learned)
         {
             var spells = rows.Select(r => r.Spell).ToList();

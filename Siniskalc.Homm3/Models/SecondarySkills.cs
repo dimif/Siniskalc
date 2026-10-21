@@ -35,14 +35,10 @@
             this.skillSlots = skillSlots;
         }
 
-        /// <summary>
-        /// Gets the number of slots occupied by skills.
-        /// </summary>
+        /// <inheritdoc/>
         public int SlotCount => this.skillSlots.Length;
 
-        /// <summary>
-        /// Gets a value indicating whether all visible skill slots are occupied.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsFull => this.skillSlots.Length >= Constants.SkillSlots.Max;
 
         /// <summary>
@@ -51,32 +47,13 @@
         public IEnumerable<SecondarySkill> ExtraSkills =>
             this.allSkillsToLevels.Where(pair => pair.Value != SkillLevel.None && !this.skillSlots.Contains(pair.Key)).Select(pair => pair.Key);
 
-        /// <summary>
-        /// Returns the level of <paramref name="skill"/>, or <see cref="SkillLevel.None"/> when the hero does not have it.
-        /// </summary>
-        /// <param name="skill">
-        /// The skill to look up.
-        /// </param>
-        /// <returns>
-        /// The level of the skill, or <see cref="SkillLevel.None"/> when the hero does not have the skill.
-        /// </returns>
+        /// <inheritdoc/>
         public SkillLevel GetSkillLevel(SecondarySkill skill)
         {
             return this.allSkillsToLevels.TryGetValue(skill, out var level) ? level : SkillLevel.None;
         }
 
-        /// <summary>
-        /// Returns the skill in <paramref name="slotIndex"/>.
-        /// </summary>
-        /// <param name="slotIndex">
-        /// The slot.
-        /// </param>
-        /// <returns>
-        /// The skill in the slot.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when the index is outside the occupied slots.
-        /// </exception>
+        /// <inheritdoc/>
         public SecondarySkill GetSkillInSlot(int slotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.skillSlots.Length, nameof(slotIndex), "Slot index is out of range.");
@@ -90,18 +67,7 @@
             return Array.IndexOf(this.skillSlots, skill);
         }
 
-        /// <summary>
-        /// Returns a new copy of the secondary skills with the provided skill at the provided level.
-        /// </summary>
-        /// <param name="skill">
-        /// The skill.
-        /// </param>
-        /// <param name="level">
-        /// The level.
-        /// </param>
-        /// <returns>
-        /// A new, updated, copy of the secondary skills.
-        /// </returns>
+        /// <inheritdoc/>
         public SecondarySkills WithSkill(SecondarySkill skill, SkillLevel level)
         {
             var slots = this.skillSlots;
@@ -140,22 +106,7 @@
             return new SecondarySkills(new Dictionary<SecondarySkill, SkillLevel>(this.allSkillsToLevels) { [skill] = SkillLevel.None }, this.skillSlots);
         }
 
-        /// <summary>
-        /// Returns a new copy of the secondary skills where a slot is inserted at the given index, replacing the one existing.
-        /// The skill level is therefore the same as the one of the replaced skill.
-        /// </summary>
-        /// <param name="slotIndex">
-        /// The slot.
-        /// </param>
-        /// <param name="skill">
-        /// The skill.
-        /// </param>
-        /// <returns>
-        /// A new, updated, copy of the secondary skills.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when the index is outside the allowed range.
-        /// </exception>
+        /// <inheritdoc/>
         public SecondarySkills WithSkillInSlot(int slotIndex, SecondarySkill skill)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.skillSlots.Length, nameof(slotIndex));
@@ -177,18 +128,7 @@
             return new SecondarySkills(levels, slots);
         }
 
-        /// <summary>
-        /// Returns a new copy without the skill in <paramref name="slotIndex"/>; later skills move up a slot.
-        /// </summary>
-        /// <param name="slotIndex">
-        /// The slot.
-        /// </param>
-        /// <returns>
-        /// A new copy without the skill in the slot.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when the index is outside the occupied slots.
-        /// </exception>
+        /// <inheritdoc/>
         public SecondarySkills WithoutSlot(int slotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.skillSlots.Length, nameof(slotIndex));
@@ -225,21 +165,7 @@
             return new SecondarySkills(new Dictionary<SecondarySkill, SkillLevel>(this.allSkillsToLevels), slots);
         }
 
-        /// <summary>
-        /// Returns a new copy of the secondary skills where 2 slots have been swapped.
-        /// </summary>
-        /// <param name="slotIndex">
-        /// First index to swap.
-        /// </param>
-        /// <param name="otherSlotIndex">
-        /// Second index to swap.
-        /// </param>
-        /// <returns>
-        /// A new, updated, copy of the secondary skills.
-        /// </returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when either of the indexes is outside the allowed range.
-        /// </exception>
+        /// <inheritdoc/>
         public SecondarySkills Swap(int slotIndex, int otherSlotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.skillSlots.Length, nameof(slotIndex));

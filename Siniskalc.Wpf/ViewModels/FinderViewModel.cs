@@ -27,6 +27,7 @@
         /// </summary>
         protected IReadOnlyList<TRow> Rows { get; }
 
+        /// <inheritdoc/>
         protected override int TotalCount => this.Rows.Count;
 
         /// <summary>
@@ -40,8 +41,10 @@
             }
         }
 
+        /// <inheritdoc/>
         public override void ChooseRow(object? row) => this.Choose(row as TRow);
 
+        /// <inheritdoc/>
         public override void ChooseRowSecondary(object? row)
         {
             if (row is TRow typed && this.onChooseSecondary != null && (this.canChooseSecondary == null || this.canChooseSecondary(typed)))

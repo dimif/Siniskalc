@@ -21,9 +21,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             history.Changed += this.OnHistoryChangedCore;
         }
 
-        /// <summary>
-        /// Gets the command that puts everything of the page back to what the savegame had.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand ResetCommand { get; }
 
         public void Dispose() => this.history.Changed -= this.OnHistoryChangedCore;

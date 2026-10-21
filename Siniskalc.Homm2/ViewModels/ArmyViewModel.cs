@@ -45,6 +45,7 @@
             this.Refresh();
         }
 
+        /// <inheritdoc/>
         public override CreatureFinderViewModel Finder { get; }
 
         /// <summary>
@@ -68,10 +69,12 @@
             this.SetSlot(slot - 1, creature, count);
         }
 
+        /// <inheritdoc/>
         protected override StackContent? ReadStack(int index) => this.getArmy().Slots[index] is { } slot
             ? new StackContent(slot.Creature.Name, (int)slot.Count, _ => Facts(slot.Creature), this.UpgradesOf(slot.Creature))
             : null;
 
+        /// <inheritdoc/>
         protected override void PutStack(int index, string? creatureName, int amount)
         {
             var creature = string.IsNullOrEmpty(creatureName) ? null : AbstractEnumeration.FromName<Creature>(creatureName);

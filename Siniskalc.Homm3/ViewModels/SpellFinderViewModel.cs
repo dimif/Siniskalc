@@ -20,8 +20,10 @@ namespace Siniskalc.Homm3.ViewModels
             this.StartFiltering();
         }
 
+        /// <inheritdoc/>
         public override string SearchPlaceholder => "Search by name, school, level, type...";
 
+        /// <inheritdoc/>
         public override string SearchHint => "Type any of: a name, a school (fire, air, water, earth), a level (level 3) or adventure / combat";
 
         public override string Summary
@@ -36,8 +38,10 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
+        /// <inheritdoc/>
         public override bool AllowsMultiSelect => true;
 
+        /// <inheritdoc/>
         public override string Footer => "Shift-click or Ctrl-click to select several spells, then tick or untick one of them to change them all.";
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
@@ -60,6 +64,7 @@ namespace Siniskalc.Homm3.ViewModels
                 "What lets the hero cast the spell without having learned it"),
         ];
 
+        /// <inheritdoc/>
         protected override bool Matches(SpellRowViewModel row)
         {
             return this.TextMatches(row.Name, row.School, $"Level {row.Level}", row.Kind);

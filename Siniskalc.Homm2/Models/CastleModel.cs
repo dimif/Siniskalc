@@ -42,9 +42,7 @@
     {
         private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
 
-        /// <summary>
-        /// Gets a value indicating whether the map uses the castle.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsUsed => this.Name.Length > 0;
 
         public bool HasCastle => this.Town.HasFlag(TownBuildings.Castle);

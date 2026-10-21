@@ -51,8 +51,10 @@ namespace Siniskalc.Homm2.ViewModels
 
         protected abstract IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory);
 
+        /// <inheritdoc/>
         protected override void OnHistoryChanged() => this.Refresh();
 
+        /// <inheritdoc/>
         protected override void Reset()
         {
             foreach (var change in this.PendingChangesOfPage().ToList())

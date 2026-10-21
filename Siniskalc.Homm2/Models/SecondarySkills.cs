@@ -91,9 +91,7 @@
             return new SecondarySkills(this.entries.Select(e => e.Skill == skill ? e with { Level = level } : e));
         }
 
-        /// <summary>
-        /// Returns a copy without the skill in <paramref name="slotIndex"/>; later skills move up a slot.
-        /// </summary>
+        /// <inheritdoc/>
         public SecondarySkills WithoutSlot(int slotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));

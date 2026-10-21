@@ -70,9 +70,7 @@ namespace Siniskalc.Homm3.Data
             return new GameSetup(result, Difficulties[bytes[location.DifficultyAt]], current);
         }
 
-        /// <summary>
-        /// Returns where the setup is, or <c>null</c> when it cannot be found.
-        /// </summary>
+        /// <inheritdoc/>
         public PlayerSetupLocation? Locate(byte[] bytes, GameVersion gameVersion)
         {
             if (!gameVersion.HasGameSetup())

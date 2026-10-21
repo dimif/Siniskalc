@@ -443,9 +443,7 @@
         {
         }
 
-        /// <summary>
-        /// Gets what the artifact adds to the primary skills of the hero that wears it.
-        /// </summary>
+        /// <inheritdoc/>
         public PrimarySkillBonus PrimarySkillBonus => new(this.EffectInfo.Atk, this.EffectInfo.Def, this.EffectInfo.Pow, this.EffectInfo.Kno);
 
         public ArtifactSlots Slot { get; }

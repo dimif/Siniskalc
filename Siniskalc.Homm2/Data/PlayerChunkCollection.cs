@@ -18,6 +18,7 @@
             this.differ = differ;
         }
 
+        /// <inheritdoc/>
         public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
         public PlayerColor GetColor(int index) => PlayerColor.All[index];

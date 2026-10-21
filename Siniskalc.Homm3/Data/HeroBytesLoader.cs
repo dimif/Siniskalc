@@ -63,8 +63,7 @@
             this.saveEncoding = encoding;
         }
 
-        /// <param name="bytes">The savefile bytes.</param>
-        /// <param name="gameVersion">The version of the savefile, as <see cref="SavegameVersionDetector.Detect"/> tells.</param>
+        /// <inheritdoc/>
         public IReadOnlyList<HeroChunk> LoadHeroChunks(byte[] bytes, GameVersion gameVersion)
         {
             var shape = GetHeroShape(gameVersion);

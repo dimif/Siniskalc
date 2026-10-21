@@ -25,6 +25,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public PlayerLayout Layout { get; }
 
+        /// <inheritdoc/>
         public override PlayerChunk WithBytes(byte[] bytes)
         {
             return new PlayerChunk(this.Color, this.CheckReplacement(bytes), this.StartIndex, this.Layout);

@@ -54,6 +54,7 @@
             this.patcher = patcher;
         }
 
+        /// <inheritdoc/>
         public SaveDocument Create(
             byte[] bytes,
             IEnumerable<HeroChunk> heroChunks,

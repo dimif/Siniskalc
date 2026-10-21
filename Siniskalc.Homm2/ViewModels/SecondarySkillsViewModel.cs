@@ -40,16 +40,22 @@
             this.Refresh();
         }
 
+        /// <inheritdoc/>
         public override string AllSkillsNote => "A hero can learn eight of the fourteen skills. They are shown in the order they were learned.";
 
+        /// <inheritdoc/>
         protected override int UsedSlots => this.getSkills().SlotCount;
 
+        /// <inheritdoc/>
         protected override string? SkillInSlot(int slot) => this.getSkills().Entries[slot].Skill.Name;
 
+        /// <inheritdoc/>
         protected override string LevelInSlot(int slot) => SkillLevelText.FromNumber(this.getSkills().Entries[slot].Level.Code);
 
+        /// <inheritdoc/>
         protected override string LevelOf(string skillName) => SkillLevelText.FromNumber(this.getSkills().GetSkillLevel(this.Find(skillName)).Code);
 
+        /// <inheritdoc/>
         protected override int SlotOf(string skillName)
         {
             var skill = this.Find(skillName);
@@ -65,12 +71,14 @@
             return -1;
         }
 
+        /// <inheritdoc/>
         protected override void ReplaceSkillInSlot(int slot, string skillName)
         {
             var skill = this.Find(skillName);
             this.update(skills => skills.WithSkillInSlot(slot, skill));
         }
 
+        /// <inheritdoc/>
         protected override void AddSkill(string skillName)
         {
             var skill = this.Find(skillName);
@@ -83,6 +91,7 @@
             this.update(skills => skills.WithSkill(skills.Entries[slot].Skill, level));
         }
 
+        /// <inheritdoc/>
         protected override void SetLevelOf(string skillName, string levelName)
         {
             var skill = this.Find(skillName);

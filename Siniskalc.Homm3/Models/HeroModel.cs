@@ -85,6 +85,7 @@
         /// </summary>
         public int Id { get; init; }
 
+        /// <inheritdoc/>
         public PlayerColor Owner { get; init; }
 
         /// <summary>
@@ -103,12 +104,16 @@
 
         public HeroClass HeroClass { get; init; }
 
+        /// <inheritdoc/>
         public HeroLevel HeroLevel { get; init; }
 
+        /// <inheritdoc/>
         public HeroPosition Position { get; init; }
 
+        /// <inheritdoc/>
         public MapPosition Destination { get; init; }
 
+        /// <inheritdoc/>
         public MovementPoints MovementPoints { get; init; }
 
         /// <inheritdoc/>
@@ -200,14 +205,10 @@
         /// </summary>
         public VisitedBuildingEffects VisitEffects { get; init; }
 
-        /// <summary>
-        /// Gets whether the hero carries a spell book.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasSpellBook => this.SpellBook.HasSpellBook;
 
-        /// <summary>
-        /// Gets the spells the hero has learned, not counting the ones artifacts grant.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.SpellBook.Learned];
 
         /// <summary>

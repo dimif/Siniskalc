@@ -129,9 +129,7 @@
         /// </summary>
         public string VisitingHeroName => this.visitingHeroName;
 
-        /// <summary>
-        /// Gets why an edit of the owner was refused, or nothing.
-        /// </summary>
+        /// <inheritdoc/>
         public string Notice => this.notice;
 
         public bool HasNotice => this.notice.Length > 0;

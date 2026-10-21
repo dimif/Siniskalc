@@ -10,6 +10,7 @@ namespace Siniskalc.Core.Data
         {
         }
 
+        /// <inheritdoc/>
         public override RawBytesChunk WithBytes(byte[] bytes)
         {
             return new RawBytesChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex);

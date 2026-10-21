@@ -51,10 +51,13 @@
         /// </summary>
         public ListCollectionView Artifacts => this.Items;
 
+        /// <inheritdoc/>
         public override string? RowToolTipPath => nameof(ArtifactChoiceViewModel.Effects);
 
+        /// <inheritdoc/>
         public override string SearchPlaceholder => "Search by name, slot, type, effect...";
 
+        /// <inheritdoc/>
         public override string SearchHint => "Type any of: a name, a slot (helm, ring, item...), a type (relic, major, minor, treasure, combined) or an effect";
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
@@ -74,6 +77,7 @@
             this.SetSecondaryAction(label, OfArtifact(onChoose), OfArtifact(canChoose));
         }
 
+        /// <inheritdoc/>
         protected override bool Matches(ArtifactChoiceViewModel choice)
         {
             return this.TextMatches(choice.Name, choice.SlotName, choice.TypeName, choice.IsCombined ? CombinedWord : null, choice.Effects);

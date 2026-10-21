@@ -16,6 +16,7 @@ namespace Siniskalc.Homm2.Data
             this.differ = kit.Differ;
         }
 
+        /// <inheritdoc/>
         public override MapObjectChunkCollection<TModel> WithChunk(int index, MapObjectChunk chunk) =>
             new(this.Replace(index, chunk), new MapObjectKit<TModel>(this.Deserializer, this.Serializer, this.differ));
     }

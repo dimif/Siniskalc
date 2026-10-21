@@ -29,12 +29,7 @@
         private const byte MarkerStart = 0x7F;
         private const byte MarkerThird = 0x02;
 
-        /// <summary>
-        /// Returns the date in the savefile, or <c>null</c> when it cannot be found.
-        /// </summary>
-        /// <param name="bytes">The savefile bytes.</param>
-        /// <param name="gameVersion">The version of the savefile.</param>
-        /// <param name="searchFrom">Where to start looking; the date comes after the players.</param>
+        /// <inheritdoc/>
         public GameDate? Find(byte[] bytes, GameVersion gameVersion, int searchFrom = 0)
         {
             var at = this.FindOffset(bytes, gameVersion, searchFrom);
@@ -43,9 +38,7 @@
                 : new GameDate(BitConverter.ToUInt16(bytes, at + 4), BitConverter.ToUInt16(bytes, at + 2), BitConverter.ToUInt16(bytes, at));
         }
 
-        /// <summary>
-        /// Returns where the date is (the 16-bit day, week and month, in that order), or -1 when it cannot be found.
-        /// </summary>
+        /// <inheritdoc/>
         public int FindOffset(byte[] bytes, GameVersion gameVersion, int searchFrom = 0)
         {
             if (!gameVersion.HasGameSetup())

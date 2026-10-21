@@ -20,6 +20,7 @@ namespace Siniskalc.Homm3.Data
             this.differ = differ;
         }
 
+        /// <inheritdoc/>
         public override CastleChunkCollection WithChunk(int index, CastleChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
         /// <summary>

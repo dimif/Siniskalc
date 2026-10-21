@@ -27,6 +27,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
+        /// <inheritdoc/>
         public override SpellFinderViewModel Finder { get; }
 
         /// <summary>
@@ -34,14 +35,17 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public override bool CanChangeSpellBook => this.getHero().HasSpellBook || !this.getHero().Artifacts.IsFull;
 
+        /// <inheritdoc/>
         public override string SpellBookNote => "Without a spell book the hero cannot cast the learned spells. The book is the Magic Book artifact, which needs a free artifact slot.";
 
         protected override bool ReadHasSpellBook() => this.getHero().HasSpellBook;
 
         protected override void WriteHasSpellBook(bool value) => this.update(hero => value ? hero.WithSpellBook() : hero.WithoutSpellBook());
 
+        /// <inheritdoc/>
         protected override void ShowRow(SpellRowViewModel row) => row.Show(this.getHero().Spells.Contains(row.Spell), false);
 
+        /// <inheritdoc/>
         protected override void SetLearned(IReadOnlyList<SpellRowViewModel> rows, bool learned)
         {
             var spells = rows.Select(r => r.Spell).ToList();

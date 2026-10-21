@@ -46,10 +46,13 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         {
         }
 
+        /// <inheritdoc/>
         public override string? RowToolTipPath => nameof(CreatureChoiceViewModel.Details);
 
+        /// <inheritdoc/>
         public override string SearchPlaceholder => "Search by name, level, town...";
 
+        /// <inheritdoc/>
         public override string SearchHint => "Type any of: a name, a town (castle, knight...), a level (level 3) or basic / upgraded";
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
@@ -66,6 +69,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             new("Special", nameof(CreatureChoiceViewModel.Special), new GridLength(1, GridUnitType.Star), FinderColumnKind.MutedText, "What the creature can do beyond fighting; point at a row to read it in full"),
         ];
 
+        /// <inheritdoc/>
         protected override bool Matches(CreatureChoiceViewModel choice) => this.TextMatches(choice.Name, choice.Faction, $"Level {choice.Level}", choice.Form);
 
         /// <summary>

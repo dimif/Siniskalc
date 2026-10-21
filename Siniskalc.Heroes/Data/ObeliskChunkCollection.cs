@@ -48,6 +48,7 @@ namespace Siniskalc.Heroes.Data
         /// </summary>
         public bool Any => this.Count > 0;
 
+        /// <inheritdoc/>
         public override ObeliskChunkCollection<TColor> WithChunk(int index, ObeliskChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ);
 
         /// <summary>
@@ -55,6 +56,7 @@ namespace Siniskalc.Heroes.Data
         /// </summary>
         public ObeliskVisits<TColor>? GetModel() => this.Any ? this.Deserializer.Deserialize(this[0]) : null;
 
+        /// <inheritdoc/>
         protected override IEnumerable<PendingChange> DiffChunk(int index, ObeliskChunk original, ObeliskChunk current)
         {
             return this.differ.Diff(index, this.Deserializer.Deserialize(original), this.Deserializer.Deserialize(current));

@@ -449,6 +449,7 @@
             return this.Faction == null ? !this.unavailableFor.Contains(faction) : this.Faction == faction;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(AbstractEnumeration? other)
             => other is Building building && this.Code == building.Code && this.Faction == building.Faction && this.Name == building.Name;
 

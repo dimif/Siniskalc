@@ -63,9 +63,7 @@
         /// </summary>
         public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
 
-        /// <summary>
-        /// Gets the spells the hero has learned.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.Spells];
 
         /// <summary>

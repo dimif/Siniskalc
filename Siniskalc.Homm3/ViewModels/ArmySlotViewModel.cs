@@ -49,6 +49,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.RaiseFactsChanged();
         }
 
+        /// <inheritdoc/>
         protected override void RaiseFactsChanged()
         {
             base.RaiseFactsChanged();

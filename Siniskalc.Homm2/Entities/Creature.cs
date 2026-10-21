@@ -95,9 +95,7 @@ namespace Siniskalc.Homm2.Entities
         /// </summary>
         public Faction? Faction { get; }
 
-        /// <summary>
-        /// Gets the tier of the creature among those of its faction, from 1 to 6.
-        /// </summary>
+        /// <inheritdoc/>
         public int Tier { get; }
 
         /// <summary>

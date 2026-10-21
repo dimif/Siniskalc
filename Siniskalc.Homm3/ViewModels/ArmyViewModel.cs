@@ -82,6 +82,7 @@
             this.update(creatures => creatures.WithSlot(slot - 1, creature, size));
         }
 
+        /// <inheritdoc/>
         protected override StackContent? ReadStack(int index)
         {
             if (this.getCreatures().Slots[index] is not { } stack)
@@ -98,12 +99,14 @@
             .Select(c => c.Name)
             .ToList();
 
+        /// <inheritdoc/>
         protected override void AfterSlotRead(ArmySlotViewModel slot, StackContent? stack)
         {
             var creature = stack == null || stack.CreatureName.Length == 0 ? null : AbstractEnumeration.FromName<Creature>(stack.CreatureName);
             slot.SetInfo(creature?.GetInfo(this.gameVersion));
         }
 
+        /// <inheritdoc/>
         protected override void PutStack(int index, string? creatureName, int amount)
         {
             var creature = string.IsNullOrEmpty(creatureName) ? null : AbstractEnumeration.FromName<Creature>(creatureName);
@@ -123,6 +126,7 @@
 
         protected override void SwapStacks(int first, int second) => this.update(creatures => creatures.Swap(first, second));
 
+        /// <inheritdoc/>
         protected override string Summarize()
         {
             var creatures = this.getCreatures();

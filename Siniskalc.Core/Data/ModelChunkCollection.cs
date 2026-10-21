@@ -50,6 +50,7 @@ namespace Siniskalc.Core.Data
         /// </summary>
         public IReadOnlyList<TModel> GetModels() => this.models.Value;
 
+        /// <inheritdoc/>
         protected override IEnumerable<PendingChange> DiffChunk(int index, TChunk original, TChunk current)
         {
             return this.diff(index, this.Deserializer.Deserialize(original), this.Deserializer.Deserialize(current));

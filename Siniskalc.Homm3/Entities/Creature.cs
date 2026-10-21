@@ -214,6 +214,7 @@
 
         public static IReadOnlyList<Creature> All => GetAll<Creature>();
 
+        /// <inheritdoc/>
         public int Tier { get; }
 
         public Faction Faction { get; }

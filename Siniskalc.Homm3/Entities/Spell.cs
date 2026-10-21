@@ -93,8 +93,10 @@
 
         public SpellSchool School { get; }
 
+        /// <inheritdoc/>
         public int Level { get; }
 
+        /// <inheritdoc/>
         public SpellType Type { get; }
 
         /// <summary>

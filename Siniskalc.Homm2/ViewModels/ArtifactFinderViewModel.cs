@@ -25,8 +25,10 @@ namespace Siniskalc.Homm2.ViewModels
             this.StartFiltering();
         }
 
+        /// <inheritdoc/>
         public override string SearchPlaceholder => "Search by name or effect...";
 
+        /// <inheritdoc/>
         public override string SearchHint => "Type part of a name, or what it adds: attack, defense, spell power, knowledge";
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
@@ -35,6 +37,7 @@ namespace Siniskalc.Homm2.ViewModels
             new("Adds to the skills", nameof(ArtifactChoiceViewModel.Bonuses), new GridLength(2, GridUnitType.Star), FinderColumnKind.MutedText),
         ];
 
+        /// <inheritdoc/>
         protected override bool Matches(ArtifactChoiceViewModel row) => this.TextMatches(row.Name, row.Bonuses);
 
         private static List<ArtifactChoiceViewModel> CreateRows(GameVersion gameVersion) => Artifact.All

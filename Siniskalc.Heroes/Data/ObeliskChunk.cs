@@ -22,6 +22,7 @@ namespace Siniskalc.Heroes.Data
         /// </summary>
         public IReadOnlyList<MapPosition?> Positions { get; }
 
+        /// <inheritdoc/>
         public override ObeliskChunk WithBytes(byte[] bytes)
         {
             return new ObeliskChunk(this.Name, this.CheckReplacement(bytes), this.StartIndex, this.Positions);

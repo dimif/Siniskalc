@@ -10,6 +10,7 @@ namespace Siniskalc.Wpf.Views
     {
         public void ShowError(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Error);
 
+        /// <inheritdoc/>
         public void ShowUnexpectedError(string title, string message, string details)
         {
             var window = new ErrorWindow(title, message, details);
@@ -30,6 +31,7 @@ namespace Siniskalc.Wpf.Views
 
         public void ShowInformation(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Information);
 
+        /// <inheritdoc/>
         public MessageAnswer AskYesNoCancel(string title, string message) => Show(title, message, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning) switch
         {
             MessageBoxResult.Yes => MessageAnswer.Yes,

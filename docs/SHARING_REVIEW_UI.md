@@ -2,6 +2,14 @@
 
 **2026-10-20:** the resources of a player (a row each, the "All" and "Gold" buttons, the limits) are `ResourcesEditorViewModel`, `ResourceRowViewModel` and `ResourceLimits` in `Siniskalc.Heroes.Wpf`; both `PlayerViewModel`s hold one and pass their own limits. A line-by-line comparison of the two games' view models found no other identical code: what is left (the hero, castle and player pages) differs in structure, not text. The overview page of each game derives from `OverviewViewModelBase` (file name, map, date, difficulty, turn and the summary line); a game says where its facts are (`Map`, `Date`, `Difficulty`, `CurrentPlayerName`, nullable) and builds its cards.
 
+**2026-10-21:** a second pass over both games.
+Done: the resource, tavern and days-left changes of a player are `AddResources`, `AddTavern` and `AddDaysLeft` in `ChangeSinkExtensions` (HoMM3 now reports a change of the days left, which it did not);
+`OwnedLinks.Heroes`, `HeroLinkViewModel` and `OwnerNavigationBuilderBase.HeroEntriesOf` are the hero lists of the overview, the player page and the navigation, and `CastleLinks.OwnedBy` is the castle list of each game;
+`SessionPageViewModelBase<TModel>` (over `IEditSession<TModel>`) holds the pending changes and the reset of the HoMM3 pages;
+`HeroesArmyViewModelBase<TCreature, TSlot>` is the army editor, `HeroesSecondarySkillsViewModel<TSkill, TSkills>` is the skills editor (`ISecondarySkills.WithSkillLevel` handles the full hero in the model), and `SkillLevelNames` moved to `Siniskalc.Heroes.Wpf`;
+`IGameInfo<TColor>` is implemented by both `Game` classes, and `OverviewViewModelBase<TColor>` reads the date, map, difficulty and turn from it.
+Not done: a shared player page base (HoMM2's `PageViewModel` and HoMM3's `SessionPageViewModelBase` are different bases, so a third one cannot sit between them; the shared blocks are already `ResourcesEditorViewModel`, `TavernPlaceViewModel` and `ObeliskVisitsViewModelBase`), and HoMM2 pages on the session base (its owner changes touch two chunks, so its reset reverts pending changes of the page).
+
 The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.
 Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was changed with this review.
 

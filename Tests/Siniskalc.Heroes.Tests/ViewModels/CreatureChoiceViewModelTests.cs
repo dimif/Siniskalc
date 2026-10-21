@@ -77,6 +77,8 @@ namespace Siniskalc.Heroes.Tests.ViewModels
             }
 
             public byte Code => 0;
+
+            public byte? BaseCreatureCode => null;
         }
     }
 }

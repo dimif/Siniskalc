@@ -22,5 +22,10 @@ namespace Siniskalc.Heroes.Entities
         /// Gets a value indicating whether the creature is the upgraded form of another one.
         /// </summary>
         bool IsUpgrade { get; }
+
+        /// <summary>
+        /// Gets the code of the creature this one upgrades from, or <c>null</c> when it is not an upgrade.
+        /// </summary>
+        byte? BaseCreatureCode { get; }
     }
 }

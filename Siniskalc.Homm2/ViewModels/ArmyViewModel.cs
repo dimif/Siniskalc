@@ -16,86 +16,26 @@
     /// the commands and what is shown are in <see cref="ArmyViewModelBase{TSlot}"/>; this reads the army it is given and writes every edit
     /// back through <c>update</c>.
     /// </summary>
-    public sealed class ArmyViewModel : ArmyViewModelBase<StackSlotViewModel>
+    public sealed class ArmyViewModel : HeroesArmyViewModelBase<Creature, StackSlotViewModel>
     {
         private const int MinStackSize = 1;
 
-        private readonly GameVersion gameVersion;
-        private readonly Func<IArmy<Creature>> getArmy;
-        private readonly Action<Func<IArmy<Creature>, IArmy<Creature>>> update;
-
         public ArmyViewModel(GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
-            : base(Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList())
-        {
-            this.gameVersion = gameVersion;
-            this.getArmy = getArmy;
-            this.update = update;
-
-            this.CreateSlots(Constants.ArmySlotCount, (i, changed, move, clear) => new StackSlotViewModel(i, changed, move, clear));
-            this.Finder = new CreatureFinderViewModel(
-                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => ((ICreature)c, c.Info)),
+            : base(
+                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
+                c => c.Info,
                 Constants.ArmySlotCount,
-                1,
+                MinStackSize,
                 (int)Constants.MaxCreatureCount,
-                () => this.HasFreeSlot,
-                (creature, count) => this.AddCreature((Creature)creature, count),
-                (creature, slot, count) => this.SendToSlot((Creature)creature, slot, count),
-                this.DescribeSlot);
-
+                getArmy,
+                update,
+                (i, changed, move, clear) => new StackSlotViewModel(i, changed, move, clear))
+        {
             this.Refresh();
         }
 
         /// <inheritdoc/>
-        public override CreatureFinderViewModel Finder { get; }
-
-        /// <summary>
-        /// Puts a creature in the first empty slot, as a stack of <paramref name="count"/>.
-        /// </summary>
-        public void AddCreature(Creature creature, int count)
-        {
-            var free = this.FirstFreeSlot();
-            if (free >= 0)
-            {
-                this.SetSlot(free, creature, count);
-            }
-        }
-
-        /// <summary>
-        /// Puts a stack of <paramref name="count"/> of <paramref name="creature"/> in <paramref name="slot"/> (from 1), replacing what was there.
-        /// </summary>
-        public void SendToSlot(Creature creature, int slot, int count)
-        {
-            RangeGuard.ThrowIfOutOfRange(slot, 1, Constants.ArmySlotCount, nameof(slot));
-            this.SetSlot(slot - 1, creature, count);
-        }
-
-        /// <inheritdoc/>
-        protected override StackContent? ReadStack(int index) => this.getArmy().Slots[index] is { } slot
-            ? new StackContent(slot.Creature.Name, (int)slot.Count, _ => Facts(slot.Creature), this.UpgradesOf(slot.Creature))
-            : null;
-
-        /// <inheritdoc/>
-        protected override void PutStack(int index, string? creatureName, int amount)
-        {
-            var creature = string.IsNullOrEmpty(creatureName) ? null : AbstractEnumeration.FromName<Creature>(creatureName);
-            if (creature == null)
-            {
-                // The empty entry, or a name that is not a creature, empties the slot.
-                this.ClearStack(index);
-                return;
-            }
-
-            this.SetSlot(index, creature, amount);
-        }
-
-        protected override void ClearStack(int index) => this.update(army => army.WithSlot(index, null));
-
-        protected override void SwapStacks(int first, int second) => this.update(army => army.Swap(first, second));
-
-        private System.Collections.Generic.IReadOnlyList<string> UpgradesOf(Creature creature) => Creature.All
-            .Where(c => c.BaseCreatureCode == creature.Code && c.IsAvailableIn(this.gameVersion))
-            .Select(c => c.Name)
-            .ToList();
+        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => Facts(creature);
 
         private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
         [
@@ -103,14 +43,5 @@
             new("Level", creature.Tier.ToString()),
             new("Growth", $"{creature.Info.Growth} a week"),
         ];
-
-        private void SetSlot(int index, Creature creature, int count)
-        {
-            // A newly picked creature starts with one in the stack, as the game does not allow an empty stack.
-            var size = (int)RangeGuard.Clamp(count, MinStackSize, (int)Constants.MaxCreatureCount);
-            this.update(army => army.WithSlot(index, new ArmySlot<Creature>(creature, size)));
-        }
-
-        private string DescribeSlot(int slot) => this.getArmy().Slots[slot - 1] is { } stack ? $"{stack.Creature.Name} ×{stack.Count}" : "empty";
     }
 }

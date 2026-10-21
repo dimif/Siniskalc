@@ -1,8 +1,7 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Homm3.Entities;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>

@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -15,102 +16,33 @@ namespace Siniskalc.Homm3.ViewModels
     /// The slots and the list are in <see cref="SecondarySkillsViewModelBase"/>; this reads from the hero's skills and writes every edit
     /// back through <c>update</c>. Call <see cref="SecondarySkillsViewModelBase.Refresh"/> after they changed.
     /// </summary>
-    public sealed class SecondarySkillsViewModel : SecondarySkillsViewModelBase
+    public sealed class SecondarySkillsViewModel : HeroesSecondarySkillsViewModel<SecondarySkill, SecondarySkills>
     {
-        private readonly Func<SecondarySkills> getSkills;
-        private readonly Action<Func<SecondarySkills, SecondarySkills>> update;
-        private readonly IReadOnlyList<SecondarySkill> knownSkills;
-
         public SecondarySkillsViewModel(
             GameVersion gameVersion,
             Func<SecondarySkills> getSkills,
             Action<Func<SecondarySkills, SecondarySkills>> update)
-            : this(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), getSkills, update)
+            : base(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.SkillSlots.Max, getSkills, update)
         {
-        }
-
-        private SecondarySkillsViewModel(
-            IReadOnlyList<SecondarySkill> knownSkills,
-            Func<SecondarySkills> getSkills,
-            Action<Func<SecondarySkills, SecondarySkills>> update)
-            : base(knownSkills.Select(s => s.Name).ToList(), Constants.SkillSlots.Max)
-        {
-            this.knownSkills = knownSkills;
-            this.getSkills = getSkills;
-            this.update = update;
-
-            this.Refresh();
         }
 
         /// <inheritdoc/>
         public override bool SupportsHiding => true;
 
         /// <inheritdoc/>
-        public override int ExtraCount => this.getSkills().ExtraSkills.Count();
+        public override int ExtraCount => this.Skills.ExtraSkills.Count();
 
         /// <inheritdoc/>
         public override string AllSkillsNote => "The game only allows a hero to learn eight skills, but it applies every skill that has a level.";
 
         /// <inheritdoc/>
-        protected override int UsedSlots => this.getSkills().SlotCount;
-
-        /// <inheritdoc/>
-        protected override string? SkillInSlot(int slot) => this.getSkills().GetSkillInSlot(slot)?.Name;
-
-        /// <inheritdoc/>
-        protected override string LevelInSlot(int slot) =>
-            this.getSkills().GetSkillInSlot(slot) is { } skill ? SkillLevelNames.FromLevel(this.getSkills().GetSkillLevel(skill)) : SkillLevelNames.Basic;
-
-        /// <inheritdoc/>
-        protected override string LevelOf(string skillName) => SkillLevelNames.FromLevel(this.getSkills().GetSkillLevel(this.Find(skillName)!));
-
-        /// <inheritdoc/>
-        protected override int SlotOf(string skillName) => this.getSkills().GetSlotOf(this.Find(skillName)!);
-
-        /// <inheritdoc/>
-        protected override void ReplaceSkillInSlot(int slot, string skillName)
-        {
-            var skill = this.Find(skillName)!;
-            this.update(skills => skills.WithSkillInSlot(slot, skill));
-        }
-
-        /// <inheritdoc/>
-        protected override void AddSkill(string skillName)
-        {
-            var skill = this.Find(skillName)!;
-            this.update(skills => skills.WithSkill(skill, SkillLevel.Beginner));
-        }
-
-        protected override void SetLevelInSlot(int slot, string levelName)
-        {
-            var level = SkillLevelNames.ToLevel(levelName);
-            if (level != SkillLevel.None)
-            {
-                this.update(skills => skills.GetSkillInSlot(slot) is { } skill ? skills.WithSkill(skill, level) : skills);
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void SetLevelOf(string skillName, string levelName)
-        {
-            var skill = this.Find(skillName)!;
-            this.update(skills => skills.WithSkillLevel(skill, SkillLevelNames.ToLevel(levelName)));
-        }
-
-        protected override void SwapSlots(int first, int second) => this.update(skills => skills.Swap(first, second));
-
-        protected override void RemoveSlot(int slot) => this.update(skills => skills.WithoutSlot(slot));
-
-        /// <inheritdoc/>
-        protected override void HideSlot(int slot) => this.update(skills => skills.WithSlotAsExtra(slot));
+        protected override void HideSlot(int slot) => this.Update(skills => skills.WithSlotAsExtra(slot));
 
         /// <inheritdoc/>
         protected override void ShowExtraSkill(string skillName)
         {
-            var skill = this.Find(skillName)!;
-            this.update(skills => skills.WithExtraSkillInSlot(skill));
+            var skill = this.Find(skillName);
+            this.Update(skills => skills.WithExtraSkillInSlot(skill));
         }
-
-        private SecondarySkill? Find(string name) => this.knownSkills.FirstOrDefault(s => s.Name == name);
     }
 }

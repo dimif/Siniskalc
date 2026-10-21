@@ -81,10 +81,7 @@
             return new SecondarySkills(levels, slots);
         }
 
-        /// <summary>
-        /// Returns a copy with the skill at <paramref name="level"/>, or removed altogether when <paramref name="level"/> is <see cref="SkillLevel.None"/>.
-        /// Removing a skill that has a slot moves the later skills up.
-        /// </summary>
+        /// <inheritdoc/>
         public SecondarySkills WithSkillLevel(SecondarySkill skill, SkillLevel level)
         {
             if (level != SkillLevel.None)

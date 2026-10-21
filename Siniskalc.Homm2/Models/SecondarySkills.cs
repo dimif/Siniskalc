@@ -92,6 +92,18 @@
         }
 
         /// <inheritdoc/>
+        public SecondarySkills WithSkillLevel(SecondarySkill skill, SkillLevel level)
+        {
+            var slot = this.GetSlotOf(skill);
+            if (level == SkillLevel.None)
+            {
+                return slot < 0 ? this : this.WithoutSlot(slot);
+            }
+
+            return slot < 0 && this.IsFull ? this : this.WithSkill(skill, level);
+        }
+
+        /// <inheritdoc/>
         public SecondarySkills WithoutSlot(int slotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.entries.Length, nameof(slotIndex));

@@ -79,6 +79,21 @@
         TSelf WithSkill(TSecondarySkill skill, SkillLevel level);
 
         /// <summary>
+        /// Returns a new copy with the skill at <paramref name="level"/>, or without the skill when <paramref name="level"/> is
+        /// <see cref="SkillLevel.None"/>. A hero whose slots are full does not learn a skill it has not got; the copy is the same.
+        /// </summary>
+        /// <param name="skill">
+        /// The skill.
+        /// </param>
+        /// <param name="level">
+        /// The level.
+        /// </param>
+        /// <returns>
+        /// A new, updated, copy of the secondary skills.
+        /// </returns>
+        TSelf WithSkillLevel(TSecondarySkill skill, SkillLevel level);
+
+        /// <summary>
         /// Returns a new copy of the secondary skills where 2 slots have been swapped.
         /// </summary>
         /// <param name="slotIndex">

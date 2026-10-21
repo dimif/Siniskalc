@@ -9,6 +9,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public interface IResourcesPage
     {
+        /// <summary>
+        /// Gets a row for each resource, gold first, each editable.
+        /// </summary>
         IReadOnlyList<AmountRowViewModel> Resources { get; }
 
         /// <summary>

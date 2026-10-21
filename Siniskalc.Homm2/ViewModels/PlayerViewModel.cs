@@ -75,6 +75,7 @@
         /// </summary>
         public string ControlText => PlayerTypeText.Describe(this.Game.GetControl(this.Color), this.Game.CurrentPlayer == this.Color);
 
+        /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.Color);
 
         /// <summary>
@@ -82,19 +83,13 @@
         /// </summary>
         public string Status => this.status;
 
-        /// <summary>
-        /// Gets the resources, gold first, each editable.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
 
-        /// <summary>
-        /// Gets the command that adds 99 of every resource but gold.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
 
-        /// <summary>
-        /// Gets the command that adds 100,000 gold.
-        /// </summary>
+        /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
 
         /// <summary>
@@ -102,8 +97,10 @@
         /// </summary>
         public ObeliskVisitsViewModel Obelisks { get; }
 
+        /// <inheritdoc/>
         public IReadOnlyList<LinkViewModel> Heroes => this.heroes;
 
+        /// <inheritdoc/>
         public IReadOnlyList<CastleLinkViewModel> Castles => this.castles;
 
         /// <summary>
@@ -111,12 +108,16 @@
         /// </summary>
         public IReadOnlyList<TavernPlaceViewModel> TavernPlaces { get; }
 
+        /// <inheritdoc/>
         IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
 
+        /// <inheritdoc/>
         IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
 
+        /// <inheritdoc/>
         public bool HasHeroes => this.heroes.Count > 0;
 
+        /// <inheritdoc/>
         public bool HasCastles => this.castles.Count > 0;
 
         protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForPlayer(this.session);

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -70,6 +70,7 @@ namespace Siniskalc.Homm3.ViewModels
 
         public PlayerColor Color => this.session.Current.Color;
 
+        /// <inheritdoc/>
         public string Name => this.Color.ToString();
 
         /// <summary>
@@ -77,6 +78,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string ControlText { get; }
 
+        /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.Color);
 
         /// <summary>
@@ -89,12 +91,16 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IReadOnlyList<HeroLinkViewModel> Heroes { get; private set; } = [];
 
+        /// <inheritdoc/>
         IReadOnlyList<AmountRowViewModel> IResourcesPage.Resources => this.Resources;
 
+        /// <inheritdoc/>
         IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
 
+        /// <inheritdoc/>
         IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
 
+        /// <inheritdoc/>
         public bool HasHeroes => this.Heroes.Count > 0;
 
         /// <summary>
@@ -112,6 +118,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IReadOnlyList<CastleLinkViewModel> Castles { get; private set; } = [];
 
+        /// <inheritdoc/>
         public bool HasCastles => this.Castles.Count > 0;
 
         /// <summary>
@@ -136,10 +143,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IReadOnlyList<DaysLeftChoiceViewModel> DayChoices { get; }
 
+        /// <inheritdoc/>
         public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
 
+        /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
-
 
         /// <summary>
         /// Gets the player as the savefile had it when it was loaded or last saved.
@@ -156,6 +164,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         protected override void Reset() => this.session.Update(_ => this.Original);
 
+        /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
             this.resources.Refresh();

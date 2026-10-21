@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using Siniskalc.Heroes.ViewModels;
@@ -14,6 +14,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// Gets the colour of the player as a hex string, the one the editor draws it with (see <c>PlayerPalette</c>).
+        /// </summary>
         string ColorHex { get; }
 
         /// <summary>
@@ -21,12 +24,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         int SelectedTab { get; set; }
 
+        /// <summary>
+        /// Gets the heroes the player owns, each as a link that opens its page.
+        /// </summary>
         IReadOnlyList<ILink> Heroes { get; }
 
+        /// <summary>
+        /// Gets whether the player owns a hero, which is when the list of heroes is shown.
+        /// </summary>
         bool HasHeroes { get; }
 
+        /// <summary>
+        /// Gets the towns the player owns, each as a link that opens its page.
+        /// </summary>
         IReadOnlyList<ILink> Castles { get; }
 
+        /// <summary>
+        /// Gets whether the player owns a town, which is when the list of towns is shown.
+        /// </summary>
         bool HasCastles { get; }
     }
 }

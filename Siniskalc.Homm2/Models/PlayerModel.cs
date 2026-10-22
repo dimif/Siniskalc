@@ -60,7 +60,8 @@
             : this;
 
         /// <summary>
-        /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one.
+        /// Returns the player with the castle in its list of castles. The days left to own a castle are cleared, as the player owns one (a banished
+        /// player stays banished).
         /// </summary>
         /// <exception cref="GameRuleException">The player has the most castles the list holds.</exception>
         public PlayerModel WithCastle(int castleIndex)
@@ -72,7 +73,7 @@
 
             return this.CastleIds.Count >= Constants.Player.CastleListSize
                 ? throw new GameRuleException($"A player has at most {Constants.Player.CastleListSize} castles.")
-                : this with { CastleIds = new Numbers(this.CastleIds.Append(castleIndex)), DaysLeft = null };
+                : this with { CastleIds = new Numbers(this.CastleIds.Append(castleIndex)), DaysLeft = this.DaysLeftOnGainingATown() };
         }
 
         /// <summary>
@@ -90,7 +91,7 @@
             {
                 CastleIds = castles,
                 SelectedCastle = this.SelectedCastle == castleIndex ? null : this.SelectedCastle,
-                DaysLeft = castles.Count == 0 ? this.DaysLeft ?? DaysToOwnACastle : this.DaysLeft,
+                DaysLeft = this.DaysLeftOnLosingATown(castles.Count),
             };
         }
     }

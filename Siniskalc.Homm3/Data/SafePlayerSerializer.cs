@@ -15,6 +15,9 @@
         /// </summary>
         public PlayerChunk Serialize(PlayerChunk chunk, PlayerModel player)
         {
+            // The number of towns (PlayerLayout.TownCount) and the list of their indices follow the owners of the castles in the saves, but
+            // the order of the list is not established, so they are left as they were, also after a castle changed owner.
+            // TODO:LOG Debug: town count and town list of a player not written; may be stale after a castle owner edit.
             return SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft);
         }
 

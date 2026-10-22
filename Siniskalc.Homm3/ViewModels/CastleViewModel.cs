@@ -85,7 +85,7 @@ namespace Siniskalc.Homm3.ViewModels
             set
             {
                 var owner = OwnerNames<PlayerColor>.Parse(value);
-                this.Edit(castle => castle with { Owner = owner });
+                this.history.CreateCastleSession(this.castleIndex).ChangeOwner(owner);
             }
         }
 

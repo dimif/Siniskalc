@@ -33,6 +33,34 @@ namespace Siniskalc.Heroes.Tests.Models
             Assert.That((player.HasCountdown, player.IsBanished), Is.EqualTo((false, true)));
         }
 
+        [TestCase(null)]
+        [TestCase(7)]
+        [TestCase(3)]
+        public void APlayerWhoGainsATownStopsCounting(int? days)
+        {
+            Assert.That(new TestPlayer(days).DaysLeftOnGainingATown(), Is.Null);
+        }
+
+        [Test]
+        public void APlayerWhoLosesItsLastTownHasSevenDaysLeft()
+        {
+            Assert.That(new TestPlayer(null).DaysLeftOnLosingATown(townsLeft: 0), Is.EqualTo(Constants.Player.MaxDaysLeft));
+        }
+
+        [Test]
+        public void APlayerWhoLosesATownAndKeepsAnotherHasNoCountdown()
+        {
+            Assert.That(new TestPlayer(null).DaysLeftOnLosingATown(townsLeft: 2), Is.Null);
+        }
+
+        [Test]
+        public void ABanishedPlayerStaysBanishedWhateverTownItGainsOrLoses()
+        {
+            var banished = new TestPlayer(0);
+
+            Assert.That((banished.DaysLeftOnGainingATown(), banished.DaysLeftOnLosingATown(0)), Is.EqualTo(((int?)0, (int?)0)));
+        }
+
         private sealed record TestPlayer(int? Days) : PlayerModelBase<ConsoleColor>(ConsoleColor.Red, ResourceSet.None, TavernHeroes.Empty, Days);
     }
 }

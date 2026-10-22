@@ -281,9 +281,7 @@
         private static string MovementText(MovementPoints points) => $"{points.Current:N0} / {points.Max:N0}";
 
         private static string PlaceText(MapPosition place, bool hasLevels) =>
-            place == MapPosition.None ? ChangeText.None
-            : hasLevels ? MapLevelText.Coordinates(place.X, place.Y, place.Level)
-            : MapLevelText.Coordinates(place.X, place.Y);
+            place == MapPosition.None ? ChangeText.None : MapLevelText.Coordinates(place, hasLevels);
 
         private static string PositionText(HeroPosition position, bool hasLevels) =>
             $"{PlaceText(new MapPosition(position.X, position.Y, position.Level), hasLevels)}, facing {position.FacingDirection}";

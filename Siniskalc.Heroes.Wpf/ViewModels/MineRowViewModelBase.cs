@@ -62,7 +62,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets where the mine is, such as "X: 12, Y: 7", with the level in a game whose map has two ("X: 12, Y: 7, Underground (1)").
         /// </summary>
-        public string PositionText => this.HasLevel ? MapLevelText.Coordinates(this.X, this.Y, this.Level) : MapLevelText.Coordinates(this.X, this.Y);
+        public string PositionText => MapLevelText.Coordinates(this.position(), this.HasLevel);
 
         public string OwnerSort => this.OwnerField.Selected;
 

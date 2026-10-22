@@ -37,8 +37,8 @@ namespace Siniskalc.Homm3.ViewModels
                 {
                     ["Creature"] = d => d.CreatureName,
                     ["Owner"] = d => d.OwnerSort,
-                    ["X"] = d => (d.X, d.Y),
-                    ["Y"] = d => (d.Y, d.X),
+                    ["X"] = d => (d.X, d.Y, d.Level),
+                    ["Y"] = d => (d.Y, d.X, d.Level),
                     ["Available"] = d => d.Stock,
                 });
             this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines)).ToList();

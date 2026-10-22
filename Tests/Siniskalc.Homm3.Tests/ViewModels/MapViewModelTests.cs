@@ -119,7 +119,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var page = new MapViewModel(LoadDwellings("05_tazar_flags_portal_of_glory"), TestServices.EffectLines);
 
             Assert.That(page.Dwellings, Has.Count.EqualTo(31));
-            var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
+            var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56, Surface (0)");
             Assert.That(guardhouse.CreatureName, Is.EqualTo("Pikeman"));
             Assert.That(guardhouse.OwnerField.Selected, Is.EqualTo("Blue"));
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));
@@ -127,11 +127,37 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
+        public void TwoDwellingsOnTheSameTileOfTheTwoLevelsAreToldApartByTheirRowAndTheirChanges()
+        {
+            // The test map has its dwellings on the surface: the second record is moved under the first one, as the hex editor would do.
+            var game = LoadDwellings("05_tazar_flags_portal_of_glory");
+            var surface = game.History.Current.Dwellings().GetModel(0).Position;
+            game.History.CreateDwellingSession(1).UpdateBytes(bytes =>
+            {
+                (bytes[DwellingLayout.X], bytes[DwellingLayout.Y], bytes[DwellingLayout.Level]) = ((byte)surface.X, (byte)surface.Y, 1);
+                return bytes;
+            });
+            var page = new MapViewModel(game, TestServices.EffectLines);
+            var above = page.Dwellings.Single(d => d.Index == 0);
+            var below = page.Dwellings.Single(d => d.Index == 1);
+
+            Assert.That(above.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Surface (0)"));
+            Assert.That(below.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Underground (1)"));
+            Assert.That((above.LevelText, below.LevelText), Is.EqualTo(("Surface (0)", "Underground (1)")));
+
+            above.StockText = "12345";
+            below.StockText = "12345";
+            Assert.That(
+                game.History.GetPendingChanges().Select(c => c.OwnerName),
+                Is.EquivalentTo(new[] { $"{above.CreatureName} dwelling at {above.PositionText}", $"{below.CreatureName} dwelling at {below.PositionText}" }));
+        }
+
+        [Test]
         public void TypingTheCreaturesToHireAndPickingAnOwnerChangeTheDwellingAndCanBeReset()
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
             var page = new MapViewModel(game, TestServices.EffectLines);
-            var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
+            var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56, Surface (0)");
 
             guardhouse.StockText = "3";
             guardhouse.OwnerField.Selected = "Green";
@@ -151,7 +177,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void AStockThatIsNotANumberLeavesTheDwellingAloneAndOneThatIsTooBigIsTakenAsTheMost()
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
-            var guardhouse = new MapViewModel(game, TestServices.EffectLines).Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
+            var guardhouse = new MapViewModel(game, TestServices.EffectLines).Dwellings.Single(d => d.PositionText == "X: 31, Y: 56, Surface (0)");
 
             guardhouse.StockText = "many";
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));

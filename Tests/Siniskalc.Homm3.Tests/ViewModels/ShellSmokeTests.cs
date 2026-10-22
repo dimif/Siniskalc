@@ -138,7 +138,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Pump();
                     Assert.That(frame.Content, Is.InstanceOf<PlayerPage>());
                     var page = viewModel.CurrentPageOf<PlayerViewModel>();
-                    page.DayChoices.Single(c => c.Days == 3).SelectCommand.Execute(null);
+                    page.DaysLeftCard.DayChoices.Single(c => c.Days == 3).SelectCommand.Execute(null);
                     Pump();
                     Assert.That(page.BanishingText, Is.EqualTo("No towns: 3 days left"));
 

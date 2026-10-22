@@ -6,7 +6,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
-      xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PlayerPage">
@@ -59,47 +58,7 @@
                 <Grid Style="{StaticResource TabPanel0}">
                     <heroes:ResourcesPanel Note="Amounts are limited to 999,999 for each resource, and 999,999,999 for gold. Hold Shift while pressing + or − to step by ten.">
                         <!-- Only a player who owns no town has days left; the buttons of a banished player are disabled. -->
-                        <Border Margin="0,12,0,0" HorizontalAlignment="Left" Width="440">
-                            <Border.Style>
-                                <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HasBanishing}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0,0,0,8" Text="Banishing"
-                                           ToolTip="A player who owns no town is banished when the days run out. Giving the player a town stops the countdown."/>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource MutedBrush}" Text="Days left"/>
-                                    <ItemsControl ItemsSource="{Binding DayChoices}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type vm:DaysLeftChoiceViewModel}">
-                                                <Button Margin="0,0,6,0" MinWidth="34" Command="{Binding SelectCommand}" Content="{Binding Days}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                                                    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                        <heroes:DaysLeftCard DataContext="{Binding DaysLeftCard}"/>
                     </heroes:ResourcesPanel>
                 </Grid>
 

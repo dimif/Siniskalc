@@ -47,5 +47,31 @@
             Assert.That(player.ControlText, Is.EqualTo("Human · current turn"));
             Assert.That(new PlayerViewModel(game, PlayerColor.Red, TestServices.BanishingText, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
         }
+
+        [Test]
+        public void APlayerWhoOwnsNoTownCanBeGivenOtherDaysLeftOnItsPageAndTheChangeIsPending()
+        {
+            var game = TestServices.LoadBrokenAlliance(21);
+            var player = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
+            Assert.That((player.DaysLeftCard.HasBanishing, player.DaysLeftCard.DaysLeft), Is.EqualTo((true, (int?)7)), "Blue lost his last castle in save 21");
+
+            player.DaysLeftCard.DayChoices.Single(c => c.Days == 3).SelectCommand.Execute(null);
+
+            Assert.That(game.History.Current.Players().GetModel(PlayerColor.Blue.Code).DaysLeft, Is.EqualTo(3));
+            Assert.That(player.DaysLeftCard.DayChoices.Single(c => c.IsCurrent).Days, Is.EqualTo(3));
+            Assert.That(player.BanishingText, Is.EqualTo("No towns: 3 days left"));
+            Assert.That(game.History.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Days left without a castle"));
+        }
+
+        [Test]
+        public void APlayerWhoOwnsATownHasNoBanishingCardAndABanishedOneCannotBeGivenDays()
+        {
+            Assert.That(new PlayerViewModel(TestServices.LoadBrokenAlliance(24), PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { }).DaysLeftCard.HasBanishing, Is.False);
+
+            var green = new PlayerViewModel(TestServices.LoadBrokenAlliance(22), PlayerColor.Green, TestServices.BanishingText, _ => { }, _ => { });
+
+            Assert.That(green.DaysLeftCard.IsBanished, Is.True);
+            Assert.That(green.DaysLeftCard.DayChoices.Select(c => c.SelectCommand.CanExecute(null)), Has.All.False);
+        }
     }
 }

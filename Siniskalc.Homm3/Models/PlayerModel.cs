@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm3.Models
 {
-    using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -18,15 +17,6 @@ namespace Siniskalc.Homm3.Models
     public sealed record PlayerModel(PlayerColor Color, ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft = null)
         : PlayerModelBase<PlayerColor>(Color, Resources, Tavern, DaysLeft)
     {
-        /// <summary>
-        /// Returns the player with <paramref name="days"/> left before banishing, 1 to 7. A banished player stays banished.
-        /// </summary>
-        public PlayerModel WithDaysLeft(int days)
-        {
-            RangeGuard.ThrowIfOutOfRange(days, Constants.Player.MinDaysLeft + 1, Constants.Player.MaxDaysLeft, nameof(days));
-            return this.IsBanished ? this : this with { DaysLeft = days };
-        }
-
         /// <summary>
         /// Returns the player once it has gained a town: its countdown stops. A banished player stays banished.
         /// </summary>

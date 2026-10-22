@@ -6,7 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the countdown that puts a player out of the game once it owns no town.
     /// </summary>
     [TestFixture]
-    internal sealed class PlayerModelBaseTests
+    internal sealed class BanishablePlayerBaseTests
     {
         [Test]
         public void APlayerWhoOwnsATownHasNoCountdown()

@@ -51,10 +51,10 @@
                 () => this.session.Current.Resources,
                 () => this.Session.Original.Resources,
                 edit => this.session.Update(player => player with { Resources = edit(player.Resources) }));
-            this.DayChoices = Enumerable.Range(Constants.Player.MinDaysLeft + 1, Constants.Player.MaxDaysLeft - Constants.Player.MinDaysLeft)
-                .Reverse()
-                .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
-                .ToList();
+            this.DaysLeftCard = new DaysLeftCardViewModel(
+                () => this.session.Current.DaysLeft,
+                days => this.session.Update(player => player.WithDaysLeft(days)),
+                () => this.session.Current.IsBanished);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", at => MapLevelText.Coordinates(at.X, at.Y, at.Level));
             this.TavernPlaces = TavernPlaceViewModel.ForTavern(
                 () => this.session.Current.Tavern,
@@ -127,7 +127,7 @@
         public int? DaysLeft => this.session.Current.DaysLeft;
 
         /// <summary>
-        /// Gets whether the Banishing card is shown: the player owns no town. A banished player is shown, but cannot be edited.
+        /// Gets whether the player owns no town, which the pill beside its name shows.
         /// </summary>
         public bool HasBanishing => this.DaysLeft != null;
 
@@ -139,9 +139,9 @@
         public string BanishingText => this.banishingText.Pill(this.session.Current);
 
         /// <summary>
-        /// Gets the days the player can be given, 7 down to 1.
+        /// Gets the Banishing card: the days left of a player who owns no town, which can be changed while it is not banished.
         /// </summary>
-        public IReadOnlyList<DaysLeftChoiceViewModel> DayChoices { get; }
+        public DaysLeftCardViewModel DaysLeftCard { get; }
 
         /// <inheritdoc/>
         public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
@@ -202,10 +202,7 @@
             this.RaisePropertyChanged(nameof(this.HasBanishing));
             this.RaisePropertyChanged(nameof(this.IsBanished));
             this.RaisePropertyChanged(nameof(this.BanishingText));
-            foreach (var choice in this.DayChoices)
-            {
-                choice.Refresh();
-            }
+            this.DaysLeftCard.Refresh();
         }
     }
 }

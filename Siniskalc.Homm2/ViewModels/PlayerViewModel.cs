@@ -64,6 +64,10 @@
                 edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
                 () => this.Game.History.Current.Heroes(),
                 this.openHero);
+            this.DaysLeftCard = new DaysLeftCardViewModel(
+                () => this.session.Current.DaysLeft,
+                days => this.session.Update(player => player.WithDaysLeft(days)),
+                () => this.session.Current.IsBanished);
             this.Refresh();
         }
 
@@ -84,6 +88,11 @@
         /// Gets the pill of a player who owns no town, such as "No towns: 6 days left" or "Banished", or nothing for a player who owns one.
         /// </summary>
         public string BanishingText => this.banishing;
+
+        /// <summary>
+        /// Gets the Banishing card: the days left of a player who owns no town, which can be changed while it is not banished.
+        /// </summary>
+        public DaysLeftCardViewModel DaysLeftCard { get; }
 
         /// <inheritdoc/>
         public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
@@ -136,6 +145,7 @@
             this.castles = CastleLinks.OwnedBy(document, this.Color, this.openCastle, this.openHero);
 
             this.Obelisks?.Refresh();
+            this.DaysLeftCard?.Refresh();
 
             foreach (var place in this.TavernPlaces)
             {

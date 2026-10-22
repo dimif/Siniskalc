@@ -1,3 +1,4 @@
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -107,15 +108,6 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(banished.IsBanished, Is.True);
             Assert.That(banished.HasCountdown, Is.False);
             Assert.That(banished.WithDaysLeft(5), Is.SameAs(banished));
-        }
-
-        [TestCase(0)]
-        [TestCase(8)]
-        public void AnAmountOfDaysThatTheGameDoesNotCountIsRefused(int days)
-        {
-            var blue = Blue(Load("banishing_01_blue_7_days_left"));
-
-            Assert.That(() => blue.WithDaysLeft(days), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]

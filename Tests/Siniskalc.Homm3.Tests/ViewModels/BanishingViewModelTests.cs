@@ -56,8 +56,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var page = BluePage(Open("banishing_06_blue_6_days_left"));
 
-            Assert.That(page.DayChoices.Select(c => c.Days), Is.EqualTo(new[] { 7, 6, 5, 4, 3, 2, 1 }));
-            Assert.That(page.DayChoices.Where(c => c.IsCurrent).Select(c => c.Days), Is.EqualTo(new[] { 6 }));
+            Assert.That(page.DaysLeftCard.DayChoices.Select(c => c.Days), Is.EqualTo(new[] { 7, 6, 5, 4, 3, 2, 1 }));
+            Assert.That(page.DaysLeftCard.DayChoices.Where(c => c.IsCurrent).Select(c => c.Days), Is.EqualTo(new[] { 6 }));
         }
 
         [Test]
@@ -66,11 +66,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var main = Open("banishing_06_blue_6_days_left");
             var page = BluePage(main);
 
-            page.DayChoices.Single(c => c.Days == 2).SelectCommand.Execute(null);
+            page.DaysLeftCard.DayChoices.Single(c => c.Days == 2).SelectCommand.Execute(null);
 
             Assert.That(page.DaysLeft, Is.EqualTo(2));
             Assert.That(page.BanishingText, Is.EqualTo("No towns: 2 days left"));
-            Assert.That(page.DayChoices.Single(c => c.IsCurrent).Days, Is.EqualTo(2));
+            Assert.That(page.DaysLeftCard.DayChoices.Single(c => c.IsCurrent).Days, Is.EqualTo(2));
             Assert.That(main.PlayerNodes().Single(n => n.Title == "Blue").NoteText(), Is.EqualTo("2 days left"));
 
             page.ResetCommand.Execute(null);
@@ -85,7 +85,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var page = BluePage(Open("banishing_13_blue_banished"));
 
             Assert.That(page.IsBanished, Is.True);
-            Assert.That(page.DayChoices.Select(c => c.SelectCommand.CanExecute(null)), Has.All.False);
+            Assert.That(page.DaysLeftCard.DayChoices.Select(c => c.SelectCommand.CanExecute(null)), Has.All.False);
         }
     }
 }

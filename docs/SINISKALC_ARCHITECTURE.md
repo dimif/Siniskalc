@@ -27,7 +27,7 @@ The creature, spell and artifact tables, positions and map headers are not share
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either.
 `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
 `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle`, `ResourcesPanel` (a card for each resource, the quick add buttons, a game's own cards in between), `ItemsCard` (a heading and a list, with a note for an empty one), `OwnerPicker` and `HeadedCard` (a card with a heading, a summary and content).
-A game's page puts its own content in the blocks: HoMM3's player page adds its banishing card to the `ResourcesPanel`, and HoMM2 has no such card.
+A game's page puts its own content in the blocks; both player pages add the Banishing card (`DaysLeftCard` over `DaysLeftCardViewModel`, the days left of a player who owns no town) to the `ResourcesPanel`.
 A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the styles of the controls come last.
 The blocks bind to what `IResettablePage`, `IResourcesPage`, `IPlayerPage`, `ICastlePage` and `IHeroPage` say a page has (`PageContractTests` puts them on pages that have nothing else).
 

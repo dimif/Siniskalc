@@ -12,11 +12,11 @@
     /// <summary>
     /// The 54 heroes of a savegame. The index of a hero is its number.
     /// </summary>
-    public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, IHeroSerializer>, IHeroSummaries<PlayerColor>
+    public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, ISerializer<HeroChunk, HeroModel>>, IHeroSummaries<PlayerColor>
     {
-        private readonly IHeroDiffer differ;
+        private readonly IDiffer<HeroModel> differ;
 
-        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, IHeroDeserializer deserializer, IHeroSerializer serializer, IHeroDiffer differ)
+        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, IHeroDeserializer deserializer, ISerializer<HeroChunk, HeroModel> serializer, IDiffer<HeroModel> differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.differ = differ;

@@ -10,13 +10,13 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// The players of a savefile, in colour order. Empty for savefile versions whose players are not known.
     /// </summary>
-    public sealed class PlayerChunkCollection : ModelChunkCollection<PlayerChunk, PlayerModel, IPlayerDeserializer, IPlayerSerializer>
+    public sealed class PlayerChunkCollection : ModelChunkCollection<PlayerChunk, PlayerModel, IPlayerDeserializer, ISerializer<PlayerChunk, PlayerModel>>
     {
         private readonly IPlayerDiffer differ;
         private readonly Func<int, string> heroName;
 
         /// <param name="heroName">Gives the name of the hero with an id, so that a change of the heroes of the tavern can name them.</param>
-        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ, Func<int, string> heroName)
+        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, ISerializer<PlayerChunk, PlayerModel> serializer, IPlayerDiffer differ, Func<int, string> heroName)
             : base(chunks, deserializer, serializer, (index, before, after) => differ.Diff(index, before, after, heroName))
         {
             this.differ = differ;

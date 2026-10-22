@@ -10,11 +10,11 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// The castles of a savefile whose name is stored in it, in the order they are in the savefile.
     /// </summary>
-    public sealed class CastleChunkCollection : ModelChunkCollection<CastleChunk, CastleModel, ICastleDeserializer, ICastleSerializer>
+    public sealed class CastleChunkCollection : ModelChunkCollection<CastleChunk, CastleModel, ICastleDeserializer, ISerializer<CastleChunk, CastleModel>>
     {
         private readonly ICastleDiffer differ;
 
-        public CastleChunkCollection(IEnumerable<CastleChunk> chunks, ICastleDeserializer deserializer, ICastleSerializer serializer, ICastleDiffer differ)
+        public CastleChunkCollection(IEnumerable<CastleChunk> chunks, ICastleDeserializer deserializer, ISerializer<CastleChunk, CastleModel> serializer, ICastleDiffer differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.differ = differ;

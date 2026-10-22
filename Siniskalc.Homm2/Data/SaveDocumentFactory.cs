@@ -13,16 +13,16 @@ namespace Siniskalc.Homm2.Data
     public sealed class SaveDocumentFactory : ISaveDocumentFactory
     {
         private readonly IHeroDeserializer heroDeserializer;
-        private readonly IHeroSerializer heroSerializer;
-        private readonly IHeroDiffer heroDiffer;
-        private readonly IPlayerDeserializer playerDeserializer;
-        private readonly IPlayerSerializer playerSerializer;
+        private readonly ISerializer<HeroChunk, HeroModel> heroSerializer;
+        private readonly IDiffer<HeroModel> heroDiffer;
+        private readonly IDeserializer<PlayerChunk, PlayerModel> playerDeserializer;
+        private readonly ISerializer<PlayerChunk, PlayerModel> playerSerializer;
         private readonly IPlayerDiffer playerDiffer;
         private readonly ICastleDeserializer castleDeserializer;
-        private readonly ICastleSerializer castleSerializer;
-        private readonly ICastleDiffer castleDiffer;
-        private readonly IObeliskDeserializer obeliskDeserializer;
-        private readonly IObeliskSerializer obeliskSerializer;
+        private readonly ISerializer<CastleChunk, CastleModel> castleSerializer;
+        private readonly IDiffer<CastleModel> castleDiffer;
+        private readonly IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer;
+        private readonly ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer;
         private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
         private readonly RecordKit<MapObjectChunk, MineModel> mines;
         private readonly RecordKit<MapObjectChunk, ShrineModel> shrines;
@@ -33,16 +33,16 @@ namespace Siniskalc.Homm2.Data
 
         public SaveDocumentFactory(
             IHeroDeserializer heroDeserializer,
-            IHeroSerializer heroSerializer,
-            IHeroDiffer heroDiffer,
-            IPlayerDeserializer playerDeserializer,
-            IPlayerSerializer playerSerializer,
+            ISerializer<HeroChunk, HeroModel> heroSerializer,
+            IDiffer<HeroModel> heroDiffer,
+            IDeserializer<PlayerChunk, PlayerModel> playerDeserializer,
+            ISerializer<PlayerChunk, PlayerModel> playerSerializer,
             IPlayerDiffer playerDiffer,
             ICastleDeserializer castleDeserializer,
-            ICastleSerializer castleSerializer,
-            ICastleDiffer castleDiffer,
-            IObeliskDeserializer obeliskDeserializer,
-            IObeliskSerializer obeliskSerializer,
+            ISerializer<CastleChunk, CastleModel> castleSerializer,
+            IDiffer<CastleModel> castleDiffer,
+            IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer,
+            ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer,
             IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
             RecordKit<MapObjectChunk, MineModel> mines,
             RecordKit<MapObjectChunk, ShrineModel> shrines,

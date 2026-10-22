@@ -8,7 +8,7 @@
     /// <summary>
     /// Writes a <see cref="PlayerModel"/> back into a <see cref="PlayerChunk"/>, preserving unknown bits.
     /// </summary>
-    public sealed class SafePlayerSerializer : IPlayerSerializer
+    public sealed class SafePlayerSerializer : ISerializer<PlayerChunk, PlayerModel>
     {
         /// <summary>
         /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes and days left before banishing written into it. Everything else is left as it was.

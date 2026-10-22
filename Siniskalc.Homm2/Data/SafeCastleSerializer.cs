@@ -13,7 +13,7 @@
     /// Writes a castle model into the record of a castle, as it is given. A field whose bytes already read as the model says is left alone,
     /// and so is everything the model does not hold: the name, the number of the castle and the rest of the bytes of the record.
     /// </summary>
-    public sealed class SafeCastleSerializer : ICastleSerializer
+    public sealed class SafeCastleSerializer : ISerializer<CastleChunk, CastleModel>
     {
         /// <inheritdoc/>
         public CastleChunk Serialize(CastleChunk chunk, CastleModel model)

@@ -19,7 +19,7 @@
     /// This guarantees some basic forward compatibility, for instance an unknown creature would fail to deserialize (and therefore resolve to an empty slot),
     /// but the serializer would leave it as it was.
     /// </remarks>
-    public sealed class SafeHeroSerializer : IHeroSerializer
+    public sealed class SafeHeroSerializer : ISerializer<HeroChunk, HeroModel>
     {
         private readonly HeroOffsets heroOffsets;
         private readonly VersionSpecificEntitiesProvider entities;

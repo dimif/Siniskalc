@@ -22,15 +22,15 @@ namespace Siniskalc.Homm2.Tests
 
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
 
-        public static IHeroSerializer HeroSerializer { get; } = new SafeHeroSerializer();
+        public static ISerializer<HeroChunk, HeroModel> HeroSerializer { get; } = new SafeHeroSerializer();
 
-        public static IPlayerDeserializer PlayerDeserializer { get; } = new PlayerDeserializer();
+        public static IDeserializer<PlayerChunk, PlayerModel> PlayerDeserializer { get; } = new PlayerDeserializer();
 
-        public static IPlayerSerializer PlayerSerializer { get; } = new SafePlayerSerializer();
+        public static ISerializer<PlayerChunk, PlayerModel> PlayerSerializer { get; } = new SafePlayerSerializer();
 
         public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer();
 
-        public static ICastleSerializer CastleSerializer { get; } = new SafeCastleSerializer();
+        public static ISerializer<CastleChunk, CastleModel> CastleSerializer { get; } = new SafeCastleSerializer();
 
         public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
 

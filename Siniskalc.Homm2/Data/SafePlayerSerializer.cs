@@ -12,7 +12,7 @@
     /// Writes a player model into the record of a player, as it is given. A field whose bytes already read as the model says is left alone,
     /// and so is everything the model does not hold.
     /// </summary>
-    public sealed class SafePlayerSerializer : IPlayerSerializer
+    public sealed class SafePlayerSerializer : ISerializer<PlayerChunk, PlayerModel>
     {
         /// <inheritdoc/>
         public PlayerChunk Serialize(PlayerChunk chunk, PlayerModel model)

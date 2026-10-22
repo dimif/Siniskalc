@@ -92,7 +92,7 @@ namespace Siniskalc.Homm3.Runtime
 
         public ICastleDeserializer CastleDeserializer { get; }
 
-        public ICastleSerializer CastleSerializer { get; }
+        public ISerializer<CastleChunk, CastleModel> CastleSerializer { get; }
 
         public IPlayerDeserializer PlayerDeserializer { get; }
 

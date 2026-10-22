@@ -13,7 +13,7 @@
     /// <summary>
     /// Lists what an edit changed in a castle.
     /// </summary>
-    public sealed class CastleDiffer : ICastleDiffer
+    public sealed class CastleDiffer : IDiffer<CastleModel>
     {
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 

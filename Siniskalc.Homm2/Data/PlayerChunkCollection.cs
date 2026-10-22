@@ -9,12 +9,12 @@
     /// <summary>
     /// The six players of a savegame, one for each colour. The index of a player is its colour.
     /// </summary>
-    public sealed class PlayerChunkCollection : ModelChunkCollection<PlayerChunk, PlayerModel, IPlayerDeserializer, IPlayerSerializer>
+    public sealed class PlayerChunkCollection : ModelChunkCollection<PlayerChunk, PlayerModel, IDeserializer<PlayerChunk, PlayerModel>, ISerializer<PlayerChunk, PlayerModel>>
     {
         private readonly IPlayerDiffer differ;
         private readonly Func<int, string> heroName;
 
-        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ, Func<int, string> heroName)
+        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IDeserializer<PlayerChunk, PlayerModel> deserializer, ISerializer<PlayerChunk, PlayerModel> serializer, IPlayerDiffer differ, Func<int, string> heroName)
             : base(chunks, deserializer, serializer, (index, before, after) => differ.Diff(index, before, after, heroName))
         {
             this.differ = differ;

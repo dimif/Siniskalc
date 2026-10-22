@@ -12,16 +12,16 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// The heroes of a savefile.
     /// </summary>
-    public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, IHeroSerializer>, IHeroSummaries<PlayerColor>
+    public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, ISerializer<HeroChunk, HeroModel>>, IHeroSummaries<PlayerColor>
     {
-        private readonly IHeroDiffer differ;
+        private readonly IDiffer<HeroModel> differ;
 
         /// <param name="chunks">The heroes.</param>
         /// <param name="offsets">Where the hero fields are, for the savefile's game version.</param>
         /// <param name="deserializer">Reads a hero from a chunk; made for <paramref name="offsets"/>.</param>
         /// <param name="serializer">Writes a hero to a chunk; made for <paramref name="offsets"/>.</param>
         /// <param name="differ">Tells what differs between two versions of a hero.</param>
-        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, HeroOffsets offsets, IHeroDeserializer deserializer, IHeroSerializer serializer, IHeroDiffer differ)
+        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, HeroOffsets offsets, IHeroDeserializer deserializer, ISerializer<HeroChunk, HeroModel> serializer, IDiffer<HeroModel> differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.Offsets = offsets;

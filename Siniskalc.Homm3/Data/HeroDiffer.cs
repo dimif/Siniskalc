@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// Finds the differences between two versions of the same hero. Used for the pending changes list.
     /// </summary>
-    public sealed class HeroDiffer : IHeroDiffer
+    public sealed class HeroDiffer : IDiffer<HeroModel>
     {
         /// <summary>
         /// Whether a place on the map says its level: the map of HoMM3 may have two.

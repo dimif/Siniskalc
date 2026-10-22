@@ -10,7 +10,7 @@
     /// <summary>
     /// Reads the record of a player. The colour is the name of the chunk, which the loader gives from the place of the record.
     /// </summary>
-    public sealed class PlayerDeserializer : IPlayerDeserializer
+    public sealed class PlayerDeserializer : IDeserializer<PlayerChunk, PlayerModel>
     {
         /// <inheritdoc/>
         public PlayerModel Deserialize(PlayerChunk chunk)

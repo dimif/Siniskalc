@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// <summary>
     /// Lists what an edit changed in a hero.
     /// </summary>
-    public sealed class HeroDiffer : IHeroDiffer
+    public sealed class HeroDiffer : IDiffer<HeroModel>
     {
         /// <summary>
         /// Whether a place on the map says its level: the map of HoMM2 has one level.

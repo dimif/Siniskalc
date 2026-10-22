@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -8,7 +9,7 @@ namespace Siniskalc.Homm2.Data
     /// <summary>
     /// Writes the obelisk flags: the byte of every obelisk the chunk has, as the model holds it. The bytes of the room the map does not use are left alone.
     /// </summary>
-    public sealed class SafeObeliskSerializer : IObeliskSerializer
+    public sealed class SafeObeliskSerializer : ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>>
     {
         /// <inheritdoc/>
         public ObeliskChunk Serialize(ObeliskChunk chunk, ObeliskVisits<PlayerColor> visits)

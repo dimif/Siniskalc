@@ -90,7 +90,7 @@
 
         public ICastleDeserializer CastleDeserializer => this.homm3.CastleDeserializer;
 
-        public ICastleSerializer CastleSerializer => this.homm3.CastleSerializer;
+        public ISerializer<CastleChunk, CastleModel> CastleSerializer => this.homm3.CastleSerializer;
 
         public IPlayerDeserializer PlayerDeserializer => this.homm3.PlayerDeserializer;
 

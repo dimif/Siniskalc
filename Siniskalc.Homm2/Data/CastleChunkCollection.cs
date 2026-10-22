@@ -10,11 +10,11 @@
     /// <summary>
     /// The 72 castle records of a savegame. The index of a castle is its number; the map uses the first few, and the others have no name.
     /// </summary>
-    public sealed class CastleChunkCollection : ModelChunkCollection<CastleChunk, CastleModel, ICastleDeserializer, ICastleSerializer>
+    public sealed class CastleChunkCollection : ModelChunkCollection<CastleChunk, CastleModel, ICastleDeserializer, ISerializer<CastleChunk, CastleModel>>
     {
-        private readonly ICastleDiffer differ;
+        private readonly IDiffer<CastleModel> differ;
 
-        public CastleChunkCollection(IEnumerable<CastleChunk> chunks, ICastleDeserializer deserializer, ICastleSerializer serializer, ICastleDiffer differ)
+        public CastleChunkCollection(IEnumerable<CastleChunk> chunks, ICastleDeserializer deserializer, ISerializer<CastleChunk, CastleModel> serializer, IDiffer<CastleModel> differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.differ = differ;

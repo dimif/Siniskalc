@@ -13,7 +13,7 @@
     /// (so a value the editor does not know, or a byte it does not model, is not changed by saving), and so is everything the model
     /// does not hold: the name, the facing and the rest of the bytes of the record, and the 14 bytes the Price of Loyalty adds.
     /// </summary>
-    public sealed class SafeHeroSerializer : IHeroSerializer
+    public sealed class SafeHeroSerializer : ISerializer<HeroChunk, HeroModel>
     {
         /// <inheritdoc/>
         public HeroChunk Serialize(HeroChunk chunk, HeroModel model)

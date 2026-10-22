@@ -52,7 +52,7 @@ namespace Siniskalc.Homm3.Tests
 
         public static ICastleDeserializer CastleDeserializer => Services.CastleDeserializer;
 
-        public static ICastleSerializer CastleSerializer => Services.CastleSerializer;
+        public static ISerializer<CastleChunk, CastleModel> CastleSerializer => Services.CastleSerializer;
 
         public static IPlayerDeserializer PlayerDeserializer => Services.PlayerDeserializer;
 

@@ -15,15 +15,15 @@
     public sealed class SaveDocumentFactory : ISaveDocumentFactory
     {
         private readonly IVersionSpecificEntitiesProviderFactory versionEntities;
-        private readonly IHeroDiffer heroDiffer;
+        private readonly IDiffer<HeroModel> heroDiffer;
         private readonly ICastleDeserializer castleDeserializer;
-        private readonly ICastleSerializer castleSerializer;
+        private readonly ISerializer<CastleChunk, CastleModel> castleSerializer;
         private readonly ICastleDiffer castleDiffer;
         private readonly IPlayerDeserializer playerDeserializer;
-        private readonly IPlayerSerializer playerSerializer;
+        private readonly ISerializer<PlayerChunk, PlayerModel> playerSerializer;
         private readonly IPlayerDiffer playerDiffer;
-        private readonly IObeliskDeserializer obeliskDeserializer;
-        private readonly IObeliskSerializer obeliskSerializer;
+        private readonly IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer;
+        private readonly ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer;
         private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
         private readonly RecordKit<RecordChunk, MineModel> mines;
         private readonly RecordKit<RecordChunk, DwellingModel> dwellings;
@@ -32,15 +32,15 @@
 
         public SaveDocumentFactory(
             IVersionSpecificEntitiesProviderFactory versionEntities,
-            IHeroDiffer heroDiffer,
+            IDiffer<HeroModel> heroDiffer,
             ICastleDeserializer castleDeserializer,
-            ICastleSerializer castleSerializer,
+            ISerializer<CastleChunk, CastleModel> castleSerializer,
             ICastleDiffer castleDiffer,
             IPlayerDeserializer playerDeserializer,
-            IPlayerSerializer playerSerializer,
+            ISerializer<PlayerChunk, PlayerModel> playerSerializer,
             IPlayerDiffer playerDiffer,
-            IObeliskDeserializer obeliskDeserializer,
-            IObeliskSerializer obeliskSerializer,
+            IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer,
+            ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer,
             IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
             RecordKit<RecordChunk, MineModel> mines,
             RecordKit<RecordChunk, DwellingModel> dwellings,

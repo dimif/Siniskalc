@@ -19,7 +19,7 @@
     /// This guarantees some basic forward compatibility, for instance an unknown creature would fail to deserialize (and therefore resolve to an empty slot),
     /// but the serializer would leave it as it was.
     /// </remarks>
-    public sealed class SafeCastleSerializer : ICastleSerializer
+    public sealed class SafeCastleSerializer : ISerializer<CastleChunk, CastleModel>
     {
         /// <inheritdoc>
         public CastleChunk Serialize(CastleChunk chunk, CastleModel castle)

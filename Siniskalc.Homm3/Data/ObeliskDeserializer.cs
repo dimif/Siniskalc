@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -9,7 +10,7 @@
     /// <summary>
     /// Reads the obelisk flags of a savefile: one byte for each obelisk with a bit for every colour that visited it.
     /// </summary>
-    public sealed class ObeliskDeserializer : IObeliskDeserializer
+    public sealed class ObeliskDeserializer : IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>>
     {
         public ObeliskVisits<PlayerColor> Deserialize(ObeliskChunk chunk)
         {

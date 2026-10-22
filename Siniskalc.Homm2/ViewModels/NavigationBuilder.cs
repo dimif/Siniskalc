@@ -26,9 +26,13 @@
             [NavNodeKind.Castle] = Homm2ChunkKinds.Castle,
         };
 
-        public NavigationBuilder()
+        private readonly BanishingTextProvider banishingText;
+
+        /// <param name="banishingText">Gives the words for a player who owns no town.</param>
+        public NavigationBuilder(BanishingTextProvider banishingText)
             : base(Kinds)
         {
+            this.banishingText = banishingText;
         }
 
         /// <inheritdoc/>
@@ -87,7 +91,7 @@
                 PlayerPalette.Of(owner),
                 owner.IsNeutral ? -1 : owner.Code,
                 !owner.IsNeutral,
-                player == null ? string.Empty : player.IsOut ? "out of the game" : player.DaysLeft is { } days ? $"{days} days left" : string.Empty,
+                player == null ? string.Empty : this.banishingText.Nav(player),
                 HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));

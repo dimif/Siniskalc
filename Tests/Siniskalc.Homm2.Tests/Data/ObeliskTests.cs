@@ -54,7 +54,7 @@
         public void ObeliskVisitsAreEditedThroughThePageOfAPlayerAndWrittenBackWithoutTouchingTheOtherColours()
         {
             var game = TestServices.LoadThreedom(77);
-            var page = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
+            var page = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
             var obelisks = page.Obelisks;
 
             Assert.That(obelisks.HasObelisks, Is.True);

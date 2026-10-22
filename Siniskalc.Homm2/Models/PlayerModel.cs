@@ -37,11 +37,6 @@
         public const int DaysToOwnACastle = Heroes.Constants.Player.MaxDaysLeft;
 
         /// <summary>
-        /// Gets a value indicating whether the player was put out of the game: no castle, no hero, and the days ran out.
-        /// </summary>
-        public bool IsOut => this.DaysLeft == 0 && this.CastleIds.Count == 0 && this.HeroIds.Count == 0;
-
-        /// <summary>
         /// Returns the player with the hero in its list of heroes.
         /// </summary>
         /// <exception cref="GameRuleException">The player has the most heroes the list holds.</exception>

@@ -52,7 +52,7 @@
             var game = this.Loaded();
             if (!this.players.TryGetValue(color.Code, out var player))
             {
-                player = new PlayerViewModel(game, color, this.ShowHero, this.ShowCastle, this.byteEditTargets);
+                player = new PlayerViewModel(game, color, this.banishingText, this.ShowHero, this.ShowCastle, this.byteEditTargets);
                 this.players[color.Code] = player;
             }
 

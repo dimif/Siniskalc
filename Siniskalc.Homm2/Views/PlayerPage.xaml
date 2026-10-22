@@ -21,7 +21,7 @@
                            ResetToolTip="Put everything of this player back to what the savegame had">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
                 <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding ControlText}"/>
-                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding Status}"/>
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource AccentBrush}" FontSize="14" Text="{Binding BanishingText}"/>
             </StackPanel>
         </heroes:PageHeader>
 

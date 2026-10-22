@@ -76,6 +76,6 @@
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
-        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(), this.banishingText, this.MaxSpellPointsCalculator);
+        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText), this.banishingText, this.MaxSpellPointsCalculator);
     }
 }

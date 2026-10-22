@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.Tests
     using Siniskalc.Heroes.Data;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -16,6 +17,8 @@ namespace Siniskalc.Homm2.Tests
         public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator();
 
         public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
+
+        public static BanishingTextProvider BanishingText { get; } = new();
 
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
 

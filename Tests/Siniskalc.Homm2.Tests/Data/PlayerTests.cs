@@ -88,8 +88,8 @@
 
             var green = Player(22, Green);
             Assert.That(green.DaysLeft, Is.Zero);
-            Assert.That(green.IsOut, Is.True);
-            Assert.That(Player(21, Green).IsOut, Is.False);
+            Assert.That((green.IsBanished, green.CastleIds.Count, green.HeroIds.Count), Is.EqualTo((true, 0, 0)), "a banished player has no castle and no hero left");
+            Assert.That(Player(21, Green).IsBanished, Is.False);
         }
 
         [Test]

@@ -14,7 +14,7 @@
         public void EachTownOfAPlayerSaysWhatItIsItsMageGuildAndHowManyDwellingsStandInIt()
         {
             var game = TestServices.LoadBrokenAlliance(24);
-            var player = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
+            var player = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(player.Castles, Is.Not.Empty);
             foreach (var castle in player.Castles)
@@ -31,7 +31,7 @@
             Assert.That(castles, Is.Not.Empty, "the save has a hero in a town");
             var owner = castles.First(c => c.Owner != null).Owner!;
 
-            var player = new PlayerViewModel(game, owner, _ => { }, _ => { });
+            var player = new PlayerViewModel(game, owner, TestServices.BanishingText, _ => { }, _ => { });
 
             var link = player.Castles.First(c => c.Heroes.Count > 0);
             Assert.That(link.Heroes.Single().Role, Is.EqualTo("Visiting"));
@@ -41,11 +41,11 @@
         public void ThePlayerPageSaysWhoPlaysTheColourAndWhetherItIsHisTurn()
         {
             var game = TestServices.LoadBrokenAlliance(24);
-            var player = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
+            var player = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Blue));
             Assert.That(player.ControlText, Is.EqualTo("Human · current turn"));
-            Assert.That(new PlayerViewModel(game, PlayerColor.Red, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
+            Assert.That(new PlayerViewModel(game, PlayerColor.Red, TestServices.BanishingText, _ => { }, _ => { }).ControlText, Is.EqualTo("Computer"));
         }
     }
 }

@@ -34,18 +34,20 @@
             Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems,
         ];
 
+        private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
         private IReadOnlyList<HeroLinkViewModel> heroes = [];
         private IReadOnlyList<CastleLinkViewModel> castles = [];
-        private string status = string.Empty;
+        private string banishing = string.Empty;
 
-        public PlayerViewModel(Game game, PlayerColor color, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
             : base(game, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
         {
             this.Color = color;
+            this.banishingText = banishingText;
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
@@ -79,9 +81,9 @@
         public string ColorHex => PlayerPalette.Of(this.Color);
 
         /// <summary>
-        /// Gets what the player is up to: out of the game, counting the days to own a castle, or nothing.
+        /// Gets the pill of a player who owns no town, such as "No towns: 6 days left" or "Banished", or nothing for a player who owns one.
         /// </summary>
-        public string Status => this.status;
+        public string BanishingText => this.banishing;
 
         /// <inheritdoc/>
         public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
@@ -126,9 +128,7 @@
         {
             var document = this.Game.History.Current;
             var player = document.Players().GetModel(this.Color.Code);
-            this.status = player.IsOut
-                ? "Out of the game"
-                : player.DaysLeft is { } days ? $"{days} days left to own a castle" : string.Empty;
+            this.banishing = this.banishingText.Pill(player);
 
             this.resources.Refresh();
 
@@ -148,7 +148,7 @@
         private string IncomeNote(Resource resource)
         {
             var player = this.session.Current;
-            return !player.IsOut && player.Income[resource] > 0 ? $"+{player.Income[resource]:N0} a day" : string.Empty;
+            return !player.IsBanished && player.Income[resource] > 0 ? $"+{player.Income[resource]:N0} a day" : string.Empty;
         }
     }
 }

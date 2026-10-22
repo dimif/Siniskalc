@@ -180,7 +180,7 @@
         {
             var document = this.editor.CurrentGame!.History.Current;
             var color = PlayerColor.All.First(c => document.Heroes().GetModels().All(h => h.Owner != c) && document.Castles().GetModels().All(t => t.Owner != c));
-            var player = new PlayerViewModel(this.editor.CurrentGame!, color, _ => { }, _ => { });
+            var player = new PlayerViewModel(this.editor.CurrentGame!, color, TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);
@@ -216,7 +216,7 @@
         public void TheTavernOfAPlayerIsEditedByPickingAHeroNobodyOwns()
         {
             var game = this.editor.CurrentGame!;
-            var blue = new PlayerViewModel(game, PlayerColor.Blue, _ => { }, _ => { });
+            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
             var free = game.History.Current.Heroes().GetModels().First(h => h.Owner.IsNeutral && !game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.Contains(h.Id));
 
             Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
@@ -232,12 +232,33 @@
         [Test]
         public void APlayerThatWasPutOutEarnsNothingWhateverTheIncomeTableHolds()
         {
-            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, _ => { }, _ => { });
-            var blue = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, _ => { }, _ => { });
+            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, _ => { }, _ => { });
+            var blue = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel(PlayerColor.Green.Code).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
             Assert.That(green.Resources.Select(r => r.Note), Is.All.Empty);
             Assert.That(blue.Resources.Select(r => r.Note), Has.Some.Not.Empty);
+        }
+
+        [Test]
+        public void APlayerThatWasPutOutReadsAsBanishedOnItsPageAndInTheTree()
+        {
+            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, _ => { }, _ => { });
+            var node = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Title == "Green");
+
+            Assert.That(green.BanishingText, Is.EqualTo("Banished"));
+            Assert.That(node.Subtitle, Does.StartWith("banished"));
+        }
+
+        [Test]
+        public void APlayerWithOneDayLeftToOwnACastleReadsAsOneDay()
+        {
+            var game = this.editor.CurrentGame!;
+            game.History.CreatePlayerSession(PlayerColor.Blue.Code).Update(p => p with { DaysLeft = 1 });
+
+            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
+
+            Assert.That(blue.BanishingText, Is.EqualTo("No towns: 1 day left"));
         }
 
         [Test]
@@ -266,7 +287,7 @@
         [Test]
         public void TheQuickAddButtonsAddToTheResourcesAndStopAtTheLimit()
         {
-            var page = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, _ => { }, _ => { });
+            var page = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
             var gold = page.Resources.Single(r => r.Name == "Gold").Value;
             var wood = page.Resources.Single(r => r.Name == "Wood").Value;
 

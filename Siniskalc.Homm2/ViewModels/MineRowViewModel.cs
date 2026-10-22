@@ -14,7 +14,7 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class MineRowViewModel : MineRowViewModelBase
     {
         public MineRowViewModel(MapObjectEditSession<MineModel> session)
-            : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session))
+            : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session), hasLevels: false)
         {
         }
 

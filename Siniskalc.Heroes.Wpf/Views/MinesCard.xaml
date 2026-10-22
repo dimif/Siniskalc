@@ -5,21 +5,25 @@
     <!-- The mines of the map: the headings that sort them and a row for each. The data context is the page, which has MineList (a SortableListViewModel
          of MineRowViewModelBase), Mines and SelectedMine. -->
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <DataTemplate x:Key="MineRowTemplate" DataType="{x:Type vm:MineRowViewModelBase}">
             <Grid Margin="0,2" ToolTip="{Binding Kind}" Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding ResourceName}"/>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the mine on the map"/>
                 <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the mine on the map"/>
-                <ComboBox Grid.Column="3" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}"
+                <TextBlock Grid.Column="3" Width="120" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding LevelText}" ToolTip="Level of the map the mine is on"
+                           Visibility="{Binding ShowLevel, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}}"/>
+                <ComboBox Grid.Column="4" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}"
                           ToolTip="{Binding OwnerField.ToolTip}"/>
-                <TextBlock Grid.Column="4" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
+                <TextBlock Grid.Column="5" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Summary}"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -32,14 +36,17 @@
                     <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Resource].Label}" Command="{Binding MineList.Columns[Resource].SortCommand}" ToolTip="Sort by resource"/>
                 <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[X].Label}" Command="{Binding MineList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
                 <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Y].Label}" Command="{Binding MineList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
-                <Button Grid.Column="3" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Owner].Label}" Command="{Binding MineList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
-                <TextBlock Grid.Column="4" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="{Binding SummaryHeading, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <TextBlock Grid.Column="3" Width="120" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Text="Level"
+                           Visibility="{Binding ShowLevel, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibility}}"/>
+                <Button Grid.Column="4" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Owner].Label}" Command="{Binding MineList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
+                <TextBlock Grid.Column="5" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="{Binding SummaryHeading, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
             </Grid>
             <ListBox ItemsSource="{Binding Mines}" SelectedItem="{Binding SelectedMine}" ItemTemplate="{StaticResource MineRowTemplate}"
                      Margin="-1,0" BorderThickness="0" Padding="0" Background="Transparent" HorizontalContentAlignment="Stretch">

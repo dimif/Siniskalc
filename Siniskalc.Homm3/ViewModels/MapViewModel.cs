@@ -28,8 +28,8 @@ namespace Siniskalc.Homm3.ViewModels
                 {
                     ["Resource"] = m => m.ResourceName,
                     ["Owner"] = m => m.OwnerSort,
-                    ["X"] = m => (m.X, m.Y),
-                    ["Y"] = m => (m.Y, m.X),
+                    ["X"] = m => (m.X, m.Y, m.Level),
+                    ["Y"] = m => (m.Y, m.X, m.Level),
                 });
             this.DwellingList = new SortableListViewModel<MapDwellingRowViewModel>(
                 Enumerable.Range(0, document.Dwellings().Count).Select(i => new MapDwellingRowViewModel(game.History.CreateDwellingSession(i))).ToList(),

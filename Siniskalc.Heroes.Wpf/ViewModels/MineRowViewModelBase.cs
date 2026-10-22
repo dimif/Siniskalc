@@ -19,15 +19,22 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="kind">Gives the kind of the mine.</param>
         /// <param name="position">Gives the tile of the mine.</param>
         /// <param name="ownerField">The list the owner is picked from.</param>
-        public MineRowViewModelBase(int index, Func<MineKind> kind, Func<MapPosition> position, ChoiceFieldViewModel ownerField)
+        /// <param name="hasLevels">Whether the map of the game has two levels, so a place on it says which level it is on.</param>
+        public MineRowViewModelBase(int index, Func<MineKind> kind, Func<MapPosition> position, ChoiceFieldViewModel ownerField, bool hasLevels)
         {
             this.Index = index;
             this.kind = kind;
             this.position = position;
             this.OwnerField = ownerField;
+            this.HasLevel = hasLevels;
         }
 
         public int Index { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the map has two levels, so the level of the mine is shown with its place.
+        /// </summary>
+        public bool HasLevel { get; }
 
         public string Kind => MineKinds.NameOf(this.kind());
 
@@ -38,11 +45,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public int Y => this.position().Y;
 
         /// <summary>
+        /// Gets the level of the map the mine is on (<see cref="MapPosition.Above"/> in a game whose map has one level).
+        /// </summary>
+        public int Level => this.position().Level;
+
+        /// <summary>
+        /// Gets the level of the map the mine is on, such as "Underground (1)", or nothing in a game whose map has one level.
+        /// </summary>
+        public string LevelText => this.HasLevel ? MapLevelText.Of(this.Level) : string.Empty;
+
+        /// <summary>
         /// Gets the place the list is sorted by: the column first, then the row.
         /// </summary>
         public (int X, int Y) Place => (this.X, this.Y);
 
-        public string PositionText => MapLevelText.Coordinates(this.X, this.Y);
+        /// <summary>
+        /// Gets where the mine is, such as "X: 12, Y: 7", with the level in a game whose map has two ("X: 12, Y: 7, Underground (1)").
+        /// </summary>
+        public string PositionText => this.HasLevel ? MapLevelText.Coordinates(this.X, this.Y, this.Level) : MapLevelText.Coordinates(this.X, this.Y);
 
         public string OwnerSort => this.OwnerField.Selected;
 

@@ -14,6 +14,9 @@ namespace Siniskalc.Heroes.Wpf.Views
         public static readonly DependencyProperty SummaryHeadingProperty =
             DependencyProperty.Register(nameof(SummaryHeading), typeof(string), typeof(MinesCard), new PropertyMetadata(string.Empty));
 
+        public static readonly DependencyProperty ShowLevelProperty =
+            DependencyProperty.Register(nameof(ShowLevel), typeof(bool), typeof(MinesCard), new PropertyMetadata(false));
+
         public MinesCard()
         {
             this.InitializeComponent();
@@ -35,6 +38,15 @@ namespace Siniskalc.Heroes.Wpf.Views
         {
             get => (string)this.GetValue(SummaryHeadingProperty);
             set => this.SetValue(SummaryHeadingProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the card has a column for the level of the map, for a game whose map has two.
+        /// </summary>
+        public bool ShowLevel
+        {
+            get => (bool)this.GetValue(ShowLevelProperty);
+            set => this.SetValue(ShowLevelProperty, value);
         }
     }
 }

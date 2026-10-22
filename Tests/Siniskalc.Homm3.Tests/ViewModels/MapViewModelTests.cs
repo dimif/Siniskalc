@@ -21,7 +21,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(page.Mines, Has.Count.EqualTo(18));
             Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 8 of them owned"));
             Assert.That(page.Mines.Select(m => m.ResourceName), Does.Contain("Sulfur").And.Contain("Mercury").And.Contain("Wood"));
-            Assert.That(page.Mines.Single(m => m.PositionText == "X: 51, Y: 33").OwnerField.Selected, Is.EqualTo("Red"));
+            Assert.That(page.Mines.Single(m => m.PositionText == "X: 51, Y: 33, Surface (0)").OwnerField.Selected, Is.EqualTo("Red"));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var game = Load("mines_00_game_begin");
             var page = new MapViewModel(game, TestServices.EffectLines);
 
-            page.Mines.Single(m => m.PositionText == "X: 26, Y: 17").OwnerField.Selected = "Green";
+            page.Mines.Single(m => m.PositionText == "X: 26, Y: 17, Surface (0)").OwnerField.Selected = "Green";
 
             Assert.That(game.History.Current.Mines().GetModels().Count(m => m.Owner == PlayerColor.Green), Is.EqualTo(1));
             Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 1 of them owned"));
@@ -65,7 +65,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var game = Load("mines_00_game_begin");
             var page = new MapViewModel(game, TestServices.EffectLines);
-            var guarded = page.Mines.Single(m => m.PositionText == "X: 1, Y: 14");
+            var guarded = page.Mines.Single(m => m.PositionText == "X: 1, Y: 14, Surface (0)");
 
             page.SelectedMine = guarded;
 
@@ -78,6 +78,37 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             Assert.That(guarded.Summary, Is.EqualTo("Unguarded"));
             Assert.That(game.History.GetPendingChanges().Single().Change.Area, Is.EqualTo(Siniskalc.Heroes.Models.ChangeAreas.Garrison));
+        }
+
+        [Test]
+        public void TwoMinesOnTheSameTileOfTheTwoLevelsAreToldApartByTheirRowTheirGuardHeadingAndTheirChanges()
+        {
+            // The test map has its mines on the surface: the second record is moved under the first one, as the hex editor would do.
+            var game = Load("mines_00_game_begin");
+            var surface = game.History.Current.Mines().GetModel(0).Position;
+            game.History.CreateMineSession(1).UpdateBytes(bytes =>
+            {
+                (bytes[MineLayout.X], bytes[MineLayout.Y], bytes[MineLayout.Level]) = ((byte)surface.X, (byte)surface.Y, 1);
+                return bytes;
+            });
+            var page = new MapViewModel(game, TestServices.EffectLines);
+            var above = page.Mines.Single(m => m.Index == 0);
+            var below = page.Mines.Single(m => m.Index == 1);
+
+            Assert.That(above.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Surface (0)"));
+            Assert.That(below.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Underground (1)"));
+            Assert.That((above.LevelText, below.LevelText), Is.EqualTo(("Surface (0)", "Underground (1)")));
+
+            page.SelectedMine = above;
+            var aboveHeading = page.GuardHeading;
+            page.SelectedMine = below;
+            Assert.That(page.GuardHeading, Does.EndWith("Underground (1)").And.Not.EqualTo(aboveHeading));
+
+            above.OwnerField.Selected = "Green";
+            below.OwnerField.Selected = "Green";
+            Assert.That(
+                game.History.GetPendingChanges().Select(c => c.OwnerName),
+                Is.EquivalentTo(new[] { $"{above.Kind} at {above.PositionText}", $"{below.Kind} at {below.PositionText}" }));
         }
 
         private static Siniskalc.Homm3.Runtime.Game LoadDwellings(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Dwellings", $"dwellings_{name}.GM2"));

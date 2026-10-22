@@ -2,6 +2,7 @@ namespace Siniskalc.Homm3.Models
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -14,6 +15,9 @@ namespace Siniskalc.Homm3.Models
     /// <param name="Guard">The creatures that guard the mine. Shaped like a hero's army: slots 1 to 7, empty slots absent.</param>
     public sealed record MineModel(int Index, MineKind Kind, PlayerColor Owner, MapPosition Position, IArmy<Creature> Guard)
     {
-        public string Name => $"{MineKinds.NameOf(this.Kind)} {this.Position.X}, {this.Position.Y}";
+        /// <summary>
+        /// Gets the name of the mine with its place, such as "Gold mine at X: 12, Y: 7, Underground (1)", as the pending changes name it.
+        /// </summary>
+        public string Name => $"{MineKinds.NameOf(this.Kind)} at {MapLevelText.Coordinates(this.Position.X, this.Position.Y, this.Position.Level)}";
     }
 }

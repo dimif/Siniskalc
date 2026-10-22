@@ -16,12 +16,12 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     {
         private sealed class Page
         {
-            public Page()
+            public Page(bool hasLevels = false)
             {
                 var rows = new List<MineRowViewModelBase>
                 {
-                    new Row(MineKind.GoldMine, new MapPosition(12, 7), "Red", "Unguarded"),
-                    new Row(MineKind.Sawmill, new MapPosition(3, 40), "Blue", "2 of 7 slots"),
+                    new Row(MineKind.GoldMine, new MapPosition(12, 7), "Red", "Unguarded", hasLevels),
+                    new Row(MineKind.Sawmill, new MapPosition(3, 40, MapPosition.Underground), "Blue", "2 of 7 slots", hasLevels),
                 };
                 this.MineList = new SortableListViewModel<MineRowViewModelBase>(
                     rows,
@@ -45,8 +45,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
         {
             private readonly string summary;
 
-            public Row(MineKind kind, MapPosition position, string owner, string summary)
-                : base(0, () => kind, () => position, new ChoiceFieldViewModel("Owner", ["Neutral", "Red", "Blue"], () => owner, _ => { }))
+            public Row(MineKind kind, MapPosition position, string owner, string summary, bool hasLevels)
+                : base(0, () => kind, () => position, new ChoiceFieldViewModel("Owner", ["Neutral", "Red", "Blue"], () => owner, _ => { }), hasLevels)
             {
                 this.summary = summary;
             }
@@ -69,6 +69,25 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             var headings = WpfTestApplication.Descendants<Button>(card).Select(b => b.Content?.ToString()).ToList();
             Assert.That(headings, Is.SupersetOf(new[] { "Resource", "X", "Y", "Owner" }));
             Assert.That(WpfTestApplication.Descendants<ComboBox>(card).Select(c => c.SelectedItem), Is.EqualTo(new[] { "Red", "Blue" }));
+            Assert.That(texts, Has.None.EqualTo("Level"));
+        }
+
+        [Test]
+        public void ACardThatShowsTheLevelHasALevelColumnThatTellsTheLevelsApart()
+        {
+            var card = new MinesCard { DataContext = new Page(hasLevels: true), ShowLevel = true };
+
+            using var hosted = WpfTestApplication.Show(card);
+
+            var texts = WpfTestApplication.Descendants<TextBlock>(card).Where(t => t.IsVisible).Select(t => t.Text).ToList();
+            Assert.That(texts, Is.SupersetOf(new[] { "Level", "Surface (0)", "Underground (1)" }));
+            double LeftOf(System.Windows.FrameworkElement element) => element.TranslatePoint(new System.Windows.Point(0, 0), card).X;
+            var heading = WpfTestApplication.Descendants<TextBlock>(card).Single(t => t.IsVisible && t.Text == "Level");
+            var cell = WpfTestApplication.Descendants<TextBlock>(card).First(t => t.IsVisible && t.Text == "Surface (0)");
+            var ownerHeading = WpfTestApplication.Descendants<Button>(card).Single(b => b.Content?.ToString() == "Owner");
+            var ownerCell = WpfTestApplication.Descendants<ComboBox>(card).First();
+            Assert.That(LeftOf(cell), Is.EqualTo(LeftOf(heading)).Within(0.5));
+            Assert.That(LeftOf(ownerCell), Is.EqualTo(LeftOf(ownerHeading)).Within(0.5));
         }
 
         [Test]

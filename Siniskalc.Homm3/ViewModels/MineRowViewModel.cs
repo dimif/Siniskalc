@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.ViewModels
         private ArmyViewModel? guardEditor;
 
         public MineRowViewModel(MineEditSession session, GameVersion gameVersion)
-            : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session))
+            : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session), hasLevels: true)
         {
             this.session = session;
             this.gameVersion = gameVersion;

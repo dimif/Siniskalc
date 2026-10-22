@@ -127,6 +127,44 @@ namespace Siniskalc.Heroes.Tests.Data
             Assert.That(putBack.Skills, Is.EqualTo(new PrimarySkills(1, 8, 7, 6)));
         }
 
+        [Test]
+        public void AChangedLevelIsOneChangeOfTheExperienceWithTheLevelBeforeAndAfter()
+        {
+            var sink = new ChangeSink<Leveled>((change, _) => new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { }));
+
+            sink.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(2_000, 3), (h, level) => h with { Level = level });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Experience", "1,000 (level 2)", "2,000 (level 3)") }));
+        }
+
+        [Test]
+        public void AChangedLevelIsPutBackWithItsExperienceSoTheTwoStayInStep()
+        {
+            var reverts = new List<Func<Leveled, Leveled>>();
+            var recording = new ChangeSink<Leveled>((change, revert) =>
+            {
+                reverts.Add(revert);
+                return new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { });
+            });
+            recording.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(2_000, 3), (h, level) => h with { Level = level });
+
+            var putBack = reverts.Single()(new Leveled(new HeroLevel(5_000, 5)));
+
+            Assert.That(putBack.Level, Is.EqualTo(new HeroLevel(1_000, 2)));
+        }
+
+        [Test]
+        public void ALevelThatDidNotChangeIsNotListed()
+        {
+            var sink = new ChangeSink<Leveled>((change, _) => new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { }));
+
+            sink.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(1_000, 2), (h, level) => h with { Level = level });
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        private sealed record Leveled(HeroLevel Level);
+
         private sealed record Skilled(PrimarySkills Skills);
 
         private sealed record Holder(TestColor Owner, IArmy<Creature> Army);

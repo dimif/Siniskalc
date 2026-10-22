@@ -54,15 +54,7 @@ namespace Siniskalc.Homm2.Data
                 changes.Add(ChangeAreas.General, "Movement points left", original.MovementPoints.Current.ToString("N0"), current.MovementPoints.Current.ToString("N0"), h => h with { MovementPoints = h.MovementPoints with { Current = original.MovementPoints.Current } });
             }
 
-            if (original.HeroLevel.Experience != current.HeroLevel.Experience)
-            {
-                changes.Add(ChangeAreas.General, "Experience", original.HeroLevel.Experience.ToString("N0"), current.HeroLevel.Experience.ToString("N0"), h => h with { HeroLevel = h.HeroLevel with { Experience = original.HeroLevel.Experience } });
-            }
-
-            if (original.HeroLevel.Level != current.HeroLevel.Level)
-            {
-                changes.Add(ChangeAreas.General, "Level", original.HeroLevel.Level.ToString(), current.HeroLevel.Level.ToString(), h => h with { HeroLevel = h.HeroLevel with { Level = original.HeroLevel.Level } });
-            }
+            changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
             if (original.NextBattle.Morale != current.NextBattle.Morale)
             {

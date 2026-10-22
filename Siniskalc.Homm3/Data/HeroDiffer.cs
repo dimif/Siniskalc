@@ -89,15 +89,7 @@ namespace Siniskalc.Homm3.Data
                 }
             }
 
-            if (!original.HeroLevel.Equals(current.HeroLevel))
-            {
-                changes.Add(
-                    ChangeAreas.General,
-                    "Experience",
-                    $"{original.HeroLevel.Experience:N0} (level {original.HeroLevel.Level})",
-                    $"{current.HeroLevel.Experience:N0} (level {current.HeroLevel.Level})",
-                    h => h with { HeroLevel = original.HeroLevel });
-            }
+            changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
             if (original.SpellPoints != current.SpellPoints)
             {

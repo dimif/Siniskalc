@@ -8,7 +8,7 @@
     using Siniskalc.Heroes.Models;
 
     /// <summary>
-    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills of a hero, and the resources, the tavern and the countdown of a player.
+    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills and the experience of a hero, and the resources, the tavern and the countdown of a player.
     /// </summary>
     public static class ChangeSinkExtensions
     {
@@ -102,6 +102,25 @@
         }
 
         /// <summary>
+        /// Adds the change of the experience of a hero, if its experience or its level differs: "Experience", with the experience and the level
+        /// before and after ("1,500 (level 3)"). The two are put back together, so the level and the experience stay in step.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The level as loaded.</param>
+        /// <param name="after">The level now.</param>
+        /// <param name="withLevel">Returns the model with the given level and experience.</param>
+        public static void AddHeroLevel<TModel>(this ChangeSink<TModel> sink, HeroLevel before, HeroLevel after, Func<TModel, HeroLevel, TModel> withLevel)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Experience", LevelText(before), LevelText(after), model => withLevel(model, before));
+        }
+
+        /// <summary>
         /// Adds a change for each resource whose amount differs, each put back on its own.
         /// </summary>
         /// <typeparam name="TModel">The model of the record that holds the resources.</typeparam>
@@ -179,5 +198,7 @@
         }
 
         private static string DaysText(int? days) => days?.ToString() ?? "not counting";
+
+        private static string LevelText(HeroLevel level) => $"{level.Experience:N0} (level {level.Level})";
     }
 }

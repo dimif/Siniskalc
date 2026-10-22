@@ -1,9 +1,10 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The secondary skills of a hero: the slots the hero screen shows, filled or free, and a list of every skill with the hero's level in
@@ -64,9 +65,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<string> SkillNames { get; }
 
-        public IReadOnlyList<string> SlotLevelNames => SkillLevelText.WithoutNone;
+        public IReadOnlyList<string> SlotLevelNames => SkillLevelNames.WithoutNone;
 
-        public IReadOnlyList<string> RowLevelNames => SkillLevelText.WithNone;
+        public IReadOnlyList<string> RowLevelNames => SkillLevelNames.WithNone;
 
         /// <summary>
         /// Gets how many slots are taken, as text, e.g. "3 of 8 slots used".
@@ -115,7 +116,7 @@ namespace Siniskalc.Wpf.ViewModels
                 for (var i = 0; i < this.Slots.Count; i++)
                 {
                     var name = i < used ? this.SkillInSlot(i) : null;
-                    this.Slots[i].Show(name, name == null ? SkillLevelText.Basic : this.LevelInSlot(i), canMoveUp: i > 0 && i < used, canMoveDown: i < used - 1);
+                    this.Slots[i].Show(name, name == null ? SkillLevelNames.Basic : this.LevelInSlot(i), canMoveUp: i > 0 && i < used, canMoveDown: i < used - 1);
                 }
 
                 var hasFreeSlot = used < this.maxSlots;
@@ -169,12 +170,12 @@ namespace Siniskalc.Wpf.ViewModels
         protected abstract string? SkillInSlot(int slot);
 
         /// <summary>
-        /// Gets the level of the skill in a slot (from 0) that is in use, as <see cref="SkillLevelText"/> names it.
+        /// Gets the level of the skill in a slot (from 0) that is in use, as <see cref="SkillLevelNames"/> names it.
         /// </summary>
         protected abstract string LevelInSlot(int slot);
 
         /// <summary>
-        /// Gets the hero's level in a skill, as <see cref="SkillLevelText"/> names it ("None" for a skill the hero has not learned).
+        /// Gets the hero's level in a skill, as <see cref="SkillLevelNames"/> names it ("None" for a skill the hero has not learned).
         /// </summary>
         protected abstract string LevelOf(string skillName);
 
@@ -258,7 +259,7 @@ namespace Siniskalc.Wpf.ViewModels
 
         private void ChooseSlotLevel(int slot, string levelName)
         {
-            if (this.isRefreshing || SkillLevelText.ToNumber(levelName) == 0 || slot < 0 || slot >= this.UsedSlots)
+            if (this.isRefreshing || SkillLevelNames.ToNumber(levelName) == 0 || slot < 0 || slot >= this.UsedSlots)
             {
                 return;
             }

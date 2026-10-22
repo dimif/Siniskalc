@@ -1,9 +1,9 @@
-namespace Siniskalc.Wpf.Views
+namespace Siniskalc.Heroes.Wpf.Views
 {
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
-    using Siniskalc.Wpf.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// The slots of an army and the finder to add creatures, shared by the creatures of a hero and the garrison of a castle, in every game.

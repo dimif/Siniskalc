@@ -1,9 +1,10 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The army of a hero or the garrison of a castle: its slots, and a finder to look up creatures to add. It knows no game: the game's

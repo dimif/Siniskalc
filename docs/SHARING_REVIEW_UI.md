@@ -14,6 +14,8 @@ The mines of HoMM3 now say their level: `MineRowViewModelBase` takes whether the
 
 **2026-10-22 (days left):** the Banishing card of the player page is `DaysLeftCard` over `DaysLeftCardViewModel` (`Siniskalc.Heroes.Wpf`: a reader of the days left, a writer and whether the player is banished; one button for each of 7 down to 1, the limits from `Constants.Player`, a range check through `RangeGuard`), with HoMM3's wording and look. HoMM2's player page has it too, so the days left of a HoMM2 player who owns no town can be edited (the model, serializer and differ already handled them). The reducer is `PlayerModelExtensions.WithDaysLeft<TPlayer>` (`Siniskalc.Heroes.Models`), which keeps the type of the game's player; to make that possible the countdown (`DaysLeft`, `IsBanished`, `HasCountdown`, `DaysLeftOnGainingATown`, `DaysLeftOnLosingATown`) moved from `PlayerModelBase<TColor>` to the colourless `BanishablePlayerBase` it derives from. A banished player is left as it is, as before.
 
+**2026-10-22 (Heroes view models out of `Siniskalc.Wpf`):** the view models and views that are about heroes, armies, skills, spells, artifacts and resources moved from `Siniskalc.Wpf` to `Siniskalc.Heroes.Wpf` (they named no game, but they are the vocabulary of the series): `SecondarySkillsViewModelBase`, `SkillRowViewModel`, `SkillSlotViewModel`, `SpellsViewModelBase`, `SpellChoiceViewModel`, `ArmyViewModelBase`, `StackSlotViewModel`, `StackContent`, `StackFact`, `ArtifactPickerViewModel`, `IArtifactInfoSource`, `ResourcePalette` and the views `ArmyEditorView`, `SecondarySkillsView`, `SpellsView` and `ArtifactSlotPicker`; the `ArtifactSlotRowTemplate` moved from `SiniskalcStyles.xaml` to `PageStyles.xaml`. `SkillLevelText` is merged into `SkillLevelNames` (one set of names). `CreatureFinderViewModelBase` is merged into its only subclass `CreatureFinderViewModel`. Left: `ArmyViewModelBase` / `HeroesArmyViewModelBase` and `SecondarySkillsViewModelBase` / `HeroesSecondarySkillsViewModel` stay two layers each: the string layer is what the slot and row view models (which hold names) and the views work with, and the typed layer turns names into a game's creatures and skills; one class would hold both and be over 300 lines. Also left in `Siniskalc.Wpf`: `NavNodeKind` (`Hero`, `Castle`, `Player`) and `NavigationTree`'s hero and castle nodes, which are the vocabulary of the series too but are part of the shell and `EditorViewModelBase`; moving them is a separate step.
+
 Not done (2026-10-21): a shared player page base (HoMM2's `PageViewModel` and HoMM3's `SessionPageViewModelBase` are different bases, so a third one cannot sit between them; the shared blocks are already `ResourcesEditorViewModel`, `TavernPlaceViewModel` and `ObeliskVisitsViewModelBase`), and HoMM2 pages on the session base (its owner changes touch two chunks, so its reset reverts pending changes of the page).
 
 The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.
@@ -21,8 +23,8 @@ Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was 
 
 ## What is already shared
 
-`Siniskalc.Wpf`: the shell, the navigation tree, `EditorViewModelBase`, the army, secondary skill and spell view models and views (`ArmyViewModelBase`, `SecondarySkillsViewModelBase`, `SpellsViewModelBase`, `FinderViewModel`), the artifact picker, steppers, hex editor.
-`Siniskalc.Heroes(.Wpf)`: the page blocks (`PageHeader`, `ResourcesPanel`, `ItemsCard`, `OwnerPicker`, `HeadedCard`), the page interfaces (`IPlayerPage`, `ICastlePage`, `IResourcesPage`, `IResettablePage`), `OwnerNavGroup`, `NavEntry`, `CreatureFinderViewModel`, the palette.
+`Siniskalc.Wpf`: the shell, the navigation tree, `EditorViewModelBase`, `FinderViewModel`, the rows of a number, a choice and a yes or no (`AmountRowViewModel`, `ChoiceFieldViewModel`, `ToggleRowViewModel`), steppers, hex editor.
+`Siniskalc.Heroes(.Wpf)`: the army, secondary skill and spell view models and views (`ArmyViewModelBase`, `HeroesArmyViewModelBase`, `StackSlotViewModel`, `ArmyEditorView`, `SecondarySkillsViewModelBase`, `HeroesSecondarySkillsViewModel`, `SecondarySkillsView`, `SpellsViewModelBase`, `SpellsView`), the artifact picker (`ArtifactPickerViewModel`, `ArtifactSlotPicker`, `ArtifactSlotRowTemplate`), `SkillLevelNames`, `ResourcePalette`, the page blocks (`PageHeader`, `ResourcesPanel`, `ItemsCard`, `OwnerPicker`, `HeadedCard`), the page interfaces (`IPlayerPage`, `ICastlePage`, `IResourcesPage`, `IResettablePage`), `OwnerNavGroup`, `NavEntry`, `CreatureFinderViewModel`, the palette.
 
 ## Summary
 
@@ -38,7 +40,7 @@ Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was 
 | V8 | Castle page: dwellings, Mage Guild | `DwellingRowViewModel`, `GuildLevelViewModel` | `DwellingRowViewModel`, `MageGuildLevelRowViewModel` | wait for M12 | open |
 | V9 | Hero page | 4 sections | 6 sections and a General tab | KEEP; owner picker shared | owner picker **done** for HoMM2 (the hero joins the list of heroes of its player and a neutral one has no move to finish, as in Broken Alliance saves 15 to 16); `IHeroPage` open |
 | V10 | Artifact choice and finder | bonuses | effect lines, slot, spell | KEEP; share the bonus text | **done** (`PrimarySkillBonusText`; HoMM2 now says "Attack +6" as HoMM3 does) |
-| V11 | Skill level text | `SkillLevelText` (Wpf) | `SkillLevelNames` | follows E3 | deferred |
+| V11 | Skill level text | `SkillLevelText` (Wpf) | `SkillLevelNames` | SHARE | **done** (one `SkillLevelNames` in `Siniskalc.Heroes.Wpf`; `SkillLevelText` is gone) |
 
 ## Done
 

@@ -61,7 +61,7 @@
                 <local:GeneralInfoView DataContext="{Binding GeneralInfoViewModel}"/>
             </Grid>
             <Grid Style="{StaticResource TabPanel1}">
-                <wpf:SecondarySkillsView DataContext="{Binding SecondarySkillsViewModel}"/>
+                <heroes:SecondarySkillsView DataContext="{Binding SecondarySkillsViewModel}"/>
             </Grid>
             <Grid Style="{StaticResource TabPanel2}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -69,7 +69,7 @@
                 </ScrollViewer>
             </Grid>
             <Grid Style="{StaticResource TabPanel3}">
-                <wpf:SpellsView DataContext="{Binding SpellsViewModel}"/>
+                <heroes:SpellsView DataContext="{Binding SpellsViewModel}"/>
             </Grid>
             <Grid Style="{StaticResource TabPanel4}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

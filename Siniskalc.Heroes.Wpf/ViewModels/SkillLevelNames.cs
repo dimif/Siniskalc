@@ -2,31 +2,46 @@
 {
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The names of skill levels as the game shows them. The entity calls them beginner, intermediate and expert.
+    /// The names of skill levels as the games show them: none, basic, advanced and expert, which are 0 to 3. The entity calls them
+    /// beginner, intermediate and expert.
     /// </summary>
     public static class SkillLevelNames
     {
-        public const string None = SkillLevelText.None;
+        /// <summary>
+        /// The name of no level: a skill the hero has not learned.
+        /// </summary>
+        public const string None = "None";
 
-        public const string Basic = SkillLevelText.Basic;
+        /// <summary>
+        /// The name of level 1.
+        /// </summary>
+        public const string Basic = "Basic";
 
-        public const string Advanced = SkillLevelText.Advanced;
+        /// <summary>
+        /// The name of level 2.
+        /// </summary>
+        public const string Advanced = "Advanced";
 
-        public const string Expert = SkillLevelText.Expert;
+        /// <summary>
+        /// The name of level 3.
+        /// </summary>
+        public const string Expert = "Expert";
 
         /// <summary>
         /// Gets the names to pick a level from, for a skill the hero may not have.
         /// </summary>
-        public static IReadOnlyList<string> WithNone => SkillLevelText.WithNone;
+        public static IReadOnlyList<string> WithNone { get; } = [None, Basic, Advanced, Expert];
 
         /// <summary>
         /// Gets the names to pick a level from, for a skill the hero has.
         /// </summary>
-        public static IReadOnlyList<string> WithoutNone => SkillLevelText.WithoutNone;
+        public static IReadOnlyList<string> WithoutNone { get; } = [Basic, Advanced, Expert];
 
+        /// <summary>
+        /// Returns the name of a level: "None" for none, "Basic", "Advanced" and "Expert" for beginner to expert.
+        /// </summary>
         public static string FromLevel(SkillLevel level) => level.Code switch
         {
             1 => Basic,
@@ -35,6 +50,9 @@
             _ => None,
         };
 
+        /// <summary>
+        /// Returns the level a name stands for; none for "None" or a name that is no level.
+        /// </summary>
         public static SkillLevel ToLevel(string name) => name switch
         {
             Basic => SkillLevel.Beginner,
@@ -44,7 +62,7 @@
         };
 
         /// <summary>
-        /// Returns 0 for none, and 1 to 3 for basic to expert.
+        /// Returns 0 for none (or a name that is no level), and 1 to 3 for basic to expert.
         /// </summary>
         public static int ToNumber(string name) => ToLevel(name).Code;
     }

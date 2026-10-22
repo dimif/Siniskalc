@@ -4,6 +4,7 @@
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -372,21 +373,21 @@
             var before = model().SlotCount;
             Assert.That(skills.SlotSummary, Is.EqualTo($"{before} of 8 slots used"));
 
-            var wisdom = skills.AllSkills.First(r => r.LevelName == SkillLevelText.None);
+            var wisdom = skills.AllSkills.First(r => r.LevelName == SkillLevelNames.None);
             var skill = SecondarySkill.All.Single(s => s.Name == wisdom.Name);
-            wisdom.LevelName = SkillLevelText.Advanced;
+            wisdom.LevelName = SkillLevelNames.Advanced;
             Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.Intermediate));
             Assert.That(model().SlotCount, Is.EqualTo(before + 1), "a new skill is learned last");
 
             var slot = skills.Slots[before];
             Assert.That(slot.SkillName, Is.EqualTo(skill.Name));
-            slot.LevelName = SkillLevelText.Expert;
+            slot.LevelName = SkillLevelNames.Expert;
             Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.Expert));
 
             skills.MoveSkill(before, -1);
             Assert.That(model().Entries[before - 1].Skill, Is.EqualTo(skill));
 
-            wisdom.LevelName = SkillLevelText.None;
+            wisdom.LevelName = SkillLevelNames.None;
             Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.None));
             Assert.That(model().SlotCount, Is.EqualTo(before));
         }
@@ -396,13 +397,13 @@
         {
             this.editor.ShowHero(7);
             var skills = ((HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
-            foreach (var row in skills.AllSkills.Where(r => r.LevelName == SkillLevelText.None).Take(8))
+            foreach (var row in skills.AllSkills.Where(r => r.LevelName == SkillLevelNames.None).Take(8))
             {
-                row.LevelName = SkillLevelText.Basic;
+                row.LevelName = SkillLevelNames.Basic;
             }
 
             Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
-            Assert.That(skills.AllSkills.Count(r => r.LevelName != SkillLevelText.None), Is.EqualTo(8), "the list shows what the hero has");
+            Assert.That(skills.AllSkills.Count(r => r.LevelName != SkillLevelNames.None), Is.EqualTo(8), "the list shows what the hero has");
         }
 
         [Test]

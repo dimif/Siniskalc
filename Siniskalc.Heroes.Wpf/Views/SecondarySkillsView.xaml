@@ -1,7 +1,7 @@
-<UserControl x:Class="Siniskalc.Wpf.Views.SecondarySkillsView"
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.SecondarySkillsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:vm="clr-namespace:Siniskalc.Wpf.ViewModels">
+      xmlns:vm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
         <!-- Three small blocks that fill from the left as the level goes up. -->

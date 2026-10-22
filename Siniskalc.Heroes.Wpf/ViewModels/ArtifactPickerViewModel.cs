@@ -1,7 +1,8 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Windows.Input;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One place an artifact can go, such as the helm of a hero or a slot of its backpack: it shows the artifact in it, and a popup with a finder

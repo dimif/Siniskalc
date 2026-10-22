@@ -1,6 +1,7 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One spell in the spells list of a hero: whether the hero has learned it, and whether something else (an artifact) makes it

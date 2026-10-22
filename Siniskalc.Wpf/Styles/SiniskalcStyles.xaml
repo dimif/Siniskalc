@@ -380,23 +380,6 @@
         <Setter Property="Focusable" Value="True"/>
     </Style>
 
-    <!-- One slot of artifacts: its name, the button that opens the picker, and a button that takes the artifact off. -->
-    <DataTemplate x:Key="ArtifactSlotRowTemplate" DataType="{x:Type vm:ArtifactPickerViewModel}">
-        <Grid Margin="0,3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="72"/>
-                <ColumnDefinition Width="210"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource FieldLabelStyle}" Text="{Binding Label}"/>
-            <local:ArtifactSlotPicker Grid.Column="1"/>
-            <Button Grid.Column="2" Style="{StaticResource SlotButtonStyle}" Content="✕" Command="{Binding ClearCommand}"
-                    Width="26" Height="26" FontSize="12" Margin="6,0,0,0" VerticalAlignment="Center"
-                    ToolTip="Take this artifact off" AutomationProperties.Name="{Binding Label, StringFormat=Clear {0}}"/>
-        </Grid>
-    </DataTemplate>
-
     <!-- A yes or no of a model as a line of a card: a check box with its name, and a small note under it. -->
     <DataTemplate x:Key="ToggleRowTemplate" DataType="{x:Type vm:ToggleRowViewModel}">
         <DockPanel Margin="0,3">

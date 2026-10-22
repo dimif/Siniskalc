@@ -109,6 +109,23 @@
         </Style.Triggers>
     </Style>
 
+    <!-- One slot of artifacts: its name, the button that opens the picker, and a button that takes the artifact off. -->
+    <DataTemplate x:Key="ArtifactSlotRowTemplate" DataType="{x:Type wvm:ArtifactPickerViewModel}">
+        <Grid Margin="0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="72"/>
+                <ColumnDefinition Width="210"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource FieldLabelStyle}" Text="{Binding Label}"/>
+            <views:ArtifactSlotPicker Grid.Column="1"/>
+            <Button Grid.Column="2" Style="{StaticResource SlotButtonStyle}" Content="✕" Command="{Binding ClearCommand}"
+                    Width="26" Height="26" FontSize="12" Margin="6,0,0,0" VerticalAlignment="Center"
+                    ToolTip="Take this artifact off" AutomationProperties.Name="{Binding Label, StringFormat=Clear {0}}"/>
+        </Grid>
+    </DataTemplate>
+
     <!-- One line of a card: what it is on the left, its value, and a smaller note after it. -->
     <DataTemplate x:Key="FactRowTemplate" DataType="{x:Type vm:FactRow}">
         <StackPanel Orientation="Horizontal" Margin="0,3">

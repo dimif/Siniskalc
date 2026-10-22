@@ -2,6 +2,7 @@
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -202,7 +203,7 @@
             {
                 if (row.HasSkill || skills.Slots.Any(s => !s.IsFilled))
                 {
-                    row.LevelName = SkillLevelText.Expert;
+                    row.LevelName = SkillLevelNames.Expert;
                 }
             }
         }

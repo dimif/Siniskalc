@@ -1,8 +1,8 @@
-<UserControl x:Class="Siniskalc.Wpf.Views.ArmyEditorView"
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.ArmyEditorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Siniskalc.Wpf.Views"
-             xmlns:vm="clr-namespace:Siniskalc.Wpf.ViewModels">
+             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+             xmlns:vm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels">
     <!-- The army of a hero or the garrison of a castle: its slots and a finder to add creatures. The DataContext is an ArmyViewModelBase. -->
     <StackPanel IsEnabled="{Binding IsEditable}">
         <Border Style="{StaticResource CardStyle}">
@@ -96,15 +96,15 @@
         <Border Style="{StaticResource CardStyle}">
             <StackPanel>
                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Find creatures"/>
-                <local:FinderView DataContext="{Binding Finder}">
-                    <local:FinderView.ToolbarContent>
+                <wpf:FinderView DataContext="{Binding Finder}">
+                    <wpf:FinderView.ToolbarContent>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="New stack of" VerticalAlignment="Center" Margin="0,0,6,0" Style="{StaticResource MutedTextStyle}"/>
                             <TextBox Width="64" Margin="0" HorizontalContentAlignment="Right"
                                      Text="{Binding AddAmount, UpdateSourceTrigger=PropertyChanged}" ToolTip="How many creatures a stack you add starts with"/>
                         </StackPanel>
-                    </local:FinderView.ToolbarContent>
-                </local:FinderView>
+                    </wpf:FinderView.ToolbarContent>
+                </wpf:FinderView>
             </StackPanel>
         </Border>
     </StackPanel>

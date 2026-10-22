@@ -135,7 +135,7 @@
 
                 <!-- Garrison: the same army editor as the creatures of a hero. -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
-                    <wpf:ArmyEditorView DataContext="{Binding GarrisonEditor}"/>
+                    <heroes:ArmyEditorView DataContext="{Binding GarrisonEditor}"/>
                 </StackPanel>
 
                 <!-- Available creatures -->

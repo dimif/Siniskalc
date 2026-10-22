@@ -1,9 +1,10 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A single creature slot in an army: the creature and the size of the stack, the commands to move or clear the slot, and what the

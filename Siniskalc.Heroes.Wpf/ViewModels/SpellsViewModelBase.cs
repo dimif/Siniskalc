@@ -1,8 +1,9 @@
-namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The spells page of a hero: whether the hero has a spell book, and every spell of the game with a box for learned (and one for

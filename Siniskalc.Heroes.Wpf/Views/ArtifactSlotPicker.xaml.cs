@@ -1,10 +1,11 @@
-namespace Siniskalc.Wpf.Views
+namespace Siniskalc.Heroes.Wpf.Views
 {
     using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using Siniskalc.Wpf.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
+    using Siniskalc.Wpf.Views;
 
     /// <summary>
     /// A button showing the artifact in a slot; clicking it opens a popup with a finder of the artifacts that fit.

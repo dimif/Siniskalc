@@ -107,17 +107,17 @@
 
                 <!-- Skills -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
-                    <wpf:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
+                    <heroes:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
                 </StackPanel>
 
                 <!-- Creatures -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <wpf:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
+                    <heroes:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
                 </StackPanel>
 
                 <!-- Spells -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
-                    <wpf:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
+                    <heroes:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
                 </StackPanel>
 
                 <!-- Places -->

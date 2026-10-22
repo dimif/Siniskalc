@@ -1,7 +1,7 @@
-<UserControl x:Class="Siniskalc.Wpf.Views.SpellsView"
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.SpellsView"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="clr-namespace:Siniskalc.Wpf.Views">
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf">
     <Border Style="{StaticResource CardStyle}">
         <DockPanel>
             <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
@@ -12,7 +12,7 @@
                 <Button Content="Forget all" Padding="10,2" Command="{Binding ForgetAllCommand}"
                         ToolTip="Forget every spell in the list below"/>
             </WrapPanel>
-            <local:FinderView DataContext="{Binding Finder}" ListMaxHeight="Infinity"/>
+            <wpf:FinderView DataContext="{Binding Finder}" ListMaxHeight="Infinity"/>
         </DockPanel>
     </Border>
 </UserControl>

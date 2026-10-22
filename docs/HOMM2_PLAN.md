@@ -85,7 +85,7 @@ The user copies them to the save folder of HoMM2, loads each and ticks the READM
 
 ## Phase 6: editing (done for heroes, players and castles; unverified in the game)
 
-Everything below is a reducer on the immutable model, undoable, with the pages built on shared view models of `Siniskalc.Wpf` (`AmountRowViewModel`, `ArmyViewModelBase`, `SecondarySkillsViewModelBase`, `SpellsViewModelBase`, `ArtifactPickerViewModel`, `ToggleRowViewModel`, `ChoiceFieldViewModel`, with the HoMM3 pages built on the same ones):
+Everything below is a reducer on the immutable model, undoable, with the pages built on shared view models of `Siniskalc.Wpf` (`AmountRowViewModel`, `ToggleRowViewModel`, `ChoiceFieldViewModel`) and `Siniskalc.Heroes.Wpf` (`HeroesArmyViewModelBase`, `HeroesSecondarySkillsViewModel`, `SpellsViewModelBase`, `ArtifactPickerViewModel`), with the HoMM3 pages built on the same ones):
 
 - **Player**: the seven resources (gold up to 999,999, the others up to 999 until tested in the game), quick add, Reset.
 - **Hero**: primary skills, level, experience, spell points, movement (and "Full movement"); the army (5 slots, finder); the secondary skills (8 slots in the order learned, the list of 14); the spell book (the Magic Book artifact) and the 65 spells; the 14 artifact slots with a finder. An artifact moves its skill bonus with it (`HeroModel.WithArtifact`), as the game does (E13ARTSW).

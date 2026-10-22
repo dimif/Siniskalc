@@ -5,6 +5,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Linq;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;

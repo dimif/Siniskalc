@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.Data
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -58,7 +59,7 @@ namespace Siniskalc.Homm3.Data
         {
             var kind = (MineKind)bytes[start + MineLayout.Kind];
             return new RecordChunk(
-                $"{MineKinds.NameOf(kind)} {bytes[start + MineLayout.X]}, {bytes[start + MineLayout.Y]}",
+                MineKinds.NameAt(kind, new MapPosition(bytes[start + MineLayout.X], bytes[start + MineLayout.Y], bytes[start + MineLayout.Level]), hasLevels: true),
                 bytes.AsSpan(start, MineLayout.RecordSize).ToArray(),
                 start,
                 index);

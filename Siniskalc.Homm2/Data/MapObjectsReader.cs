@@ -1,9 +1,9 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -60,7 +60,7 @@
                 }
 
                 var position = new MapPosition(x, y);
-                chunks.Add(new MapObjectChunk($"{MineKinds.NameOf((MineKind)kind)} at {x}, {y}", bytes.AsSpan(offset, MapObjectLayout.MineRecordSize).ToArray(), offset, position, chunks.Count, kind, parts));
+                chunks.Add(new MapObjectChunk(MineKinds.NameAt((MineKind)kind, position, hasLevels: false), bytes.AsSpan(offset, MapObjectLayout.MineRecordSize).ToArray(), offset, position, chunks.Count, kind, parts));
             }
 
             return chunks;

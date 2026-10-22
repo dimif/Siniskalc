@@ -49,7 +49,7 @@
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
-            this.Obelisks = new ObeliskVisitsViewModel(game.History, color);
+            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
             this.resources = new ResourcesEditorViewModel(
                 ResourceOrder,
                 Limits,
@@ -95,7 +95,7 @@
         /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited.
         /// </summary>
-        public ObeliskVisitsViewModel Obelisks { get; }
+        public ObeliskVisitsViewModel<PlayerColor> Obelisks { get; }
 
         /// <inheritdoc/>
         public IReadOnlyList<HeroLinkViewModel> Heroes => this.heroes;

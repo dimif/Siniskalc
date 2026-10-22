@@ -8,7 +8,9 @@ Done: the resource, tavern and days-left changes of a player are `AddResources`,
 `SessionPageViewModelBase<TModel>` (over `IEditSession<TModel>`) holds the pending changes and the reset of the HoMM3 pages;
 `HeroesArmyViewModelBase<TCreature, TSlot>` is the army editor, `HeroesSecondarySkillsViewModel<TSkill, TSkills>` is the skills editor (`ISecondarySkills.WithSkillLevel` handles the full hero in the model), and `SkillLevelNames` moved to `Siniskalc.Heroes.Wpf`;
 `IGameInfo<TColor>` is implemented by both `Game` classes, and `OverviewViewModelBase<TColor>` reads the date, map, difficulty and turn from it.
-Not done: a shared player page base (HoMM2's `PageViewModel` and HoMM3's `SessionPageViewModelBase` are different bases, so a third one cannot sit between them; the shared blocks are already `ResourcesEditorViewModel`, `TavernPlaceViewModel` and `ObeliskVisitsViewModelBase`), and HoMM2 pages on the session base (its owner changes touch two chunks, so its reset reverts pending changes of the page).
+**2026-10-22:** the obelisks card of the player page is one `ObeliskVisitsViewModel<TColor>` in `Siniskalc.Heroes.Wpf` (over `ObeliskVisitsViewModelBase`); the two games' copies are gone. A game gives the kind of chunk of its obelisks, the word for what the puzzle leads to ("Ultimate Artifact", "Grail") and how it writes a place (HoMM3 with the level, HoMM2 without).
+
+Not done (2026-10-21): a shared player page base (HoMM2's `PageViewModel` and HoMM3's `SessionPageViewModelBase` are different bases, so a third one cannot sit between them; the shared blocks are already `ResourcesEditorViewModel`, `TavernPlaceViewModel` and `ObeliskVisitsViewModelBase`), and HoMM2 pages on the session base (its owner changes touch two chunks, so its reset reverts pending changes of the page).
 
 The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.
 Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was changed with this review.

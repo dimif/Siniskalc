@@ -55,7 +55,7 @@
                 .Reverse()
                 .Select(days => new DaysLeftChoiceViewModel(days, () => this.DaysLeft == days, () => this.session.Update(player => player.WithDaysLeft(days)), () => !this.IsBanished))
                 .ToList();
-            this.Obelisks = new ObeliskVisitsViewModel(session.History, session.Current.Color);
+            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", at => MapLevelText.Coordinates(at.X, at.Y, at.Level));
             this.TavernPlaces = TavernPlaceViewModel.ForTavern(
                 () => this.session.Current.Tavern,
                 edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
@@ -111,7 +111,7 @@
         /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited; empty when the savefile has none to show.
         /// </summary>
-        public ObeliskVisitsViewModel Obelisks { get; }
+        public ObeliskVisitsViewModel<PlayerColor> Obelisks { get; }
 
         /// <summary>
         /// Gets the towns of the player, by name.

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Tests
+namespace Siniskalc.Tests
 {
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.ViewModels;
@@ -31,7 +31,7 @@
         public void TheShellStartsOnTheFirstGameAndKnowsBoth()
         {
             Assert.That(this.shell.Modules.Select(m => m.Name), Is.EqualTo(new[] { "Heroes of Might and Magic III", "Heroes of Might and Magic II" }));
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic III"));
+            Assert.That(this.shell.Title, Is.EqualTo("Save game editor"));
             Assert.That(this.shell.OpenFilter, Does.StartWith("Savegames |*.CGM;*.GM*;*.GM?;*.GX?|"));
         }
 

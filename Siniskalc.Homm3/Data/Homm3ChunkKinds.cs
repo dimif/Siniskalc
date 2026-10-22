@@ -18,5 +18,7 @@
         public static readonly ChunkKind Mines = new("Mines", 4);
 
         public static readonly ChunkKind Dwellings = new("Dwellings", 5);
+
+        public static readonly ChunkKind Merchants = new("Merchants", 6);
     }
 }

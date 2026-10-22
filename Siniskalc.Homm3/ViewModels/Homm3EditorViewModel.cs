@@ -116,7 +116,7 @@
         /// </summary>
         public void ShowMap()
         {
-            this.map ??= new MapViewModel(this.Loaded());
+            this.map ??= new MapViewModel(this.Loaded(), this.effectLines);
             this.SetCurrentPage(this.map);
         }
 

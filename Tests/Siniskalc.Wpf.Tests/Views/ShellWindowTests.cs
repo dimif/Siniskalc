@@ -19,7 +19,7 @@ namespace Siniskalc.Wpf.Tests.Views
     internal sealed class ShellWindowTests
     {
         [Test]
-        public void TheWindowShowsTheTitleOfTheGameAndEveryIconOfItsToolbarAndMenuLoads()
+        public void TheWindowShowsTheTitleOfTheEditorAndEveryIconOfItsToolbarAndMenuLoads()
         {
             var folder = Path.Combine(Path.GetTempPath(), "siniskalc-shell-window-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(folder);
@@ -48,7 +48,7 @@ namespace Siniskalc.Wpf.Tests.Views
                     Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
                     window.UpdateLayout();
 
-                    Assert.That(window.Title, Is.EqualTo("Editor - First Game"));
+                    Assert.That(window.Title, Is.EqualTo("Save game editor"));
 
                     var images = Descendants<Image>(window).ToList();
                     Assert.That(images, Is.Not.Empty);

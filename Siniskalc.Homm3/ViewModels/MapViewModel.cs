@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Siniskalc.Homm3.Runtime.Game game;
         private MineRowViewModel? selectedMine;
 
-        public MapViewModel(Siniskalc.Homm3.Runtime.Game game)
+        public MapViewModel(Siniskalc.Homm3.Runtime.Game game, EffectLineProvider effectLines)
             : base("Map", game.History)
         {
             this.game = game;
@@ -41,6 +41,7 @@ namespace Siniskalc.Homm3.ViewModels
                     ["Y"] = d => (d.Y, d.X),
                     ["Available"] = d => d.Stock,
                 });
+            this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines)).ToList();
             this.selectedMine = rows.FirstOrDefault();
             this.Refresh();
         }
@@ -60,6 +61,13 @@ namespace Siniskalc.Homm3.ViewModels
         public IReadOnlyList<MapDwellingRowViewModel> Dwellings => this.DwellingList.Items;
 
         public bool HasDwellings => this.Dwellings.Count > 0;
+
+        /// <summary>
+        /// Gets what the merchants have in store: the artifact merchants and the black market.
+        /// </summary>
+        public IReadOnlyList<MerchantViewModel> Merchants { get; }
+
+        public bool HasMerchants => this.Merchants.Count > 0;
 
         public bool HasMines => this.Mines.Count > 0;
 
@@ -124,6 +132,11 @@ namespace Siniskalc.Homm3.ViewModels
                 row.Refresh();
             }
 
+            foreach (var merchant in this.Merchants)
+            {
+                merchant.Refresh();
+            }
+
             this.HasPendingChanges = this.PendingChangesOfPage().Any();
             this.RaiseAllPropertiesChanged();
         }
@@ -141,6 +154,6 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         private IEnumerable<Siniskalc.Core.Data.PendingChange> PendingChangesOfPage() =>
-            this.game.History.GetPendingChanges().Where(c => c.Kind == Homm3ChunkKinds.Mines || c.Kind == Homm3ChunkKinds.Dwellings);
+            this.game.History.GetPendingChanges().Where(c => c.Kind == Homm3ChunkKinds.Mines || c.Kind == Homm3ChunkKinds.Dwellings || c.Kind == Homm3ChunkKinds.Merchants);
     }
 }

@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ThePageListsTheMinesWithTheirOwnerAndSaysHowManyAreOwned()
         {
-            var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"));
+            var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"), TestServices.EffectLines);
 
             Assert.That(page.Mines, Has.Count.EqualTo(18));
             Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 8 of them owned"));
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void PickingAnOwnerChangesTheMineAndTheCountAndCanBeReset()
         {
             var game = Load("mines_00_game_begin");
-            var page = new MapViewModel(game);
+            var page = new MapViewModel(game, TestServices.EffectLines);
 
             page.Mines.Single(m => m.PositionText == "X: 26, Y: 17").OwnerField.Selected = "Green";
 
@@ -45,7 +45,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheMinesAreSortedByResourceOwnerOrLocationFromTheHeadings()
         {
-            var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"));
+            var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"), TestServices.EffectLines);
 
             page.MineList.Columns["X"].SortCommand.Execute(null);
             Assert.That(page.Mines.Select(m => m.X), Is.Ordered);
@@ -64,7 +64,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void ThePickedMineShowsItsGuardInTheArmyEditorAndEditingItChangesTheMine()
         {
             var game = Load("mines_00_game_begin");
-            var page = new MapViewModel(game);
+            var page = new MapViewModel(game, TestServices.EffectLines);
             var guarded = page.Mines.Single(m => m.PositionText == "X: 1, Y: 14");
 
             page.SelectedMine = guarded;
@@ -85,7 +85,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ThePageListsTheDwellingsWithTheirCreatureOwnerAndTheCreaturesToHire()
         {
-            var page = new MapViewModel(LoadDwellings("05_tazar_flags_portal_of_glory"));
+            var page = new MapViewModel(LoadDwellings("05_tazar_flags_portal_of_glory"), TestServices.EffectLines);
 
             Assert.That(page.Dwellings, Has.Count.EqualTo(31));
             var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void TypingTheCreaturesToHireAndPickingAnOwnerChangeTheDwellingAndCanBeReset()
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
-            var page = new MapViewModel(game);
+            var page = new MapViewModel(game, TestServices.EffectLines);
             var guardhouse = page.Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
 
             guardhouse.StockText = "3";
@@ -120,13 +120,34 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void AStockThatIsNotANumberLeavesTheDwellingAloneAndOneThatIsTooBigIsTakenAsTheMost()
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
-            var guardhouse = new MapViewModel(game).Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
+            var guardhouse = new MapViewModel(game, TestServices.EffectLines).Dwellings.Single(d => d.PositionText == "X: 31, Y: 56");
 
             guardhouse.StockText = "many";
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));
 
             guardhouse.StockText = "99999999999";
             Assert.That(guardhouse.Stock, Is.EqualTo(Siniskalc.Homm3.Constants.Army.MaxStackSize));
+        }
+
+        [Test]
+        public void TheMerchantsTabHasASlotPickerForEachOfTheSevenArtifactsOfEachMerchantAndClearingOneMarksItSold()
+        {
+            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "VisitedPlaces", "visited_places_27_tazar_artifact_merchant.GM2"));
+            var page = new MapViewModel(game, TestServices.EffectLines);
+
+            Assert.That(page.Merchants.Select(m => m.Name), Is.EqualTo(new[] { "Artifact merchants", "Black market" }));
+            Assert.That(page.Merchants[0].Slots.Select(s => s.ArtifactName), Is.EqualTo(new[] { "Bow of Elven Cherrywood", "Pendant of Total Recall", "Clover of Fortune", "Inexhaustible Cart of Ore", "Scales of the Greater Basilisk", "Vampire's Cowl", "Everflowing Crystal Cloak" }));
+
+            page.Merchants[1].Slots[0].ClearCommand.Execute(null);
+
+            Assert.That(page.Merchants[1].Slots[0].HasArtifact, Is.False);
+            Assert.That(game.History.Current.Merchants().GetModel(1).Slots[0], Is.Null);
+            Assert.That(page.HasPendingChanges, Is.True);
+
+            page.ResetCommand.Execute(null);
+
+            Assert.That(page.Merchants[1].Slots[0].ArtifactName, Is.EqualTo(Siniskalc.Homm3.Entities.Artifact.All[0x49].Name));
+            Assert.That(page.HasPendingChanges, Is.False);
         }
     }
 }

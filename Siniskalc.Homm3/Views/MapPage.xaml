@@ -45,6 +45,7 @@
         <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
             <wpf:NavButton Text="Mines"/>
             <wpf:NavButton Text="Dwellings"/>
+            <wpf:NavButton Text="Merchants"/>
         </ListBox>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
@@ -73,6 +74,40 @@
                         <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"/>
                     </StackPanel>
                 </Border>
+            </StackPanel>
+            <!-- Merchants -->
+            <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+                <ItemsControl ItemsSource="{Binding Merchants}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:MerchantViewModel}">
+                            <Border Style="{StaticResource CardStyle}" Width="380">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Name}"/>
+                                    <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                               Text="The seven artifacts in store. Clear a slot for an artifact that was sold. Not yet tried in the game."/>
+                                    <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Margin="6,8,0,0" Text="The stock of the merchants was not found in this savegame.">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasMerchants}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StackPanel>
             <!-- Mines -->
             <StackPanel Style="{StaticResource TabPanel0}">

@@ -84,5 +84,21 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             page.MineList.Columns["X"].SortCommand.Execute(null);
             Assert.That(page.Mines.Select(m => m.X), Is.EqualTo(new[] { 12, 3 }));
         }
+
+        [Test]
+        public void TheColumnsOfARowStartWhereTheirHeadingsStart()
+        {
+            var card = new MinesCard { DataContext = new Page() };
+            using var hosted = WpfTestApplication.Show(card);
+
+            double LeftOf(System.Windows.FrameworkElement element) => element.TranslatePoint(new System.Windows.Point(0, 0), card).X;
+            var heading = WpfTestApplication.Descendants<Button>(card).Single(b => b.Content?.ToString() == "X");
+            var cell = WpfTestApplication.Descendants<TextBlock>(card).First(t => t.IsVisible && t.Text == "12");
+            var resourceHeading = WpfTestApplication.Descendants<Button>(card).Single(b => b.Content?.ToString() == "Resource");
+            var resourceCell = WpfTestApplication.Descendants<TextBlock>(card).First(t => t.IsVisible && t.Text == "Gold");
+
+            Assert.That(LeftOf(cell), Is.EqualTo(LeftOf(heading)).Within(0.5));
+            Assert.That(LeftOf(resourceCell), Is.EqualTo(LeftOf(resourceHeading)).Within(0.5));
+        }
     }
 }

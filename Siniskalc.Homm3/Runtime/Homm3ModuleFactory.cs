@@ -54,6 +54,9 @@ namespace Siniskalc.Homm3.Runtime
                 new DwellingDeserializer(),
                 new SafeDwellingSerializer(),
                 new DwellingDiffer(),
+                new MerchantStockDeserializer(),
+                new SafeMerchantStockSerializer(),
+                new MerchantStockDiffer(),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
@@ -66,6 +69,7 @@ namespace Siniskalc.Homm3.Runtime
                     new ObeliskBytesLoader(),
                     new MineBytesLoader(),
                     new DwellingBytesLoader(),
+                    new MerchantBytesLoader(),
                     new MapPlacesLoader(),
                     dateLocator,
                     setupLocator,

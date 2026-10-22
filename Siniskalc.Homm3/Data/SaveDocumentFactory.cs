@@ -30,6 +30,9 @@
         private readonly IDwellingDeserializer dwellingDeserializer;
         private readonly IDwellingSerializer dwellingSerializer;
         private readonly IDwellingDiffer dwellingDiffer;
+        private readonly IMerchantStockDeserializer merchantDeserializer;
+        private readonly IMerchantStockSerializer merchantSerializer;
+        private readonly IMerchantStockDiffer merchantDiffer;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -50,6 +53,9 @@
             IDwellingDeserializer dwellingDeserializer,
             IDwellingSerializer dwellingSerializer,
             IDwellingDiffer dwellingDiffer,
+            IMerchantStockDeserializer merchantDeserializer,
+            IMerchantStockSerializer merchantSerializer,
+            IMerchantStockDiffer merchantDiffer,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -69,6 +75,9 @@
             this.dwellingDeserializer = dwellingDeserializer;
             this.dwellingSerializer = dwellingSerializer;
             this.dwellingDiffer = dwellingDiffer;
+            this.merchantDeserializer = merchantDeserializer;
+            this.merchantSerializer = merchantSerializer;
+            this.merchantDiffer = merchantDiffer;
             this.patcher = patcher;
         }
 
@@ -81,7 +90,8 @@
             IEnumerable<CastleChunk>? castleChunks = null,
             IEnumerable<ObeliskChunk>? obeliskChunks = null,
             IEnumerable<MineChunk>? mineChunks = null,
-            IEnumerable<DwellingChunk>? dwellingChunks = null)
+            IEnumerable<DwellingChunk>? dwellingChunks = null,
+            IEnumerable<MerchantStockChunk>? merchantChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
@@ -94,8 +104,9 @@
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
             var obelisks = new ObeliskChunkCollection<PlayerColor>(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
             var mines = new MineChunkCollection(mineChunks ?? Enumerable.Empty<MineChunk>(), this.mineDeserializer, this.mineSerializer, this.mineDiffer);
+            var merchants = new MerchantStockChunkCollection(merchantChunks ?? Enumerable.Empty<MerchantStockChunk>(), this.merchantDeserializer, this.merchantSerializer, this.merchantDiffer);
             var dwellings = new DwellingChunkCollection(dwellingChunks ?? Enumerable.Empty<DwellingChunk>(), this.dwellingDeserializer, this.dwellingSerializer, this.dwellingDiffer);
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, this.patcher);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, this.patcher);
         }
     }
 }

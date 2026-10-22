@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MineChunkCollection mines, DwellingChunkCollection dwellings, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MineChunkCollection mines, DwellingChunkCollection dwellings, MerchantStockChunkCollection merchants, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -20,6 +20,7 @@ namespace Siniskalc.Homm3.Data
                 [Homm3ChunkKinds.Obelisks] = obelisks,
                 [Homm3ChunkKinds.Mines] = mines,
                 [Homm3ChunkKinds.Dwellings] = dwellings,
+                [Homm3ChunkKinds.Merchants] = merchants,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -48,6 +49,8 @@ namespace Siniskalc.Homm3.Data
         public static MineChunkCollection Mines(this SaveDocument document) => (MineChunkCollection)document.GetCollection(Homm3ChunkKinds.Mines);
 
         public static DwellingChunkCollection Dwellings(this SaveDocument document) => (DwellingChunkCollection)document.GetCollection(Homm3ChunkKinds.Dwellings);
+
+        public static MerchantStockChunkCollection Merchants(this SaveDocument document) => (MerchantStockChunkCollection)document.GetCollection(Homm3ChunkKinds.Merchants);
 
         public static GameVersion GameVersion(this SaveDocument document) => document.Heroes().Offsets.GameVersion;
 

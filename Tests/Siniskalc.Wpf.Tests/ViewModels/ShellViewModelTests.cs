@@ -32,7 +32,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         {
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.first));
             Assert.That(this.shell.Editor, Is.SameAs(this.first.Editor));
-            Assert.That(this.shell.Title, Is.EqualTo("Editor - First Game"));
+            Assert.That(this.shell.Title, Is.EqualTo("Save game editor"), "no game is named before a savegame is open");
             Assert.That(this.shell.IsGameLoaded, Is.False);
             Assert.That(this.second.Created, Is.Zero);
         }

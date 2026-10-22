@@ -24,6 +24,7 @@ namespace Siniskalc.Homm3.Data
             IEnumerable<CastleChunk>? castleChunks = null,
             IEnumerable<ObeliskChunk>? obeliskChunks = null,
             IEnumerable<MineChunk>? mineChunks = null,
-            IEnumerable<DwellingChunk>? dwellingChunks = null);
+            IEnumerable<DwellingChunk>? dwellingChunks = null,
+            IEnumerable<MerchantStockChunk>? merchantChunks = null);
     }
 }

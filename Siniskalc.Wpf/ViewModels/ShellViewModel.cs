@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -24,6 +24,8 @@
             nameof(IGameEditor.CanRedo),
             nameof(IGameEditor.HasPendingChanges),
         ];
+
+        private const string NoGameTitle = "Save game editor";
 
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
         private readonly SettingsStore settings;
@@ -69,9 +71,9 @@
         public IObservableGameEditor Editor => this.editor;
 
         /// <summary>
-        /// Gets the title of the window.
+        /// Gets the title of the window: "Save game editor" until a savegame is open, then the name of the application and of the game it is from.
         /// </summary>
-        public string Title => $"{this.applicationName} - {this.currentModule.Name}";
+        public string Title => this.IsGameLoaded ? $"{this.applicationName} - {this.currentModule.Name}" : NoGameTitle;
 
         /// <summary>
         /// Gets or sets whether a copy of a savefile is kept before it is saved over. Kept in the settings of the user.
@@ -264,6 +266,7 @@
             if (e.PropertyName == nameof(IGameEditor.Savegame))
             {
                 this.RaisePropertyChanged(nameof(this.IsGameLoaded));
+                this.RaisePropertyChanged(nameof(this.Title));
                 this.RaisePropertyChanged(nameof(this.Name));
                 this.RaisePropertyChanged(nameof(this.File));
                 this.RaisePropertyChanged(nameof(this.HasFile));

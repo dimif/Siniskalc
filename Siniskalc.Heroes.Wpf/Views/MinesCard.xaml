@@ -42,7 +42,15 @@
                 <TextBlock Grid.Column="4" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="{Binding SummaryHeading, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
             </Grid>
             <ListBox ItemsSource="{Binding Mines}" SelectedItem="{Binding SelectedMine}" ItemTemplate="{StaticResource MineRowTemplate}"
-                     BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch"/>
+                     Margin="-1,0" BorderThickness="0" Padding="0" Background="Transparent" HorizontalContentAlignment="Stretch">
+                <!-- No padding around a row, and -1 for the pixel the template of the list keeps around it, or the columns would start to the right of the headings above them. -->
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
         </StackPanel>
     </Border>
 </UserControl>

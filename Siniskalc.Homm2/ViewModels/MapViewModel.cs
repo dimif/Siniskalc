@@ -16,6 +16,7 @@ namespace Siniskalc.Homm2.ViewModels
     public sealed class MapViewModel : ResettablePageViewModelBase
     {
         private readonly Game game;
+        private MineRowViewModel? selectedMine;
 
         public MapViewModel(Game game)
             : base("Map", game.History)
@@ -48,6 +49,22 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         public IReadOnlyList<MineRowViewModel> Mines => this.MineList.Items;
+
+        /// <summary>
+        /// Gets or sets the mine that is picked in the list. HoMM2 has nothing to show for it, but the list marks it as the list of every game does.
+        /// </summary>
+        public MineRowViewModel? SelectedMine
+        {
+            get => this.selectedMine;
+            set
+            {
+                if (!ReferenceEquals(value, this.selectedMine))
+                {
+                    this.selectedMine = value;
+                    this.RaisePropertyChanged(nameof(this.SelectedMine));
+                }
+            }
+        }
 
         public IReadOnlyList<ShrineRowViewModel> Shrines => this.ShrineList.Items;
 

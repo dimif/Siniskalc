@@ -31,14 +31,16 @@ namespace Siniskalc.Homm3.ViewModels
 
         public string CreatureName => this.session.Current.Creature?.Name ?? $"Creature {this.session.Current.CreatureCode}";
 
-        /// <summary>
-        /// Gets the place the list is sorted by: the column first, then the row.
-        /// </summary>
-        public (int X, int Y) Place => (this.session.Current.Position.X, this.session.Current.Position.Y);
+        public int X => this.session.Current.Position.X;
+
+        public int Y => this.session.Current.Position.Y;
 
         /// <summary>
         /// Gets the tile the savegame gives for the dwelling. A hero stood on it to flag the dwellings of the Castle and the Rampart of the test
         /// map, and 3 tiles lower to visit the neutral ones in the row above, so it is only where the dwelling is, give or take its entrance.
+        /// </summary>
+        /// <summary>
+        /// Gets the tile as the other lists show it, such as "X: 31, Y: 56".
         /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.session.Current.Position.X, this.session.Current.Position.Y);
 

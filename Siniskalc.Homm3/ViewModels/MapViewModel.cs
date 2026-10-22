@@ -28,7 +28,8 @@ namespace Siniskalc.Homm3.ViewModels
                 {
                     ["Resource"] = m => m.ResourceName,
                     ["Owner"] = m => m.OwnerSort,
-                    ["Location"] = m => m.Place,
+                    ["X"] = m => (m.X, m.Y),
+                    ["Y"] = m => (m.Y, m.X),
                 });
             this.DwellingList = new SortableListViewModel<MapDwellingRowViewModel>(
                 Enumerable.Range(0, document.Dwellings().Count).Select(i => new MapDwellingRowViewModel(game.History.CreateDwellingSession(i))).ToList(),
@@ -36,7 +37,8 @@ namespace Siniskalc.Homm3.ViewModels
                 {
                     ["Creature"] = d => d.CreatureName,
                     ["Owner"] = d => d.OwnerSort,
-                    ["Location"] = d => d.Place,
+                    ["X"] = d => (d.X, d.Y),
+                    ["Y"] = d => (d.Y, d.X),
                     ["Available"] = d => d.Stock,
                 });
             this.selectedMine = rows.FirstOrDefault();

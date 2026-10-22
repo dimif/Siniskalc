@@ -47,8 +47,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"));
 
-            page.MineList.Columns["Location"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.Place.X), Is.Ordered);
+            page.MineList.Columns["X"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.X), Is.Ordered);
+
+            page.MineList.Columns["Y"].SortCommand.Execute(null);
+            Assert.That(page.Mines.Select(m => m.Y), Is.Ordered);
 
             page.MineList.Columns["Resource"].SortCommand.Execute(null);
             Assert.That(page.Mines.Select(m => m.ResourceName), Is.Ordered);
@@ -66,14 +69,14 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             page.SelectedMine = guarded;
 
-            Assert.That(guarded.GuardText, Is.EqualTo("1 of 7 slots"));
+            Assert.That(guarded.Summary, Is.EqualTo("1 of 7 slots"));
             Assert.That(page.GuardEditor, Is.SameAs(guarded.GuardEditor));
             Assert.That(page.GuardHeading, Does.Contain("X: 1, Y: 14"));
             Assert.That(page.GuardEditor!.CreatureSlots[0].HasCreature, Is.True);
 
             page.GuardEditor.CreatureSlots[0].ClearCommand.Execute(null);
 
-            Assert.That(guarded.GuardText, Is.EqualTo("Unguarded"));
+            Assert.That(guarded.Summary, Is.EqualTo("Unguarded"));
             Assert.That(game.History.GetPendingChanges().Single().Change.Area, Is.EqualTo(Siniskalc.Heroes.Models.ChangeAreas.Garrison));
         }
 

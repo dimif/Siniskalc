@@ -7,22 +7,6 @@
       xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
       Title="Map">
     <Page.Resources>
-        <!-- A mine: what it gives, where it is, and its owner. -->
-        <DataTemplate x:Key="MineTemplate" DataType="{x:Type vm:MineRowViewModel}">
-            <Grid Margin="0,2" ToolTip="{Binding Kind}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding ResourceName}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the mine on the map"/>
-                <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the mine on the map"/>
-                <ComboBox Grid.Column="3" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}" ToolTip="{Binding OwnerField.ToolTip}"/>
-            </Grid>
-        </DataTemplate>
-
         <!-- A shrine: its circle, where it is, and the spell it teaches. -->
         <DataTemplate x:Key="ShrineTemplate" DataType="{x:Type vm:ShrineRowViewModel}">
             <StackPanel Margin="0,2">
@@ -53,24 +37,6 @@
                 </TextBlock>
             </StackPanel>
         </DataTemplate>
-
-        <!-- The heading of a sortable column: a flat button with the name and the arrow. -->
-        <Style x:Key="SortHeadingStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0,2"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <ContentPresenter/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
 
         <!-- A text the user types: an answer or a riddle. -->
         <DataTemplate x:Key="TextFieldTemplate" DataType="{x:Type wpfvm:TextFieldViewModel}">
@@ -146,26 +112,7 @@
             <Grid Margin="8,4,8,16">
                 <!-- Mines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
-                    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Mines"/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                                       Text="Who owns each mine on the map."/>
-                            <Grid Margin="0,0,0,2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="110"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Resource].Label}" Command="{Binding MineList.Columns[Resource].SortCommand}" ToolTip="Sort by resource"/>
-                                <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[X].Label}" Command="{Binding MineList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
-                                <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Y].Label}" Command="{Binding MineList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
-                                <Button Grid.Column="3" Style="{StaticResource SortHeadingStyle}" Content="{Binding MineList.Columns[Owner].Label}" Command="{Binding MineList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
-                            </Grid>
-                            <ItemsControl ItemsSource="{Binding MineList.Items}" ItemTemplate="{StaticResource MineTemplate}"/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:MinesCard Note="Who owns each mine on the map."/>
                 </StackPanel>
 
                 <!-- Shrines -->

@@ -42,9 +42,9 @@ namespace Siniskalc.Homm3.Data
             [HeroOffsetName.Gender] = 20,                 // Gender (0 male, 1 female), in the hero header: not in the chunk of a hero with a biography
             [HeroOffsetName.HeroId] = HeroIdOffset,       // Which hero this is: 0 Orrin, 1 Valeska, ... 17 Ufretin
             [HeroOffsetName.Portrait] = 38,               // Portrait id: the hero id unless the map gives the hero another portrait
-            [HeroOffsetName.DestinationX] = 45,                // Destination XYZ coordinates (where the hero is going: the marker of its path)
-            [HeroOffsetName.DestinationY] = 47,
-            [HeroOffsetName.DestinationZ] = 49,
+            [HeroOffsetName.DestinationX] = 45,                // Destination: x and y as 32 bits each, then the level in 16 bits (where the hero is going: the marker of its path; FF FF FF FF for x and y when there is none, the level 0 then). The marker is on the tile a hero enters an object from: 1 east and 1 north of the hero in save 347 of TestData/Hota
+            [HeroOffsetName.DestinationY] = 49,
+            [HeroOffsetName.DestinationZ] = 53,
             [HeroOffsetName.MaxMovementPoints] = 57,      // Movement points in total
             [HeroOffsetName.CurrentMovementPoints] = 61,  // Movement points remaining
             [HeroOffsetName.ExperiencePoints] = 65,       // Experience points

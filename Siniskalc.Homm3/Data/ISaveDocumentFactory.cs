@@ -22,6 +22,8 @@ namespace Siniskalc.Homm3.Data
             HeroOffsets offsets,
             IEnumerable<PlayerChunk>? playerChunks = null,
             IEnumerable<CastleChunk>? castleChunks = null,
-            IEnumerable<ObeliskChunk>? obeliskChunks = null);
+            IEnumerable<ObeliskChunk>? obeliskChunks = null,
+            IEnumerable<MineChunk>? mineChunks = null,
+            IEnumerable<DwellingChunk>? dwellingChunks = null);
     }
 }

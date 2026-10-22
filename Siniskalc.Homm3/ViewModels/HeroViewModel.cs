@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
-        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null)
+        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
             : base(session.Current.Name, session)
         {
             this.session = session;
@@ -38,6 +38,7 @@ namespace Siniskalc.Homm3.ViewModels
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep);
+            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.History.Current.GameVersion());
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,
                 () => this.HeroModel.SecondarySkills,
@@ -70,6 +71,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the cached general-info view model for this hero.
         /// </summary>
         public GeneralInfoPageViewModel GeneralInfoViewModel { get; }
+
+        /// <summary>
+        /// Gets the places of the permanent bonuses the hero visited: the Places tab.
+        /// </summary>
+        public VisitedPlacesViewModel PlacesViewModel { get; }
 
         /// <summary>
         /// Gets the cached creatures view model for this hero.
@@ -312,6 +318,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.ArtifactsViewModel.Refresh(hero.EquippedArtifacts);
             this.BackpackViewModel.Refresh(hero.Backpack);
             this.GeneralInfoViewModel.Refresh();
+            this.PlacesViewModel.Refresh();
             this.ArmyViewModel.Refresh();
             this.SecondarySkillsViewModel.Refresh();
             this.SpellsViewModel.Refresh();

@@ -29,6 +29,10 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Creates a view onto the visited obelisks of the savefile (its only obelisk chunk, so index 0); its edits are pushed onto this history.
         /// </summary>
+        public static DwellingEditSession CreateDwellingSession(this SaveDocumentHistory history, int index) => new(history, index);
+
+        public static MineEditSession CreateMineSession(this SaveDocumentHistory history, int index) => new(history, index);
+
         public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm3ChunkKinds.Obelisks, index);
     }
 }

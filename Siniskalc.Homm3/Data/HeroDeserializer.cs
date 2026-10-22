@@ -50,8 +50,11 @@
                 this.DeserializeIsAsleep(chunk),
                 this.DeserializeMoraleBonus(chunk),
                 this.DeserializeLuckBonus(chunk),
-                this.DeserializeVisitEffects(chunk));
+                this.DeserializeVisitEffects(chunk),
+                this.DeserializePlaceVisits(chunk));
         }
+
+        public PlaceVisits DeserializePlaceVisits(HeroChunk chunk) => new(VisitedPlaceKind.All.Select(kind => this.HasPlaces(chunk, kind) ? chunk.GetUInt32At(kind.HeroOffset) : 0u));
 
         public int DeserializeMoraleBonus(HeroChunk chunk) => (sbyte)chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MoraleBonus]);
 
@@ -148,11 +151,12 @@
 
         public MapPosition DeserializeDestination(HeroChunk chunk)
         {
-            var destinationX = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationX]);
-            var destinationY = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationY]);
+            // Two 32 bit numbers, x and y (FFFFFFFF for none), and then the level in 16 bits, which is 0 when there is no marker.
+            var destinationX = chunk.GetInt32At(this.heroOffsets[HeroOffsetName.DestinationX]);
+            var destinationY = chunk.GetInt32At(this.heroOffsets[HeroOffsetName.DestinationY]);
             var destinationZ = chunk.GetInt16At(this.heroOffsets[HeroOffsetName.DestinationZ]);
 
-            return new MapPosition(destinationX, destinationY, destinationZ);
+            return destinationX < 0 || destinationY < 0 ? MapPosition.None : new MapPosition(destinationX, destinationY, destinationZ);
         }
 
         public HeroClass DeserializeClass(HeroChunk chunk)
@@ -312,5 +316,8 @@
 
             return new SpellBook(spellBookSpells, otherAvailable, this.DeserializeHasSpellBook(chunk));
         }
+
+        private bool HasPlaces(HeroChunk chunk, VisitedPlaceKind kind) =>
+            kind.HeroOffset + sizeof(uint) <= chunk.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss);
     }
 }

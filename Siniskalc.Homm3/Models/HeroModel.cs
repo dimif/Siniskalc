@@ -46,7 +46,8 @@
             bool isAsleep,
             int moraleBonus,
             int luckBonus,
-            VisitedBuildingEffects visitEffects)
+            VisitedBuildingEffects visitEffects,
+            PlaceVisits placeVisits)
         {
             this.Name = name;
             this.Id = id;
@@ -58,6 +59,7 @@
             this.MoraleBonus = moraleBonus;
             this.LuckBonus = luckBonus;
             this.VisitEffects = visitEffects;
+            this.PlaceVisits = placeVisits;
             this.grantedSpellsResolver = grantedSpellsResolver;
             this.Owner = owner;
             this.primarySkills = primarySkills;
@@ -204,6 +206,11 @@
         /// Read-only: it is never written back.
         /// </summary>
         public VisitedBuildingEffects VisitEffects { get; init; }
+
+        /// <summary>
+        /// Gets the places of the permanent bonuses (arenas, schools, stars axes...) the hero visited, which give nothing a second time.
+        /// </summary>
+        public PlaceVisits PlaceVisits { get; init; }
 
         /// <inheritdoc/>
         public bool HasSpellBook => this.SpellBook.HasSpellBook;

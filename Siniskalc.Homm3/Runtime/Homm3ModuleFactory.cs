@@ -48,6 +48,12 @@ namespace Siniskalc.Homm3.Runtime
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
+                new MineDeserializer(),
+                new SafeMineSerializer(),
+                new MineDiffer(),
+                new DwellingDeserializer(),
+                new SafeDwellingSerializer(),
+                new DwellingDiffer(),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
@@ -58,6 +64,9 @@ namespace Siniskalc.Homm3.Runtime
                     new CastleBytesLoader(heroNameEncoding),
                     new PlayerBytesLoader(),
                     new ObeliskBytesLoader(),
+                    new MineBytesLoader(),
+                    new DwellingBytesLoader(),
+                    new MapPlacesLoader(),
                     dateLocator,
                     setupLocator,
                     mapHeaderLocator,

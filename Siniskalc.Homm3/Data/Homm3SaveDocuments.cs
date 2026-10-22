@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MineChunkCollection mines, DwellingChunkCollection dwellings, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -18,6 +18,8 @@ namespace Siniskalc.Homm3.Data
                 [Homm3ChunkKinds.Player] = players,
                 [Homm3ChunkKinds.Castle] = castles,
                 [Homm3ChunkKinds.Obelisks] = obelisks,
+                [Homm3ChunkKinds.Mines] = mines,
+                [Homm3ChunkKinds.Dwellings] = dwellings,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -43,6 +45,10 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Gets the game version that wrote the savefile.
         /// </summary>
+        public static MineChunkCollection Mines(this SaveDocument document) => (MineChunkCollection)document.GetCollection(Homm3ChunkKinds.Mines);
+
+        public static DwellingChunkCollection Dwellings(this SaveDocument document) => (DwellingChunkCollection)document.GetCollection(Homm3ChunkKinds.Dwellings);
+
         public static GameVersion GameVersion(this SaveDocument document) => document.Heroes().Offsets.GameVersion;
 
         public static SaveDocument WithHero(this SaveDocument document, int index, HeroChunk chunk) => document.WithChunk(Homm3ChunkKinds.Hero, index, chunk);

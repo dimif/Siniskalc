@@ -24,6 +24,12 @@
         private readonly IObeliskDeserializer obeliskDeserializer;
         private readonly IObeliskSerializer obeliskSerializer;
         private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
+        private readonly IMineDeserializer mineDeserializer;
+        private readonly IMineSerializer mineSerializer;
+        private readonly IMineDiffer mineDiffer;
+        private readonly IDwellingDeserializer dwellingDeserializer;
+        private readonly IDwellingSerializer dwellingSerializer;
+        private readonly IDwellingDiffer dwellingDiffer;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -38,6 +44,12 @@
             IObeliskDeserializer obeliskDeserializer,
             IObeliskSerializer obeliskSerializer,
             IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
+            IMineDeserializer mineDeserializer,
+            IMineSerializer mineSerializer,
+            IMineDiffer mineDiffer,
+            IDwellingDeserializer dwellingDeserializer,
+            IDwellingSerializer dwellingSerializer,
+            IDwellingDiffer dwellingDiffer,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -51,6 +63,12 @@
             this.obeliskDeserializer = obeliskDeserializer;
             this.obeliskSerializer = obeliskSerializer;
             this.obeliskDiffer = obeliskDiffer;
+            this.mineDeserializer = mineDeserializer;
+            this.mineSerializer = mineSerializer;
+            this.mineDiffer = mineDiffer;
+            this.dwellingDeserializer = dwellingDeserializer;
+            this.dwellingSerializer = dwellingSerializer;
+            this.dwellingDiffer = dwellingDiffer;
             this.patcher = patcher;
         }
 
@@ -61,7 +79,9 @@
             HeroOffsets offsets,
             IEnumerable<PlayerChunk>? playerChunks = null,
             IEnumerable<CastleChunk>? castleChunks = null,
-            IEnumerable<ObeliskChunk>? obeliskChunks = null)
+            IEnumerable<ObeliskChunk>? obeliskChunks = null,
+            IEnumerable<MineChunk>? mineChunks = null,
+            IEnumerable<DwellingChunk>? dwellingChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
@@ -73,7 +93,9 @@
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
             var obelisks = new ObeliskChunkCollection<PlayerColor>(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, this.patcher);
+            var mines = new MineChunkCollection(mineChunks ?? Enumerable.Empty<MineChunk>(), this.mineDeserializer, this.mineSerializer, this.mineDiffer);
+            var dwellings = new DwellingChunkCollection(dwellingChunks ?? Enumerable.Empty<DwellingChunk>(), this.dwellingDeserializer, this.dwellingSerializer, this.dwellingDiffer);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, this.patcher);
         }
     }
 }

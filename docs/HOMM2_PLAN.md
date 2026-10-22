@@ -120,6 +120,10 @@ What the shared models of `Siniskalc.Heroes` would hold for HoMM2 but the editor
 
 For each, once the bytes are known: a row in `HOMM2_SAVE_FORMAT.md`, a layout constant, the reader and the writer (separate classes), the model field, and tests that name the save (`TestData/Homm2/...README.md` says what each save holds).
 
+## To find out: the guardians of a mine (2026-10-22)
+
+A hero can put a few creatures on a mine with the spells Set Earth, Air, Fire and Water Guardian (spell numbers 62 to 65): a number of elementals, not a full garrison. The 7 byte record of a mine (owner, kind, x, y) has no room for them, and no save of the editor's test maps has a guarded mine yet, so where the kind and the number are kept is unknown. Saves to make: one mine of the player with each of the four spells cast on it (name the hero's spell power and knowledge), one with the guardians defeated by an enemy, one with a guarded mine that changes owner. HoMM3 mines have a full garrison in their record (see `FUTURE_IMPROVEMENTS.md`, item 4); the editor should model the guard of a mine in both games with the shared army blocks.
+
 ## Phase 8: the saves of Threedom (2026-10-17)
 
 Done: the 71 saves are in `TestData/Homm2/Threedom` with a README; the buildings of a town (turrets, marketplace, the second well, moat, the special building and the captain's quarters), the morale and luck of a hero for its next battle and the places it has visited are read, written and edited (`TownBuildings`, `NextBattleBonus`, `VisitedPlaces`, the hero page), with the tests in `ThreedomTests`. The savegames T01BLDS, T02FORGT and T03BONUS in `TestData/Homm2/out` are for the game.

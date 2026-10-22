@@ -61,6 +61,21 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <inheritdoc/>
+        protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
+        {
+            var mines = game.History.Current.Mines().Count;
+            var dwellings = game.History.Current.Dwellings().Count;
+            if (mines + dwellings == 0)
+            {
+                return;
+            }
+
+            var node = new NavNodeViewModel("Map", $"{mines} mines, {dwellings} dwellings", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            tree.Register(node);
+            overview.Children.Add(node);
+        }
+
+        /// <inheritdoc/>
         protected override IReadOnlyList<PlayerColor> CastleOwners(Game game) => game.History.Current.Castles().GetOwners();
 
         /// <inheritdoc/>

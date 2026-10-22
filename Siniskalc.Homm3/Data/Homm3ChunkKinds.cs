@@ -14,5 +14,9 @@
         public static readonly ChunkKind Castle = new("Castle", 2);
 
         public static readonly ChunkKind Obelisks = new("Obelisks", 3);
+
+        public static readonly ChunkKind Mines = new("Mines", 4);
+
+        public static readonly ChunkKind Dwellings = new("Dwellings", 5);
     }
 }

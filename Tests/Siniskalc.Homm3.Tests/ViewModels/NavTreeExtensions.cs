@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public static string BadgeTooltip(this NavNodeViewModel node, string key) => node.Badges.Single(b => b.Key == key).Tooltip;
 
-        public static IList<NavNodeViewModel> PlayerNodes(this Homm3EditorViewModel main) => main.NavigationNodes.Single().Children;
+        public static IList<NavNodeViewModel> PlayerNodes(this Homm3EditorViewModel main) => main.NavigationNodes.Single().Children.Where(n => n.Kind != NavNodeKind.Map).ToList();
 
         public static IEnumerable<NavNodeViewModel> Descendants(this IEnumerable<NavNodeViewModel> nodes) => nodes.SelectMany(n => n.Descendants());
     }

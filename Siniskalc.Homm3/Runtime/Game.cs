@@ -16,9 +16,10 @@ namespace Siniskalc.Homm3.Runtime
     /// </summary>
     public sealed class Game : AbstractSavegame, IGameInfo<PlayerColor>
     {
-        public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata metadata)
+        public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata metadata, MapPlaces? places = null)
             : base(file, bytes, history, name)
         {
+            this.Places = places ?? MapPlaces.None;
             this.GameVersion = gameVersion;
             this.Metadata = metadata;
         }
@@ -27,6 +28,11 @@ namespace Siniskalc.Homm3.Runtime
         /// Gets what the savefile says about the game besides its editable structs.
         /// </summary>
         public SaveMetadata Metadata { get; }
+
+        /// <summary>
+        /// Gets where the places a hero can visit are on the map.
+        /// </summary>
+        public MapPlaces Places { get; }
 
         public GameVersion GameVersion { get; }
 

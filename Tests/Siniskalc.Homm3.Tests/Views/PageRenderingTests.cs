@@ -52,7 +52,7 @@ namespace Siniskalc.Homm3.Tests.Views
                 Assert.That(editor.ShowHero("Christian"), Is.True);
                 Pump();
                 var hero = editor.SelectedHero();
-                foreach (var tab in Enumerable.Range(0, 7))
+                foreach (var tab in Enumerable.Range(0, 8))
                 {
                     hero.SelectedTab = tab;
                     Show(window);

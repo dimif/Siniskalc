@@ -25,6 +25,7 @@
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
+        private MapViewModel? map;
         private OverviewViewModel? overview;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
@@ -77,7 +78,7 @@
 
             if (!this.heroes.TryGetValue(heroIndex, out var hero))
             {
-                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints.Create(game.History.Current.GameVersion()), this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle);
+                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints.Create(game.History.Current.GameVersion()), this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle, game.Places);
                 this.heroes[heroIndex] = hero;
             }
 
@@ -111,6 +112,15 @@
         }
 
         /// <summary>
+        /// Shows the page of the mines of the map.
+        /// </summary>
+        public void ShowMap()
+        {
+            this.map ??= new MapViewModel(this.Loaded());
+            this.SetCurrentPage(this.map);
+        }
+
+        /// <summary>
         /// Shows the page of the castle at <paramref name="castleIndex"/> in the savegame's castles.
         /// </summary>
         public void ShowCastle(int castleIndex)
@@ -141,6 +151,8 @@
             this.players.Clear();
             this.heroes.Clear();
             this.castles.Clear();
+            this.map?.Dispose();
+            this.map = null;
         }
 
         /// <inheritdoc/>
@@ -157,6 +169,7 @@
             PlayerViewModel player => this.Navigation.PlayerTabNode(player.Session.PlayerIndex, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.Session.HeroIndex),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
+            MapViewModel => this.Navigation.MapNode,
             _ => null,
         };
 
@@ -179,6 +192,9 @@
                     break;
                 case NavNodeKind.Overview:
                     this.ShowOverview();
+                    break;
+                case NavNodeKind.Map:
+                    this.ShowMap();
                     break;
             }
         }

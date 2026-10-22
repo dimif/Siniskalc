@@ -21,6 +21,7 @@ namespace Siniskalc.Homm3.Views
             PlayerViewModel player => new PlayerPage(player),
             CastleViewModel castle => new CastlePage(castle),
             OverviewViewModel overview => new OverviewPage(overview),
+            MapViewModel map => new MapPage(map),
             _ => throw new InvalidOperationException($"No page for {viewModel.GetType().Name}."),
         };
     }

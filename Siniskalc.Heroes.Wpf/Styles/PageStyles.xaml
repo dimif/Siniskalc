@@ -63,6 +63,13 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="TabPanel7" TargetType="FrameworkElement" BasedOn="{StaticResource TabPanelBase}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding SelectedTab}" Value="7">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 
     <!-- A note that is only shown while its Tag is False: "This player has no heroes". -->
     <Style x:Key="EmptyNoteStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">

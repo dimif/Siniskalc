@@ -175,6 +175,15 @@
     <None Include="..\..\TestData\Hota\new_day_03_m6w1d2.GM1" Link="TestData\Hota\new_day_03_m6w1d2.GM1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\TestData\Hota\Mines\*.GM2" Link="TestData\Hota\Mines\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\VisitedPlaces\*.GM2" Link="TestData\Hota\VisitedPlaces\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\Dwellings\*.GM2" Link="TestData\Hota\Dwellings\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

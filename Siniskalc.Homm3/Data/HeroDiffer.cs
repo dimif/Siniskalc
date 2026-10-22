@@ -36,8 +36,22 @@ namespace Siniskalc.Homm3.Data
             DiffEquipped(original, current, changes);
             DiffBackpack(original, current, changes);
             DiffSpells(original, current, changes);
+            DiffPlaceVisits(original, current, changes);
 
             return changes.All;
+        }
+
+        private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
+        {
+            foreach (var kind in VisitedPlaceKind.All.Where(k => original.PlaceVisits.Of(k) != current.PlaceVisits.Of(k)))
+            {
+                changes.Add(
+                    ChangeAreas.General,
+                    $"Visited: {kind.Name.ToLowerInvariant()}",
+                    System.Numerics.BitOperations.PopCount(original.PlaceVisits.Of(kind)).ToString(),
+                    System.Numerics.BitOperations.PopCount(current.PlaceVisits.Of(kind)).ToString(),
+                    h => h with { PlaceVisits = h.PlaceVisits.With(kind, original.PlaceVisits.Of(kind)) });
+            }
         }
 
         private static void DiffGeneral(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)

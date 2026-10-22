@@ -22,6 +22,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Styles
         [TestCase("TabPanelBase")]
         [TestCase("TabPanel0")]
         [TestCase("TabPanel6")]
+        [TestCase("TabPanel7")]
         [TestCase("EmptyNoteStyle")]
         [TestCase("EditedMarkStyle")]
         [TestCase("ResetPillStyle")]

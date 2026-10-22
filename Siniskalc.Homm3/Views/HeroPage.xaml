@@ -48,6 +48,7 @@
             <wpf:NavButton Text="Skills"/>
             <wpf:NavButton Text="Creatures"/>
             <wpf:NavButton Text="Spells"/>
+            <wpf:NavButton Text="Places"/>
             <wpf:NavButton Text="Artifacts"/>
             <wpf:NavButton Text="Backpack"/>
             <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
@@ -71,12 +72,19 @@
                 <wpf:SpellsView DataContext="{Binding SpellsViewModel}"/>
             </Grid>
             <Grid Style="{StaticResource TabPanel4}">
-                <local:ArtifactsView DataContext="{Binding ArtifactsViewModel}"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <WrapPanel Margin="-6,0,0,0">
+                        <heroes:VisitedPlacesCard DataContext="{Binding PlacesViewModel.PlacesVisited}"/>
+                    </WrapPanel>
+                </ScrollViewer>
             </Grid>
             <Grid Style="{StaticResource TabPanel5}">
+                <local:ArtifactsView DataContext="{Binding ArtifactsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel6}">
                 <local:BackpackView DataContext="{Binding BackpackViewModel}"/>
             </Grid>
-            <wpf:HexEditor x:Name="hexEditor" Style="{StaticResource TabPanel6}"/>
+            <wpf:HexEditor x:Name="hexEditor" Style="{StaticResource TabPanel7}"/>
         </Grid>
     </Grid>
 </Page>

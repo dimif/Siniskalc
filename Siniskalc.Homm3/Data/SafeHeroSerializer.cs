@@ -51,8 +51,25 @@
             chunk = this.SerializeHasSpellBook(chunk, hero.SpellBook.HasSpellBook);
             chunk = this.SerializeCreatures(chunk, hero.Army);
             chunk = this.SerializeSpellBook(chunk, hero.SpellBook);
+            chunk = this.SerializePlaceVisits(chunk, hero.PlaceVisits);
 
             return chunk;
+        }
+
+        public HeroChunk SerializePlaceVisits(HeroChunk chunk, PlaceVisits visits)
+        {
+            return Edit(chunk, buffer =>
+            {
+                foreach (var kind in VisitedPlaceKind.All)
+                {
+                    // A kind the savegame has no room for, or that does not exist in this version, is left alone.
+                    if (kind.HeroOffset + sizeof(uint) <= buffer.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss)
+                        && ByteBufferHelper.ReadUInt32(buffer, kind.HeroOffset) != visits.Of(kind))
+                    {
+                        ByteBufferHelper.WriteUInt32(buffer, kind.HeroOffset, visits.Of(kind));
+                    }
+                }
+            });
         }
 
         public HeroChunk SerializeCreatures(HeroChunk chunk, IArmy<Creature> creatures)
@@ -126,9 +143,27 @@
         {
             return Edit(chunk, buffer =>
             {
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationX], Coordinate(destination.X, nameof(destination)));
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationY], Coordinate(destination.Y, nameof(destination)));
-                ByteBufferHelper.WriteInt16(buffer, this.heroOffsets[HeroOffsetName.DestinationZ], Coordinate(destination.Level, nameof(destination)));
+                // The marker of a hero that has none reads as no destination at all, whatever its level byte says: it is left alone then.
+                var x = this.heroOffsets[HeroOffsetName.DestinationX];
+                var y = this.heroOffsets[HeroOffsetName.DestinationY];
+                var z = this.heroOffsets[HeroOffsetName.DestinationZ];
+                var none = BitConverter.ToInt32(buffer, x) < 0 || BitConverter.ToInt32(buffer, y) < 0;
+                if (destination == MapPosition.None)
+                {
+                    if (!none)
+                    {
+                        // The game leaves x and y at -1 and the level at 0 for a hero with no marker.
+                        ByteBufferHelper.WriteInt32(buffer, x, -1);
+                        ByteBufferHelper.WriteInt32(buffer, y, -1);
+                        ByteBufferHelper.WriteInt16(buffer, z, 0);
+                    }
+
+                    return;
+                }
+
+                ByteBufferHelper.WriteInt32(buffer, x, Coordinate(destination.X, nameof(destination)));
+                ByteBufferHelper.WriteInt32(buffer, y, Coordinate(destination.Y, nameof(destination)));
+                ByteBufferHelper.WriteInt16(buffer, z, Coordinate(destination.Level, nameof(destination)));
             });
         }
 

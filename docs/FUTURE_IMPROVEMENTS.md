@@ -27,7 +27,12 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 ## User features
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today.
-2. **Castle creatures growth**: we think we have found the growth table is found, but it isn't read.
+2. **Castle creatures growth**.
+   - **HoMM3**: we think we have found the growth table, but it isn't read.
+   - **HoMM2** (done 2026-10-22, `CastleModel.WeeklyGrowth`, shown as "+N a week" on each dwelling): the growth of the creature, +2 from the Well in every built dwelling, +8 from the second well of the faction in the first dwelling only, nothing in an unbuilt dwelling (`docs/HOMM2_SAVE_FORMAT.md`, "The Well and the second well").
+     Left: the **Warlock** (Waterfall) was in none of the saves, so only five factions are confirmed; whether a **dwelling built or upgraded today gets its first creatures at once or at the next week** (the editor leaves the count alone; Threedom saves 15 and 16 suggest next week, not proven); and **none of it is tried in the game**.
+   - **HoMM2: "Can build this turn"** (done 2026-10-22, `BuiltTodayModel`; a bit for each of the 72 castle slots, 0x48 bytes after the castle table; saves of `TestData/Homm2/BuiltThisTurn`).
+     Left: the page writes the bit but **it is not tried in the game**; **changing the date must clear the whole set**, as the game does on a new day (belongs to item 3); and the low bits `0x3` of Xabran's dwelling mask (`+0x1A`) in `built_this_turn_13_corackston_well__xabran_well` are **unexplained** (nothing else in the saves sets them; ask what was done in that step).
 3. **Editing of the date, and whose turn it is**
 4. **Resource generators (mines etc.)** (mines, dwellings and the stock of the merchants are on the Map page of HoMM3; see below for what is open): as we're starting to understand tile structure, we could extract all the buildings from the save and make the owner editeable.
    - **HoMM3, found in the saves of `Island of HOTA tests 6p` (2026-10-22):** a table of 62-byte records, one for each mine object of the map, in the order of the map-object list; a record is x, y, z, owner (FF none, 0 Red, 1 Blue), kind (0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold), one byte, then **the guard: seven creature slots (u32 each, FF FF FF FF for none) and seven counts (u32 each)**. An abandoned mine has its record in the same table (its owner FF and its guard filled until it is taken, then its owner, the resource it turned into and an empty guard).

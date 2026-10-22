@@ -26,7 +26,7 @@
 
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
-        private readonly MapObjectEditSession<BuiltTodayModel>? builtToday;
+        private readonly MapObjectEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
@@ -42,13 +42,12 @@
             this.openHero = openHero;
             this.session = game.History.CreateCastleSession(castleIndex);
             this.castle = this.session.Current;
-            this.builtToday = game.History.Current.BuiltToday().Count > 0 ? game.History.CreateBuiltTodaySession() : null;
-            this.BuiltThisTurn = new ToggleRowViewModel(
-                "Built this turn",
-                () => this.builtToday?.Current.Has(this.CastleIndex) ?? false,
-                built => this.builtToday!.Update(set => set.With(this.CastleIndex, built)),
-                () => this.builtToday != null,
-                toolTip: "The game lets a castle build one thing a day. Tick it to stop the castle from building until the next day, or clear it to let it build again.");
+            this.builtToday = game.History.CreateBuiltTodaySession();
+            this.CanBuildThisTurn = new ToggleRowViewModel(
+                "Can build this turn",
+                () => !this.builtToday.Current.Has(this.CastleIndex),
+                canBuild => this.builtToday.Update(set => set.With(this.CastleIndex, !canBuild)),
+                toolTip: "Whether a building can still be built in this town today. The game allows one building per town per day.");
 
             this.GarrisonEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -180,9 +179,10 @@
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
         /// <summary>
-        /// Gets whether the castle has already built something today: the game allows one building a day, and clears this when a new day starts.
+        /// Gets whether the castle can still build something today: the opposite of the bit the game sets when it has built (one building a day;
+        /// the game clears the bit when a new day starts).
         /// </summary>
-        public ToggleRowViewModel BuiltThisTurn { get; }
+        public ToggleRowViewModel CanBuildThisTurn { get; }
 
         public IReadOnlyList<DwellingRowViewModel> Dwellings => this.dwellings;
 
@@ -206,7 +206,7 @@
             this.visitingHeroName = this.heroes.FirstOrDefault()?.Name ?? string.Empty;
 
             this.OwnerField?.Refresh();
-            this.BuiltThisTurn?.Refresh();
+            this.CanBuildThisTurn?.Refresh();
             this.GuildLevelField?.Refresh();
             this.GarrisonEditor?.Refresh();
             foreach (var building in this.buildings ?? [])

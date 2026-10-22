@@ -119,12 +119,11 @@
             <Grid Margin="8,4,8,16">
                 <!-- Buildings -->
                 <StackPanel Style="{StaticResource TabPanel0}">
+                    <CheckBox Margin="0,0,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding CanBuildThisTurn.Name}"
+                              IsChecked="{Binding CanBuildThisTurn.IsChecked}" ToolTip="{Binding CanBuildThisTurn.ToolTip}"/>
                     <WrapPanel Margin="-6,0,0,0">
                         <heroes:HeadedCard Heading="Buildings">
-                            <StackPanel>
-                                <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
-                                <ContentControl Margin="0,8,0,0" Content="{Binding BuiltThisTurn}" ContentTemplate="{StaticResource ToggleRowTemplate}"/>
-                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
                         </heroes:HeadedCard>
                         <heroes:HeadedCard Heading="Dwellings">
                             <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingBuiltTemplate}"/>

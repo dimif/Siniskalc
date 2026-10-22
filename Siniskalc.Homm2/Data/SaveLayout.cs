@@ -72,9 +72,9 @@ namespace Siniskalc.Homm2.Data
         public int MapDescriptionStart => HeaderLayout.MapDescription + this.MarkerLength;
 
         /// <summary>
-        /// Gets the size the savegame has at least: the end of the table of castles.
+        /// Gets the size the savegame has at least: the end of the set of the castles that have built today, which follows the table of castles.
         /// </summary>
-        public int MinimumLength => this.CastleStart(Constants.Table.CastleSlotCount);
+        public int MinimumLength => this.CastleStart(Constants.Table.CastleSlotCount) + MapObjectLayout.BuiltToday + MapObjectLayout.BuiltTodaySize;
 
         /// <summary>
         /// Gets the position in the savefile of the record of the player at <paramref name="index"/>.

@@ -6,7 +6,9 @@ namespace Siniskalc.Heroes.Data
 
     /// <summary>
     /// Makes the pending changes of the records of a savefile: a change and the way to put it back. The differs of a game use it, so that
-    /// what puts a change back (which kind of chunk, which edit session) is the game's and not the differ's.
+    /// what puts a change back (which kind of chunk, which edit session) is the game's and not the differ's. An object of the map that
+    /// is a record of its own (a mine, a dwelling, a shrine) has no member here: its differ is the game's and makes its pending change
+    /// with <see cref="ChunkPendingChange.For{TChunk, TModel}"/> through a <see cref="ChangeSink{TModel}"/>.
     /// </summary>
     /// <typeparam name="THero">The model of a hero of the game.</typeparam>
     /// <typeparam name="TPlayer">The model of a player of the game.</typeparam>
@@ -52,18 +54,5 @@ namespace Siniskalc.Heroes.Data
         /// <param name="change">What changed.</param>
         /// <param name="revert">Puts the obelisks back to what they were.</param>
         PendingChange ForObelisks(int index, Change change, Func<TObelisks, TObelisks> revert);
-
-        /// <summary>
-        /// Makes the pending change of an object of the map that is a record of its own, such as a mine or a shrine.
-        /// </summary>
-        /// <typeparam name="TModel">The model of the object.</typeparam>
-        /// <param name="kind">The kind of the chunk of the object.</param>
-        /// <param name="name">The name shown for the object.</param>
-        /// <param name="index">The place of the object among the chunks of its kind.</param>
-        /// <param name="change">What changed.</param>
-        /// <param name="revert">Puts the object back to what it was.</param>
-        /// <exception cref="NotImplementedException">The game has no such objects yet.</exception>
-        PendingChange ForMapObject<TModel>(ChunkKind kind, string name, int index, Change change, Func<TModel, TModel> revert)
-            where TModel : class;
     }
 }

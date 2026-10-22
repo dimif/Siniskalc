@@ -9,7 +9,7 @@
     using Siniskalc.Homm2.Models;
 
     /// <summary>
-    /// Makes the pending changes of a hero, a player, a castle, the obelisks or an object of the map: a change and the way to put it back.
+    /// Makes the pending changes of a hero, a player, a castle or the obelisks: a change and the way to put it back.
     /// </summary>
     public sealed class Homm2PendingChangesFactory : IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>>
     {
@@ -35,15 +35,6 @@
         public PendingChange ForObelisks(int index, Change change, Func<ObeliskVisits<PlayerColor>, ObeliskVisits<PlayerColor>> revert)
         {
             return new PendingChange("Obelisks", change, Homm2ChunkKinds.Obelisks, index, history => history.CreateObeliskSession(index).Update(revert));
-        }
-
-        /// <summary>
-        /// Makes the pending change of a mine, a shrine, a sphinx or the turn (the objects of the map).
-        /// </summary>
-        public PendingChange ForMapObject<TModel>(ChunkKind kind, string name, int index, Change change, Func<TModel, TModel> revert)
-            where TModel : class
-        {
-            return new PendingChange(name, change, kind, index, history => new MapObjectEditSession<TModel>(history, kind, index).Update(revert));
         }
     }
 }

@@ -8,6 +8,8 @@ The work was done in the order at the end; **"Status after the work"** below say
 
 **2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `ObeliskEditSession<TColor>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`. Not done: sharing `Game` / `SaveMetadata` (HoMM2 has its date, map and difficulty always, HoMM3 may not; an interface over both would make HoMM2's nullable only for the interface).
 
+**2026-10-22:** `IPendingChangesFactory` has no `ForMapObject` any more (HoMM3's threw). The differs of the objects of the map are each game's own and make their pending changes with `ChunkPendingChange.For` through a `ChangeSink`, in both games (HoMM2's `MineDiffer`, `ShrineDiffer`, `SphinxDiffer`, `TurnDiffer` and `BuiltTodayDiffer`, HoMM3's mine, dwelling and merchant differs); HoMM2's mine owner change is the shared `AddOwner`. The texts of the changes are the same as before.
+
 Read from the working tree of 2026-10-16, which already has the work of `6f06ab7`, `aeb17a6` and what is not committed yet.
 What that work moved into `Heroes` is listed under "Already shared" and is not proposed again.
 

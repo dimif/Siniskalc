@@ -2,10 +2,7 @@
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -13,28 +10,12 @@
     /// </summary>
     public sealed class MineDiffer : IMapObjectDiffer<MineModel>
     {
-        private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
-
-        /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public MineDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
-        {
-            this.pendingChanges = pendingChanges;
-        }
-
+        /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int index, MineModel original, MineModel current)
         {
-            var changes = new List<PendingChange>();
-            if (original.Owner != current.Owner)
-            {
-                changes.Add(this.pendingChanges.ForMapObject<MineModel>(
-                    Homm2ChunkKinds.Mines,
-                    current.Name,
-                    index,
-                    new Change(ChangeAreas.General, "Owner", OwnerNames<Siniskalc.Homm2.Entities.PlayerColor>.Of(original.Owner), OwnerNames<Siniskalc.Homm2.Entities.PlayerColor>.Of(current.Owner)),
-                    mine => mine with { Owner = original.Owner }));
-            }
-
-            return changes;
+            var changes = new ChangeSink<MineModel>((change, revert) => ChunkPendingChange.For<MapObjectChunk, MineModel>(Homm2ChunkKinds.Mines, current.Name, index, change, revert));
+            changes.AddOwner(original.Owner, current.Owner, (mine, owner) => mine with { Owner = owner });
+            return changes.All;
         }
     }
 }

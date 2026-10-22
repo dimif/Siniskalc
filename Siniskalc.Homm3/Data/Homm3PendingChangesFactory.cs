@@ -36,15 +36,5 @@
         {
             return new PendingChange("Obelisks", change, Homm3ChunkKinds.Obelisks, index, history => history.CreateObeliskSession(index).Update(revert));
         }
-
-        /// <summary>
-        /// Not supported: the editor of Heroes of Might and Magic III has no objects of the map that are records of their own yet.
-        /// </summary>
-        /// <exception cref="NotImplementedException">Always.</exception>
-        public PendingChange ForMapObject<TModel>(ChunkKind kind, string name, int index, Change change, Func<TModel, TModel> revert)
-            where TModel : class
-        {
-            throw new NotImplementedException("Map objects (mines, shrines, sphinxes) are not yet supported in HoMM3.");
-        }
     }
 }

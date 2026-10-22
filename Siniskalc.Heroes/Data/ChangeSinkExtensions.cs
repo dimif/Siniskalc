@@ -6,9 +6,10 @@
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
 
     /// <summary>
-    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills and the experience of a hero, and the resources, the tavern and the countdown of a player.
+    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills, the experience, the place, the movement and the spell points of a hero, and the resources, the tavern and the countdown of a player.
     /// </summary>
     public static class ChangeSinkExtensions
     {
@@ -121,6 +122,82 @@
         }
 
         /// <summary>
+        /// Adds the change of where a hero stands, if its tile, its level or the way it faces differs: "Position", with the place and the facing
+        /// before and after ("X: 12, Y: 5, Surface (0), facing North"; without the level in a game whose map has one). The whole position is put back.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The position as loaded.</param>
+        /// <param name="after">The position now.</param>
+        /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
+        /// <param name="withPosition">Returns the model with the given position.</param>
+        public static void AddPosition<TModel>(this ChangeSink<TModel> sink, HeroPosition before, HeroPosition after, bool hasLevels, Func<TModel, HeroPosition, TModel> withPosition)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Position", PositionText(before, hasLevels), PositionText(after, hasLevels), model => withPosition(model, before));
+        }
+
+        /// <summary>
+        /// Adds the change of the tile a hero is going to, if it differs: "Destination", with the place before and after, or "none" when it goes nowhere.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The destination as loaded, or <see cref="MapPosition.None"/>.</param>
+        /// <param name="after">The destination now, or <see cref="MapPosition.None"/>.</param>
+        /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
+        /// <param name="withDestination">Returns the model with the given destination.</param>
+        public static void AddDestination<TModel>(this ChangeSink<TModel> sink, MapPosition before, MapPosition after, bool hasLevels, Func<TModel, MapPosition, TModel> withDestination)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Destination", PlaceText(before, hasLevels), PlaceText(after, hasLevels), model => withDestination(model, before));
+        }
+
+        /// <summary>
+        /// Adds the change of the movement points of a hero, if they differ: "Movement points", with what is left and what a full day gives,
+        /// before and after ("320 / 1,500"). Both are put back.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The movement points as loaded.</param>
+        /// <param name="after">The movement points now.</param>
+        /// <param name="withMovement">Returns the model with the given movement points.</param>
+        public static void AddMovement<TModel>(this ChangeSink<TModel> sink, MovementPoints before, MovementPoints after, Func<TModel, MovementPoints, TModel> withMovement)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Movement points", MovementText(before), MovementText(after), model => withMovement(model, before));
+        }
+
+        /// <summary>
+        /// Adds the change of the spell points of a hero, if they differ: "Spell points", with the points before and after.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="before">The spell points as loaded.</param>
+        /// <param name="after">The spell points now.</param>
+        /// <param name="withSpellPoints">Returns the model with the given spell points.</param>
+        public static void AddSpellPoints<TModel>(this ChangeSink<TModel> sink, int before, int after, Func<TModel, int, TModel> withSpellPoints)
+        {
+            if (before == after)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.General, "Spell points", before.ToString("N0"), after.ToString("N0"), model => withSpellPoints(model, before));
+        }
+
+        /// <summary>
         /// Adds a change for each resource whose amount differs, each put back on its own.
         /// </summary>
         /// <typeparam name="TModel">The model of the record that holds the resources.</typeparam>
@@ -200,5 +277,15 @@
         private static string DaysText(int? days) => days?.ToString() ?? "not counting";
 
         private static string LevelText(HeroLevel level) => $"{level.Experience:N0} (level {level.Level})";
+
+        private static string MovementText(MovementPoints points) => $"{points.Current:N0} / {points.Max:N0}";
+
+        private static string PlaceText(MapPosition place, bool hasLevels) =>
+            place == MapPosition.None ? ChangeText.None
+            : hasLevels ? MapLevelText.Coordinates(place.X, place.Y, place.Level)
+            : MapLevelText.Coordinates(place.X, place.Y);
+
+        private static string PositionText(HeroPosition position, bool hasLevels) =>
+            $"{PlaceText(new MapPosition(position.X, position.Y, position.Level), hasLevels)}, facing {position.FacingDirection}";
     }
 }

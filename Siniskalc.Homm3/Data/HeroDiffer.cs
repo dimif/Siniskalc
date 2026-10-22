@@ -15,6 +15,11 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
+        /// <summary>
+        /// Whether a place on the map says its level: the map of HoMM3 may have two.
+        /// </summary>
+        private const bool HasLevels = true;
+
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
@@ -91,30 +96,10 @@ namespace Siniskalc.Homm3.Data
 
             changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
-            if (original.SpellPoints != current.SpellPoints)
-            {
-                changes.Add(ChangeAreas.General, "Spell points", original.SpellPoints.ToString(), current.SpellPoints.ToString(), h => h with { SpellPoints = original.SpellPoints });
-            }
-
-            if (!original.MovementPoints.Equals(current.MovementPoints))
-            {
-                changes.Add(
-                    ChangeAreas.General,
-                    "Movement points",
-                    $"{original.MovementPoints.Current} / {original.MovementPoints.Max}",
-                    $"{current.MovementPoints.Current} / {current.MovementPoints.Max}",
-                    h => h with { MovementPoints = original.MovementPoints });
-            }
-
-            if (original.Position != current.Position)
-            {
-                changes.Add(ChangeAreas.General, "Position", FormatPosition(original.Position), FormatPosition(current.Position), h => h with { Position = original.Position });
-            }
-
-            if (original.Destination != current.Destination)
-            {
-                changes.Add(ChangeAreas.General, "Destination", FormatPosition(original.Destination), FormatPosition(current.Destination), h => h with { Destination = original.Destination });
-            }
+            changes.AddSpellPoints(original.SpellPoints, current.SpellPoints, (h, points) => h with { SpellPoints = points });
+            changes.AddMovement(original.MovementPoints, current.MovementPoints, (h, movement) => h with { MovementPoints = movement });
+            changes.AddPosition(original.Position, current.Position, HasLevels, (h, position) => h with { Position = position });
+            changes.AddDestination(original.Destination, current.Destination, HasLevels, (h, destination) => h with { Destination = destination });
         }
 
         private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
@@ -243,13 +228,6 @@ namespace Siniskalc.Homm3.Data
             }
 
             return FormatList(parts);
-        }
-
-        private static string FormatPosition(MapPosition position)
-        {
-            return position is HeroPosition heroPosition
-                ? $"{position.X}, {position.Y}, {position.Level} facing {heroPosition.FacingDirection}"
-                : $"{position.X}, {position.Y}, {position.Level}";
         }
 
         private static string FormatList(IEnumerable<string> items)

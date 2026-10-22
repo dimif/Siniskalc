@@ -9,11 +9,15 @@ namespace Siniskalc.Homm2.Data
     using Siniskalc.Homm2.Models;
 
     /// <summary>
-    /// Lists what an edit changed in a hero. What the game works out itself (the movement of a full day) and the place the hero stands on are
-    /// not listed, but they are saved.
+    /// Lists what an edit changed in a hero.
     /// </summary>
     public sealed class HeroDiffer : IHeroDiffer
     {
+        /// <summary>
+        /// Whether a place on the map says its level: the map of HoMM2 has one level.
+        /// </summary>
+        private const bool HasLevels = false;
+
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
@@ -29,31 +33,10 @@ namespace Siniskalc.Homm2.Data
 
             changes.AddOwner(original.Owner, current.Owner, (h, owner) => h with { Owner = owner });
 
-            if (original.Position.X != current.Position.X || original.Position.Y != current.Position.Y)
-            {
-                changes.Add(ChangeAreas.General, "Position", original.Position.ToString(), current.Position.ToString(), h => h with { Position = h.Position with { X = original.Position.X, Y = original.Position.Y } });
-            }
-
-            if (original.Position.FacingDirection != current.Position.FacingDirection)
-            {
-                changes.Add(ChangeAreas.General, "Facing", original.Position.FacingDirection.ToString(), current.Position.FacingDirection.ToString(), h => h with { Position = h.Position with { FacingDirection = original.Position.FacingDirection } });
-            }
-
-            if (original.Destination != current.Destination)
-            {
-                changes.Add(ChangeAreas.General, "Destination", original.Destination == MapPosition.None ? ChangeText.Empty : original.Destination.ToString(), current.Destination == MapPosition.None ? ChangeText.Empty : current.Destination.ToString(), h => h with { Destination = original.Destination });
-            }
-
-            if (original.SpellPoints != current.SpellPoints)
-            {
-                changes.Add(ChangeAreas.General, "Spell points", original.SpellPoints.ToString("N0"), current.SpellPoints.ToString("N0"), h => h with { SpellPoints = original.SpellPoints });
-            }
-
-            if (original.MovementPoints.Current != current.MovementPoints.Current)
-            {
-                changes.Add(ChangeAreas.General, "Movement points left", original.MovementPoints.Current.ToString("N0"), current.MovementPoints.Current.ToString("N0"), h => h with { MovementPoints = h.MovementPoints with { Current = original.MovementPoints.Current } });
-            }
-
+            changes.AddPosition(original.Position, current.Position, HasLevels, (h, position) => h with { Position = position });
+            changes.AddDestination(original.Destination, current.Destination, HasLevels, (h, destination) => h with { Destination = destination });
+            changes.AddSpellPoints(original.SpellPoints, current.SpellPoints, (h, points) => h with { SpellPoints = points });
+            changes.AddMovement(original.MovementPoints, current.MovementPoints, (h, movement) => h with { MovementPoints = movement });
             changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
             if (original.NextBattle.Morale != current.NextBattle.Morale)

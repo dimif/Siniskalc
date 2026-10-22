@@ -163,6 +163,86 @@ namespace Siniskalc.Heroes.Tests.Data
             Assert.That(sink.All, Is.Empty);
         }
 
+        [Test]
+        public void ANewPositionOrFacingIsOneChangeThatShowsThePlaceAndTheFacingBeforeAndAfter()
+        {
+            var sink = NewMoverSink();
+
+            sink.AddPosition(new HeroPosition(3, 4, FacingDirection.North), new HeroPosition(3, 4, FacingDirection.East), hasLevels: false, (h, position) => h with { Position = position });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Position", "X: 3, Y: 4, facing North", "X: 3, Y: 4, facing East") }));
+        }
+
+        [Test]
+        public void APositionSaysItsLevelInAGameWhoseMapHasTwo()
+        {
+            var sink = NewMoverSink();
+
+            sink.AddPosition(new HeroPosition(3, 4, 0, FacingDirection.North), new HeroPosition(3, 4, 1, FacingDirection.North), hasLevels: true, (h, position) => h with { Position = position });
+
+            Assert.That(
+                sink.All.Select(c => (c.Change.Before, c.Change.After)),
+                Is.EqualTo(new[] { ("X: 3, Y: 4, Surface (0), facing North", "X: 3, Y: 4, Underground (1), facing North") }));
+        }
+
+        [Test]
+        public void ADestinationThatWasSetReadsAsNoneBefore()
+        {
+            var sink = NewMoverSink();
+
+            sink.AddDestination(MapPosition.None, new MapPosition(30, 31), hasLevels: false, (h, destination) => h with { Destination = destination });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Destination", "none", "X: 30, Y: 31") }));
+        }
+
+        [Test]
+        public void ChangedMovementShowsWhatIsLeftAndWhatAFullDayGivesAndIsPutBackWhole()
+        {
+            var reverts = new List<Func<Mover, Mover>>();
+            var sink = new ChangeSink<Mover>((change, revert) =>
+            {
+                reverts.Add(revert);
+                return new PendingChange("Mover", change, new ChunkKind("Mover", 0), 0, _ => { });
+            });
+
+            sink.AddMovement(new MovementPoints(320, 1_500), new MovementPoints(1_500, 1_500), (h, movement) => h with { Movement = movement });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Movement points", "320 / 1,500", "1,500 / 1,500") }));
+            Assert.That(reverts.Single()(Mover.Nowhere with { Movement = new MovementPoints(9, 9) }).Movement, Is.EqualTo(new MovementPoints(320, 1_500)));
+        }
+
+        [Test]
+        public void ChangedSpellPointsAreListedWithThePointsBeforeAndAfter()
+        {
+            var sink = NewMoverSink();
+
+            sink.AddSpellPoints(10, 1_200, (h, points) => h with { SpellPoints = points });
+
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Spell points", "10", "1,200") }));
+        }
+
+        [Test]
+        public void APlaceMovementOrSpellPointsThatDidNotChangeAreNotListed()
+        {
+            var sink = NewMoverSink();
+            var here = new HeroPosition(3, 4, FacingDirection.North);
+
+            sink.AddPosition(here, here with { }, hasLevels: true, (h, position) => h with { Position = position });
+            sink.AddDestination(new MapPosition(1, 2), new MapPosition(1, 2), hasLevels: true, (h, destination) => h with { Destination = destination });
+            sink.AddMovement(new MovementPoints(1, 2), new MovementPoints(1, 2), (h, movement) => h with { Movement = movement });
+            sink.AddSpellPoints(5, 5, (h, points) => h with { SpellPoints = points });
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        private static ChangeSink<Mover> NewMoverSink() =>
+            new((change, _) => new PendingChange("Mover", change, new ChunkKind("Mover", 0), 0, _ => { }));
+
+        private sealed record Mover(HeroPosition Position, MapPosition Destination, MovementPoints Movement, int SpellPoints)
+        {
+            public static Mover Nowhere { get; } = new(new HeroPosition(0, 0, FacingDirection.North), MapPosition.None, default, 0);
+        }
+
         private sealed record Leveled(HeroLevel Level);
 
         private sealed record Skilled(PrimarySkills Skills);

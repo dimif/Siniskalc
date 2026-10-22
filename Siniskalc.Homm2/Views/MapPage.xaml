@@ -99,7 +99,7 @@
         <heroes:PageHeader Grid.Row="0" Margin="16,14,16,4" ColorHex="#9AA3AE" Title="Map"
                            EditedToolTip="The mines, shrines or sphinxes have changes that are not saved yet"
                            ResetToolTip="Put every mine, shrine and sphinx back to what the savegame had">
-            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding MinesSummary}"/>
+            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding Mines.Summary}"/>
         </heroes:PageHeader>
 
         <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
@@ -112,7 +112,7 @@
             <Grid Margin="8,4,8,16">
                 <!-- Mines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
-                    <heroes:MinesCard Note="Who owns each mine on the map."/>
+                    <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine on the map."/>
                 </StackPanel>
 
                 <!-- Shrines -->

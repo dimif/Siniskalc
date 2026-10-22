@@ -14,39 +14,12 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     [Apartment(ApartmentState.STA)]
     internal sealed class MinesCardTests
     {
-        private sealed class Page
-        {
-            public Page(bool hasLevels = false)
-            {
-                var rows = new List<MineRowViewModelBase>
-                {
-                    new Row(MineKind.GoldMine, new MapPosition(12, 7), "Red", "Unguarded", hasLevels),
-                    new Row(MineKind.Sawmill, new MapPosition(3, 40, MapPosition.Underground), "Blue", "2 of 7 slots", hasLevels),
-                };
-                this.MineList = new SortableListViewModel<MineRowViewModelBase>(
-                    rows,
-                    new Dictionary<string, Func<MineRowViewModelBase, IComparable>>
-                    {
-                        ["Resource"] = m => m.ResourceName,
-                        ["X"] = m => (m.X, m.Y),
-                        ["Y"] = m => (m.Y, m.X),
-                        ["Owner"] = m => m.OwnerSort,
-                    });
-            }
-
-            public SortableListViewModel<MineRowViewModelBase> MineList { get; }
-
-            public IReadOnlyList<MineRowViewModelBase> Mines => this.MineList.Items;
-
-            public MineRowViewModelBase? SelectedMine { get; set; }
-        }
-
         private sealed class Row : MineRowViewModelBase
         {
             private readonly string summary;
 
             public Row(MineKind kind, MapPosition position, string owner, string summary, bool hasLevels)
-                : base(0, () => kind, () => position, new ChoiceFieldViewModel("Owner", ["Neutral", "Red", "Blue"], () => owner, _ => { }), hasLevels)
+                : base(0, () => kind, () => position, () => owner != "Neutral", new ChoiceFieldViewModel("Owner", ["Neutral", "Red", "Blue"], () => owner, _ => { }), hasLevels)
             {
                 this.summary = summary;
             }
@@ -54,13 +27,19 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             public override string Summary => this.summary;
         }
 
+        private static MinesListViewModel<MineRowViewModelBase> Mines(bool hasLevels = false) => new(
+        [
+            new Row(MineKind.GoldMine, new MapPosition(12, 7), "Red", "Unguarded", hasLevels),
+            new Row(MineKind.Sawmill, new MapPosition(3, 40, MapPosition.Underground), "Blue", "2 of 7 slots", hasLevels),
+        ]);
+
         [OneTimeSetUp]
         public void MakeTheApplication() => WpfTestApplication.Ensure();
 
         [Test]
         public void TheCardShowsTheHeadingsThatSortAndARowForEachMineWithWhatTheGameAddsAfterTheOwner()
         {
-            var card = new MinesCard { DataContext = new Page(), Note = "Who owns each mine.", SummaryHeading = "Guard" };
+            var card = new MinesCard { DataContext = Mines(), Note = "Who owns each mine.", SummaryHeading = "Guard" };
 
             using var hosted = WpfTestApplication.Show(card);
 
@@ -75,7 +54,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
         [Test]
         public void ACardThatShowsTheLevelHasALevelColumnThatTellsTheLevelsApart()
         {
-            var card = new MinesCard { DataContext = new Page(hasLevels: true), ShowLevel = true };
+            var card = new MinesCard { DataContext = Mines(hasLevels: true), ShowLevel = true };
 
             using var hosted = WpfTestApplication.Show(card);
 
@@ -93,21 +72,26 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
         [Test]
         public void ClickingAHeadingSortsTheRowsAndTheOtherWayRoundOnTheSecondClick()
         {
-            var page = new Page();
-            var card = new MinesCard { DataContext = page };
+            var mines = Mines();
+            var card = new MinesCard { DataContext = mines };
             using var hosted = WpfTestApplication.Show(card);
+            IEnumerable<string> Shown() => WpfTestApplication.Descendants<TextBlock>(card).Where(t => t.IsVisible && (t.Text == "Gold" || t.Text == "Wood")).Select(t => t.Text);
 
-            page.MineList.Columns["X"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.X), Is.EqualTo(new[] { 3, 12 }));
+            mines.List.Columns["X"].SortCommand.Execute(null);
+            card.UpdateLayout();
+            Assert.That(mines.Rows.Select(m => m.X), Is.EqualTo(new[] { 3, 12 }));
+            Assert.That(Shown(), Is.EqualTo(new[] { "Wood", "Gold" }), "the card shows the rows in the new order");
 
-            page.MineList.Columns["X"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.X), Is.EqualTo(new[] { 12, 3 }));
+            mines.List.Columns["X"].SortCommand.Execute(null);
+            card.UpdateLayout();
+            Assert.That(mines.Rows.Select(m => m.X), Is.EqualTo(new[] { 12, 3 }));
+            Assert.That(Shown(), Is.EqualTo(new[] { "Gold", "Wood" }));
         }
 
         [Test]
         public void TheColumnsOfARowStartWhereTheirHeadingsStart()
         {
-            var card = new MinesCard { DataContext = new Page() };
+            var card = new MinesCard { DataContext = Mines() };
             using var hosted = WpfTestApplication.Show(card);
 
             double LeftOf(System.Windows.FrameworkElement element) => element.TranslatePoint(new System.Windows.Point(0, 0), card).X;

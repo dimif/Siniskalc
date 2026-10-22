@@ -6,6 +6,7 @@ namespace Siniskalc.Homm2.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
+    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
     using Siniskalc.Wpf.ViewModels;
 
@@ -13,27 +14,19 @@ namespace Siniskalc.Homm2.ViewModels
     /// The objects of the map that have a state the savegame keeps: its mines (and who owns them), its shrines (and the spell each teaches)
     /// and its sphinxes (and their riddles). One page with a tab for each kind.
     /// </summary>
-    public sealed class MapViewModel : ResettablePageViewModelBase
+    public sealed class MapViewModel : RecordsPageViewModelBase
     {
-        private readonly Game game;
-        private MineRowViewModel? selectedMine;
+        private const string MineOwnerToolTip = "Who owns the mine. The flag on the map and the daily income change with it: the game works the income out at the start of the next day. Not tried in the game.";
 
         public MapViewModel(Game game)
-            : base("Map", game.History)
+            : base("Map", game.History, Homm2ChunkKinds.Mines, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
-            this.game = game;
             var document = game.History.Current;
             var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
-            var mines = Enumerable.Range(0, document.Mines().Count).Select(i => new MineRowViewModel(game.History.CreateMineSession(i))).ToList();
-            this.MineList = new SortableListViewModel<MineRowViewModel>(
-                mines,
-                new Dictionary<string, Func<MineRowViewModel, IComparable>>
-                {
-                    ["Resource"] = m => m.ResourceName,
-                    ["Owner"] = m => m.OwnerField.Selected,
-                    ["X"] = m => (m.X, m.Y),
-                    ["Y"] = m => (m.Y, m.X),
-                });
+            this.Mines = new MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>>(
+                Enumerable.Range(0, document.Mines().Count)
+                    .Select(i => new MineRowViewModel<MineModel, PlayerColor>(game.History.CreateMineSession(i), (mine, owner) => mine with { Owner = owner }, MineOwnerToolTip, hasLevels: false))
+                    .ToList());
             var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
             this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
                 shrines,
@@ -48,30 +41,13 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
-        public IReadOnlyList<MineRowViewModel> Mines => this.MineList.Items;
-
         /// <summary>
-        /// Gets or sets the mine that is picked in the list. HoMM2 has nothing to show for it, but the list marks it as the list of every game does.
+        /// Gets the mines with the headings that sort them, the mine that is picked and how many are owned. HoMM2 has nothing more to show for
+        /// the mine that is picked.
         /// </summary>
-        public MineRowViewModel? SelectedMine
-        {
-            get => this.selectedMine;
-            set
-            {
-                if (!ReferenceEquals(value, this.selectedMine))
-                {
-                    this.selectedMine = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedMine));
-                }
-            }
-        }
+        public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
 
         public IReadOnlyList<ShrineRowViewModel> Shrines => this.ShrineList.Items;
-
-        /// <summary>
-        /// Gets the mines with the headings that sort them by resource, owner or either coordinate.
-        /// </summary>
-        public SortableListViewModel<MineRowViewModel> MineList { get; }
 
         /// <summary>
         /// Gets the shrines with the headings that sort them by name, either coordinate or spell.
@@ -80,33 +56,14 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<SphinxViewModel> Sphinxes { get; }
 
-        public bool HasMines => this.Mines.Count > 0;
-
         public bool HasShrines => this.Shrines.Count > 0;
 
         public bool HasSphinxes => this.Sphinxes.Count > 0;
 
-        /// <summary>
-        /// Gets how many mines there are and how many have an owner, such as "41 mines, 36 of them owned".
-        /// </summary>
-        public string MinesSummary
+        /// <inheritdoc/>
+        protected override void RefreshRecords()
         {
-            get
-            {
-                var owned = this.game.History.Current.Mines().GetModels().Count(m => !m.Owner.IsNeutral);
-                return $"{this.Mines.Count} mines, {owned} of them owned";
-            }
-        }
-
-        /// <summary>
-        /// Shows the objects again, after the history changed.
-        /// </summary>
-        public void Refresh()
-        {
-            foreach (var row in this.Mines)
-            {
-                row.Refresh();
-            }
+            this.Mines.Refresh();
 
             foreach (var row in this.Shrines)
             {
@@ -117,24 +74,6 @@ namespace Siniskalc.Homm2.ViewModels
             {
                 sphinx.Refresh();
             }
-
-            this.HasPendingChanges = this.PendingChangesOfPage().Any();
-            this.RaiseAllPropertiesChanged();
         }
-
-        /// <inheritdoc/>
-        protected override void OnHistoryChanged() => this.Refresh();
-
-        /// <inheritdoc/>
-        protected override void Reset()
-        {
-            foreach (var change in this.PendingChangesOfPage().ToList())
-            {
-                change.Revert(this.game.History);
-            }
-        }
-
-        private IEnumerable<Siniskalc.Core.Data.PendingChange> PendingChangesOfPage() =>
-            this.game.History.GetPendingChanges().Where(c => c.Kind == Homm2ChunkKinds.Mines || c.Kind == Homm2ChunkKinds.Shrines || c.Kind == Homm2ChunkKinds.Sphinxes);
     }
 }

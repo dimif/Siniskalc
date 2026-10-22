@@ -16,30 +16,11 @@
         {
             var page = new MapViewModel(TestServices.LoadThreedom(71));
 
-            Assert.That(page.Mines, Has.Count.EqualTo(41));
+            Assert.That(page.Mines.Rows, Has.Count.EqualTo(41));
             Assert.That(page.Shrines, Has.Count.EqualTo(13));
             Assert.That(page.Sphinxes, Has.Count.EqualTo(1));
-            Assert.That(page.MinesSummary, Is.EqualTo("41 mines, 22 of them owned"));
-            Assert.That(page.Mines.Select(m => m.Kind), Does.Contain("Sawmill").And.Contain("Gold mine").And.Contain("Alchemist's lab"));
-        }
-
-        [Test]
-        public void TheMinesAreSortedByResourceOwnerOrLocationFromTheHeadings()
-        {
-            var page = new MapViewModel(TestServices.LoadThreedom(71));
-
-            page.MineList.Columns["X"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.X), Is.Ordered);
-            Assert.That(page.Mines[0].X, Is.LessThanOrEqualTo(page.Mines[1].X));
-
-            page.MineList.Columns["X"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.X), Is.Ordered.Descending);
-
-            page.MineList.Columns["Resource"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.ResourceName), Is.Ordered);
-
-            page.MineList.Columns["Owner"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.OwnerField.Selected), Is.Ordered);
+            Assert.That(page.Mines.Summary, Is.EqualTo("41 mines, 22 of them owned"));
+            Assert.That(page.Mines.Rows.Select(m => m.Kind), Does.Contain("Sawmill").And.Contain("Gold mine").And.Contain("Alchemist's lab"));
         }
 
         [Test]
@@ -62,7 +43,7 @@
         {
             var game = TestServices.LoadThreedom(71);
             var page = new MapViewModel(game);
-            var mine = page.Mines.Single(m => m.PositionText == "X: 34, Y: 53");
+            var mine = page.Mines.Rows.Single(m => m.PositionText == "X: 34, Y: 53");
 
             mine.OwnerField.Selected = "Green";
 

@@ -115,7 +115,7 @@
             </StackPanel>
             <!-- Mines -->
             <StackPanel Style="{StaticResource TabPanel0}">
-                <heroes:MinesCard Note="Who owns each mine of the map. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
+                <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine of the map. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
 
                 <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
                     <StackPanel>

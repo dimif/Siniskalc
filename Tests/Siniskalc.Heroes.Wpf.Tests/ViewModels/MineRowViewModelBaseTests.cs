@@ -11,9 +11,6 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [TestFixture]
     internal sealed class MineRowViewModelBaseTests
     {
-        private static MineRowViewModelBase Row(MapPosition position, bool hasLevels) =>
-            new(3, () => MineKind.GoldMine, () => position, new ChoiceFieldViewModel("Owner", ["Neutral", "Red"], () => "Red", _ => { }), hasLevels);
-
         [Test]
         public void InAGameWithTwoLevelsThePlaceOfAMineSaysItsLevel()
         {
@@ -38,7 +35,17 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var row = Row(new MapPosition(12, 7), hasLevels: false);
 
-            Assert.That((row.Index, row.Kind, row.ResourceName, row.OwnerSort), Is.EqualTo((3, "Gold mine", "Gold", "Red")));
+            Assert.That((row.Index, row.Kind, row.ResourceName, row.OwnerSort, row.IsOwned), Is.EqualTo((3, "Gold mine", "Gold", "Red", true)));
+        }
+
+        private static MineRowViewModelBase Row(MapPosition position, bool hasLevels) => new TestRow(position, hasLevels);
+
+        private sealed class TestRow : MineRowViewModelBase
+        {
+            public TestRow(MapPosition position, bool hasLevels)
+                : base(3, () => MineKind.GoldMine, () => position, () => true, new ChoiceFieldViewModel("Owner", ["Neutral", "Red"], () => "Red", _ => { }), hasLevels)
+            {
+            }
         }
     }
 }

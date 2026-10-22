@@ -18,10 +18,10 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"), TestServices.EffectLines);
 
-            Assert.That(page.Mines, Has.Count.EqualTo(18));
-            Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 8 of them owned"));
-            Assert.That(page.Mines.Select(m => m.ResourceName), Does.Contain("Sulfur").And.Contain("Mercury").And.Contain("Wood"));
-            Assert.That(page.Mines.Single(m => m.PositionText == "X: 51, Y: 33, Surface (0)").OwnerField.Selected, Is.EqualTo("Red"));
+            Assert.That(page.Mines.Rows, Has.Count.EqualTo(18));
+            Assert.That(page.Mines.Summary, Is.EqualTo("18 mines, 8 of them owned"));
+            Assert.That(page.Mines.Rows.Select(m => m.ResourceName), Does.Contain("Sulfur").And.Contain("Mercury").And.Contain("Wood"));
+            Assert.That(page.Mines.Rows.Single(m => m.PositionText == "X: 51, Y: 33, Surface (0)").OwnerField.Selected, Is.EqualTo("Red"));
         }
 
         [Test]
@@ -30,34 +30,16 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var game = Load("mines_00_game_begin");
             var page = new MapViewModel(game, TestServices.EffectLines);
 
-            page.Mines.Single(m => m.PositionText == "X: 26, Y: 17, Surface (0)").OwnerField.Selected = "Green";
+            page.Mines.Rows.Single(m => m.PositionText == "X: 26, Y: 17, Surface (0)").OwnerField.Selected = "Green";
 
             Assert.That(game.History.Current.Mines().GetModels().Count(m => m.Owner == PlayerColor.Green), Is.EqualTo(1));
-            Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 1 of them owned"));
+            Assert.That(page.Mines.Summary, Is.EqualTo("18 mines, 1 of them owned"));
             Assert.That(page.HasPendingChanges, Is.True);
 
             page.ResetCommand.Execute(null);
 
-            Assert.That(page.MinesSummary, Is.EqualTo("18 mines, 0 of them owned"));
+            Assert.That(page.Mines.Summary, Is.EqualTo("18 mines, 0 of them owned"));
             Assert.That(page.HasPendingChanges, Is.False);
-        }
-
-        [Test]
-        public void TheMinesAreSortedByResourceOwnerOrLocationFromTheHeadings()
-        {
-            var page = new MapViewModel(Load("mines_08_red_abandoned_mine_sulfur"), TestServices.EffectLines);
-
-            page.MineList.Columns["X"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.X), Is.Ordered);
-
-            page.MineList.Columns["Y"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.Y), Is.Ordered);
-
-            page.MineList.Columns["Resource"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.ResourceName), Is.Ordered);
-
-            page.MineList.Columns["Owner"].SortCommand.Execute(null);
-            Assert.That(page.Mines.Select(m => m.OwnerField.Selected), Is.Ordered);
         }
 
         [Test]
@@ -65,9 +47,9 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var game = Load("mines_00_game_begin");
             var page = new MapViewModel(game, TestServices.EffectLines);
-            var guarded = page.Mines.Single(m => m.PositionText == "X: 1, Y: 14, Surface (0)");
+            var guarded = page.Mines.Rows.Single(m => m.PositionText == "X: 1, Y: 14, Surface (0)");
 
-            page.SelectedMine = guarded;
+            page.Mines.SelectedMine = guarded;
 
             Assert.That(guarded.Summary, Is.EqualTo("1 of 7 slots"));
             Assert.That(page.GuardEditor, Is.SameAs(guarded.GuardEditor));
@@ -92,16 +74,16 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 return bytes;
             });
             var page = new MapViewModel(game, TestServices.EffectLines);
-            var above = page.Mines.Single(m => m.Index == 0);
-            var below = page.Mines.Single(m => m.Index == 1);
+            var above = page.Mines.Rows.Single(m => m.Index == 0);
+            var below = page.Mines.Rows.Single(m => m.Index == 1);
 
             Assert.That(above.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Surface (0)"));
             Assert.That(below.PositionText, Is.EqualTo($"X: {surface.X}, Y: {surface.Y}, Underground (1)"));
             Assert.That((above.LevelText, below.LevelText), Is.EqualTo(("Surface (0)", "Underground (1)")));
 
-            page.SelectedMine = above;
+            page.Mines.SelectedMine = above;
             var aboveHeading = page.GuardHeading;
-            page.SelectedMine = below;
+            page.Mines.SelectedMine = below;
             Assert.That(page.GuardHeading, Does.EndWith("Underground (1)").And.Not.EqualTo(aboveHeading));
 
             above.OwnerField.Selected = "Green";

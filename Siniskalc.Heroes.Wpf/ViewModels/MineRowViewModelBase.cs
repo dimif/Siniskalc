@@ -7,24 +7,28 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// A mine of the map in any game, as a row of the mines card (<c>MinesCard</c>): what it gives, where it is, and who owns it (picked from a
-    /// list). A game derives from it to add what only it has, such as the guard of a mine, and says it in <see cref="Summary"/>.
+    /// A mine of the map in any game, as a row of the mines card (<c>MinesCard</c>) and of <see cref="MinesListViewModel{TRow}"/>: what it gives,
+    /// where it is, and who owns it (picked from a list). <see cref="MineRowViewModel{TMine, TColor}"/> reads it from the savegame; a game derives
+    /// from that to add what only it has, such as the guard of a mine, and says it in <see cref="Summary"/>.
     /// </summary>
-    public class MineRowViewModelBase : AbstractViewModelBase
+    public abstract class MineRowViewModelBase : AbstractViewModelBase
     {
         private readonly Func<MineKind> kind;
         private readonly Func<MapPosition> position;
+        private readonly Func<bool> isOwned;
 
         /// <param name="index">The place of the mine among the mines of the savegame.</param>
         /// <param name="kind">Gives the kind of the mine.</param>
         /// <param name="position">Gives the tile of the mine.</param>
+        /// <param name="isOwned">Gives whether a player owns the mine.</param>
         /// <param name="ownerField">The list the owner is picked from.</param>
         /// <param name="hasLevels">Whether the map of the game has two levels, so a place on it says which level it is on.</param>
-        public MineRowViewModelBase(int index, Func<MineKind> kind, Func<MapPosition> position, ChoiceFieldViewModel ownerField, bool hasLevels)
+        protected MineRowViewModelBase(int index, Func<MineKind> kind, Func<MapPosition> position, Func<bool> isOwned, ChoiceFieldViewModel ownerField, bool hasLevels)
         {
             this.Index = index;
             this.kind = kind;
             this.position = position;
+            this.isOwned = isOwned;
             this.OwnerField = ownerField;
             this.HasLevel = hasLevels;
         }
@@ -65,6 +69,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string PositionText => MapLevelText.Coordinates(this.position(), this.HasLevel);
 
         public string OwnerSort => this.OwnerField.Selected;
+
+        /// <summary>
+        /// Gets a value indicating whether a player owns the mine.
+        /// </summary>
+        public bool IsOwned => this.isOwned();
 
         public ChoiceFieldViewModel OwnerField { get; }
 

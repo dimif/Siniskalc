@@ -15,16 +15,18 @@ namespace Siniskalc.Homm3.ViewModels
     /// A mine of the map: the row every game shows (what it gives, where its record says it is, who owns it) and the creatures that guard it,
     /// which are edited with the same army editor as a hero's creatures.
     /// </summary>
-    public sealed class MineRowViewModel : MineRowViewModelBase
+    public sealed class MineRowViewModel : MineRowViewModel<MineModel, PlayerColor>
     {
-        private readonly IEditSession<MineModel> session;
         private readonly GameVersion gameVersion;
         private ArmyViewModel? guardEditor;
 
         public MineRowViewModel(IEditSession<MineModel> session, GameVersion gameVersion)
-            : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session), hasLevels: true)
+            : base(
+                session,
+                (mine, owner) => mine with { Owner = owner },
+                "Who owns the mine. The game works the income out at the start of the next day and draws the flag from the owner. Not tried in the game.",
+                hasLevels: true)
         {
-            this.session = session;
             this.gameVersion = gameVersion;
         }
 
@@ -35,7 +37,7 @@ namespace Siniskalc.Homm3.ViewModels
         {
             get
             {
-                var count = this.session.Current.Guard.Filled.Count();
+                var count = this.Session.Current.Guard.Filled.Count();
                 return count == 0 ? "Unguarded" : $"{count} of {Constants.CreatureSlotCount} slots";
             }
         }
@@ -45,20 +47,13 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public ArmyViewModel GuardEditor => this.guardEditor ??= new ArmyViewModel(
             this.gameVersion,
-            () => this.session.Current.Guard,
-            edit => this.session.Update(mine => mine with { Guard = edit(mine.Guard) }));
+            () => this.Session.Current.Guard,
+            edit => this.Session.Update(mine => mine with { Guard = edit(mine.Guard) }));
 
         public override void Refresh()
         {
             base.Refresh();
             this.guardEditor?.Refresh();
         }
-
-        private static ChoiceFieldViewModel OwnerOf(IEditSession<MineModel> session) => new(
-            "Owner",
-            OwnerNames<PlayerColor>.Choices,
-            () => OwnerNames<PlayerColor>.Of(session.Current.Owner),
-            name => session.Update(mine => mine with { Owner = OwnerNames<PlayerColor>.Parse(name) }),
-            toolTip: "Who owns the mine. The game works the income out at the start of the next day and draws the flag from the owner. Not tried in the game.");
     }
 }

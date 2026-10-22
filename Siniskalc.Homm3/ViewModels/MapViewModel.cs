@@ -2,35 +2,28 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The objects of the map that have an owner and a guard the savegame keeps: its mines. One page with the list of the mines, which can be
-    /// sorted, and the guard of the mine that is picked.
+    /// The objects of the map that have an owner the savegame keeps: its mines (with the guard of the mine that is picked), its dwellings and
+    /// what its merchants have in store. One page with a tab for each kind.
     /// </summary>
-    public sealed class MapViewModel : ResettablePageViewModelBase
+    public sealed class MapViewModel : RecordsPageViewModelBase
     {
         private readonly Siniskalc.Homm3.Runtime.Game game;
-        private MineRowViewModel? selectedMine;
 
         public MapViewModel(Siniskalc.Homm3.Runtime.Game game, EffectLineProvider effectLines)
-            : base("Map", game.History)
+            : base("Map", game.History, Homm3ChunkKinds.Mines, Homm3ChunkKinds.Dwellings, Homm3ChunkKinds.Merchants)
         {
             this.game = game;
             var document = game.History.Current;
-            var rows = Enumerable.Range(0, document.Mines().Count).Select(i => new MineRowViewModel(game.History.CreateMineSession(i), game.GameVersion)).ToList();
-            this.MineList = new SortableListViewModel<MineRowViewModel>(
-                rows,
-                new Dictionary<string, Func<MineRowViewModel, IComparable>>
-                {
-                    ["Resource"] = m => m.ResourceName,
-                    ["Owner"] = m => m.OwnerSort,
-                    ["X"] = m => (m.X, m.Y, m.Level),
-                    ["Y"] = m => (m.Y, m.X, m.Level),
-                });
+            this.Mines = new MinesListViewModel<MineRowViewModel>(
+                Enumerable.Range(0, document.Mines().Count).Select(i => new MineRowViewModel(game.History.CreateMineSession(i), game.GameVersion)).ToList());
+            this.Mines.PropertyChanged += this.OnMinesChanged;
             this.DwellingList = new SortableListViewModel<MapDwellingRowViewModel>(
                 Enumerable.Range(0, document.Dwellings().Count).Select(i => new MapDwellingRowViewModel(game.History.CreateDwellingSession(i))).ToList(),
                 new Dictionary<string, Func<MapDwellingRowViewModel, IComparable>>
@@ -42,16 +35,13 @@ namespace Siniskalc.Homm3.ViewModels
                     ["Available"] = d => d.Stock,
                 });
             this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines)).ToList();
-            this.selectedMine = rows.FirstOrDefault();
             this.Refresh();
         }
 
         /// <summary>
-        /// Gets the mines with the headings that sort them by resource, owner or location.
+        /// Gets the mines with the headings that sort them by resource, owner or location, the mine whose guard is shown and how many are owned.
         /// </summary>
-        public SortableListViewModel<MineRowViewModel> MineList { get; }
-
-        public IReadOnlyList<MineRowViewModel> Mines => this.MineList.Items;
+        public MinesListViewModel<MineRowViewModel> Mines { get; }
 
         /// <summary>
         /// Gets the dwellings with the headings that sort them by creature, owner, location or the creatures to hire.
@@ -69,41 +59,9 @@ namespace Siniskalc.Homm3.ViewModels
 
         public bool HasMerchants => this.Merchants.Count > 0;
 
-        public bool HasMines => this.Mines.Count > 0;
+        public ArmyViewModel? GuardEditor => this.Mines.SelectedMine?.GuardEditor;
 
-        /// <summary>
-        /// Gets or sets the mine whose guard is shown.
-        /// </summary>
-        public MineRowViewModel? SelectedMine
-        {
-            get => this.selectedMine;
-            set
-            {
-                if (value != null && !ReferenceEquals(value, this.selectedMine))
-                {
-                    this.selectedMine = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedMine));
-                    this.RaisePropertyChanged(nameof(this.GuardEditor));
-                    this.RaisePropertyChanged(nameof(this.GuardHeading));
-                }
-            }
-        }
-
-        public ArmyViewModel? GuardEditor => this.SelectedMine?.GuardEditor;
-
-        public string GuardHeading => this.SelectedMine is { } mine ? $"Guard of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Guard";
-
-        /// <summary>
-        /// Gets how many mines there are and how many have an owner, such as "18 mines, 4 of them owned".
-        /// </summary>
-        public string MinesSummary
-        {
-            get
-            {
-                var owned = this.game.History.Current.Mines().GetModels().Count(m => !m.Owner.IsNeutral);
-                return $"{this.Mines.Count} mines, {owned} of them owned";
-            }
-        }
+        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Guard of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Guard";
 
         /// <summary>
         /// Gets what the header says: the mines and the dwellings, each with how many have an owner.
@@ -113,19 +71,14 @@ namespace Siniskalc.Homm3.ViewModels
             get
             {
                 var owned = this.game.History.Current.Dwellings().GetModels().Count(d => !d.Owner.IsNeutral);
-                return this.Dwellings.Count == 0 ? this.MinesSummary : $"{this.MinesSummary} · {this.Dwellings.Count} dwellings, {owned} of them owned";
+                return this.Dwellings.Count == 0 ? this.Mines.Summary : $"{this.Mines.Summary} · {this.Dwellings.Count} dwellings, {owned} of them owned";
             }
         }
 
-        /// <summary>
-        /// Shows the mines again, after the history changed.
-        /// </summary>
-        public void Refresh()
+        /// <inheritdoc/>
+        protected override void RefreshRecords()
         {
-            foreach (var row in this.Mines)
-            {
-                row.Refresh();
-            }
+            this.Mines.Refresh();
 
             foreach (var row in this.Dwellings)
             {
@@ -136,24 +89,15 @@ namespace Siniskalc.Homm3.ViewModels
             {
                 merchant.Refresh();
             }
-
-            this.HasPendingChanges = this.PendingChangesOfPage().Any();
-            this.RaiseAllPropertiesChanged();
         }
 
-        /// <inheritdoc/>
-        protected override void OnHistoryChanged() => this.Refresh();
-
-        /// <inheritdoc/>
-        protected override void Reset()
+        private void OnMinesChanged(object? sender, PropertyChangedEventArgs e)
         {
-            foreach (var change in this.PendingChangesOfPage().ToList())
+            if (e.PropertyName == nameof(this.Mines.SelectedMine))
             {
-                change.Revert(this.game.History);
+                this.RaisePropertyChanged(nameof(this.GuardEditor));
+                this.RaisePropertyChanged(nameof(this.GuardHeading));
             }
         }
-
-        private IEnumerable<Siniskalc.Core.Data.PendingChange> PendingChangesOfPage() =>
-            this.game.History.GetPendingChanges().Where(c => c.Kind == Homm3ChunkKinds.Mines || c.Kind == Homm3ChunkKinds.Dwellings || c.Kind == Homm3ChunkKinds.Merchants);
     }
 }

@@ -31,6 +31,19 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(game.History.Current.Castles().Select(c => c.Name), Does.Contain("Castle Haret").And.Contain("Castle Tumlac"));
         }
 
+        // The list of castles of a player (CastleLinks, which the player page and the overview show) leaves out a castle the map does not
+        // use, as HoMM2's does; the loader of HoMM3 finds only the castles the map has, so every one has a name.
+        [Test]
+        public void EveryCastleOfEverySavefileHasANameSoTheMapUsesIt()
+        {
+            foreach (var path in Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
+            {
+                var game = TestServices.GameService.LoadGameFromFile(path);
+
+                Assert.That(game.History.Current.Castles().GetModels().Where(c => !c.IsUsed), Is.Empty, Path.GetFileName(path));
+            }
+        }
+
         [Test]
         public void HaretInTheBaselineIsACastleOfTanWithoutGarrison()
         {

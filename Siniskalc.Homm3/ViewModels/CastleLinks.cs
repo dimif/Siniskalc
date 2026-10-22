@@ -3,13 +3,11 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// Makes the links to the castles of a savefile and to the heroes in them, with the words HoMM3 uses for a settlement.
@@ -17,34 +15,23 @@ namespace Siniskalc.Homm3.ViewModels
     public static class CastleLinks
     {
         /// <summary>
-        /// Returns the link of each castle <paramref name="owner"/> owns, ordered by name.
+        /// Returns the link of each castle <paramref name="owner"/> owns, ordered by name, with the hall and fortification that stand in it,
+        /// whether it is the capital, its Grail structure and the heroes in it.
         /// </summary>
         /// <param name="document">The savefile.</param>
         /// <param name="owner">The colour whose castles are wanted.</param>
         /// <param name="openCastle">Opens the page of the castle at an index; the links do nothing without it.</param>
         /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
         public static IReadOnlyList<CastleLinkViewModel> OwnedBy(SaveDocument document, PlayerColor owner, Action<int>? openCastle, Action<int>? openHero) =>
-            document.Castles().GetModels()
-                .Select((model, index) => (Index: index, Model: model))
-                .Where(c => c.Model.Owner == owner)
-                .OrderBy(c => c.Model.Name)
-                .Select(c => For(c.Model, new DelegateCommand(_ => openCastle?.Invoke(c.Index), _ => openCastle != null), CastleHeroRows.For(c.Model, document.Heroes(), openHero)))
-                .ToList();
-
-        /// <summary>
-        /// Returns the link to a castle, with the hall and fortification that stand in it.
-        /// </summary>
-        /// <param name="castle">The castle.</param>
-        /// <param name="open">Opens the page of the castle.</param>
-        /// <param name="heroes">The heroes in the castle; see <see cref="CastleHeroRows"/>.</param>
-        public static CastleLinkViewModel For(CastleModel castle, ICommand open, IReadOnlyList<CastleHeroRowViewModel>? heroes = null) =>
-            CastleLinkViewModel.For(
-                castle,
-                open,
-                [HallOf(castle), FortOf(castle)],
-                castle.HasBuilt(Building.Capitol),
-                castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name ?? string.Empty,
-                heroes);
+            OwnedLinks.Castles<CastleModel, PlayerColor, Creature, Faction>(
+                document.Castles().GetModels(),
+                document.Heroes(),
+                owner,
+                openCastle,
+                openHero,
+                castle => [HallOf(castle), FortOf(castle)],
+                castle => castle.HasBuilt(Building.Capitol),
+                castle => castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name ?? string.Empty);
 
         private static string HallOf(CastleModel castle)
         {

@@ -3,8 +3,8 @@ namespace Siniskalc.Homm3.Data
     using System;
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Finds which colours are played by a human, and the difficulty, in a savefile.
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who plays each colour and the difficulty, or <c>null</c> when they cannot be found.
         /// </summary>
-        public GameSetup? FindSetup(byte[] bytes, GameVersion gameVersion)
+        public GameSetup<PlayerColor>? FindSetup(byte[] bytes, GameVersion gameVersion)
         {
             var location = this.Locate(bytes, gameVersion);
             if (location == null)
@@ -67,7 +67,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             PlayerColor? current = humanFlags >= 0 ? PlayerColor.FromByte((byte)BitConverter.ToInt32(bytes, humanFlags + HumanFlagsLength)) : null;
-            return new GameSetup(result, Difficulties[bytes[location.DifficultyAt]], current);
+            return new GameSetup<PlayerColor>(result, Difficulties[bytes[location.DifficultyAt]], current);
         }
 
         /// <inheritdoc/>

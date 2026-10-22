@@ -27,14 +27,23 @@ namespace Siniskalc.Homm3.Data
         public static CastleEditSession CreateCastleSession(this SaveDocumentHistory history, int castleIndex) => new(history, castleIndex);
 
         /// <summary>
+        /// Creates a view onto the stock of the merchant at <paramref name="index"/> (0 the artifact merchants, 1 the black market); its edits are pushed onto this history.
+        /// </summary>
+        public static EditSession<RecordChunk, MerchantStockModel> CreateMerchantSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Merchants, index);
+
+        /// <summary>
+        /// Creates a view onto the dwelling at <paramref name="index"/>; its edits are pushed onto this history.
+        /// </summary>
+        public static EditSession<RecordChunk, DwellingModel> CreateDwellingSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Dwellings, index);
+
+        /// <summary>
+        /// Creates a view onto the mine at <paramref name="index"/>; its edits are pushed onto this history.
+        /// </summary>
+        public static EditSession<RecordChunk, MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Mines, index);
+
+        /// <summary>
         /// Creates a view onto the visited obelisks of the savefile (its only obelisk chunk, so index 0); its edits are pushed onto this history.
         /// </summary>
-        public static MerchantStockEditSession CreateMerchantSession(this SaveDocumentHistory history, int index) => new(history, index);
-
-        public static DwellingEditSession CreateDwellingSession(this SaveDocumentHistory history, int index) => new(history, index);
-
-        public static MineEditSession CreateMineSession(this SaveDocumentHistory history, int index) => new(history, index);
-
         public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm3ChunkKinds.Obelisks, index);
     }
 }

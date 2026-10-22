@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Data
     /// <summary>
     /// Lists the castles that were marked or unmarked as having built today.
     /// </summary>
-    public sealed class BuiltTodayDiffer : IMapObjectDiffer<BuiltTodayModel>
+    public sealed class BuiltTodayDiffer : IDiffer<BuiltTodayModel>
     {
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int index, BuiltTodayModel original, BuiltTodayModel current)

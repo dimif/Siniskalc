@@ -10,11 +10,11 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// Lists the changes of the owner and of the creatures that can be hired of a dwelling.
     /// </summary>
-    public sealed class DwellingDiffer : IDwellingDiffer
+    public sealed class DwellingDiffer : IDiffer<DwellingModel>
     {
         public IReadOnlyList<PendingChange> Diff(int index, DwellingModel original, DwellingModel current)
         {
-            var changes = new ChangeSink<DwellingModel>((change, revert) => ChunkPendingChange.For<DwellingChunk, DwellingModel>(Homm3ChunkKinds.Dwellings, current.Name, index, change, revert));
+            var changes = new ChangeSink<DwellingModel>((change, revert) => ChunkPendingChange.For<RecordChunk, DwellingModel>(Homm3ChunkKinds.Dwellings, current.Name, index, change, revert));
             changes.AddOwner(original.Owner, current.Owner, (dwelling, owner) => dwelling with { Owner = owner });
             if (original.Stock != current.Stock)
             {

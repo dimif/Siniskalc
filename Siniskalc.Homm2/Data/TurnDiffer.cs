@@ -8,7 +8,7 @@
     /// <summary>
     /// Lists the change of whose turn it is.
     /// </summary>
-    public sealed class TurnDiffer : IMapObjectDiffer<TurnModel>
+    public sealed class TurnDiffer : IDiffer<TurnModel>
     {
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int index, TurnModel original, TurnModel current)

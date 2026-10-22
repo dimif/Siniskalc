@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -17,9 +18,9 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private static readonly Resource[] ResourceOrder = [Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems];
 
-        private readonly MapObjectEditSession<SphinxModel> session;
+        private readonly IEditSession<SphinxModel> session;
 
-        public SphinxViewModel(MapObjectEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
+        public SphinxViewModel(IEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
         {
             this.session = session;
             this.SolvedToggle = new ToggleRowViewModel(
@@ -98,7 +99,7 @@ namespace Siniskalc.Homm2.ViewModels
                 gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
                 gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,
                 () => this.session.Current.Reward[(int)resource],
-                () => this.session.OriginalModel.Reward[(int)resource],
+                () => this.session.Original.Reward[(int)resource],
                 amount => this.session.Update(sphinx => sphinx with { Reward = sphinx.Reward.Select((value, i) => i == (int)resource ? (int)amount : value).ToList() }));
         }
 

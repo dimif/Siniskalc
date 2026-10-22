@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.Data
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -14,7 +15,7 @@ namespace Siniskalc.Homm3.Data
         private static readonly string[] Names = ["Artifact merchants", "Black market"];
 
         /// <inheritdoc/>
-        public IReadOnlyList<MerchantStockChunk> LoadMerchantChunks(byte[] bytes)
+        public IReadOnlyList<RecordChunk> LoadMerchantChunks(byte[] bytes)
         {
             var last = Math.Min(bytes.Length - (2 * MerchantLayout.ListSize), MerchantLayout.SearchLength);
             for (var at = sizeof(uint); at <= last; at++)
@@ -22,7 +23,7 @@ namespace Siniskalc.Homm3.Data
                 if (BitConverter.ToUInt32(bytes, at - sizeof(uint)) == MerchantLayout.MarkerBefore && LooksLikeTheLists(bytes, at))
                 {
                     return Enumerable.Range(0, Names.Length)
-                        .Select(i => new MerchantStockChunk(Names[i], bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
+                        .Select(i => new RecordChunk(Names[i], bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
                         .ToList();
                 }
             }

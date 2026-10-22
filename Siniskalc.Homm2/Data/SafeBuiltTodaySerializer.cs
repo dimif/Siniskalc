@@ -1,12 +1,13 @@
 namespace Siniskalc.Homm2.Data
 {
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Writes which castles have built today: sets or clears the bit of each castle and leaves the other bits as they are.
     /// </summary>
-    public sealed class SafeBuiltTodaySerializer : IMapObjectSerializer<BuiltTodayModel>
+    public sealed class SafeBuiltTodaySerializer : ISerializer<MapObjectChunk, BuiltTodayModel>
     {
         /// <inheritdoc/>
         public MapObjectChunk Serialize(MapObjectChunk chunk, BuiltTodayModel model)

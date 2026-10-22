@@ -6,6 +6,7 @@
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
+    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Builds a <see cref="SaveDocument"/>. The hero reader and writer depend on the game version, so they are made here, once
@@ -24,15 +25,9 @@
         private readonly IObeliskDeserializer obeliskDeserializer;
         private readonly IObeliskSerializer obeliskSerializer;
         private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
-        private readonly IMineDeserializer mineDeserializer;
-        private readonly IMineSerializer mineSerializer;
-        private readonly IMineDiffer mineDiffer;
-        private readonly IDwellingDeserializer dwellingDeserializer;
-        private readonly IDwellingSerializer dwellingSerializer;
-        private readonly IDwellingDiffer dwellingDiffer;
-        private readonly IMerchantStockDeserializer merchantDeserializer;
-        private readonly IMerchantStockSerializer merchantSerializer;
-        private readonly IMerchantStockDiffer merchantDiffer;
+        private readonly RecordKit<RecordChunk, MineModel> mines;
+        private readonly RecordKit<RecordChunk, DwellingModel> dwellings;
+        private readonly RecordKit<RecordChunk, MerchantStockModel> merchants;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -47,15 +42,9 @@
             IObeliskDeserializer obeliskDeserializer,
             IObeliskSerializer obeliskSerializer,
             IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
-            IMineDeserializer mineDeserializer,
-            IMineSerializer mineSerializer,
-            IMineDiffer mineDiffer,
-            IDwellingDeserializer dwellingDeserializer,
-            IDwellingSerializer dwellingSerializer,
-            IDwellingDiffer dwellingDiffer,
-            IMerchantStockDeserializer merchantDeserializer,
-            IMerchantStockSerializer merchantSerializer,
-            IMerchantStockDiffer merchantDiffer,
+            RecordKit<RecordChunk, MineModel> mines,
+            RecordKit<RecordChunk, DwellingModel> dwellings,
+            RecordKit<RecordChunk, MerchantStockModel> merchants,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -69,15 +58,9 @@
             this.obeliskDeserializer = obeliskDeserializer;
             this.obeliskSerializer = obeliskSerializer;
             this.obeliskDiffer = obeliskDiffer;
-            this.mineDeserializer = mineDeserializer;
-            this.mineSerializer = mineSerializer;
-            this.mineDiffer = mineDiffer;
-            this.dwellingDeserializer = dwellingDeserializer;
-            this.dwellingSerializer = dwellingSerializer;
-            this.dwellingDiffer = dwellingDiffer;
-            this.merchantDeserializer = merchantDeserializer;
-            this.merchantSerializer = merchantSerializer;
-            this.merchantDiffer = merchantDiffer;
+            this.mines = mines;
+            this.dwellings = dwellings;
+            this.merchants = merchants;
             this.patcher = patcher;
         }
 
@@ -89,9 +72,9 @@
             IEnumerable<PlayerChunk>? playerChunks = null,
             IEnumerable<CastleChunk>? castleChunks = null,
             IEnumerable<ObeliskChunk>? obeliskChunks = null,
-            IEnumerable<MineChunk>? mineChunks = null,
-            IEnumerable<DwellingChunk>? dwellingChunks = null,
-            IEnumerable<MerchantStockChunk>? merchantChunks = null)
+            IEnumerable<RecordChunk>? mineChunks = null,
+            IEnumerable<RecordChunk>? dwellingChunks = null,
+            IEnumerable<RecordChunk>? merchantChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
@@ -103,9 +86,9 @@
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
             var obelisks = new ObeliskChunkCollection<PlayerColor>(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
-            var mines = new MineChunkCollection(mineChunks ?? Enumerable.Empty<MineChunk>(), this.mineDeserializer, this.mineSerializer, this.mineDiffer);
-            var merchants = new MerchantStockChunkCollection(merchantChunks ?? Enumerable.Empty<MerchantStockChunk>(), this.merchantDeserializer, this.merchantSerializer, this.merchantDiffer);
-            var dwellings = new DwellingChunkCollection(dwellingChunks ?? Enumerable.Empty<DwellingChunk>(), this.dwellingDeserializer, this.dwellingSerializer, this.dwellingDiffer);
+            var mines = new RecordChunkCollection<RecordChunk, MineModel>(mineChunks ?? Enumerable.Empty<RecordChunk>(), this.mines);
+            var merchants = new RecordChunkCollection<RecordChunk, MerchantStockModel>(merchantChunks ?? Enumerable.Empty<RecordChunk>(), this.merchants);
+            var dwellings = new RecordChunkCollection<RecordChunk, DwellingModel>(dwellingChunks ?? Enumerable.Empty<RecordChunk>(), this.dwellings);
             return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, this.patcher);
         }
     }

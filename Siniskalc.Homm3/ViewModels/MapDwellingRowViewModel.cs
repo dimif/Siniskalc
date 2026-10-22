@@ -2,10 +2,12 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System.Globalization;
     using Siniskalc.Core;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm3.Data;
+    using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -14,9 +16,9 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class MapDwellingRowViewModel : AbstractViewModelBase
     {
-        private readonly DwellingEditSession session;
+        private readonly IEditSession<DwellingModel> session;
 
-        public MapDwellingRowViewModel(DwellingEditSession session)
+        public MapDwellingRowViewModel(IEditSession<DwellingModel> session)
         {
             this.session = session;
             this.OwnerField = new ChoiceFieldViewModel(

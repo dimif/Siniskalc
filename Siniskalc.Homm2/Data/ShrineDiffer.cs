@@ -8,7 +8,7 @@
     /// <summary>
     /// Lists the change of the spell of a shrine.
     /// </summary>
-    public sealed class ShrineDiffer : IMapObjectDiffer<ShrineModel>
+    public sealed class ShrineDiffer : IDiffer<ShrineModel>
     {
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int index, ShrineModel original, ShrineModel current)

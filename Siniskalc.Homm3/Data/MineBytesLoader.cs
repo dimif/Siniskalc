@@ -2,6 +2,7 @@ namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Entities;
 
@@ -13,9 +14,9 @@ namespace Siniskalc.Homm3.Data
     public sealed class MineBytesLoader : IMineBytesLoader
     {
         /// <inheritdoc/>
-        public IReadOnlyList<MineChunk> LoadMineChunks(byte[] bytes)
+        public IReadOnlyList<RecordChunk> LoadMineChunks(byte[] bytes)
         {
-            var chunks = new List<MineChunk>();
+            var chunks = new List<RecordChunk>();
             var at = 0;
             while (at + MineLayout.RecordSize <= bytes.Length)
             {
@@ -53,10 +54,10 @@ namespace Siniskalc.Homm3.Data
             return chunks;
         }
 
-        private static MineChunk Chunk(byte[] bytes, int start, int index)
+        private static RecordChunk Chunk(byte[] bytes, int start, int index)
         {
             var kind = (MineKind)bytes[start + MineLayout.Kind];
-            return new MineChunk(
+            return new RecordChunk(
                 $"{MineKinds.NameOf(kind)} {bytes[start + MineLayout.X]}, {bytes[start + MineLayout.Y]}",
                 bytes.AsSpan(start, MineLayout.RecordSize).ToArray(),
                 start,

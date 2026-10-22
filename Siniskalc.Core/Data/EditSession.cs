@@ -45,9 +45,7 @@ namespace Siniskalc.Core.Data
 
         public ChunkKind Kind { get; }
 
-        /// <summary>
-        /// Gets the index of the struct among the savefile's structs of the same kind.
-        /// </summary>
+        /// <inheritdoc/>
         public int Index { get; }
 
         public TChunk Chunk => this.History.Current.GetChunks<TChunk>(this.Kind)[this.Index];

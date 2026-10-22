@@ -8,13 +8,13 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// Lists the slots of a merchant that changed.
     /// </summary>
-    public sealed class MerchantStockDiffer : IMerchantStockDiffer
+    public sealed class MerchantStockDiffer : IDiffer<MerchantStockModel>
     {
         private const string NoArtifact = "(sold)";
 
         public IReadOnlyList<PendingChange> Diff(int index, MerchantStockModel original, MerchantStockModel current)
         {
-            var changes = new ChangeSink<MerchantStockModel>((change, revert) => ChunkPendingChange.For<MerchantStockChunk, MerchantStockModel>(Homm3ChunkKinds.Merchants, current.Name, index, change, revert));
+            var changes = new ChangeSink<MerchantStockModel>((change, revert) => ChunkPendingChange.For<RecordChunk, MerchantStockModel>(Homm3ChunkKinds.Merchants, current.Name, index, change, revert));
             for (var slot = 0; slot < current.Slots.Count; slot++)
             {
                 var number = slot;

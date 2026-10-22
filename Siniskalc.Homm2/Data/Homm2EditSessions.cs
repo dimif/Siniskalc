@@ -17,15 +17,15 @@ namespace Siniskalc.Homm2.Data
 
         public static CastleEditSession CreateCastleSession(this SaveDocumentHistory history, int castleIndex) => new(history, castleIndex);
 
-        public static MapObjectEditSession<MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Mines, index);
+        public static EditSession<MapObjectChunk, MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Mines, index);
 
-        public static MapObjectEditSession<ShrineModel> CreateShrineSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Shrines, index);
+        public static EditSession<MapObjectChunk, ShrineModel> CreateShrineSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Shrines, index);
 
-        public static MapObjectEditSession<TurnModel> CreateTurnSession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.Turn, 0);
+        public static EditSession<MapObjectChunk, TurnModel> CreateTurnSession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.Turn, 0);
 
-        public static MapObjectEditSession<BuiltTodayModel> CreateBuiltTodaySession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.BuiltToday, 0);
+        public static EditSession<MapObjectChunk, BuiltTodayModel> CreateBuiltTodaySession(this SaveDocumentHistory history) => new(history, Homm2ChunkKinds.BuiltToday, 0);
 
-        public static MapObjectEditSession<SphinxModel> CreateSphinxSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Sphinxes, index);
+        public static EditSession<MapObjectChunk, SphinxModel> CreateSphinxSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Sphinxes, index);
 
         public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm2ChunkKinds.Obelisks, index);
     }

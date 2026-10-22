@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -8,10 +9,10 @@ namespace Siniskalc.Homm3.Data
     /// Writes the owner and the guard of a mine into its record. The kind and the tile are not edited. An owner byte that is no colour is left
     /// alone while the model says Neutral, as it reads.
     /// </summary>
-    public sealed class SafeMineSerializer : IMineSerializer
+    public sealed class SafeMineSerializer : ISerializer<RecordChunk, MineModel>
     {
         /// <inheritdoc/>
-        public MineChunk Serialize(MineChunk chunk, MineModel model)
+        public RecordChunk Serialize(RecordChunk chunk, MineModel model)
         {
             var bytes = chunk.ToArray();
             if (PlayerColor.FromByte(bytes[MineLayout.Owner]) != model.Owner)

@@ -32,11 +32,11 @@ namespace Siniskalc.Homm2.Tests
 
         public static ICastleSerializer CastleSerializer { get; } = new SafeCastleSerializer();
 
-        public static IMapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
+        public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
 
-        public static IMapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(), new SafeShrineSerializer());
+        public static MapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(), new SafeShrineSerializer());
 
-        public static IMapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(), new SafeSphinxSerializer());
+        public static MapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(), new SafeSphinxSerializer());
 
         private static readonly Homm2PendingChangesFactory PendingChanges = new();
 
@@ -57,11 +57,11 @@ namespace Siniskalc.Homm2.Tests
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, PendingChanges.ForObelisks),
-                new MapObjectKit<MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
-                new MapObjectKit<ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
-                new MapObjectKit<SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
-                new MapObjectKit<TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
-                new MapObjectKit<BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
+                new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
+                new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
+                new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
+                new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
+                new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
             new MapObjectsReader());

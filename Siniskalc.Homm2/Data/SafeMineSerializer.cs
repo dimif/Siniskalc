@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -7,7 +8,7 @@ namespace Siniskalc.Homm2.Data
     /// <summary>
     /// Writes the owner of a mine into its record, and the flag that shows it on the map: the colour of the flag is its first picture plus the colour of the owner, and a mine of nobody has no flag.
     /// </summary>
-    public sealed class SafeMineSerializer : IMapObjectSerializer<MineModel>
+    public sealed class SafeMineSerializer : ISerializer<MapObjectChunk, MineModel>
     {
         /// <inheritdoc/>
         public MapObjectChunk Serialize(MapObjectChunk chunk, MineModel model)

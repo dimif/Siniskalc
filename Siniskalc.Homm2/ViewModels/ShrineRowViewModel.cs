@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -13,9 +14,9 @@
     /// </summary>
     public sealed class ShrineRowViewModel : AbstractViewModelBase
     {
-        private readonly MapObjectEditSession<ShrineModel> session;
+        private readonly IEditSession<ShrineModel> session;
 
-        public ShrineRowViewModel(MapObjectEditSession<ShrineModel> session, IReadOnlyList<string> spellNames)
+        public ShrineRowViewModel(IEditSession<ShrineModel> session, IReadOnlyList<string> spellNames)
         {
             this.session = session;
             this.SpellField = new ChoiceFieldViewModel(

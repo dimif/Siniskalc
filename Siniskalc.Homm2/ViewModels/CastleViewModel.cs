@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -26,7 +27,7 @@
 
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
-        private readonly MapObjectEditSession<BuiltTodayModel> builtToday;
+        private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;

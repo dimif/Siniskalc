@@ -1,13 +1,14 @@
 namespace Siniskalc.Homm2.Data
 {
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Reads which castles have built today: a bit for each castle slot.
     /// </summary>
-    public sealed class BuiltTodayDeserializer : IMapObjectDeserializer<BuiltTodayModel>
+    public sealed class BuiltTodayDeserializer : IDeserializer<MapObjectChunk, BuiltTodayModel>
     {
         /// <inheritdoc/>
         public BuiltTodayModel Deserialize(MapObjectChunk chunk) =>

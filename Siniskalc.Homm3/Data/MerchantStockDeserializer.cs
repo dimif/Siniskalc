@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.Data
 {
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -8,9 +9,9 @@ namespace Siniskalc.Homm3.Data
     /// Reads the seven slots of a merchant. A number that is no artifact the editor knows reads as the first one it knows, and the serializer
     /// keeps the number while the model still holds it.
     /// </summary>
-    public sealed class MerchantStockDeserializer : IMerchantStockDeserializer
+    public sealed class MerchantStockDeserializer : IDeserializer<RecordChunk, MerchantStockModel>
     {
-        public MerchantStockModel Deserialize(MerchantStockChunk chunk) => new(
+        public MerchantStockModel Deserialize(RecordChunk chunk) => new(
             chunk.Index,
             chunk.Name,
             Enumerable.Range(0, MerchantLayout.SlotCount).Select(slot => ArtifactOf(chunk.GetUInt32At(MerchantLayout.SlotAt(slot)))).ToList());

@@ -48,15 +48,9 @@ namespace Siniskalc.Homm3.Runtime
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
-                new MineDeserializer(),
-                new SafeMineSerializer(),
-                new MineDiffer(),
-                new DwellingDeserializer(),
-                new SafeDwellingSerializer(),
-                new DwellingDiffer(),
-                new MerchantStockDeserializer(),
-                new SafeMerchantStockSerializer(),
-                new MerchantStockDiffer(),
+                new RecordKit<RecordChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
+                new RecordKit<RecordChunk, DwellingModel>(new DwellingDeserializer(), new SafeDwellingSerializer(), new DwellingDiffer()),
+                new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();

@@ -8,10 +8,10 @@ namespace Siniskalc.Homm3.Data
     /// Writes the seven slots of a merchant into its list. A slot whose number the editor does not know is left alone while the model still
     /// has what it reads as.
     /// </summary>
-    public sealed class SafeMerchantStockSerializer : IMerchantStockSerializer
+    public sealed class SafeMerchantStockSerializer : ISerializer<RecordChunk, MerchantStockModel>
     {
         /// <inheritdoc/>
-        public MerchantStockChunk Serialize(MerchantStockChunk chunk, MerchantStockModel model)
+        public RecordChunk Serialize(RecordChunk chunk, MerchantStockModel model)
         {
             RangeGuard.ThrowIfOutOfRange<long>(model.Slots.Count, MerchantLayout.SlotCount, MerchantLayout.SlotCount, nameof(model.Slots));
             var bytes = chunk.ToArray();

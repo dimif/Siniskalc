@@ -24,11 +24,11 @@ namespace Siniskalc.Homm2.Data
         private readonly IObeliskDeserializer obeliskDeserializer;
         private readonly IObeliskSerializer obeliskSerializer;
         private readonly IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer;
-        private readonly MapObjectKit<MineModel> mines;
-        private readonly MapObjectKit<ShrineModel> shrines;
-        private readonly MapObjectKit<SphinxModel> sphinxes;
-        private readonly MapObjectKit<TurnModel> turn;
-        private readonly MapObjectKit<BuiltTodayModel> builtToday;
+        private readonly RecordKit<MapObjectChunk, MineModel> mines;
+        private readonly RecordKit<MapObjectChunk, ShrineModel> shrines;
+        private readonly RecordKit<MapObjectChunk, SphinxModel> sphinxes;
+        private readonly RecordKit<MapObjectChunk, TurnModel> turn;
+        private readonly RecordKit<MapObjectChunk, BuiltTodayModel> builtToday;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -44,11 +44,11 @@ namespace Siniskalc.Homm2.Data
             IObeliskDeserializer obeliskDeserializer,
             IObeliskSerializer obeliskSerializer,
             IDiffer<ObeliskVisits<PlayerColor>> obeliskDiffer,
-            MapObjectKit<MineModel> mines,
-            MapObjectKit<ShrineModel> shrines,
-            MapObjectKit<SphinxModel> sphinxes,
-            MapObjectKit<TurnModel> turn,
-            MapObjectKit<BuiltTodayModel> builtToday,
+            RecordKit<MapObjectChunk, MineModel> mines,
+            RecordKit<MapObjectChunk, ShrineModel> shrines,
+            RecordKit<MapObjectChunk, SphinxModel> sphinxes,
+            RecordKit<MapObjectChunk, TurnModel> turn,
+            RecordKit<MapObjectChunk, BuiltTodayModel> builtToday,
             ISavefileBytesPatcher patcher)
         {
             this.heroDeserializer = heroDeserializer;
@@ -81,11 +81,11 @@ namespace Siniskalc.Homm2.Data
                 new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer, heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}"),
                 new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
                 new ObeliskChunkCollection<PlayerColor>(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
-                new MapObjectChunkCollection<MineModel>(objects.Mines, this.mines),
-                new MapObjectChunkCollection<ShrineModel>(objects.Shrines, this.shrines),
-                new MapObjectChunkCollection<SphinxModel>(objects.Sphinxes, this.sphinxes),
-                new MapObjectChunkCollection<TurnModel>(objects.Turn, this.turn),
-                new MapObjectChunkCollection<BuiltTodayModel>(objects.BuiltToday, this.builtToday),
+                new RecordChunkCollection<MapObjectChunk, MineModel>(objects.Mines, this.mines),
+                new RecordChunkCollection<MapObjectChunk, ShrineModel>(objects.Shrines, this.shrines),
+                new RecordChunkCollection<MapObjectChunk, SphinxModel>(objects.Sphinxes, this.sphinxes),
+                new RecordChunkCollection<MapObjectChunk, TurnModel>(objects.Turn, this.turn),
+                new RecordChunkCollection<MapObjectChunk, BuiltTodayModel>(objects.BuiltToday, this.builtToday),
                 this.patcher);
         }
     }

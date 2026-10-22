@@ -1,12 +1,14 @@
 namespace Siniskalc.Homm3.ViewModels
 {
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
+    using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -15,11 +17,11 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class MineRowViewModel : MineRowViewModelBase
     {
-        private readonly MineEditSession session;
+        private readonly IEditSession<MineModel> session;
         private readonly GameVersion gameVersion;
         private ArmyViewModel? guardEditor;
 
-        public MineRowViewModel(MineEditSession session, GameVersion gameVersion)
+        public MineRowViewModel(IEditSession<MineModel> session, GameVersion gameVersion)
             : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session), hasLevels: true)
         {
             this.session = session;
@@ -52,7 +54,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.guardEditor?.Refresh();
         }
 
-        private static ChoiceFieldViewModel OwnerOf(MineEditSession session) => new(
+        private static ChoiceFieldViewModel OwnerOf(IEditSession<MineModel> session) => new(
             "Owner",
             OwnerNames<PlayerColor>.Choices,
             () => OwnerNames<PlayerColor>.Of(session.Current.Owner),

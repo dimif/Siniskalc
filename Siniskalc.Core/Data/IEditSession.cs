@@ -15,6 +15,11 @@ namespace Siniskalc.Core.Data
         SaveDocumentHistory History { get; }
 
         /// <summary>
+        /// Gets the place of the record among the records of its kind.
+        /// </summary>
+        int Index { get; }
+
+        /// <summary>
         /// Gets the record as it is now.
         /// </summary>
         TModel Current { get; }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -13,12 +14,12 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class MineRowViewModel : MineRowViewModelBase
     {
-        public MineRowViewModel(MapObjectEditSession<MineModel> session)
+        public MineRowViewModel(IEditSession<MineModel> session)
             : base(session.Index, () => session.Current.Kind, () => session.Current.Position, OwnerOf(session), hasLevels: false)
         {
         }
 
-        private static ChoiceFieldViewModel OwnerOf(MapObjectEditSession<MineModel> session) => new(
+        private static ChoiceFieldViewModel OwnerOf(IEditSession<MineModel> session) => new(
             "Owner",
             OwnerNames<PlayerColor>.Choices,
             () => OwnerNames<PlayerColor>.Of(session.Current.Owner),

@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Data
     /// Writes the spell of a shrine into its tile: the number of the spell shifted left by 3, with the 3 low bits of the tile kept. A shrine
     /// whose spell is not known (a hero stands on it) is left alone.
     /// </summary>
-    public sealed class SafeShrineSerializer : IMapObjectSerializer<ShrineModel>
+    public sealed class SafeShrineSerializer : ISerializer<MapObjectChunk, ShrineModel>
     {
         /// <inheritdoc/>
         public MapObjectChunk Serialize(MapObjectChunk chunk, ShrineModel model)

@@ -9,7 +9,7 @@
     /// <summary>
     /// Lists what changed in a sphinx: whether it is active, the reward, the answers and the riddle.
     /// </summary>
-    public sealed class SphinxDiffer : IMapObjectDiffer<SphinxModel>
+    public sealed class SphinxDiffer : IDiffer<SphinxModel>
     {
         private static readonly string[] Resources = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"];
 

@@ -10,13 +10,12 @@ namespace Siniskalc.Homm2.Data
     /// The bytes of an object of the map (a mine, a shrine, a sphinx): the record or block that holds it, and the bytes that belong to
     /// the object but sit somewhere else (the flag of a mine, which is part of a tile). The position of the object is not part of the bytes.
     /// </summary>
-    public sealed class MapObjectChunk : BytesChunk
+    public sealed class MapObjectChunk : RecordChunk
     {
         public MapObjectChunk(string name, byte[] bytes, int startIndex, MapPosition? position, int index, int tag = 0, IReadOnlyList<MapObjectPart>? parts = null)
-            : base(name, bytes, startIndex)
+            : base(name, bytes, startIndex, index)
         {
             this.Position = position;
-            this.Index = index;
             this.Tag = tag;
             this.Parts = parts ?? [];
         }
@@ -25,11 +24,6 @@ namespace Siniskalc.Homm2.Data
         /// Gets the tile of the object, when it was found.
         /// </summary>
         public MapPosition? Position { get; }
-
-        /// <summary>
-        /// Gets the place of the object in the list of the objects of its kind.
-        /// </summary>
-        public int Index { get; }
 
         /// <summary>
         /// Gets a number the reader leaves for the deserializer: the circle of a shrine, the kind of a mine.

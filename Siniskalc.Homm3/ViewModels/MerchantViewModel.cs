@@ -2,9 +2,11 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
+    using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -13,9 +15,9 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class MerchantViewModel : AbstractViewModelBase
     {
-        private readonly MerchantStockEditSession session;
+        private readonly IEditSession<MerchantStockModel> session;
 
-        public MerchantViewModel(MerchantStockEditSession session, GameVersion gameVersion, EffectLineProvider effectLines)
+        public MerchantViewModel(IEditSession<MerchantStockModel> session, GameVersion gameVersion, EffectLineProvider effectLines)
         {
             this.session = session;
             this.Slots = Enumerable.Range(0, MerchantLayout.SlotCount)

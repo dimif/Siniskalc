@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MapObjectChunkCollection<MineModel> mines, MapObjectChunkCollection<ShrineModel> shrines, MapObjectChunkCollection<SphinxModel> sphinxes, MapObjectChunkCollection<TurnModel> turn, MapObjectChunkCollection<BuiltTodayModel> builtToday, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<MapObjectChunk, MineModel> mines, RecordChunkCollection<MapObjectChunk, ShrineModel> shrines, RecordChunkCollection<MapObjectChunk, SphinxModel> sphinxes, RecordChunkCollection<MapObjectChunk, TurnModel> turn, RecordChunkCollection<MapObjectChunk, BuiltTodayModel> builtToday, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -35,15 +35,15 @@ namespace Siniskalc.Homm2.Data
 
         public static CastleChunkCollection Castles(this SaveDocument document) => (CastleChunkCollection)document.GetCollection(Homm2ChunkKinds.Castle);
 
-        public static MapObjectChunkCollection<MineModel> Mines(this SaveDocument document) => (MapObjectChunkCollection<MineModel>)document.GetCollection(Homm2ChunkKinds.Mines);
+        public static RecordChunkCollection<MapObjectChunk, MineModel> Mines(this SaveDocument document) => (RecordChunkCollection<MapObjectChunk, MineModel>)document.GetCollection(Homm2ChunkKinds.Mines);
 
-        public static MapObjectChunkCollection<ShrineModel> Shrines(this SaveDocument document) => (MapObjectChunkCollection<ShrineModel>)document.GetCollection(Homm2ChunkKinds.Shrines);
+        public static RecordChunkCollection<MapObjectChunk, ShrineModel> Shrines(this SaveDocument document) => (RecordChunkCollection<MapObjectChunk, ShrineModel>)document.GetCollection(Homm2ChunkKinds.Shrines);
 
-        public static MapObjectChunkCollection<SphinxModel> Sphinxes(this SaveDocument document) => (MapObjectChunkCollection<SphinxModel>)document.GetCollection(Homm2ChunkKinds.Sphinxes);
+        public static RecordChunkCollection<MapObjectChunk, SphinxModel> Sphinxes(this SaveDocument document) => (RecordChunkCollection<MapObjectChunk, SphinxModel>)document.GetCollection(Homm2ChunkKinds.Sphinxes);
 
-        public static MapObjectChunkCollection<TurnModel> Turn(this SaveDocument document) => (MapObjectChunkCollection<TurnModel>)document.GetCollection(Homm2ChunkKinds.Turn);
+        public static RecordChunkCollection<MapObjectChunk, TurnModel> Turn(this SaveDocument document) => (RecordChunkCollection<MapObjectChunk, TurnModel>)document.GetCollection(Homm2ChunkKinds.Turn);
 
-        public static MapObjectChunkCollection<BuiltTodayModel> BuiltToday(this SaveDocument document) => (MapObjectChunkCollection<BuiltTodayModel>)document.GetCollection(Homm2ChunkKinds.BuiltToday);
+        public static RecordChunkCollection<MapObjectChunk, BuiltTodayModel> BuiltToday(this SaveDocument document) => (RecordChunkCollection<MapObjectChunk, BuiltTodayModel>)document.GetCollection(Homm2ChunkKinds.BuiltToday);
 
         public static ObeliskChunkCollection<PlayerColor> Obelisks(this SaveDocument document) => (ObeliskChunkCollection<PlayerColor>)document.GetCollection(Homm2ChunkKinds.Obelisks);
     }

@@ -8,7 +8,7 @@
     /// <summary>
     /// Lists the change of the owner of a mine.
     /// </summary>
-    public sealed class MineDiffer : IMapObjectDiffer<MineModel>
+    public sealed class MineDiffer : IDiffer<MineModel>
     {
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int index, MineModel original, MineModel current)

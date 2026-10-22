@@ -15,6 +15,6 @@ namespace Siniskalc.Homm3.Data
         /// <param name="mines">The mines of the savefile: the dwellings come after them.</param>
         /// <param name="others">The other chunks of the savefile: the table stops before the first record that would overlap one, as the player
         /// block does on some maps.</param>
-        IReadOnlyList<DwellingChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<MineChunk> mines, IEnumerable<BytesChunk> others);
+        IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others);
     }
 }

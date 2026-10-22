@@ -1,12 +1,13 @@
 namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core;
+    using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Writes whose turn it is: the number of the record of the player.
     /// </summary>
-    public sealed class SafeTurnSerializer : IMapObjectSerializer<TurnModel>
+    public sealed class SafeTurnSerializer : ISerializer<MapObjectChunk, TurnModel>
     {
         /// <inheritdoc/>
         public MapObjectChunk Serialize(MapObjectChunk chunk, TurnModel model)

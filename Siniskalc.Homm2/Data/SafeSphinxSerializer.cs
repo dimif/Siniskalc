@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// Writes a sphinx into its block. The block has a fixed size, so a riddle longer than the room it has, or an answer longer than 12
     /// characters, or more than 8 answers, is refused. What is the same as in the block is not written.
     /// </summary>
-    public sealed class SafeSphinxSerializer : IMapObjectSerializer<SphinxModel>
+    public sealed class SafeSphinxSerializer : ISerializer<MapObjectChunk, SphinxModel>
     {
         /// <inheritdoc/>
         public MapObjectChunk Serialize(MapObjectChunk chunk, SphinxModel model)

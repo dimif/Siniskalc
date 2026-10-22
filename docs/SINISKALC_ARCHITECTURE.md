@@ -74,7 +74,7 @@ A game's tests reference only that game's project, so they build the game from i
 
 A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:
 
-1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` (a `GameService : SavegameService<Game>`, whose parser is an `ISavegameParser<Game>`) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core); the module (`IGameModule`) that recognises the file.
+1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` (a `GameService : SavegameService<Game>`, whose parser is an `ISavegameParser<Game>`) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core), and a list of records of one kind (mines, dwellings, shrines) is a `RecordChunkCollection<TChunk, TModel>` (Core) of `RecordChunk`s (or a chunk derived from it) built from a `RecordKit` (its deserializer, serializer and differ) and edited with `new EditSession<TChunk, TModel>(history, kind, index)`; the module (`IGameModule`) that recognises the file.
 2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
 3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
 4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.
@@ -89,6 +89,7 @@ SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Origi
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
       HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer; the obelisk one is shared, ObeliskEditSession<TColor>)
+      the records of the map (mines, dwellings, merchants, shrines, sphinxes) have no session class: EditSession<TChunk,TModel>(history, kind, index) takes the (de)serializer of their RecordChunkCollection
 Models / Entities               immutable models and game vocabulary (HeroModel, SpellBook, Artifact, ...)
 ViewModels                      hold immutable models, apply edits through reducers, never touch chunks
 Views                           XAML

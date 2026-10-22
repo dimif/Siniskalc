@@ -2,12 +2,13 @@ namespace Siniskalc.Homm2.Data
 {
     using System.Linq;
     using System.Text;
+    using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Reads the block of a sphinx (see <see cref="MapObjectLayout"/>).
     /// </summary>
-    public sealed class SphinxDeserializer : IMapObjectDeserializer<SphinxModel>
+    public sealed class SphinxDeserializer : IDeserializer<MapObjectChunk, SphinxModel>
     {
         public SphinxModel Deserialize(MapObjectChunk chunk)
         {

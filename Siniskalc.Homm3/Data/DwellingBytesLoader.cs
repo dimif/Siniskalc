@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Data
     public sealed class DwellingBytesLoader : IDwellingBytesLoader
     {
         /// <inheritdoc/>
-        public IReadOnlyList<DwellingChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<MineChunk> mines, IEnumerable<BytesChunk> others)
+        public IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others)
         {
             // The first record starts right after the last mine (the table of the mines ends with the last mine on the test map). Anywhere else
             // the same bytes can be a table by chance, and a chunk that overlaps another one stops the savegame from being written.
@@ -36,10 +36,10 @@ namespace Siniskalc.Homm3.Data
             return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 
-        private static DwellingChunk Chunk(byte[] bytes, int start, int index)
+        private static RecordChunk Chunk(byte[] bytes, int start, int index)
         {
             var creature = Creature.FromByte(bytes[start + DwellingLayout.Creature]);
-            return new DwellingChunk(
+            return new RecordChunk(
                 $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} dwelling {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
                 bytes.AsSpan(start, DwellingLayout.RecordSize).ToArray(),
                 start,

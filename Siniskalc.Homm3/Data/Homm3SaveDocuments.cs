@@ -4,13 +4,14 @@ namespace Siniskalc.Homm3.Data
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
+    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Creates a <see cref="SaveDocument"/> for a Heroes of Might and Magic III savefile and gives typed access to its heroes, players and castles.
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, MineChunkCollection mines, DwellingChunkCollection dwellings, MerchantStockChunkCollection merchants, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -44,14 +45,23 @@ namespace Siniskalc.Homm3.Data
         public static ObeliskChunkCollection<PlayerColor> Obelisks(this SaveDocument document) => (ObeliskChunkCollection<PlayerColor>)document.GetCollection(Homm3ChunkKinds.Obelisks);
 
         /// <summary>
+        /// Gets the mines, in the order of the table of their records.
+        /// </summary>
+        public static RecordChunkCollection<RecordChunk, MineModel> Mines(this SaveDocument document) => (RecordChunkCollection<RecordChunk, MineModel>)document.GetCollection(Homm3ChunkKinds.Mines);
+
+        /// <summary>
+        /// Gets the dwellings, in the order of the table of their records.
+        /// </summary>
+        public static RecordChunkCollection<RecordChunk, DwellingModel> Dwellings(this SaveDocument document) => (RecordChunkCollection<RecordChunk, DwellingModel>)document.GetCollection(Homm3ChunkKinds.Dwellings);
+
+        /// <summary>
+        /// Gets what the merchants have in store: the artifact merchants, then the black market.
+        /// </summary>
+        public static RecordChunkCollection<RecordChunk, MerchantStockModel> Merchants(this SaveDocument document) => (RecordChunkCollection<RecordChunk, MerchantStockModel>)document.GetCollection(Homm3ChunkKinds.Merchants);
+
+        /// <summary>
         /// Gets the game version that wrote the savefile.
         /// </summary>
-        public static MineChunkCollection Mines(this SaveDocument document) => (MineChunkCollection)document.GetCollection(Homm3ChunkKinds.Mines);
-
-        public static DwellingChunkCollection Dwellings(this SaveDocument document) => (DwellingChunkCollection)document.GetCollection(Homm3ChunkKinds.Dwellings);
-
-        public static MerchantStockChunkCollection Merchants(this SaveDocument document) => (MerchantStockChunkCollection)document.GetCollection(Homm3ChunkKinds.Merchants);
-
         public static GameVersion GameVersion(this SaveDocument document) => document.Heroes().Offsets.GameVersion;
 
         public static SaveDocument WithHero(this SaveDocument document, int index, HeroChunk chunk) => document.WithChunk(Homm3ChunkKinds.Hero, index, chunk);

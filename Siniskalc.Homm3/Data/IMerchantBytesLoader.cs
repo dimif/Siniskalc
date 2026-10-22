@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
+    using Siniskalc.Core.Data;
 
     /// <summary>
     /// Cuts the lists of what the merchants have in store out of a savefile.
@@ -10,6 +11,6 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns the two lists (the artifact merchants, then the black market), or none when they are not found.
         /// </summary>
-        IReadOnlyList<MerchantStockChunk> LoadMerchantChunks(byte[] bytes);
+        IReadOnlyList<RecordChunk> LoadMerchantChunks(byte[] bytes);
     }
 }

@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -7,9 +8,9 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// Reads the record of a dwelling: the creature, the owner, the tile and the creatures that can be hired.
     /// </summary>
-    public sealed class DwellingDeserializer : IDwellingDeserializer
+    public sealed class DwellingDeserializer : IDeserializer<RecordChunk, DwellingModel>
     {
-        public DwellingModel Deserialize(DwellingChunk chunk)
+        public DwellingModel Deserialize(RecordChunk chunk)
         {
             var code = chunk.GetByteAt(DwellingLayout.Creature);
             return new DwellingModel(

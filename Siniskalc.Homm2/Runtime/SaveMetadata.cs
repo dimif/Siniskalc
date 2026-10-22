@@ -12,7 +12,7 @@
     /// <param name="Date">The date in the game.</param>
     /// <param name="Map">The map the game is played on.</param>
     /// <param name="Difficulty">The difficulty the game was started with.</param>
-    /// <param name="CurrentPlayer">The colour whose turn it was, or <c>null</c> when the savegame does not say.</param>
-    /// <param name="PlayerControls">Who plays each colour, Blue first, or <c>null</c> when not known.</param>
-    public sealed record SaveMetadata(GameDate Date, MapHeader Map, GameDifficulty Difficulty, PlayerColor? CurrentPlayer = null, IReadOnlyList<PlayerType>? PlayerControls = null);
+    /// <param name="PlayerControls">Who plays each colour, Blue first, or <c>null</c> when not known. Whose turn it is is not here but in the
+    /// turn record (<see cref="Game.CurrentPlayer"/>), which is the same byte and can be edited.</param>
+    public sealed record SaveMetadata(GameDate Date, MapHeader Map, GameDifficulty Difficulty, IReadOnlyList<PlayerType>? PlayerControls = null);
 }

@@ -28,6 +28,25 @@
             Assert.That(game.CurrentPlayer, Is.EqualTo(current));
         }
 
+        // The header and the turn record are the same byte: the number of the record of the human whose turn it is. The reader of the
+        // header read it too (as the human the mask marks at that record); on every save it named the same colour as the turn record
+        // (Game.CurrentPlayer), so only the turn record, which can be edited, is kept.
+        [Test]
+        public void TheCurrentPlayerOfEverySaveIsTheHumanWhoseRecordTheTurnByteNames()
+        {
+            foreach (var path in Saves.All())
+            {
+                var game = TestServices.Load(path);
+                var bytes = game.Bytes.ToArray();
+                var turn = bytes[game.Layout.CurrentHumanStart];
+                var expected = turn < PlayerColor.All.Count && bytes[game.Layout.HumanMaskStart + turn] != 0
+                    ? PlayerColor.All[PlayerRecordOrder.ColorsOf(bytes, game.Layout)[turn]]
+                    : null;
+
+                Assert.That(game.CurrentPlayer, Is.EqualTo(expected), Path.GetFileName(path));
+            }
+        }
+
         [TestCase("human_cpu_12_two_humans_blue_turn_day_1", "Blue")]
         [TestCase("human_cpu_13_two_humans_green_turn_day_1", "Green")]
         [TestCase("human_cpu_14_two_humans_blue_turn_day_2", "Blue")]

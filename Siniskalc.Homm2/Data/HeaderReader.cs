@@ -29,12 +29,11 @@
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
                 ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
                 layout.Width);
-            var (controls, current) = ReadPlayers(bytes, layout);
-            return new SaveMetadata(date, map, ReadDifficulty(bytes[layout.DifficultyStart]), current, controls);
+            return new SaveMetadata(date, map, ReadDifficulty(bytes[layout.DifficultyStart]), ReadControls(bytes, layout));
         }
 
-        // The game plays the humans the mask marks, in the order of the records, and the byte of the turn is the number of the record.
-        private static (List<PlayerType> Controls, PlayerColor? Current) ReadPlayers(byte[] bytes, SaveLayout layout)
+        // The game plays the humans the mask marks, in the order of the records. Whose turn it is is the turn record (Game.CurrentPlayer).
+        private static List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
         {
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             var controls = Enumerable.Repeat(PlayerType.NotInGame, Constants.Table.PlayerCount).ToList();
@@ -46,9 +45,7 @@
                 }
             }
 
-            var turn = bytes[layout.CurrentHumanStart];
-            PlayerColor? current = turn < Constants.Table.PlayerCount && bytes[layout.HumanMaskStart + turn] != 0 ? PlayerColor.All[colors[turn]] : null;
-            return (controls, current);
+            return controls;
         }
 
         // TODO:LOG warning: a difficulty that is no level was read as the first one.

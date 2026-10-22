@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
@@ -26,11 +27,11 @@ namespace Siniskalc.Homm2.Data
                 // A flag that already shows the new owner is left as it is.
                 var wanted = model.Owner.IsNeutral
                     ? [MapObjectLayout.NoClass, MapObjectLayout.NoPicture]
-                    : new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(model.Kind) + model.Owner.Code) };
+                    : new[] { MapObjectLayout.FlagClass, (byte)(MineFlags.PictureOf(model.Kind) + model.Owner.Code) };
                 var current = chunk.Parts[i].Bytes;
                 var showsOwner = model.Owner.IsNeutral
                     ? current[0] == MapObjectLayout.NoClass && current[1] == MapObjectLayout.NoPicture
-                    : current[0] == MapObjectLayout.FlagClass && current[1] == MineKinds.FlagPicture(model.Kind) + model.Owner.Code;
+                    : current[0] == MapObjectLayout.FlagClass && current[1] == MineFlags.PictureOf(model.Kind) + model.Owner.Code;
                 if (!showsOwner)
                 {
                     written = written.WithPart(i, wanted);

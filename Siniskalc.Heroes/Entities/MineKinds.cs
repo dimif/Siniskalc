@@ -1,6 +1,5 @@
-namespace Siniskalc.Homm2.Entities
+namespace Siniskalc.Heroes.Entities
 {
-    using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// What each kind of mine gives and how the savegame draws its flag.
@@ -39,11 +38,5 @@ namespace Siniskalc.Homm2.Entities
         /// Returns the picture of the flag of the first colour (Blue): the picture of the flag of a player is this plus its colour. The
         /// flags of the mines, the alchemist's lab and the sawmill are three series of seven pictures.
         /// </summary>
-        public static int FlagPicture(MineKind kind) => kind switch
-        {
-            MineKind.Sawmill => 28,
-            MineKind.AlchemistLab => 21,
-            _ => 14,
-        };
     }
 }

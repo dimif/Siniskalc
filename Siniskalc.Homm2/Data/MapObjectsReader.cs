@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -76,7 +77,7 @@
                 return null;
             }
 
-            var picture = MineKinds.FlagPicture(kind);
+            var picture = MineFlags.PictureOf(kind);
             bool IsFlagOrEmpty(int at) =>
                 (bytes[at] == MapObjectLayout.NoClass && bytes[at + 1] == MapObjectLayout.NoPicture)
                 || (bytes[at] == MapObjectLayout.FlagClass && bytes[at + 1] >= picture && bytes[at + 1] < picture + 7);

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Entities
+namespace Siniskalc.Heroes.Entities
 {
     /// <summary>
     /// The mines of the map (the objects that give their owner a resource every day), in the order of their kind in the savegame.

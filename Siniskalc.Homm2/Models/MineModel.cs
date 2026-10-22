@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Models
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 

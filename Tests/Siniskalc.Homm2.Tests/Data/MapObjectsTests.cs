@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Tests.Data
 {
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -44,7 +45,7 @@
                 var mine = TestServices.Mines.Deserialize(chunk);
                 foreach (var part in chunk.Parts)
                 {
-                    var expected = mine.Owner.IsNeutral ? [MapObjectLayout.NoClass, MapObjectLayout.NoPicture] : new[] { MapObjectLayout.FlagClass, (byte)(MineKinds.FlagPicture(mine.Kind) + mine.Owner.Code) };
+                    var expected = mine.Owner.IsNeutral ? [MapObjectLayout.NoClass, MapObjectLayout.NoPicture] : new[] { MapObjectLayout.FlagClass, (byte)(MineFlags.PictureOf(mine.Kind) + mine.Owner.Code) };
                     Assert.That(part.Bytes, Is.EqualTo(expected), mine.Name);
                 }
             }

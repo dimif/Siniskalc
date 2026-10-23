@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -57,10 +58,12 @@
         private static readonly HeroShape HotaShape = new(19, false, true, true);
 
         private readonly Encoding saveEncoding;
+        private readonly ILogger<HeroBytesLoader> logger;
 
-        public HeroBytesLoader(Encoding encoding)
+        public HeroBytesLoader(Encoding encoding, ILogger<HeroBytesLoader> logger)
         {
             this.saveEncoding = encoding;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -338,7 +341,7 @@
             }
             catch (DecoderFallbackException)
             {
-                // TODO:LOG info: a hero biography at {start} is not text in the encoding of the savefile; the hero is read without one.
+                this.logger.LogDebug("The biography at offset {Offset:X} is not text in the encoding of the savefile, the hero is read without one", start);
                 return null;
             }
         }
@@ -358,7 +361,7 @@
             }
             catch (DecoderFallbackException)
             {
-                // TODO:LOG debug: bytes at {index} look like a hero but their name is not text in the encoding of the savefile; the scan goes on.
+                this.logger.LogTrace("Bytes at offset {Offset:X} look like a hero but the name is not text in the encoding of the savefile, the scan goes on", index);
                 return false;
             }
         }

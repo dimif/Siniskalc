@@ -35,7 +35,7 @@ namespace Siniskalc.Homm3.Runtime
             this.CastleRegions = new CastleRegionProvider();
 
             this.CastleDeserializer = new CastleDeserializer(loggerFactory.CreateLogger<CastleDeserializer>());
-            this.CastleSerializer = new SafeCastleSerializer();
+            this.CastleSerializer = new SafeCastleSerializer(loggerFactory.CreateLogger<SafeCastleSerializer>());
             this.PlayerDeserializer = new PlayerDeserializer();
             var pendingChanges = new Homm3PendingChangesFactory();
             this.DocumentFactory = new SaveDocumentFactory(
@@ -45,7 +45,7 @@ namespace Siniskalc.Homm3.Runtime
                 this.CastleSerializer,
                 new CastleDiffer(pendingChanges),
                 this.PlayerDeserializer,
-                new SafePlayerSerializer(),
+                new SafePlayerSerializer(loggerFactory.CreateLogger<SafePlayerSerializer>()),
                 new PlayerDiffer(pendingChanges),
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
@@ -60,12 +60,12 @@ namespace Siniskalc.Homm3.Runtime
             this.GameService = new GameService(
                 new SavegameParser(
                     new SavegameVersionDetector(),
-                    new HeroBytesLoader(heroNameEncoding),
+                    new HeroBytesLoader(heroNameEncoding, loggerFactory.CreateLogger<HeroBytesLoader>()),
                     new CastleBytesLoader(heroNameEncoding),
                     new PlayerBytesLoader(),
                     new ObeliskBytesLoader(),
                     new MineBytesLoader(),
-                    new DwellingBytesLoader(),
+                    new DwellingBytesLoader(loggerFactory.CreateLogger<DwellingBytesLoader>()),
                     new MerchantBytesLoader(),
                     new MapPlacesLoader(),
                     dateLocator,
@@ -74,7 +74,8 @@ namespace Siniskalc.Homm3.Runtime
                     this.DocumentFactory,
                     loggerFactory.CreateLogger<SavegameParser>()),
                 this.SavefileCodec,
-                backup);
+                backup,
+                loggerFactory.CreateLogger<GameService>());
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider());
             this.EffectLines = new EffectLineProvider();

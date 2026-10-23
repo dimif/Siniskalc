@@ -43,7 +43,7 @@
             var editor = (Homm2EditorViewModel)shell.Editor;
             var window = new ShellWindow(
                 new RecentFilesMenuViewModel(services.RecentFiles),
-                new ShellUrlLauncher(_ => { }),
+                new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
                 services.About,
                 services.Help,
                 NoUserInteraction.Messages(),

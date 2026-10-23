@@ -124,7 +124,7 @@
 
                 var window = new ShellWindow(
                     new RecentFilesMenuViewModel(this.services.RecentFiles),
-                    new ShellUrlLauncher(_ => { }),
+                    new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
                     this.services.About,
                     this.services.Help,
                     NoUserInteraction.Messages(),

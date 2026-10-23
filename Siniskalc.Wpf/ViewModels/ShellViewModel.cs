@@ -7,6 +7,7 @@ namespace Siniskalc.Wpf.ViewModels
     using System.IO;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
 
@@ -30,6 +31,7 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
         private readonly SettingsStore settings;
         private readonly string applicationName;
+        private readonly ILogger<ShellViewModel> logger;
         private readonly Dictionary<IGameModule<IObservableGameEditor>, IObservableGameEditor> editors = new();
         private IGameModule<IObservableGameEditor> currentModule;
         private IObservableGameEditor editor;
@@ -38,8 +40,10 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
-        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName)
+        /// <param name="logger">Where a file that cannot be read is reported.</param>
+        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName, ILogger<ShellViewModel> logger)
         {
+            this.logger = logger;
             if (modules.Count == 0)
             {
                 throw new ArgumentException("The application needs at least one game.", nameof(modules));
@@ -186,14 +190,10 @@ namespace Siniskalc.Wpf.ViewModels
                 var read = stream.Read(head, 0, head.Length);
                 return this.modules.FirstOrDefault(m => m.IsOwnSavefile(filePath, head.AsSpan(0, Math.Min(read, m.HeadLength))));
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                // TODO:LOG warn: the file {filePath} could not be read to find its game; the editor that is shown tells the user why.
-                return null;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // TODO:LOG warn: the file {filePath} could not be read to find its game; the editor that is shown tells the user why.
+                // The editor that is shown tells the user why the file cannot be opened.
+                this.logger.LogWarning(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
                 return null;
             }
         }

@@ -37,7 +37,7 @@
                 DeserializeBuildings(chunk, faction, CastleLayout.VisibleBuildingsFromNameEnd),
                 chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
                 DeserializeSpellCounts(chunk),
-                this.DeserializeMageGuildSpells(chunk));
+                DeserializeMageGuildSpells(chunk, logger));
         }
 
         public Faction DeserializeFaction(CastleChunk chunk)
@@ -117,7 +117,7 @@
         /// (-1 for a level the faction cannot build, or a code that is no spell) is left out, and a chunk that ends before the lists
         /// (a savefile cut short) has none.
         /// </summary>
-        private IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
+        private static IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk, ILogger logger)
         {
             using var subject = logger.BeginSubject("Castle", chunk.Name);
             var levels = new IReadOnlyList<Spell>[CastleLayout.SpellLevelCount];

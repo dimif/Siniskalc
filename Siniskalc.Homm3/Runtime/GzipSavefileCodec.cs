@@ -74,7 +74,8 @@
                 }
                 catch (IOException)
                 {
-                    logger.LogWarning("Could not remove the temporary file {File} after a failed save", temporary);
+                    logger.LogWarning("Could not remove the temporary file {File} after a failed save", Path.GetFileName(temporary));
+
                     // The write failed already; the leftover is only a stray file.
                 }
 

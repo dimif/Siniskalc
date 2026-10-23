@@ -41,9 +41,9 @@
             this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
-            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
+            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(this.LoggerFactory.CreateLogger<NumberedSavefileBackupService>()), new DisabledFileBackupService());
             this.BanishingText = new BanishingTextProvider();
-            this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
+            this.UrlLauncher = new ShellUrlLauncher(StartWithShell, this.LoggerFactory.CreateLogger<ShellUrlLauncher>());
             this.Messages = new WpfMessageService();
             this.FileDialogs = new WpfFileDialogs();
             this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages, this.LoggerFactory.CreateLogger<SavegameFileCommands>());
@@ -149,7 +149,7 @@
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.
         /// </summary>
-        public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);
+        public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name, this.LoggerFactory.CreateLogger<ShellViewModel>());
 
         private static AboutInfo CreateAboutInfo()
         {

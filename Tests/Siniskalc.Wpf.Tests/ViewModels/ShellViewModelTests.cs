@@ -21,7 +21,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
             this.settings = new SettingsStore(Path.Combine(this.folder, "settings.json"));
             this.first = new FakeGameModule("First Game", 0x11, "*.F1;*.F2");
             this.second = new FakeGameModule("Second Game", 0x22, "*.S1");
-            this.shell = new ShellViewModel([this.first, this.second], this.settings, "Editor");
+            this.shell = new ShellViewModel([this.first, this.second], this.settings, "Editor", NullLogger<ShellViewModel>.Instance);
         }
 
         [TearDown]
@@ -40,7 +40,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         [Test]
         public void AShellWithoutGamesCannotBeMade()
         {
-            Assert.That(() => new ShellViewModel([], this.settings, "Editor"), Throws.ArgumentException);
+            Assert.That(() => new ShellViewModel([], this.settings, "Editor", NullLogger<ShellViewModel>.Instance), Throws.ArgumentException);
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         [Test]
         public void TheOpenFilterOfASingleGameOffersItsFilesOnly()
         {
-            var single = new ShellViewModel([this.first], this.settings, "Editor");
+            var single = new ShellViewModel([this.first], this.settings, "Editor", NullLogger<ShellViewModel>.Instance);
 
             Assert.That(single.OpenFilter, Is.EqualTo("First Game savegames |*.F1;*.F2"));
         }

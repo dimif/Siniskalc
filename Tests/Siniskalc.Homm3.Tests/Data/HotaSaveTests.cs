@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void LoadSave()
         {
             this.bytes = TestServices.SavefileCodec.Read(SavePath);
-            this.loader = new HeroBytesLoader(Encoding.Latin1);
+            this.loader = new HeroBytesLoader(Encoding.Latin1, NullLogger<HeroBytesLoader>.Instance);
             this.chunks = this.loader.LoadHeroChunks(this.bytes, new SavegameVersionDetector().Detect(this.bytes));
             this.offsets = new HeroOffsets(new SavegameVersionDetector().Detect(this.bytes));
             var entities = TestServices.VersionEntities.For(this.offsets.GameVersion);

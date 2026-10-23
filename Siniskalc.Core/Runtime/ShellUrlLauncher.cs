@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Core.Runtime
 {
     using System;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Opens a web address with the program the operating system has for it.
@@ -8,10 +9,12 @@
     public sealed class ShellUrlLauncher : IUrlLauncher
     {
         private readonly Action<string> start;
+        private readonly ILogger<ShellUrlLauncher> logger;
 
-        public ShellUrlLauncher(Action<string> start)
+        public ShellUrlLauncher(Action<string> start, ILogger<ShellUrlLauncher> logger)
         {
             this.start = start;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -28,9 +31,9 @@
                 this.start(uri.AbsoluteUri);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO:LOG warning: the address {url} could not be opened ({exception type and message}).
+                this.logger.LogWarning(ex, "Could not open the address {Url}", url);
                 return false;
             }
         }

@@ -1,7 +1,7 @@
 # Error model
 
 What can go wrong, what the code throws, who catches it and what the user is told.
-What is written to the log file, and when, is in `LOGGING.md`. A place that should log but has no logger yet is marked `// TODO:LOG <level>: what to log`, so `grep -rn "TODO:LOG"` lists what is left to cover.
+What is written to the log file, and when, is in `LOGGING.md`. Every place that was marked `// TODO:LOG` now logs; a class that gets no logger yet may still carry the marker, and `grep -rn "TODO:LOG"` lists them.
 
 ## Kinds of failure
 
@@ -17,7 +17,7 @@ What is written to the log file, and when, is in `LOGGING.md`. A place that shou
 ## Rules
 
 - **A value the editor does not know never stops a load.** Deserializers read it as a stand-in (or as nothing) and the serializer keeps the original byte (see `CLAUDE.md`).
-  These are the places marked `TODO:LOG`.
+  Each is logged at Trace with the record as its subject (see `LOGGING.md`).
 - **Parsing only slices bytes; the models are read when a page needs them.** `Homm3EditorViewModel.SetGame` builds what reads the new game (the overview, the owners) before it lets go of the open game, so a game that cannot be shown leaves the open one as it was.
 - **A save is all or nothing.** `GameService.SaveGame` works out the bytes, makes the backup, then `GzipSavefileCodec.Write` writes a `.saving` file and moves it over the savefile.
   Only after that is the game tied to the file (`Game.SavedTo`) and marked saved.

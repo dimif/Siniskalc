@@ -65,7 +65,7 @@
         public void ABackupThatFailsStopsTheSaveAndLeavesTheGameUnsaved()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(FailingBackup()));
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(FailingBackup()), NullLogger<GameService>.Instance);
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());
@@ -80,7 +80,7 @@
         {
             var game = TestServices.GameService.LoadGameFromFile(Save);
             var backup = new Mock<IFileBackupService>(MockBehavior.Strict);
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object), NullLogger<GameService>.Instance);
             var path = Path.Combine(this.folder, "new.GM1");
 
             service.SaveGame(game, path);
@@ -94,7 +94,7 @@
         {
             var game = this.EditedGame(out var path);
             var backup = new Mock<IFileBackupService>();
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object), NullLogger<GameService>.Instance);
 
             service.SaveGame(game, path);
 
@@ -105,7 +105,7 @@
         public void AWriteThatFailsLeavesTheGameUnsavedAndTheFileAsItWas()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(NoParser(), FailingCodec(), BackupsOf(new DisabledFileBackupService()));
+            var service = new GameService(NoParser(), FailingCodec(), BackupsOf(new DisabledFileBackupService()), NullLogger<GameService>.Instance);
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());

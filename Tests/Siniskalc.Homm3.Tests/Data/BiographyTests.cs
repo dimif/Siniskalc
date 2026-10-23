@@ -92,7 +92,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var chunk = game.History.Current.Heroes()[index];
             Assert.That(chunk.Biography, Is.EqualTo(original.Biography));
             var bytes = game.GetBytesToSave();
-            var saved = new HeroBytesLoader(Encoding.Latin1).LoadHeroChunks(bytes, new SavegameVersionDetector().Detect(bytes));
+            var saved = new HeroBytesLoader(Encoding.Latin1, NullLogger<HeroBytesLoader>.Instance).LoadHeroChunks(bytes, new SavegameVersionDetector().Detect(bytes));
             Assert.That(saved.Single(c => c.Name == "Alkin").Biography, Is.EqualTo(original.Biography));
         }
 

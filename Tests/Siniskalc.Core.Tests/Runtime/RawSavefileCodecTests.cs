@@ -5,7 +5,7 @@ namespace Siniskalc.Core.Tests.Runtime
     [TestFixture]
     internal sealed class RawSavefileCodecTests
     {
-        private readonly RawSavefileCodec codec = new();
+        private readonly RawSavefileCodec codec = new(NullLogger<RawSavefileCodec>.Instance);
         private string folder = string.Empty;
 
         [SetUp]

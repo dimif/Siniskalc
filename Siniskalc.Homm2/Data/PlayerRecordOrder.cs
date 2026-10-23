@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Which colour each record of the table of players is. The records are in the order the players play (the humans first), and each
@@ -12,11 +13,19 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns the colour of each record, as the number of the colour.
         /// </summary>
-        // TODO:LOG warning: the records of the players do not name the six colours, so they were taken in the order of the colours.
-        public static IReadOnlyList<int> ColorsOf(byte[] bytes, SaveLayout layout)
+        /// <summary>
+        /// Returns the colour of each record of a player. When the records do not name the six colours they are taken in the order of the
+        /// colours, which is logged at Trace to <paramref name="logger"/> when there is one (the readers pass theirs, the writers none).
+        /// </summary>
+        public static IReadOnlyList<int> ColorsOf(byte[] bytes, SaveLayout layout, ILogger? logger = null)
         {
             var colors = Enumerable.Range(0, Constants.Table.PlayerCount).Select(record => (int)bytes[layout.PlayerStart(record) + PlayerLayout.Color]).ToList();
             var named = colors.Distinct().Count() == Constants.Table.PlayerCount && colors.All(c => c < Constants.Table.PlayerCount);
+            if (!named)
+            {
+                logger?.LogTrace("The records of the players do not name the six colours, taken in the order of the colours");
+            }
+
             return named ? colors : Enumerable.Range(0, Constants.Table.PlayerCount).ToList();
         }
 

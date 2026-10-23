@@ -94,7 +94,6 @@ namespace Siniskalc.Homm3.ViewModels
 
         // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
         // (see PlayerControlLocator) and writing it is not built.
-        // TODO:LOG info: the turn was asked to be given to a player, and the editor does not write it for this game yet.
         private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
         {
             var isCurrent = this.game.CurrentPlayer == color;

@@ -2,11 +2,12 @@ namespace Siniskalc.Core.Runtime
 {
     using System;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Reads and writes a savefile that the game writes as it is, without compressing it.
     /// </summary>
-    public sealed class RawSavefileCodec : ISavefileCodec
+    public sealed class RawSavefileCodec(ILogger<RawSavefileCodec> logger) : ISavefileCodec
     {
         /// <inheritdoc/>
         public byte[] Read(string filePath) => File.ReadAllBytes(filePath);
@@ -33,7 +34,8 @@ namespace Siniskalc.Core.Runtime
                 }
                 catch (IOException)
                 {
-                    // TODO:LOG warning: the temporary file {temporary} could not be removed after a failed save.
+                    logger.LogWarning("Could not remove the temporary file {File} after a failed save", Path.GetFileName(temporary));
+
                     // The write failed already; the leftover is only a stray file.
                 }
 

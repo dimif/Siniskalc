@@ -26,13 +26,13 @@
         {
             this.banishingText = banishingText;
 
-            var locator = new SaveLayoutLocator();
+            var locator = new SaveLayoutLocator(loggerFactory.CreateLogger<SaveLayoutLocator>());
             var pendingChanges = new Homm2PendingChangesFactory();
             this.GameService = new GameService(
                 new SavegameParser(
                     locator,
                     new BytesLoader(),
-                    new HeaderReader(),
+                    new HeaderReader(loggerFactory.CreateLogger<HeaderReader>()),
                     new SaveDocumentFactory(
                         new HeroDeserializer(loggerFactory.CreateLogger<HeroDeserializer>()),
                         new SafeHeroSerializer(),
@@ -52,11 +52,12 @@
                         new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                         new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                         bytesPatcher),
-                    new MapPlacesReader(),
+                    new MapPlacesReader(loggerFactory.CreateLogger<MapPlacesReader>()),
                     new MapObjectsReader(),
                     loggerFactory.CreateLogger<SavegameParser>()),
-                new RawSavefileCodec(),
-                backup);
+                new RawSavefileCodec(loggerFactory.CreateLogger<RawSavefileCodec>()),
+                backup,
+                loggerFactory.CreateLogger<GameService>());
             this.SaveRegionProvider = new SaveRegionProvider(locator);
             this.ByteEditTargets = new ByteEditTargetFactory();
             this.MaxSpellPointsCalculator = new MaxSpellPointsCalculator();

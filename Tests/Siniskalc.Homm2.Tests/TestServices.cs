@@ -14,7 +14,7 @@ namespace Siniskalc.Homm2.Tests
     /// </summary>
     internal static class TestServices
     {
-        public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator();
+        public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator(NullLogger<SaveLayoutLocator>.Instance);
 
         public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
 
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Tests
         public static ISavegameParser Parser { get; } = new SavegameParser(
             Locator,
             new BytesLoader(),
-            new HeaderReader(),
+            new HeaderReader(NullLogger<HeaderReader>.Instance),
             new SaveDocumentFactory(
                 HeroDeserializer,
                 HeroSerializer,
@@ -63,7 +63,7 @@ namespace Siniskalc.Homm2.Tests
                 new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                 new SavefileBytesPatcher()),
-            new MapPlacesReader(),
+            new MapPlacesReader(NullLogger<MapPlacesReader>.Instance),
             new MapObjectsReader(),
             NullLogger<SavegameParser>.Instance);
 

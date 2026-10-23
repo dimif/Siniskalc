@@ -92,7 +92,7 @@
                 () => this.session.Current,
                 edit => this.session.Update(edit));
 
-            // TODO:LOG warning: the active spell is kept in the view model only, as the savegames do not say where the game keeps it
+            // The active spells are kept in the view model only, as the savegames do not say where the game keeps them.
             this.ActiveSpells = new ActiveSpellsCardViewModel(
             [
                 new ToggleRowViewModel(

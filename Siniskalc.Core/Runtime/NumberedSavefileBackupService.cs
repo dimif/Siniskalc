@@ -3,12 +3,13 @@
     using System;
     using System.Globalization;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Copies a file to <c>name.bak</c>, and when that exists to <c>name.bak1</c>, <c>name.bak2</c> and so on, one number higher than
     /// the highest copy there is. A copy is never overwritten. Has no settings; throws when the file does not exist.
     /// </summary>
-    public sealed class NumberedSavefileBackupService : IFileBackupService
+    public sealed class NumberedSavefileBackupService(ILogger<NumberedSavefileBackupService> logger) : IFileBackupService
     {
         private const string Extension = ".bak";
 
@@ -34,7 +35,7 @@
                 catch (IOException) when (File.Exists(target))
                 {
                     // Someone made that copy since we looked.
-                    // TODO:LOG debug: the backup {target} appeared while it was being made; the next number is tried.
+                    logger.LogDebug("Backup {File} appeared while it was being made, trying the next number", Path.GetFileName(target));
                     next++;
                 }
             }

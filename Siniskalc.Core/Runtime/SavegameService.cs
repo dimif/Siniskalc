@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Loads, reloads and saves the open games of one game: the file I/O. Building a game from the bytes of a savefile is the job of
@@ -14,9 +15,11 @@
         private readonly ISavegameParser<TGame> parser;
         private readonly ISavefileCodec codec;
         private readonly IFileBackupServiceProvider backups;
+        private readonly ILogger logger;
 
-        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
+        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups, ILogger logger)
         {
+            this.logger = logger;
             this.parser = parser;
             this.codec = codec;
             this.backups = backups;
@@ -58,14 +61,15 @@
 
             // Keep a copy of whatever is being replaced, so a bad save can be undone (when the user has not turned that off).
             // A failed backup stops the save: the exception goes up to the caller, which shows it to the user.
+            string? backup = null;
             if (File.Exists(filePath))
             {
-                this.backups.GetService().Backup(filePath);
+                backup = this.backups.GetService().Backup(filePath);
             }
 
             this.codec.Write(filePath, bytes);
 
-            // TODO:LOG info: the savegame was saved to {filePath} ({bytes.Length} bytes, {pending changes} pending changes, backup {path or none}).
+            this.logger.LogInformation("Saved {File} ({Length} bytes, backup {Backup})", Path.GetFileName(filePath), bytes.Length, backup is null ? "none" : Path.GetFileName(backup));
 
             // Reloading reads what was just saved, not the file the game was opened from.
             game.SavedTo(filePath);

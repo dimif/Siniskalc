@@ -33,10 +33,10 @@ namespace Siniskalc.Wpf.Tests.Views
                 EnsureApplication();
                 var settings = new SettingsStore(Path.Combine(folder, "settings.json"));
                 var recent = new RecentFilesStore(settings);
-                var shell = new ShellViewModel([new FakeGameModule("First Game", 0x11, "*.F1")], settings, "Editor");
+                var shell = new ShellViewModel([new FakeGameModule("First Game", 0x11, "*.F1")], settings, "Editor", NullLogger<ShellViewModel>.Instance);
                 var window = new ShellWindow(
                     new RecentFilesMenuViewModel(recent),
-                    new ShellUrlLauncher(_ => { }),
+                    new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
                     new AboutInfo("Editor", "1.0", "A test.", "https://example.org", "https://example.org/releases", "MIT", []),
                     new HelpLinks("https://example.org/guide", "https://example.org/issues"),
                     SilentMessages(),

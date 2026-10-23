@@ -16,7 +16,7 @@ namespace Siniskalc.Core.Tests.Runtime
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-backup-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
             this.settings = new SettingsStore(Path.Combine(this.folder, "settings.json"));
-            this.enabled = new NumberedSavefileBackupService();
+            this.enabled = new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance);
             this.disabled = new DisabledFileBackupService();
         }
 

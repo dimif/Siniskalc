@@ -2,12 +2,13 @@ namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Buffers.Binary;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// Finds the layout of a savegame of Heroes of Might and Magic II, the base game's (<c>.GM1</c>) and the Price of Loyalty's (<c>.GX1</c>).
     /// </summary>
-    public sealed class SaveLayoutLocator : ISaveLayoutLocator
+    public sealed class SaveLayoutLocator(ILogger<SaveLayoutLocator> logger) : ISaveLayoutLocator
     {
         /// <inheritdoc/>
         public int HeadLength => HeaderLayout.MarkerLength + HeaderLayout.MapFormatField + 4;
@@ -39,7 +40,7 @@ namespace Siniskalc.Homm2.Data
 
             if (bytes.Length < layout.MinimumLength || !HasTables(bytes, layout))
             {
-                // TODO:LOG warning: a file with the header of a Heroes II savegame ({bytes.Length} bytes, map size {header.Size}) was refused because its tables are not where they are expected.
+                logger.LogWarning("Refused a file with the header of a Heroes II savegame ({Length} bytes, map size {Size}): its tables are not where they are expected", bytes.Length, header.Size);
                 return null;
             }
 

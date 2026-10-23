@@ -3,9 +3,11 @@
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -19,7 +21,7 @@
     /// This guarantees some basic forward compatibility, for instance an unknown creature would fail to deserialize (and therefore resolve to an empty slot),
     /// but the serializer would leave it as it was.
     /// </remarks>
-    public sealed class SafeCastleSerializer : ISerializer<CastleChunk, CastleModel>
+    public sealed class SafeCastleSerializer(ILogger<SafeCastleSerializer> logger) : ISerializer<CastleChunk, CastleModel>
     {
         /// <inheritdoc>
         public CastleChunk Serialize(CastleChunk chunk, CastleModel castle)
@@ -41,8 +43,8 @@
                 bytes[nameEnd + CastleLayout.SpellCountsFromNameEnd + level] = (byte)castle.MageGuildSpellCounts[level];
             }
 
-            SerializeMageGuildSpells(chunk, bytes, castle);
-            SerializeBuildings(chunk, bytes, castle);
+            SerializeMageGuildSpells(chunk, bytes, castle, logger);
+            SerializeBuildings(chunk, bytes, castle, logger);
 
             return chunk.WithBytes(bytes);
         }
@@ -52,7 +54,7 @@
         /// (a level the faction cannot build, a code that is no spell) alone. The model lists only the slots that read as a spell, so a
         /// level whose list is not as long as that was not made by this reader and is left as it is.
         /// </summary>
-        private static void SerializeMageGuildSpells(CastleChunk chunk, byte[] bytes, CastleModel castle)
+        private static void SerializeMageGuildSpells(CastleChunk chunk, byte[] bytes, CastleModel castle, ILogger logger)
         {
             for (var level = 1; level <= CastleLayout.SpellLevelCount && level <= castle.MageGuildSpells.Count; level++)
             {
@@ -70,7 +72,8 @@
                 var spells = castle.MageGuildSpells[level - 1];
                 if (spells.Count != slots.Count)
                 {
-                    // TODO:LOG warning: the spells of level {level} of the Mage Guild of {castle.Name} were not written: the model lists {spells.Count} of them and the savefile has {slots.Count} slots that hold a known spell.
+                    using var subject = logger.BeginSubject("Castle", castle.Name);
+                    logger.LogWarning("The spells of Mage Guild level {Level} were not written: the model lists {Count} of them and the savefile has {Slots} slots that hold a known spell", level, spells.Count, slots.Count);
                     continue;
                 }
 
@@ -129,7 +132,7 @@
             }
         }
 
-        private static void SerializeBuildings(CastleChunk chunk, byte[] bytes, CastleModel castle)
+        private static void SerializeBuildings(CastleChunk chunk, byte[] bytes, CastleModel castle, ILogger logger)
         {
             if (castle.Faction == Faction.Neutral)
             {
@@ -150,7 +153,8 @@
             {
                 if (building.Code >= 64)
                 {
-                    // TODO:LOG warning: the building {building.Name} has a code that does not fit the 64-bit masks and was not written.
+                    using var subject = logger.BeginSubject("Castle", castle.Name);
+                    logger.LogWarning("The building {Building} has a code that does not fit the 64-bit masks and was not written", building.Name);
                     continue;
                 }
 

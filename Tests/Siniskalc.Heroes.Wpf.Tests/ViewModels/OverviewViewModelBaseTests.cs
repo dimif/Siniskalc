@@ -92,6 +92,10 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             public static string Summarize(int players, int heroes, params string[] more) => SummaryOf(players, heroes, more);
 
+            public override void Refresh()
+            {
+            }
+
             protected override string SizeOf(MapHeader map) => map.SizeText + this.MoreSize;
         }
     }

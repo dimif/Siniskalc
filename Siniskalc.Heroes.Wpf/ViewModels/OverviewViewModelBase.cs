@@ -79,13 +79,13 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public bool HasOrderOfPlay => this.OrderOfPlay.Count > 0;
 
-        /// <inheritdoc/>
-        public abstract void Refresh();
-
         /// <summary>
         /// Gets the game the page is about.
         /// </summary>
         protected IGameInfo<TColor> Game => this.game;
+
+        /// <inheritdoc/>
+        public abstract void Refresh();
 
         /// <summary>
         /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,

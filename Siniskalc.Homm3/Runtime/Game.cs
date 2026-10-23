@@ -2,6 +2,7 @@ namespace Siniskalc.Homm3.Runtime
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Runtime;
     using Siniskalc.Homm3.Data;

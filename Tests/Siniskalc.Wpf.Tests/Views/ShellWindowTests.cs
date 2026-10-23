@@ -48,7 +48,7 @@ namespace Siniskalc.Wpf.Tests.Views
                     Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
                     window.UpdateLayout();
 
-                    Assert.That(window.Title, Is.EqualTo("Save game editor"));
+                    Assert.That(window.Title, Is.EqualTo("Editor - Save game editor"));
 
                     var images = Descendants<Image>(window).ToList();
                     Assert.That(images, Is.Not.Empty);

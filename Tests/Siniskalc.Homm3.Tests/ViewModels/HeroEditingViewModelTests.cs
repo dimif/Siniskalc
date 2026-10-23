@@ -36,8 +36,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(slots[0].SelectedCreature, Is.EqualTo("Pikeman"));
             Assert.That(slots[0].CreatureAmount, Is.EqualTo(10));
             Assert.That(slots[3].SelectedCreature, Is.Null);
-            Assert.That(slots[0].MoveLeftCommand.CanExecute(null), Is.False);
-            Assert.That(slots[0].MoveRightCommand.CanExecute(null), Is.True);
+            Assert.That(slots[0].MoveUpCommand.CanExecute(null), Is.False);
+            Assert.That(slots[0].MoveDownCommand.CanExecute(null), Is.True);
             Assert.That(slots[3].ClearCommand.CanExecute(null), Is.False);
         }
 
@@ -46,7 +46,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var slots = this.hero.ArmyViewModel.CreatureSlots;
 
-            slots[0].MoveRightCommand.Execute(null);
+            slots[0].MoveDownCommand.Execute(null);
 
             Assert.That(slots[0].SelectedCreature, Is.EqualTo("Archer"));
             Assert.That(slots[1].SelectedCreature, Is.EqualTo("Pikeman"));

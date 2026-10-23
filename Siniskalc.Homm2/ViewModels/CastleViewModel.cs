@@ -54,6 +54,7 @@
                 game.GameVersion,
                 () => this.session.Current.Garrison,
                 edit => this.session.Update(c => c with { Garrison = edit(c.Garrison) }));
+            this.GarrisonEditor.SetTitle("Garrison");
             this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHeroId!.Value), _ => this.castle?.VisitingHeroId != null);
 
             this.OwnerField = new ChoiceFieldViewModel(

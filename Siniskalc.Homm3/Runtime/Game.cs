@@ -37,7 +37,15 @@ namespace Siniskalc.Homm3.Runtime
         public GameVersion GameVersion { get; }
 
         /// <inheritdoc/>
-        public override string VersionName => this.GameVersion.ToString();
+        public override string VersionName => this.GameVersion switch
+        {
+            GameVersion.RestorationOfErathia => "Restoration of Erathia",
+            GameVersion.ArmageddonsBlade => "Armageddon's Blade",
+            GameVersion.ShadowOfDeath => "Shadow of Death",
+            GameVersion.HeroesChronicles => "Heroes Chronicles",
+            GameVersion.HornOfTheAbyss => "Horn of the Abyss",
+            _ => "Unknown version",
+        };
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 

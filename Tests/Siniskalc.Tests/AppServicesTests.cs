@@ -31,7 +31,7 @@ namespace Siniskalc.Tests
         public void TheShellStartsOnTheFirstGameAndKnowsBoth()
         {
             Assert.That(this.shell.Modules.Select(m => m.Name), Is.EqualTo(new[] { "Heroes of Might and Magic III", "Heroes of Might and Magic II" }));
-            Assert.That(this.shell.Title, Is.EqualTo("Save game editor"));
+            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Save game editor"));
             Assert.That(this.shell.OpenFilter, Does.StartWith("Savegames |*.CGM;*.GM*;*.GM?;*.GX?|"));
         }
 
@@ -40,7 +40,7 @@ namespace Siniskalc.Tests
         {
             this.shell.LoadGame(Saves.Homm2());
 
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
+            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (Base game)"));
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Homm2));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
         }

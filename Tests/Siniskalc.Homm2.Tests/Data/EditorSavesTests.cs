@@ -123,7 +123,7 @@
             Assert.That(gallant.Spells.Contains(Spell.Cure), Is.True);
 
             var blue = Open("E23LIMIT").Document.Players().GetModel(0).Resources;
-            Assert.That(blue, Is.EqualTo(new ResourceSet(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, 999_999)));
+            Assert.That(blue, Is.EqualTo(new ResourceSet(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, Constants.Player.MaxGold)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
             Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Peasant, (int)Constants.MaxCreatureCount)));
@@ -146,7 +146,17 @@
             Assert.That(all.Heroes().GetModel(7).SecondarySkills.SlotCount, Is.EqualTo(8));
             Assert.That(all.Heroes().GetModel(7).Artifacts.IsFull, Is.True);
             Assert.That(all.Heroes().GetModel(1).Army.Slots[0]!.Count, Is.EqualTo((int)Constants.MaxCreatureCount));
-            Assert.That(all.Players().GetModel(0).Resources.Gold, Is.EqualTo(999_999));
+            Assert.That(all.Players().GetModel(0).Resources.Gold, Is.EqualTo(Constants.Player.MaxGold));
+        }
+
+        [Test]
+        public void TheGoldLimitSaveHoldsTheMostGoldAndLeavesTheOtherResourcesAlone()
+        {
+            var before = new SaveDocumentOf(TestServices.LoadBrokenAlliance(24).History.Current).Document.Players().GetModel(0).Resources;
+            var after = Open("E39GOLDX").Document.Players().GetModel(0).Resources;
+
+            Assert.That(after, Is.EqualTo(before with { Gold = Constants.Player.MaxGold }));
+            Assert.That(after.Gold, Is.EqualTo(int.MaxValue));
         }
 
         /// <summary>

@@ -1,11 +1,8 @@
-namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Globalization;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// What a whole stack of a creature is worth, worked out from the stats of one creature: hit points, damage, cost, and the values the
@@ -84,6 +81,15 @@ namespace Siniskalc.Homm3.ViewModels
             new(string.Empty, this.OtherCost, IsNote: true),
             new("AI value", this.AiValue, "What the computer player counts the stack as worth"),
             new("Fight value", this.FightValue, "How much the stack counts for in the strength of an army"),
+        ];
+
+        /// <summary>
+        /// Gives the hit points and damage only, for a game that knows nothing else of a stack (no cost or values of the computer player).
+        /// </summary>
+        public IReadOnlyList<StackFact> ToHealthAndDamageFacts() =>
+        [
+            new("HP Total", this.Health),
+            new("Damage", this.Damage),
         ];
 
         private static string Format(long number) => number.ToString("N0", CultureInfo.CurrentCulture);

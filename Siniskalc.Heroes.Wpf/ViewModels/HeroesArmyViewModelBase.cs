@@ -20,6 +20,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         where TSlot : StackSlotViewModel
     {
         private readonly IReadOnlyList<TCreature> creatures;
+        private readonly Func<TCreature, CreatureInfo> infoOf;
         private readonly Func<IArmy<TCreature>> getArmy;
         private readonly Action<Func<IArmy<TCreature>, IArmy<TCreature>>> update;
         private readonly int minStack;
@@ -50,6 +51,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             : base(creatures.Select(c => c.Name).ToList(), isReadOnly)
         {
             this.creatures = creatures;
+            this.infoOf = infoOf;
             this.getArmy = getArmy;
             this.update = update;
             this.minStack = minStack;
@@ -68,6 +70,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
         /// <inheritdoc/>
         public override CreatureFinderViewModel Finder { get; }
+
+        /// <inheritdoc/>
+        protected override AbstractFinderViewModel CreatePickerFinder(Action<string> onPicked) => new CreatureFinderViewModel(
+            this.creatures.Select(c => ((ICreature)c, this.infoOf(c))),
+            this.CreatureSlots.Count,
+            this.minStack,
+            this.maxStack,
+            () => true,
+            (creature, _) => onPicked(creature.Name),
+            actionLabel: "Choose");
 
         /// <summary>
         /// Puts <paramref name="count"/> creatures in the first free slot, or does nothing when every slot is taken.
@@ -108,6 +120,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="creature">The creature of the stack.</param>
         /// <param name="amount">How many creatures it holds.</param>
         protected abstract IReadOnlyList<StackFact> FactsOf(TCreature creature, int amount);
+
+        /// <summary>
+        /// Gets a value indicating whether the summary of the army tells the cost and the values of the computer player too. False for a game
+        /// that does not know them.
+        /// </summary>
+        protected virtual bool SummaryHasValues => false;
+
+        /// <inheritdoc/>
+        protected override string Summarize()
+        {
+            var totals = new ArmyTotals();
+            foreach (var stack in this.getArmy().Filled)
+            {
+                totals.Add(this.infoOf(stack.Creature), stack.Count);
+            }
+
+            return totals.ToSummary(this.SummaryHasValues);
+        }
 
         /// <inheritdoc/>
         protected override StackContent? ReadStack(int index)

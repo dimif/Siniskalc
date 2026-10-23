@@ -32,7 +32,7 @@
         public GameVersion GameVersion => this.Layout.Version;
 
         /// <inheritdoc/>
-        public override string VersionName => this.GameVersion.ToString();
+        public override string VersionName => this.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
 
         public SaveMetadata Metadata { get; }
 

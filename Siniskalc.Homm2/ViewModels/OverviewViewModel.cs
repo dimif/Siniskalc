@@ -38,7 +38,7 @@
         }
 
         /// <inheritdoc/>
-        public override string VersionName => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
+        public override string VersionName => this.game.VersionName;
 
         /// <summary>
         /// Reads the players again from the current document.

@@ -20,7 +20,6 @@
     /// </summary>
     public sealed class ArmyViewModel : HeroesArmyViewModelBase<Creature, ArmySlotViewModel>
     {
-        private readonly Func<IArmy<Creature>> getCreatures;
         private readonly GameVersion gameVersion;
 
         public ArmyViewModel(
@@ -40,7 +39,6 @@
                 isReadOnly)
         {
             this.gameVersion = gameVersion;
-            this.getCreatures = getCreatures;
             this.Refresh();
         }
 
@@ -55,44 +53,6 @@
         }
 
         /// <inheritdoc/>
-        protected override string Summarize()
-        {
-            var creatures = this.getCreatures();
-            long health = 0, gold = 0, ai = 0, fight = 0, wood = 0, ore = 0, mercury = 0, sulfur = 0, crystal = 0, gems = 0;
-            var any = false;
-            foreach (var stack in creatures.Filled)
-            {
-                any = true;
-                var info = stack.Creature.GetInfo(this.gameVersion);
-                long count = stack.Count;
-                health += info.Health * count;
-                gold += info.Gold * count;
-                ai += info.AiValue * count;
-                fight += info.FightValue * count;
-                wood += info.Wood * count;
-                ore += info.Ore * count;
-                mercury += info.Mercury * count;
-                sulfur += info.Sulfur * count;
-                crystal += info.Crystal * count;
-                gems += info.Gems * count;
-            }
-
-            if (!any)
-            {
-                return string.Empty;
-            }
-
-            var others = new List<string>();
-            foreach (var (amount, name) in new[] { (wood, "wood"), (ore, "ore"), (mercury, "mercury"), (sulfur, "sulfur"), (crystal, "crystal"), (gems, "gems") })
-            {
-                if (amount != 0)
-                {
-                    others.Add($"{amount:N0} {name}");
-                }
-            }
-
-            var cost = others.Count == 0 ? $"{gold:N0}" : $"{gold:N0} and {string.Join(", ", others)}";
-            return $"HP Total {health:N0}  ·  Cost {cost}  ·  AI {ai:N0}  ·  Fight {fight:N0}";
-        }
+        protected override bool SummaryHasValues => true;
     }
 }

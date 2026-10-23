@@ -35,10 +35,9 @@
         }
 
         /// <inheritdoc/>
-        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => Facts(creature);
-
-        private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
+        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) =>
         [
+            .. new StackTotals(creature.Info, amount).ToHealthAndDamageFacts(),
             new("Town", creature.Faction?.ToString() ?? "Neutral"),
             new("Level", creature.Tier.ToString()),
             new("Growth", $"{creature.Info.Growth} a week"),

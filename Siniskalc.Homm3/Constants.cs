@@ -119,10 +119,10 @@ namespace Siniskalc.Homm3
             public const long Min = 0;
 
             /// <summary>
-            /// The most gold a player can be given here. The game itself shows large amounts, but not beyond this.
+            /// The most gold a player can be given here (the same in every game of the series).
             /// </summary>
-            public const long MaxGold = 999_999_999;
-            public const long MaxOther = 999_999;
+            public const long MaxGold = Heroes.Constants.Resources.MaxGold;
+            public const long MaxOther = Heroes.Constants.Resources.MaxOther;
             public const long GoldStep = 1000;
             public const long OtherStep = 1;
 

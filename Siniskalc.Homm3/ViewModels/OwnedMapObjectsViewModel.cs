@@ -48,6 +48,7 @@ namespace Siniskalc.Homm3.ViewModels
             {
                 if (e.PropertyName == nameof(this.Mines.SelectedMine))
                 {
+                    this.guardEditor?.SetTitle(this.GuardHeading);
                     this.guardEditor?.Refresh();
                     this.RaisePropertyChanged(nameof(this.GuardEditor));
                     this.RaisePropertyChanged(nameof(this.GuardHeading));
@@ -92,7 +93,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public ArmyViewModel? GuardEditor => this.Mines.SelectedMine == null ? null : this.guardEditor ??= this.CreateGuardEditor();
 
-        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Guard of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Guard";
+        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Garrison of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Garrison";
 
         /// <summary>
         /// Gets how many dwellings the owner has, such as "3 dwellings".
@@ -134,10 +135,15 @@ namespace Siniskalc.Homm3.ViewModels
 
         // One editor serves whichever mine is picked: swapping the editor of the page for another view model rebuilds the whole editor (its
         // seven creature lists and the finder of every creature), which takes most of a second, while refreshing one only updates its values.
-        private ArmyViewModel CreateGuardEditor() => new(
-            this.version,
-            () => this.Mines.SelectedMine?.Guard ?? new Army<Creature>(Constants.CreatureSlotCount),
-            edit => this.Mines.SelectedMine?.UpdateGuard(edit));
+        private ArmyViewModel CreateGuardEditor()
+        {
+            var editor = new ArmyViewModel(
+                this.version,
+                () => this.Mines.SelectedMine?.Guard ?? new Army<Creature>(Constants.CreatureSlotCount),
+                edit => this.Mines.SelectedMine?.UpdateGuard(edit));
+            editor.SetTitle(this.GuardHeading);
+            return editor;
+        }
 
         /// <summary>
         /// Picks the mine with the given place among the mines of the savegame, if the owner has it.

@@ -320,7 +320,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             Assert.That(gold.DeltaText, Is.EqualTo("+5,000 from save"));
             Assert.That(page.HasPendingChanges, Is.True);
 
-            gold.Value = 99_999_999;
+            gold.Value = long.MaxValue;
             Assert.That(gold.Value, Is.EqualTo(Constants.Player.MaxGold), "the value is kept within the limit");
 
             page.ResetCommand.Execute(null);
@@ -367,7 +367,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             free.CreatureAmount = 7;
 
             Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot<Creature>(Creature.Titan, 7)));
-            Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "Town", "Level", "Growth" }));
+            Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "HP Total", "Damage", "Town", "Level", "Growth" }));
 
             army.Finder.AddAmount = 12;
             army.Finder.Choose(army.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Single(c => c.Name == "Peasant"));

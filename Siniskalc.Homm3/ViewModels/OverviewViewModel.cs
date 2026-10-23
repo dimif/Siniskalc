@@ -36,15 +36,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <inheritdoc/>
-        public override string VersionName => this.game.GameVersion switch
-        {
-            GameVersion.RestorationOfErathia => "Restoration of Erathia",
-            GameVersion.ArmageddonsBlade => "Armageddon's Blade",
-            GameVersion.ShadowOfDeath => "Shadow of Death",
-            GameVersion.HeroesChronicles => "Heroes Chronicles",
-            GameVersion.HornOfTheAbyss => "Horn of the Abyss",
-            _ => "Unknown version",
-        };
+        public override string VersionName => this.game.VersionName;
 
         /// <summary>
         /// Gets whether the savefile tells about the map. The other map properties are empty when it does not.

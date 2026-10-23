@@ -49,6 +49,7 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.GarrisonedHeroModel?.Army ?? this.Castle.Garrison,
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
+            this.GarrisonEditor.SetTitle("Garrison");
         }
 
         public int CastleIndex => this.castleIndex;

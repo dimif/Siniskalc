@@ -35,6 +35,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="add">Called with the creature and the size of the stack when the user picks one.</param>
         /// <param name="sendToSlot">Called with the creature, a slot (from 1) and a count when the user sends some of it there; the right-click menu is left out when null.</param>
         /// <param name="describeSlot">Says what is in a slot (from 1), for its menu entry.</param>
+        /// <param name="actionLabel">The text of the button of each row.</param>
         public CreatureFinderViewModel(
             IEnumerable<(ICreature Creature, CreatureInfo Info)> creatures,
             int slotCount,
@@ -43,7 +44,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Func<bool> hasFreeSlot,
             Action<ICreature, int> add,
             Action<ICreature, int, int>? sendToSlot = null,
-            Func<int, string>? describeSlot = null)
+            Func<int, string>? describeSlot = null,
+            string actionLabel = "Add")
             : base(CreateRows(creatures), nameof(CreatureChoiceViewModel.Faction), string.Empty, "creatures", FinderColumns)
         {
             this.slotCount = slotCount;
@@ -53,7 +55,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.sendToSlot = sendToSlot;
             this.describeSlot = describeSlot;
 
-            this.SetAction("Add", choice => add(choice.Creature, this.addAmount), _ => this.hasFreeSlot());
+            this.SetAction(actionLabel, choice => add(choice.Creature, this.addAmount), _ => this.hasFreeSlot());
             this.StartFiltering();
         }
 

@@ -44,7 +44,7 @@
 
             this.shell.LoadGame(path);
 
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
+            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (Base game)"));
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Module));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
             Assert.That(this.shell.IsGameLoaded, Is.True);
@@ -73,7 +73,7 @@
             Assert.That(() => this.shell.LoadGame(broken), Throws.InstanceOf<UnsupportedSavefileException>());
 
             Assert.That(this.shell.File, Is.EqualTo(Saves.BrokenAllianceSave(1)));
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
+            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (Base game)"));
         }
 
         [Test]
@@ -139,7 +139,7 @@
                     Pump();
                     window.UpdateLayout();
 
-                    Assert.That(window.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II"));
+                    Assert.That(window.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (Base game)"));
                     Assert.That(Find<Homm2EditorView>(window), Is.Not.Null);
                     Assert.That(Find<Homm2EditorView>(window)!.DataContext, Is.SameAs(this.shell.Editor));
 
@@ -159,7 +159,7 @@
                         (() => editor.ShowPlayer(PlayerColor.Blue), () => (PlayerViewModel)editor.CurrentPage!, 5),
                         (() => editor.ShowHero(hero), () => (HeroViewModel)editor.CurrentPage!, 6),
                         (() => editor.ShowCastle(castle), () => (CastleViewModel)editor.CurrentPage!, 5),
-                        (() => editor.ShowMap(), () => (MapViewModel)editor.CurrentPage!, 3),
+                        (() => editor.ShowMap(), () => (MapViewModel)editor.CurrentPage!, 2),
                     };
                     foreach (var (show, page, tabs) in pages)
                     {

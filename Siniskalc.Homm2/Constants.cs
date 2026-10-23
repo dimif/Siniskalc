@@ -100,13 +100,13 @@ namespace Siniskalc.Homm2
             public const int ResourceCount = 7;
 
             public const long MinResource = 0;
-            public const long MaxResource = 2_000_000_000;
+            public const long MaxResource = Heroes.Constants.Resources.MaxGold;
 
             /// <summary>
-            /// The most the editor gives a player. The savegame holds 32 bits; the game was seen to take well over 1,000,000 gold and over 1,000 of the other resources (save E23LIMIT, where the next turn went past them), so these are cautious.
+            /// The most the editor gives a player (the same in every game of the series). The savegame holds 32 bits; the game took well over 1,000,000 gold and over 1,000 of the other resources (save E23LIMIT, where the next turn went past them).
             /// </summary>
-            public const long MaxGold = 999_999;
-            public const long MaxOther = 9_999;
+            public const long MaxGold = Heroes.Constants.Resources.MaxGold;
+            public const long MaxOther = Heroes.Constants.Resources.MaxOther;
             public const long GoldStep = 1000;
             public const long OtherStep = 1;
 

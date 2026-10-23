@@ -68,6 +68,8 @@
                     "Whiteshield's sixth dwelling is the Black Dragon with 3 waiting (in E34DWUP2 it showed 0: the count of a dragon upgraded twice is in the sixth place of the list of upgraded dwellings)."),
                 Make("E38DRG5", "Whiteshield: the Black Dragon dwelling with 5 waiting, as the game keeps them", BlackDragonsFive, game =>
                     "Whiteshield's sixth dwelling is the Black Dragon with 5 waiting (E35 had only the count and showed none: the game wants a 3 in the fifth place of the upgraded list too)."),
+                Make("E39GOLDX", "Blue's gold at the limit of the editor, 2,147,483,647, the other resources untouched", BlueGoldAtTheLimit, game =>
+                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold. Look at how the screens show it, then end the turn: does the gold stay, or does the income make it negative?"),
                 Make("E26ALL", "All of the edits above that do not exclude each other", EverythingTogether, _ =>
                     "Everything of E14, E15, E16, E17, E18, E19, E21, E22, E23, E24 and E25 together: the towns changed hands, Xabran and Whiteshield are built as there, Maximus has the artifacts and the eight skills, Sir Gallant the book, the army and the stats, and Blue the resources at the limits."),
             ];
@@ -224,6 +226,12 @@
             {
                 row.Value = row.Maximum;
             }
+        }
+
+        private static void BlueGoldAtTheLimit(Game game)
+        {
+            var gold = Player(game, PlayerColor.Blue).Resources.Single(r => r.Name == "Gold");
+            gold.Value = gold.Maximum;
         }
 
         private static void GallantArmy(Game game)

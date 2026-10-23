@@ -25,7 +25,7 @@ namespace Siniskalc.Wpf.ViewModels
             nameof(IGameEditor.HasPendingChanges),
         ];
 
-        private const string NoGameTitle = "Save game editor";
+        private const string NoGameSubtitle = "Save game editor";
 
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
         private readonly SettingsStore settings;
@@ -71,9 +71,12 @@ namespace Siniskalc.Wpf.ViewModels
         public IObservableGameEditor Editor => this.editor;
 
         /// <summary>
-        /// Gets the title of the window: "Save game editor" until a savegame is open, then the name of the application and of the game it is from.
+        /// Gets the title of the window: the name of the application and "Save game editor" until a savegame is open, then the name of the application
+        /// and the game and version of the savegame, such as "Siniskalc - Heroes of Might and Magic III (Shadow of Death)".
         /// </summary>
-        public string Title => this.IsGameLoaded ? $"{this.applicationName} - {this.currentModule.Name}" : NoGameTitle;
+        public string Title => this.editor.Savegame is { } savegame
+            ? $"{this.applicationName} - {this.currentModule.Name}{(savegame.VersionName.Length > 0 ? $" ({savegame.VersionName})" : string.Empty)}"
+            : $"{this.applicationName} - {NoGameSubtitle}";
 
         /// <summary>
         /// Gets or sets whether a copy of a savefile is kept before it is saved over. Kept in the settings of the user.

@@ -2,6 +2,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
@@ -79,6 +80,32 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             this.view.CreatureSlots[0].SelectedCreature = string.Empty;
 
             Assert.That(this.army.Slots[0], Is.Null);
+        }
+
+        [Test]
+        public void PickingARowOfTheFinderInTheSlotPopupPutsThatCreatureInTheSlotAndClosesThePopup()
+        {
+            var slot = this.view.CreatureSlots[1];
+            slot.OpenPickerCommand.Execute(null);
+            Assert.That(slot.IsPickerOpen, Is.True);
+
+            var finder = (CreatureFinderViewModel)slot.PickerFinder!;
+            finder.Choose(new CreatureChoiceViewModel(TestCreature.Archer, default));
+
+            Assert.That(this.army.Slots[1], Is.EqualTo(new ArmySlot<TestCreature>(TestCreature.Archer, 1)));
+            Assert.That(slot.IsPickerOpen, Is.False);
+            Assert.That(slot.CreatureButtonText, Is.EqualTo("Archer"));
+        }
+
+        [Test]
+        public void AnEmptySlotInvitesToPickACreatureAndTheTitleCanBeChanged()
+        {
+            Assert.That(this.view.CreatureSlots[0].CreatureButtonText, Is.EqualTo("(empty)"));
+            Assert.That(this.view.Title, Is.EqualTo("Army"));
+
+            this.view.SetTitle("Garrison of the sawmill");
+
+            Assert.That(this.view.Title, Is.EqualTo("Garrison of the sawmill"));
         }
 
         [Test]

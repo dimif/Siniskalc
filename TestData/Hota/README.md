@@ -9,15 +9,15 @@ See `docs/KNOWLEDGE_BASE.md` for what was found in them.
 
 | Save | What it is | Used by |
 |---|---|---|
-| empire_of_the_world_01_m5w4d6 (+ `_expected_info.md`) | A game of "The empire of the world" on month 5, week 4, day 6, with the values of the hero screens written down | `HotaSaveTests` (heroes), `PlayerTests`, `GameDateTests`, `MapDifficultyTests` (Rook) |
-| empire_of_the_world_02_m5w4d6_purple_gifts_red | The same day after Purple sent Red 1 wood, 3 ore, 5 mercury, 7 sulfur, 11 crystal, 13 gems and 17 gold | `PlayerTests`: the resources of both players |
-| new_day_01_m5w4d7, new_day_02_m6w1d1, new_day_03_m6w1d2 | The same game on the following days | `GameDateTests`: day, week and month, including the rollovers |
-| players_human_red, players_human_tan, players_human_red_and_tan (.GM2) | One map (red is Rampart, tan is Tower) with red, tan or both human | `PlayerControlTests` |
+| empire_of_the_world_01_m5w4d6 (+ `_expected_info.md`) | A game of "The empire of the world" on month 5, week 4, day 6, with the values of the hero screens written down | `HotaSaveTests` (heroes), `PlayerDeserializerTests`, `GameDateLocatorTests`, `MapDifficultyTests` (Rook) |
+| empire_of_the_world_02_m5w4d6_purple_gifts_red | The same day after Purple sent Red 1 wood, 3 ore, 5 mercury, 7 sulfur, 11 crystal, 13 gems and 17 gold | `PlayerDeserializerTests`: the resources of both players |
+| new_day_01_m5w4d7, new_day_02_m6w1d1, new_day_03_m6w1d2 | The same game on the following days | `GameDateLocatorTests`: day, week and month, including the rollovers |
+| players_human_red, players_human_tan, players_human_red_and_tan (.GM2) | One map (red is Rampart, tan is Tower) with red, tan or both human | `PlayerControlLocatorTests` |
 | map_difficulty_edited_to_expert | The map difficulty changed in the map editor from King to Queen | `MapDifficultyTests` |
 | tan_not_parsing | A map with a town in each corner, played by Red, Blue, Green and Teal; the colour Tan is not in the game but has 10000 gold in the table of players. Port Evendore (Cove) and the hero Spint (Navigator) of the bottom left corner belong to Teal in the file | `HotaFourCornersTests`: the players listed, who owns what |
 | cannot_edit_town_spells | A castle whose Mage Guild spells raised "Can only change SelectedItems collection in multiple selection modes" when one was picked in the drop-down | `ShellSmokeTests` (picking a spell through its combo box) |
 | bios_standard, bios_custom | No hero has a biography; then Alkin (Purple) and Ivor (Green) have a long and a short one | `BiographyTests` |
-| castles_00_baseline, castles_01_blacksmith_garrison_tumlac_to_blue, castles_02_cloud_temple | Two castles of Tan (Haret and Tumlac): Haret gets a blacksmith and a garrison and Tumlac goes to Blue; then Tumlac builds its cloud temple | `CastleTests`, `GenderTests` (Josephine and Theodorus set to male) |
+| castles_00_baseline, castles_01_blacksmith_garrison_tumlac_to_blue, castles_02_cloud_temple | Two castles of Tan (Haret and Tumlac): Haret gets a blacksmith and a garrison and Tumlac goes to Blue; then Tumlac builds its cloud temple | `CastleDeserializerTests`, `GenderTests` (Josephine and Theodorus set to male) |
 
 ## Series
 

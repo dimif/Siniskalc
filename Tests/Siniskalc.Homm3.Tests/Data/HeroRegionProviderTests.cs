@@ -138,5 +138,31 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(map.FindLeaf(-1), Is.Null);
             Assert.That(map.FindLeaf(this.chunk.Length), Is.Null);
         }
+
+        [Test]
+        public void TheHeroHasItsReservedSlotCounters()
+        {
+            var offsets = new HeroOffsets(GameVersion.HornOfTheAbyss);
+            var regions = TestServices.HeroRegions.GetRegions(offsets);
+
+            var reserved = regions.Single(r => r.Name == "Reserved slots");
+            Assert.That(reserved.Elements.Select(e => e.Name), Is.EqualTo(new[] { "Helmet", "Cape", "Necklace", "Weapon", "Shield", "Torso", "Rings", "Feet", "Misc" }));
+            Assert.That(reserved.Elements.Select(e => e.Start), Is.EqualTo(offsets.ReservedSlotCounters.Select(c => c.Offset)));
+            Assert.That(TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.ShadowOfDeath)).Select(r => r.Name), Does.Contain("Reserved slots"));
+            Assert.That(TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.RestorationOfErathia)).Select(r => r.Name), Does.Not.Contain("Reserved slots"));
+        }
+
+        [Test]
+        public void TheHeroHeaderHasItsPositionGenderAndBiographyLength()
+        {
+            var offsets = new HeroOffsets(GameVersion.HornOfTheAbyss);
+            var header = TestServices.HeroRegions.GetHeaderRegions(offsets);
+
+            Assert.That(header.Select(r => (r.Name, r.Start)), Is.EqualTo(new[]
+            {
+                ("Map X", 0), ("Map Y", 2), ("Map level", 4), ("Gender", 20), ("Biography length", 22),
+            }));
+            Assert.That(header.Max(r => r.End), Is.EqualTo(HeroChunk.HeaderLength));
+        }
     }
 }

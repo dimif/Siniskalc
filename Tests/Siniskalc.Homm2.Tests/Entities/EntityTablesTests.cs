@@ -6,7 +6,7 @@ namespace Siniskalc.Homm2.Tests.Entities
     /// The tables of entities, against the numbers the savegames proved and the shape of the game (66 creatures, 65 spells, 14 skills).
     /// </summary>
     [TestFixture]
-    internal sealed class EntityTests
+    internal sealed class EntityTablesTests
     {
         [Test]
         public void TheGameHasSixtySixCreaturesNumberedFromZeroWithoutGaps()

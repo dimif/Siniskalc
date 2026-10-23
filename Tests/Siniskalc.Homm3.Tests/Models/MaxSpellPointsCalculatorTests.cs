@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Tests.Models
     /// The most spell points a hero can have in a savefile of each version of the game.
     /// </summary>
     [TestFixture]
-    internal sealed class SpellPointsCalculatorTests
+    internal sealed class MaxSpellPointsCalculatorTests
     {
         private static HeroModel HeroWith(int knowledge, SkillLevel intelligence)
         {

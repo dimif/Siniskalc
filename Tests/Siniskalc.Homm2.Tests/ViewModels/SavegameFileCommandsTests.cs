@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Runtime
+﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Runtime;
@@ -9,7 +9,7 @@
     /// The game lists a savegame only when its name has at most 8 characters before the extension; the editor refuses to save under another name.
     /// </summary>
     [TestFixture]
-    internal sealed class SaveNameTests
+    internal sealed class SavegameFileCommandsTests
     {
         private string folder = string.Empty;
         private TestApplicationServices services = null!;

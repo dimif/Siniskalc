@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// Tests against HotA savegames of one map (red is Rampart, tan is Tower) where either red or tan was the human.
     /// </summary>
     [TestFixture]
-    internal sealed class PlayerControlTests
+    internal sealed class PlayerControlLocatorTests
     {
         private static Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", name + (name == "players_human_red_and_tan" ? ".GM2" : ".GM1")));
 

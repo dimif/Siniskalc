@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// In castles_01_blacksmith_garrison_tumlac_to_blue Haret got a blacksmith and a garrison and Tumlac changed hands to blue. In castles_02_cloud_temple Tumlac built its cloud temple.
     /// </summary>
     [TestFixture]
-    internal sealed class CastleTests
+    internal sealed class CastleDeserializerTests
     {
         private static CastleModel Castle(string save, string name)
         {

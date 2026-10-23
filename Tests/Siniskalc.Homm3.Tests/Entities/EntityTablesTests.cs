@@ -9,7 +9,7 @@ namespace Siniskalc.Homm3.Tests.Entities
     /// Checks that the explicit tags on entities (building type, hero class type, abilities) agree with the data they were derived from.
     /// </summary>
     [TestFixture]
-    internal sealed class EntityInvariantTests
+    internal sealed class EntityTablesTests
     {
         private static readonly Faction[] AllFactions = Faction.All.Where(f => f != Faction.Neutral).ToArray();
 

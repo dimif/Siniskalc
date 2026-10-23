@@ -14,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// 1 wood, 3 ore, 5 mercury, 7 sulfur, 11 crystal, 13 gems and 17 gold. The amounts come from the in-game resource bars.
     /// </summary>
     [TestFixture]
-    internal sealed class PlayerTests
+    internal sealed class PlayerDeserializerTests
     {
         private static readonly string Save1 = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
         private static readonly string Save2 = Path.Combine("TestData", "Hota", "empire_of_the_world_02_m5w4d6_purple_gifts_red.GM1");

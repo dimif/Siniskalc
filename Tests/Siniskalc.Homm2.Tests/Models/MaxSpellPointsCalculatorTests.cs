@@ -7,7 +7,7 @@
     /// The most spell points a HoMM2 hero can have.
     /// </summary>
     [TestFixture]
-    internal sealed class SpellPointsCalculatorTests
+    internal sealed class MaxSpellPointsCalculatorTests
     {
         [Test]
         public void AHeroCanHaveTenSpellPointsForEachPointOfKnowledge()

@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// Tests against real HotA savegames of one game, made on consecutive days. The dates come from the in-game adventure map.
     /// </summary>
     [TestFixture]
-    internal sealed class GameDateTests
+    internal sealed class GameDateLocatorTests
     {
         private static Game Load(string name)
         {

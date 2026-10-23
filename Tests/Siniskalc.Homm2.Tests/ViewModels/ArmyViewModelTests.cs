@@ -8,7 +8,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// The upgrade button of a stack of the army.
     /// </summary>
     [TestFixture]
-    internal sealed class ArmyUpgradeTests
+    internal sealed class ArmyViewModelTests
     {
         private static (ArmyViewModel View, Func<IArmy<Creature>> Army) Create(Creature creature)
         {

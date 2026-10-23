@@ -8,7 +8,7 @@
     /// Tests the towns of a player, as the player page and the overview card of HoMM2 list them.
     /// </summary>
     [TestFixture]
-    internal sealed class PlayerTownsTests
+    internal sealed class PlayerViewModelTests
     {
         [Test]
         public void EachTownOfAPlayerSaysWhatItIsItsMageGuildAndHowManyDwellingsStandInIt()

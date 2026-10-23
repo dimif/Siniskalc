@@ -7,6 +7,7 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
+    using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Homm3.Runtime;
     using Siniskalc.Wpf.ViewModels;
@@ -26,7 +27,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private MapViewModel? map;
-        private NeutralViewModel? neutral;
+        private readonly Dictionary<PlayerColor, NeutralViewModel> neutrals = [];
         private OverviewViewModel? overview;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
@@ -113,14 +114,21 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>).
+        /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>), or of what a colour owns
+        /// that has no player in the savegame, when <paramref name="owner"/> is given.
         /// </summary>
-        public void ShowNeutral(int tab = NeutralTabs.Heroes)
+        public void ShowNeutral(int tab = NeutralTabs.Heroes, PlayerColor? owner = null)
         {
             var game = this.Loaded();
-            this.neutral ??= new NeutralViewModel(game.History, this.byteEditTargets, this.ShowHero, this.ShowCastle);
-            this.neutral.SelectedTab = tab;
-            this.SetCurrentPage(this.neutral);
+            var color = owner ?? PlayerColor.Neutral;
+            if (!this.neutrals.TryGetValue(color, out var page))
+            {
+                page = new NeutralViewModel(game.History, this.byteEditTargets, this.ShowHero, this.ShowCastle, color);
+                this.neutrals[color] = page;
+            }
+
+            page.SelectedTab = tab;
+            this.SetCurrentPage(page);
         }
 
         /// <summary>
@@ -139,17 +147,12 @@ namespace Siniskalc.Homm3.ViewModels
         {
             var game = this.Loaded();
             var owner = game.History.Current.Mines().GetModel(mineIndex).Owner;
-            if (owner.IsNeutral)
-            {
-                this.ShowNeutral(NeutralTabs.Mines);
-                this.neutral!.MapObjects.PickMine(mineIndex);
-                return;
-            }
-
-            var playerIndex = game.History.Current.Players().FindByColor(owner);
+            var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
-                // TODO:LOG Warning: a mine owned by a colour that has no player in the savegame has no page to show it on.
+                // A colour with no player in the savegame has a page like Neutral's for what it owns.
+                this.ShowNeutral(NeutralTabs.Mines, owner);
+                this.neutrals[owner].MapObjects.PickMine(mineIndex);
                 return;
             }
 
@@ -164,16 +167,10 @@ namespace Siniskalc.Homm3.ViewModels
         {
             var game = this.Loaded();
             var owner = game.History.Current.Dwellings().GetModel(dwellingIndex).Owner;
-            if (owner.IsNeutral)
-            {
-                this.ShowNeutral(NeutralTabs.Dwellings);
-                return;
-            }
-
-            var playerIndex = game.History.Current.Players().FindByColor(owner);
+            var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
-                // TODO:LOG Warning: a dwelling owned by a colour that has no player in the savegame has no page to show it on.
+                this.ShowNeutral(NeutralTabs.Dwellings, owner);
                 return;
             }
 
@@ -213,8 +210,12 @@ namespace Siniskalc.Homm3.ViewModels
             this.castles.Clear();
             this.map?.Dispose();
             this.map = null;
-            this.neutral?.Dispose();
-            this.neutral = null;
+            foreach (var page in this.neutrals.Values)
+            {
+                page.Dispose();
+            }
+
+            this.neutrals.Clear();
         }
 
         /// <inheritdoc/>
@@ -231,7 +232,7 @@ namespace Siniskalc.Homm3.ViewModels
             PlayerViewModel player => this.Navigation.PlayerTabNode(player.Session.PlayerIndex, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.Session.HeroIndex),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
-            NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab),
+            NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab, neutralPage.OwnerIndex),
             MapViewModel => this.Navigation.MapNode,
             _ => null,
         };
@@ -254,14 +255,14 @@ namespace Siniskalc.Homm3.ViewModels
                     this.ShowCastle(node.Index);
                     break;
                 case NavNodeKind.OwnerSubGroup when node.Index < 0:
-                    this.ShowNeutral(node.Tab);
+                    this.ShowNeutral(node.Tab, NeutralViewModel.OwnerOf(node.Index));
                     break;
                 case NavNodeKind.OwnerSubGroup:
                     this.ShowPlayer(node.Index, node.Tab);
                     break;
                 case NavNodeKind.Neutral:
                 case NavNodeKind.NeutralTab:
-                    this.ShowNeutral(node.Tab);
+                    this.ShowNeutral(node.Tab, NeutralViewModel.OwnerOf(node.Index));
                     break;
                 case NavNodeKind.Mine:
                     this.ShowMine(node.Index);

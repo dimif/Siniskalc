@@ -18,7 +18,8 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly Dictionary<int, NavNodeViewModel> playerNodes = [];
         private readonly Dictionary<(int Player, int Tab), NavNodeViewModel> playerTabNodes = [];
         private readonly Dictionary<int, NavNodeViewModel> castleNodes = [];
-        private readonly Dictionary<int, NavNodeViewModel> neutralTabNodes = [];
+        private readonly Dictionary<(int Owner, int Tab), NavNodeViewModel> neutralTabNodes = [];
+        private readonly Dictionary<int, NavNodeViewModel> neutralNodes = [];
         private readonly Dictionary<int, NavNodeViewModel> mineNodes = [];
         private readonly Dictionary<int, NavNodeViewModel> dwellingNodes = [];
         private string filter = string.Empty;
@@ -72,12 +73,13 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Gets the node of what nobody owns, or <c>null</c> when the game has none.
         /// </summary>
-        public NavNodeViewModel? NeutralNode { get; private set; }
+        public NavNodeViewModel? NeutralNode => this.neutralNodes.GetValueOrDefault(-1);
 
         /// <summary>
-        /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group.
+        /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group. A colour
+        /// that has no page of its own has a neutral-style page too, told apart by <paramref name="owner"/> (-1 for what nobody owns).
         /// </summary>
-        public NavNodeViewModel? NeutralTabNode(int tab) => this.neutralTabNodes.GetValueOrDefault(tab) ?? this.NeutralNode;
+        public NavNodeViewModel? NeutralTabNode(int tab, int owner = -1) => this.neutralTabNodes.GetValueOrDefault((owner, tab)) ?? this.neutralNodes.GetValueOrDefault(owner);
 
         public NavNodeViewModel? MineNode(int mineIndex) => this.mineNodes.GetValueOrDefault(mineIndex);
 
@@ -98,7 +100,7 @@ namespace Siniskalc.Wpf.ViewModels
             this.mineNodes.Clear();
             this.dwellingNodes.Clear();
             this.neutralTabNodes.Clear();
-            this.NeutralNode = null;
+            this.neutralNodes.Clear();
         }
 
         /// <summary>
@@ -128,10 +130,10 @@ namespace Siniskalc.Wpf.ViewModels
                     this.castleNodes[node.Index] = node;
                     break;
                 case NavNodeKind.Neutral:
-                    this.NeutralNode = node;
+                    this.neutralNodes[node.Index] = node;
                     break;
                 case NavNodeKind.NeutralTab:
-                    this.neutralTabNodes[node.Tab] = node;
+                    this.neutralTabNodes[(node.Index, node.Tab)] = node;
                     break;
                 case NavNodeKind.Mine:
                     this.mineNodes[node.Index] = node;

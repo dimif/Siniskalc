@@ -29,3 +29,4 @@ Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_IMPROVEMENTS.md` item 4): a table
 | mines_17_red_sulfur_mine_2 | Tazar takes the second sulfur mine (30, 17) |
 | mines_18_red_sulfur_mine_1_again | Tazar takes the first sulfur mine back from Blue |
 | mines_19_finished | The state after the mines (`mines_finished.GM2`), before the places of `VisitedPlaces` |
+| mines_20_flagged_by_colours_with_no_player | A different game of the map (`flag_mines.GM2`): the players are Tan, Green, Orange and Pink, but the mines are flagged Red (2) and Blue (14), colours the savefile has no player data for. Used by `NavigationBuilderTests` (their nodes and their pages) |

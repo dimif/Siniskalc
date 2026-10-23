@@ -102,7 +102,14 @@ namespace Siniskalc.Homm3.ViewModels
                 .ToList();
 
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
+            // A colour the savefile has no player data for gets a page like Neutral's, numbered below -1 so the tree can tell them apart.
             var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
+            var hasPlayerPage = playerIndex >= 0;
+            if (!hasPlayerPage)
+            {
+                playerIndex = NeutralViewModel.IndexOf(owner);
+            }
+
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
             var node = OwnerNavGroup.Create(
                 tree,
@@ -116,8 +123,8 @@ namespace Siniskalc.Homm3.ViewModels
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]),
                 MineGroupsOf(game.History.Current.Mines().GetModels(), owner, hasLevels: true),
                 DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner),
-                neutralPage: owner.IsNeutral);
-            if (playerIndex >= 0)
+                neutralPage: !hasPlayerPage);
+            if (hasPlayerPage)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));
             }

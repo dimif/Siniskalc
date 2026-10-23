@@ -18,8 +18,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
         /// <param name="history">The history of the savegame.</param>
         /// <param name="colorHex">The colour neutral is drawn with.</param>
-        protected NeutralPageViewModelBase(SaveDocumentHistory history, string colorHex)
-            : base("Neutral")
+        /// <param name="name">What the page is called: "Neutral", or the colour of a player the savegame has no data for.</param>
+        protected NeutralPageViewModelBase(SaveDocumentHistory history, string colorHex, string name = "Neutral")
+            : base(name)
         {
             this.history = history;
             this.ColorHex = colorHex;

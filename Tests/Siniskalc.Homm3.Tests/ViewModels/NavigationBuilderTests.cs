@@ -75,6 +75,44 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
+        public void PickingAMineOfAColourWithNoPlayerShowsItOnThePageOfThatColour()
+        {
+            var main = LoadFlaggedByColoursWithNoPlayer();
+            var mine = main.PlayerNodes().Single(n => n.Title == "Blue").Descendants().First(n => n.Kind == NavNodeKind.Mine);
+
+            mine.IsSelected = true;
+
+            var page = main.CurrentPageOf<NeutralViewModel>();
+            Assert.That(page.Name, Is.EqualTo("Blue"));
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Mines));
+            Assert.That(page.MapObjects.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
+            Assert.That(main.NavigationNodes.Descendants().Where(n => n.IsSelected), Is.EqualTo(new[] { mine }));
+        }
+
+        [Test]
+        public void TheNodeOfAColourWithNoPlayerOpensItsPageAndNotTheNeutralOne()
+        {
+            var main = LoadFlaggedByColoursWithNoPlayer();
+
+            foreach (var name in new[] { "Red", "Blue" })
+            {
+                main.PlayerNodes().Single(n => n.Title == name).IsSelected = true;
+
+                Assert.That(main.CurrentPageOf<NeutralViewModel>().Name, Is.EqualTo(name));
+            }
+
+            Assert.That(main.CurrentPageOf<NeutralViewModel>().MapObjects.Mines.Rows.Select(m => m.OwnerSort), Is.All.EqualTo("Blue"));
+        }
+
+        private static Homm3EditorViewModel LoadFlaggedByColoursWithNoPlayer()
+        {
+            var path = Path.Combine("TestData", "Hota", "Mines", "mines_20_flagged_by_colours_with_no_player.GM2");
+            var main = TestServices.CreateHomm3Editor();
+            main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            return main;
+        }
+
+        [Test]
         public void TheNeutralNodeOpensThePageOfWhatNobodyOwns()
         {
             var neutral = this.main.PlayerNodes().Single(n => n.Title == "Neutral");

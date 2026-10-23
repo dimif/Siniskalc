@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -56,6 +56,7 @@
                 days => this.session.Update(player => player.WithDaysLeft(days)),
                 () => this.session.Current.IsBanished);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", at => MapLevelText.Coordinates(at.X, at.Y, at.Level));
+            this.MapObjects = new OwnedMapObjectsViewModel(session.History, session.Current.Color);
             this.TavernPlaces = TavernPlaceViewModel.ForTavern(
                 () => this.session.Current.Tavern,
                 edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
@@ -107,6 +108,11 @@
         /// Gets the two heroes the tavern of the player offers, each with the heroes that can take its place.
         /// </summary>
         public IReadOnlyList<TavernPlaceViewModel> TavernPlaces { get; }
+
+        /// <summary>
+        /// Gets the mines and dwellings of the map that the player owns, for the Mines and Dwellings tabs.
+        /// </summary>
+        public OwnedMapObjectsViewModel MapObjects { get; }
 
         /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited; empty when the savefile has none to show.
@@ -169,6 +175,7 @@
             this.RefreshOwned();
             this.RefreshBanishing();
             this.Obelisks.Refresh();
+            this.MapObjects.Refresh();
             foreach (var place in this.TavernPlaces)
             {
                 place.Refresh();

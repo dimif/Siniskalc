@@ -16,17 +16,12 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
-        private const string MineOwnerToolTip = "Who owns the mine. The flag on the map and the daily income change with it: the game works the income out at the start of the next day. Not tried in the game.";
-
         public MapViewModel(Game game)
             : base("Map", game.History, Homm2ChunkKinds.Mines, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
             var document = game.History.Current;
             var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
-            this.Mines = new MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>>(
-                Enumerable.Range(0, document.Mines().Count)
-                    .Select(i => new MineRowViewModel<MineModel, PlayerColor>(game.History.CreateMineSession(i), (mine, owner) => mine with { Owner = owner }, MineOwnerToolTip, hasLevels: false))
-                    .ToList());
+            this.Mines = MinesLists.Create(game);
             var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
             this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
                 shrines,

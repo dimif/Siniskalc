@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -58,6 +58,25 @@
 
             player.SelectedTab = tab;
             this.SetCurrentPage(player);
+        }
+
+        /// <summary>
+        /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
+        /// when nobody owns it.
+        /// </summary>
+        public void ShowMine(int mineIndex)
+        {
+            var owner = this.Loaded().History.Current.Mines().GetModel(mineIndex).Owner;
+            if (owner.IsNeutral)
+            {
+                this.ShowMap();
+                this.map!.SelectedTab = 0;
+                this.map.Mines.PickMine(mineIndex);
+                return;
+            }
+
+            this.ShowPlayer(owner, OwnerTabs.Mines);
+            this.players[owner.Code].Mines.PickMine(mineIndex);
         }
 
         /// <summary>
@@ -149,6 +168,12 @@
                     break;
                 case NavNodeKind.PlayerTab:
                     this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
+                    break;
+                case NavNodeKind.OwnerSubGroup:
+                    this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
+                    break;
+                case NavNodeKind.Mine:
+                    this.ShowMine(node.Index);
                     break;
                 case NavNodeKind.Hero:
                     this.ShowHero(node.Index);

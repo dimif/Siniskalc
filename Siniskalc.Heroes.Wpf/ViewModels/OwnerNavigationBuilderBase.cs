@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Heroes.Wpf.ViewModels
+namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +8,7 @@
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
@@ -32,10 +33,11 @@
         public IReadOnlyDictionary<NavNodeKind, ChunkKind> ChunkKinds => this.kinds;
 
         /// <summary>
-        /// Returns who owns each castle and hero, as one text that changes when any of them changes hands. Reads the owner bytes only.
+        /// Returns who owns each castle, hero, mine and dwelling, as one text that changes when any of them changes hands. Reads the owner bytes only.
         /// </summary>
         public string StructureKey(TGame game) =>
-            string.Join(",", this.CastleOwners(game).Select(o => o.ToString())) + ";" + string.Join(",", this.HeroOwners(game).Select(o => o.ToString()));
+            string.Join(",", this.CastleOwners(game).Select(o => o.ToString())) + ";" + string.Join(",", this.HeroOwners(game).Select(o => o.ToString()))
+            + ";" + string.Join(",", this.MineOwners(game).Select(o => o.ToString())) + ";" + string.Join(",", this.DwellingOwners(game).Select(o => o.ToString()));
 
         /// <inheritdoc/>
         public void Build(NavigationTree tree, TGame game)
@@ -94,6 +96,29 @@
         /// Gets the owner of each hero of the savefile, in the order of the heroes.
         /// </summary>
         protected abstract IReadOnlyList<TColor> HeroOwners(TGame game);
+
+        /// <summary>
+        /// Gets the owner of each mine of the map, in the order of the mines. None by default.
+        /// </summary>
+        protected virtual IReadOnlyList<TColor> MineOwners(TGame game) => [];
+
+        /// <summary>
+        /// Gets the owner of each dwelling of the map, in the order of the dwellings. None by default, for a game whose map has none.
+        /// </summary>
+        protected virtual IReadOnlyList<TColor> DwellingOwners(TGame game) => [];
+
+        /// <summary>
+        /// Returns the mines <paramref name="owner"/> owns in groups, one for each resource they give, in the order of the resources.
+        /// </summary>
+        /// <param name="mines">The mines of the map.</param>
+        /// <param name="owner">The colour whose mines are wanted.</param>
+        protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner) =>
+            mines
+                .Where(m => m.Owner == owner)
+                .GroupBy(m => MineKinds.ResourceOf(m.Kind))
+                .OrderBy(g => g.Key)
+                .Select(g => new NavGroup(g.Key.ToString(), g.OrderBy(m => m.Position.Level).ThenBy(m => m.Position.X).ThenBy(m => m.Position.Y).Select(m => new NavEntry(m.Index, m.Name, string.Empty)).ToList()))
+                .ToList();
 
         /// <summary>
         /// Gets the colours of the players the savefile has data for. A player listed here has a node, whether it owns anything or not.

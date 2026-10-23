@@ -14,6 +14,7 @@ namespace Siniskalc.Wpf.ViewModels
     {
         private readonly IReadOnlyList<TRow> rows;
         private readonly IReadOnlyDictionary<string, Func<TRow, IComparable>> keys;
+        private readonly Func<TRow, bool>? filter;
         private IReadOnlyList<TRow> items;
         private string? column;
         private bool descending;
@@ -21,11 +22,13 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="rows">The rows, in the order they have when not sorted.</param>
         /// <param name="keys">For each column, what a row is sorted by.</param>
         /// <param name="initialColumn">The column the list is sorted by first, or null for the order of the rows.</param>
-        public SortableListViewModel(IReadOnlyList<TRow> rows, IReadOnlyDictionary<string, Func<TRow, IComparable>> keys, string? initialColumn = null)
+        /// <param name="filter">Says which rows the list shows, or null for all; it is applied again by <see cref="Sort"/>, so a row that no longer matches leaves the list then.</param>
+        public SortableListViewModel(IReadOnlyList<TRow> rows, IReadOnlyDictionary<string, Func<TRow, IComparable>> keys, string? initialColumn = null, Func<TRow, bool>? filter = null)
         {
             this.rows = rows;
             this.keys = keys;
-            this.items = rows;
+            this.filter = filter;
+            this.items = filter == null ? rows : rows.Where(filter).ToList();
             this.Columns = keys.Keys.ToDictionary(name => name, name => new SortColumnViewModel(name, new DelegateCommand(_ => this.SortBy(name))));
             if (initialColumn != null)
             {
@@ -54,15 +57,18 @@ namespace Siniskalc.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Puts the rows in the order of the column that is chosen again, for when the rows changed.
+        /// Puts the rows in the order of the column that is chosen again, and keeps those the filter lets through, for when the rows changed.
         /// </summary>
         public void Sort()
         {
+            IEnumerable<TRow> shown = this.filter == null ? this.rows : this.rows.Where(this.filter);
             if (this.column != null)
             {
                 var key = this.keys[this.column];
-                this.items = (this.descending ? this.rows.OrderByDescending(key) : this.rows.OrderBy(key)).ToList();
+                shown = this.descending ? shown.OrderByDescending(key) : shown.OrderBy(key);
             }
+
+            this.items = this.filter == null && this.column == null ? this.rows : shown.ToList();
 
             foreach (var heading in this.Columns.Values)
             {

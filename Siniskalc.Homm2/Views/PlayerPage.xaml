@@ -30,19 +30,22 @@
             <wpf:NavButton Text="Resources"/>
             <wpf:NavButton Text="Heroes"/>
             <wpf:NavButton Text="Towns"/>
+            <wpf:NavButton Text="Mines" Visibility="{Binding Mines.HasMines, Converter={StaticResource BoolToVisibilityTab}}"/>
+            <!-- A HoMM2 map has no dwellings of its own: the tab keeps the number the page of the other game has. -->
+            <wpf:NavButton Text="Dwellings" Visibility="Collapsed"/>
             <wpf:NavButton Text="Obelisks" Visibility="{Binding Obelisks.HasObelisks, Converter={StaticResource BoolToVisibilityTab}}"/>
             <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel6}"/>
 
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedTab}" Value="4">
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="6">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
@@ -70,8 +73,13 @@
                                       HasItems="{Binding HasCastles}" EmptyText="This player has no towns"/>
                 </WrapPanel>
 
-                <!-- Obelisks -->
+                <!-- Mines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
+                    <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine this player owns."/>
+                </StackPanel>
+
+                <!-- Obelisks -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel5}">
                     <!-- The obelisks of the map and which of them this player has visited. Only for savegames in which they were found. -->
                     <heroes:ObeliskVisitsCard DataContext="{Binding Obelisks}"/>
                 </StackPanel>

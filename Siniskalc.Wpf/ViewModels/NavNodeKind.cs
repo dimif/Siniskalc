@@ -25,5 +25,14 @@ namespace Siniskalc.Wpf.ViewModels
 
         /// <summary>The "Heroes" or "Towns" group of a player: the player's page, on the tab with that list.</summary>
         PlayerTab,
+
+        /// <summary>A mine of the map, below the "Mines" group of its owner.</summary>
+        Mine,
+
+        /// <summary>A dwelling of the map, below the "Dwellings" group of its owner.</summary>
+        Dwelling,
+
+        /// <summary>A group inside the "Mines" or "Dwellings" group of an owner (the mines of one resource, the dwellings of one faction): it opens the owner's tab with that list.</summary>
+        OwnerSubGroup,
     }
 }

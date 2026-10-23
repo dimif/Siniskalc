@@ -18,6 +18,8 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly Dictionary<int, NavNodeViewModel> playerNodes = [];
         private readonly Dictionary<(int Player, int Tab), NavNodeViewModel> playerTabNodes = [];
         private readonly Dictionary<int, NavNodeViewModel> castleNodes = [];
+        private readonly Dictionary<int, NavNodeViewModel> mineNodes = [];
+        private readonly Dictionary<int, NavNodeViewModel> dwellingNodes = [];
         private string filter = string.Empty;
 
         /// <param name="onSelected">Called with the node when the user picks one.</param>
@@ -66,6 +68,10 @@ namespace Siniskalc.Wpf.ViewModels
 
         public NavNodeViewModel? CastleNode(int castleIndex) => this.castleNodes.GetValueOrDefault(castleIndex);
 
+        public NavNodeViewModel? MineNode(int mineIndex) => this.mineNodes.GetValueOrDefault(mineIndex);
+
+        public NavNodeViewModel? DwellingNode(int dwellingIndex) => this.dwellingNodes.GetValueOrDefault(dwellingIndex);
+
         /// <summary>
         /// Empties the tree, for the builder to fill it again.
         /// </summary>
@@ -78,6 +84,8 @@ namespace Siniskalc.Wpf.ViewModels
             this.playerNodes.Clear();
             this.playerTabNodes.Clear();
             this.castleNodes.Clear();
+            this.mineNodes.Clear();
+            this.dwellingNodes.Clear();
         }
 
         /// <summary>
@@ -91,7 +99,7 @@ namespace Siniskalc.Wpf.ViewModels
 
         /// <summary>
         /// Remembers <paramref name="node"/> by what it stands for, so the editor can find it again: a hero, a castle, a player or a
-        /// tab of a player's page.
+        /// tab of a player's page, a mine or a dwelling.
         /// </summary>
         public void Register(NavNodeViewModel node)
         {
@@ -105,6 +113,12 @@ namespace Siniskalc.Wpf.ViewModels
                     break;
                 case NavNodeKind.Castle:
                     this.castleNodes[node.Index] = node;
+                    break;
+                case NavNodeKind.Mine:
+                    this.mineNodes[node.Index] = node;
+                    break;
+                case NavNodeKind.Dwelling:
+                    this.dwellingNodes[node.Index] = node;
                     break;
                 case NavNodeKind.Player:
                     this.playerNodes[node.Index] = node;

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -121,6 +121,43 @@
         }
 
         /// <summary>
+        /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
+        /// when nobody owns it.
+        /// </summary>
+        public void ShowMine(int mineIndex)
+        {
+            var game = this.Loaded();
+            var playerIndex = game.History.Current.Players().FindByColor(game.History.Current.Mines().GetModel(mineIndex).Owner);
+            if (playerIndex < 0)
+            {
+                this.ShowMap();
+                this.map!.SelectedTab = 0;
+                this.map.Mines.PickMine(mineIndex);
+                return;
+            }
+
+            this.ShowPlayer(playerIndex, OwnerTabs.Mines);
+            this.players[playerIndex].MapObjects.PickMine(mineIndex);
+        }
+
+        /// <summary>
+        /// Shows the tab of the dwellings of the owner of the dwelling at <paramref name="dwellingIndex"/>, or the map page when nobody owns it.
+        /// </summary>
+        public void ShowDwelling(int dwellingIndex)
+        {
+            var game = this.Loaded();
+            var playerIndex = game.History.Current.Players().FindByColor(game.History.Current.Dwellings().GetModel(dwellingIndex).Owner);
+            if (playerIndex < 0)
+            {
+                this.ShowMap();
+                this.map!.SelectedTab = 1;
+                return;
+            }
+
+            this.ShowPlayer(playerIndex, OwnerTabs.Dwellings);
+        }
+
+        /// <summary>
         /// Shows the page of the castle at <paramref name="castleIndex"/> in the savegame's castles.
         /// </summary>
         public void ShowCastle(int castleIndex)
@@ -189,6 +226,15 @@
                     break;
                 case NavNodeKind.Castle:
                     this.ShowCastle(node.Index);
+                    break;
+                case NavNodeKind.OwnerSubGroup:
+                    this.ShowPlayer(node.Index, node.Tab);
+                    break;
+                case NavNodeKind.Mine:
+                    this.ShowMine(node.Index);
+                    break;
+                case NavNodeKind.Dwelling:
+                    this.ShowDwelling(node.Index);
                     break;
                 case NavNodeKind.Overview:
                     this.ShowOverview();

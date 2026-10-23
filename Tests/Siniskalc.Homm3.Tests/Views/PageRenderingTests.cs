@@ -1,7 +1,8 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Heroes.Wpf.Views;
 using Siniskalc.Homm3.Tests.ViewModels;
 using Siniskalc.Homm3.ViewModels;
@@ -69,6 +70,40 @@ namespace Siniskalc.Homm3.Tests.Views
                     Show(window);
                     AssertRendered((Page)frame.Content, castleNode.Title);
                 }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        [Test]
+        public void TheMinesTabOfAPlayerShowsItsMinesAndTheGuardOfThePickedOne()
+        {
+            EnsureApplication();
+            var path = Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            var shell = TestServices.CreateShell(editor);
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            var window = TestServices.CreateShellWindow(shell);
+            window.Show();
+
+            try
+            {
+                var frame = window.HeroFrame();
+                Pump();
+
+                var mine = editor.PlayerNodes().Where(n => n.Kind == NavNodeKind.Player).SelectMany(n => n.Descendants()).First(n => n.Kind == NavNodeKind.Mine);
+                mine.IsSelected = true;
+                Pump();
+                var player = editor.CurrentPageOf<PlayerViewModel>();
+                Assert.That(player.SelectedTab, Is.EqualTo(OwnerTabs.Mines));
+                Assert.That(player.MapObjects.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
+                Show(window);
+
+                var texts = Descendants<TextBlock>((Page)frame.Content).Where(t => t.IsVisible).Select(t => t.Text).ToList();
+                Assert.That(texts, Does.Contain("Mines").And.Contain(player.MapObjects.GuardHeading), "the mines card did not render");
+                Assert.That(Descendants<MinesCard>((Page)frame.Content).Count(c => c.IsVisible), Is.EqualTo(1));
             }
             finally
             {

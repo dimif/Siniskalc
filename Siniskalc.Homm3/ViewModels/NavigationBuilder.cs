@@ -28,6 +28,8 @@ namespace Siniskalc.Homm3.ViewModels
             [NavNodeKind.Player] = Homm3ChunkKinds.Player,
             [NavNodeKind.Hero] = Homm3ChunkKinds.Hero,
             [NavNodeKind.Castle] = Homm3ChunkKinds.Castle,
+            [NavNodeKind.Mine] = Homm3ChunkKinds.Mines,
+            [NavNodeKind.Dwelling] = Homm3ChunkKinds.Dwellings,
         };
 
         private readonly BanishingTextProvider banishingText;
@@ -81,6 +83,12 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
+        /// <inheritdoc/>
+        protected override IReadOnlyList<PlayerColor> MineOwners(Game game) => game.History.Current.Mines().GetModels().Select(m => m.Owner).ToList();
+
+        /// <inheritdoc/>
+        protected override IReadOnlyList<PlayerColor> DwellingOwners(Game game) => game.History.Current.Dwellings().GetModels().Select(d => d.Owner).ToList();
+
         // A player is listed when the savefile has the player's data or one of the player's heroes.
         /// <inheritdoc/>
         protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetColors();
@@ -106,7 +114,9 @@ namespace Siniskalc.Homm3.ViewModels
                 string.Empty,
                 HeroEntriesOf(game.History.Current.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction.Name)).ToList(),
-                (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]));
+                (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]),
+                MineGroupsOf(game.History.Current.Mines().GetModels(), owner),
+                DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner));
             if (playerIndex >= 0)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));
@@ -114,6 +124,24 @@ namespace Siniskalc.Homm3.ViewModels
 
             return node;
         }
+
+        // The dwellings of an owner in groups, one for each faction of the creature they give (neutral last); a creature the editor does
+        // not know has a group of its own at the end.
+        private static IReadOnlyList<NavGroup> DwellingGroupsOf(IEnumerable<DwellingModel> dwellings, PlayerColor owner)
+        {
+            var own = dwellings.Where(d => d.Owner == owner).ToList();
+            var groups = own
+                .Where(d => d.Creature != null)
+                .GroupBy(d => d.Creature!.Faction)
+                .OrderBy(g => g.Key)
+                .Select(g => new NavGroup(g.Key.Name, EntriesOf(g)))
+                .ToList();
+            groups.Add(new NavGroup("Unknown", EntriesOf(own.Where(d => d.Creature == null))));
+            return groups;
+        }
+
+        private static IReadOnlyList<NavEntry> EntriesOf(IEnumerable<DwellingModel> dwellings) =>
+            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, d.Name, string.Empty)).ToList();
 
         private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
 

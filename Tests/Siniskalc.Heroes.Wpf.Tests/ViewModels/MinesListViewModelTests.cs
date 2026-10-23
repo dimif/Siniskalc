@@ -1,5 +1,6 @@
 namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
+    using System;
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
@@ -67,7 +68,49 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That(mines.Summary, Is.EqualTo("4 mines, 2 of them owned"));
         }
 
-        private static MineRowViewModel<IMineModel<TestColor>, TestColor> Row(MineKind kind, TestColor owner, int x, int y, int level = MapPosition.Above)
+        [Test]
+        public void AListOfOneOwnerShowsOnlyTheMinesOfThatOwner()
+        {
+            var mines = new MinesListViewModel<MineRowViewModel<IMineModel<TestColor>, TestColor>>(Mines().Rows, m => m.OwnerSort == OwnerNames<TestColor>.Of(TestColor.Neutral));
+
+            Assert.That(mines.Rows.Select(m => m.ResourceName), Is.EquivalentTo(new[] { MineKind.GoldMine.ToString(), MineKind.CrystalMine.ToString() }.Select(k => Resource(k))));
+            Assert.That(mines.Summary, Is.EqualTo("2 mines, 0 of them owned"));
+        }
+
+        [Test]
+        public void AMineThatChangesHandsLeavesTheListOfItsOldOwnerAndThePickedMineMovesOn()
+        {
+            var owner = TestColor.Red;
+            var rows = new[] { Row(MineKind.Sawmill, () => owner, 30, 4), Row(MineKind.GoldMine, () => TestColor.Red, 12, 40) };
+            var mines = new MinesListViewModel<MineRowViewModel<IMineModel<TestColor>, TestColor>>(rows, m => m.OwnerSort == OwnerNames<TestColor>.Of(TestColor.Red));
+            Assert.That(mines.SelectedMine, Is.SameAs(rows[0]));
+
+            owner = TestColor.Blue;
+            mines.Refresh();
+
+            Assert.That(mines.Rows, Is.EqualTo(new[] { rows[1] }));
+            Assert.That(mines.SelectedMine, Is.SameAs(rows[1]));
+        }
+
+        [Test]
+        public void AListThatLosesItsLastMineHasNoneToPick()
+        {
+            var owner = TestColor.Red;
+            var mines = new MinesListViewModel<MineRowViewModel<IMineModel<TestColor>, TestColor>>([Row(MineKind.Sawmill, () => owner, 1, 1)], m => m.OwnerSort == OwnerNames<TestColor>.Of(TestColor.Red));
+
+            owner = TestColor.Blue;
+            mines.Refresh();
+
+            Assert.That(mines.HasMines, Is.False);
+            Assert.That(mines.SelectedMine, Is.Null);
+        }
+
+        private static string Resource(string kind) => MineKinds.ResourceOf(Enum.Parse<MineKind>(kind)).ToString();
+
+        private static MineRowViewModel<IMineModel<TestColor>, TestColor> Row(MineKind kind, TestColor owner, int x, int y, int level = MapPosition.Above) =>
+            Row(kind, () => owner, x, y, level);
+
+        private static MineRowViewModel<IMineModel<TestColor>, TestColor> Row(MineKind kind, Func<TestColor> owner, int x, int y, int level = MapPosition.Above)
         {
             var mine = new Mock<IMineModel<TestColor>>();
             mine.SetupGet(m => m.Kind).Returns(kind);

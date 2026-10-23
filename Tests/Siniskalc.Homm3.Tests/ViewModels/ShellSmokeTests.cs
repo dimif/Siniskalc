@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
@@ -58,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Assert.That(viewModel.PendingChanges.Single().Path, Is.EqualTo("Purple › Resources"));
 
                     // The hex tab of the player shows the edited resource.
-                    (viewModel.CurrentPageOf<PlayerViewModel>()).SelectedTab = 4;
+                    (viewModel.CurrentPageOf<PlayerViewModel>()).SelectedTab = OwnerTabs.Hex;
                     Pump();
                     var playerHex = (HexEditor)((PlayerPage)frame.Content).FindName("hexEditor");
                     Assert.That(playerHex.IsVisible, Is.True);
@@ -345,7 +346,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     Pump();
                     var player = viewModel.CurrentPageOf<PlayerViewModel>();
                     Assert.That(player.Obelisks.HasObelisks, Is.True);
-                    player.SelectedTab = 3;
+                    player.SelectedTab = OwnerTabs.Obelisks;
                     Pump();
                     player.Obelisks.Obelisks[0].IsVisited = true;
                     Pump();

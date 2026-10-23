@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -24,6 +24,7 @@
             [NavNodeKind.Player] = Homm2ChunkKinds.Player,
             [NavNodeKind.Hero] = Homm2ChunkKinds.Hero,
             [NavNodeKind.Castle] = Homm2ChunkKinds.Castle,
+            [NavNodeKind.Mine] = Homm2ChunkKinds.Mines,
         };
 
         private readonly BanishingTextProvider banishingText;
@@ -70,6 +71,9 @@
         /// <inheritdoc/>
         protected override IReadOnlyList<PlayerColor> HeroOwners(Game game) => game.History.Current.Heroes().GetOwners();
 
+        /// <inheritdoc/>
+        protected override IReadOnlyList<PlayerColor> MineOwners(Game game) => game.History.Current.Mines().GetModels().Select(m => m.Owner).ToList();
+
         // A player is listed when it has a castle, a hero, or days left to get a castle.
         /// <inheritdoc/>
         protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetModels()
@@ -94,7 +98,8 @@
                 player == null ? string.Empty : this.banishingText.Nav(player),
                 HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
-                (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])));
+                (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])),
+                MineGroupsOf(document.Mines().GetModels(), owner));
         }
 
         private static IReadOnlyList<string> NotesOf(string visitor) => visitor.Length > 0 ? [visitor] : [];

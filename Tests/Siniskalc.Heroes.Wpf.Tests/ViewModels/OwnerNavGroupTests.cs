@@ -38,6 +38,46 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
+        public void TheMinesOfAPlayerAreInOneGroupForEachResourceBelowItsMinesGroup()
+        {
+            var tree = NewTree();
+            NavGroup[] mines = [new("Wood", [new(0, "Sawmill at X: 1, Y: 2", string.Empty)]), new("Gold", [new(4, "Gold mine at X: 3, Y: 4", string.Empty), new(7, "Gold mine at X: 5, Y: 6", string.Empty)]), new("Ore", [])];
+
+            var node = OwnerNavGroup.Create(tree, "Red", "#FF0000", 0, true, string.Empty, [], [], mines: mines);
+
+            var section = node.Children.Single();
+            Assert.That((section.Title, section.Subtitle, section.Kind, section.Tab), Is.EqualTo(("Mines", "3", NavNodeKind.PlayerTab, OwnerTabs.Mines)));
+            Assert.That(section.Children.Select(g => (g.Title, g.Subtitle, g.Kind, g.Tab)), Is.EqualTo(new[] { ("Wood", "1", NavNodeKind.OwnerSubGroup, OwnerTabs.Mines), ("Gold", "2", NavNodeKind.OwnerSubGroup, OwnerTabs.Mines) }));
+            Assert.That(section.Children[1].Children.Select(m => (m.Kind, m.Index)), Is.EqualTo(new[] { (NavNodeKind.Mine, 4), (NavNodeKind.Mine, 7) }));
+            Assert.That(node.Subtitle, Is.EqualTo("3 mines"));
+            Assert.That(tree.MineNode(7)?.Title, Is.EqualTo("Gold mine at X: 5, Y: 6"));
+            Assert.That(tree.PlayerTabNode(0, OwnerTabs.Mines), Is.SameAs(section));
+            Assert.That(section.Children.Select(g => g.IsExpanded), Has.All.False);
+        }
+
+        [Test]
+        public void TheDwellingsOfWhatNobodyOwnsAreGroupedToo()
+        {
+            var tree = NewTree();
+
+            var node = OwnerNavGroup.Create(tree, "Neutral", "#888888", -1, false, string.Empty, [], [], dwellings: [new("Castle", [new(2, "Pikeman dwelling at X: 1, Y: 1", string.Empty)])]);
+
+            var section = node.Children.Single();
+            Assert.That((section.Title, section.Kind, section.Tab), Is.EqualTo(("Dwellings", NavNodeKind.Group, OwnerTabs.Dwellings)));
+            Assert.That(section.Children.Single().Kind, Is.EqualTo(NavNodeKind.Group));
+            Assert.That(tree.DwellingNode(2)?.Kind, Is.EqualTo(NavNodeKind.Dwelling));
+            Assert.That(node.Subtitle, Is.EqualTo("1 dwelling"));
+        }
+
+        [Test]
+        public void AnOwnerWithoutMinesOrDwellingsHasNoSectionForThem()
+        {
+            var node = OwnerNavGroup.Create(NewTree(), "Blue", "#0000FF", 1, true, string.Empty, Heroes, [], mines: [new("Gold", [])], dwellings: []);
+
+            Assert.That(node.Children.Select(c => c.Title), Is.EqualTo(new[] { "Heroes" }));
+        }
+
+        [Test]
         public void TheGameMarksEachTownNode()
         {
             var marked = new List<int>();

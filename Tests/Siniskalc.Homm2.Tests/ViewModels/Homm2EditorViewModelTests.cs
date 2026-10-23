@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Models;
@@ -79,6 +79,26 @@
             var page = (CastleViewModel)this.editor.CurrentPage!;
             Assert.That(page.CastleIndex, Is.EqualTo(town.Index));
             Assert.That(page.Name, Is.EqualTo(town.Title));
+        }
+
+        [Test]
+        public void PickingAMineOfAPlayerShowsTheMinesTabOfThePlayerWithThatMinePicked()
+        {
+            var player = this.editor.NavigationNodes[0].Children.FirstOrDefault(n => n.Kind == NavNodeKind.Player && Descendants(n).Any(m => m.Kind == NavNodeKind.Mine));
+            if (player == null)
+            {
+                Assert.Ignore("No player of the savegame owns a mine.");
+            }
+
+            var mine = Descendants(player!).First(n => n.Kind == NavNodeKind.Mine);
+            Assert.That(Descendants(player!).Where(n => n.Kind == NavNodeKind.OwnerSubGroup).Select(n => n.Tab), Has.All.EqualTo(OwnerTabs.Mines));
+
+            mine.IsSelected = true;
+
+            var page = (PlayerViewModel)this.editor.CurrentPage!;
+            Assert.That(page.Color, Is.EqualTo(PlayerColor.All[player!.Index]));
+            Assert.That(page.SelectedTab, Is.EqualTo(OwnerTabs.Mines));
+            Assert.That(page.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
         }
 
         [Test]

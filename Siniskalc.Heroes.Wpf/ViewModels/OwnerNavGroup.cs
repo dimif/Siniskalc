@@ -2,6 +2,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -22,6 +23,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="heroes">The heroes of the owner.</param>
         /// <param name="castles">The towns of the owner.</param>
         /// <param name="markCastle">Sets what a game shows on the node of a town (badges, notes), or <c>null</c>.</param>
+        /// <param name="mines">The mines of the owner in groups (one per resource), or <c>null</c> for a game that shows none.</param>
+        /// <param name="dwellings">The dwellings of the owner in groups (one per faction), or <c>null</c> for a game that shows none.</param>
         public static NavNodeViewModel Create(
             NavigationTree tree,
             string ownerName,
@@ -31,8 +34,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             string status,
             IReadOnlyList<NavEntry> heroes,
             IReadOnlyList<NavEntry> castles,
-            Action<NavNodeViewModel, int>? markCastle = null)
+            Action<NavNodeViewModel, int>? markCastle = null,
+            IReadOnlyList<NavGroup>? mines = null,
+            IReadOnlyList<NavGroup>? dwellings = null)
         {
+            mines = NonEmpty(mines);
+            dwellings = NonEmpty(dwellings);
             var parts = new List<string>();
             if (status.Length > 0)
             {
@@ -49,6 +56,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 parts.Add($"{castles.Count} {(castles.Count == 1 ? "town" : "towns")}");
             }
 
+            AddCount(parts, mines, "mine", "mines");
+            AddCount(parts, dwellings, "dwelling", "dwellings");
+
             var isPlayer = playerIndex >= 0;
             var node = new NavNodeViewModel(
                 ownerName,
@@ -64,16 +74,73 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
             if (heroes.Count > 0)
             {
-                node.Children.Add(Group(tree, "Heroes", 1, colorHex, playerIndex, owned, heroes, NavNodeKind.Hero, null));
+                node.Children.Add(Group(tree, "Heroes", OwnerTabs.Heroes, colorHex, playerIndex, owned, heroes, NavNodeKind.Hero, null));
             }
 
             if (castles.Count > 0)
             {
-                node.Children.Add(Group(tree, "Towns", 2, colorHex, playerIndex, owned, castles, NavNodeKind.Castle, markCastle));
+                node.Children.Add(Group(tree, "Towns", OwnerTabs.Towns, colorHex, playerIndex, owned, castles, NavNodeKind.Castle, markCastle));
+            }
+
+            if (mines.Count > 0)
+            {
+                node.Children.Add(GroupedSection(tree, "Mines", OwnerTabs.Mines, colorHex, playerIndex, owned, mines, NavNodeKind.Mine));
+            }
+
+            if (dwellings.Count > 0)
+            {
+                node.Children.Add(GroupedSection(tree, "Dwellings", OwnerTabs.Dwellings, colorHex, playerIndex, owned, dwellings, NavNodeKind.Dwelling));
             }
 
             node.IsExpanded = node.DefaultExpanded;
             return node;
+        }
+
+        private static IReadOnlyList<NavGroup> NonEmpty(IReadOnlyList<NavGroup>? groups) => (groups ?? []).Where(g => g.Entries.Count > 0).ToList();
+
+        private static void AddCount(List<string> parts, IReadOnlyList<NavGroup> groups, string one, string many)
+        {
+            var count = groups.Sum(g => g.Entries.Count);
+            if (count > 0)
+            {
+                parts.Add($"{count} {(count == 1 ? one : many)}");
+            }
+        }
+
+        // A section of an owner whose entries are in groups: "Mines" holds "Gold", which holds the gold mines. The section opens the
+        // owner's tab; a group opens the same tab and is not registered, as the tab is the section's.
+        private static NavNodeViewModel GroupedSection(
+            NavigationTree tree,
+            string title,
+            int tab,
+            string colorHex,
+            int playerIndex,
+            bool owned,
+            IReadOnlyList<NavGroup> groups,
+            NavNodeKind leafKind)
+        {
+            var isPlayer = playerIndex >= 0;
+            var section = new NavNodeViewModel(title, groups.Sum(g => g.Entries.Count).ToString(), colorHex, isPlayer ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, tab, isPlayer ? tree.OnSelected : null)
+            {
+                DefaultExpanded = owned,
+            };
+            tree.Register(section);
+
+            foreach (var group in groups)
+            {
+                var node = new NavNodeViewModel(group.Title, group.Entries.Count.ToString(), colorHex, isPlayer ? NavNodeKind.OwnerSubGroup : NavNodeKind.Group, playerIndex, tab, isPlayer ? tree.OnSelected : null);
+                foreach (var entry in group.Entries)
+                {
+                    var leaf = new NavNodeViewModel(entry.Title, entry.Subtitle, colorHex, leafKind, entry.Index, onSelected: tree.OnSelected);
+                    node.Children.Add(leaf);
+                    tree.Register(leaf);
+                }
+
+                section.Children.Add(node);
+            }
+
+            section.IsExpanded = section.DefaultExpanded;
+            return section;
         }
 
         private static NavNodeViewModel Group(

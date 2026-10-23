@@ -45,7 +45,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(players.Select(g => g.Title), Is.EqualTo(new[] { "Red", "Blue", "Tan", "Green", "Orange", "Purple", "Teal", "Pink", "Neutral" }));
             Assert.That(players.Take(8).Select(g => g.Kind), Has.All.EqualTo(NavNodeKind.Player));
             Assert.That(players.Last().Kind, Is.EqualTo(NavNodeKind.Group));
-            Assert.That(players.SelectMany(p => p.Children).Select(c => c.Title).Distinct(), Is.EquivalentTo(new[] { "Heroes", "Towns" }));
+            Assert.That(players.SelectMany(p => p.Children).Select(c => c.Title).Distinct(), Is.SubsetOf(new[] { "Heroes", "Towns", "Mines", "Dwellings" }).And.Contain("Heroes").And.Contain("Towns"));
             Assert.That(players.Take(8).SelectMany(p => p.Children), Has.All.Matches<NavNodeViewModel>(c => c.Kind == NavNodeKind.PlayerTab));
             Assert.That(players.Last().Children, Has.All.Matches<NavNodeViewModel>(c => c.Kind == NavNodeKind.Group));
 

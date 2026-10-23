@@ -13,10 +13,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     public sealed class MinesListViewModel<TRow> : AbstractViewModelBase
         where TRow : MineRowViewModelBase
     {
+        private readonly bool filtered;
         private TRow? selectedMine;
 
         /// <param name="rows">The mines, in the order of the savegame.</param>
-        public MinesListViewModel(IReadOnlyList<TRow> rows)
+        /// <param name="filter">Says which mines the list shows (those of one owner, say), or null for all.</param>
+        public MinesListViewModel(IReadOnlyList<TRow> rows, Func<TRow, bool>? filter = null)
         {
             this.List = new SortableListViewModel<TRow>(
                 rows,
@@ -26,8 +28,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                     ["Owner"] = m => m.OwnerSort,
                     ["X"] = m => (m.X, m.Y, m.Level),
                     ["Y"] = m => (m.Y, m.X, m.Level),
-                });
-            this.selectedMine = rows.FirstOrDefault();
+                },
+                filter: filter);
+            this.filtered = filter != null;
+            this.selectedMine = this.List.Items.FirstOrDefault();
         }
 
         /// <summary>
@@ -57,6 +61,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
+        /// Picks the mine with the given place among the mines of the savegame, if the list has it.
+        /// </summary>
+        public void PickMine(int mineIndex) => this.SelectedMine = this.Rows.FirstOrDefault(m => m.Index == mineIndex);
+
+        /// <summary>
         /// Gets a value indicating whether the map has any mine.
         /// </summary>
         public bool HasMines => this.Rows.Count > 0;
@@ -67,7 +76,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string Summary => $"{this.Rows.Count} mines, {this.Rows.Count(m => m.IsOwned)} of them owned";
 
         /// <summary>
-        /// Shows the mines again, after the history changed.
+        /// Shows the mines again, after the history changed. A mine that no longer passes the filter leaves the list, and when it was the
+        /// one picked, the first one is picked (none when the list is empty).
         /// </summary>
         public void Refresh()
         {
@@ -76,6 +86,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 row.Refresh();
             }
 
+            // An unfiltered list keeps its order, so a row does not jump away while its owner is being edited.
+            if (this.filtered)
+            {
+                this.List.Sort();
+            }
+
+            if (this.selectedMine == null || !this.Rows.Contains(this.selectedMine))
+            {
+                this.selectedMine = this.Rows.FirstOrDefault();
+                this.RaisePropertyChanged(nameof(this.SelectedMine));
+            }
+
+            this.RaisePropertyChanged(nameof(this.HasMines));
             this.RaisePropertyChanged(nameof(this.Summary));
         }
     }

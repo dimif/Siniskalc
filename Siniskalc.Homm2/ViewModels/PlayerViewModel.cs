@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -51,6 +51,7 @@
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
+            this.Mines = MinesLists.Create(game, color);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
             this.resources = new ResourcesEditorViewModel(
                 ResourceOrder,
@@ -104,6 +105,11 @@
         public ICommand SetRichCommand => this.resources.SetRichCommand;
 
         /// <summary>
+        /// Gets the mines of the map that the player owns, for the Mines tab.
+        /// </summary>
+        public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
+
+        /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited.
         /// </summary>
         public ObeliskVisitsViewModel<PlayerColor> Obelisks { get; }
@@ -145,6 +151,7 @@
             this.castles = CastleLinks.OwnedBy(document, this.Color, this.openCastle, this.openHero);
 
             this.Obelisks?.Refresh();
+            this.Mines?.Refresh();
             this.DaysLeftCard?.Refresh();
 
             foreach (var place in this.TavernPlaces)

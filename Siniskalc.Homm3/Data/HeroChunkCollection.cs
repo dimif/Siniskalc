@@ -51,9 +51,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
 
-        /// <summary>
-        /// Returns the index of the hero with the given id (see <see cref="HeroModel.Id"/>), or -1 if the savefile has no such hero.
-        /// </summary>
+        /// <inheritdoc/>
         public int IndexOfId(int heroId) => this.IndexOf(c => this.Deserializer.DeserializeHeroId(c) == heroId);
 
         /// <inheritdoc/>

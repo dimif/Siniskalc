@@ -22,6 +22,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
                 new HeroSummary<TestColor>(1, 11, "Bob", TestColor.Neutral, "Wizard", 2),
                 new HeroSummary<TestColor>(2, 12, "Cid", TestColor.Red, "Knight", 3),
             ]);
+            heroes.Setup(h => h.IndexOfId(It.IsAny<int>())).Returns((int id) => id switch { 10 => 0, 11 => 1, 12 => 2, _ => -1 });
             return heroes;
         }
 
@@ -66,7 +67,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             places[0].OpenCommand.Execute(null);
 
-            Assert.That(opened, Is.EqualTo(new[] { 11 }));
+            Assert.That(opened, Is.EqualTo(new[] { 1 }));
             Assert.That(places[1].OpenCommand.CanExecute(null), Is.False);
         }
 

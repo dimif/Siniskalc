@@ -4,7 +4,7 @@
 
 **2026-10-21:** a second pass over both games.
 Done: the resource, tavern and days-left changes of a player are `AddResources`, `AddTavern` and `AddDaysLeft` in `ChangeSinkExtensions` (HoMM3 now reports a change of the days left, which it did not);
-`OwnedLinks.Heroes`, `HeroLinkViewModel` and `OwnerNavigationBuilderBase.HeroEntriesOf` are the hero lists of the overview, the player page and the navigation, and `CastleLinks.OwnedBy` is the castle list of each game (since 2026-10-22 one `OwnedLinks.Castles` over `ICastleModel`, the game giving its words);
+`OwnedLinks.Heroes`, `HeroLinkViewModel` and `OwnerNavigationBuilderBase.HeroEntriesOf` are the hero lists of the overview, the player page and the navigation, and `CastleLinks.OwnedBy` is the castle list of each game (since 2026-10-22 one `OwnedLinks.Castles` over `ICastleModel`, the game giving its words); since 2026-10-23 `IHeroSummaries.IndexOfId` also makes tavern links translate the stored hero id to the page index in one shared place (HoMM2 explicitly returns the id because its id is its index);
 `SessionPageViewModelBase<TModel>` (over `IEditSession<TModel>`) holds the pending changes and the reset of the HoMM3 pages;
 `HeroesArmyViewModelBase<TCreature, TSlot>` is the army editor, `HeroesSecondarySkillsViewModel<TSkill, TSkills>` is the skills editor (`ISecondarySkills.WithSkillLevel` handles the full hero in the model), and `SkillLevelNames` moved to `Siniskalc.Heroes.Wpf`;
 `IGameInfo<TColor>` is implemented by both `Game` classes, and `OverviewViewModelBase<TColor>` reads the date, map, difficulty and turn from it.

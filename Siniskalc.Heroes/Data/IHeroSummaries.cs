@@ -18,6 +18,12 @@ namespace Siniskalc.Heroes.Data
         IReadOnlyList<HeroSummary<TColor>> GetSummaries();
 
         /// <summary>
+        /// Returns the index of the hero with the given id, or -1 if the savefile has no such hero.
+        /// </summary>
+        /// <param name="heroId">The id a castle or a tavern holds for the hero.</param>
+        int IndexOfId(int heroId);
+
+        /// <summary>
         /// Returns the summary of the hero with the given id, or <c>null</c> if the savefile has no such hero.
         /// </summary>
         /// <param name="heroId">The id a castle or a tavern holds for the hero.</param>

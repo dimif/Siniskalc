@@ -35,9 +35,16 @@
         /// </summary>
         public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => this.GetModels().Select(hero => hero.Summary).ToList();
 
+        /// <inheritdoc/>
+        public int IndexOfId(int heroId) => heroId >= 0 && heroId < this.Count ? heroId : -1;
+
         /// <summary>
         /// Returns the summary of the hero with the given number (which is its place in the table), or null if there is no such hero.
         /// </summary>
-        public HeroSummary<PlayerColor>? FindById(int heroId) => heroId >= 0 && heroId < this.Count ? this.GetModel(heroId).Summary : null;
+        public HeroSummary<PlayerColor>? FindById(int heroId)
+        {
+            var index = this.IndexOfId(heroId);
+            return index < 0 ? null : this.GetModel(index).Summary;
+        }
     }
 }

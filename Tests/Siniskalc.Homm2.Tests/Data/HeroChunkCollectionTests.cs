@@ -22,10 +22,14 @@ namespace Siniskalc.Homm2.Tests.Data
         public void AHeroIsFoundByItsNumberAndAnUnknownNumberIsNull()
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes();
+            var summaries = (IHeroSummaries<PlayerColor>)heroes;
 
-            Assert.That(((IHeroSummaries<PlayerColor>)heroes).FindById(7), Is.EqualTo(heroes.GetModel(7).Summary));
-            Assert.That(((IHeroSummaries<PlayerColor>)heroes).FindById(54), Is.Null);
-            Assert.That(((IHeroSummaries<PlayerColor>)heroes).FindById(-1), Is.Null);
+            Assert.That(summaries.IndexOfId(7), Is.EqualTo(7));
+            Assert.That(summaries.IndexOfId(54), Is.EqualTo(-1));
+            Assert.That(summaries.IndexOfId(-1), Is.EqualTo(-1));
+            Assert.That(summaries.FindById(7), Is.EqualTo(heroes.GetModel(7).Summary));
+            Assert.That(summaries.FindById(54), Is.Null);
+            Assert.That(summaries.FindById(-1), Is.Null);
         }
     }
 }

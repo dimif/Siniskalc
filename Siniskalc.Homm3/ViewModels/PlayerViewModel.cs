@@ -59,7 +59,7 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.session.Current.Tavern,
                 edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),
                 () => this.session.History.Current.Heroes(),
-                this.OpenHeroById);
+                this.openHero);
 
             this.UpdateIsDirty();
             this.RefreshOwned();
@@ -177,14 +177,6 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             CommandManager.InvalidateRequerySuggested();
-        }
-
-        private void OpenHeroById(int heroId)
-        {
-            if (this.session.History.Current.Heroes().FindById(heroId) is { } hero)
-            {
-                this.openHero?.Invoke(hero.Index);
-            }
         }
 
         private void RefreshOwned()

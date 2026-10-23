@@ -86,8 +86,6 @@ namespace Siniskalc.Homm2.Data
 
         public const int SphinxAnswers = 32;
 
-        public const int SphinxMaxAnswers = 8;
-
         public const int SphinxAnswerSize = 13;
 
         public const int SphinxRiddle = 136;

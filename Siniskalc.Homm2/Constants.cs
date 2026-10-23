@@ -156,5 +156,14 @@ namespace Siniskalc.Homm2
             /// </summary>
             public const int SecondWellGrowth = 8;
         }
+
+        /// <summary>
+        /// Limits of the values of a sphinx.
+        /// </summary>
+        public static class Sphinx
+        {
+            public const int MaxAnswers = 8;
+            public const int MaxAnswerLength = 12;
+        }
     }
 }

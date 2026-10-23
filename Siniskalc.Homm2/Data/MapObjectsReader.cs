@@ -175,7 +175,7 @@
             }
 
             var count = bytes[payload + MapObjectLayout.SphinxAnswerCount];
-            if (count is < 1 or > MapObjectLayout.SphinxMaxAnswers)
+            if (count is < 1 or > Constants.Sphinx.MaxAnswers)
             {
                 return false;
             }

@@ -6,7 +6,6 @@ namespace Siniskalc.Homm2.ViewModels
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -34,7 +33,7 @@ namespace Siniskalc.Homm2.ViewModels
                 "Artifact",
                 onPick => new ArtifactFinderViewModel(version, string.Empty, "Choose", artifact => onPick(artifact.Name)),
                 name => this.session.Update(sphinx => sphinx with { ArtifactCode = name == null ? SphinxModel.NoArtifact : Artifact.All.First(a => a.Name == name).Code }));
-            this.Answers = Enumerable.Range(0, MapObjectLayout.SphinxMaxAnswers).Select(this.CreateAnswerField).ToList();
+            this.Answers = Enumerable.Range(0, Constants.Sphinx.MaxAnswers).Select(this.CreateAnswerField).ToList();
             this.Riddle = new TextFieldViewModel(
                 "Riddle",
                 () => this.session.Current.Riddle,
@@ -84,7 +83,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private static IReadOnlyList<string> WithAnswer(IReadOnlyList<string> answers, int place, string text)
         {
-            var places = Enumerable.Range(0, MapObjectLayout.SphinxMaxAnswers).Select(i => i < answers.Count ? answers[i] : string.Empty).ToList();
+            var places = Enumerable.Range(0, Constants.Sphinx.MaxAnswers).Select(i => i < answers.Count ? answers[i] : string.Empty).ToList();
             places[place] = text.Trim();
             var result = places.Where(a => a.Length > 0).ToList();
             return result.Count > 0 ? result : answers;
@@ -108,7 +107,7 @@ namespace Siniskalc.Homm2.ViewModels
             $"Answer {place + 1}",
             () => place < this.session.Current.Answers.Count ? this.session.Current.Answers[place] : string.Empty,
             text => this.session.Update(sphinx => sphinx with { Answers = WithAnswer(sphinx.Answers, place, text) }),
-            () => MapObjectLayout.SphinxAnswerSize - 1,
+            () => Constants.Sphinx.MaxAnswerLength,
             toolTip: "An answer the sphinx accepts, in any case; at most 12 characters.");
     }
 }

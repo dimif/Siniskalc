@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Data
         public MapObjectChunk Serialize(MapObjectChunk chunk, SphinxModel model)
         {
             var bytes = chunk.ToArray();
-            RangeGuard.ThrowIfOutOfRange<long>(model.Answers.Count, 1, MapObjectLayout.SphinxMaxAnswers, nameof(model.Answers));
+            RangeGuard.ThrowIfOutOfRange<long>(model.Answers.Count, 1, Constants.Sphinx.MaxAnswers, nameof(model.Answers));
             RangeGuard.ThrowIfOutOfRange<long>(model.Riddle.Length, 1, bytes.Length - MapObjectLayout.SphinxRiddle - 1, nameof(model.Riddle));
 
             if ((bytes[MapObjectLayout.SphinxActive] != 0) != model.IsActive)
@@ -44,10 +44,10 @@ namespace Siniskalc.Homm2.Data
             if (!old.Answers.SequenceEqual(model.Answers))
             {
                 bytes[MapObjectLayout.SphinxAnswerCount] = (byte)model.Answers.Count;
-                bytes.AsSpan(MapObjectLayout.SphinxAnswers, MapObjectLayout.SphinxMaxAnswers * MapObjectLayout.SphinxAnswerSize).Clear();
+                bytes.AsSpan(MapObjectLayout.SphinxAnswers, Constants.Sphinx.MaxAnswers * MapObjectLayout.SphinxAnswerSize).Clear();
                 for (var i = 0; i < model.Answers.Count; i++)
                 {
-                    RangeGuard.ThrowIfOutOfRange<long>(model.Answers[i].Length, 1, MapObjectLayout.SphinxAnswerSize - 1, nameof(model.Answers));
+                    RangeGuard.ThrowIfOutOfRange<long>(model.Answers[i].Length, 1, Constants.Sphinx.MaxAnswerLength, nameof(model.Answers));
                     Encoding.Latin1.GetBytes(model.Answers[i], bytes.AsSpan(MapObjectLayout.SphinxAnswers + (i * MapObjectLayout.SphinxAnswerSize)));
                 }
             }

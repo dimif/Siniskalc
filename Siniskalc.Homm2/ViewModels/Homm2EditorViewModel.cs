@@ -146,7 +146,6 @@ namespace Siniskalc.Homm2.ViewModels
             this.map = null;
             this.neutral?.Dispose();
             this.neutral = null;
-            this.overview?.Dispose();
         }
 
         /// <inheritdoc/>

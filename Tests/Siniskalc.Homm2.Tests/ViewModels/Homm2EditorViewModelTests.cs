@@ -171,6 +171,26 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheOverviewRefreshesWhileShownAndAfterUndoAndRedoAwayFromIt()
+        {
+            var original = this.editor.Overview!.Players.Single(p => p.Name == "Blue").Gold;
+            var session = this.editor.CurrentGame!.History.CreatePlayerSession(PlayerColor.Blue.Code);
+
+            session.Update(player => player with { Resources = player.Resources.With(Resource.Gold, 7) });
+            Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo("7"));
+
+            this.editor.ShowPlayer(PlayerColor.Blue);
+            this.editor.Undo();
+            this.editor.ShowOverview();
+            Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo(original));
+
+            this.editor.ShowPlayer(PlayerColor.Blue);
+            this.editor.Redo();
+            this.editor.ShowOverview();
+            Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo("7"));
+        }
+
+        [Test]
         public void TheFilterNarrowsTheTreeToWhatMatches()
         {
             var hero = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.Hero);

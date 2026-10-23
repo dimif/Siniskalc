@@ -49,7 +49,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Builds the cards again from the savefile as it is edited now.
         /// </summary>
-        public void Refresh()
+        public override void Refresh()
         {
             var summaries = this.game.History.Current.Heroes().GetSummaries();
             var colors = this.game.History.Current.Players().GetColors()

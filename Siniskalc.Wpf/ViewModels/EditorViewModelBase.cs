@@ -210,6 +210,7 @@ namespace Siniskalc.Wpf.ViewModels
         {
             if (!ReferenceEquals(this.currentPage, page))
             {
+                this.RefreshOverview(page);
                 this.OnPageShowing(page);
                 this.currentPage = page;
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
@@ -276,6 +277,15 @@ namespace Siniskalc.Wpf.ViewModels
             this.RebuildNavigationIfStructureChanged();
             this.RefreshPendingChanges();
             this.OnHistoryChanged();
+            this.RefreshOverview(this.currentPage);
+        }
+
+        private void RefreshOverview(object? page)
+        {
+            if (page != null && ReferenceEquals(page, this.OverviewPage) && page is IRefreshableViewModel refreshable)
+            {
+                refreshable.Refresh();
+            }
         }
 
         private void RebuildNavigationIfStructureChanged()

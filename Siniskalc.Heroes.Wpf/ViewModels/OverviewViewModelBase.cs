@@ -15,7 +15,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// its savefile does not tell), builds the cards of the players and sets <see cref="Players"/>, <see cref="OrderOfPlay"/> and
     /// <see cref="Summary"/>.
     /// </summary>
-    public abstract class OverviewViewModelBase<TColor> : AbstractViewModelBase, IOverviewPage
+    public abstract class OverviewViewModelBase<TColor> : AbstractViewModelBase, IOverviewPage, IRefreshableViewModel
         where TColor : class, IPlayerColor
     {
         private const string UnnamedFile = "Savegame";
@@ -78,6 +78,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
         /// <inheritdoc/>
         public bool HasOrderOfPlay => this.OrderOfPlay.Count > 0;
+
+        /// <inheritdoc/>
+        public abstract void Refresh();
 
         /// <summary>
         /// Gets the game the page is about.

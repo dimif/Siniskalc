@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
@@ -17,7 +16,7 @@
     /// What the editor shows about the savegame that is open: the map, the date and a card for each player with its castles and heroes.
     /// It reads the models of the current document, so it is up to date after every edit, undo and redo.
     /// </summary>
-    public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>, IDisposable
+    public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -33,7 +32,6 @@
             this.openPlayer = openPlayer;
             this.openHero = openHero;
             this.openCastle = openCastle;
-            this.game.History.Changed += this.OnHistoryChanged;
             this.Refresh();
         }
 
@@ -43,7 +41,7 @@
         /// <summary>
         /// Reads the players again from the current document.
         /// </summary>
-        public void Refresh()
+        public override void Refresh()
         {
             var document = this.game.History.Current;
             var heroes = document.Heroes().GetModels();
@@ -58,8 +56,6 @@
             this.Summary = SummaryOf(this.Players.Count, owned, this.DifficultyText);
             this.RaiseAllPropertiesChanged();
         }
-
-        public void Dispose() => this.game.History.Changed -= this.OnHistoryChanged;
 
         private OrderOfPlayItemViewModel OrderItemOf(PlayerModel player)
         {
@@ -94,7 +90,5 @@
                 banishingText: this.banishingText.Pill(player),
                 isBanished: player.IsBanished);
         }
-
-        private void OnHistoryChanged(object? sender, EventArgs e) => this.Refresh();
     }
 }

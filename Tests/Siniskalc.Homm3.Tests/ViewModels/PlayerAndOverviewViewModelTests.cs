@@ -265,11 +265,17 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheOverviewShowsGoldEditedOnAPlayerPageWhenItIsShownAgain()
         {
+            var original = this.main.LoadedOverview().Players.Single(p => p.Name == "Purple").Gold;
             this.PlayerNode("Purple").IsSelected = true;
             (this.main.CurrentPageOf<PlayerViewModel>()).Resources.Single(r => r.IsGold).Value = 7;
 
             this.main.ShowOverview();
+            Assert.That(this.main.LoadedOverview().Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
 
+            this.main.Undo();
+            Assert.That(this.main.LoadedOverview().Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo(original));
+
+            this.main.Redo();
             Assert.That(this.main.LoadedOverview().Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
         }
 

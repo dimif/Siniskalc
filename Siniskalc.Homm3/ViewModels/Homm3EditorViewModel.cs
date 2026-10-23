@@ -278,23 +278,5 @@ namespace Siniskalc.Homm3.ViewModels
             }
         }
 
-        /// <inheritdoc/>
-        protected override void OnPageShowing(object? page)
-        {
-            if (page is OverviewViewModel shown && ReferenceEquals(shown, this.overview))
-            {
-                // It was not kept up to date while it was out of sight.
-                shown.Refresh();
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnHistoryChanged()
-        {
-            if (this.overview != null && ReferenceEquals(this.CurrentPage, this.overview))
-            {
-                this.overview.Refresh();
-            }
-        }
     }
 }

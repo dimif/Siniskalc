@@ -52,6 +52,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public ICommand SetRichCommand { get; }
 
         /// <summary>
+        /// Builds the resources of a player in the order both games show them: gold first, then the savefile-table order.
+        /// </summary>
+        /// <param name="limits">What the player may hold, and what the buttons add.</param>
+        /// <param name="current">Gets the resources of the player now.</param>
+        /// <param name="original">Gets the resources of the player as the savefile had them.</param>
+        /// <param name="update">Changes the resources of the player.</param>
+        /// <param name="note">Tells what is shown beside the amount of a resource, such as its income; nothing when omitted.</param>
+        public static ResourcesEditorViewModel ForPlayer(
+            ResourceLimits limits,
+            Func<ResourceSet> current,
+            Func<ResourceSet> original,
+            Action<Func<ResourceSet, ResourceSet>> update,
+            Func<Resource, string>? note = null)
+        {
+            return new ResourcesEditorViewModel(ResourceSet.All.OrderBy(resource => resource != Resource.Gold), limits, current, original, update, note);
+        }
+
+        /// <summary>
         /// Shows the amounts again, after the resources changed.
         /// </summary>
         public void Refresh()

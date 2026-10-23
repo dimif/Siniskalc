@@ -32,6 +32,16 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
+        public void APlayerHasGoldFirstThenTheSavefileTableOrder()
+        {
+            var editor = ResourcesEditorViewModel.ForPlayer(Limits, () => this.state, () => ResourceSet.None, edit => this.state = edit(this.state));
+
+            Assert.That(
+                editor.Rows.Select(r => r.Resource),
+                Is.EqualTo(new[] { Resource.Gold, Resource.Wood, Resource.Mercury, Resource.Ore, Resource.Sulfur, Resource.Crystal, Resource.Gems }));
+        }
+
+        [Test]
         public void GoldHasLimitsOfItsOwn()
         {
             var rows = this.Editor().Rows;

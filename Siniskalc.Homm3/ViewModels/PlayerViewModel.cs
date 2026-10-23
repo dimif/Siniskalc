@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
@@ -45,8 +44,7 @@ namespace Siniskalc.Homm3.ViewModels
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
-            this.resources = new ResourcesEditorViewModel(
-                ResourceSet.All.OrderBy(resource => resource != Resource.Gold),
+            this.resources = ResourcesEditorViewModel.ForPlayer(
                 Limits,
                 () => this.session.Current.Resources,
                 () => this.Session.Original.Resources,

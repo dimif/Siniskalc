@@ -2,7 +2,6 @@ namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
@@ -29,11 +28,6 @@ namespace Siniskalc.Homm2.ViewModels
             Constants.Player.AllResourcesIncrease,
             Constants.Player.GoldIncrease);
 
-        private static readonly Resource[] ResourceOrder =
-        [
-            Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems,
-        ];
-
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
@@ -53,8 +47,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.session = game.History.CreatePlayerSession(color.Code);
             this.Mines = MinesLists.Create(game, color);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
-            this.resources = new ResourcesEditorViewModel(
-                ResourceOrder,
+            this.resources = ResourcesEditorViewModel.ForPlayer(
                 Limits,
                 () => this.session.Current.Resources,
                 () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources,

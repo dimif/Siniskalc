@@ -248,7 +248,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);
-            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
+            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems" }));
         }
 
         [Test]

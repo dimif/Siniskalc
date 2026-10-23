@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm2.Data
 {
+    using Siniskalc.Heroes.Data;
+
     /// <summary>
     /// Where the obelisks a player has visited are in the savegame.
     /// </summary>
@@ -26,5 +28,10 @@ namespace Siniskalc.Homm2.Data
         /// The byte 9 of the tile that is an obelisk.
         /// </summary>
         public const byte TileMarker = 0x99;
+
+        /// <summary>
+        /// Gets where the visited flags are in their chunk. HoMM2 gets their count from the obelisks found on the map.
+        /// </summary>
+        public static ObeliskFlagsLayout Flags { get; } = new(0, null);
     }
 }

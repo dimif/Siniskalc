@@ -1,5 +1,7 @@
 namespace Siniskalc.Homm3.Data
 {
+    using Siniskalc.Heroes.Data;
+
     /// <summary>
     /// Where the obelisks the player has visited are in the savefile.
     /// </summary>
@@ -27,5 +29,10 @@ namespace Siniskalc.Homm3.Data
         public const int CountOffset = 3;
 
         public const int FlagsOffset = MarkerLength;
+
+        /// <summary>
+        /// Gets where the count and visited flags are in their chunk.
+        /// </summary>
+        public static ObeliskFlagsLayout Flags { get; } = new(FlagsOffset, CountOffset);
     }
 }

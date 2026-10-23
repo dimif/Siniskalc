@@ -30,6 +30,7 @@ The creature, spell and artifact tables, positions and map headers are not share
 A game's page puts its own content in the blocks; both player pages add the Banishing card (`DaysLeftCard` over `DaysLeftCardViewModel`, the days left of a player who owns no town) to the `ResourcesPanel`.
 A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the styles of the controls come last.
 The blocks bind to what `IResettablePage`, `IResourcesPage`, `IPlayerPage`, `ICastlePage` and `IHeroPage` say a page has (`PageContractTests` puts them on pages that have nothing else).
+The page view models share `ResettablePageViewModelBase` (tab, pending changes, Reset, dispose): HoMM3's hero, castle and player pages derive from `SessionPageViewModelBase<TModel>` (the page reads and writes one record through an `IEditSession<TModel>`), both Map pages from `RecordsPageViewModelBase`, and HoMM2's hero, castle and player pages from its own `PageViewModel` (an owner change there writes three records, so its Reset reverts the pending changes of the page).
 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).

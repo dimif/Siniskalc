@@ -60,7 +60,7 @@ Done, each in its own commit with the whole suite run after it:
 **What the assessment looks like now**
 
 - **Hero.** After E10, M1, M2, M4 and M14 the two hero models hold the same *parts* (level, movement, primary skills, army, spell set). What is left that differs is secondary skills (M3, deferred) and the glue (artifact rules, class, backpack, war machines, flags). M10 stays KEEP; the next step is a hero page interface (`IHeroPage`, a view-model question) and, after E3 and M3, the secondary skills page.
-- **Player and map.** The player is now a shared base plus each game's lists. What remains different is real: HoMM2 keeps lists of hero and castle numbers and an income, HoMM3 does not. `GameSetup` (who controls each colour, whose turn) stays HoMM3's until the HoMM2 header masks are decoded (test 2 in `HOMM2_PLAN.md`); then `PlayerType` and `GameSetup` move together (E12 and M13).
+- **Player and map.** The player is now a shared base plus each game's own members. HoMM2's model keeps the lists of hero and castle numbers and an income; HoMM3's player record has the same lists but its model does not read them (M9a: the redundancy of the lists with the owner bytes, no decision yet). `GameSetup` was HoMM3's until the HoMM2 header masks were decoded; it is `GameSetup<TColor>` in `Heroes` now (2026-10-22), and `PlayerType` is shared.
 - **M17, obelisks: revised.** The review said `ObeliskVisits` had no HoMM2 counterpart. HoMM2 has obelisks that work like HoMM3's, and no teams. The model is already free of teams: it is a byte per obelisk with a bit per colour; "the whole team gets the bit" is done by the game when it writes and is only described in a comment. So `ObeliskVisits` can become `ObeliskVisits<TColor>` in `Heroes` (its positions are `MapPosition?` now), together with the obelisk view models. The blocker is decoding, not design: test 3 in `HOMM2_PLAN.md`. For HoMM2 the "team" case is simply not offered. M17 is therefore no longer KEEP for the obelisks; granted spells, the castle builder and `PrimarySkillBonus` stay as they were (the last moved with M2).
 - **Entities.** E4 (secondary skills), E8 (buildings), E11 (HoMM3 hero vocabulary), M5 (artifacts and backpack), M16 (spell points rule): unchanged, for the reasons given. E11 has one new note: `FacingDirection` moves first when the HoMM2 facing byte is decoded (test 4).
 - **Pattern that held.** Every shared type that came out of this was either a value both games store in the same way (`ResourceSet`, `MapPosition`, `PrimarySkills`), or a generic over the game's own entity (`Army<TCreature>`, `SpellSet<TSpell>`, `HeroSummary<TColor>`, `PlayerModelBase<TColor>`), or a mechanism with the game's data passed in (`ExperienceTable`, `Factions<TFaction>`). What did not move is exactly what each game's rules own.
@@ -78,7 +78,7 @@ Done, each in its own commit with the whole suite run after it:
 | E6 | Creature, ability | done | done | KEEP the rest | none |
 | E7 | Artifact | name and code | name, code, slot, class, cost, effects | INTERFACE (`IArtifact` + bonus) | small |
 | E8 | Buildings and dwellings | flags | building graph | KEEP | none |
-| E9 | Position | struct (x, y) | record (x, y, z), `HeroPosition` | SHARE (`MapPosition`) | medium |
+| E9 | Position | struct (x, y) | record (x, y, z), `HeroPosition` | SHARE (`MapPosition`) | **done** (`MapPosition` and `HeroPosition` in `Heroes.Models`) |
 | E10 | Hero level and movement | four loose numbers | `HeroLevel`, `HeroMovementPoints` | SHARE | small |
 | E11 | Hero vocabulary of HoMM3 | none | class, gender, facing, war machines, ... | KEEP | none |
 | E12 | Player type | none | `PlayerType` | KEEP (revisit) | none |
@@ -90,8 +90,8 @@ Done, each in its own commit with the whole suite run after it:
 | M6 | Artifact bonus table | `ArtifactBonuses` | `ArtifactEffectInfo` | follows E7 | small |
 | M7 | Resources | `Resources` (long) | `PlayerResources` (int) | SHARE (`ResourceSet`) | small |
 | M8 | `Numbers` | value-equality int list | none (plain lists) | SHARE (Core) | small |
-| M9 | Player | colour, resources, income, lists, days left, tavern | colour, resources, tavern, days left | GENERIC base | medium |
-| M10 | Hero | flat record | class with reconcile | KEEP (share the parts) | none |
+| M9 | Player | colour, resources, income, lists, days left, tavern | colour, resources, tavern, days left | GENERIC base | **done** (`PlayerModelBase<TColor>`; the lists: see M9a) |
+| M10 | Hero | flat record | class with reconcile | KEEP (share the parts) | KEEP; the parts are shared and both models implement `IHeroModel<...>`, both pages `IHeroPage` |
 | M11 | Hero summary | none (in the navigation builder) | `HeroSummary` | SHARE | small |
 | M12 | Castle | flags and numbers | building set | KEEP; share `MageGuild`, `CreatureStock` | medium |
 | M13 | Map header, game setup | name, size | name, difficulty, size, underground | SHARE (`MapHeader`) | small |
@@ -191,6 +191,7 @@ A common `IBuilding` would have a name and a flag, which the pages already get a
 The folders disagree (`Models` against `Entities`), which is the first sign they are the same idea.
 
 **Proposal.** `MapPosition(int X, int Y, int Level = 0)` as a `readonly record struct` in `Heroes.Models` with `ToString` ("x,y" or "x,y,level"), `Above`/`Underground` constants, and a `None` sentinel. HoMM2 always has level 0. `HeroPosition` stays in HoMM3 as `MapPosition` plus the facing (record composition, not inheritance, since a struct cannot be derived from).
+**Status (2026-10-22): done.** `MapPosition(X, Y, Level)` is a record in `Heroes.Models`, and `HeroPosition(X, Y, Level, FacingDirection)` derives from it there too (both games' heroes face a direction), so the composition above was not needed.
 The consumers: the headers of the castle and hero pages show a position; the `Destination`, `Boat`, `MarkerPosition` fields.
 
 **Cost and risk.** About 140 uses in the two games; HoMM3's serializers narrow to `short`/`byte`, so the narrowing guards the serializers already have must cover it. The data is not at risk (the layout classes decide the bytes), and the compiler finds every use.
@@ -294,12 +295,55 @@ That may not matter today (the pending changes come from the differs, and dirty 
 
 ### M9. Player: GENERIC base (`PlayerModelBase<TColor>`)
 
-**Now.** HoMM2 `PlayerModel(Color, Resources, Income, HeroIds, SelectedHero, CastleIds, SelectedCastle, DaysLeft, Tavern)` with `IsOut`, `DaysToOwnACastle = 7`, `WithCastle`, `WithoutCastle`. HoMM3 `PlayerModel(PlayerColor, PlayerResources, Tavern, DaysLeft)` with `IsBanished`, `HasCountdown`, `WithDaysLeft(int)`.
-The shared part is the banishing countdown (7 days in both; 0 = out) and resources and tavern. The HoMM2-only part is the lists of heroes and castles and the income (HoMM3 keeps the lists elsewhere).
+**Status (2026-10-22): done.** `abstract record PlayerModelBase<TColor>(TColor Color, ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft) : BanishablePlayerBase(DaysLeft)` is in `Heroes.Models`; the countdown (`DaysLeft`, `IsBanished`, `HasCountdown`, `DaysLeftOnGainingATown`, `DaysLeftOnLosingATown`) is on the colourless `BanishablePlayerBase`, and `WithDaysLeft` is the extension `PlayerModelExtensions.WithDaysLeft<TPlayer>`, which keeps the game's type. Both `PlayerModel`s derive from it: HoMM2's adds `Income`, `HeroIds`, `SelectedHero`, `CastleIds`, `SelectedCastle` and `WithHero` / `WithoutHero` / `WithCastle` / `WithoutCastle`; HoMM3's adds `WithTownGained` / `WithTownLost`. `IsOut` is gone for `IsBanished`, and both games word the countdown with `BanishingTextProvider` and edit it with `DaysLeftCard`. The text below is the review as it was written.
+
+**Then.** HoMM2 `PlayerModel(Color, Resources, Income, HeroIds, SelectedHero, CastleIds, SelectedCastle, DaysLeft, Tavern)` with `IsOut`, `DaysToOwnACastle = 7`, `WithCastle`, `WithoutCastle`. HoMM3 `PlayerModel(PlayerColor, PlayerResources, Tavern, DaysLeft)` with `IsBanished`, `HasCountdown`, `WithDaysLeft(int)`.
+The shared part is the banishing countdown (7 days in both; 0 = out) and resources and tavern. The HoMM2-only part of the *model* is the lists of heroes and castles and the income. (HoMM3's player record holds the lists too, but its model does not read them; see M9a.)
 
 **Proposal.** `abstract record PlayerModelBase<TColor>(TColor Color, ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft)` in `Heroes.Models` with `IsBanished`, `HasCountdown`, `WithDaysLeft` and the constants (`MaxDaysLeft`). Each game's sealed `PlayerModel` derives from it and adds its own members. The navigation builders' two copies of the "N days left" text then read one property.
 **Why a base and not a field:** record inheritance keeps `with` and positional deconstruction, so serializers and reducers change only their type names.
 **Value:** medium. The banishing rule is where the games already agree, and `BanishingTextProvider` (HoMM3) could be shared with it.
+
+### M9a. The hero and castle lists of a player: redundant with the owner bytes (no decision yet)
+
+**No decision has been made.** This section records what is known, what is open and the options, so the owner can decide after testing in the game.
+
+**The redundancy.** In both games a hero and a castle record their owner (one byte, `FF` for nobody), and the record of each player also lists what it owns:
+
+- HoMM2 (`docs/HOMM2_SAVE_FORMAT.md`, "Players"): the number of heroes (+0x2C2), the selected hero (+0x2C3), five places of hero ids (+0x2C5, `Constants.Player.HeroListSize` = 5), the number of castles (+0x305), the selected castle (+0x306) and eight places of castle indexes (+0x308, `Constants.Player.CastleListSize` = 8), `FF` for an empty place.
+- HoMM3 (`docs/KNOWLEDGE_BASE.md`, "Players"; `PlayerLayout`): the number of heroes (0), the selected hero (1), eight places of hero ids (2 to 9; a garrisoned hero is not in the list), the number of towns (23, `PlayerLayout.TownCount`), the selected town (24, `PlayerLayout.SelectedTown`) and the town indexes from 25.
+
+So "who owns this" is stored twice: once in the hero or castle, once in a player's list (and its count).
+
+**What each game does today.**
+
+- HoMM2: `PlayerModel` holds `HeroIds`, `SelectedHero`, `CastleIds` and `SelectedCastle`, read by `PlayerDeserializer` and written by `SafePlayerSerializer` (the counts are written from the lists). An owner edit is one step of the history over **three chunks**: `HeroEditSession.ChangeOwner` writes the hero (`HeroModel.WithOwner`) and the old and new owner's player records (`WithoutHero` / `WithHero`); `CastleEditSession.ChangeOwner` writes the castle and the two players (`WithoutCastle` / `WithCastle`, which also move the countdown with `DaysLeftOnLosingATown` / `DaysLeftOnGainingATown`). A full list refuses the edit (`GameRuleException`); a removed selection becomes `FF` (null).
+- HoMM3: `PlayerModel` reads none of the lists, and `SafePlayerSerializer` leaves them, the counts and the selections as they are. A castle owner edit goes through `CastleEditSession.ChangeOwner`: the castle and the two players' **days left** only (`WithTownLost` / `WithTownGained`, the towns counted from the owners of the castles); `TownCount` and the town list are not written, so they are stale after the edit. A hero owner edit is `HeroModel.WithOwner` on the hero chunk only; the hero count and list of the players are not written.
+
+**What is known from the saves.**
+
+- The record and the lists change together in every save where a hero or castle changed hands: a hire (HoMM2 Broken Alliance save 8: the hero's owner byte and the player's hero list), a defeat (save 16: owner `FF`, the AI player's list loses the hero), a capture and a loss (saves 17 to 19 and 23 to 24: castle owner and both castle lists; HoMM3 `castles_00` to `01`, `banishing_00` to `01` and `01` to `02`, `roe_63` to `64`).
+- The counts follow the lists (HoMM2: confirmed; HoMM3: the town count went up or down by one with each castle gained or lost in every pair of saves looked at).
+- The days left (both games, same rule, `BanishablePlayerBase`): `FF` while the player owns a town; 7 the day the last town is lost (HoMM2 Broken Alliance save 21; HoMM3 `banishing_00` to `01` and `banishing_04` to `05`); one less each day; `FF` again at once when a town is gained (HoMM2 save 24; HoMM3 `banishing_01` to `02`); losing one town of several or gaining one while not counting leaves `FF`; 0 once banished (HoMM2 save 22, Green; HoMM3 `banishing_13`). A banished player gaining a town is in no save; the editor leaves it banished.
+- A removed selection becomes `FF` (HoMM2: the selected hero becomes `FF` when a castle is selected, and the two are exclusive in HoMM3 too).
+- HoMM2 write test E14GIVE (`docs/HOMM2_SAVE_FORMAT.md`): a castle given from Blue to Orange with both lists edited loaded, and the game agreed on the owner; the notes say the flag on the map (which the editor does not write) stayed Blue's and "the castle was missing from Blue's list until the turn changed", which does not say which list the game showed from.
+
+**What is open.**
+
+- Is the order of a list meaningful (the order of the heroes and castles on the game's right-hand panel, or which hero is selected next)? HoMM2 appends (`02 03 01` after three captures), but whether the game sorts or relies on it is not known.
+- Does the game rebuild the lists from the owner bytes on load or at the start of a turn, or does it trust them?
+- What happens on a mismatch: a hero or castle owned by a player but not in its list, or in a list but owned by another?
+- Is the selected hero or castle only UI state, or does the game use it beyond the selection on the map?
+- Does HoMM3 break, or fix itself, with a stale town list and `TownCount` after the editor's castle owner change (the state it leaves today)?
+- What does the game do when a banished player gains a town?
+
+**Options.**
+
+- **A. Keep as is.** The lists stay in the model (HoMM2) and the sessions write three chunks per owner edit. Simple to reason about and matches what the saves show; HoMM3 would have to add the lists to its model and its sessions to do the same. Cost: the model carries a copy of what the owner bytes say, and every edit that changes an owner must remember the lists (a missed path leaves them out of step).
+- **B. Lists out of the model, a reconciler per game.** The models keep only the owner bytes; after each edit a document-level step supplied by the game (a reconciler run by the history or the save) rewrites each player's lists and counts from the owners, keeping the order of what stays and appending what is new, and clearing a selection that is gone. One rule for every edit path and both games; needs the order question answered first, and it writes bytes the user did not touch (the lists of players whose owners did not change would be rewritten only if they were already out of step, which could alter a loaded save).
+- **C. Lists out of the model, no reconciliation.** What HoMM3 does today: only the owner bytes (and the days left) are written. Least code; leaves the lists and `TownCount` stale after an owner edit, which is safe only if the game rebuilds them.
+
+**Decision needed: test in the game first.** Edit only the owner byte of a hero and of a castle (lists left alone), load, and see what the game shows and whether it fixes the lists; swap the order of a list; empty a list while the player still owns what it listed. The answers choose between A, B and C for both games.
 
 ### M10. Hero: KEEP (share the parts)
 

@@ -63,7 +63,7 @@ Offsets below are for Blue; add `n * 0xCF` for colour n (Blue 0, Green 1, Red 2,
 | 0x304 | u8 | **days left before the player is eliminated for owning no castle or town**, 0xFF while he owns one. Blue lost his last castle in save 21 (7), then 4 (save 22), 3 (save 23); it went back to 0xFF after the next capture (save 24). Green: 3 in save 21, 0 in save 22 where he was kicked out - **confirmed** |
 | 0x305 | u8 | number of castles owned (1 -> 2 when Corackston was captured; 0 when the last was lost) - confirmed |
 | 0x306 | u8 | **selected castle index**, 0xFF when none (3 = Xabran when the castle was selected after building) - likely |
-| 0x308 | u8 list | **castles owned**, as castle indexes, 0xFF for empty (`03 FF..`, `03 02 FF..`; after the three captures of saves 19-24 `02 03 01`); at least 4 entries are used (Purple holds `08 09 04 0A`) - confirmed |
+| 0x308 | u8 list | **castles owned**, as castle indexes, 0xFF for empty (`03 FF..`, `03 02 FF..`; after the three captures of saves 19-24 `02 03 01`); the list has 8 places (`Constants.Player.CastleListSize`; the hero list at 0x2C5 has 5, `Constants.Player.HeroListSize`), and 4 were the most seen in use (Purple holds `08 09 04 0A`) - confirmed |
 | 0x350 | u32 | wood - confirmed |
 | 0x354 | u32 | mercury - confirmed |
 | 0x358 | u32 | ore - confirmed |

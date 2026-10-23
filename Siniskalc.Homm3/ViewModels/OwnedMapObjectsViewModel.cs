@@ -7,6 +7,7 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Wpf.ViewModels;
 
@@ -18,16 +19,18 @@ namespace Siniskalc.Homm3.ViewModels
     {
         private readonly SaveDocumentHistory history;
         private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly GameVersion version;
         private MapDwellingRowViewModel? selectedDwelling;
+        private ArmyViewModel? guardEditor;
 
         public OwnedMapObjectsViewModel(SaveDocumentHistory history, PlayerColor owner, IByteEditTargetFactory byteEditTargets)
         {
             this.history = history;
             this.byteEditTargets = byteEditTargets;
             var ownerName = OwnerNames<PlayerColor>.Of(owner);
-            var version = history.Current.GameVersion();
+            this.version = history.Current.GameVersion();
             this.Mines = new MinesListViewModel<MineRowViewModel>(
-                Enumerable.Range(0, history.Current.Mines().Count).Select(i => new MineRowViewModel(history.CreateMineSession(i), version)).ToList(),
+                Enumerable.Range(0, history.Current.Mines().Count).Select(i => new MineRowViewModel(history.CreateMineSession(i))).ToList(),
                 mine => mine.OwnerSort == ownerName);
             this.DwellingList = new SortableListViewModel<MapDwellingRowViewModel>(
                 Enumerable.Range(0, history.Current.Dwellings().Count).Select(i => new MapDwellingRowViewModel(history.CreateDwellingSession(i))).ToList(),
@@ -45,6 +48,7 @@ namespace Siniskalc.Homm3.ViewModels
             {
                 if (e.PropertyName == nameof(this.Mines.SelectedMine))
                 {
+                    this.guardEditor?.Refresh();
                     this.RaisePropertyChanged(nameof(this.GuardEditor));
                     this.RaisePropertyChanged(nameof(this.GuardHeading));
                 }
@@ -86,7 +90,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the editor of the guard of the mine that is picked, or <c>null</c> when the owner has no mine.
         /// </summary>
-        public ArmyViewModel? GuardEditor => this.Mines.SelectedMine?.GuardEditor;
+        public ArmyViewModel? GuardEditor => this.Mines.SelectedMine == null ? null : this.guardEditor ??= this.CreateGuardEditor();
 
         public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Guard of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Guard";
 
@@ -101,6 +105,7 @@ namespace Siniskalc.Homm3.ViewModels
         public void Refresh()
         {
             this.Mines.Refresh();
+            this.guardEditor?.Refresh();
             this.DwellingList.Sort();
             foreach (var row in this.Dwellings)
             {
@@ -126,6 +131,13 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IByteEditTarget? CreateDwellingByteEditTarget() =>
             this.SelectedDwelling is { } dwelling ? this.byteEditTargets.ForDwelling(this.history, dwelling.Index) : null;
+
+        // One editor serves whichever mine is picked: swapping the editor of the page for another view model rebuilds the whole editor (its
+        // seven creature lists and the finder of every creature), which takes most of a second, while refreshing one only updates its values.
+        private ArmyViewModel CreateGuardEditor() => new(
+            this.version,
+            () => this.Mines.SelectedMine?.Guard ?? new Army<Creature>(Constants.CreatureSlotCount),
+            edit => this.Mines.SelectedMine?.UpdateGuard(edit));
 
         /// <summary>
         /// Picks the mine with the given place among the mines of the savegame, if the owner has it.

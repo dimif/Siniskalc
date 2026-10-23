@@ -14,14 +14,14 @@
                 <local:ArmyEditor DataContext="{Binding GuardEditor}"/>
             </StackPanel>
         </Border>
-        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400">
+        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hex: the bytes of the mine that is picked"/>
-                <wpf:HexEditor Grid.Row="1" x:Name="hexEditor"/>
+                <wpf:HexEditor Grid.Row="1" x:Name="hexEditor" KnownFieldsHeight="120"/>
             </Grid>
         </Border>
     </StackPanel>

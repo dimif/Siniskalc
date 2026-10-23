@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.ViewModels
 {
+    using System;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
@@ -17,17 +18,13 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class MineRowViewModel : MineRowViewModel<MineModel, PlayerColor>
     {
-        private readonly GameVersion gameVersion;
-        private ArmyViewModel? guardEditor;
-
-        public MineRowViewModel(IEditSession<MineModel> session, GameVersion gameVersion)
+        public MineRowViewModel(IEditSession<MineModel> session)
             : base(
                 session,
                 (mine, owner) => mine with { Owner = owner },
                 "Who owns the mine. The game works the income out at the start of the next day and draws the flag from the owner. Not tried in the game.",
                 hasLevels: true)
         {
-            this.gameVersion = gameVersion;
         }
 
         /// <summary>
@@ -43,17 +40,13 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Gets the editor of the guard. It is made when first needed, as it builds the finder of every creature.
+        /// Gets the creatures that guard the mine.
         /// </summary>
-        public ArmyViewModel GuardEditor => this.guardEditor ??= new ArmyViewModel(
-            this.gameVersion,
-            () => this.Session.Current.Guard,
-            edit => this.Session.Update(mine => mine with { Guard = edit(mine.Guard) }));
+        public IArmy<Creature> Guard => this.Session.Current.Guard;
 
-        public override void Refresh()
-        {
-            base.Refresh();
-            this.guardEditor?.Refresh();
-        }
+        /// <summary>
+        /// Changes the creatures that guard the mine.
+        /// </summary>
+        public void UpdateGuard(Func<IArmy<Creature>, IArmy<Creature>> edit) => this.Session.Update(mine => mine with { Guard = edit(mine.Guard) });
     }
 }

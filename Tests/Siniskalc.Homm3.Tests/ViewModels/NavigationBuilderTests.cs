@@ -63,6 +63,18 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
+        public void PickingAMineSelectsOnlyThatMineAndNotTheMinesNodeOfItsOwner()
+        {
+            var red = this.main.PlayerNodes().Single(n => n.Title == "Red");
+            var mine = red.Descendants().First(n => n.Kind == NavNodeKind.Mine);
+
+            mine.IsSelected = true;
+
+            Assert.That(this.main.NavigationNodes.Descendants().Where(n => n.IsSelected), Is.EqualTo(new[] { mine }));
+            Assert.That(this.main.CurrentPageOf<PlayerViewModel>().SelectedTab, Is.EqualTo(OwnerTabs.Mines));
+        }
+
+        [Test]
         public void TheNeutralNodeOpensThePageOfWhatNobodyOwns()
         {
             var neutral = this.main.PlayerNodes().Single(n => n.Title == "Neutral");

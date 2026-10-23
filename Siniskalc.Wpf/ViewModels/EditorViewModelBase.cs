@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Wpf.ViewModels
+namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -21,6 +21,7 @@
         private readonly NavigationTree navigation;
         private TGame? currentGame;
         private object? currentPage;
+        private NavNodeViewModel? pickedNode;
         private string navigationFilter = string.Empty;
         private string structureKey = string.Empty;
 
@@ -29,7 +30,7 @@
             this.gameService = gameService;
             this.saveRegions = saveRegions;
             this.navigationBuilder = navigationBuilder;
-            this.navigation = new NavigationTree(this.OnNodeSelected, navigationBuilder.ChunkKinds);
+            this.navigation = new NavigationTree(this.OnNodePicked, navigationBuilder.ChunkKinds);
         }
 
         /// <summary>
@@ -216,7 +217,22 @@
 
             if (page != null)
             {
-                this.navigation.Reveal(this.NodeOf(page));
+                this.navigation.Reveal(this.pickedNode ?? this.NodeOf(page));
+            }
+        }
+
+        // The node the user picked stays the selected one while its page is shown, even when the page belongs to another node as well (the
+        // Mines tab of a player for one of its mines); selecting that node too would leave two nodes highlighted.
+        private void OnNodePicked(NavNodeViewModel node)
+        {
+            this.pickedNode = node;
+            try
+            {
+                this.OnNodeSelected(node);
+            }
+            finally
+            {
+                this.pickedNode = null;
             }
         }
 

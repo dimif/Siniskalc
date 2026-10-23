@@ -71,7 +71,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             page.Mines.SelectedMine = guarded;
 
             Assert.That(guarded.Summary, Is.EqualTo("1 of 7 slots"));
-            Assert.That(page.GuardEditor, Is.SameAs(guarded.GuardEditor));
+            Assert.That(page.GuardEditor, Is.Not.Null);
             Assert.That(page.GuardHeading, Does.Contain("X: 1, Y: 14"));
             Assert.That(page.GuardEditor!.CreatureSlots[0].HasCreature, Is.True);
 

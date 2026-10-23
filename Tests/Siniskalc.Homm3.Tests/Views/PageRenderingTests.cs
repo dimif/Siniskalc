@@ -104,6 +104,9 @@ namespace Siniskalc.Homm3.Tests.Views
                 var texts = Descendants<TextBlock>((Page)frame.Content).Where(t => t.IsVisible).Select(t => t.Text).ToList();
                 Assert.That(texts, Does.Contain("Mines").And.Contain(player.MapObjects.GuardHeading), "the mines card did not render");
                 Assert.That(Descendants<MinesCard>((Page)frame.Content).Count(c => c.IsVisible), Is.EqualTo(1));
+
+                // The finder of creatures of the guard lists every creature of the game: it must only build the rows that are in view.
+                Assert.That(Descendants<ListBoxItem>((Page)frame.Content).Count(), Is.LessThan(80), "the finder builds a row for every creature");
             }
             finally
             {

@@ -19,6 +19,7 @@ namespace Siniskalc.Homm3.Views
         {
             this.InitializeComponent();
             AdvancedModeVisibility.Apply(this.hexCard);
+            this.hexCard.IsVisibleChanged += (_, _) => this.ShowBytes();
             this.DataContextChanged += this.OnDataContextChanged;
         }
 
@@ -44,6 +45,13 @@ namespace Siniskalc.Homm3.Views
         // The bytes follow the mine that is picked; an edit of the same mine leaves the editor as it is.
         private void ShowBytes()
         {
+            // Building the grid of bytes is slow, so it is only built while the card is on screen (advanced mode, on this tab).
+            if (!this.hexCard.IsVisible)
+            {
+                this.boundMine = -1;
+                return;
+            }
+
             var picked = this.viewModel?.Mines.SelectedMine?.Index ?? -1;
             if (picked == this.boundMine)
             {

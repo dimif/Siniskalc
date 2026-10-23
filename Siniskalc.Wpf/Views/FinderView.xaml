@@ -45,6 +45,7 @@
         <ListBox x:Name="list" ItemsSource="{Binding Items}" MaxHeight="{Binding ListMaxHeight, ElementName=root}" Background="Transparent"
                  BorderThickness="0,1,0,0" BorderBrush="{StaticResource LineBrush}"
                  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.ScrollUnit="Pixel"
                  MouseDoubleClick="ListDoubleClick" ContextMenuOpening="ListContextMenuOpening">
             <ListBox.GroupStyle>
                 <GroupStyle>

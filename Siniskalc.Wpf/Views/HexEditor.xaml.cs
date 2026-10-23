@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Wpf.Views
+namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.Collections.Generic;
@@ -33,6 +33,16 @@
             typeof(string),
             typeof(HexEditor),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
+
+        /// <summary>
+        /// The height of the list of known fields under the grid. It is tall for a chunk with many fields (a hero), and can be small where
+        /// there are few (a mine).
+        /// </summary>
+        public static readonly DependencyProperty KnownFieldsHeightProperty = DependencyProperty.Register(
+            nameof(KnownFieldsHeight),
+            typeof(double),
+            typeof(HexEditor),
+            new PropertyMetadata(230.0));
 
         private const int BytesPerRow = 16;
         private const int AddressColumnIndex = 0;
@@ -71,6 +81,15 @@
                 this.SubscribeToTarget();
                 this.SyncFromTarget();
             };
+        }
+
+        /// <summary>
+        /// Gets or sets the height of the list of known fields under the grid.
+        /// </summary>
+        public double KnownFieldsHeight
+        {
+            get { return (double)this.GetValue(KnownFieldsHeightProperty); }
+            set { this.SetValue(KnownFieldsHeightProperty, value); }
         }
 
         public static string? GetSourceFile(DependencyObject element) => (string?)element.GetValue(SourceFileProperty);

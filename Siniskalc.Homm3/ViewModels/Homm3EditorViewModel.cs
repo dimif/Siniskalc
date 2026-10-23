@@ -277,6 +277,5 @@ namespace Siniskalc.Homm3.ViewModels
                     break;
             }
         }
-
     }
 }

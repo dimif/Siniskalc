@@ -34,7 +34,7 @@ namespace Siniskalc.Homm3.Runtime
             this.PlayerRegions = new PlayerRegionProvider();
             this.CastleRegions = new CastleRegionProvider();
 
-            this.CastleDeserializer = new CastleDeserializer();
+            this.CastleDeserializer = new CastleDeserializer(loggerFactory.CreateLogger<CastleDeserializer>());
             this.CastleSerializer = new SafeCastleSerializer();
             this.PlayerDeserializer = new PlayerDeserializer();
             var pendingChanges = new Homm3PendingChangesFactory();
@@ -53,7 +53,8 @@ namespace Siniskalc.Homm3.Runtime
                 new RecordKit<RecordChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
                 new RecordKit<RecordChunk, DwellingModel>(new DwellingDeserializer(), new SafeDwellingSerializer(), new DwellingDiffer()),
                 new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
-                this.BytesPatcher);
+                this.BytesPatcher,
+                loggerFactory);
 
             this.SavefileCodec = new GzipSavefileCodec(loggerFactory.CreateLogger<GzipSavefileCodec>());
             this.GameService = new GameService(

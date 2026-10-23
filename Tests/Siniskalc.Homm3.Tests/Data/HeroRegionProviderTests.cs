@@ -103,7 +103,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var entities = TestServices.VersionEntities.For(GameVersion.HornOfTheAbyss);
             var serializer = new SafeHeroSerializer(HotaOffsets, entities);
-            var model = new HeroDeserializer(HotaOffsets, entities).Deserialize(this.chunk);
+            var model = new HeroDeserializer(HotaOffsets, entities, NullLogger<HeroDeserializer>.Instance).Deserialize(this.chunk);
             var map = new ByteRegionMap(TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length), this.chunk.Length);
 
             var edited = serializer.Serialize(this.chunk, model with

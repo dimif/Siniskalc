@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -13,7 +15,7 @@
     /// <summary>
     /// Reads a <see cref="CastleModel"/> from a <see cref="CastleChunk"/>.
     /// </summary>
-    public sealed class CastleDeserializer : ICastleDeserializer
+    public sealed class CastleDeserializer(ILogger<CastleDeserializer> logger) : ICastleDeserializer
     {
         public CastleModel Deserialize(CastleChunk chunk)
         {
@@ -35,7 +37,7 @@
                 DeserializeBuildings(chunk, faction, CastleLayout.VisibleBuildingsFromNameEnd),
                 chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
                 DeserializeSpellCounts(chunk),
-                DeserializeMageGuildSpells(chunk));
+                this.DeserializeMageGuildSpells(chunk));
         }
 
         public Faction DeserializeFaction(CastleChunk chunk)
@@ -45,8 +47,14 @@
 
         public PlayerColor DeserializeOwner(CastleChunk chunk)
         {
-            // TODO:LOG info, when the byte is neither a colour nor FF: the castle "{chunk.Name}" has owner byte {value}, which reads as neutral and is kept.
-            return PlayerColor.FromByte(chunk.GetByteAt(CastleLayout.Owner));
+            var code = chunk.GetByteAt(CastleLayout.Owner);
+            if (code != Constants.ByteOff && AbstractEnumeration.FromCode<PlayerColor>(code) is null)
+            {
+                using var subject = logger.BeginSubject("Castle", chunk.Name);
+                logger.LogTrace("Owner byte {Code:X2} is no colour, read as neutral and kept", code);
+            }
+
+            return PlayerColor.FromByte(code);
         }
 
         public MapPosition DeserializePosition(CastleChunk chunk)
@@ -64,7 +72,11 @@
             return x == byte.MaxValue && y == byte.MaxValue ? null : new MapPosition(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
-        public IArmy<Creature> DeserializeGarrison(CastleChunk chunk) => ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance);
+        public IArmy<Creature> DeserializeGarrison(CastleChunk chunk)
+        {
+            using var subject = logger.BeginSubject("Castle", chunk.Name);
+            return ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance, logger);
+        }
 
         /// <summary>
         /// Returns every building the castle has built, including the ones an upgrade has replaced.
@@ -105,8 +117,9 @@
         /// (-1 for a level the faction cannot build, or a code that is no spell) is left out, and a chunk that ends before the lists
         /// (a savefile cut short) has none.
         /// </summary>
-        private static IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
+        private IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
         {
+            using var subject = logger.BeginSubject("Castle", chunk.Name);
             var levels = new IReadOnlyList<Spell>[CastleLayout.SpellLevelCount];
             for (var level = 1; level <= levels.Length; level++)
             {
@@ -120,8 +133,10 @@
                     {
                         spells.Add(spell);
                     }
-
-                    // TODO:LOG warning, when spell is null and code is not -1: the castle "{chunk.Name}" holds spell code {code} in its level {level} Mage Guild slot {slot}, which this editor does not know; the slot is left out and its bytes are kept.
+                    else if (code != -1)
+                    {
+                        logger.LogTrace("Spell code {Code} in Mage Guild level {Level} slot {Slot} is unknown, the slot is left out and its bytes are kept", code, level, slot);
+                    }
                 }
 
                 levels[level - 1] = spells;

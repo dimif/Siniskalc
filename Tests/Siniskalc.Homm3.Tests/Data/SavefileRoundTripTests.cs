@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var heroes = TestServices.GameService.LoadGameFromFile(path).History.Current.Heroes();
             var entities = TestServices.VersionEntities.For(heroes.Offsets.GameVersion);
-            var deserializer = new HeroDeserializer(heroes.Offsets, entities);
+            var deserializer = new HeroDeserializer(heroes.Offsets, entities, NullLogger<HeroDeserializer>.Instance);
             var serializer = new SafeHeroSerializer(heroes.Offsets, entities);
 
             foreach (var chunk in heroes)

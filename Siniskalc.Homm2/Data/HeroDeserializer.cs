@@ -2,7 +2,9 @@
 {
     using System;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -12,17 +14,22 @@
     /// Reads the record of a hero. A value the editor does not know (a creature or an artifact it has no name for, a colour that is none)
     /// does not stop the load: see <see cref="Bytes"/>. The name is read, never written.
     /// </summary>
-    public sealed class HeroDeserializer : IHeroDeserializer
+    public sealed class HeroDeserializer(ILogger<HeroDeserializer> logger) : IHeroDeserializer
     {
         /// <inheritdoc/>
-        public PlayerColor DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
+        public PlayerColor DeserializeOwner(HeroChunk chunk)
+        {
+            using var subject = logger.BeginSubject("Hero", chunk.Name);
+            return Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner), logger);
+        }
 
         /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
         {
+            using var subject = logger.BeginSubject("Hero", chunk.Name);
             var bytes = chunk.ToArray();
             var id = chunk.GetByteAt(HeroLayout.Id);
-            var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));
+            var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(code => Bytes.ReadArtifact(code, logger)));
 
             return new HeroModel(
                 id,
@@ -44,8 +51,9 @@
                 },
                 Bytes.SecondarySkills(
                     chunk.GetBytesAt(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount),
-                    chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
-                ArmyReader.Read(chunk, HeroLayout.Army, CreatureCodes.Instance),
+                    chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount),
+                    logger),
+                ArmyReader.Read(chunk, HeroLayout.Army, CreatureCodes.Instance, logger),
                 FactionOf(id),
                 artifacts,
                 Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))

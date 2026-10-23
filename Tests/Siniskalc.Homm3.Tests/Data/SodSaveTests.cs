@@ -51,7 +51,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void MariusIsTheOnlyHeroWithAnOwner()
         {
             var game = Load(Save1);
-            var deserializer = new HeroDeserializer(game.History.Current.Heroes().Offsets, TestServices.VersionEntities.For(game.GameVersion));
+            var deserializer = new HeroDeserializer(game.History.Current.Heroes().Offsets, TestServices.VersionEntities.For(game.GameVersion), NullLogger<HeroDeserializer>.Instance);
 
             var owned = game.History.Current.Heroes().Where(c => deserializer.DeserializeOwner(c) == PlayerColor.Red).Select(c => c.Name);
 

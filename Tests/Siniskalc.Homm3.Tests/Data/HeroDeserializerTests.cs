@@ -14,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [SetUp]
         public void SetUp()
         {
-            this.deserializer = new HeroDeserializer(new HeroOffsets(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss), TestServices.VersionEntities.For(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss));
+            this.deserializer = new HeroDeserializer(new HeroOffsets(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss), TestServices.VersionEntities.For(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss), NullLogger<HeroDeserializer>.Instance);
         }
 
         [Test]

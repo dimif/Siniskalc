@@ -7,6 +7,8 @@ namespace Siniskalc
     using Serilog;
     using Serilog.Events;
     using Serilog.Extensions.Logging;
+    using Serilog.Formatting;
+    using Serilog.Templates;
     using Siniskalc.Core.Runtime;
 
     /// <summary>
@@ -18,7 +20,8 @@ namespace Siniskalc
     {
         private const string FileName = "siniskalc-.log";
         private const int DaysKept = 7;
-        private const string Template = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}";
+        // The subject (a hero or a castle, see LogScopeExtensions) is shown after the category when the line has one.
+        private const string Template = "{@t:yyyy-MM-dd HH:mm:ss.fff zzz} [{@l:u3}] {SourceContext}{#if Subject is not null} ({Subject}){#end}: {@m}\n{#if @x is not null}{@x}\n{#end}";
 
         /// <summary>
         /// Starts logging. The folder is the one the user chose, or the one of the platform when they did not.
@@ -30,15 +33,15 @@ namespace Siniskalc
             var configuration = new LoggerConfiguration()
                 .MinimumLevel.Is(LevelOf(settings.LogLevel))
                 .Enrich.FromLogContext()
-                .WriteTo.Debug(outputTemplate: Template)
-                .WriteTo.Console(outputTemplate: Template);
+                .WriteTo.Debug(Formatter())
+                .WriteTo.Console(Formatter());
 
             var folder = LogPaths.Resolve(settings, applicationName);
             if (TryUse(folder, out var problem))
             {
                 configuration.WriteTo.File(
+                    Formatter(),
                     Path.Combine(folder, FileName),
-                    outputTemplate: Template,
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: DaysKept);
             }
@@ -49,6 +52,8 @@ namespace Siniskalc
 
             return new SerilogLoggerFactory(configuration.CreateLogger(), dispose: true);
         }
+
+        private static ITextFormatter Formatter() => new ExpressionTemplate(Template);
 
         private static LogEventLevel LevelOf(LogLevel level) => level switch
         {

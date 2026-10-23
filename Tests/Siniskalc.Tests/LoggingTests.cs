@@ -1,6 +1,7 @@
 namespace Siniskalc.Tests
 {
     using System.Text.Json;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     [TestFixture]
@@ -42,6 +43,27 @@ namespace Siniskalc.Tests
             services.LoggerFactory.Dispose();
 
             Assert.That(Directory.GetFiles(logs).SelectMany(File.ReadAllLines), Is.Empty);
+        }
+
+        [Test]
+        public void ALineShowsWhatItIsAboutWhenItIsLoggedInsideASubject()
+        {
+            var logs = Path.Combine(this.folder, "subject");
+            var settingsPath = this.WriteSettings(new { LogFolder = logs, LogLevel = "Trace" });
+
+            var services = new AppServices(settingsPath: settingsPath);
+            var logger = services.LoggerFactory.CreateLogger("Test.Category");
+            using (logger.BeginSubject("Hero", "Sandro"))
+            {
+                logger.LogTrace("Class byte {Code:X2} read as Knight", 0xFE);
+            }
+
+            logger.LogTrace("Outside any subject");
+            services.LoggerFactory.Dispose();
+
+            var lines = File.ReadAllLines(Directory.GetFiles(logs).Single());
+            Assert.That(lines, Has.One.Matches<string>(l => l.Contains("[VRB] Test.Category (Hero Sandro): Class byte FE read as Knight")));
+            Assert.That(lines, Has.One.Matches<string>(l => l.EndsWith("[VRB] Test.Category: Outside any subject")));
         }
 
         [Test]

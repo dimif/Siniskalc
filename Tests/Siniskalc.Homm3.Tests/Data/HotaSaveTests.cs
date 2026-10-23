@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Data
             this.chunks = this.loader.LoadHeroChunks(this.bytes, new SavegameVersionDetector().Detect(this.bytes));
             this.offsets = new HeroOffsets(new SavegameVersionDetector().Detect(this.bytes));
             var entities = TestServices.VersionEntities.For(this.offsets.GameVersion);
-            this.deserializer = new HeroDeserializer(this.offsets, entities);
+            this.deserializer = new HeroDeserializer(this.offsets, entities, NullLogger<HeroDeserializer>.Instance);
         }
 
         [Test]

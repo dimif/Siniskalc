@@ -10,7 +10,7 @@ Failures that the user must see are in `ERROR_MODEL.md`; this file is about what
 | What do I inject? | `ILogger<T>` (`Microsoft.Extensions.Logging`), through the constructor, kept in a field called `logger`. Never `Log.Logger` or any static. |
 | Who builds the loggers? | `AppServices` (the composition root) via `LoggingSetup` in the exe. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
 | Where is the file? | `<LocalApplicationData>/Siniskalc/logs/siniskalc-<date>.log` (`LogPaths`), unless `LogFolder` is set in `settings.json`. |
-| How do I write a message? | A constant template with named placeholders, never `$"..."`: `logger.LogWarning("Unknown creature code {Code:X2} in slot {Slot}", code, slot)`. `CA2254` enforces it. |
+| How do I write a message? | A constant template with named placeholders, never `$"..."`: `logger.LogWarning("Skipped the backup of {File}", name)`. `CA2254` enforces it. |
 | Which level? | Warning = surprising but handled. Error = the user saw an operation fail. See the table below. |
 | Where not to log? | Models and reducers, views, property setters, anything per byte or per item of a list. |
 
@@ -34,16 +34,20 @@ Do **not** log:
 
 Log **once, where the failure is handled** (the catch that turns it into a message for the user, or the code that chooses the
 fallback). Do not log at every layer the exception passes through, and do not log and rethrow.
-A deserializer that falls back logs each distinct case once per load, not once per occurrence.
+
+A deserializer that reads a byte it does not know as a stand-in logs it at **Trace**, on every read, with no de-duplication: a
+model is read again whenever a page needs it, so the same line repeats. That is acceptable because Trace is off by default; the
+noise is handled with the level and filters, not in the code. Such a line says what the byte was and what it read as, and puts
+the record it is about in a *subject* (next section).
 
 ## Levels
 
 | Level | Use | Example |
 |---|---|---|
-| Trace | Per-item decode detail. Off by default. | each offset a locator tried |
+| Trace | Per-item decode detail. Off by default. | each offset a locator tried; a byte a deserializer read as a stand-in |
 | Debug | Flow detail for a developer. | block found at offset, length, the heuristic that chose the version |
 | Information | Lifecycle and user commands that worked. | app started (version, OS, runtime), savegame opened or saved (game, version), backup made |
-| Warning | The editor met something unexpected and carried on. | unknown creature read as a stand-in, byte kept, backup skipped |
+| Warning | The editor met something unexpected and carried on. | backup skipped, a temporary file that could not be removed |
 | Error | An operation failed and the user was told. | file unreadable, corrupt or unsupported savegame, save failed |
 | Critical | An unhandled exception, or the app cannot start or continue. | `OnUnhandledException`, a settings or logging failure at start-up |
 
@@ -62,11 +66,17 @@ The minimum level is Information (Debug while a debugger is attached) and can be
 - **Exceptions** go in the exception argument, never as `ex.Message` inside the template:
   `logger.LogError(ex, "Failed to save {File}", name)`.
 - **Layout** (timestamp, level, category) belongs to the sink in `LoggingSetup`. Code does not format any of it.
+  Serilog writes the levels as `VRB` (Trace), `DBG`, `INF`, `WRN`, `ERR` and `FTL` (Critical).
+- **Subject.** A line about one record does not repeat its name in the message: the code that reads the record opens
+  `using var subject = logger.BeginSubject("Hero", chunk.Name);` (`LogScopeExtensions`, `Kind Name`: `Hero`, `Castle`, `Mine`) and every line
+  logged inside it, including those of helpers that were passed the logger (`ArmyReader.Read`, `Bytes.ReadColor`), shows
+  `Category (Hero Sandro): message`. It is the property `Subject`, so a filter can select it. A helper that is also used by the
+  serializers takes `ILogger? logger = null` and logs only when it gets one, so writing a model does not log what reading it would.
 
 The file is plain text, one event per line, followed by the exception when there is one:
 
 ```
-2026-10-23 14:02:11.532 +02:00 [WRN] Siniskalc.Homm3.Data.HeroDeserializer: Unknown creature code FE in slot 3 read as stand-in
+2026-10-23 14:02:11.532 +02:00 [VRB] Siniskalc.Homm3.Data.HeroDeserializer (Hero Sandro): Class byte FE read as Knight and kept until the class is changed
 ```
 
 ## What to include, and what never to

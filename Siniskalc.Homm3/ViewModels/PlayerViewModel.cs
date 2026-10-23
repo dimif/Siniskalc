@@ -156,9 +156,6 @@ namespace Siniskalc.Homm3.ViewModels
         public ICommand SetRichCommand => this.resources.SetRichCommand;
 
         /// <summary>
-        /// Gets the player as the savefile had it when it was loaded or last saved.
-        /// </summary>
-        /// <summary>
         /// Creates the raw bytes of the player for the hex editor. The caller owns the target and disposes it.
         /// </summary>
         public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForPlayer(this.session);

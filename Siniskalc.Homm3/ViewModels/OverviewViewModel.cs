@@ -47,16 +47,6 @@ namespace Siniskalc.Homm3.ViewModels
         };
 
         /// <summary>
-        /// Gets whether the savefile tells about the map. The other map properties are empty when it does not.
-        /// </summary>
-        public bool HasMap => this.game.Map != null;
-
-        /// <summary>
-        /// Gets a note about the heroes that no player owns, or nothing when every hero has an owner.
-        /// </summary>
-        public string UnownedNote { get; private set; } = string.Empty;
-
-        /// <summary>
         /// Builds the cards again from the savefile as it is edited now.
         /// </summary>
         public void Refresh()
@@ -91,7 +81,6 @@ namespace Siniskalc.Homm3.ViewModels
             var obelisks = this.game.History.Current.Obelisks().GetModel() is { Count: > 0 } found ? OverviewText.Count(found.Count, "obelisk", "obelisks") : string.Empty;
             this.Summary = SummaryOf(this.Players.Count, summaries.Count - unowned, this.DifficultyText, obelisks);
 
-            this.UnownedNote = unowned == 0 ? string.Empty : $"{unowned} more {(unowned == 1 ? "hero belongs" : "heroes belong")} to no player; they are listed under \"Neutral\" on the left.";
             this.RaiseAllPropertiesChanged();
         }
 

@@ -97,26 +97,20 @@
         </Grid.RowDefinitions>
 
         <heroes:PageHeader Grid.Row="0" Margin="16,14,16,4" ColorHex="#9AA3AE" Title="Map"
-                           EditedToolTip="The mines, shrines or sphinxes have changes that are not saved yet"
-                           ResetToolTip="Put every mine, shrine and sphinx back to what the savegame had">
-            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding Mines.Summary}"/>
+                           EditedToolTip="The shrines or sphinxes have changes that are not saved yet"
+                           ResetToolTip="Put every shrine and sphinx back to what the savegame had">
+            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding MapSummary}"/>
         </heroes:PageHeader>
 
         <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
-            <wpf:NavButton Text="Mines"/>
             <wpf:NavButton Text="Shrines"/>
             <wpf:NavButton Text="Sphinxes"/>
         </ListBox>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <Grid Margin="8,4,8,16">
-                <!-- Mines -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
-                    <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine on the map."/>
-                </StackPanel>
-
                 <!-- Shrines -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
                     <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
                         <StackPanel>
                             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Shrines"/>
@@ -140,7 +134,7 @@
                 </StackPanel>
 
                 <!-- Sphinxes -->
-                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
                     <ItemsControl ItemsSource="{Binding Sphinxes}" ItemTemplate="{StaticResource SphinxTemplate}"/>
                     <TextBlock Margin="6,8,0,0" Text="This map has no sphinx.">
                         <TextBlock.Style>

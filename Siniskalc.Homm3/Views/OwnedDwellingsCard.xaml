@@ -5,8 +5,6 @@
              xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels">
     <!-- The dwellings of one owner, and the bytes of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-
         <!-- A row is picked while the focus is in it, so its bytes show below. -->
         <Style x:Key="DwellingRowStyle" TargetType="ListBoxItem">
             <Setter Property="Focusable" Value="False"/>
@@ -83,8 +81,7 @@
         </Border>
 
         <!-- Hex: the bytes of the dwelling that is picked -->
-        <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400"
-                Visibility="{Binding DataContext.IsAdvancedMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -6,21 +6,19 @@
     using Siniskalc.Homm2.ViewModels;
 
     /// <summary>
-    /// The page of the map's mines, shrines and sphinxes (Threedom).
+    /// The page of the map's shrines and sphinxes (Threedom).
     /// </summary>
     [TestFixture]
     internal sealed class MapViewModelTests
     {
         [Test]
-        public void ThePageListsTheMinesTheShrinesAndTheSphinxOfTheMap()
+        public void ThePageListsTheShrinesAndTheSphinxOfTheMap()
         {
             var page = new MapViewModel(TestServices.LoadThreedom(71));
 
-            Assert.That(page.Mines.Rows, Has.Count.EqualTo(41));
             Assert.That(page.Shrines, Has.Count.EqualTo(13));
             Assert.That(page.Sphinxes, Has.Count.EqualTo(1));
-            Assert.That(page.Mines.Summary, Is.EqualTo("41 mines, 22 of them owned"));
-            Assert.That(page.Mines.Rows.Select(m => m.Kind), Does.Contain("Sawmill").And.Contain("Gold mine").And.Contain("Alchemist's lab"));
+            Assert.That(page.MapSummary, Is.EqualTo("13 shrines, 1 sphinx"));
         }
 
         [Test]
@@ -36,22 +34,6 @@
 
             page.ShrineList.Columns["X"].SortCommand.Execute(null);
             Assert.That(page.Shrines.Select(s => s.X), Is.Ordered);
-        }
-
-        [Test]
-        public void PickingAnOwnerForAMineChangesItsRecordAndFlagAndTheCountAndCanBeReset()
-        {
-            var game = TestServices.LoadThreedom(71);
-            var page = new MapViewModel(game);
-            var mine = page.Mines.Rows.Single(m => m.PositionText == "X: 34, Y: 53");
-
-            mine.OwnerField.Selected = "Green";
-
-            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(PlayerColor.Green));
-            Assert.That(page.HasPendingChanges, Is.True);
-            page.ResetCommand.Execute(null);
-            Assert.That(game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(34, 53)).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(page.HasPendingChanges, Is.False);
         }
 
         [Test]

@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.Views
     using System.Windows;
     using System.Windows.Controls;
     using Siniskalc.Homm3.ViewModels;
+    using Siniskalc.Wpf.Views;
 
     /// <summary>
     /// Shows the mines and the guard of the mine that is picked of one owner, and the bytes of that mine. All behaviour is in
@@ -17,6 +18,7 @@ namespace Siniskalc.Homm3.Views
         public OwnedMinesCards()
         {
             this.InitializeComponent();
+            AdvancedModeVisibility.Apply(this.hexCard);
             this.DataContextChanged += this.OnDataContextChanged;
         }
 

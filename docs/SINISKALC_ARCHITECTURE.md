@@ -1,4 +1,4 @@
-﻿# Architecture
+# Architecture
 
 ## Projects
 
@@ -147,11 +147,21 @@ What is thrown, who catches it and what the user is told: see [ERROR_MODEL.md](E
 
 How heroes, castles, players, the date and the map header are found in a savefile: see [LOCATING_HOMM3_ENTITIES.md](LOCATING_HOMM3_ENTITIES.md).
 
+## Navigation tree
+
+`OwnerNavigationBuilderBase` (Heroes.Wpf) fills the tree: the game, then one node per owner made by `OwnerNavGroup`, then what a game adds (the Map node). An owner's node holds sections in the order of the tabs of its page (`OwnerTabs`: General 0, Heroes 1, Towns 2, Mines 3, Dwellings 4, Obelisks 5, Hex 6): `Heroes` and `Towns` list their entries directly, `Mines` and `Dwellings` hold a group for each resource or faction (`NavGroup`, node kind `OwnerSubGroup`) whose children are the mines or dwellings (`NavNodeKind.Mine`, `Dwelling`). A section is only made when it has entries. The groups are not registered as tab nodes, because `NavigationTree` keeps one node for each `(player, tab)`.
+
+What nobody owns is the node `Neutral` (kind `Neutral`, its sections `NeutralTab`), with a page of its own (`NeutralPageViewModelBase` in Heroes.Wpf, `NeutralViewModel` and `NeutralPage` in each game) whose tabs are numbered from the heroes (`NeutralTabs`). Mines and dwellings of one owner are `MinesListViewModel` and, in HoMM3, `OwnedMapObjectsViewModel`, which show the rows whose owner is that owner: the list is filtered again on every history change, so a record given to another owner leaves one page and joins the other. `StructureKey` includes the owners of the mines and dwellings, so the editor rebuilds the tree when one of them changes hands.
+
+The Map page keeps the records no player owns: merchants (HoMM3), shrines and sphinxes (HoMM2).
+
 ## Hex views
 
 ```
 IByteEditTarget (editable)   HeroByteEditTarget / PlayerByteEditTarget / CastleByteEditTarget  ->  HexEditor (hero, player and castle pages)
+                             MineByteEditTarget / DwellingByteEditTarget (HoMM3)                 ->  HexEditor (card below the picked mine or dwelling)
   Regions                    HeroRegionProvider / PlayerRegionProvider / CastleRegionProvider     known fields of one chunk, from the layout classes
+                             MineRegionProvider / DwellingRegionProvider (HoMM3)                  the fields of a record, from MineLayout / DwellingLayout
 SaveHexDump (read only)      SaveRegionProvider  ->  HexViewer in SaveHexWindow                    Advanced > View save hex
 ```
 
@@ -162,6 +172,7 @@ Making the viewer editable would need a byte edit target for the bytes that no c
 
 The hex tabs and the Advanced menu are only shown in advanced mode (`ShellViewModel.IsAdvancedMode`).
 The Hex `NavButton` of each page binds its `Visibility` to it, and a `NavButton` that gets hidden while it is the selected tab selects the first tab.
+The Hex cards below a mine or a dwelling (`OwnedMinesCards`, `OwnedDwellingsCard`) do the same through `AdvancedModeVisibility.Apply`, which makes the binding once the card is loaded in a window (a binding to an ancestor made earlier reports an error).
 
 ## Settings and backups
 

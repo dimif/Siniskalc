@@ -6,81 +6,22 @@
       xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
       xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
       Title="Map">
-    <Page.Resources>
-        <!-- A dwelling: the creature it gives, where it is, its owner and the creatures that can be hired. -->
-        <DataTemplate x:Key="DwellingTemplate" DataType="{x:Type vm:MapDwellingRowViewModel}">
-            <Grid Margin="0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="160"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="160"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding CreatureName}"/>
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the dwelling on the map. A hero stood on this tile to flag a dwelling of the Castle, and 3 tiles lower to visit a neutral one: the entrance can be a few tiles off."/>
-                <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the dwelling on the map"/>
-                <TextBlock Grid.Column="3" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding LevelText}" ToolTip="Level of the map the dwelling is on"/>
-                <ComboBox Grid.Column="4" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}"
-                          ToolTip="{Binding OwnerField.ToolTip}"/>
-                <TextBox Grid.Column="5" HorizontalAlignment="Left" Width="90" HorizontalContentAlignment="Right" Text="{Binding StockText, UpdateSourceTrigger=LostFocus}"
-                         ToolTip="The creatures that can be hired now"/>
-            </Grid>
-        </DataTemplate>
-
-    </Page.Resources>
-
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <heroes:PageHeader Grid.Row="0" Margin="16,14,16,4" ColorHex="#9AA3AE" Title="Map"
-                           EditedToolTip="The mines have changes that are not saved yet"
-                           ResetToolTip="Put every mine back to what the savegame had">
+                           EditedToolTip="The merchants have changes that are not saved yet"
+                           ResetToolTip="Put every merchant back to what the savegame had">
             <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding MapSummary}"/>
         </heroes:PageHeader>
 
-        <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
-            <wpf:NavButton Text="Mines"/>
-            <wpf:NavButton Text="Dwellings"/>
-            <wpf:NavButton Text="Merchants"/>
-        </ListBox>
-
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <Grid Margin="8,4,8,16">
-            <!-- Dwellings -->
-            <StackPanel Style="{StaticResource TabPanel1}">
-                <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-                    <StackPanel>
-                        <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Dwellings"/>
-                        <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                                   Text="Who owns each dwelling of the map and how many creatures can be hired there now. Not yet tried in the game."/>
-                        <Grid Margin="0,0,0,2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Creature].Label}" Command="{Binding DwellingList.Columns[Creature].SortCommand}" ToolTip="Sort by creature"/>
-                            <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[X].Label}" Command="{Binding DwellingList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
-                            <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Y].Label}" Command="{Binding DwellingList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
-                            <TextBlock Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Text="Level"/>
-                            <Button Grid.Column="4" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Owner].Label}" Command="{Binding DwellingList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
-                            <Button Grid.Column="5" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Available].Label}" Command="{Binding DwellingList.Columns[Available].SortCommand}" ToolTip="Sort by the creatures that can be hired"/>
-                        </Grid>
-                        <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"/>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
             <!-- Merchants -->
-            <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+            <StackPanel Margin="-6,0,0,0">
                 <ItemsControl ItemsSource="{Binding Merchants}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -112,17 +53,6 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-            </StackPanel>
-            <!-- Mines -->
-            <StackPanel Style="{StaticResource TabPanel0}">
-                <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine of the map. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
-
-                <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-                    <StackPanel>
-                        <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding GuardHeading}"/>
-                        <local:ArmyEditor DataContext="{Binding GuardEditor}"/>
-                    </StackPanel>
-                </Border>
             </StackPanel>
             </Grid>
         </ScrollViewer>

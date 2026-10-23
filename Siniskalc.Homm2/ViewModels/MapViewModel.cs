@@ -11,17 +11,16 @@ namespace Siniskalc.Homm2.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The objects of the map that have a state the savegame keeps: its mines (and who owns them), its shrines (and the spell each teaches)
-    /// and its sphinxes (and their riddles). One page with a tab for each kind.
+    /// The objects of the map that no player owns and that have a state the savegame keeps: its shrines (and the spell each teaches) and its
+    /// sphinxes (and their riddles). One page with a tab for each kind. The mines are on the pages of their owners and on the page of Neutral.
     /// </summary>
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
         public MapViewModel(Game game)
-            : base("Map", game.History, Homm2ChunkKinds.Mines, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
+            : base("Map", game.History, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
             var document = game.History.Current;
             var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
-            this.Mines = MinesLists.Create(game);
             var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
             this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
                 shrines,
@@ -36,12 +35,6 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
-        /// <summary>
-        /// Gets the mines with the headings that sort them, the mine that is picked and how many are owned. HoMM2 has nothing more to show for
-        /// the mine that is picked.
-        /// </summary>
-        public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
-
         public IReadOnlyList<ShrineRowViewModel> Shrines => this.ShrineList.Items;
 
         /// <summary>
@@ -51,6 +44,11 @@ namespace Siniskalc.Homm2.ViewModels
 
         public IReadOnlyList<SphinxViewModel> Sphinxes { get; }
 
+        /// <summary>
+        /// Gets what the header says: how many shrines and sphinxes the map has.
+        /// </summary>
+        public string MapSummary => $"{this.Shrines.Count} {(this.Shrines.Count == 1 ? "shrine" : "shrines")}, {this.Sphinxes.Count} {(this.Sphinxes.Count == 1 ? "sphinx" : "sphinxes")}";
+
         public bool HasShrines => this.Shrines.Count > 0;
 
         public bool HasSphinxes => this.Sphinxes.Count > 0;
@@ -58,8 +56,6 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         protected override void RefreshRecords()
         {
-            this.Mines.Refresh();
-
             foreach (var row in this.Shrines)
             {
                 row.Refresh();

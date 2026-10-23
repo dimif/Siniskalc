@@ -6,9 +6,6 @@
              xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
              xmlns:local="clr-namespace:Siniskalc.Homm3.Views">
     <!-- The mines of one owner, with the guard of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-    </UserControl.Resources>
     <StackPanel>
         <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
         <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
@@ -17,8 +14,7 @@
                 <local:ArmyEditor DataContext="{Binding GuardEditor}"/>
             </StackPanel>
         </Border>
-        <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400"
-                Visibility="{Binding DataContext.IsAdvancedMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

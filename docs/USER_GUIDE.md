@@ -16,7 +16,9 @@ Nothing is written until you choose **File > Save**.
 1. **File > Open** (Ctrl+O) and pick a savegame.
    **File > Recent** lists the last ones.
 2. Pick what to edit in the tree on the left.
-   The tree shows the game, then one node per player, each with its heroes and towns.
+   The tree shows the game, then one node per player, each with its heroes, towns, mines and dwellings, then **Neutral** and the **Map**.
+   Below **Mines** the mines are grouped by the resource they give (Gold, Wood, ...), and below **Dwellings** (HoMM3) the dwellings are grouped by the faction of their creature, so `Red > Mines > Gold` holds the gold mines Red owns.
+   A player with no mine or dwelling has no such node.
 3. Change values on the page.
    A dot next to a node in the tree means it has changes that are not saved.
 4. **File > Save** (Ctrl+S).
@@ -27,6 +29,9 @@ Pages:
 - **Game overview**: map and game setup read from the save (difficulty, date, who controls each player).
 - **Player**: the seven resources (tab **General**), the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
   A player who owns no town has a "No towns: n days left" pill beside the name, in the overview and in the navigation tree, and a Banishing card on the General tab with the buttons 7 to 1 to change the days left. A player who has been banished stays in the game as he is and cannot be edited.
+  Its **Mines** tab lists the mines the player owns (pick one to see and edit its guard, and change its owner) and its **Dwellings** tab (HoMM3) the dwellings it owns, with the creatures that can be hired there. A mine or dwelling given to another player moves to that player's tabs.
+- **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings**). It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
+- **Map**: what the map keeps that no player owns: the artifact merchants and the black market (HoMM3), the shrines and sphinxes (HoMM2).
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
 - **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings.
 
@@ -69,6 +74,7 @@ Advanced mode is for finding out where things are in a savefile and for editing 
 It shows:
 
 - a **Hex** tab on every player, hero and town, which edits the raw bytes of that part of the savefile;
+- a **Hex** card below the mine (and, in HoMM3, the dwelling) that is picked on the Mines and Dwellings tabs, which edits the bytes of that one record;
 - the **Advanced** menu: **View save hex** shows the whole file with its known regions, **Export save bytes** writes the decompressed savegame to a `.bin` file and **Load save from bytes** reads one back.
   These files are useful to compare two saves in a diff tool and to attach to a bug report.
 

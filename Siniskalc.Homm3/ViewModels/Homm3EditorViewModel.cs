@@ -124,7 +124,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the page of the mines of the map.
+        /// Shows the page of what the map keeps that no player owns.
         /// </summary>
         public void ShowMap()
         {
@@ -133,8 +133,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
-        /// when nobody owns it.
+        /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or of Neutral.
         /// </summary>
         public void ShowMine(int mineIndex)
         {
@@ -150,9 +149,7 @@ namespace Siniskalc.Homm3.ViewModels
             var playerIndex = game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
-                this.ShowMap();
-                this.map!.SelectedTab = 0;
-                this.map.Mines.PickMine(mineIndex);
+                // TODO:LOG Warning: a mine owned by a colour that has no player in the savegame has no page to show it on.
                 return;
             }
 
@@ -161,7 +158,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the tab of the dwellings of the owner of the dwelling at <paramref name="dwellingIndex"/>, or the map page when nobody owns it.
+        /// Shows the tab of the dwellings of the owner of the dwelling at <paramref name="dwellingIndex"/>, or of Neutral.
         /// </summary>
         public void ShowDwelling(int dwellingIndex)
         {
@@ -176,8 +173,7 @@ namespace Siniskalc.Homm3.ViewModels
             var playerIndex = game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
-                this.ShowMap();
-                this.map!.SelectedTab = 1;
+                // TODO:LOG Warning: a dwelling owned by a colour that has no player in the savegame has no page to show it on.
                 return;
             }
 

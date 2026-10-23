@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests
+namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -44,14 +44,14 @@
 
         private static void ChangeMines(Game game)
         {
-            var mines = new MapViewModel(game).Mines.Rows;
+            var mines = MinesLists.Create(game).Rows;
             mines.Single(m => m.PositionText == "X: 22, Y: 29").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "X: 65, Y: 31").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "X: 23, Y: 2").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "X: 44, Y: 6").OwnerField.Selected = "Red";
         }
 
-        private static string MinesOf(Game game) => string.Join(", ", new MapViewModel(game).Mines.Rows.Where(m => new[] { "X: 22, Y: 29", "X: 65, Y: 31", "X: 23, Y: 2", "X: 44, Y: 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
+        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "X: 22, Y: 29", "X: 65, Y: 31", "X: 23, Y: 2", "X: 44, Y: 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
 
         private static void ChangeShrines(Game game)
         {

@@ -65,14 +65,13 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
         {
-            var mines = game.History.Current.Mines().Count;
-            var dwellings = game.History.Current.Dwellings().Count;
-            if (mines + dwellings == 0)
+            var merchants = game.History.Current.Merchants().Count;
+            if (merchants == 0)
             {
                 return;
             }
 
-            var node = new NavNodeViewModel("Map", $"{mines} mines, {dwellings} dwellings", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            var node = new NavNodeViewModel("Map", $"{merchants} {(merchants == 1 ? "merchant" : "merchants")}", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
         }

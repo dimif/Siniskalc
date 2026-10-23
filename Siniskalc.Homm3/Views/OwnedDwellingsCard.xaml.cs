@@ -4,6 +4,7 @@ namespace Siniskalc.Homm3.Views
     using System.Windows;
     using System.Windows.Controls;
     using Siniskalc.Homm3.ViewModels;
+    using Siniskalc.Wpf.Views;
 
     /// <summary>
     /// Shows the dwellings of one owner and the bytes of the dwelling that is picked. All behaviour is in
@@ -17,6 +18,7 @@ namespace Siniskalc.Homm3.Views
         public OwnedDwellingsCard()
         {
             this.InitializeComponent();
+            AdvancedModeVisibility.Apply(this.hexCard);
             this.DataContextChanged += this.OnDataContextChanged;
         }
 

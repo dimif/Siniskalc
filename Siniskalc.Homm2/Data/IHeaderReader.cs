@@ -1,12 +1,13 @@
 namespace Siniskalc.Homm2.Data
 {
-    using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// Reads the date and the description of the map from the header of a savegame.
     /// </summary>
     public interface IHeaderReader
     {
-        SaveMetadata Read(byte[] bytes, SaveLayout layout);
+        SaveMetadata<PlayerColor> Read(byte[] bytes, SaveLayout layout);
     }
 }

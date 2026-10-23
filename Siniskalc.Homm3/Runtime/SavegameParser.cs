@@ -79,10 +79,10 @@
             var mineChunks = this.mineLoader.LoadMineChunks(bytes);
             var dwellingChunks = this.dwellingLoader.LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
 
-            var metadata = new SaveMetadata(
-                this.dateLocator.Find(bytes, gameVersion, playerChunks.Count == 0 ? 0 : playerChunks[^1].End),
-                setup,
-                this.mapHeaderLocator.Find(bytes, gameVersion));
+            var metadata = new SaveMetadata<PlayerColor>(
+                Date: this.dateLocator.Find(bytes, gameVersion, playerChunks.Count == 0 ? 0 : playerChunks[^1].End),
+                Map: this.mapHeaderLocator.Find(bytes, gameVersion),
+                Setup: setup);
 
             var offsets = new HeroOffsets(gameVersion);
             var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes));

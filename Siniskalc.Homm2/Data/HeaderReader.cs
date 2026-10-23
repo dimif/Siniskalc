@@ -7,7 +7,6 @@
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
-    using Siniskalc.Homm2.Runtime;
 
     /// <summary>
     /// Reads the header of a savegame. Nothing in it is written back: the date and the map are only shown.
@@ -18,7 +17,7 @@
         private static readonly GameDifficulty[] Difficulties = [GameDifficulty.Pawn, GameDifficulty.Knight, GameDifficulty.Rook, GameDifficulty.Queen, GameDifficulty.King];
 
         /// <inheritdoc/>
-        public SaveMetadata Read(byte[] bytes, SaveLayout layout)
+        public SaveMetadata<PlayerColor> Read(byte[] bytes, SaveLayout layout)
         {
             var date = new GameDate(
                 bytes[layout.DateStart + (2 * HeaderLayout.DateStep)],
@@ -29,7 +28,8 @@
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
                 ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
                 layout.Width);
-            return new SaveMetadata(date, map, ReadDifficulty(bytes[layout.DifficultyStart]), ReadControls(bytes, layout));
+            var setup = new GameSetup<PlayerColor>(ReadControls(bytes, layout), ReadDifficulty(bytes[layout.DifficultyStart]));
+            return new SaveMetadata<PlayerColor>(date, map, setup);
         }
 
         // The game plays the humans the mask marks, in the order of the records. Whose turn it is is the turn record (Game.CurrentPlayer).

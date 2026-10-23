@@ -16,11 +16,12 @@
             foreach (var path in Saves.AllOfBrokenAlliance())
             {
                 var game = TestServices.Load(path);
+                var map = game.Map!;
 
                 Assert.That(game.FileName, Is.EqualTo(path));
                 Assert.That(game.GameVersion, Is.EqualTo(GameVersion.BaseGame), path);
-                Assert.That(game.Map, Is.EqualTo(new MapHeader("Broken Alliance", game.Map.Description, GameDifficulty.Knight, 72)), path);
-                Assert.That(game.Map.Description, Does.StartWith("The alliance has crumbled"), path);
+                Assert.That(map, Is.EqualTo(new MapHeader("Broken Alliance", map.Description, GameDifficulty.Knight, 72)), path);
+                Assert.That(map.Description, Does.StartWith("The alliance has crumbled"), path);
                 Assert.That(game.History.Current.Heroes(), Has.Count.EqualTo(54), path);
                 Assert.That(game.History.Current.Players(), Has.Count.EqualTo(6), path);
                 Assert.That(game.History.Current.Castles(), Has.Count.EqualTo(72), path);
@@ -33,10 +34,11 @@
         {
             var game = TestServices.Load(Saves.Path(Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));
             var document = game.History.Current;
+            var map = game.Map!;
 
             Assert.That(game.GameVersion, Is.EqualTo(GameVersion.PriceOfLoyalty));
-            Assert.That(game.Map.Name, Is.EqualTo("Arrax the Jerk"));
-            Assert.That(game.Map.Size, Is.EqualTo(36));
+            Assert.That(map.Name, Is.EqualTo("Arrax the Jerk"));
+            Assert.That(map.Size, Is.EqualTo(36));
             Assert.That(document.Heroes().GetName(16), Is.EqualTo("Bikko"));
             Assert.That(document.Heroes().GetName(17), Is.EqualTo("King Anthrax"));
             Assert.That(document.Heroes().GetOwners().Select((owner, index) => (owner, index)).Where(x => !x.owner.IsNeutral).Select(x => x.index), Is.EqualTo(new[] { 16, 17 }));

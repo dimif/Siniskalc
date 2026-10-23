@@ -34,7 +34,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("09_map_hard_medium", GameDifficulty.Rook)]
         public void TheDifficultyTheMapWasMadeWithIsReadApartFromTheGameDifficulty(string save, GameDifficulty expected)
         {
-            Assert.That(Load(save).Map.Difficulty, Is.EqualTo(expected));
+            Assert.That(Load(save).Map!.Difficulty, Is.EqualTo(expected));
         }
 
         [TestCase("01_game_easy", 36, "Small (36 x 36)")]
@@ -44,7 +44,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase("07_map_hard_extra_large", 144, "Extra large (144 x 144)")]
         public void TheSizeOfTheMapIsReadInSquaresAndByName(string save, int size, string text)
         {
-            var map = Load(save).Map;
+            var map = Load(save).Map!;
 
             Assert.That(map.Size, Is.EqualTo(size));
             Assert.That(map.SizeText, Is.EqualTo(text));

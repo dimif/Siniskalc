@@ -111,6 +111,42 @@ namespace Siniskalc.Homm3.Tests.Views
             }
         }
 
+        [Test]
+        public void TheNeutralPageShowsItsHeaderAndItsListsOnEveryTab()
+        {
+            EnsureApplication();
+            var path = Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            var shell = TestServices.CreateShell(editor);
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            var window = TestServices.CreateShellWindow(shell);
+            window.Show();
+
+            try
+            {
+                var frame = window.HeroFrame();
+                Pump();
+
+                editor.PlayerNodes().Single(n => n.Title == "Neutral").IsSelected = true;
+                Pump();
+                var neutral = editor.CurrentPageOf<NeutralViewModel>();
+                foreach (var tab in new[] { NeutralTabs.Heroes, NeutralTabs.Towns, NeutralTabs.Mines, NeutralTabs.Dwellings })
+                {
+                    neutral.SelectedTab = tab;
+                    Show(window);
+                    AssertRendered((Page)frame.Content, "Neutral");
+                }
+
+                neutral.SelectedTab = NeutralTabs.Mines;
+                Show(window);
+                Assert.That(Descendants<MinesCard>((Page)frame.Content).Count(c => c.IsVisible), Is.EqualTo(1));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
         private static void AssertRendered(Page page, string title)
         {
             var header = Descendants<PageHeader>(page).Single();

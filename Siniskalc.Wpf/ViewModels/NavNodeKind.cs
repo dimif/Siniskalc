@@ -26,6 +26,12 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>The "Heroes" or "Towns" group of a player: the player's page, on the tab with that list.</summary>
         PlayerTab,
 
+        /// <summary>What nobody owns: its page shows the heroes, towns, mines and dwellings that belong to no player, and the node holds them.</summary>
+        Neutral,
+
+        /// <summary>The "Heroes", "Towns", "Mines" or "Dwellings" group of the neutral node: the neutral page, on the tab with that list.</summary>
+        NeutralTab,
+
         /// <summary>A mine of the map, below the "Mines" group of its owner.</summary>
         Mine,
 

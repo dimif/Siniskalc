@@ -102,6 +102,29 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheNeutralNodeOpensThePageOfWhatNobodyOwnsAndItsMinesOpenTheMinesTab()
+        {
+            var neutral = this.editor.NavigationNodes[0].Children.Single(n => n.Title == "Neutral");
+            Assert.That(neutral.Kind, Is.EqualTo(NavNodeKind.Neutral));
+
+            neutral.IsSelected = true;
+
+            var page = (NeutralViewModel)this.editor.CurrentPage!;
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Heroes));
+
+            var mine = Descendants(neutral).FirstOrDefault(n => n.Kind == NavNodeKind.Mine);
+            if (mine == null)
+            {
+                Assert.Ignore("The savegame has no mine nobody owns.");
+            }
+
+            mine!.IsSelected = true;
+
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Mines));
+            Assert.That(page.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
+        }
+
+        [Test]
         public void PickingTheHeroesOfAPlayerShowsThePlayerOnTheTabOfHeroes()
         {
             var tab = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.PlayerTab && n.Tab == 1);

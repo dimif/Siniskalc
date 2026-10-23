@@ -112,12 +112,13 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="mines">The mines of the map.</param>
         /// <param name="owner">The colour whose mines are wanted.</param>
-        protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner) =>
+        /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
+        protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner, bool hasLevels) =>
             mines
                 .Where(m => m.Owner == owner)
                 .GroupBy(m => MineKinds.ResourceOf(m.Kind))
                 .OrderBy(g => g.Key)
-                .Select(g => new NavGroup(g.Key.ToString(), g.OrderBy(m => m.Position.Level).ThenBy(m => m.Position.X).ThenBy(m => m.Position.Y).Select(m => new NavEntry(m.Index, m.Name, string.Empty)).ToList()))
+                .Select(g => new NavGroup(g.Key.ToString(), g.OrderBy(m => m.Position.Level).ThenBy(m => m.Position.X).ThenBy(m => m.Position.Y).Select(m => new NavEntry(m.Index, MapLevelText.At(m.Position, hasLevels), string.Empty)).ToList()))
                 .ToList();
 
         /// <summary>

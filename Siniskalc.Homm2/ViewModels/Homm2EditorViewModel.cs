@@ -27,6 +27,7 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private OverviewViewModel? overview;
         private MapViewModel? map;
+        private NeutralViewModel? neutral;
 
         public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
             : base(gameService, saveRegions, navigationBuilder)
@@ -61,6 +62,16 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         /// <summary>
+        /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>).
+        /// </summary>
+        public void ShowNeutral(int tab = NeutralTabs.Heroes)
+        {
+            this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle);
+            this.neutral.SelectedTab = tab;
+            this.SetCurrentPage(this.neutral);
+        }
+
+        /// <summary>
         /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
         /// when nobody owns it.
         /// </summary>
@@ -69,9 +80,8 @@ namespace Siniskalc.Homm2.ViewModels
             var owner = this.Loaded().History.Current.Mines().GetModel(mineIndex).Owner;
             if (owner.IsNeutral)
             {
-                this.ShowMap();
-                this.map!.SelectedTab = 0;
-                this.map.Mines.PickMine(mineIndex);
+                this.ShowNeutral(NeutralTabs.Mines);
+                this.neutral!.Mines.PickMine(mineIndex);
                 return;
             }
 
@@ -134,6 +144,8 @@ namespace Siniskalc.Homm2.ViewModels
             this.castles.Clear();
             this.map?.Dispose();
             this.map = null;
+            this.neutral?.Dispose();
+            this.neutral = null;
             this.overview?.Dispose();
         }
 
@@ -151,6 +163,7 @@ namespace Siniskalc.Homm2.ViewModels
             PlayerViewModel player => this.Navigation.PlayerTabNode(player.Color.Code, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.HeroId),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
+            NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab),
             MapViewModel => this.Navigation.MapNode,
             _ => null,
         };
@@ -169,8 +182,15 @@ namespace Siniskalc.Homm2.ViewModels
                 case NavNodeKind.PlayerTab:
                     this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
                     break;
+                case NavNodeKind.OwnerSubGroup when node.Index < 0:
+                    this.ShowNeutral(node.Tab);
+                    break;
                 case NavNodeKind.OwnerSubGroup:
                     this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
+                    break;
+                case NavNodeKind.Neutral:
+                case NavNodeKind.NeutralTab:
+                    this.ShowNeutral(node.Tab);
                     break;
                 case NavNodeKind.Mine:
                     this.ShowMine(node.Index);

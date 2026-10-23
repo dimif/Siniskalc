@@ -16,8 +16,14 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class OwnedMapObjectsViewModel : AbstractViewModelBase
     {
-        public OwnedMapObjectsViewModel(SaveDocumentHistory history, PlayerColor owner)
+        private readonly SaveDocumentHistory history;
+        private readonly IByteEditTargetFactory byteEditTargets;
+        private MapDwellingRowViewModel? selectedDwelling;
+
+        public OwnedMapObjectsViewModel(SaveDocumentHistory history, PlayerColor owner, IByteEditTargetFactory byteEditTargets)
         {
+            this.history = history;
+            this.byteEditTargets = byteEditTargets;
             var ownerName = OwnerNames<PlayerColor>.Of(owner);
             var version = history.Current.GameVersion();
             this.Mines = new MinesListViewModel<MineRowViewModel>(
@@ -34,6 +40,7 @@ namespace Siniskalc.Homm3.ViewModels
                     ["Available"] = d => d.Stock,
                 },
                 filter: dwelling => dwelling.OwnerSort == ownerName);
+            this.selectedDwelling = this.Dwellings.FirstOrDefault();
             this.Mines.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName == nameof(this.Mines.SelectedMine))
@@ -55,6 +62,22 @@ namespace Siniskalc.Homm3.ViewModels
         public SortableListViewModel<MapDwellingRowViewModel> DwellingList { get; }
 
         public IReadOnlyList<MapDwellingRowViewModel> Dwellings => this.DwellingList.Items;
+
+        /// <summary>
+        /// Gets or sets the dwelling whose bytes are shown (the first one at first, and never none once there is one). Picking none leaves the dwelling that was picked.
+        /// </summary>
+        public MapDwellingRowViewModel? SelectedDwelling
+        {
+            get => this.selectedDwelling;
+            set
+            {
+                if (value != null && !ReferenceEquals(value, this.selectedDwelling))
+                {
+                    this.selectedDwelling = value;
+                    this.RaisePropertyChanged(nameof(this.SelectedDwelling));
+                }
+            }
+        }
 
         public bool HasMines => this.Mines.HasMines;
 
@@ -84,8 +107,25 @@ namespace Siniskalc.Homm3.ViewModels
                 row.Refresh();
             }
 
+            if (this.selectedDwelling == null || !this.Dwellings.Contains(this.selectedDwelling))
+            {
+                this.selectedDwelling = this.Dwellings.FirstOrDefault();
+            }
+
             this.RaiseAllPropertiesChanged();
         }
+
+        /// <summary>
+        /// Creates the raw bytes of the mine that is picked for the hex editor, or <c>null</c> when the owner has none. The caller owns the target and disposes it.
+        /// </summary>
+        public IByteEditTarget? CreateMineByteEditTarget() =>
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets.ForMine(this.history, mine.Index) : null;
+
+        /// <summary>
+        /// Creates the raw bytes of the dwelling that is picked for the hex editor, or <c>null</c> when the owner has none. The caller owns the target and disposes it.
+        /// </summary>
+        public IByteEditTarget? CreateDwellingByteEditTarget() =>
+            this.SelectedDwelling is { } dwelling ? this.byteEditTargets.ForDwelling(this.history, dwelling.Index) : null;
 
         /// <summary>
         /// Picks the mine with the given place among the mines of the savegame, if the owner has it.

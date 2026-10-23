@@ -26,6 +26,22 @@ namespace Siniskalc.Heroes.ViewModels
         public static string Coordinates(MapPosition position, bool hasLevels) =>
             hasLevels ? Coordinates(position.X, position.Y, position.Level) : Coordinates(position.X, position.Y);
 
+        /// <summary>
+        /// Returns a place for a list that is already about one kind of thing, such as "At 59, 9, Surface" in a game that has two levels
+        /// and "At 59, 9" in one that has one.
+        /// </summary>
+        /// <param name="position">The place.</param>
+        /// <param name="hasLevels">Whether the map of the game has two levels.</param>
+        public static string At(MapPosition position, bool hasLevels) =>
+            hasLevels ? $"At {position.X}, {position.Y}, {LevelName(position.Level)}" : $"At {position.X}, {position.Y}";
+
+        private static string LevelName(int level) => level switch
+        {
+            MapPosition.Above => "Surface",
+            MapPosition.Underground => "Underground",
+            _ => $"Level {level}",
+        };
+
         public static string Of(int level) => level switch
         {
             MapPosition.Above => $"Surface ({MapPosition.Above})",

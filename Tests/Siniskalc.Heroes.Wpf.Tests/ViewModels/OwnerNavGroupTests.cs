@@ -78,6 +78,26 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
+        public void WhatNobodyOwnsCanHaveAPageOfItsOwnWhoseTabsStartAtTheHeroes()
+        {
+            var tree = NewTree();
+
+            var node = OwnerNavGroup.Create(tree, "Neutral", "#888888", -1, false, string.Empty, Heroes, Castles, mines: [new("Gold", [new(4, "Gold mine at X: 3, Y: 4", string.Empty)])], neutralPage: true);
+
+            Assert.That(node.Kind, Is.EqualTo(NavNodeKind.Neutral));
+            Assert.That(node.Children.Select(c => (c.Title, c.Kind, c.Tab)), Is.EqualTo(new[]
+            {
+                ("Heroes", NavNodeKind.NeutralTab, NeutralTabs.Heroes),
+                ("Towns", NavNodeKind.NeutralTab, NeutralTabs.Towns),
+                ("Mines", NavNodeKind.NeutralTab, NeutralTabs.Mines),
+            }));
+            Assert.That(node.Children[2].Children.Single().Kind, Is.EqualTo(NavNodeKind.OwnerSubGroup));
+            Assert.That(tree.NeutralNode, Is.SameAs(node));
+            Assert.That(tree.NeutralTabNode(NeutralTabs.Mines), Is.SameAs(node.Children[2]));
+            Assert.That(tree.NeutralTabNode(NeutralTabs.Dwellings), Is.SameAs(node), "a tab with no group falls back to the node");
+        }
+
+        [Test]
         public void TheGameMarksEachTownNode()
         {
             var marked = new List<int>();

@@ -72,7 +72,7 @@ namespace Siniskalc.Homm3.Runtime
                 this.SavefileCodec,
                 backup);
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
-            this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions);
+            this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider());
             this.EffectLines = new EffectLineProvider();
             this.CastleBuildMessages = new CastleBuildMessageProvider();
             this.SpellPoints = new SpellPointsCalculatorFactory();

@@ -25,6 +25,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="markCastle">Sets what a game shows on the node of a town (badges, notes), or <c>null</c>.</param>
         /// <param name="mines">The mines of the owner in groups (one per resource), or <c>null</c> for a game that shows none.</param>
         /// <param name="dwellings">The dwellings of the owner in groups (one per faction), or <c>null</c> for a game that shows none.</param>
+        /// <param name="neutralPage">Whether the owner is what nobody owns and has a page of its own (<paramref name="playerIndex"/> is -1): its node and groups open that page.</param>
         public static NavNodeViewModel Create(
             NavigationTree tree,
             string ownerName,
@@ -36,7 +37,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             IReadOnlyList<NavEntry> castles,
             Action<NavNodeViewModel, int>? markCastle = null,
             IReadOnlyList<NavGroup>? mines = null,
-            IReadOnlyList<NavGroup>? dwellings = null)
+            IReadOnlyList<NavGroup>? dwellings = null,
+            bool neutralPage = false)
         {
             mines = NonEmpty(mines);
             dwellings = NonEmpty(dwellings);
@@ -60,13 +62,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             AddCount(parts, dwellings, "dwelling", "dwellings");
 
             var isPlayer = playerIndex >= 0;
+            var hasPage = isPlayer || neutralPage;
             var node = new NavNodeViewModel(
                 ownerName,
                 string.Join(" · ", parts),
                 colorHex,
-                isPlayer ? NavNodeKind.Player : NavNodeKind.Group,
+                isPlayer ? NavNodeKind.Player : neutralPage ? NavNodeKind.Neutral : NavNodeKind.Group,
                 playerIndex,
-                onSelected: isPlayer ? tree.OnSelected : null)
+                onSelected: hasPage ? tree.OnSelected : null)
             {
                 DefaultExpanded = owned,
             };
@@ -74,27 +77,34 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
             if (heroes.Count > 0)
             {
-                node.Children.Add(Group(tree, "Heroes", OwnerTabs.Heroes, colorHex, playerIndex, owned, heroes, NavNodeKind.Hero, null));
+                node.Children.Add(Group(tree, "Heroes", OwnerTabs.Heroes, colorHex, playerIndex, neutralPage, owned, heroes, NavNodeKind.Hero, null));
             }
 
             if (castles.Count > 0)
             {
-                node.Children.Add(Group(tree, "Towns", OwnerTabs.Towns, colorHex, playerIndex, owned, castles, NavNodeKind.Castle, markCastle));
+                node.Children.Add(Group(tree, "Towns", OwnerTabs.Towns, colorHex, playerIndex, neutralPage, owned, castles, NavNodeKind.Castle, markCastle));
             }
 
             if (mines.Count > 0)
             {
-                node.Children.Add(GroupedSection(tree, "Mines", OwnerTabs.Mines, colorHex, playerIndex, owned, mines, NavNodeKind.Mine));
+                node.Children.Add(GroupedSection(tree, "Mines", OwnerTabs.Mines, colorHex, playerIndex, neutralPage, owned, mines, NavNodeKind.Mine));
             }
 
             if (dwellings.Count > 0)
             {
-                node.Children.Add(GroupedSection(tree, "Dwellings", OwnerTabs.Dwellings, colorHex, playerIndex, owned, dwellings, NavNodeKind.Dwelling));
+                node.Children.Add(GroupedSection(tree, "Dwellings", OwnerTabs.Dwellings, colorHex, playerIndex, neutralPage, owned, dwellings, NavNodeKind.Dwelling));
             }
 
             node.IsExpanded = node.DefaultExpanded;
             return node;
         }
+
+        private static bool HasPage(int playerIndex, bool neutralPage) => playerIndex >= 0 || neutralPage;
+
+        private static NavNodeKind TabKind(int playerIndex, bool neutralPage) => playerIndex >= 0 ? NavNodeKind.PlayerTab : neutralPage ? NavNodeKind.NeutralTab : NavNodeKind.Group;
+
+        // The neutral page has no tab for the resources, so its tabs are numbered from the heroes.
+        private static int TabOf(int ownerTab, bool neutralPage) => neutralPage ? NeutralTabs.Of(ownerTab) : ownerTab;
 
         private static IReadOnlyList<NavGroup> NonEmpty(IReadOnlyList<NavGroup>? groups) => (groups ?? []).Where(g => g.Entries.Count > 0).ToList();
 
@@ -115,12 +125,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             int tab,
             string colorHex,
             int playerIndex,
+            bool neutralPage,
             bool owned,
             IReadOnlyList<NavGroup> groups,
             NavNodeKind leafKind)
         {
-            var isPlayer = playerIndex >= 0;
-            var section = new NavNodeViewModel(title, groups.Sum(g => g.Entries.Count).ToString(), colorHex, isPlayer ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, tab, isPlayer ? tree.OnSelected : null)
+            var section = new NavNodeViewModel(title, groups.Sum(g => g.Entries.Count).ToString(), colorHex, TabKind(playerIndex, neutralPage), playerIndex, TabOf(tab, neutralPage), HasPage(playerIndex, neutralPage) ? tree.OnSelected : null)
             {
                 DefaultExpanded = owned,
             };
@@ -128,7 +138,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
             foreach (var group in groups)
             {
-                var node = new NavNodeViewModel(group.Title, group.Entries.Count.ToString(), colorHex, isPlayer ? NavNodeKind.OwnerSubGroup : NavNodeKind.Group, playerIndex, tab, isPlayer ? tree.OnSelected : null);
+                var node = new NavNodeViewModel(group.Title, group.Entries.Count.ToString(), colorHex, HasPage(playerIndex, neutralPage) ? NavNodeKind.OwnerSubGroup : NavNodeKind.Group, playerIndex, TabOf(tab, neutralPage), HasPage(playerIndex, neutralPage) ? tree.OnSelected : null);
                 foreach (var entry in group.Entries)
                 {
                     var leaf = new NavNodeViewModel(entry.Title, entry.Subtitle, colorHex, leafKind, entry.Index, onSelected: tree.OnSelected);
@@ -149,13 +159,13 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             int tab,
             string colorHex,
             int playerIndex,
+            bool neutralPage,
             bool owned,
             IReadOnlyList<NavEntry> entries,
             NavNodeKind kind,
             Action<NavNodeViewModel, int>? mark)
         {
-            var isPlayer = playerIndex >= 0;
-            var group = new NavNodeViewModel(title, entries.Count.ToString(), colorHex, isPlayer ? NavNodeKind.PlayerTab : NavNodeKind.Group, playerIndex, tab, isPlayer ? tree.OnSelected : null)
+            var group = new NavNodeViewModel(title, entries.Count.ToString(), colorHex, TabKind(playerIndex, neutralPage), playerIndex, TabOf(tab, neutralPage), HasPage(playerIndex, neutralPage) ? tree.OnSelected : null)
             {
                 DefaultExpanded = owned,
             };

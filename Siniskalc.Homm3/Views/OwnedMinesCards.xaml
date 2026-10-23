@@ -2,9 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
              xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
              xmlns:local="clr-namespace:Siniskalc.Homm3.Views">
     <!-- The mines of one owner, with the guard of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
     <StackPanel>
         <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
         <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
@@ -12,6 +16,17 @@
                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding GuardHeading}"/>
                 <local:ArmyEditor DataContext="{Binding GuardEditor}"/>
             </StackPanel>
+        </Border>
+        <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch" Height="400"
+                Visibility="{Binding DataContext.IsAdvancedMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibility}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hex: the bytes of the mine that is picked"/>
+                <wpf:HexEditor Grid.Row="1" x:Name="hexEditor"/>
+            </Grid>
         </Border>
     </StackPanel>
 </UserControl>

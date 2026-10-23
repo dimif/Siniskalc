@@ -26,6 +26,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
         private MapViewModel? map;
+        private NeutralViewModel? neutral;
         private OverviewViewModel? overview;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
@@ -112,6 +113,17 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
+        /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>).
+        /// </summary>
+        public void ShowNeutral(int tab = NeutralTabs.Heroes)
+        {
+            var game = this.Loaded();
+            this.neutral ??= new NeutralViewModel(game.History, this.byteEditTargets, this.ShowHero, this.ShowCastle);
+            this.neutral.SelectedTab = tab;
+            this.SetCurrentPage(this.neutral);
+        }
+
+        /// <summary>
         /// Shows the page of the mines of the map.
         /// </summary>
         public void ShowMap()
@@ -127,7 +139,15 @@ namespace Siniskalc.Homm3.ViewModels
         public void ShowMine(int mineIndex)
         {
             var game = this.Loaded();
-            var playerIndex = game.History.Current.Players().FindByColor(game.History.Current.Mines().GetModel(mineIndex).Owner);
+            var owner = game.History.Current.Mines().GetModel(mineIndex).Owner;
+            if (owner.IsNeutral)
+            {
+                this.ShowNeutral(NeutralTabs.Mines);
+                this.neutral!.MapObjects.PickMine(mineIndex);
+                return;
+            }
+
+            var playerIndex = game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
                 this.ShowMap();
@@ -146,7 +166,14 @@ namespace Siniskalc.Homm3.ViewModels
         public void ShowDwelling(int dwellingIndex)
         {
             var game = this.Loaded();
-            var playerIndex = game.History.Current.Players().FindByColor(game.History.Current.Dwellings().GetModel(dwellingIndex).Owner);
+            var owner = game.History.Current.Dwellings().GetModel(dwellingIndex).Owner;
+            if (owner.IsNeutral)
+            {
+                this.ShowNeutral(NeutralTabs.Dwellings);
+                return;
+            }
+
+            var playerIndex = game.History.Current.Players().FindByColor(owner);
             if (playerIndex < 0)
             {
                 this.ShowMap();
@@ -190,6 +217,8 @@ namespace Siniskalc.Homm3.ViewModels
             this.castles.Clear();
             this.map?.Dispose();
             this.map = null;
+            this.neutral?.Dispose();
+            this.neutral = null;
         }
 
         /// <inheritdoc/>
@@ -206,6 +235,7 @@ namespace Siniskalc.Homm3.ViewModels
             PlayerViewModel player => this.Navigation.PlayerTabNode(player.Session.PlayerIndex, player.SelectedTab),
             HeroViewModel hero => this.Navigation.HeroNode(hero.Session.HeroIndex),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
+            NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab),
             MapViewModel => this.Navigation.MapNode,
             _ => null,
         };
@@ -227,8 +257,15 @@ namespace Siniskalc.Homm3.ViewModels
                 case NavNodeKind.Castle:
                     this.ShowCastle(node.Index);
                     break;
+                case NavNodeKind.OwnerSubGroup when node.Index < 0:
+                    this.ShowNeutral(node.Tab);
+                    break;
                 case NavNodeKind.OwnerSubGroup:
                     this.ShowPlayer(node.Index, node.Tab);
+                    break;
+                case NavNodeKind.Neutral:
+                case NavNodeKind.NeutralTab:
+                    this.ShowNeutral(node.Tab);
                     break;
                 case NavNodeKind.Mine:
                     this.ShowMine(node.Index);

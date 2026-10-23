@@ -115,8 +115,9 @@ namespace Siniskalc.Homm3.ViewModels
                 HeroEntriesOf(game.History.Current.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction.Name)).ToList(),
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]),
-                MineGroupsOf(game.History.Current.Mines().GetModels(), owner),
-                DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner));
+                MineGroupsOf(game.History.Current.Mines().GetModels(), owner, hasLevels: true),
+                DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner),
+                neutralPage: owner.IsNeutral);
             if (playerIndex >= 0)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));
@@ -141,7 +142,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         private static IReadOnlyList<NavEntry> EntriesOf(IEnumerable<DwellingModel> dwellings) =>
-            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, d.Name, string.Empty)).ToList();
+            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, $"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} at {MapLevelText.At(d.Position, hasLevels: true)[3..]}", string.Empty)).ToList();
 
         private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
 

@@ -18,5 +18,16 @@ namespace Siniskalc.Heroes.Tests.ViewModels
                 (MapLevelText.Coordinates(below, hasLevels: true), MapLevelText.Coordinates(below, hasLevels: false)),
                 Is.EqualTo(("X: 59, Y: 9, Underground (1)", "X: 59, Y: 9")));
         }
+
+        [Test]
+        public void APlaceInAListOfOneKindOfThingIsShortAndSaysTheLevelOnlyWhenTheMapHasTwo()
+        {
+            var surface = new MapPosition(12, 7, MapPosition.Above);
+            var below = new MapPosition(59, 9, MapPosition.Underground);
+
+            Assert.That(
+                (MapLevelText.At(surface, hasLevels: true), MapLevelText.At(below, hasLevels: true), MapLevelText.At(below, hasLevels: false)),
+                Is.EqualTo(("At 12, 7, Surface", "At 59, 9, Underground", "At 59, 9")));
+        }
     }
 }

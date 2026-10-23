@@ -31,7 +31,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(mines.Tab, Is.EqualTo(OwnerTabs.Mines));
             Assert.That(mines.Children, Is.Not.Empty.And.All.Matches<NavNodeViewModel>(g => g.Kind == NavNodeKind.OwnerSubGroup));
             Assert.That(mines.Children.Select(g => g.Title), Is.Ordered.Using<string>((a, b) => ResourceOrder(a).CompareTo(ResourceOrder(b))));
-            Assert.That(mines.Children.SelectMany(g => g.Children), Has.All.Matches<NavNodeViewModel>(m => m.Kind == NavNodeKind.Mine && m.Title.Contains(" at ")));
+            Assert.That(mines.Children.SelectMany(g => g.Children), Has.All.Matches<NavNodeViewModel>(m => m.Kind == NavNodeKind.Mine && m.Title.StartsWith("At ", StringComparison.Ordinal)));
             Assert.That(mines.Subtitle, Is.EqualTo(mines.Children.SelectMany(g => g.Children).Count().ToString()));
         }
 
@@ -60,6 +60,45 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(titles, Is.Unique);
             Assert.That(dwellings.Children.SelectMany(g => g.Children), Has.All.Matches<NavNodeViewModel>(d => d.Kind == NavNodeKind.Dwelling));
             Assert.That(titles.IndexOf("Neutral"), Is.EqualTo(titles.Contains("Unknown") ? titles.Count - 2 : titles.Count - 1).Or.EqualTo(-1));
+        }
+
+        [Test]
+        public void TheNeutralNodeOpensThePageOfWhatNobodyOwns()
+        {
+            var neutral = this.main.PlayerNodes().Single(n => n.Title == "Neutral");
+            Assert.That(neutral.Kind, Is.EqualTo(NavNodeKind.Neutral));
+
+            neutral.IsSelected = true;
+
+            var page = this.main.CurrentPageOf<NeutralViewModel>();
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Heroes));
+            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(10));
+            Assert.That(page.Summary, Does.Contain("10 mines"));
+        }
+
+        [Test]
+        public void PickingANeutralMineShowsTheMinesTabOfThePageWithThatMinePicked()
+        {
+            var mine = this.main.PlayerNodes().Single(n => n.Title == "Neutral").Descendants().First(n => n.Kind == NavNodeKind.Mine);
+
+            mine.IsSelected = true;
+
+            var page = this.main.CurrentPageOf<NeutralViewModel>();
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Mines));
+            Assert.That(page.MapObjects.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
+        }
+
+        [Test]
+        public void AMineGivenToAPlayerLeavesTheNeutralListAndJoinsThePlayers()
+        {
+            this.main.PlayerNodes().Single(n => n.Title == "Neutral").IsSelected = true;
+            var page = this.main.CurrentPageOf<NeutralViewModel>();
+            var row = page.MapObjects.Mines.Rows[0];
+
+            row.OwnerField.Selected = "Blue";
+
+            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(9));
+            Assert.That(page.MapObjects.Mines.Rows.Select(m => m.Index), Does.Not.Contain(row.Index));
         }
 
         [Test]

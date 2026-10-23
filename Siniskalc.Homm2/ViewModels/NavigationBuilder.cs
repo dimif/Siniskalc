@@ -99,7 +99,8 @@ namespace Siniskalc.Homm2.ViewModels
                 HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
                 (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])),
-                MineGroupsOf(document.Mines().GetModels(), owner));
+                MineGroupsOf(document.Mines().GetModels(), owner, hasLevels: false),
+                neutralPage: owner.IsNeutral);
         }
 
         private static IReadOnlyList<string> NotesOf(string visitor) => visitor.Length > 0 ? [visitor] : [];

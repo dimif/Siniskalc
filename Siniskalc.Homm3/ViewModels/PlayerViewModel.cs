@@ -56,7 +56,7 @@ namespace Siniskalc.Homm3.ViewModels
                 days => this.session.Update(player => player.WithDaysLeft(days)),
                 () => this.session.Current.IsBanished);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", at => MapLevelText.Coordinates(at.X, at.Y, at.Level));
-            this.MapObjects = new OwnedMapObjectsViewModel(session.History, session.Current.Color);
+            this.MapObjects = new OwnedMapObjectsViewModel(session.History, session.Current.Color, byteEditTargets);
             this.TavernPlaces = TavernPlaceViewModel.ForTavern(
                 () => this.session.Current.Tavern,
                 edit => this.session.Update(player => player with { Tavern = edit(player.Tavern) }),

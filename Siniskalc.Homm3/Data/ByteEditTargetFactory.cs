@@ -5,16 +5,20 @@ namespace Siniskalc.Homm3.Data
     using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// Creates the byte edit targets of heroes, players and castles with the region providers they describe their bytes with.
+    /// Creates the byte edit targets of heroes, players, castles, mines and dwellings with the region providers they describe their bytes with.
     /// </summary>
     public sealed class ByteEditTargetFactory : IByteEditTargetFactory
     {
         private readonly IHeroRegionProvider heroRegions;
         private readonly IPlayerRegionProvider playerRegions;
         private readonly ICastleRegionProvider castleRegions;
+        private readonly IMineRegionProvider mineRegions;
+        private readonly IDwellingRegionProvider dwellingRegions;
 
-        public ByteEditTargetFactory(IHeroRegionProvider heroRegions, IPlayerRegionProvider playerRegions, ICastleRegionProvider castleRegions)
+        public ByteEditTargetFactory(IHeroRegionProvider heroRegions, IPlayerRegionProvider playerRegions, ICastleRegionProvider castleRegions, IMineRegionProvider mineRegions, IDwellingRegionProvider dwellingRegions)
         {
+            this.mineRegions = mineRegions;
+            this.dwellingRegions = dwellingRegions;
             this.heroRegions = heroRegions;
             this.playerRegions = playerRegions;
             this.castleRegions = castleRegions;
@@ -25,5 +29,9 @@ namespace Siniskalc.Homm3.Data
         public IByteEditTarget ForPlayer(PlayerEditSession session) => new PlayerByteEditTarget(session, this.playerRegions);
 
         public IByteEditTarget ForCastle(SaveDocumentHistory history, int castleIndex) => new CastleByteEditTarget(history, castleIndex, this.castleRegions);
+
+        public IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex) => new MineByteEditTarget(history, mineIndex, this.mineRegions);
+
+        public IByteEditTarget ForDwelling(SaveDocumentHistory history, int dwellingIndex) => new DwellingByteEditTarget(history, dwellingIndex, this.dwellingRegions);
     }
 }

@@ -140,6 +140,7 @@
             Assert.That(overview.OrderOfPlay.Where(i => i.Command != null).Select(i => i.Name), Is.EqualTo(new[] { "Orange" }), "only a human who has not the turn can be given it");
 
             overview.OrderOfPlay.Single(i => i.Name == "Orange").Command!.Execute(null);
+            overview.Refresh();
 
             Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Orange));
             Assert.That(overview.OrderOfPlay.Single(i => i.IsCurrent).Name, Is.EqualTo("Orange"));

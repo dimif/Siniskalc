@@ -44,6 +44,5 @@ namespace Siniskalc.Homm3.Runtime
         /// started at, or <c>null</c> when it cannot be found in this version.
         /// </summary>
         public GameDifficulty? MapDifficulty => this.Map?.Difficulty;
-
     }
 }

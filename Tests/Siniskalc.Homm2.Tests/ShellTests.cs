@@ -128,7 +128,7 @@
                     this.services.About,
                     this.services.Help,
                     NoUserInteraction.Messages(),
-                    new SavegameFileCommands(this.services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages())) { DataContext = this.shell };
+                    new SavegameFileCommands(this.services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = this.shell };
                 window.Show();
 
                 try

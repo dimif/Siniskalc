@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Runtime
 {
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.Data;
@@ -15,8 +16,9 @@ namespace Siniskalc.Homm2.Runtime
         private readonly ISaveDocumentFactory documentFactory;
         private readonly IMapPlacesReader placesReader;
         private readonly IMapObjectsReader objectsReader;
+        private readonly ILogger<SavegameParser> logger;
 
-        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader)
+        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader, ILogger<SavegameParser> logger)
         {
             this.locator = locator;
             this.loader = loader;
@@ -24,6 +26,7 @@ namespace Siniskalc.Homm2.Runtime
             this.documentFactory = documentFactory;
             this.placesReader = placesReader;
             this.objectsReader = objectsReader;
+            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -32,7 +35,7 @@ namespace Siniskalc.Homm2.Runtime
             var layout = this.locator.Locate(bytes);
             if (layout is null)
             {
-                // TODO:LOG warning: {file or name} ({bytes.Length} bytes) was refused as unsupported; log its first bytes (the header) to help recognise the version.
+                this.logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes II savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic II savegame, or it comes from a version of the game this editor does not know.");
             }
 

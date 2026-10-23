@@ -49,7 +49,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 .Returns(() => this.pathToSave);
             this.messages = new Mock<IMessageService>();
             this.messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(() => this.answer);
-            this.commands = new SavegameFileCommands(this.recent, dialogs.Object, this.messages.Object);
+            this.commands = new SavegameFileCommands(this.recent, dialogs.Object, this.messages.Object, NullLogger<SavegameFileCommands>.Instance);
             this.shell = TestServices.CreateShell();
         }
 

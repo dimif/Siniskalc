@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.Runtime
 {
     using System.Text;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
@@ -19,7 +20,8 @@ namespace Siniskalc.Homm3.Runtime
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public Homm3ModuleFactory(Encoding heroNameEncoding, IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText)
+        /// <param name="loggerFactory">Makes the loggers of the components that log.</param>
+        public Homm3ModuleFactory(Encoding heroNameEncoding, IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, ILoggerFactory loggerFactory)
         {
             this.BytesPatcher = bytesPatcher;
             this.BanishingText = banishingText;
@@ -53,7 +55,7 @@ namespace Siniskalc.Homm3.Runtime
                 new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
                 this.BytesPatcher);
 
-            this.SavefileCodec = new GzipSavefileCodec();
+            this.SavefileCodec = new GzipSavefileCodec(loggerFactory.CreateLogger<GzipSavefileCodec>());
             this.GameService = new GameService(
                 new SavegameParser(
                     new SavegameVersionDetector(),
@@ -68,7 +70,8 @@ namespace Siniskalc.Homm3.Runtime
                     dateLocator,
                     setupLocator,
                     mapHeaderLocator,
-                    this.DocumentFactory),
+                    this.DocumentFactory,
+                    loggerFactory.CreateLogger<SavegameParser>()),
                 this.SavefileCodec,
                 backup);
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);

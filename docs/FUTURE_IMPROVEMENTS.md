@@ -22,7 +22,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
   A single store holding the document and applying reducers would replace the per-view-model `Update` callbacks and the `Refresh()` calls that follow `History.Changed`.
 - **Editable store for game entities** Entities (heroes, castles, creatures) are hardcoded in the editor.
   A store of entities that can be edited and saved would let the editor support mods and future games.
-- **Logging** Add serilog to the project for debug logs, and a log viewer to the UI for users to report issues.
+- **Log viewer** A log viewer in the UI for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
 
 ## User features
 

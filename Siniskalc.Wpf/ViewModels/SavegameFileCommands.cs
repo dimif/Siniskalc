@@ -3,6 +3,7 @@ namespace Siniskalc.Wpf.ViewModels
     using System;
     using System.IO;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.Views;
 
@@ -19,12 +20,14 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly RecentFilesStore recentFiles;
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
+        private readonly ILogger<SavegameFileCommands> logger;
 
-        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
+        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages, ILogger<SavegameFileCommands> logger)
         {
             this.recentFiles = recentFiles;
             this.dialogs = dialogs;
             this.messages = messages;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -184,7 +187,7 @@ namespace Siniskalc.Wpf.ViewModels
         private void ReportError(string title, string what, Exception ex)
         {
             // The message of a savefile exception is already written for the user.
-            // TODO:LOG error: {title}: {what} failed; log the whole exception (type, message, inner exception, stack trace) and the path involved.
+            this.logger.LogError(ex, "{Title}: failed to {What}", title, what);
             var message = ex is SavefileException ? ex.Message : $"Failed to {what}: {ex.Message}";
             this.messages.ShowError(title, message);
         }

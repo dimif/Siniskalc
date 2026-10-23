@@ -40,7 +40,7 @@ namespace Siniskalc.Wpf.Tests.Views
                     new AboutInfo("Editor", "1.0", "A test.", "https://example.org", "https://example.org/releases", "MIT", []),
                     new HelpLinks("https://example.org/guide", "https://example.org/issues"),
                     SilentMessages(),
-                    new SavegameFileCommands(recent, new Mock<IFileDialogs>().Object, SilentMessages())) { DataContext = shell };
+                    new SavegameFileCommands(recent, new Mock<IFileDialogs>().Object, SilentMessages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = shell };
                 window.Show();
 
                 try

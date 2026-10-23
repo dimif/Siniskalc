@@ -81,8 +81,8 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - Several people and tools edit this tree at once.
   Re-read a file before editing it and run the whole suite, not only the tests of the area you touched.
 - Do not push unless asked.
-- Where the editor skips, keeps or falls back on something it did not expect, leave `// TODO:LOG <level>: what to log` (see `docs/ERROR_MODEL.md`).
-  There is no logger yet.
+- Log through an injected `ILogger<T>`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
+  Where the editor skips, keeps or falls back on something it did not expect, log it there; a `// TODO:LOG <level>: what to log` marker is for a class that has no logger yet and is replaced by the call (see `docs/ERROR_MODEL.md`).
 
 ## Tests
 

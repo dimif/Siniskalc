@@ -40,27 +40,51 @@ namespace Siniskalc.Core.Tests.Runtime
         }
 
         [Test]
-        public void ACorruptSettingsFileFallsBackToTheDefaults()
+        public void ACorruptSettingsFileIsReportedWithItsPath()
         {
             var path = Path.Combine(this.folder, "settings.json");
             File.WriteAllText(path, "{ this is not json");
 
-            var store = new SettingsStore(path);
+            var failure = Assert.Throws<SettingsException>(() => new SettingsStore(path));
 
-            Assert.That(store.BackupOnSave, Is.True);
-            Assert.That(store.Settings.RecentFiles, Is.Empty);
+            Assert.That(failure!.Path, Is.EqualTo(path));
+            Assert.That(failure.Message, Does.Contain(path));
         }
 
         [Test]
-        public void SettingsThatCannotBeWrittenNeverInterruptTheUser()
+        public void ALogLevelThatMeansNothingIsReportedLikeACorruptFile()
+        {
+            var path = Path.Combine(this.folder, "settings.json");
+            File.WriteAllText(path, "{ \"LogLevel\": \"Loud\" }");
+
+            Assert.That(() => new SettingsStore(path), Throws.TypeOf<SettingsException>());
+        }
+
+        [Test]
+        public void SettingsThatCannotBeWrittenAreReportedButKeptForTheSession()
         {
             // A folder where the file should be: writing it fails.
             var path = Path.Combine(this.folder, "settings.json");
             Directory.CreateDirectory(path);
             var store = new SettingsStore(path);
 
-            Assert.That(() => store.AdvancedMode = true, Throws.Nothing);
+            Assert.That(() => store.AdvancedMode = true, Throws.TypeOf<SettingsException>());
             Assert.That(store.AdvancedMode, Is.True);
+        }
+
+        [Test]
+        public void TheLogFolderAndLevelAreKeptForTheNextTime()
+        {
+            var path = Path.Combine(this.folder, "settings.json");
+            var store = new SettingsStore(path);
+            store.Settings.LogFolder = Path.Combine(this.folder, "mylogs");
+            store.Settings.LogLevel = Microsoft.Extensions.Logging.LogLevel.Warning;
+            store.Save();
+
+            var again = new SettingsStore(path);
+
+            Assert.That(again.Settings.LogFolder, Is.EqualTo(Path.Combine(this.folder, "mylogs")));
+            Assert.That(again.Settings.LogLevel, Is.EqualTo(Microsoft.Extensions.Logging.LogLevel.Warning));
         }
 
         [Test]

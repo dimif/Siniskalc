@@ -47,7 +47,7 @@
                 services.About,
                 services.Help,
                 NoUserInteraction.Messages(),
-                new SavegameFileCommands(services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages())) { DataContext = shell };
+                new SavegameFileCommands(services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = shell };
             window.Show();
 
             try

@@ -33,7 +33,8 @@ namespace Siniskalc.Homm3.Tests
             Encoding.Latin1,
             new FileBackupServiceProvider(Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
             Patcher,
-            Banishing);
+            Banishing,
+            NullLoggerFactory.Instance);
 
         private static readonly AboutInfo About = new(ApplicationName, "test", "A savegame editor.", "https://example.invalid", "https://example.invalid", "MIT", []);
 
@@ -90,7 +91,7 @@ namespace Siniskalc.Homm3.Tests
         {
             var recentFiles = CreateRecentFiles();
             var shownMessages = messages ?? CancellingMessages();
-            var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages);
+            var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages, NullLogger<SavegameFileCommands>.Instance);
             return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), About, Help, shownMessages, files) { DataContext = shell };
         }
 

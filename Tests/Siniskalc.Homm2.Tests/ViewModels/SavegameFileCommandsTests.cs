@@ -31,7 +31,7 @@
             var messages = new Mock<IMessageService>();
             messages.Setup(m => m.ShowWarning(It.IsAny<string>(), It.IsAny<string>())).Callback<string, string>((_, message) => this.warnings.Add(message));
             messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(MessageAnswer.No);
-            this.commands = new SavegameFileCommands(this.services.RecentFiles, dialogs.Object, messages.Object);
+            this.commands = new SavegameFileCommands(this.services.RecentFiles, dialogs.Object, messages.Object, NullLogger<SavegameFileCommands>.Instance);
             this.shell.LoadGame(Saves.BrokenAllianceSave(5));
         }
 

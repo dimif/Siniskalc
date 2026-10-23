@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Runtime
 {
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
@@ -20,7 +21,8 @@
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText)
+        /// <param name="loggerFactory">Makes the loggers of the components that log.</param>
+        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, ILoggerFactory loggerFactory)
         {
             this.banishingText = banishingText;
 
@@ -51,7 +53,8 @@
                         new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                         bytesPatcher),
                     new MapPlacesReader(),
-                    new MapObjectsReader()),
+                    new MapObjectsReader(),
+                    loggerFactory.CreateLogger<SavegameParser>()),
                 new RawSavefileCodec(),
                 backup);
             this.SaveRegionProvider = new SaveRegionProvider(locator);

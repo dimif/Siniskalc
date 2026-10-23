@@ -20,7 +20,7 @@ namespace Siniskalc.Tests
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-app-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"));
+            this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"), loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
             this.shell = this.services.CreateShellViewModel();
         }
 

@@ -4,6 +4,7 @@
     using System.IO;
     using ICSharpCode.SharpZipLib;
     using ICSharpCode.SharpZipLib.GZip;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     /// <summary>
@@ -15,7 +16,7 @@
     /// A file that is not GZip, or ends early, is a <see cref="CorruptSavefileException"/>; a file that cannot be opened is an
     /// <see cref="IOException"/> as usual.
     /// </remarks>
-    public sealed class GzipSavefileCodec : ISavefileCodec
+    public sealed class GzipSavefileCodec(ILogger<GzipSavefileCodec> logger) : ISavefileCodec
     {
         /// <summary>
         /// The number of bytes at the start of a file that tell whether it is a GZip file.
@@ -44,7 +45,7 @@
             }
             catch (Exception ex) when (ex is SharpZipBaseException or InvalidDataException or EndOfStreamException)
             {
-                // TODO:LOG warning: {filePath} could not be decompressed; log the exception from the decompressor.
+                logger.LogWarning(ex, "Could not decompress {File}", Path.GetFileName(filePath));
                 throw new CorruptSavefileException($"{Path.GetFileName(filePath)} is not a compressed savegame, or it is damaged: {ex.Message}", ex);
             }
         }
@@ -73,7 +74,7 @@
                 }
                 catch (IOException)
                 {
-                    // TODO:LOG warning: the temporary file {temporary} could not be removed after a failed save.
+                    logger.LogWarning("Could not remove the temporary file {File} after a failed save", temporary);
                     // The write failed already; the leftover is only a stray file.
                 }
 

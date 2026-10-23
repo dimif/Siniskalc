@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
@@ -27,6 +28,7 @@
         private readonly IPlayerControlLocator setupLocator;
         private readonly IMapHeaderLocator mapHeaderLocator;
         private readonly ISaveDocumentFactory documentFactory;
+        private readonly ILogger<SavegameParser> logger;
 
         public SavegameParser(
             ISavegameVersionDetector versionDetector,
@@ -41,7 +43,8 @@
             IGameDateLocator dateLocator,
             IPlayerControlLocator setupLocator,
             IMapHeaderLocator mapHeaderLocator,
-            ISaveDocumentFactory documentFactory)
+            ISaveDocumentFactory documentFactory,
+            ILogger<SavegameParser> logger)
         {
             this.versionDetector = versionDetector;
             this.heroLoader = heroLoader;
@@ -56,6 +59,7 @@
             this.setupLocator = setupLocator;
             this.mapHeaderLocator = mapHeaderLocator;
             this.documentFactory = documentFactory;
+            this.logger = logger;
         }
 
         public Game Parse(byte[] bytes, string? file, string? name = null)
@@ -63,7 +67,7 @@
             var gameVersion = this.versionDetector.Detect(bytes);
             if (gameVersion == GameVersion.Unknown)
             {
-                // TODO:LOG warning: {file or name} ({bytes.Length} bytes) was refused as unsupported; log its first bytes (the header) to help recognise the version.
+                this.logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes III savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic III savegame, or it comes from a version of the game this editor does not know.");
             }
 

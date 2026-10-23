@@ -2,7 +2,9 @@
 {
     using System.Diagnostics;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Text;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -27,12 +29,16 @@
 
         /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
-        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null)
+        /// <param name="loggerFactory">Makes the loggers; the application leaves it out and gets the log file of the user, tests give a silent one.</param>
+        /// <exception cref="SettingsException">The settings file exists but cannot be read.</exception>
+        /// <exception cref="LoggingException">The log folder the user chose cannot be used.</exception>
+        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null)
         {
             this.BytesPatcher = new SavefileBytesPatcher();
             this.Settings = settingsPath is null
                 ? new SettingsStore(UserSettings.PathFor("Siniskalc"), UserSettings.PathFor("Heroes3Editor"))
                 : new SettingsStore(settingsPath);
+            this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
             this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
@@ -40,13 +46,25 @@
             this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
             this.Messages = new WpfMessageService();
             this.FileDialogs = new WpfFileDialogs();
-            this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
+            this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages, this.LoggerFactory.CreateLogger<SavegameFileCommands>());
             this.About = CreateAboutInfo();
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
 
-            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
-            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
+            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, this.LoggerFactory);
+            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText, this.LoggerFactory);
+
+            this.LoggerFactory.CreateLogger<AppServices>().LogInformation(
+                "Started {App} {Version} on {Os} with {Runtime}",
+                this.About.Name,
+                this.About.Version,
+                RuntimeInformation.OSDescription,
+                RuntimeInformation.FrameworkDescription);
         }
+
+        /// <summary>
+        /// Gets the factory of the loggers. The application disposes it when it exits, which flushes the log file.
+        /// </summary>
+        public ILoggerFactory LoggerFactory { get; }
 
         public SettingsStore Settings { get; }
 

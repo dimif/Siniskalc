@@ -1,8 +1,11 @@
 namespace Siniskalc
 {
     using System;
+    using System.IO;
     using System.Windows;
     using System.Windows.Threading;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.Views;
 
     /// <summary>
@@ -11,13 +14,23 @@ namespace Siniskalc
     public partial class App : Application
     {
         private IMessageService? messages;
+        private ILogger<App>? logger;
+        private AppServices? services;
         private bool isReporting;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             this.DispatcherUnhandledException += this.OnUnhandledException;
 
-            var services = new AppServices();
+            var services = this.StartServices();
+            if (services is null)
+            {
+                this.Shutdown();
+                return;
+            }
+
+            this.services = services;
+            this.logger = services.LoggerFactory.CreateLogger<App>();
             this.messages = services.Messages;
             this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands);
             this.MainWindow.Show();
@@ -26,12 +39,67 @@ namespace Siniskalc
         }
 
         /// <summary>
+        /// Flushes the log file.
+        /// </summary>
+        protected override void OnExit(ExitEventArgs e)
+        {
+            this.services?.LoggerFactory.Dispose();
+            base.OnExit(e);
+        }
+
+        /// <summary>
+        /// Builds the components, or tells the user why it cannot: a settings file that cannot be read, or a log folder that cannot be used.
+        /// A settings file can be reset (kept as <c>.bad</c> next to it), so a damaged file never locks the user out. Null when the editor must not start.
+        /// </summary>
+        private AppServices? StartServices()
+        {
+            while (true)
+            {
+                try
+                {
+                    return new AppServices();
+                }
+                catch (SettingsException ex)
+                {
+                    var answer = MessageBox.Show(
+                        $"{ex.Message}\n\nReset the settings? The file is kept as {Path.GetFileName(ex.Path)}.bad and the editor starts with the defaults.",
+                        "Settings error",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Error);
+                    if (answer != MessageBoxResult.Yes)
+                    {
+                        return null;
+                    }
+
+                    try
+                    {
+                        File.Move(ex.Path, ex.Path + ".bad", overwrite: true);
+                    }
+                    catch (Exception moveFailure) when (moveFailure is IOException or UnauthorizedAccessException)
+                    {
+                        MessageBox.Show($"The settings file {ex.Path} could not be moved aside: {moveFailure.Message}", "Settings error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
+                    }
+                }
+                catch (LoggingException ex)
+                {
+                    MessageBox.Show(
+                        $"{ex.Message}\n\nChoose another folder with LogFolder in the settings file, or remove it to use the default.",
+                        "Logging error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
         /// Keeps the editor and its open savegame alive when an edit throws something nobody caught, so the user can still save
         /// (under another name if in doubt) instead of losing every unsaved edit.
         /// </summary>
         private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            // TODO:LOG error: an unexpected exception reached the dispatcher; log the whole exception (type, message, stack trace) and the page the user was on.
+            this.logger?.LogCritical(e.Exception, "An unexpected exception reached the dispatcher");
             e.Handled = true;
 
             // The dialog is shown from inside the handler: an exception it raises itself (or raised again while it is open) must not
@@ -56,7 +124,7 @@ namespace Siniskalc
             }
             catch (Exception)
             {
-                // TODO:LOG error: the unexpected error window itself failed ({exception type and message}); the plain message box is the last resort.
+                this.logger?.LogError("The unexpected error window itself failed; the plain message box is the last resort");
                 MessageBox.Show(message, "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally

@@ -64,7 +64,8 @@ namespace Siniskalc.Homm2.Tests
                 new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
-            new MapObjectsReader());
+            new MapObjectsReader(),
+            NullLogger<SavegameParser>.Instance);
 
         /// <summary>
         /// Loads the savegame at <paramref name="path"/>.

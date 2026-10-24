@@ -1,8 +1,11 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using System;
+    using System.Linq;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Models;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
@@ -15,7 +18,8 @@
         private static readonly ILogger<SafePlayerSerializer> Logger = LogFactory.For<SafePlayerSerializer>();
 
         /// <summary>
-        /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes and days left before banishing written into it. Everything else is left as it was.
+        /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes, list of heroes, selected hero and days left before banishing written
+        /// into it. Everything else is left as it was.
         /// </summary>
         public PlayerChunk Serialize(PlayerChunk chunk, PlayerModel player)
         {
@@ -23,7 +27,43 @@
             // the order of the list is not established, so they are left as they were, also after a castle changed owner.
             using var subject = Logger.BeginSubject("Player", chunk.Name);
             Logger.LogTrace("Town count and town list not written, they may be stale after a castle owner edit");
-            return SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft);
+            return SerializeHeroes(SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft), player.HeroIds, player.SelectedHero);
+        }
+
+        // The list and its count are written together, and only when the places of the list in the chunk do not hold the ids of the model in
+        // that order; the selected hero only when its byte does not read as the model's. So a list the game wrote stays as it was until it is edited.
+        private static PlayerChunk SerializeHeroes(PlayerChunk chunk, Numbers heroIds, int? selectedHero)
+        {
+            RangeGuard.ThrowIfOutOfRange(heroIds.Count, 0, Constants.Player.HeroListSize, nameof(heroIds));
+            var bytes = chunk.ToArray();
+            var places = bytes.AsSpan(PlayerLayout.HeroIds, PlayerLayout.HeroIdPlaces).ToArray();
+            if (!places.Where(id => id != Constants.ByteOff).Select(id => (int)id).SequenceEqual(heroIds))
+            {
+                for (var place = 0; place < PlayerLayout.HeroIdPlaces; place++)
+                {
+                    if (place < heroIds.Count)
+                    {
+                        RangeGuard.ThrowIfOutOfRange(heroIds[place], Constants.Player.MinHeroId, Constants.Player.MaxHeroId, nameof(heroIds));
+                    }
+
+                    bytes[PlayerLayout.HeroIds + place] = place < heroIds.Count ? (byte)heroIds[place] : Constants.ByteOff;
+                }
+
+                bytes[PlayerLayout.HeroCount] = (byte)heroIds.Count;
+            }
+
+            var selected = bytes[PlayerLayout.SelectedHero];
+            if ((selected == Constants.ByteOff ? null : (int?)selected) != selectedHero)
+            {
+                if (selectedHero is { } id)
+                {
+                    RangeGuard.ThrowIfOutOfRange(id, Constants.Player.MinHeroId, Constants.Player.MaxHeroId, nameof(selectedHero));
+                }
+
+                bytes[PlayerLayout.SelectedHero] = selectedHero is { } value ? (byte)value : Constants.ByteOff;
+            }
+
+            return chunk.WithBytes(bytes);
         }
 
         private static PlayerChunk SerializeDaysLeft(PlayerChunk chunk, int? daysLeft)

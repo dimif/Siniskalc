@@ -1,6 +1,8 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
     using System;
+    using System.Linq;
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -13,7 +15,28 @@
     {
         public PlayerModel Deserialize(PlayerChunk chunk)
         {
-            return new PlayerModel(this.DeserializeColor(chunk), this.DeserializeResources(chunk), this.DeserializeTavern(chunk), this.DeserializeDaysLeft(chunk));
+            return new PlayerModel(
+                this.DeserializeColor(chunk),
+                this.DeserializeResources(chunk),
+                this.DeserializeTavern(chunk),
+                this.DeserializeHeroIds(chunk),
+                this.DeserializeSelectedHero(chunk),
+                this.DeserializeDaysLeft(chunk));
+        }
+
+        /// <summary>
+        /// Reads the ids of the heroes of the player: the places of its list that are not FF, in their order.
+        /// </summary>
+        public Numbers DeserializeHeroIds(PlayerChunk chunk) => new(
+            Enumerable.Range(PlayerLayout.HeroIds, PlayerLayout.HeroIdPlaces).Select(chunk.GetByteAt).Where(id => id != Constants.ByteOff).Select(id => (int)id));
+
+        /// <summary>
+        /// Reads the id of the selected hero; FF reads as none.
+        /// </summary>
+        public int? DeserializeSelectedHero(PlayerChunk chunk)
+        {
+            var id = chunk.GetByteAt(PlayerLayout.SelectedHero);
+            return id == Constants.ByteOff ? null : id;
         }
 
         /// <summary>

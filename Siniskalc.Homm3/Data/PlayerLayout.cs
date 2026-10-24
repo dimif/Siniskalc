@@ -40,7 +40,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int HeroIds = 2;
 
-        public const int HeroIdPlaces = 8;
+        public const int HeroIdPlaces = Constants.Player.HeroListSize;
 
         /// <summary>
         /// Where the ids of the two heroes the tavern offers are, one byte each, FF when the tavern has none.

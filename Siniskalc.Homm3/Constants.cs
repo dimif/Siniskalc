@@ -167,6 +167,11 @@ namespace Siniskalc.Homm3
             public const int MaxHeroId = 254;
 
             /// <summary>
+            /// The most heroes a player has on the map: the places of the list of heroes of a player (a garrisoned hero is not in it).
+            /// </summary>
+            public const int HeroListSize = 8;
+
+            /// <summary>
             /// The days a player with no town has left before being banished: 7 the day the last town is lost, 0 once banished.
             /// A player who owns a town has none (FF in the savefile).
             /// </summary>

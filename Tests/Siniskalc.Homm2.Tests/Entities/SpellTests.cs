@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Tests.Entities
 {
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
 
     [TestFixture]
@@ -41,6 +42,39 @@ namespace Siniskalc.Homm2.Tests.Entities
         public void EverySpellIsOnALevelFromOneToFive()
         {
             Assert.That(Spell.All.Select(s => s.Level), Has.All.InRange(1, 5));
+        }
+
+        [Test]
+        public void EveryMageGuildLevelAndShrineCircleOfTheTestSavesHoldsSpellsOfItsLevel()
+        {
+            var wrong = new HashSet<string>();
+            foreach (var path in Saves.All())
+            {
+                var document = TestServices.Load(path).History.Current;
+                foreach (var castle in document.Castles().GetModels().Where(c => c.IsUsed))
+                {
+                    for (var level = 1; level <= Constants.Castle.MageGuildLevels; level++)
+                    {
+                        for (var slot = 0; slot < Constants.Castle.MageGuildSlotsPerLevel; slot++)
+                        {
+                            if (castle.MageGuildSpell(level, slot) is { } spell && spell.Level != level)
+                            {
+                                wrong.Add($"guild level {level}: {spell.Name} (level {spell.Level})");
+                            }
+                        }
+                    }
+                }
+
+                foreach (var shrine in document.Shrines().GetModels())
+                {
+                    if (shrine.Spell is { } spell && spell.Level != shrine.Circle)
+                    {
+                        wrong.Add($"shrine circle {shrine.Circle}: {spell.Name} (level {spell.Level})");
+                    }
+                }
+            }
+
+            Assert.That(wrong, Is.Empty);
         }
     }
 }

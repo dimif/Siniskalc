@@ -24,6 +24,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly HeroEditSession session;
         private readonly IByteEditTargetFactory byteEditTargets;
         private object shownRevision;
+        private string notice = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
@@ -140,8 +141,9 @@ namespace Siniskalc.Homm3.ViewModels
         public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
-        /// Gets or sets the owner, as "Neutral" or the name of a player colour. A hero that is made neutral leaves the map:
-        /// its position and destination become -1, -1, -1 and it faces east.
+        /// Gets or sets the owner, as "Neutral" or the name of a player colour. The lists of heroes of the players and the table of hero owners
+        /// change with it (<see cref="HeroEditSession.ChangeOwner"/>). A hero that is made neutral leaves the map: its position and destination
+        /// become -1, -1, -1 and it faces east. A change the editor cannot make as the game would is not made; <see cref="Notice"/> says why.
         /// </summary>
         public string SelectedOwner
         {
@@ -154,9 +156,41 @@ namespace Siniskalc.Homm3.ViewModels
                     return;
                 }
 
-                this.Update(h => h.WithOwner(owner));
+                try
+                {
+                    this.session.ChangeOwner(owner);
+                    this.Notice = string.Empty;
+                }
+                catch (GameRuleException ex)
+                {
+                    // Only the rules of the game are told to the user; a fault is not made to look like one.
+                    this.Notice = ex.Message;
+                    this.RaisePropertyChanged(nameof(this.SelectedOwner));
+                }
             }
         }
+
+        /// <summary>
+        /// Gets why the last change of the owner was not made, or an empty text.
+        /// </summary>
+        public string Notice
+        {
+            get => this.notice;
+            private set
+            {
+                if (this.notice != value)
+                {
+                    this.notice = value;
+                    this.RaisePropertyChanged(nameof(this.Notice));
+                    this.RaisePropertyChanged(nameof(this.HasNotice));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether there is a <see cref="Notice"/> to show.
+        /// </summary>
+        public bool HasNotice => this.notice.Length > 0;
 
         /// <summary>
         /// Gets the name of the castle that holds this hero inside it, otherwise an empty text.

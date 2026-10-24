@@ -28,6 +28,7 @@
         private readonly RecordKit<RecordChunk, MineModel> mines;
         private readonly RecordKit<RecordChunk, DwellingModel> dwellings;
         private readonly RecordKit<RecordChunk, MerchantStockModel> merchants;
+        private readonly RecordKit<RecordChunk, HeroOwnersModel> heroOwners;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -45,6 +46,7 @@
             RecordKit<RecordChunk, MineModel> mines,
             RecordKit<RecordChunk, DwellingModel> dwellings,
             RecordKit<RecordChunk, MerchantStockModel> merchants,
+            RecordKit<RecordChunk, HeroOwnersModel> heroOwners,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -61,6 +63,7 @@
             this.mines = mines;
             this.dwellings = dwellings;
             this.merchants = merchants;
+            this.heroOwners = heroOwners;
             this.patcher = patcher;
         }
 
@@ -74,7 +77,8 @@
             IEnumerable<ObeliskChunk>? obeliskChunks = null,
             IEnumerable<RecordChunk>? mineChunks = null,
             IEnumerable<RecordChunk>? dwellingChunks = null,
-            IEnumerable<RecordChunk>? merchantChunks = null)
+            IEnumerable<RecordChunk>? merchantChunks = null,
+            IEnumerable<RecordChunk>? heroOwnerChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
@@ -89,7 +93,8 @@
             var mines = new RecordChunkCollection<RecordChunk, MineModel>(mineChunks ?? Enumerable.Empty<RecordChunk>(), this.mines);
             var merchants = new RecordChunkCollection<RecordChunk, MerchantStockModel>(merchantChunks ?? Enumerable.Empty<RecordChunk>(), this.merchants);
             var dwellings = new RecordChunkCollection<RecordChunk, DwellingModel>(dwellingChunks ?? Enumerable.Empty<RecordChunk>(), this.dwellings);
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, this.patcher);
+            var heroOwners = new RecordChunkCollection<RecordChunk, HeroOwnersModel>(heroOwnerChunks ?? Enumerable.Empty<RecordChunk>(), this.heroOwners);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, this.patcher);
         }
     }
 }

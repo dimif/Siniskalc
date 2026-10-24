@@ -33,6 +33,11 @@ namespace Siniskalc.Homm3.Data
         {
             var changes = new ChangeSink<HeroModel>((change, revert) => this.pendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
+            // The owner of a hero is also in the lists of heroes of the players and in the table of hero owners, so putting it back puts those
+            // back too, in one step (HeroEditSession.RestoreOwner), not the hero alone.
+            var owner = new ChangeSink<HeroModel>((change, _) => new PendingChange(current.Name, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).RestoreOwner()));
+            owner.AddOwner(original.Owner, current.Owner, (h, _) => h);
+
             DiffGeneral(original, current, changes);
             DiffPrimarySkills(original, current, changes);
             DiffSecondarySkills(original, current, changes);
@@ -43,7 +48,7 @@ namespace Siniskalc.Homm3.Data
             DiffSpells(original, current, changes);
             DiffPlaceVisits(original, current, changes);
 
-            return changes.All;
+            return owner.All.Concat(changes.All).ToList();
         }
 
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)

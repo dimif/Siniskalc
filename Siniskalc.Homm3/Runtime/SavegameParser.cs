@@ -24,6 +24,7 @@
         private readonly IMineBytesLoader mineLoader;
         private readonly IDwellingBytesLoader dwellingLoader;
         private readonly IMerchantBytesLoader merchantLoader;
+        private readonly IHeroOwnersBytesLoader heroOwnersLoader;
         private readonly IMapPlacesLoader placesLoader;
         private readonly IGameDateLocator dateLocator;
         private readonly IPlayerControlLocator setupLocator;
@@ -39,6 +40,7 @@
             IMineBytesLoader mineLoader,
             IDwellingBytesLoader dwellingLoader,
             IMerchantBytesLoader merchantLoader,
+            IHeroOwnersBytesLoader heroOwnersLoader,
             IMapPlacesLoader placesLoader,
             IGameDateLocator dateLocator,
             IPlayerControlLocator setupLocator,
@@ -53,6 +55,7 @@
             this.mineLoader = mineLoader;
             this.dwellingLoader = dwellingLoader;
             this.merchantLoader = merchantLoader;
+            this.heroOwnersLoader = heroOwnersLoader;
             this.placesLoader = placesLoader;
             this.dateLocator = dateLocator;
             this.setupLocator = setupLocator;
@@ -81,13 +84,14 @@
             var mineChunks = this.mineLoader.LoadMineChunks(bytes);
             var dwellingChunks = this.dwellingLoader.LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
 
+            var afterPlayers = playerChunks.Count == 0 ? 0 : playerChunks[^1].End;
             var metadata = new SaveMetadata(
-                this.dateLocator.Find(bytes, gameVersion, playerChunks.Count == 0 ? 0 : playerChunks[^1].End),
+                this.dateLocator.Find(bytes, gameVersion, afterPlayers),
                 setup,
                 this.mapHeaderLocator.Find(bytes, gameVersion));
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes));
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers));
             return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
         }
 

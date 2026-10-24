@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
@@ -29,7 +30,21 @@
             changes.AddResources(original.Resources, current.Resources, p => p.Resources, (p, resources) => p with { Resources = resources });
             changes.AddTavern(original.Tavern, current.Tavern, heroName, p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
             changes.AddDaysLeft(original.DaysLeft, current.DaysLeft, (p, days) => p with { DaysLeft = days });
-            return changes.All;
+
+            // The list changes with the owners of heroes, so putting it back gives those heroes their owners back (PlayerEditSession.RestoreHeroes).
+            var heroes = new ChangeSink<PlayerModel>((change, _) => new PendingChange(current.Color.ToString(), change, Homm3ChunkKinds.Player, playerIndex, history => history.CreatePlayerSession(playerIndex).RestoreHeroes()));
+            if (!original.HeroIds.Equals(current.HeroIds) || original.SelectedHero != current.SelectedHero)
+            {
+                heroes.Add(ChangeAreas.Heroes, "Heroes", HeroList(original, heroName), HeroList(current, heroName), p => p);
+            }
+
+            return changes.All.Concat(heroes.All).ToList();
+        }
+
+        private static string HeroList(PlayerModel player, Func<int, string> heroName)
+        {
+            var list = player.HeroIds.Count == 0 ? "none" : string.Join(", ", player.HeroIds.Select(heroName));
+            return player.SelectedHero is { } selected ? $"{list} ({heroName(selected)} selected)" : list;
         }
     }
 }

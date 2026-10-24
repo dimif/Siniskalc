@@ -54,7 +54,7 @@ Only do the steps you are told to do, one at a time, in the order given.
 5. Limits go in `Constants`; range checks go through `RangeGuard`.
 6. One top-level type per file, named after the file. A type has no game prefix (the namespace says the game). Document public members; use `<inheritdoc/>` on members that implement or override a documented one. Property summaries start with "Gets" or "Gets or sets".
 7. **Test the shared code once**, in the shared test project, and use a Moq mock whenever you add an interface. Keep each game's own tests for what is the game's own. Test names are PascalCase sentences, one `<Subject>Tests` class per subject. A game's test project references only that game's project.
-8. Build and test with `dotnet test Siniskalc.sln --artifacts-path ../_art` (the exe is often running and locks the normal output) and run the whole suite, not only the tests of the area. The count of tests must not go down. The build must have no new warnings: StyleCop's member order (SA1201 to SA1204) and using order (SA1208, SA1210) are warnings here, so write members in the order it expects (constants and fields, constructors, properties, methods; static before instance; public before protected before private).
+8. Build and test with `dotnet test ... --artifacts-path ../_art` (the exe is often running and locks the normal output). Follow `CLAUDE.md`: between steps build and test only the projects that can be affected (the one you changed, its test project, and the test projects of the projects that reference it); run the whole suite (`dotnet test Siniskalc.sln --artifacts-path ../_art`) once per batch, before the last commit of the batch, and say so in your report. The count of tests must not go down. The build must have no new warnings: StyleCop's member order (SA1201 to SA1204) and using order (SA1208, SA1210) are warnings here, so write members in the order it expects (constants and fields, constructors, properties, methods; static before instance; public before protected before private).
 9. Update `docs/SHARING_REVIEW.md` or `docs/SHARING_REVIEW_UI.md` (and `docs/SINISKALC_ARCHITECTURE.md` or `CLAUDE.md` if a rule or a named type changed) with what was done and what was left.
 
 ## Git
@@ -62,6 +62,10 @@ Only do the steps you are told to do, one at a time, in the order given.
 - Commit only your own work, with explicit paths (never `git add -A`, and be careful with `git add -u`: other people's edits may be in the tree). Several small commits with a clear subject each are better than one large one; split a file that holds two logical changes.
 - No "Claude" in a commit message and no `Co-Authored-By` trailer.
 - Never push. Never rewrite history.
+
+## Cost
+
+Work with the fewest tokens that do the job: read only the files a step needs, do not paste whole build or test output into your answers, and do not repeat the full suite after every step. If a step is mechanical (a rename, a move, a decided fix) say so; if you think a step needs a stronger model than the one you run on (an unknown layout, a design choice, a decision about what is written to a savefile), say so in your report instead of guessing.
 
 ## When to stop and ask
 

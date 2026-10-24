@@ -1,6 +1,6 @@
+using Siniskalc;
 using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.Models;
-using Siniskalc;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;

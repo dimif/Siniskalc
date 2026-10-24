@@ -1,6 +1,6 @@
 using Siniskalc.Heroes.Wpf.ViewModels;
-using Siniskalc.Homm3.Runtime;
 using Siniskalc;
+using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
@@ -111,7 +111,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
             var player = this.main.CurrentPageOf<PlayerViewModel>();
             Assert.That(player.Name, Is.EqualTo("Purple"));
-            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold" }));
+            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems" }));
             Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(220976));
             Assert.That(player.Resources.Single(r => r.Name == "Mercury").Value, Is.EqualTo(153));
         }
@@ -193,7 +193,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var others = player.Resources.Where(r => !r.IsGold).Select(r => r.Value).ToList();
 
             player.SetAllResourcesCommand.Execute(null);
-            Assert.That(player.Resources.Where(r => !r.IsGold).Select(r => r.Value), Is.EqualTo(others.Select(v => Math.Min(v + Constants.Resources.AllResourcesIncrease, Constants.Resources.MaxOther))));
+            Assert.That(player.Resources.Where(r => !r.IsGold).Select(r => r.Value), Is.EqualTo(others.Select(v => Math.Min(v + 99, Constants.Resources.MaxOther))));
             Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(gold));
 
             player.SetRichCommand.Execute(null);

@@ -210,9 +210,61 @@ These are named and laid out like unit tests of one class but load real saves or
 - **One class, several subjects** (against "one test class per subject"): `SaveDocumentTests` (with `SaveDocumentHistory`), `SettingsStoreTests` (also `RecentFilesStore`), `EntityInvariantTests`, `CollectionAccessTests`, `PlayerAndCastleRegionProviderTests`, `CreatureFinderAndArtifactEffectsTests`, `PlayerAndOverviewViewModelTests`, `SkillsAndSpellsViewModelTests`, `CastlePillAndTavernLinkTests`, and the session tests in `SafeCastleSerializerTests:134-164`.
   Scenario classes (`Roe*`, `Sod*`, `Hota*`, `*CastleTests` per faction) are allowed by `CLAUDE.md` and are fine.
 - **Names that are not behaviour sentences**: `HeroDeserializerTests` (`DeserializingHeroDeserializes`, `DeserializingHasSpellBookForHeroWithDeserializes`), `HeroEditSessionTests` (`UpdateWritesAndUndoRestores`), `HeroOffsetsTests` (`SkillSlotsDependOnVersion`), `GrantedSpellsResolverTests` (`OneVersions…`), `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`.
+  See [Naming consistency](#naming-consistency) for the full list.
 - **Projects**: every test is in the project of the class it tests.
   `Siniskalc.Core.Tests` and `Siniskalc.Wpf.Tests` do not name any HoMM3 type.
   `Tests/Siniskalc.Tests/Models/` is listed as an empty `<Folder>` in the csproj although it holds tests; remove that item.
+
+### Naming consistency
+
+`CLAUDE.md` sets the format: a test class is `<Subject>Tests` in a file of the same name, and a scenario, save or game version may be the subject instead of a type.
+A method is a PascalCase sentence that states the behaviour, with no underscores, no `Test` or `Should` prefix, not just the name of a hero, and the subject named as the code names it.
+Savefile names follow `TestData/README.md` and are checked by `TestDataNamesTests`.
+
+What holds everywhere (checked by script over all 636 methods and 93 classes):
+
+- Every file holds one test class named like the file, and every namespace follows its folder.
+- No method has an underscore, a `Test` or `Should` prefix, or a lower-case start.
+- The two `partial` test classes are partial only for `[GeneratedRegex]`, in one file.
+- Helpers (`TestServices`, `CastleSamples`, `CastleMasks`, `SeriesSaves`, …) are in their own files, as the rules ask.
+
+Where names drift:
+
+- **Class names that are neither a type nor a scenario.**
+  43 of 93 classes match a production type.
+  The `Roe*`, `Sod*`, `Hota*` and faction `*CastleTests` classes are scenarios, which is allowed.
+  A third kind is not covered by the rules: classes named after a **feature** that cuts across reader, writer and view model (`GenderTests`, `BiographyTests`, `ActiveSpellsTests`, `MovedTodayTests`, `MapDifficultyTests`, `PlayerControlTests`, `PlayerHeadTests`, `MageGuildSpellsTests`, `MageGuildSpellEditingTests`, `ObeliskVisitsTests`, `CastleEditingTests`, `HeroEditingTests`, `SaveBaselineTests`, `HeroGeneralTabTests`, `SpellsFromArtifactsTests`, `CastleGarrisonedHeroTests`).
+  `CastleTests` and `PlayerTests` look like subjects but there is no `Castle` or `Player` type; they test `CastleModel`/`PlayerModel` read from a save.
+  Classes joined with `And` name two subjects (listed above).
+- **Method names that say nothing about the behaviour** (tautology, a hero name, or "works"):
+  `HeroDeserializerTests.DeserializingHeroDeserializes`, `…FullMaximusDumpDeserializesHero`, `…HasSpellBookForHeroWithDeserializes`, `…WithoutDeserializes`;
+  `HotaSaveTests.EveryHeroDeserializes`, `SirMullichIsDeserialized`, `MaximusIsDeserialized`, `ChristianIsDeserialized`;
+  `HotaSaveTests` and `SodSaveTests.UnchangedGameSavesIdenticalBytes` (no verb);
+  `ArtifactTests.GettingComboArtifactsReturnsCombo` (method-and-result style);
+  `CreatureInfoTests.EveryCreatureHasStats`, `ResourceCostIsImported`, `ShotsAreImported`;
+  `HeroOffsetsTests.SkillSlotsDependOnVersion`, `FifthSideSlotAndBackpackDependOnVersion` (depend how?);
+  `GrantedSpellsResolverTests.OneVersionsResolversAreEqualAndResolveThatVersionsSpells`;
+  `HeroByteEditTargetTests.ExposesTitleBytesAndRegions`;
+  `PlayerAndOverviewViewModelTests.QuickSetCommandsAndResetPlayerWork`;
+  `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`.
+- **Two sentence styles.**
+  Most of the suite (the savefile, castle, view-model and Core/Wpf tests) writes full sentences with articles: `ANeutralCastleIsWrittenAsTheByteFF`.
+  The older hero classes write telegraphic ones without articles: `SingleByteEditCanBeUndoneAndRedone`, `RoundTripKeepsBytesIdentical`, `ArtifactAddedToBackpackHasBlankSpellId`, `EquippingIntoBlankSlotWritesAValidArtifactSlot`, `DisposedTargetStopsListening`, `CreaturesSwapMovesStacksAndIntoEmptySlots`, `SelectingCombinationArtifactMirrorsBlockedSlots`, `FinderListsEveryCreatureUntilNarrowed` (in `HeroByteEditTargetTests`, `HeroEditSessionTests`, `SavefileBytesPatcherTests`, `SafeHeroSerializerTests`, `HeroEditingTests`, `EquippedArtifactsViewModelTests`, `CreatureFinderAndArtifactEffectsTests`).
+  Both pass the rule; the full-sentence style is the one to keep.
+- **Names that start with the member under test** (`ToBytesAppliesChunkEdits`, `ApplyChangesToKeepsEditsMadeElsewhere`, `ThrowIfNotIndexRejects…`, `WithGrantsReturnsTheSameBook…`, `HistoryOriginalRestoresEverything`).
+  The rule allows this ("name the thing under test the way the code does"); it reads well when the member is public API and badly when it is a model field (`HistoryOriginal`).
+
+Proposed format, so the rules decide every case (adopted in `CLAUDE.md`):
+
+| Kind | Class | Example |
+|---|---|---|
+| Unit, multi-unit | `<ProductionType>Tests`, one type | `SafeCastleSerializerTests` |
+| Integration, one save or series | `<Version><Scenario>Tests` | `RoeCastleBuildingsTests`, `SodHotseatTests` |
+| Integration, one feature over every layer | `<Feature>Tests` in `Integration/` | `GenderTests`, `ObeliskVisitsTests` |
+
+Methods: a present-tense sentence with articles, subject first, then the observable result (`AnUnknownClassReadsAsKnightAndIsKept`).
+Name a member only when it is the public API under test.
+Name a save, hero or castle only together with what it shows (`TazarStartsWithEquestriansGlovesAndNoSpellBook`, not `TazarIsDeserialized`).
 
 ## Excessive coverage
 
@@ -283,6 +335,6 @@ These are named and laid out like unit tests of one class but load real saves or
 4. Split `CastleBuilderTests` and `CastleBuilderRulesTests` into `Models/CastleBuilderTests` (castle models built in the test) and one integration replay per series; this saves about 14 s.
 5. Give the hero view-model tests a `HeroModel` built in the test and a mocked session; keep `SpellsFromArtifactsTests` and two or three save-based tests as integration (saves about 9 s).
 6. Cache loaded saves for the every-save and series sources (`ObeliskVisitsTests`, `PlayerHeadTests`, `OtherFactionsCastleTests`, `RoeCastleBuildingsTests`, `SodSeriesTests`).
-7. Split the multi-subject classes and move view-model tests out of Data classes; rename the non-sentence test methods; move `GameDateTests` and `SaveBaselineTests` to where their subjects are.
+7. Split the multi-subject classes and move view-model tests out of Data classes; rename the non-sentence test methods listed under [Naming consistency](#naming-consistency) and rewrite the telegraphic hero-class names as full sentences; move `GameDateTests` and `SaveBaselineTests` to where their subjects are.
 8. Add tests for the gaps: `SafePlayerSerializer`, `SafeObeliskSerializer`, `PlayerDeserializer`, `ObeliskDeserializer`, `PlayerDiffer`, the loaders, the byte edit targets, and the unknown-byte rules for players, obelisks and castle factions; then the view models and providers without tests.
 9. Remove the duplicated coverage listed above once the unit tests that replace it are in place.

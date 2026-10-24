@@ -24,7 +24,9 @@ The last report is `docs/TEST_REVIEW.md`; update it, and say what changed since 
 3. **Isolation**: unit tests that load savefiles, use `TestServices`, use the real disk or a static global, or call a real collaborator that could be a Moq fake.
 4. **Placement and naming**: a test is in the project of the class it tests, and in the folder of that class's layer (`Data`, `Entities`, `Models`, `Runtime`, `ViewModels`, `Views`).
    One test class per subject, named `<Subject>Tests` (scenario classes such as `RoeCastleTests` and `SodSaveTests` are allowed).
-   Method names are PascalCase sentences that state the behaviour.
+   Method names are PascalCase sentences that state the behaviour: full sentences with articles, subject first, then the observable result; a member name first only when it is the public API under test; a save or hero named only together with what it shows; nothing that only repeats the subject (`DeserializingHeroDeserializes`, `MaximusIsDeserialized`) or ends in "works".
+   Unit and multi-unit classes are named after one production type; integration classes may be named after a scenario (`RoeCastleTests`) or a feature tested through every layer (`GenderTests`); flag classes that are neither, and classes that join two subjects with `And`.
+   Check that every class matches its file and every namespace its folder (a short script over `Tests/` does this for all classes and methods at once).
    `Siniskalc.Core.Tests` and `Siniskalc.Wpf.Tests` must not name a HoMM3 type.
 5. **Excessive coverage**: the same behaviour asserted in several classes, the same save loaded in many tests, parameter sets far larger than the behaviour needs, and "every savefile" sources.
 6. **Gaps**: production classes with no test class of their own (list the files under `Siniskalc*/` and grep `Tests/` for each type name), classes covered only through savefile tests, and the `CLAUDE.md` rules (an unknown byte reads as a stand-in and does not stop a load; the serializer leaves that byte alone while the model holds the stand-in) for each serializer and deserializer.

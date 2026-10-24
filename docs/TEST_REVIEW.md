@@ -5,7 +5,9 @@ It is a report; nothing in the tests was changed.
 The backlog at the end lists the fixes in order.
 `.github/agents/test-reviewer.agent.md` (Copilot) and `.claude/agents/test-reviewer.md` (Claude) repeat this review.
 
-Reviewed at commit `c352615`, 2026-10-24.
+Reviewed at commit `c352615` (`main`), 2026-10-24.
+`feature/homm2-support` has moved on since: 170 more commits, seven test projects (adding `Heroes`, `Heroes.Wpf`, `Homm2` and `Homm3` tests) with 263 test files instead of 93, and Moq already in 27 of them.
+Findings about files that were moved or split there may be out of date; run the test-reviewer agent on that branch to refresh this report.
 
 ## Summary
 

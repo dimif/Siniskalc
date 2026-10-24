@@ -29,6 +29,33 @@ namespace Siniskalc.Core.Tests.Runtime
         }
 
         [Test]
+        public void AFolderThatIsThereIsHandedToTheShell()
+        {
+            var started = new List<string>();
+            var folder = Path.Combine(Path.GetTempPath(), "siniskalc-launcher-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(folder);
+            try
+            {
+                Assert.That(new ShellUrlLauncher(started.Add).TryOpenFolder(folder), Is.True);
+                Assert.That(started, Is.EqualTo(new[] { folder }));
+            }
+            finally
+            {
+                Directory.Delete(folder);
+            }
+        }
+
+        [Test]
+        public void AFolderThatIsNotThereIsNotHandedToTheShell()
+        {
+            var started = new List<string>();
+            var missing = Path.Combine(Path.GetTempPath(), "siniskalc-launcher-" + Guid.NewGuid().ToString("N"));
+
+            Assert.That(new ShellUrlLauncher(started.Add).TryOpenFolder(missing), Is.False);
+            Assert.That(started, Is.Empty);
+        }
+
+        [Test]
         public void ABrowserThatFailsToStartIsReportedNotThrown()
         {
             var launcher = new ShellUrlLauncher(_ => throw new InvalidOperationException("no browser"));

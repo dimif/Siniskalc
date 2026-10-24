@@ -51,7 +51,7 @@
             this.FileDialogs = new WpfFileDialogs();
             this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
             this.About = CreateAboutInfo();
-            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
+            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl, LogPaths.Resolve(this.Settings.Settings, AppInfo.Name));
 
             this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
             this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);

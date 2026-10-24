@@ -14,7 +14,7 @@ namespace Siniskalc
     /// <summary>
     /// Starts Serilog with what the user set (<see cref="UserSettings.LogFolder"/>, <see cref="UserSettings.LogLevel"/>) and hands it out as
     /// the <see cref="ILoggerFactory"/> the rest of the editor knows. This and <see cref="AppServices"/> are the only code that names Serilog.
-    /// The log is a plain text file, one event per line, kept for a week.
+    /// The log is a plain text file, one event per line, kept for a week. The file is shared, so a second copy of the editor can log to it too.
     /// </summary>
     internal static class LoggingSetup
     {
@@ -43,7 +43,8 @@ namespace Siniskalc
                     Formatter(),
                     Path.Combine(folder, FileName),
                     rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: DaysKept);
+                    retainedFileCountLimit: DaysKept,
+                    shared: true);
             }
             else if (chosen)
             {

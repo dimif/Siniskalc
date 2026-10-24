@@ -24,6 +24,11 @@
             nameof(OpenIssues),
             typeof(EditorCommands));
 
+        public static readonly RoutedUICommand ShowLogs = new RoutedUICommand(
+            "Show logs",
+            nameof(ShowLogs),
+            typeof(EditorCommands));
+
         public static readonly RoutedUICommand About = new RoutedUICommand(
             "About Siniskalc",
             nameof(About),

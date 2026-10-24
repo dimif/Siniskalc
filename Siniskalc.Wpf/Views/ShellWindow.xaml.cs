@@ -28,6 +28,7 @@ namespace Siniskalc.Wpf.Views
             this.help = help;
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
+            this.showLogsMenuItem.Visibility = help.LogFolder is null ? Visibility.Collapsed : Visibility.Visible;
             recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
@@ -135,6 +136,14 @@ namespace Siniskalc.Wpf.Views
         private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.UserGuideUrl);
 
         private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.IssuesUrl);
+
+        private void ShowLogsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.help.LogFolder is { } folder && !this.urlLauncher.TryOpenFolder(folder))
+            {
+                this.messages.ShowInformation("Help", $"Could not open the folder of the logs. It is at:\n{folder}");
+            }
+        }
 
         private void AboutCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {

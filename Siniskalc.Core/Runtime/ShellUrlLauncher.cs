@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Core.Runtime
 {
     using System;
+    using System.IO;
     using Microsoft.Extensions.Logging;
 
     /// <summary>
@@ -34,6 +35,28 @@
             catch (Exception ex)
             {
                 Logger.LogWarning(ex, "Could not open the address {Url}", url);
+                return false;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool TryOpenFolder(string folder)
+        {
+            // Only a folder that is there: the shell would also run a file or a program it is given.
+            if (!Directory.Exists(folder))
+            {
+                Logger.LogWarning("Could not open the folder {Folder}: it does not exist", folder);
+                return false;
+            }
+
+            try
+            {
+                this.start(Path.GetFullPath(folder));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "Could not open the folder {Folder}", folder);
                 return false;
             }
         }

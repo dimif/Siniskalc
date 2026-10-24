@@ -22,7 +22,7 @@
             // The number of towns (PlayerLayout.TownCount) and the list of their indices follow the owners of the castles in the saves, but
             // the order of the list is not established, so they are left as they were, also after a castle changed owner.
             using var subject = Logger.BeginSubject("Player", chunk.Name);
-            Logger.LogDebug("Town count and town list not written, they may be stale after a castle owner edit");
+            Logger.LogTrace("Town count and town list not written, they may be stale after a castle owner edit");
             return SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft);
         }
 

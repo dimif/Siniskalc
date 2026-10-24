@@ -52,6 +52,7 @@ The head is the same for every colour and in SoD and HotA (`PlayerHeadTests`).
 From the start of the chunk:
 
 - 0: number of heroes of the player. 1: the selected hero (`FF` for none). 2 to 9: the eight places for hero ids, `FF` for an empty one; a garrisoned hero is not in the list.
+  Read and written as `PlayerModel.HeroIds` and `SelectedHero` (the list and the count are written together, and only when the places do not hold the model's ids; see "The table of hero owners" below for how an owner edit changes them).
 - 10 and 11: the two heroes of the tavern, by hero id (`PlayerModel.Tavern`).
   The computer's taverns change both heroes at the start of a week and, within a week, only the place of a hero the computer hired (`SodSeriesTests`).
 - 19: changed from 03 to A7 when a hero dug; unexplained.
@@ -77,7 +78,29 @@ A slot with the marker but no valid colour byte (an unused last slot) is named a
 The byte in front of the marker (`PlayerLayout.FlagOffset`, 44 bytes after the resources) is **1 in most players and 0 in some**: Red's is 1 and Blue's 0 in `banishing_14` to `16`, while every player has 1 in `banishing_00`. What makes it 0 is not known, so the loader does not look at it (it once did, and found only the four players after Blue: Red and Blue had no page).
 
 **Not checked in the game**: editing the tavern.
-A table of `00`, `40` and `FF` bytes 230 to 290 bytes before the date also changes when a hero flees or is defeated, so a tavern hero set by the editor may be treated differently from one the game chose.
+The table of hero owners (below) marks the heroes the taverns offer with `40`, and the tavern page does not write it, so a tavern hero set by the editor is not marked as one the game chose.
+
+### The table of hero owners (found in `TestData/Hota/HeroOwners`, 2026-10-24)
+
+A byte per hero id, in the order of the ids (`HeroOwnersLayout`, `HeroOwnersModel`): the colour of the player who has the hero (0 Red to 7 Pink), `FF` for nobody, and `40` for a hero the game keeps from being drawn for a tavern (the two heroes of every tavern, and the campaign heroes 145 to 155). Hero 3 has `41` in every HotA save while nobody has it and no tavern offers it: unexplained, read as "kept out of play", left alone.
+It is 156 bytes in SoD (the `Roe` saves are SoD saves) and 215 in HotA; a second table of as many bytes, all `FF` in every save, follows, then `00 08`, two 16-bit numbers that vary, a zero byte and the 7F marker of the date. So `HeroOwnersBytesLoader` finds it from the date (`date - 11 - 2 * length`) and checks it (every byte `FF` or a colour with or without `40`, the second table all `FF`, the tail `00 08`); it is never searched for. It was found and checked in all 447 HoMM3 saves of `TestData` (`HeroOwnersBytesLoaderTests`): the table says the owner byte of every hero chunk, every hero of a player's list has the player's colour, every tavern hero has `40`, and an owned hero in no list is garrisoned in a castle (Blue's hero 29 in `hero_owners_04`, hired when Blue's list was full).
+RoE, AB and Chronicles saves were not seen: no table is read for them and an owner edit there changes the hero and the lists only.
+
+What the game changes (`hero_owners_00` to `05`, hotseat saves of `Island of HOTA tests 6p`):
+
+- **A defeat** (`00` to `01`: Clancy of Blue and Ufretin of Red; `02` to `03`: four heroes of Red; `04` to `05` and `05` to `06`: seven heroes of Blue at once, Fiona (205) among them, past the 200th byte of the table): the hero's owner byte becomes `FF` and it leaves the map; in the player's record the count drops, the id goes and the later ids move up a place, the freed places become `FF`; if it was the selected hero, the first hero left is selected (Blue: 22 selected, `[0, 22]` became 0 selected, `[0]`); the table's byte becomes `FF`. The tavern bytes do not change. A defeated hero goes back to the pool: Sir Mullich (144), Red's until `03`, was hired by Blue in `05`.
+- **A hire** (`02` to `03`, Red hires Vokial, 65, from the first place of its tavern; `04` and `05`, Blue hires seven): the id goes to the first free place after the others (after the compaction of the heroes lost in the same turn), the count goes up, the selected hero does not change; the table's `40` becomes the player's colour; the tavern place is refilled by a hero the game draws (Leena, 160), which gets `40` in the table. Blue's eighth hire in `04` (29) went into the garrison: the table says Blue, the list (full at 8) does not have it.
+- **A player knocked out** (Pink in `04`): its tavern bytes become `FF FF` and its two tavern heroes' `40` becomes `FF`.
+- Unexplained: in `05` Red's first tavern place changed (160 to 2, with the table following) while Red hired nobody.
+
+What the editor does (`HeroEditSession.ChangeOwner`, `HeroOwnerEdits`), in one step of the history:
+
+- **To nobody** (a defeat): the hero (`HeroModel.WithOwner`: off the map), the old owner's list (`PlayerModel.WithoutHero`) and the table (`FF`), as above. Replayed on `00` to `01` (bytes 0 to 9 of every player and the whole table equal the game's), `02` to `03`, `04` to `05` and `05` to `06` (the whole table and Blue's record but its selected hero, which the game set to Orrin in `06` though no selected hero was lost; the editor leaves a selection alone unless the selected hero goes) (`HeroOwnerEditsTests`).
+- **To a player** (a hire of a hero that is in no tavern): the id at the end of the new owner's list, the table says the colour; from another player, the old owner loses it as in a defeat.
+- **Refused** (`GameRuleException`, nothing written): a hero a tavern offers (the game refills the tavern place with a hero it draws, which the editor cannot do); a hero the table keeps out of play (`40` with no tavern, the campaign heroes and hero 3); a player whose list has 8 heroes; a hero garrisoned in a castle (the castle holds its id and how a defeat or a change of owner of a garrisoned hero is kept was not seen: hero 29 was defeated between `04` and `05`, with the castle, which was not looked at).
+- Reverting the owner change (or the player's "Heroes" change, which is listed with it) puts the hero's owner, the place of the hero in every list, the selected hero and the table back together.
+
+**Open:** whether the game accepts a hero given to a player that it did not hire (a hire from the pool goes through a tavern in every save seen, and nothing shows how the game would treat a hero that skips it; not checked in the game); how a garrisoned hero's owner change and defeat are stored (the castle's garrison byte); what the second table is; the `41` of hero 3; the refill of Red's tavern in `05`.
 The tavern page offers only heroes no player owns, and never the same hero twice.
 
 ## Castles

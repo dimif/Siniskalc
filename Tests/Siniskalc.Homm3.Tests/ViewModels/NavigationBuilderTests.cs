@@ -75,36 +75,36 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
-        public void PickingAMineOfAColourWithNoPlayerShowsItOnThePageOfThatColour()
+        public void PickingAMineOfBlueInTheSaveWhoseBlueStructHasAZeroFlagShowsItOnBluesPlayerPage()
         {
-            var main = LoadFlaggedByColoursWithNoPlayer();
+            var main = LoadFlaggedByBlue();
             var mine = main.PlayerNodes().Single(n => n.Title == "Blue").Descendants().First(n => n.Kind == NavNodeKind.Mine);
 
             mine.IsSelected = true;
 
-            var page = main.CurrentPageOf<NeutralViewModel>();
+            var page = main.CurrentPageOf<PlayerViewModel>();
             Assert.That(page.Name, Is.EqualTo("Blue"));
-            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Mines));
+            Assert.That(page.SelectedTab, Is.EqualTo(OwnerTabs.Mines));
             Assert.That(page.MapObjects.Mines.SelectedMine?.Index, Is.EqualTo(mine.Index));
             Assert.That(main.NavigationNodes.Descendants().Where(n => n.IsSelected), Is.EqualTo(new[] { mine }));
         }
 
         [Test]
-        public void TheNodeOfAColourWithNoPlayerOpensItsPageAndNotTheNeutralOne()
+        public void TheNodesOfRedAndBlueOfTheSaveWithAZeroFlagOpenTheirPlayerPagesAndNotTheNeutralOne()
         {
-            var main = LoadFlaggedByColoursWithNoPlayer();
+            var main = LoadFlaggedByBlue();
 
             foreach (var name in new[] { "Red", "Blue" })
             {
                 main.PlayerNodes().Single(n => n.Title == name).IsSelected = true;
 
-                Assert.That(main.CurrentPageOf<NeutralViewModel>().Name, Is.EqualTo(name));
+                Assert.That(main.CurrentPageOf<PlayerViewModel>().Name, Is.EqualTo(name));
             }
 
-            Assert.That(main.CurrentPageOf<NeutralViewModel>().MapObjects.Mines.Rows.Select(m => m.OwnerSort), Is.All.EqualTo("Blue"));
+            Assert.That(main.CurrentPageOf<PlayerViewModel>().MapObjects.Mines.Rows.Select(m => m.OwnerSort), Is.All.EqualTo("Blue"));
         }
 
-        private static Homm3EditorViewModel LoadFlaggedByColoursWithNoPlayer()
+        private static Homm3EditorViewModel LoadFlaggedByBlue()
         {
             var path = Path.Combine("TestData", "Hota", "Mines", "mines_20_flagged_by_colours_with_no_player.GM2");
             var main = TestServices.CreateHomm3Editor();

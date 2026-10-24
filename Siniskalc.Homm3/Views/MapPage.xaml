@@ -6,6 +6,9 @@
       xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
       xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
       Title="Map">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityMap"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,6 +36,11 @@
                             <Border Style="{StaticResource CardStyle}" Width="380">
                                 <StackPanel>
                                     <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Name}"/>
+                                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,4" Text="{Binding Location}">
+                                        <TextBlock.Visibility>
+                                            <Binding Path="HasLocation" Converter="{StaticResource BoolToVisibilityMap}"/>
+                                        </TextBlock.Visibility>
+                                    </TextBlock>
                                     <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,6"
                                                Text="The seven artifacts in store. Clear a slot for an artifact that was sold. Not yet tried in the game."/>
                                     <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>

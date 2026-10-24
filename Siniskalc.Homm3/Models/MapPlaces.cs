@@ -13,15 +13,21 @@ namespace Siniskalc.Homm3.Models
     {
         private readonly IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places;
 
-        public MapPlaces(IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places)
+        public MapPlaces(IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places, IReadOnlyList<(int Number, MapPosition Position)>? merchants = null)
         {
             this.places = places;
+            this.Merchants = merchants ?? [];
         }
 
         /// <summary>
         /// Gets the places of a map in which none were found.
         /// </summary>
         public static MapPlaces None { get; } = new(new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>());
+
+        /// <summary>
+        /// Gets where the merchants of the map are, by their number among the merchants (the index of their stock). A merchant a hero stands on is not found.
+        /// </summary>
+        public IReadOnlyList<(int Number, MapPosition Position)> Merchants { get; }
 
         /// <summary>
         /// Returns the places with those that a hero stands on added: such a place is not found on the map, as the hero hides it, but the hero's
@@ -41,7 +47,7 @@ namespace Siniskalc.Homm3.Models
                 merged[group.Key] = known.OrderBy(k => k.Number).ToList();
             }
 
-            return new MapPlaces(merged);
+            return new MapPlaces(merged, this.Merchants);
         }
 
         /// <summary>

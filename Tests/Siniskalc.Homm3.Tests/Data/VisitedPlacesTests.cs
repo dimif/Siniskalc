@@ -60,6 +60,24 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
+        public void TheTreesOfKnowledgeAreFoundWhateverFlagsTheirCellsHold()
+        {
+            // The cell of a tree has 0 or 1 for its number before a visit and 0x60 or 0x61 after, and a payment after it instead of zeros.
+            Assert.That(Load("00_baseline").Places.Of(VisitedPlaceKind.TreeOfKnowledge).Select(p => (p.Number, p.Position.X, p.Position.Y)), Is.EqualTo(new[] { (0, 2, 20), (1, 2, 23) }));
+            Assert.That(Load("26_tazar_library_of_enlightenment_2").Places.Of(VisitedPlaceKind.TreeOfKnowledge).Select(p => (p.Number, p.Position.X, p.Position.Y)), Does.Contain((0, 2, 20)));
+        }
+
+        [Test]
+        public void ATreeAHeroStandsOnIsNumberedWithoutTheFlagsTheHeroReads()
+        {
+            // Tazar stands next to the tree at 2, 23 and reads 0x21 for its number; the number of the tree is 1.
+            var trees = Load("23_tazar_tree_of_knowledge_1").Places.Of(VisitedPlaceKind.TreeOfKnowledge);
+
+            Assert.That(trees.Select(p => p.Number), Has.All.LessThan(2));
+            Assert.That(trees.Select(p => p.Number), Does.Contain(1));
+        }
+
+        [Test]
         public void APlaceAHeroStandsOnIsFoundFromTheRecordOfTheHero()
         {
             // In this save Tazar stands on the first school of war and Orrin on the second: the map holds neither, the heroes name both.

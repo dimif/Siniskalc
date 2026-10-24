@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Runtime
+namespace Siniskalc.Homm3.Runtime
 {
     using System;
     using System.Collections.Generic;
@@ -103,7 +103,7 @@
                 var kind = VisitedPlaceKind.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
                 if (kind != null && heroes[i].GetByteAt(15) == 1 && heroes.GetModel(i).Position is { X: >= 0 } position)
                 {
-                    yield return (kind, heroes[i].GetByteAt(16), position);
+                    yield return (kind, heroes[i].GetByteAt(16) & kind.NumberMask, position);
                 }
             }
         }

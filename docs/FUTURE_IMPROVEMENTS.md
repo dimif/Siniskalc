@@ -14,8 +14,8 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 - **A third game** (HoMM1 first, as the test that the page interfaces are right): see "Adding a game" in the architecture document.
 - **Names behind a provider.** Names of creatures, spells and artifacts are string literals in the entity tables.
   Before a third game, one injected name provider (like `EffectLineProvider`) so a creature is named once and the UI can be localized.
-- **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`), but each game's view model is its own.
-  There is no hero page interface yet: the tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class).
+- **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`, `IHeroPage`), but each game's view model is its own.
+  The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills page waits for the entity sharing described in `docs/SHARING_REVIEW.md`.
 - **View models free of WPF.** The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite for Avalonia.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
@@ -47,14 +47,15 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known.
    The tavern has table about 250 bytes before the date that changes when a hero is defeated, so it's probably that one.
 9. **Places a HoMM3 hero visited** (built 2026-10-22: Places tab of the hero page on the shared `VisitedPlacesCard`; a 32 bit number per kind in the hero record, bit = number of the place among its kind, positions from the map cells; see `docs/KNOWLEDGE_BASE.md`). Open:
-   - Per-place lists of **trees of knowledge, colossi and gazebos** (the per-place cells are not found) and the **dragon utopia "visited for Red only"** mark.
+   - Per-place lists of the **colossi and gazebos** (they are objects of the type 144 whose cells carry no number; the subtype in the definition tells a gazebo, 6, from other objects, but no colossus was identified) and the **dragon utopia "visited for Red only"** mark. The trees of knowledge have theirs (2026-10-24).
+   - **Mineral spring** (a Horn of the Abyss object, type 144 subtype 4: +1 luck for the next battle and +600 movement points until the end of the day): where a hero keeps that it visited one is not known. Probe saves wanted: Tazar visits a mineral spring, then Orrin a turn later, and a save a day later.
    - Offsets verified only in **Horn of the Abyss**; Shadow of Death and Restoration of Erathia are unchecked.
    - Forgetting a visited place is **not tried in the game**.
 10. **HoMM3 Map page, what is left** (Mines, Dwellings and Merchants tabs; built 2026-10-22):
    - **Nothing is tried in the game**: owner and stock edits of mines and dwellings, guard edits, merchant stock edits, the destination fix.
    - **Position versus entrance**: the record tile of a mine or dwelling is not always the entrance; the hero's destination marker equals the entrance and may be the better source. Test it against the mine and dwelling saves.
    - **Dwellings**: the guard and state of a neutral dwelling, the stock of the refugee camp (`TestData/Hota/VisitedPlaces` save 30 is filed, undecoded; a before/after-hire pair is wanted), creature codes of other factions, non-Castle dwellings. The table finder works only when the table directly follows the mines, so maps like the Arts map show none.
-   - **Merchants**: only one list pair was found on the test map; maps with several merchants of a kind are unknown. Merchants never sell spell scrolls (the picker excludes them); the picker could be limited to treasure/minor/major artifacts if that rule is confirmed.
+   - **Merchants**: the number in front of the lists is the number of merchants and each has a list (`multi_merchants`, four black markets; 2026-10-24). That the lists follow the merchants in the order of their numbers is confirmed only for the first two. Merchants never sell spell scrolls (the picker excludes them); the picker could be limited to treasure/minor/major artifacts if that rule is confirmed.
    - Unfiled saves from the user's folder: 237, 242, 243 and 311 to 313.
 8. **Banishing, what is left** (the counter itself is found: byte 22 of the player struct, shown on the player page and editable; see `docs/KNOWLEDGE_BASE.md`, "Players").
    - Check in the game that a lower or higher number of days makes the game banish the player earlier or later.

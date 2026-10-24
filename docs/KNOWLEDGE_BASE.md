@@ -74,6 +74,7 @@ A colour is listed when it has resources, heroes or a town, and the setup does n
 `tan_not_parsing`: Tan is not in the game but has 10000 gold in the table, like a computer player never given a start; the colour that plays is Teal (confirmed in the game).
 A human with two heroes and no resources, as in `SleepGarrisonVisiting` saves 1 to 3 and Blue in the hotseat saves, counts through its heroes.
 A slot with the marker but no valid colour byte (an unused last slot) is named after the colour that follows the previous one.
+The byte in front of the marker (`PlayerLayout.FlagOffset`, 44 bytes after the resources) is **1 in most players and 0 in some**: Red's is 1 and Blue's 0 in `banishing_14` to `16`, while every player has 1 in `banishing_00`. What makes it 0 is not known, so the loader does not look at it (it once did, and found only the four players after Blue: Red and Blue had no page).
 
 **Not checked in the game**: editing the tavern.
 A table of `00`, `40` and `FF` bytes 230 to 290 bytes before the date also changes when a hero flees or is defeated, so a tavern hero set by the editor may be treated differently from one the game chose.
@@ -240,6 +241,17 @@ From the saves of `TestData/Hota/VisitedPlaces`: Tazar and Orrin visit, a turn a
 - **A dragon utopia (once per map)** is marked visited for the heroes of the player that won it and not for the others: Orrin (Blue) saw no change in the save after Tazar's win. Where that mark is kept is not found (the saves after it are 99 and 8,749 bytes longer).
 - Tree of knowledge: other bytes change too (+231 and +1141 for Tazar, +224 and +1134 for Orrin) and the level (+75) goes up by one: the payment each tree asks (gold, gems...) is not stored in the hero.
 
+### Objects of the map: what the list of positions and the cells say (2026-10-24)
+
+- **In the list of objects (a definition number and x, y, z for each) the position of an entry belongs to the object whose definition is in the next entry.** A hero standing on school of magic 0 in `visited_places_05` is at the position of entry 791 and the definition of entry 792 is the school; the cells of the map that give a place number point at the entry with the position. `MapObjectPositions` therefore gives the position of the object a cell names, and the type of that object is the type of the *next* definition.
+- **Definitions have a type and a subtype**: of the 33 bytes after the file name of a definition, the type of the object is at +26 and its subtype at +28. The Horn of the Abyss objects that are not in the older games share the type 144 and tell themselves apart by the subtype: `AVXgazeb` (gazebo) is 6, `AVXmspr0` (mineral spring) is 4, `AVSmgarn` 2, `avwtplce` 3, `AVShrmit` 5, `avmoilpm` 8, `avxtrmtw` 9, `avtprosp` 10, `avstrblz` 11, `AVStmplt` 0. Which of them is the colossus of the magi is not settled: the cells of the AVStmplt objects are the only ones with the type 144 in them and a number of FFFFFFFF, and a hero standing on a colossus reads 144 and the number 0 or 1, but no position of a hero ever agreed with a definition of the type 144.
+- **The cell of a tree of knowledge** (`66 00 00 00`, place, number, `20 05 00`) holds more than the number: the byte of the number is 0 or 1 before a visit and 0x60 or 0x61 after it, the three bytes after it are the payment (`20 05 00` is 2,000 gold at first, `2C 05 00` after a visit), and a hero standing on a tree reads 0x20 or 0x21 for its number. The number of the place is the low five bits (`VisitedPlaceKind.NumberMask`). Both trees of the test map are found this way: 0 at 2, 20 and 1 at 2, 23, and the bits Tazar sets are those (`visited_places_23` and `24`).
+- **A cell is written for every tile of an object**, and the cells of one object do not always agree on the number (a merchant of `multi_merchants` has 2 on its first tile and 1 on another): the first cell of a place with a valid number is the one to take.
+
+### The merchants (found in `TestData/Hota/multi_merchants`, 2026-10-24)
+
+The 32 bit number in front of the first list of seven artifacts is **the number of merchants**, not a marker: 2 in the first map of the test series, 4 in `multi_merchants`, where two black markets were added with the map editor, and that many lists follow, one for each merchant of the map. The game calls every one of them a black market. Their number is the number among the objects of the type 7 (`07 00 00 00`, place, number), in the order of the object list: (28, 34), (28, 37), (31, 34) and (31, 37) in that map. The first two are the ones Tazar visits as number 0 and 1 in `visited_places_27` to `29`. Which merchant a list belongs to was not confirmed in the game for more than two.
+
 ## Dwellings (Horn of the Abyss, found 2026-10-22)
 
 From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature generators, Orrin flags them to Blue a turn later).
@@ -251,7 +263,7 @@ From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature g
 
 ## The Places tab of a hero (HoMM3)
 
-The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The trees of knowledge, the colossi and the gazebos are listed without their places: the cells of the trees were not found, and the colossi and gazebos share an object type.
+The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The colossi and the gazebos are listed without their places: they share the object type 144 with the other objects of the Horn of the Abyss and their cells carry no number (see "Objects of the map"). The trees of knowledge are listed with theirs since 2026-10-24. A kind with no places can still be opened, and it shows nothing.
 
 ## Hex views
 

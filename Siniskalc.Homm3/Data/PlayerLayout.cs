@@ -71,14 +71,20 @@ namespace Siniskalc.Homm3.Data
         public const int ResourceSize = 4;
 
         /// <summary>
-        /// The layout of Horn of the Abyss savefiles. After the resources comes a 1 and a 16, then three zero bytes.
+        /// Where the flag byte that follows the resources by 44 bytes is. It is 1 in most players and 0 in some (Blue of the saves of
+        /// <c>TestData/Hota/Banishing</c> and of <c>TestData/Hota/Mines</c>, never Red's); what makes it 0 is not known, so the Horn of the Abyss marker starts after it (Shadow of Death saves with it 0 were not seen, and its marker includes it).
         /// </summary>
-        public static readonly PlayerLayout HornOfTheAbyss = new(stride: 149, markerOffset: ResourcesOffset + 44, marker: [0x01, 0x10, 0x00, 0x00, 0x00], colorOffset: ResourcesOffset + 51);
+        public const int FlagOffset = ResourcesOffset + 44;
 
         /// <summary>
-        /// The layout of Shadow of Death savefiles. After the resources comes a 1 and two zero bytes.
+        /// The layout of Horn of the Abyss savefiles. After the resources comes a flag byte (<see cref="FlagOffset"/>), then a 16 and three zero bytes.
         /// </summary>
-        public static readonly PlayerLayout ShadowOfDeath = new(stride: 145, markerOffset: ResourcesOffset + 44, marker: [0x01, 0x00, 0x00], colorOffset: ResourcesOffset + 47);
+        public static readonly PlayerLayout HornOfTheAbyss = new(stride: 149, markerOffset: FlagOffset + 1, marker: [0x10, 0x00, 0x00, 0x00], colorOffset: ResourcesOffset + 51);
+
+        /// <summary>
+        /// The layout of Shadow of Death savefiles. After the resources comes a 1 and two zero bytes (the flag byte of <see cref="FlagOffset"/> is part of the marker here: the Horn of the Abyss saves are the only ones seen with it 0).
+        /// </summary>
+        public static readonly PlayerLayout ShadowOfDeath = new(stride: 145, markerOffset: FlagOffset, marker: [0x01, 0x00, 0x00], colorOffset: ResourcesOffset + 47);
 
         private PlayerLayout(int stride, int markerOffset, byte[] marker, int colorOffset)
         {

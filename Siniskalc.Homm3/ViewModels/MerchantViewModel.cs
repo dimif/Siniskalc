@@ -10,16 +10,17 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// What a merchant (the artifact merchants, the black market) has in store: seven slots, each picked like the artifact of a hero. A slot
+    /// What a merchant (every one is a black market) has in store: seven slots, each picked like the artifact of a hero. A slot
     /// that is cleared is a sold one. Call <see cref="Refresh"/> after the stock changed.
     /// </summary>
     public sealed class MerchantViewModel : AbstractViewModelBase
     {
         private readonly IEditSession<MerchantStockModel> session;
 
-        public MerchantViewModel(IEditSession<MerchantStockModel> session, GameVersion gameVersion, EffectLineProvider effectLines)
+        public MerchantViewModel(IEditSession<MerchantStockModel> session, GameVersion gameVersion, EffectLineProvider effectLines, string location = "")
         {
             this.session = session;
+            this.Location = location;
             this.Slots = Enumerable.Range(0, MerchantLayout.SlotCount)
                 .Select(slot => new ArtifactSlotViewModel(
                     $"Slot {slot + 1}",
@@ -30,6 +31,13 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         public string Name => this.session.Current.Name;
+
+        /// <summary>
+        /// Gets where the merchant is on the map, or nothing when a hero standing on it hides where it is.
+        /// </summary>
+        public string Location { get; }
+
+        public bool HasLocation => this.Location.Length > 0;
 
         /// <summary>
         /// Gets the seven slots of the shop, in order.

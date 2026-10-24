@@ -22,6 +22,31 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheBytesTabListsEveryRecordOfTheMapAndShowsTheFirst()
+        {
+            var game = TestServices.LoadThreedom(71);
+            var document = game.History.Current;
+            var page = new MapViewModel(game, new ByteEditTargetFactory());
+
+            Assert.That(page.Records, Has.Count.EqualTo(document.Mines().Count + document.Shrines().Count + document.Sphinxes().Count + 3));
+            Assert.That(page.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
+            Assert.That(page.SelectedRecord, Is.SameAs(page.Records[0]));
+
+            page.SelectedRecord = page.Records.Single(r => r.Name == "Obelisks");
+            using var target = page.CreateByteEditTarget()!;
+            Assert.That(target.Title, Is.EqualTo("Obelisks"));
+        }
+
+        [Test]
+        public void WithoutAFactoryThePageHasNoBytes()
+        {
+            var page = new MapViewModel(TestServices.LoadThreedom(71));
+
+            Assert.That(page.Records, Is.Empty);
+            Assert.That(page.CreateByteEditTarget(), Is.Null);
+        }
+
+        [Test]
         public void TheShrinesAreSortedByCircleLocationOrSpellFromTheHeadings()
         {
             var page = new MapViewModel(TestServices.LoadThreedom(77));

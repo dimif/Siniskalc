@@ -94,7 +94,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public void ShowMap()
         {
-            this.map ??= new MapViewModel(this.Loaded());
+            this.map ??= new MapViewModel(this.Loaded(), this.byteEditTargets);
             this.SetCurrentPage(this.map);
         }
 

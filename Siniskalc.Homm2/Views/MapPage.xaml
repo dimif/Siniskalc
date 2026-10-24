@@ -105,9 +105,30 @@
         <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
             <wpf:NavButton Text="Shrines"/>
             <wpf:NavButton Text="Sphinxes"/>
+            <wpf:NavButton Text="Bytes" RequiresAdvancedMode="True"/>
         </ListBox>
 
+        <!-- Bytes: the raw bytes of the record that is picked, with its own scrolling. -->
+        <DockPanel Grid.Row="2" Margin="8,8,8,0" Style="{StaticResource TabPanel2}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,8">
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Record"/>
+                <ComboBox x:Name="records" Width="300" ItemsSource="{Binding Records}" SelectedItem="{Binding SelectedRecord}" DisplayMemberPath="Name"
+                          ToolTip="The record of the map whose bytes are shown: a mine, a shrine, a sphinx, whose turn it is, the castles that built today or the obelisks"/>
+            </StackPanel>
+            <wpf:HexEditor x:Name="hexEditor"/>
+        </DockPanel>
+
+        <!-- The pages of cards scroll, except the Bytes tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="2">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <!-- Shrines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">

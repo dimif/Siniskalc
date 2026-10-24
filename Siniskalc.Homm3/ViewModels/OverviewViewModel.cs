@@ -18,6 +18,11 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
+        /// <summary>
+        /// The tooltip of the disabled button that would give the turn to a human player.
+        /// </summary>
+        public const string GiveTheTurnNotBuilt = "Giving the turn to this player is not possible yet: the editor does not write whose turn it is for this game";
+
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
@@ -92,8 +97,8 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
 
-        // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
-        // (see PlayerControlLocator) and writing it is not built.
+        // The button of a human who has not the turn is shown disabled: where the savefile keeps the turn is known (see PlayerControlLocator)
+        // and writing it is not built. Nothing is logged: it is a state of the page, not a fallback (docs/LOGGING.md).
         private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
         {
             var isCurrent = this.game.CurrentPlayer == color;
@@ -102,8 +107,8 @@ namespace Siniskalc.Homm3.ViewModels
                 color.ToString(),
                 PlayerPalette.Of(color),
                 isCurrent,
-                isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
-                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
+                isHuman && !isCurrent ? new DelegateCommand(_ => { }, _ => false) : null,
+                isCurrent ? "It is this player's turn" : isHuman ? GiveTheTurnNotBuilt : "A computer player cannot be given the turn");
         }
     }
 }

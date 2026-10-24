@@ -9,7 +9,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     internal sealed class OrderOfPlayTests
     {
         [Test]
-        public void TheCardListsThePlayersWithTheTurnLitAndOnlyAHumanWhoHasNotTheTurnCanBePressedButNothingChanges()
+        public void TheCardListsThePlayersWithTheTurnLitAndTheButtonOfAHumanWhoHasNotTheTurnIsDisabledWithTheReason()
         {
             var path = Path.Combine("TestData", "Sod", "Hotseat", "hotseat_00_baseline_200_diff.GM2");
             var game = TestServices.GameService.LoadGameFromFile(path);
@@ -19,13 +19,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var current = overview.OrderOfPlay.Where(i => i.IsCurrent).ToList();
             Assert.That(current, Has.Count.EqualTo(1));
             Assert.That(current[0].Command, Is.Null, "the player who has the turn cannot be given it");
-            var pressable = overview.OrderOfPlay.Where(i => i.Command != null).Select(i => i.Name).ToList();
-            Assert.That(pressable, Is.Not.Empty);
-
-            overview.OrderOfPlay.First(i => i.Command != null).Command!.Execute(null);
-
+            var others = overview.OrderOfPlay.Where(i => i.Command != null).ToList();
+            Assert.That(others, Is.Not.Empty, "a human who has not the turn has a button");
+            Assert.That(others.Select(i => i.Command!.CanExecute(null)), Has.All.False, "writing the turn is not built for HoMM3");
+            Assert.That(others.Select(i => i.ToolTip), Has.All.EqualTo(OverviewViewModel.GiveTheTurnNotBuilt));
             Assert.That(game.History.GetPendingChanges(), Is.Empty);
-            Assert.That(overview.OrderOfPlay.Single(i => i.IsCurrent).Name, Is.EqualTo(current[0].Name));
         }
     }
 }

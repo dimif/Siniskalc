@@ -427,6 +427,10 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                 </Trigger>
+                <!-- A turn the editor cannot give yet: the button stays, greyed out, with its tooltip saying why. -->
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="tile" Property="Opacity" Value="0.55"/>
+                </Trigger>
                 <DataTrigger Binding="{Binding IsCurrent}" Value="True">
                     <Setter TargetName="tile" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
                     <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
@@ -436,7 +440,7 @@
         </ControlTemplate>
         <DataTemplate x:Key="OrderOfPlayItemTemplate" DataType="{x:Type wvm:OrderOfPlayItemViewModel}">
             <Button Template="{StaticResource OrderOfPlayButtonTemplate}" Margin="0,0,8,0" Cursor="Hand" Command="{Binding Command}" ToolTip="{Binding ToolTip}"
-                    AutomationProperties.Name="{Binding Name}"/>
+                    ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="{Binding Name}"/>
         </DataTemplate>
 
         <DataTemplate x:Key="PlayerCardTemplate" DataType="{x:Type wvm:PlayerCardViewModel}">

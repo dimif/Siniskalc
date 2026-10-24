@@ -58,7 +58,7 @@
             <Grid Margin="8,4,8,16">
                 <!-- General: the resources, and the countdown to banishing of a player with no town -->
                 <Grid Style="{StaticResource TabPanel0}">
-                    <heroes:ResourcesPanel Note="Amounts are limited to 999,999 for each resource, and 999,999,999 for gold. Hold Shift while pressing + or − to step by ten.">
+                    <heroes:ResourcesPanel Note="Amounts are limited to 2,147,483,647 gold and 65,535 of each other resource. Hold Shift while pressing + or − to step by ten.">
                         <!-- Only a player who owns no town has days left; the buttons of a banished player are disabled. -->
                         <heroes:DaysLeftCard DataContext="{Binding DaysLeftCard}"/>
                     </heroes:ResourcesPanel>

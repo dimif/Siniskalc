@@ -7,7 +7,6 @@
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// The second set of savegames for the write test with the game, made with the view models of the editor (TestData/Homm2/out, not in
@@ -123,7 +122,7 @@
             Assert.That(gallant.Spells.Contains(Spell.Cure), Is.True);
 
             var blue = Open("E23LIMIT").Document.Players().GetModel(0).Resources;
-            Assert.That(blue, Is.EqualTo(new ResourceSet(9_999, 9_999, 9_999, 9_999, 9_999, 9_999, Constants.Player.MaxGold)));
+            Assert.That(blue, Is.EqualTo(new ResourceSet(Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxGold)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
             Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Peasant, (int)Constants.MaxCreatureCount)));

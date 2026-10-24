@@ -284,7 +284,7 @@ The only shared piece is the bonus (E7, M2). The page block for artifacts is alr
 **Now.** HoMM2 `Resources(long x7)` and HoMM3 `PlayerResources(int x7)`: seven named amounts, an indexer by `Resource`, `With(resource, amount)`, a `None`/zero, value equality. The code is the same `switch`.
 HoMM2 also uses a second `Resources` for the daily income.
 
-**Proposal.** `ResourceSet(long Wood, long Mercury, long Ore, long Sulfur, long Crystal, long Gems, long Gold)` in `Heroes.Models` (with `None`, `this[Resource]`, `With`, `All`). Limits (HoMM2: 999,999 gold and 9,999 others; HoMM3: its own) stay in each game's `Constants`. HoMM3 reads and writes each amount as an `Int32` (`PlayerDeserializer`, `SafePlayerSerializer`), so its serializer would need a narrowing guard that it does not have today (the stepper limits keep it in range, but the serializer should not rely on that).
+**Proposal.** `ResourceSet(long Wood, long Mercury, long Ore, long Sulfur, long Crystal, long Gems, long Gold)` in `Heroes.Models` (with `None`, `this[Resource]`, `With`, `All`). Limits (both games: 2,147,483,647 gold and 65,535 others, `Heroes.Constants.Resources`) stay in each game's `Constants`. HoMM3 reads and writes each amount as an `Int32` (`PlayerDeserializer`, `SafePlayerSerializer`), so its serializer would need a narrowing guard that it does not have today (the stepper limits keep it in range, but the serializer should not rely on that).
 `IResourcesPage` can then say `ResourceSet` and not only a list of rows. Income is a second `ResourceSet` in HoMM2.
 
 ### M8. `Numbers`: SHARE (Core)

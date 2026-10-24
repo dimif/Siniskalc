@@ -52,9 +52,9 @@ namespace Siniskalc.Heroes
             public const long MaxGold = int.MaxValue;
 
             /// <summary>
-            /// The most of any other resource.
+            /// The most of any other resource: the largest 16-bit unsigned number.
             /// </summary>
-            public const long MaxOther = 9_999;
+            public const long MaxOther = ushort.MaxValue;
         }
 
         /// <summary>

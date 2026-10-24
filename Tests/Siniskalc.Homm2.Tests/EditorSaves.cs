@@ -5,10 +5,8 @@
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
     using Siniskalc.Homm2.ViewModels;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The second set of savegames for the write test with the game: unlike <see cref="EditedSaves"/>, which edits the models, these
@@ -43,7 +41,7 @@
                 Make("E22BOOK", "Sir Gallant buys a spell book and learns the spells without 'fire' in the name", GallantBook, game =>
                     $"Sir Gallant has a spell book with {game.History.Current.Heroes().GetModel(1).Spells.Count} spells: all but {string.Join(", ", Spell.All.Where(x => !game.History.Current.Heroes().GetModel(1).Spells.Contains(x)).Select(x => x.Name))}."),
                 Make("E23LIMIT", "Blue's resources at the limits of the editor", BlueAtTheLimits, game =>
-                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold and 999 of every other resource. Look at how the screens show them."),
+                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold and {Constants.Player.MaxOther:N0} of every other resource. Look at how the screens show them."),
                 Make("E24STACK", "Sir Gallant's army: a stack of 65,535, a neutral creature and a dragon", GallantArmy, game =>
                     $"Sir Gallant has {ArmyOf(game, 1)}. Look at how the 65,535 is shown."),
                 Make("E25STATS", "Sir Gallant: skills 20, level 20, experience 50,000, spell points 99, all his movement", GallantStats, game =>

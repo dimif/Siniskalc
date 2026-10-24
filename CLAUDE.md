@@ -103,3 +103,10 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   **How savefiles are named and organised (`<series>_<NN>_<what changed>.GM1`, folders, numbering, what to update when adding one) is in `TestData/README.md`: read it before adding, renaming or looking for a save.** `TestDataNamesTests` enforces it; each `TestData` folder's own `README.md` says what its saves hold.
 - A class that tests one scenario, save or game version across several subjects (`RoeCastleTests`, `HotaSaveTests`, `SodSaveTests`) is allowed to be named after that scenario instead of one subject.
   Its methods are still sentences about the behaviour.
+- **Say what kind of test a class is** (target convention, being adopted; see `docs/TEST_REVIEW.md`).
+  A unit test checks one class, with Moq fakes for its collaborators and no savefiles; it is `[Category("Unit")]` and lives in the layer folder.
+  A test of several real classes without savefiles is `[Category("MultiUnit")]` under `MultiUnit/<Layer>/`.
+  A test that reads `TestData`, writes to disk or builds the whole graph (`TestServices`) is `[Category("Integration")]` under `Integration/<Layer>/`.
+  Only integration tests and tests on binary data (deserializers, serializers) may be slow.
+- A test never ends in `Assert.Pass` or skips its assertions with `continue`; a serializer test asserts the bytes, not what the deserializer reads back.
+- The `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`) repeats the review and updates `docs/TEST_REVIEW.md`.

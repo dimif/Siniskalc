@@ -151,6 +151,60 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
+        public void RevertingAMoveToAnotherPlayerPutsBothPlayersAndTheTableBackInOneStep()
+        {
+            var history = Load(Baseline);
+            var original = history.Current;
+            history.CreateHeroSession(original.Heroes().IndexOfId(22)).ChangeOwner(PlayerColor.Tan);
+            var moved = history.Current;
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
+
+            Assert.That(Hero(history.Current, 22).Owner, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(Head(history.Current, PlayerColor.Blue), Is.EqualTo(Head(original, PlayerColor.Blue)));
+            Assert.That(Head(history.Current, PlayerColor.Tan), Is.EqualTo(Head(original, PlayerColor.Tan)));
+            Assert.That(Table(history.Current), Is.EqualTo(Table(original)));
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+
+            history.Undo();
+            Assert.That(history.Current, Is.SameAs(moved), "the revert is one step of the history");
+        }
+
+        [Test]
+        public void AHeroTheTableGivesToAPlayerButNoListHasIsStillTakenFromIt()
+        {
+            // The table and the lists are two records: in hero_owners_04 the table gives Melodia (29) to Blue and no list has her.
+            var history = Load(Baseline);
+            var players = history.Current.Players();
+            var blue = players.FindByColor(PlayerColor.Blue);
+            history.Apply(history.Current.WithPlayer(blue, players.Serializer.Serialize(players[blue], players.GetModel(blue).WithoutHero(22))));
+
+            Defeat(history, 22);
+
+            Assert.That(Hero(history.Current, 22).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Player(history.Current, PlayerColor.Blue).HeroIds, Is.EqualTo(Numbers.Of(0)));
+            Assert.That(history.Current.HeroOwners().GetModel(0).Heroes[22], Is.EqualTo(HeroOwnership.Free));
+        }
+
+        [Test]
+        public void ASavefileWithNoTableOfHeroOwnersStillHasTheHeroAndTheListsChanged()
+        {
+            var loaded = Load(Baseline).Current;
+            var heroes = loaded.Heroes();
+            var history = new SaveDocumentHistory(TestServices.DocumentFactory.Create(loaded.ToBytes(), heroes, heroes.Offsets, loaded.Players(), loaded.Castles()));
+            var original = history.Current;
+            Assert.That(original.HeroOwners(), Is.Empty);
+
+            Defeat(history, 22);
+
+            Assert.That(Hero(history.Current, 22).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Player(history.Current, PlayerColor.Blue).HeroIds, Is.EqualTo(Numbers.Of(0)));
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
+            Assert.That(Head(history.Current, PlayerColor.Blue), Is.EqualTo(Head(original, PlayerColor.Blue)));
+        }
+
+        [Test]
         public void AHeroATavernOffersIsNotGivenToAPlayer()
         {
             var history = Load(Week2Day1);

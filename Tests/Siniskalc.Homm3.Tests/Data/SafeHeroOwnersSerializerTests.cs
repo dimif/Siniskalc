@@ -17,6 +17,19 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static HeroOwnersModel Read() => new HeroOwnersDeserializer().Deserialize(Chunk());
 
+        private static IEnumerable<string> EverySavefile() => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal);
+
+        [TestCaseSource(nameof(EverySavefile))]
+        public void TheTableOfEverySavefileIsWrittenBackAsItWasRead(string path)
+        {
+            var owners = TestServices.GameService.LoadGameFromFile(path).History.Current.HeroOwners();
+
+            for (var i = 0; i < owners.Count; i++)
+            {
+                Assert.That(owners.Serializer.Serialize(owners[i], owners.GetModel(i)).ToArray(), Is.EqualTo(owners[i].ToArray()));
+            }
+        }
+
         [Test]
         public void ATableThatWasNotEditedIsWrittenAsItWas()
         {

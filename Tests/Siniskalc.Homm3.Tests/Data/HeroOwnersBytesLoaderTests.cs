@@ -1,6 +1,7 @@
 using Moq;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Models;
 
 namespace Siniskalc.Homm3.Tests.Data
 {
@@ -67,6 +68,19 @@ namespace Siniskalc.Homm3.Tests.Data
             dates.Setup(d => d.FindOffset(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<int>())).Returns(-1);
 
             Assert.That(new HeroOwnersBytesLoader(dates.Object).LoadHeroOwnerChunks(Savefile(), GameVersion.ShadowOfDeath, 0), Is.Empty);
+        }
+
+        [TestCase("hero_owners_00_baseline", 543453)]
+        [TestCase("hero_owners_02_m4w2d1", 543492)]
+        public void TheTableOfAHornOfTheAbyssSaveHasAByteForEach215HeroesInFrontOfTheDate(string save, int offset)
+        {
+            var owners = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History.Current.HeroOwners();
+
+            Assert.That(owners[0].StartIndex, Is.EqualTo(offset));
+            Assert.That(owners[0].Length, Is.EqualTo(215));
+
+            // Fiona (205) and hero 210 have bytes of their own.
+            Assert.That(owners.GetModel(0).Heroes[210], Is.EqualTo(HeroOwnership.Reserved));
         }
 
         [TestCaseSource(nameof(EverySavefile))]

@@ -81,7 +81,12 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - The WPF exe is often running and locks the build output.
   Build or test with `--artifacts-path <another folder>` (or `-p:OutDir=<another folder>`).
 - Several people and tools edit this tree at once.
-  Re-read a file before editing it and run the whole suite, not only the tests of the area you touched.
+  Re-read a file before editing it.
+- **Run the tests in proportion to the step.** Between the steps of a piece of work, build and test only the projects that can be affected: the project you changed, its test project, and the test projects of the projects that reference it (`dotnet test Tests/<Project>.Tests --artifacts-path <folder>`, with `--filter` while you iterate).
+  Run the whole suite (`dotnet test Siniskalc.sln --artifacts-path <folder>`) **once per batch** of related changes, before the last commit of the batch or before you hand the work over, and say so in your report.
+  A full run takes minutes and prints a lot: do not repeat it after every step, and do not paste its whole output.
+- **Use the cheapest agent or model that can do a step.** A mechanical step (renames, moving a type, updating usings and docs, adding a test that follows a pattern, applying a decided fix) goes to a cheaper model; keep the stronger one for design, for reading an unknown savefile layout and for anything that decides what is written to a savefile.
+  An agent that thinks a step needs a stronger model says so in its report instead of guessing.
 - Do not push unless asked.
 - Log through `LogFactory.For<T>()`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
   Where the editor skips, keeps or falls back on something it did not expect, log it there; a `// TODO:LOG <level>: what to log` marker is for a class that has no logger yet and is replaced by the call (see `docs/ERROR_MODEL.md`).

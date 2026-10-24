@@ -41,6 +41,11 @@ namespace Siniskalc.Homm3.Data
         public static EditSession<RecordChunk, MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Mines, index);
 
         /// <summary>
+        /// Creates a view onto whose turn it is (the savefile's only turn chunk); its edits are pushed onto this history.
+        /// </summary>
+        public static EditSession<RecordChunk, TurnModel> CreateTurnSession(this SaveDocumentHistory history) => new(history, Homm3ChunkKinds.Turn, 0);
+
+        /// <summary>
         /// Creates a view onto the visited obelisks of the savefile (its only obelisk chunk, so index 0); its edits are pushed onto this history.
         /// </summary>
         public static ObeliskEditSession<PlayerColor> CreateObeliskSession(this SaveDocumentHistory history, int index = 0) => new(history, Homm3ChunkKinds.Obelisks, index);

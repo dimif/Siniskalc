@@ -31,6 +31,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
         private Mock<IDwellingBytesLoader> dwellings = null!;
         private Mock<IMerchantBytesLoader> merchants = null!;
         private Mock<IHeroOwnersBytesLoader> heroOwners = null!;
+        private Mock<ITurnBytesLoader> turn = null!;
         private Mock<IMapPlacesLoader> places = null!;
         private Mock<IGameDateLocator> date = null!;
         private Mock<IPlayerControlLocator> setup = null!;
@@ -59,6 +60,8 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.merchants.Setup(l => l.LoadMerchantChunks(It.IsAny<byte[]>())).Returns([]);
             this.heroOwners = new Mock<IHeroOwnersBytesLoader>();
             this.heroOwners.Setup(l => l.LoadHeroOwnerChunks(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<int>())).Returns([]);
+            this.turn = new Mock<ITurnBytesLoader>();
+            this.turn.Setup(l => l.LoadTurnChunks(It.IsAny<byte[]>(), It.IsAny<GameVersion>())).Returns([]);
             this.places = new Mock<IMapPlacesLoader>();
             this.places.Setup(l => l.Load(It.IsAny<byte[]>())).Returns(MapPlaces.None);
             this.date = new Mock<IGameDateLocator>();
@@ -67,13 +70,13 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.document = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current;
             this.documents = new Mock<ISaveDocumentFactory>();
             this.documents
-                .Setup(f => f.Create(It.IsAny<byte[]>(), It.IsAny<IEnumerable<HeroChunk>>(), It.IsAny<HeroOffsets>(), It.IsAny<IEnumerable<PlayerChunk>?>(), It.IsAny<IEnumerable<CastleChunk>?>(), It.IsAny<IEnumerable<ObeliskChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>()))
+                .Setup(f => f.Create(It.IsAny<byte[]>(), It.IsAny<IEnumerable<HeroChunk>>(), It.IsAny<HeroOffsets>(), It.IsAny<IEnumerable<PlayerChunk>?>(), It.IsAny<IEnumerable<CastleChunk>?>(), It.IsAny<IEnumerable<ObeliskChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>()))
                 .Returns(() => this.document);
         }
 
         private SavegameParser Parser() => new(
             this.detector.Object, this.heroes.Object, this.castles.Object, this.players.Object, this.obelisks.Object, this.mines.Object, this.dwellings.Object,
-            this.merchants.Object, this.heroOwners.Object, this.places.Object, this.date.Object, this.setup.Object, this.map.Object, this.documents.Object);
+            this.merchants.Object, this.heroOwners.Object, this.turn.Object, this.places.Object, this.date.Object, this.setup.Object, this.map.Object, this.documents.Object);
 
         [Test]
         public void ABytesArrayOfNoKnownVersionIsRefusedBeforeAnythingIsLookedFor()
@@ -190,6 +193,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
                     It.IsAny<IEnumerable<RecordChunk>?>(),
                     It.IsAny<IEnumerable<RecordChunk>?>(),
                     It.Is<IEnumerable<RecordChunk>?>(m => m!.Single() == merchant),
+                    It.IsAny<IEnumerable<RecordChunk>?>(),
                     It.IsAny<IEnumerable<RecordChunk>?>()),
                 Times.Once);
         }

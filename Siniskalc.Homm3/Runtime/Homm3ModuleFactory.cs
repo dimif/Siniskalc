@@ -62,6 +62,7 @@ namespace Siniskalc.Homm3.Runtime
                 new RecordKit<RecordChunk, DwellingModel>(new DwellingDeserializer(), new SafeDwellingSerializer(), new DwellingDiffer()),
                 new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(new HeroOwnersDeserializer(), new SafeHeroOwnersSerializer(), new HeroOwnersDiffer()),
+                new RecordKit<RecordChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
@@ -76,6 +77,7 @@ namespace Siniskalc.Homm3.Runtime
                     new DwellingBytesLoader(),
                     new MerchantBytesLoader(),
                     new HeroOwnersBytesLoader(dateLocator),
+                    new TurnBytesLoader(setupLocator),
                     new MapPlacesLoader(),
                     dateLocator,
                     setupLocator,

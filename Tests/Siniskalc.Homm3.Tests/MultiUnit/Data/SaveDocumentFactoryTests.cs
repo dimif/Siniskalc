@@ -50,6 +50,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 new RecordKit<RecordChunk, DwellingModel>(Mock.Of<IDeserializer<RecordChunk, DwellingModel>>(), Mock.Of<ISerializer<RecordChunk, DwellingModel>>(), Mock.Of<IDiffer<DwellingModel>>()),
                 new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(Mock.Of<IDeserializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<ISerializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<IDiffer<HeroOwnersModel>>()),
+                new RecordKit<RecordChunk, TurnModel>(Mock.Of<IDeserializer<RecordChunk, TurnModel>>(), Mock.Of<ISerializer<RecordChunk, TurnModel>>(), Mock.Of<IDiffer<TurnModel>>()),
                 Mock.Of<ISavefileBytesPatcher>());
         }
 

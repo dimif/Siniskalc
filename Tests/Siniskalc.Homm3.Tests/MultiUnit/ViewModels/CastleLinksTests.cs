@@ -65,6 +65,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Kit<DwellingModel>(),
                 Kit<MerchantStockModel>(),
                 Kit<HeroOwnersModel>(),
+                Kit<TurnModel>(),
                 Mock.Of<ISavefileBytesPatcher>());
             var chunks = this.castles.Keys.Select((name, i) => new CastleChunk(name, new byte[10], 1000 + (i * 100))).ToList();
 

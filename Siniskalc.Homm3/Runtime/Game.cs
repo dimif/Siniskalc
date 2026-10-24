@@ -6,6 +6,7 @@ namespace Siniskalc.Homm3.Runtime
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Runtime;
+    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -75,9 +76,9 @@ namespace Siniskalc.Homm3.Runtime
         public GameDifficulty? MapDifficulty => this.Map?.Difficulty;
 
         /// <summary>
-        /// Gets the colour whose turn it was when the savefile was made, or <c>null</c> when it cannot be found.
+        /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when it cannot be found or names no human.
         /// </summary>
-        public PlayerColor? CurrentPlayer => this.Metadata.Setup?.CurrentPlayer;
+        public PlayerColor? CurrentPlayer => this.History.Current.Turn() is { Count: > 0 } turn && turn.GetModel(0).Color is var color && this.GetControl(color) == PlayerType.Human ? color : null;
 
         /// <summary>
         /// Returns who plays <paramref name="color"/>, or <c>null</c> when that is not known.

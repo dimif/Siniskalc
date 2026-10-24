@@ -25,6 +25,7 @@
         private readonly IDwellingBytesLoader dwellingLoader;
         private readonly IMerchantBytesLoader merchantLoader;
         private readonly IHeroOwnersBytesLoader heroOwnersLoader;
+        private readonly ITurnBytesLoader turnLoader;
         private readonly IMapPlacesLoader placesLoader;
         private readonly IGameDateLocator dateLocator;
         private readonly IPlayerControlLocator setupLocator;
@@ -41,6 +42,7 @@
             IDwellingBytesLoader dwellingLoader,
             IMerchantBytesLoader merchantLoader,
             IHeroOwnersBytesLoader heroOwnersLoader,
+            ITurnBytesLoader turnLoader,
             IMapPlacesLoader placesLoader,
             IGameDateLocator dateLocator,
             IPlayerControlLocator setupLocator,
@@ -56,6 +58,7 @@
             this.dwellingLoader = dwellingLoader;
             this.merchantLoader = merchantLoader;
             this.heroOwnersLoader = heroOwnersLoader;
+            this.turnLoader = turnLoader;
             this.placesLoader = placesLoader;
             this.dateLocator = dateLocator;
             this.setupLocator = setupLocator;
@@ -91,7 +94,7 @@
                 this.mapHeaderLocator.Find(bytes, gameVersion));
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers));
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion));
             var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
             Logger.LogInformation(
                 "Opened {File} as Heroes III {Version}: {Heroes} heroes, {Castles} castles, {Players} players, {Mines} mines, {Dwellings} dwellings",

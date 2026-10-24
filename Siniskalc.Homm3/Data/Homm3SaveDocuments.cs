@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -23,6 +23,7 @@ namespace Siniskalc.Homm3.Data
                 [Homm3ChunkKinds.Dwellings] = dwellings,
                 [Homm3ChunkKinds.Merchants] = merchants,
                 [Homm3ChunkKinds.HeroOwners] = heroOwners,
+                [Homm3ChunkKinds.Turn] = turn,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -64,6 +65,11 @@ namespace Siniskalc.Homm3.Data
         /// Gets the table of who owns each hero (<see cref="HeroOwnersLayout"/>): one chunk, or none when the savefile has no table the editor knows.
         /// </summary>
         public static RecordChunkCollection<RecordChunk, HeroOwnersModel> HeroOwners(this SaveDocument document) => (RecordChunkCollection<RecordChunk, HeroOwnersModel>)document.GetCollection(Homm3ChunkKinds.HeroOwners);
+
+        /// <summary>
+        /// Gets whose turn it is: one chunk when the setup of the players and its human flags are found, otherwise none.
+        /// </summary>
+        public static RecordChunkCollection<RecordChunk, TurnModel> Turn(this SaveDocument document) => (RecordChunkCollection<RecordChunk, TurnModel>)document.GetCollection(Homm3ChunkKinds.Turn);
 
         /// <summary>
         /// Gets the game version that wrote the savefile.

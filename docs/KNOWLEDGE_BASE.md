@@ -40,7 +40,9 @@ This project therefore includes the GZip part of SharpZipLib 1.2.0 with the line
 - **Human flags**: eight 32-bit values in colour order (1 = human), followed by the colour whose turn it is, then a marker: `FF 10` eight bytes later in HotA, `FF 00 00 00` right after in SoD and RoE (+36 from the flags; offsets 1130, 1228, 1262 and 1286 seen, so locate by shape).
   The header's one-byte-per-colour list (`FF` not in game, `0A` computer, other = human) only names the first human of a hotseat game.
   Found by comparing `players_human_red`, `players_human_tan` and `players_human_red_and_tan`; only red and tan were seen human, so the stride for the other colours is assumed.
-  Current turn checked on four saves.
+  The current player is a 32-bit colour index (0 Red to 7 Pink) at the flags +32, and it is always a human.
+  Across 21 pairs of consecutive saves only this value changed in the setup window when the turn passed; among them `Hota/Mines` 00-01 and 18-19, `Hota/Banishing` 00-01, 02-03, 03-04, 12-13, 13-14 and 15-16, `Hota/Dwellings` 04-05 and 05-06, `Hota/VisitedPlaces` 00-01, `Sod/Hotseat` five_teams_01-02, hotseat_11-12 and hotseat_12-13, and `Hota/players_human_red_and_tan` to `players_human_tan`. The new-day block does not depend on it.
+  The editor writes it (`SafeTurnSerializer`, the Order of play card). Not known: whether the game starts the new player's turn cleanly from an edited save, and whether anything else goes with the turn (`hotseat_12_blue_turn` also changes the selected hero of both players).
 - **Teams** (SoD and RoE; not found in HotA saves; not read by the editor): in the header, just before two lists `00 01 02 03 04 05 06 07`, a byte with the number of teams, and when it is not 0, eight bytes with the team of each colour (Red, Blue, Tan, Green, Orange, Purple, Teal, Pink).
   The hotseat map has `03 | 00 00 01 01 01 02 00 02`; Teal, which nobody plays, keeps the default 0.
   With no teams the byte is 0 and there are no team bytes.

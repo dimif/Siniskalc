@@ -21,9 +21,7 @@
     {
         private readonly Action<int> openCastle;
         private readonly HeroEditSession session;
-        private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
-        private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
         private HeroModel hero = null!;
@@ -40,19 +38,20 @@
                 () => this.session.Current.PrimarySkills,
                 edit => this.session.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
                 new NumberRange(Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill));
-            this.battleBonus =
-            [
-                this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
-                this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
-            ];
-            this.battleSources =
-            [
-                this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
-                this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
-                this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
-                this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
-                this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
-            ];
+            this.NextBattle = new NextBattleCardViewModel(
+                "Next battle",
+                [
+                    this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
+                    this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
+                ],
+                [
+                    this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
+                    this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
+                    this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
+                    this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
+                    this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
+                ],
+                "What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game.");
             this.usedOnce =
             [
                 this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),
@@ -219,20 +218,15 @@
         public PrimarySkillsCardViewModel PrimarySkills { get; }
 
         /// <summary>
-        /// Gets the morale and the luck the hero has for its next battle only (a temple, a fountain, a faerie ring).
+        /// Gets the card of the morale and the luck the hero has for its next battle only, and of the places that gave them (a temple, a
+        /// fountain, a faerie ring): ticking one gives the hero the bonus, clearing it takes it away.
         /// </summary>
-        public IReadOnlyList<AmountRowViewModel> BattleBonus => this.battleBonus;
+        public NextBattleCardViewModel NextBattle { get; }
 
         /// <summary>
         /// Gets the kinds of places the hero has visited and cannot get anything from a second time.
         /// </summary>
         public IReadOnlyList<VisitedPlaceRowViewModel> VisitedPlaces => this.visitedPlaces;
-
-        /// <summary>
-        /// Gets the places that gave the hero luck or morale for the next battle, with the bonus each gave: ticking one gives the hero the bonus,
-        /// clearing it takes it away.
-        /// </summary>
-        public IReadOnlyList<ToggleRowViewModel> BattleSources => this.battleSources;
 
         /// <summary>
         /// Gets the places that give something once to a hero (the arena).
@@ -285,17 +279,14 @@
             this.hero = hero;
 
             this.PrimarySkills.Refresh();
-            foreach (var row in this.battleBonus)
-            {
-                row.Refresh();
-            }
+            this.NextBattle.Refresh();
 
             foreach (var row in this.visitedPlaces)
             {
                 row.Refresh();
             }
 
-            foreach (var row in this.battleSources.Concat(this.usedOnce).Concat(this.usedWeekly))
+            foreach (var row in this.usedOnce.Concat(this.usedWeekly))
             {
                 row.Refresh();
             }

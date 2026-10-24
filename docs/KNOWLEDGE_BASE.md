@@ -189,7 +189,7 @@ HotA has twelve bytes there too, laid out differently (`D0 07` in the second and
   Other versions were not seen.
 - **Bonus effects** (until the next battle, or the next week for some).
   Read: take the byte, mask the bit, non-zero means on.
-  `HeroModel.MoraleBonus`, `LuckBonus` (read only) and `VisitEffects` (editable) are shown on the General page.
+  `HeroModel.MoraleBonus`, `LuckBonus` and `VisitEffects` are edited on the General page ("Visited buildings", the shared next-battle card) and written by `SafeHeroSerializer` (the two signed bytes, and only the known bit of each building; the other bits of those bytes are left as they are). The watering hole (+1 morale), the swan pond (+2 luck) and the crypt (-1 morale) set their bit and the byte together, as HoMM2 must (`docs/HOMM2_SAVE_FORMAT.md`, T03BONUS); the stables have only a bit. The faerie ring, the fountain of fortune (a luck the game draws) and the idol of fortune are shown but not edited, as the saves do not pin down what they give. **Not tried in the game.**
   - +28: morale bonus, +29 luck bonus, signed bytes (watering hole +1, crypt -1; swan pond +2, fountain of fortune +1).
   - +135: `0x02` stables (lasts the week), `0x08` swan pond, `0x40` watering hole. +136: `0x04` crypt, `0x20` Faerie Ring. +138: `0x08` Fountain of Fortune, `0x02` Idol of Fortune.
   - A battle clears luck, the fountain bit, and the Faerie Ring and Idol bits; a new day clears the stables bit.

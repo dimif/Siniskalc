@@ -86,10 +86,10 @@ namespace Siniskalc.Homm2.Tests
         private static void SourcesAndForgetfulness(Game game)
         {
             var colar = Hero(game, ColarBlau);
-            colar.BattleBonus[0].Value = 0; // save 82 comes from T03BONUS: its numbers are not from any place
-            colar.BattleBonus[1].Value = 0;
-            colar.BattleSources.Single(r => r.Name == "Temple").IsChecked = true;
-            colar.BattleSources.Single(r => r.Name == "Fountain").IsChecked = true;
+            colar.NextBattle.Bonus[0].Value = 0; // save 82 comes from T03BONUS: its numbers are not from any place
+            colar.NextBattle.Bonus[1].Value = 0;
+            colar.NextBattle.Sources.Single(r => r.Name == "Temple").IsChecked = true;
+            colar.NextBattle.Sources.Single(r => r.Name == "Fountain").IsChecked = true;
             var charity = Hero(game, Charity);
             foreach (var row in charity.UsedOnce.Concat(charity.UsedWeekly))
             {
@@ -125,10 +125,10 @@ namespace Siniskalc.Homm2.Tests
 
         private static void BattleBonus(Game game)
         {
-            var colar = Hero(game, ColarBlau).BattleBonus;
+            var colar = Hero(game, ColarBlau).NextBattle.Bonus;
             colar[0].Value = 3;
             colar[1].Value = 3;
-            var charity = Hero(game, Charity).BattleBonus;
+            var charity = Hero(game, Charity).NextBattle.Bonus;
             charity[0].Value = -3;
             charity[1].Value = -3;
         }

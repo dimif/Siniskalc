@@ -92,6 +92,7 @@
                 coordinates,
                 this.LevelChoices);
             this.SelectAllWarMachinesCommand = new DelegateCommand(_ => this.SelectAllWarMachines());
+            this.NextBattle = this.CreateNextBattle();
 
             this.WarMachinesChecked = new ObservableCollection<bool>(new bool[WarMachineCheckBoxCount]);
 
@@ -167,19 +168,10 @@
             set => this.Update(h => h with { IsAsleep = value });
         }
 
-        public bool StablesVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.Stables);
-
-        public bool SwanPondVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.SwanPond);
-
-        public bool WateringHoleVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.WateringHole);
-
-        public bool CryptVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.Crypt);
-
-        public bool FaerieRingVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.FaerieRing);
-
-        public bool FountainOfFortuneVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.FountainOfFortune);
-
-        public bool IdolOfFortuneVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.IdolOfFortune);
+        /// <summary>
+        /// Gets the card of what visited buildings gave the hero until its next battle: the morale and the luck, and a box for each building.
+        /// </summary>
+        public NextBattleCardViewModel NextBattle { get; }
 
         /// <summary>
         /// Gets the hero's morale such as "+2": what Leadership, the artifacts and the visited buildings add, between -3 and +3. The game
@@ -232,6 +224,7 @@
                 this.Position.Refresh();
                 this.Destination.Refresh();
                 this.ActiveSpells.Refresh();
+                this.NextBattle.Refresh();
 
                 this.RaiseAllPropertiesChanged();
             }
@@ -345,6 +338,59 @@
             name,
             () => this.Hero.ActiveSpells.HasFlag(spell),
             active => this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell }));
+
+        // The buildings whose morale or luck is known from the saves (TestData/Sod/Hotseat) set their bit and the byte together, as HoMM2 has to
+        // (docs/HOMM2_SAVE_FORMAT.md); the stables only have a bit. The faerie ring, the fountain and the idol of fortune give a bonus the
+        // saves do not pin down, so their boxes cannot be changed.
+        private NextBattleCardViewModel CreateNextBattle()
+        {
+            var range = new NumberRange(-Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck);
+            return new NextBattleCardViewModel(
+                "Visited buildings",
+                [
+                    this.BonusRow("Morale", range, h => h.MoraleBonus, (h, value) => h with { MoraleBonus = value }),
+                    this.BonusRow("Luck", range, h => h.LuckBonus, (h, value) => h with { LuckBonus = value }),
+                ],
+                [
+                    this.Source(VisitedBuildingEffects.WateringHole, 1, 0, range, "+1 morale until the next battle"),
+                    this.Source(VisitedBuildingEffects.SwanPond, 0, 2, range, "+2 luck until the next battle"),
+                    this.Source(VisitedBuildingEffects.Crypt, -1, 0, range, "-1 morale until the next battle"),
+                    this.Source(VisitedBuildingEffects.Stables, 0, 0, range, "More movement points until the end of the week"),
+                    this.Shown(VisitedBuildingEffects.FaerieRing, "+1 luck until the next battle"),
+                    this.Shown(VisitedBuildingEffects.FountainOfFortune, "A luck that the game draws, until the next battle"),
+                    this.Shown(VisitedBuildingEffects.IdolOfFortune, "+1 morale or +1 luck, depending on the day"),
+                ],
+                "What the buildings the hero visited gave. A battle takes most of it away; the stables last until the end of the week. Not tried in the game.");
+        }
+
+        private AmountRowViewModel BonusRow(string name, NumberRange range, Func<HeroModel, int> get, Func<HeroModel, int, HeroModel> set) => new(
+            name,
+            PlayerPalette.Of(this.Hero.Owner),
+            range.Minimum,
+            range.Maximum,
+            range.Step,
+            () => get(this.Hero),
+            () => get(this.Hero),
+            value => this.Update(h => set(h, (int)value)),
+            () => "next battle only");
+
+        private ToggleRowViewModel Source(VisitedBuildingEffects effect, int morale, int luck, NumberRange range, string toolTip) => new(
+            VisitedBuildingNames.Of(effect),
+            () => this.Hero.VisitEffects.HasFlag(effect),
+            on => this.Update(h => h with
+            {
+                VisitEffects = on ? h.VisitEffects | effect : h.VisitEffects & ~effect,
+                MoraleBonus = (int)Math.Clamp(h.MoraleBonus + (on ? morale : -morale), range.Minimum, range.Maximum),
+                LuckBonus = (int)Math.Clamp(h.LuckBonus + (on ? luck : -luck), range.Minimum, range.Maximum),
+            }),
+            toolTip: toolTip + (morale == 0 && luck == 0 ? ". Sets what the game remembers." : ". Sets what the game remembers and its morale or luck together.") + " Not tried in the game.");
+
+        private ToggleRowViewModel Shown(VisitedBuildingEffects effect, string toolTip) => new(
+            VisitedBuildingNames.Of(effect),
+            () => this.Hero.VisitEffects.HasFlag(effect),
+            _ => { },
+            canToggle: () => false,
+            toolTip: toolTip + ". Shown only: how much the saves keep for it is not known for sure, so it is not edited.");
 
         private void RefreshWarMachines()
         {

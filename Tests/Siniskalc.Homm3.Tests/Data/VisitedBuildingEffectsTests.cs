@@ -59,17 +59,45 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheEffectsMoraleAndLuckAreReadOnlyAndNeverWritten()
+        public void TheEffectsMoraleAndLuckAreWrittenAndListedAndEachIsPutBackOnItsOwn()
         {
             var game = Load(9);
-            var session = Session(game, "Sir Mullich");
+            var index = game.History.Current.Heroes().FindByName("Sir Mullich");
+            var before = game.History.Current.Heroes()[index].ToArray();
+
+            Session(game, "Sir Mullich").Update(h => h with { VisitEffects = VisitedBuildingEffects.None, MoraleBonus = 3, LuckBonus = -2 });
+
+            var chunk = game.History.Current.Heroes()[index];
+            Assert.That((chunk.GetByteAt(28), chunk.GetByteAt(29)), Is.EqualTo(((byte)3, (byte)0xFE)));
+            Assert.That(chunk.GetByteAt(136) & 0x04, Is.Zero, "the bit of the crypt");
+            var changes = game.History.GetPendingChanges();
+            Assert.That(changes.Select(c => c.Change.Description), Is.SupersetOf(new[] { "Morale, next battle", "Luck, next battle", "Visited building: Crypt" }));
+            Assert.That(changes.Single(c => c.Change.Description == "Morale, next battle").Change.Before, Is.EqualTo("-1"));
+
+            foreach (var change in changes)
+            {
+                change.Revert(game.History);
+            }
+
+            Assert.That(game.History.Current.Heroes()[index].ToArray(), Is.EqualTo(before));
+        }
+
+        [Test]
+        public void WritingTheEffectsLeavesTheBitsTheEditorDoesNotKnowAsTheyAre()
+        {
+            var game = Load(9);
+            var index = game.History.Current.Heroes().FindByName("Sir Mullich");
             var heroes = game.History.Current.Heroes();
+            var chunk = heroes[index];
+            var bytes = chunk.ToArray();
+            bytes[135] |= 0x10;
+            bytes[137] = 0x5A;
+            var model = heroes.Deserializer.Deserialize(chunk.WithBytes(bytes));
 
-            session.Update(h => h with { VisitEffects = VisitedBuildingEffects.None, MoraleBonus = 3, LuckBonus = 3 });
+            var written = heroes.Serializer.Serialize(chunk.WithBytes(bytes), model with { VisitEffects = model.VisitEffects | VisitedBuildingEffects.Stables });
 
-            Assert.That(game.History.GetPendingChanges(), Is.Empty);
-            Assert.That(heroes[heroes.FindByName("Sir Mullich")].GetByteAt(28), Is.EqualTo(0xFF));
-            Assert.That(Session(game, "Sir Mullich").Current.VisitEffects.HasFlag(VisitedBuildingEffects.Crypt), Is.True);
+            Assert.That(written.GetByteAt(135), Is.EqualTo((byte)(bytes[135] | 0x02)), "the stables bit is set and 0x10 is kept");
+            Assert.That(written.GetByteAt(137), Is.EqualTo(0x5A));
         }
 
         [Test]
@@ -83,11 +111,40 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(general.LuckBreakdown, Does.Not.Contain("artifacts"));
             Assert.That(general.MoraleBreakdown, Does.Contain("buildings +1"));
             Assert.That(general.MoraleBreakdown, Does.Not.Contain(" 0"));
-            Assert.That(general.WateringHoleVisited && general.SwanPondVisited && !general.CryptVisited, Is.True);
+            Assert.That(general.NextBattle.Sources.Where(s => s.IsChecked).Select(s => s.Name), Is.EquivalentTo(new[] { "Watering hole", "Swan pond" }));
 
             using var untouched = TestServices.CreateHeroViewModel(Session(Load(0), "Tazar"));
             Assert.That(untouched.GeneralInfoViewModel.LuckBreakdown, Is.Empty);
             Assert.That(untouched.GeneralInfoViewModel.MoraleText, Does.Match("^[+-][0-9]$"));
+        }
+
+        [Test]
+        public void TickingAVisitedBuildingSetsItsBitAndItsMoraleOrLuckTogetherAndClearingItTakesThemAway()
+        {
+            var game = Load(0);
+            using var tazar = TestServices.CreateHeroViewModel(Session(game, "Tazar"));
+            var card = tazar.GeneralInfoViewModel.NextBattle;
+            var morale = Session(game, "Tazar").Current.MoraleBonus;
+
+            card.Sources.Single(s => s.Name == "Watering hole").IsChecked = true;
+
+            var hero = Session(game, "Tazar").Current;
+            Assert.That((hero.VisitEffects.HasFlag(VisitedBuildingEffects.WateringHole), hero.MoraleBonus), Is.EqualTo((true, morale + 1)));
+
+            card.Sources.Single(s => s.Name == "Watering hole").IsChecked = false;
+
+            Assert.That(game.History.GetPendingChanges(), Is.Empty);
+        }
+
+        [Test]
+        public void TheBuildingsWhoseBonusIsNotKnownForSureAreShownButCannotBeTicked()
+        {
+            using var mullich = TestServices.CreateHeroViewModel(Session(Load(10), "Sir Mullich"));
+            var card = mullich.GeneralInfoViewModel.NextBattle;
+
+            Assert.That(card.Sources.Where(s => !s.CanToggle).Select(s => s.Name), Is.EquivalentTo(new[] { "Faerie ring", "Fountain of fortune", "Idol of fortune" }));
+            Assert.That(card.Sources.Single(s => s.Name == "Faerie ring").IsChecked, Is.True, "Sir Mullich visited the faerie ring in save 10");
+            Assert.That(card.Bonus.Select(r => r.Name), Is.EqualTo(new[] { "Morale", "Luck" }));
         }
 
         [TestCase(0)]

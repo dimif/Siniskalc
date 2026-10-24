@@ -76,35 +76,7 @@
 
             <heroes:ActiveSpellsCard DataContext="{Binding ActiveSpells}"/>
 
-            <Border Style="{StaticResource CardStyle}" Width="330">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Visited buildings (read only)"
-                               ToolTip="Buildings the hero visited whose effect is still on it. A battle clears most of them; the stables last until the end of the week."/>
-                    <WrapPanel>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding WateringHoleVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Watering hole: +1 morale">
-                            <TextBlock FontWeight="SemiBold" Text="Watering hole"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding SwanPondVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Swan pond: +2 luck">
-                            <TextBlock FontWeight="SemiBold" Text="Swan pond"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" Width="Auto" MinWidth="140" IsChecked="{Binding FountainOfFortuneVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Fountain of fortune: luck">
-                            <TextBlock FontWeight="SemiBold" Text="Fountain of fortune"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" Width="Auto" MinWidth="140" IsChecked="{Binding IdolOfFortuneVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Idol of fortune: +1 morale or +1 luck">
-                            <TextBlock FontWeight="SemiBold" Text="Idol of fortune"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding FaerieRingVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Faerie ring: +1 luck">
-                            <TextBlock FontWeight="SemiBold" Text="Faerie ring"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding CryptVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Crypt: -1 morale">
-                            <TextBlock FontWeight="SemiBold" Text="Crypt"/>
-                        </CheckBox>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding StablesVisited, Mode=OneWay}" IsHitTestVisible="False" Focusable="False" ToolTip="Stables: extra movement this week">
-                            <TextBlock FontWeight="SemiBold" Text="Stables"/>
-                        </CheckBox>
-                    </WrapPanel>
-                </StackPanel>
-            </Border>
+            <heroes:NextBattleCard DataContext="{Binding NextBattle}"/>
 
             <Border Style="{StaticResource CardStyle}" Width="330" Visibility="{Binding CanSleep, Converter={StaticResource BoolToVisibility}}">
                 <StackPanel>

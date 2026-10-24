@@ -99,6 +99,30 @@ namespace Siniskalc.Homm3.Data
                 }
             }
 
+            // What visited buildings gave until the next battle: the bytes of morale and luck and the bit of each building, each put back on its own.
+            if (original.MoraleBonus != current.MoraleBonus)
+            {
+                changes.Add(ChangeAreas.General, "Morale, next battle", Signed(original.MoraleBonus), Signed(current.MoraleBonus), h => h with { MoraleBonus = original.MoraleBonus });
+            }
+
+            if (original.LuckBonus != current.LuckBonus)
+            {
+                changes.Add(ChangeAreas.General, "Luck, next battle", Signed(original.LuckBonus), Signed(current.LuckBonus), h => h with { LuckBonus = original.LuckBonus });
+            }
+
+            foreach (var effect in System.Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None))
+            {
+                if (original.VisitEffects.HasFlag(effect) != current.VisitEffects.HasFlag(effect))
+                {
+                    changes.Add(
+                        ChangeAreas.General,
+                        $"Visited building: {VisitedBuildingNames.Of(effect)}",
+                        ChangeText.YesNo(original.VisitEffects.HasFlag(effect)),
+                        ChangeText.YesNo(current.VisitEffects.HasFlag(effect)),
+                        h => h with { VisitEffects = (h.VisitEffects & ~effect) | (original.VisitEffects & effect) });
+                }
+            }
+
             changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
             changes.AddSpellPoints(original.SpellPoints, current.SpellPoints, (h, points) => h with { SpellPoints = points });
@@ -242,6 +266,8 @@ namespace Siniskalc.Homm3.Data
         }
 
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
+
+        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
 
         /// <summary>
         /// The pending changes of one hero as they are found.

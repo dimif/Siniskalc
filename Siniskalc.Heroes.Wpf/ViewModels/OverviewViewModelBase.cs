@@ -12,8 +12,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// <summary>
     /// What the overview page of any game says about the open savefile: its name, the map, the date, the difficulty and whose turn it is, as
     /// the words <c>OverviewView</c> shows. A game says where the facts are (<see cref="Map"/>, <see cref="Date"/> and the others, null when
-    /// its savefile does not tell), builds the cards of the players and sets <see cref="Players"/>, <see cref="OrderOfPlay"/> and
-    /// <see cref="Summary"/>.
+    /// its savefile does not tell), builds the cards of the players and sets <see cref="Players"/>, <see cref="OrderOfPlay"/> (of the items
+    /// <see cref="OrderItemOf"/> makes) and <see cref="Summary"/>, and says how the turn is given to a human (<see cref="GiveTurn"/>).
     /// </summary>
     public abstract class OverviewViewModelBase<TColor> : AbstractViewModelBase, IOverviewPage
         where TColor : class, IPlayerColor
@@ -85,6 +85,22 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         protected IGameInfo<TColor> Game => this.game;
 
         /// <summary>
+        /// Gets the tooltip of the item of a human who has not the turn, which gives it the turn when pressed.
+        /// </summary>
+        protected virtual string GiveTurnToolTip => "Give the turn to this player";
+
+        /// <summary>
+        /// Gets a value indicating whether the button of a human who has not the turn can be pressed; a game switches it off while giving the
+        /// turn is not trusted yet.
+        /// </summary>
+        protected virtual bool CanGiveTurn => true;
+
+        /// <summary>
+        /// Gets the tooltip of the item of a computer player, which cannot be given the turn.
+        /// </summary>
+        protected abstract string ComputerTurnToolTip { get; }
+
+        /// <summary>
         /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,
         /// separated by dots.
         /// </summary>
@@ -98,6 +114,29 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="color">The colour.</param>
         protected string ControlTextOf(TColor color) => PlayerTypeText.Describe(this.game, color);
+
+        /// <summary>
+        /// Returns the item of <paramref name="color"/> in the order of play: lit when it is that colour's turn, and with a command that gives it
+        /// the turn (<see cref="GiveTurn"/>) when it is a human who has not the turn.
+        /// </summary>
+        /// <param name="color">The colour.</param>
+        protected OrderOfPlayItemViewModel OrderItemOf(TColor color)
+        {
+            var isCurrent = Equals(this.game.CurrentPlayer, color);
+            var isHuman = this.game.GetControl(color) == PlayerType.Human;
+            return new OrderOfPlayItemViewModel(
+                color.ToString() ?? string.Empty,
+                PlayerPalette.Of(color),
+                isCurrent,
+                isHuman && !isCurrent ? new DelegateCommand(_ => this.GiveTurn(color), _ => this.CanGiveTurn) : null,
+                isCurrent ? "It is this player's turn" : isHuman ? this.GiveTurnToolTip : this.ComputerTurnToolTip);
+        }
+
+        /// <summary>
+        /// Gives the turn to <paramref name="color"/>, a human, through the history of the savefile.
+        /// </summary>
+        /// <param name="color">The colour of a human who has not the turn.</param>
+        protected abstract void GiveTurn(TColor color);
 
         /// <summary>
         /// Returns the size of the map as the page shows it; the size alone unless the game says more (HoMM3 adds its levels).

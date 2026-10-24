@@ -2,6 +2,7 @@ using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
+    using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.ViewModels;
 
     /// <summary>
@@ -20,7 +21,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             Assert.That(overview.HasOrderOfPlay, Is.True);
             var current = overview.OrderOfPlay.Where(i => i.IsCurrent).ToList();
-            Assert.That(current, Has.Count.EqualTo(1));
+            Assert.That(current.Select(i => i.Name), Is.EqualTo(new[] { "Red" }));
             Assert.That(current[0].Command, Is.Null, "the player who has the turn cannot be given it");
             var others = overview.OrderOfPlay.Where(i => i.Command != null).ToList();
             Assert.That(others, Is.Not.Empty, "a human who has not the turn has a button");

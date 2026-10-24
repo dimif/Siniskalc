@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// The tooltip of the disabled button that would give the turn to a human player.
         /// </summary>
-        public const string GiveTheTurnNotBuilt = "Giving the turn to this player is not possible yet: the editor does not write whose turn it is for this game";
+        public const string GiveTheTurnNotBuilt = "Giving the turn to this player is switched off for now: the editor can write whose turn it is, but this has not been tried in the game yet";
 
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -51,6 +51,19 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets a note about the heroes that no player owns, or nothing when every hero has an owner.
         /// </summary>
         public string UnownedNote { get; private set; } = string.Empty;
+
+        /// <inheritdoc/>
+        protected override string GiveTurnToolTip => GiveTheTurnNotBuilt;
+
+        /// <summary>
+        /// Gets a value indicating whether the button that gives the turn can be pressed. The editor can write whose turn it is (see
+        /// <see cref="GiveTurn"/>), but the button stays off until an edited savegame has been opened in the game and found to start the new
+        /// player's turn cleanly (the probe is in docs/FUTURE_IMPROVEMENTS.md).
+        /// </summary>
+        protected override bool CanGiveTurn => false;
+
+        /// <inheritdoc/>
+        protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";
 
         /// <summary>
         /// Builds the cards again from the savefile as it is edited now.
@@ -96,18 +109,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
 
-        // The button of a human who has not the turn is shown disabled: where the savefile keeps the turn is known (see PlayerControlLocator)
-        // and writing it is not built. Nothing is logged: it is a state of the page, not a fallback (docs/LOGGING.md).
-        private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
-        {
-            var isCurrent = this.game.CurrentPlayer == color;
-            var isHuman = this.game.GetControl(color) == PlayerType.Human;
-            return new OrderOfPlayItemViewModel(
-                color.ToString(),
-                PlayerPalette.Of(color),
-                isCurrent,
-                isHuman && !isCurrent ? new DelegateCommand(_ => { }, _ => false) : null,
-                isCurrent ? "It is this player's turn" : isHuman ? GiveTheTurnNotBuilt : "A computer player cannot be given the turn");
-        }
+        /// <inheritdoc/>
+        protected override void GiveTurn(PlayerColor color) => this.game.History.CreateTurnSession().Update(turn => turn with { Color = color });
     }
 }

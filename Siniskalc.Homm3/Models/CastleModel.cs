@@ -71,6 +71,15 @@
         public int? CreaturesWaiting(int level) => CastleBuilder.DwellingOf(this, level) == null ? null : this.CreaturesAvailable[level];
 
         /// <summary>
+        /// Returns the base weekly growth of the creatures of <paramref name="level"/> (0 to 6): the growth of the creature of the level, the
+        /// same for its upgrade, which is what a newly built dwelling holds (the Conflux saves). The bonuses of the castle, the horde building
+        /// and the Grail are not included, as how the game adds them was not checked in a save. 0 if no dwelling is built for the level.
+        /// </summary>
+        public int BaseWeeklyGrowth(int level) => CastleBuilder.DwellingOf(this, level) == null
+            ? 0
+            : Creature.ForFaction(this.Faction).FirstOrDefault(c => c.Tier == level + 1)?.Info.Growth ?? 0;
+
+        /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures of <paramref name="level"/> (0 to 6) waiting in the dwelling that
         /// stands for them. Throws <see cref="GameRuleException"/> if there is no such dwelling.
         /// </summary>

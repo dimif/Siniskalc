@@ -139,6 +139,7 @@ RoE, AB and Chronicles saves were not seen.
   A chronological series can show that one is too strict, but not that it is right.
   `dung_necro` was built in the map editor, which ignores prerequisites, so it proves bit positions only.
 - **Dwelling growth** (Conflux, SoD): 20, 6, 6, 5, 4, 2, 2 a week and 60, 18, 18, 5, 4, 2, 2 (110, 30, 30, 15, 12, 6, 6 upgraded) once the buildings have stood for a week.
+  The first numbers are the growth of the creatures (`Creature.Info.Growth`), which is what a dwelling holds when it is built (`CastleBuilder`), and the castle page shows them as "+N a week" (`CastleModel.BaseWeeklyGrowth`). What the castle, the horde buildings and the Grail add was not worked out from a save, so it is not shown.
   Building the upgraded Magic Lantern gives the upgraded Garden of Life by itself (bits 19 and 37).
   The Conflux dwellings are the Magic Lantern, the Altars of Air, Water, Fire, Earth and Thought, and the Pyre.
 - **Garrisoned and visiting hero**: the castle holds both ids (`CastleLayout.VisitingHero`, bytes 65 and 66 in HotA).

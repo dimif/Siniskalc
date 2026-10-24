@@ -47,6 +47,8 @@
                         </Style>
                     </wpf:Stepper.Style>
                 </wpf:Stepper>
+                <TextBlock DockPanel.Dock="Right" Width="80" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding WeeklyGrowthText}"
+                           ToolTip="The weekly growth of the creature. The bonuses of the castle, the horde building and the Grail are not included."/>
                 <TextBlock DockPanel.Dock="Left" Width="22" Foreground="{StaticResource MutedBrush}" Text="{Binding Level}"/>
                 <StackPanel>
                     <TextBlock x:Name="dwelling" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding CreatureNames}"/>

@@ -18,6 +18,9 @@ The mines of HoMM3 now say their level: `MineRowViewModelBase` takes whether the
 
 **2026-10-22 (castle lists):** the castles a colour owns are listed by one `OwnedLinks.Castles<TCastle, TColor, TCreature, TFaction>` in `Siniskalc.Heroes.Wpf`: the castles the map uses (`ICastleModel.IsUsed`), ordered by name, opened by their place in the list, with the heroes in them. Each game's `CastleLinks.OwnedBy` gives only its words: HoMM2 "Castle" or "Town"; HoMM3 the hall and the fortification, whether the castle has a Capitol and the name of its Grail structure. HoMM3 now leaves out a castle without a name too; its loader finds only the castles of the map, and every castle of every HoMM3 test save has a name (`CastleDeserializerTests.EveryCastleOfEverySavefileHasANameSoTheMapUsesIt`), so nothing changes on screen. HoMM2 opened a castle by the number in its record and now by its place in the list; they are the same (`CastleTests` in HoMM2 checks the 72 records).
 
+**2026-10-24 (feature audit of HoMM2 against HoMM3):**
+- `WeeklyGrowthText` is the "+N a week" of a dwelling in both games; HoMM3's dwellings show the base weekly growth of their creature (`CastleModel.BaseWeeklyGrowth`), without the castle, horde building and Grail bonuses, which no save pins down.
+
 Not done (2026-10-21): a shared player page base (HoMM2's `PageViewModel` and HoMM3's `SessionPageViewModelBase` are different bases, so a third one cannot sit between them; the shared blocks are already `ResourcesEditorViewModel`, `TavernPlaceViewModel` and `ObeliskVisitsViewModelBase`), and HoMM2 pages on the session base (its owner changes touch three chunks, the hero or castle and the old and new owner's player records, so its reset reverts pending changes of the page; see M9a in `SHARING_REVIEW.md`).
 
 The same kind of review as `SHARING_REVIEW.md`, for the view models and views of `Siniskalc.Homm2` and `Siniskalc.Homm3`, read on 2026-10-17.

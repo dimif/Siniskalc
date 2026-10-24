@@ -59,6 +59,16 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         }
 
         [Test]
+        public void TheDwellingsShowTheBaseWeeklyGrowthOfTheirCreatures()
+        {
+            var castle = Show("Cove", "cove_inland_upg_nymph_waterfall", "Lakenshire");
+
+            Assert.That(castle.Dwellings[0].WeeklyGrowthText, Is.EqualTo("+16 a week"), "Nymph");
+            Assert.That(castle.Dwellings[1].WeeklyGrowthText, Is.EqualTo("+9 a week"), "Crew Mate");
+            Assert.That(castle.Dwellings[2].WeeklyGrowthText, Is.Empty, "not built");
+        }
+
+        [Test]
         public void TheMageGuildShowsTheSpellsOfEachBuiltLevel()
         {
             var castle = Show("Cove", "cove_inland_all_cheat", "Lakenshire");

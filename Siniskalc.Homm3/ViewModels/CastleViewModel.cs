@@ -396,12 +396,12 @@ namespace Siniskalc.Homm3.ViewModels
                 if (upgraded != null && this.Castle.HasBuilt(upgraded))
                 {
                     var count = this.Castle.CreaturesAvailable[level];
-                    rows.Add(new DwellingRowViewModel(level + 1, upgraded.Name, "Upgraded", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: true)));
+                    rows.Add(new DwellingRowViewModel(level + 1, upgraded.Name, "Upgraded", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: true), this.Castle.BaseWeeklyGrowth(level)));
                 }
                 else if (this.Castle.HasBuilt(dwelling))
                 {
                     var count = this.Castle.CreaturesAvailable[level];
-                    rows.Add(new DwellingRowViewModel(level + 1, dwelling.Name, "Built", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: false)));
+                    rows.Add(new DwellingRowViewModel(level + 1, dwelling.Name, "Built", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: false), this.Castle.BaseWeeklyGrowth(level)));
                 }
                 else
                 {

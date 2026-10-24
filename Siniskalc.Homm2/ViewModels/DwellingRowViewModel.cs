@@ -30,7 +30,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets what the dwelling gains each week, with the Well and the second well: such as "+20 a week", nothing for a dwelling that is not built.
         /// </summary>
-        public string WeeklyGrowthText => this.weeklyGrowth() is var growth && growth > 0 ? $"+{growth} a week" : string.Empty;
+        public string WeeklyGrowthText => Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(this.weeklyGrowth());
 
         public void Refresh()
         {

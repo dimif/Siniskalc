@@ -13,8 +13,10 @@
 
         /// <param name="count">How many creatures wait in the dwelling, or null when no dwelling is built.</param>
         /// <param name="setCount">Called with the new number of creatures when the user edits it; null for a row that cannot be edited.</param>
-        public DwellingRowViewModel(int level, string dwelling, string state, string creatures, bool isBuilt, int? count = null, Action<int>? setCount = null, string creatureNames = "")
+        /// <param name="weeklyGrowth">The base weekly growth of the creatures of the level (<see cref="Models.CastleModel.BaseWeeklyGrowth"/>), 0 when no dwelling is built.</param>
+        public DwellingRowViewModel(int level, string dwelling, string state, string creatures, bool isBuilt, int? count = null, Action<int>? setCount = null, string creatureNames = "", int weeklyGrowth = 0)
         {
+            this.WeeklyGrowthText = Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(weeklyGrowth);
             this.CreatureNames = creatureNames;
             this.setCount = setCount;
             this.count = count ?? 0;
@@ -61,5 +63,10 @@
         public string Creatures { get; }
 
         public bool IsBuilt { get; }
+
+        /// <summary>
+        /// Gets the base weekly growth of the creatures, such as "+14 a week", or nothing for a dwelling that is not built.
+        /// </summary>
+        public string WeeklyGrowthText { get; }
     }
 }

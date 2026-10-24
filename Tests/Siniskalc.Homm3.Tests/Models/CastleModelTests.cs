@@ -28,5 +28,20 @@ namespace Siniskalc.Homm3.Tests.Models
             Assert.That(castle.DwellingCount, Is.EqualTo(model.Buildings.Count(b => b.IsDwelling)));
             Assert.That(castle.GarrisonedHeroId, Is.EqualTo(model.GarrisonedHeroId));
         }
+
+        [Test]
+        public void TheBaseWeeklyGrowthIsTheGrowthOfTheCreatureOnceItsDwellingIsBuilt()
+        {
+            var castles = CastleSamples.Load(CastleSamples.Folder("Bulwark").Single(p => p.EndsWith("bulwark_13_mage_guild_4.GM1"))).History.Current.Castles();
+            var still = TestServices.CastleDeserializer.Deserialize(castles.First(c => c.Name == "Still Water"));
+
+            Assert.That(still.BaseWeeklyGrowth(0), Is.EqualTo(0), "Still Water has no Centaur Stables in this save");
+
+            var built = Siniskalc.Homm3.Models.CastleBuilder.Build(still, Building.RampartCentaurStables);
+            Assert.That(built.BaseWeeklyGrowth(0), Is.EqualTo(14));
+
+            var upgraded = Siniskalc.Homm3.Models.CastleBuilder.Build(built, Building.RampartUpgCentaurStables);
+            Assert.That(upgraded.BaseWeeklyGrowth(0), Is.EqualTo(14), "an upgraded dwelling has the growth of the creature it upgrades");
+        }
     }
 }

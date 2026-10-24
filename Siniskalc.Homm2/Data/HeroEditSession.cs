@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -55,6 +56,60 @@
             }
 
             this.History.Apply(updated);
+        }
+
+        /// <summary>
+        /// Puts the owner of the hero back to what the savegame had, in one step of the history, with the lists of heroes of the players
+        /// (<see cref="PlayerModel.WithHeroAsIn"/>). It is how the change of the owner is reverted. The rest of the hero (such as the move it has
+        /// left) is a change of its own and is left as it is.
+        /// </summary>
+        /// <exception cref="GameRuleException">The hero goes back to a list of heroes that has become full.</exception>
+        public void RestoreOwner()
+        {
+            var updated = WithOwnerAsIn(this.History.Current, this.History.Original, this.HeroIndex);
+            if (!ReferenceEquals(updated, this.History.Current))
+            {
+                this.History.Apply(updated);
+            }
+        }
+
+        /// <summary>
+        /// Returns the document with the owner of the hero as it is in <paramref name="original"/>, in the hero and in the lists of heroes of the
+        /// players. The new records are all made before any is written, so a refused change leaves the document as it was.
+        /// </summary>
+        /// <exception cref="GameRuleException">The hero goes back to a list of heroes that has become full.</exception>
+        internal static SaveDocument WithOwnerAsIn(SaveDocument document, SaveDocument original, int heroIndex)
+        {
+            var heroes = document.Heroes();
+            var hero = heroes.GetModel(heroIndex);
+            var originalHero = original.Heroes().GetModel(heroIndex);
+
+            var players = document.Players();
+            var originalPlayers = original.Players();
+            var edits = new List<(int Player, PlayerModel Model)>();
+            for (var index = 0; index < players.Count && index < originalPlayers.Count; index++)
+            {
+                var player = players.GetModel(index);
+                var originalPlayer = originalPlayers.GetModel(index);
+                if (player.HeroIds.Contains(hero.Id) || originalPlayer.HeroIds.Contains(hero.Id))
+                {
+                    var restored = player.WithHeroAsIn(hero.Id, originalPlayer);
+                    if (restored != player)
+                    {
+                        edits.Add((index, restored));
+                    }
+                }
+            }
+
+            var updated = hero.Owner == originalHero.Owner
+                ? document
+                : document.WithChunk(Homm2ChunkKinds.Hero, heroIndex, heroes.Serializer.Serialize(heroes[heroIndex], hero with { Owner = originalHero.Owner }));
+            foreach (var (player, model) in edits)
+            {
+                updated = updated.WithChunk(Homm2ChunkKinds.Player, player, players.Serializer.Serialize(players[player], model));
+            }
+
+            return updated;
         }
     }
 }

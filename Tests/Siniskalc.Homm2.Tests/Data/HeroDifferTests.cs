@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Runtime;
 
     /// <summary>
@@ -62,6 +63,27 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(
                 (change.Change.Description, change.Change.After),
                 Is.EqualTo(("Movement points", $"{left:N0} / {original.MovementPoints.Max:N0}")));
+        }
+
+        [Test]
+        public void RevertingTheOwnerOfAHeroPutsTheHeroAndTheListsOfThePlayersBackInOneStep()
+        {
+            var history = this.game.History;
+            var original = history.Current.ToBytes();
+            var hero = history.Current.Heroes().GetModel(Maximus);
+            var newOwner = hero.Owner == PlayerColor.Blue ? PlayerColor.Green : PlayerColor.Blue;
+
+            history.CreateHeroSession(Maximus).ChangeOwner(newOwner);
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Heroes"));
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
+
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+
+            history.Undo();
+
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Heroes"));
         }
     }
 }

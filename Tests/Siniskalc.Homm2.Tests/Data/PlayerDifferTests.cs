@@ -52,5 +52,35 @@
 
             Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Selected castle"));
         }
+
+        [Test]
+        public void RevertingTheHeroesOfAPlayerGivesTheHeroesTheirOwnersBack()
+        {
+            var history = this.game.History;
+            var original = history.Current.ToBytes();
+            var hero = history.Current.Players().GetModel(0).HeroIds[0];
+
+            history.CreateHeroSession(hero).ChangeOwner(PlayerColor.Green);
+            history.GetPendingChanges().Single(c => c.OwnerName == PlayerColor.Blue.ToString() && c.Change.Description == "Heroes").Revert(history);
+
+            Assert.That(history.Current.Heroes().GetModel(hero).Owner, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void RevertingTheCastlesOfAPlayerGivesTheCastlesTheirOwnersBack()
+        {
+            var history = this.game.History;
+            var original = history.Current.ToBytes();
+            var castle = history.Current.Players().GetModel(0).CastleIds[0];
+
+            history.CreateCastleSession(castle).ChangeOwner(PlayerColor.Neutral);
+            history.GetPendingChanges().Single(c => c.Change.Description == "Castles").Revert(history);
+
+            Assert.That(history.Current.Castles().GetModel(castle).Owner, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+        }
     }
 }

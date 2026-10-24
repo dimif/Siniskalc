@@ -1,6 +1,8 @@
 namespace Siniskalc.Homm2.Tests.Data
 {
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
 
     /// <summary>
@@ -59,6 +61,47 @@ namespace Siniskalc.Homm2.Tests.Data
             change.Revert(this.game.History);
 
             Assert.That(this.game.History.Current.Castles().GetModel(Xabran), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void RevertingTheOwnerOfACastlePutsTheCastleTheListsAndTheDaysLeftBackInOneStep()
+        {
+            var history = this.game.History;
+            var original = history.Current.ToBytes();
+            var blue = history.Current.Players().GetModel(PlayerColor.Blue.Code);
+            var castle = blue.CastleIds[0];
+
+            history.CreateCastleSession(castle).ChangeOwner(PlayerColor.Green);
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Castles"));
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
+
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+
+            history.Undo();
+
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Castles"));
+        }
+
+        [Test]
+        public void RevertingTheOwnerOfTheLastCastleOfAPlayerStopsTheCountdownItStarted()
+        {
+            var history = this.game.History;
+            var blue = history.Current.Players().GetModel(PlayerColor.Blue.Code);
+            foreach (var castle in blue.CastleIds.Skip(1))
+            {
+                history.CreateCastleSession(castle).ChangeOwner(PlayerColor.Green);
+            }
+
+            history.MarkSaved();
+            history.CreateCastleSession(blue.CastleIds[0]).ChangeOwner(PlayerColor.Neutral);
+            Assert.That(history.Current.Players().GetModel(PlayerColor.Blue.Code).DaysLeft, Is.EqualTo(PlayerModel.DaysToOwnACastle));
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
+
+            Assert.That(history.Current.Players().GetModel(PlayerColor.Blue.Code).DaysLeft, Is.Null);
+            Assert.That(history.GetPendingChanges(), Is.Empty);
         }
     }
 }

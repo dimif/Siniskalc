@@ -105,18 +105,19 @@
                 name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
                 toolTip: "Builds the Mage Guild to this level, or takes it down. Each level shows 3, 3, 2, 2 and 1 spells (one more with the Library of a Wizard).");
 
-            var spellNames = new[] { NoSpell }.Concat(Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name)).ToList();
+            var spells = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).ToList();
+            var (original, current) = (this.session.Original, this.session.Current);
             this.guildLevels = Enumerable.Range(1, Constants.Castle.MageGuildLevels)
                 .Select(level => new GuildLevelViewModel(
                     level,
                     Enumerable.Range(0, Constants.Castle.MageGuildSlotsPerLevel)
                         .Select(slot => new ChoiceFieldViewModel(
                             $"Spell {slot + 1}",
-                            spellNames,
+                            GuildSpellChoices(spells, level, original.MageGuildSpell(level, slot), current.MageGuildSpell(level, slot)),
                             () => this.session.Current.MageGuildSpell(level, slot)?.Name ?? NoSpell,
                             name => this.session.Update(c => c.WithMageGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Spell>(name))),
                             () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.MageGuildSpellCounts[level - 1],
-                            "The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
+                            $"A guild of level {level} teaches spells of level {level}, as every guild of the test saves does; the spell levels are read from those saves and not all were checked in the game. A spell of another level that the savegame has here is kept. The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
                         .ToList()))
                 .ToList();
 
@@ -238,6 +239,19 @@
                 level.Refresh();
             }
         }
+
+        /// <summary>
+        /// Returns what a slot of the guild of <paramref name="level"/> can be given: no spell, and the spells of that level by name. A spell of
+        /// another level that the slot holds as loaded or now (a savegame may have one) is offered too, so it shows and stays.
+        /// </summary>
+        private static IReadOnlyList<string> GuildSpellChoices(IEnumerable<Spell> spells, int level, Spell? original, Spell? current) =>
+            new[] { NoSpell }
+                .Concat(spells.Where(s => s.Level == level)
+                    .Concat(new[] { original, current }.OfType<Spell>())
+                    .Distinct()
+                    .OrderBy(s => s.Name)
+                    .Select(s => s.Name))
+                .ToList();
 
         private ToggleRowViewModel Building(string name, TownBuildings building, string toolTip = "") => new(
             name,

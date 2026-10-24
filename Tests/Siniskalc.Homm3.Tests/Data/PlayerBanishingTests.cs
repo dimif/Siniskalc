@@ -78,7 +78,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ReadingAndWritingAPlayerBackLeavesItsBytesAsTheyWere()
         {
-            var serializer = new SafePlayerSerializer(NullLogger<SafePlayerSerializer>.Instance);
+            var serializer = new SafePlayerSerializer();
             foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing")))
             {
                 foreach (var chunk in TestServices.GameService.LoadGameFromFile(path).History.Current.Players())
@@ -93,7 +93,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = BlueChunk(Load("banishing_01_blue_7_days_left"));
 
-            var written = new SafePlayerSerializer(NullLogger<SafePlayerSerializer>.Instance).Serialize(chunk, TestServices.PlayerDeserializer.Deserialize(chunk).WithDaysLeft(3));
+            var written = new SafePlayerSerializer().Serialize(chunk, TestServices.PlayerDeserializer.Deserialize(chunk).WithDaysLeft(3));
 
             var changed = Enumerable.Range(0, chunk.ToArray().Length).Where(i => written.ToArray()[i] != chunk.ToArray()[i]).ToList();
             Assert.That(changed, Is.EqualTo(new[] { PlayerLayout.DaysLeft }));
@@ -117,7 +117,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = chunk.ToArray();
             bytes[PlayerLayout.DaysLeft] = 0x40;
             var odd = chunk.WithBytes(bytes);
-            var serializer = new SafePlayerSerializer(NullLogger<SafePlayerSerializer>.Instance);
+            var serializer = new SafePlayerSerializer();
 
             var model = TestServices.PlayerDeserializer.Deserialize(odd);
 
@@ -131,7 +131,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = BlueChunk(Load("banishing_01_blue_7_days_left"));
 
-            var written = new SafePlayerSerializer(NullLogger<SafePlayerSerializer>.Instance).Serialize(chunk, TestServices.PlayerDeserializer.Deserialize(chunk) with { DaysLeft = null });
+            var written = new SafePlayerSerializer().Serialize(chunk, TestServices.PlayerDeserializer.Deserialize(chunk) with { DaysLeft = null });
 
             Assert.That(written.GetByteAt(PlayerLayout.DaysLeft), Is.EqualTo(0xFF));
         }

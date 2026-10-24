@@ -1,14 +1,12 @@
 namespace Siniskalc.Homm3.Tests.Runtime
 {
-    using Microsoft.Extensions.Logging;
-    using Moq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Runtime;
 
     [TestFixture]
     internal sealed class GzipSavefileCodecTests
     {
-        private readonly GzipSavefileCodec codec = new(NullLogger<GzipSavefileCodec>.Instance);
+        private readonly GzipSavefileCodec codec = new();
         private string folder = string.Empty;
 
         [SetUp]
@@ -55,25 +53,6 @@ namespace Siniskalc.Homm3.Tests.Runtime
             File.WriteAllText(path, "this is not a gzip file at all");
 
             Assert.That(() => this.codec.Read(path), Throws.TypeOf<CorruptSavefileException>());
-        }
-
-        [Test]
-        public void ACorruptSavefileIsLoggedByItsFileNameAsAWarning()
-        {
-            var logger = new Mock<ILogger<GzipSavefileCodec>>();
-            var path = Path.Combine(this.folder, "notes.GM1");
-            File.WriteAllText(path, "this is not a gzip file at all");
-
-            Assert.That(() => new GzipSavefileCodec(logger.Object).Read(path), Throws.TypeOf<CorruptSavefileException>());
-
-            logger.Verify(
-                l => l.Log(
-                    LogLevel.Warning,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((state, _) => state.ToString()!.Contains("notes.GM1") && !state.ToString()!.Contains(this.folder)),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-                Times.Once);
         }
 
         [Test]

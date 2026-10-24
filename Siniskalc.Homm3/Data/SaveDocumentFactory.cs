@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
@@ -30,7 +29,6 @@
         private readonly RecordKit<RecordChunk, DwellingModel> dwellings;
         private readonly RecordKit<RecordChunk, MerchantStockModel> merchants;
         private readonly ISavefileBytesPatcher patcher;
-        private readonly ILoggerFactory loggerFactory;
 
         public SaveDocumentFactory(
             IVersionSpecificEntitiesProviderFactory versionEntities,
@@ -47,10 +45,8 @@
             RecordKit<RecordChunk, MineModel> mines,
             RecordKit<RecordChunk, DwellingModel> dwellings,
             RecordKit<RecordChunk, MerchantStockModel> merchants,
-            ISavefileBytesPatcher patcher,
-            ILoggerFactory loggerFactory)
+            ISavefileBytesPatcher patcher)
         {
-            this.loggerFactory = loggerFactory;
             this.versionEntities = versionEntities;
             this.heroDiffer = heroDiffer;
             this.castleDeserializer = castleDeserializer;
@@ -81,7 +77,7 @@
             IEnumerable<RecordChunk>? merchantChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
-            var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities, this.loggerFactory.CreateLogger<HeroDeserializer>()), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
+            var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
             var players = new PlayerChunkCollection(
                 playerChunks ?? Enumerable.Empty<PlayerChunk>(),
                 this.playerDeserializer,

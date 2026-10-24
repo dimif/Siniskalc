@@ -7,10 +7,10 @@ Failures that the user must see are in `ERROR_MODEL.md`; this file is about what
 
 | Question | Answer |
 |---|---|
-| What do I inject? | `ILogger<T>` (`Microsoft.Extensions.Logging`), through the constructor, kept in a field called `logger`. Never `Log.Logger` or any static. |
-| Who builds the loggers? | `AppServices` (the composition root) via `LoggingSetup` in the exe. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
+| Where do I get a logger? | `private static readonly ILogger<T> Logger = LogFactory.For<T>();` (`LogFactory.For(typeof(T))` in a static class). Not through the constructor, and never `Serilog.Log`. |
+| Who installs the real logger? | `AppServices` (the composition root) calls `LogFactory.Install` once with the factory `LoggingSetup` builds in the exe; until then, and in the tests, loggers write nowhere. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
 | Where is the file? | `<LocalApplicationData>/Siniskalc/logs/siniskalc-<date>.log` (`LogPaths`), unless `LogFolder` is set in `settings.json`. |
-| How do I write a message? | A constant template with named placeholders, never `$"..."`: `logger.LogWarning("Skipped the backup of {File}", name)`. `CA2254` enforces it. |
+| How do I write a message? | A constant template with named placeholders, never `$"..."`: `Logger.LogWarning("Skipped the backup of {File}", name)`. `CA2254` enforces it. |
 | Which level? | Warning = surprising but handled. Error = the user saw an operation fail. See the table below. |
 | Where not to log? | Models and reducers, views, property setters, anything per byte or per item of a list. |
 
@@ -64,14 +64,14 @@ The minimum level is Information (Debug while a debugger is attached) and can be
   Add to the list here before inventing a new one.
 - **Hex.** Offsets and raw byte values are formatted as hex, as the hex editor shows them: `{Offset:X}`, `{Code:X2}`.
 - **Exceptions** go in the exception argument, never as `ex.Message` inside the template:
-  `logger.LogError(ex, "Failed to save {File}", name)`.
+  `Logger.LogError(ex, "Failed to save {File}", name)`.
 - **Layout** (timestamp, level, category) belongs to the sink in `LoggingSetup`. Code does not format any of it.
   Serilog writes the levels as `VRB` (Trace), `DBG`, `INF`, `WRN`, `ERR` and `FTL` (Critical).
 - **Subject.** A line about one record does not repeat its name in the message: the code that reads the record opens
-  `using var subject = logger.BeginSubject("Hero", chunk.Name);` (`LogScopeExtensions`, `Kind Name`: `Hero`, `Castle`, `Mine`) and every line
-  logged inside it, including those of helpers that were passed the logger (`ArmyReader.Read`, `Bytes.ReadColor`), shows
-  `Category (Hero Sandro): message`. It is the property `Subject`, so a filter can select it. A helper that is also used by the
-  serializers takes `ILogger? logger = null` and logs only when it gets one, so writing a model does not log what reading it would.
+  `using var subject = Logger.BeginSubject("Hero", chunk.Name);` (`LogScopeExtensions`, `Kind Name`: `Hero`, `Castle`, `Mine`) and every line
+  logged inside it, by any class and any static helper (`ArmyReader.Read`, `Bytes.ReadColor`), shows
+  `Category (Hero Sandro): message`. It is the property `Subject`, so a filter can select it. The serializers read bytes with the same
+  helpers to compare, so they log the same Trace fallbacks; filter by level when that is too much.
 
 The file is plain text, one event per line, followed by the exception when there is one:
 
@@ -103,7 +103,7 @@ EventLog), and name no WPF type outside the exe. The only WPF line is flushing t
 ## Working with the markers
 
 - A `// TODO:LOG <level>: ...` marker is replaced by the real call, at the level it names, and the marker is deleted.
-- Once a spot has a logger, new "unexpected, carried on" code gets the call directly. Do not add new markers in a class that
-  already receives an `ILogger<T>`.
-- A test that exists to prove "it logs" (a fallback, a failed read) uses a fake `ILogger`; every other test uses `NullLogger<T>`
-  (or `NullLoggerFactory.Instance` for `AppServices`).
+- New "unexpected, carried on" code gets the call directly. Do not add new `TODO:LOG` markers: every class can have a logger.
+- Logging is not unit-tested: the code has no conditional logging, only calls at different levels. The tests that touch it check the
+  infrastructure (`LogFactoryTests`, `LoggingTests`: the log file, the subject, the start-up errors). Tests that build `AppServices` pass
+  `NullLoggerFactory.Instance`, and a test that installs a real factory calls `LogFactory.Reset()` afterwards.

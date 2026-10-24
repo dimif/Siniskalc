@@ -1,10 +1,9 @@
-namespace Siniskalc.Homm3.Tests.ViewModels
+﻿namespace Siniskalc.Homm3.Tests.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm3.Data;
-    using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.ViewModels;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
@@ -49,7 +48,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 .Returns(() => this.pathToSave);
             this.messages = new Mock<IMessageService>();
             this.messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(() => this.answer);
-            this.commands = new SavegameFileCommands(this.recent, dialogs.Object, this.messages.Object, NullLogger<SavegameFileCommands>.Instance);
+            this.commands = new SavegameFileCommands(this.recent, dialogs.Object, this.messages.Object);
             this.shell = TestServices.CreateShell();
         }
 

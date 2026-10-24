@@ -1,7 +1,6 @@
-namespace Siniskalc.Homm3.Tests.Data
+﻿namespace Siniskalc.Homm3.Tests.Data
 {
     using Siniskalc.Homm3.Data;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// What reading a savefile and writing it back must leave alone, for each savefile of the series the repository holds.
@@ -25,7 +24,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var heroes = TestServices.GameService.LoadGameFromFile(path).History.Current.Heroes();
             var entities = TestServices.VersionEntities.For(heroes.Offsets.GameVersion);
-            var deserializer = new HeroDeserializer(heroes.Offsets, entities, NullLogger<HeroDeserializer>.Instance);
+            var deserializer = new HeroDeserializer(heroes.Offsets, entities);
             var serializer = new SafeHeroSerializer(heroes.Offsets, entities);
 
             foreach (var chunk in heroes)

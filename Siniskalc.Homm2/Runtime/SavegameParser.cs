@@ -10,15 +10,16 @@ namespace Siniskalc.Homm2.Runtime
     /// </summary>
     public sealed class SavegameParser : ISavegameParser
     {
+        private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
+
         private readonly ISaveLayoutLocator locator;
         private readonly IBytesLoader loader;
         private readonly IHeaderReader headerReader;
         private readonly ISaveDocumentFactory documentFactory;
         private readonly IMapPlacesReader placesReader;
         private readonly IMapObjectsReader objectsReader;
-        private readonly ILogger<SavegameParser> logger;
 
-        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader, ILogger<SavegameParser> logger)
+        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader)
         {
             this.locator = locator;
             this.loader = loader;
@@ -26,7 +27,6 @@ namespace Siniskalc.Homm2.Runtime
             this.documentFactory = documentFactory;
             this.placesReader = placesReader;
             this.objectsReader = objectsReader;
-            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -35,7 +35,7 @@ namespace Siniskalc.Homm2.Runtime
             var layout = this.locator.Locate(bytes);
             if (layout is null)
             {
-                this.logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes II savegame", LogPaths.Label(file, name), bytes.Length);
+                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes II savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic II savegame, or it comes from a version of the game this editor does not know.");
             }
 

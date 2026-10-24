@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
-    <Using Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,5 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using System.Buffers.Binary;
-using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -20,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void SetUp()
         {
             var entities = TestServices.VersionEntities.For(HotaOffsets.GameVersion);
-            this.deserializer = new HeroDeserializer(HotaOffsets, entities, NullLogger<HeroDeserializer>.Instance);
+            this.deserializer = new HeroDeserializer(HotaOffsets, entities);
             this.serializer = new SafeHeroSerializer(HotaOffsets, entities);
         }
 
@@ -37,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = ReadDump(file);
             var chunk = new HeroChunk("hero", bytes, 0);
 
-            var model = new HeroDeserializer(offsets, TestServices.VersionEntities.For(offsets.GameVersion), NullLogger<HeroDeserializer>.Instance).Deserialize(chunk);
+            var model = new HeroDeserializer(offsets, TestServices.VersionEntities.For(offsets.GameVersion)).Deserialize(chunk);
             var result = new SafeHeroSerializer(offsets, TestServices.VersionEntities.For(offsets.GameVersion)).Serialize(chunk, model);
 
             Assert.That(result.ToArray(), Is.EqualTo(bytes));
@@ -300,7 +299,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var result = new SafeHeroSerializer(classic, TestServices.VersionEntities.For(classic.GameVersion)).SerializeHasSpellBook(chunk, true);
 
-            Assert.That(new HeroDeserializer(classic, TestServices.VersionEntities.For(classic.GameVersion), NullLogger<HeroDeserializer>.Instance).DeserializeHasSpellBook(result), Is.True);
+            Assert.That(new HeroDeserializer(classic, TestServices.VersionEntities.For(classic.GameVersion)).DeserializeHasSpellBook(result), Is.True);
             Assert.That(result.GetBytesAt(classic[HeroOffsetName.SpellBook], 8), Is.EqualTo(new byte[] { 0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF }));
         }
 

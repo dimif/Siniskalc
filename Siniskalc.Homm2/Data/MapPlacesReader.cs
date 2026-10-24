@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -12,8 +13,10 @@ namespace Siniskalc.Homm2.Data
     /// Alliance, Arrax the Jerk and the maps of the other sizes): a gazebo is 0x8A, a fort 0xBE, a witch doctor's hut 0xC5, a mercenary camp
     /// 0xC9, the standing stones 0xC2 (on both of their tiles) and Xanadu 0xD6.
     /// </summary>
-    public sealed class MapPlacesReader(ILogger<MapPlacesReader> logger) : IMapPlacesReader
+    public sealed class MapPlacesReader : IMapPlacesReader
     {
+        private static readonly ILogger<MapPlacesReader> Logger = LogFactory.For<MapPlacesReader>();
+
         private static readonly (PlaceKind Kind, byte Value)[] Values =
         [
             (PlaceKind.Gazebo, 0x8A),
@@ -30,7 +33,7 @@ namespace Siniskalc.Homm2.Data
             var tiles = MapTileTable.FindStart(bytes, layout);
             if (tiles < 0)
             {
-                logger.LogWarning("The table of tiles of the map was not found, so the places a hero can visit are not listed");
+                Logger.LogWarning("The table of tiles of the map was not found, so the places a hero can visit are not listed");
                 return MapPlaces.None;
             }
 

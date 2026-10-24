@@ -43,11 +43,11 @@
             var editor = (Homm2EditorViewModel)shell.Editor;
             var window = new ShellWindow(
                 new RecentFilesMenuViewModel(services.RecentFiles),
-                new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
+                new ShellUrlLauncher(_ => { }),
                 services.About,
                 services.Help,
                 NoUserInteraction.Messages(),
-                new SavegameFileCommands(services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = shell };
+                new SavegameFileCommands(services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages())) { DataContext = shell };
             window.Show();
 
             try

@@ -17,17 +17,17 @@ namespace Siniskalc.Wpf.ViewModels
     {
         private const string BytesFilter = "Binary dump|*.bin|All files|*.*";
 
+        private static readonly ILogger<SavegameFileCommands> Logger = LogFactory.For<SavegameFileCommands>();
+
         private readonly RecentFilesStore recentFiles;
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
-        private readonly ILogger<SavegameFileCommands> logger;
 
-        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages, ILogger<SavegameFileCommands> logger)
+        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;
             this.dialogs = dialogs;
             this.messages = messages;
-            this.logger = logger;
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Siniskalc.Wpf.ViewModels
         private void ReportError(string title, string what, Exception ex)
         {
             // The message of a savefile exception is already written for the user.
-            this.logger.LogError(ex, "{Title}: failed to {What}", title, what);
+            Logger.LogError(ex, "{Title}: failed to {What}", title, what);
             var message = ex is SavefileException ? ex.Message : $"Failed to {what}: {ex.Message}";
             this.messages.ShowError(title, message);
         }

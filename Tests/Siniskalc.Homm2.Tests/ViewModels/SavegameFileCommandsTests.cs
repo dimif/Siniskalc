@@ -1,7 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
     using Moq;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.ViewModels;
     using Siniskalc.Wpf.Views;
 
@@ -31,7 +30,7 @@
             var messages = new Mock<IMessageService>();
             messages.Setup(m => m.ShowWarning(It.IsAny<string>(), It.IsAny<string>())).Callback<string, string>((_, message) => this.warnings.Add(message));
             messages.Setup(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>())).Returns(MessageAnswer.No);
-            this.commands = new SavegameFileCommands(this.services.RecentFiles, dialogs.Object, messages.Object, NullLogger<SavegameFileCommands>.Instance);
+            this.commands = new SavegameFileCommands(this.services.RecentFiles, dialogs.Object, messages.Object);
             this.shell.LoadGame(Saves.BrokenAllianceSave(5));
         }
 

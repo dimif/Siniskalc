@@ -1,5 +1,4 @@
-using System.IO;
-using System.ComponentModel;
+﻿using System.IO;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,14 +32,14 @@ namespace Siniskalc.Wpf.Tests.Views
                 EnsureApplication();
                 var settings = new SettingsStore(Path.Combine(folder, "settings.json"));
                 var recent = new RecentFilesStore(settings);
-                var shell = new ShellViewModel([new FakeGameModule("First Game", 0x11, "*.F1")], settings, "Editor", NullLogger<ShellViewModel>.Instance);
+                var shell = new ShellViewModel([new FakeGameModule("First Game", 0x11, "*.F1")], settings, "Editor");
                 var window = new ShellWindow(
                     new RecentFilesMenuViewModel(recent),
-                    new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
+                    new ShellUrlLauncher(_ => { }),
                     new AboutInfo("Editor", "1.0", "A test.", "https://example.org", "https://example.org/releases", "MIT", []),
                     new HelpLinks("https://example.org/guide", "https://example.org/issues"),
                     SilentMessages(),
-                    new SavegameFileCommands(recent, new Mock<IFileDialogs>().Object, SilentMessages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = shell };
+                    new SavegameFileCommands(recent, new Mock<IFileDialogs>().Object, SilentMessages())) { DataContext = shell };
                 window.Show();
 
                 try

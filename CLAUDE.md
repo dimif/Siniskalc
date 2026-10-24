@@ -56,6 +56,8 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   What depends on the game version of a savefile (`VersionSpecificEntitiesProvider`, the hero reader and writer and the hero chunk collection) is made per savefile: the provider by `IVersionSpecificEntitiesProviderFactory`, the rest by `SaveDocumentFactory`, which is the one place besides `AppServices` that builds such objects.
 - Static classes are for helpers, fixed data and pure functions of immutable models (`RangeGuard`, `Constants`, layouts, extension methods, `CastleBuilder` and `LevelCalculator`, which are reducers and tables).
   Behaviour that has collaborators, state or may be swapped (loaders, locators, providers, serializers, differs) is an injected instance, not a static class.
+- **The one exception is logging**: a class gets its logger from the static `LogFactory`, in a `private static readonly ILogger<T> Logger = LogFactory.For<T>();` field (`For(typeof(T))` in a static class), and does not take it through its constructor.
+  `AppServices` installs the real factory once; until then, and in the tests, loggers write nowhere.
 
 ## Values and limits
 
@@ -81,7 +83,7 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - Several people and tools edit this tree at once.
   Re-read a file before editing it and run the whole suite, not only the tests of the area you touched.
 - Do not push unless asked.
-- Log through an injected `ILogger<T>`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
+- Log through `LogFactory.For<T>()`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
   Where the editor skips, keeps or falls back on something it did not expect, log it there; a `// TODO:LOG <level>: what to log` marker is for a class that has no logger yet and is replaced by the call (see `docs/ERROR_MODEL.md`).
 
 ## Tests

@@ -28,10 +28,11 @@ namespace Siniskalc.Wpf.ViewModels
 
         private const string NoGameSubtitle = "Save game editor";
 
+        private static readonly ILogger<ShellViewModel> Logger = LogFactory.For<ShellViewModel>();
+
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
         private readonly SettingsStore settings;
         private readonly string applicationName;
-        private readonly ILogger<ShellViewModel> logger;
         private readonly Dictionary<IGameModule<IObservableGameEditor>, IObservableGameEditor> editors = new();
         private IGameModule<IObservableGameEditor> currentModule;
         private IObservableGameEditor editor;
@@ -40,10 +41,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
-        /// <param name="logger">Where a file that cannot be read is reported.</param>
-        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName, ILogger<ShellViewModel> logger)
+        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName)
         {
-            this.logger = logger;
             if (modules.Count == 0)
             {
                 throw new ArgumentException("The application needs at least one game.", nameof(modules));
@@ -193,7 +192,7 @@ namespace Siniskalc.Wpf.ViewModels
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 // The editor that is shown tells the user why the file cannot be opened.
-                this.logger.LogWarning(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
+                Logger.LogWarning(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
                 return null;
             }
         }

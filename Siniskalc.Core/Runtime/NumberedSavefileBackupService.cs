@@ -9,9 +9,11 @@
     /// Copies a file to <c>name.bak</c>, and when that exists to <c>name.bak1</c>, <c>name.bak2</c> and so on, one number higher than
     /// the highest copy there is. A copy is never overwritten. Has no settings; throws when the file does not exist.
     /// </summary>
-    public sealed class NumberedSavefileBackupService(ILogger<NumberedSavefileBackupService> logger) : IFileBackupService
+    public sealed class NumberedSavefileBackupService : IFileBackupService
     {
         private const string Extension = ".bak";
+
+        private static readonly ILogger<NumberedSavefileBackupService> Logger = LogFactory.For<NumberedSavefileBackupService>();
 
         /// <inheritdoc/>
         /// <exception cref="FileNotFoundException">The file does not exist.</exception>
@@ -35,7 +37,7 @@
                 catch (IOException) when (File.Exists(target))
                 {
                     // Someone made that copy since we looked.
-                    logger.LogDebug("Backup {File} appeared while it was being made, trying the next number", Path.GetFileName(target));
+                    Logger.LogDebug("Backup {File} appeared while it was being made, trying the next number", Path.GetFileName(target));
                     next++;
                 }
             }

@@ -5,14 +5,17 @@ namespace Siniskalc.Homm3.Data
     using System.Linq;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
     /// Finds the table of dwellings by what its records look like (see <see cref="DwellingLayout"/>): a run of records of 150 bytes that all
     /// name the type of a creature generator, with an owner that is a colour or none and a tile on the map.
     /// </summary>
-    public sealed class DwellingBytesLoader(ILogger<DwellingBytesLoader> logger) : IDwellingBytesLoader
+    public sealed class DwellingBytesLoader : IDwellingBytesLoader
     {
+        private static readonly ILogger<DwellingBytesLoader> Logger = LogFactory.For<DwellingBytesLoader>();
+
         /// <inheritdoc/>
         public IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others)
         {
@@ -33,7 +36,7 @@ namespace Siniskalc.Homm3.Data
                 length++;
             }
 
-            logger.LogDebug("Read {Count} dwellings from offset {Offset:X} after the last mine", length < DwellingLayout.MinimumRun ? 0 : length, at);
+            Logger.LogDebug("Read {Count} dwellings from offset {Offset:X} after the last mine", length < DwellingLayout.MinimumRun ? 0 : length, at);
             return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 

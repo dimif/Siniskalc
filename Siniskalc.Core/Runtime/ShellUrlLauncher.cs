@@ -8,13 +8,13 @@
     /// </summary>
     public sealed class ShellUrlLauncher : IUrlLauncher
     {
-        private readonly Action<string> start;
-        private readonly ILogger<ShellUrlLauncher> logger;
+        private static readonly ILogger<ShellUrlLauncher> Logger = LogFactory.For<ShellUrlLauncher>();
 
-        public ShellUrlLauncher(Action<string> start, ILogger<ShellUrlLauncher> logger)
+        private readonly Action<string> start;
+
+        public ShellUrlLauncher(Action<string> start)
         {
             this.start = start;
-            this.logger = logger;
         }
 
         /// <inheritdoc/>
@@ -33,7 +33,7 @@
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, "Could not open the address {Url}", url);
+                Logger.LogWarning(ex, "Could not open the address {Url}", url);
                 return false;
             }
         }

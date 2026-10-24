@@ -1,6 +1,5 @@
-namespace Siniskalc.Homm3.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.Logging;
@@ -15,6 +14,8 @@ namespace Siniskalc.Homm3.Runtime
     /// </summary>
     public sealed class SavegameParser : ISavegameParser
     {
+        private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
+
         private readonly ISavegameVersionDetector versionDetector;
         private readonly IHeroBytesLoader heroLoader;
         private readonly ICastleBytesLoader castleLoader;
@@ -28,7 +29,6 @@ namespace Siniskalc.Homm3.Runtime
         private readonly IPlayerControlLocator setupLocator;
         private readonly IMapHeaderLocator mapHeaderLocator;
         private readonly ISaveDocumentFactory documentFactory;
-        private readonly ILogger<SavegameParser> logger;
 
         public SavegameParser(
             ISavegameVersionDetector versionDetector,
@@ -43,8 +43,7 @@ namespace Siniskalc.Homm3.Runtime
             IGameDateLocator dateLocator,
             IPlayerControlLocator setupLocator,
             IMapHeaderLocator mapHeaderLocator,
-            ISaveDocumentFactory documentFactory,
-            ILogger<SavegameParser> logger)
+            ISaveDocumentFactory documentFactory)
         {
             this.versionDetector = versionDetector;
             this.heroLoader = heroLoader;
@@ -59,7 +58,6 @@ namespace Siniskalc.Homm3.Runtime
             this.setupLocator = setupLocator;
             this.mapHeaderLocator = mapHeaderLocator;
             this.documentFactory = documentFactory;
-            this.logger = logger;
         }
 
         public Game Parse(byte[] bytes, string? file, string? name = null)
@@ -67,7 +65,7 @@ namespace Siniskalc.Homm3.Runtime
             var gameVersion = this.versionDetector.Detect(bytes);
             if (gameVersion == GameVersion.Unknown)
             {
-                this.logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes III savegame", LogPaths.Label(file, name), bytes.Length);
+                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes III savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic III savegame, or it comes from a version of the game this editor does not know.");
             }
 

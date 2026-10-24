@@ -24,7 +24,7 @@
         {
             File.WriteAllText(this.save, "one");
 
-            var copy = new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak"));
             Assert.That(File.ReadAllText(this.save + ".bak"), Is.EqualTo("one"));
@@ -33,7 +33,7 @@
         [Test]
         public void ABackupNeverReplacesAnEarlierOneAndTheCounterGoesUp()
         {
-            var backup = new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance);
+            var backup = new NumberedSavefileBackupService();
             File.WriteAllText(this.save, "one");
             backup.Backup(this.save);
             File.WriteAllText(this.save, "two");
@@ -53,7 +53,7 @@
             File.WriteAllText(this.save + ".bak", "old");
             File.WriteAllText(this.save + ".bak5", "newer");
 
-            var copy = new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak6"));
         }
@@ -65,7 +65,7 @@
             File.WriteAllText(this.save + ".bakery", "not a copy");
             File.WriteAllText(Path.Combine(this.folder, "save10.gm1.bak3"), "another save");
 
-            var copy = new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance).Backup(this.save);
+            var copy = new NumberedSavefileBackupService().Backup(this.save);
 
             Assert.That(copy, Is.EqualTo(this.save + ".bak"));
         }
@@ -73,7 +73,7 @@
         [Test]
         public void AFileThatDoesNotExistCannotBeBackedUp()
         {
-            Assert.That(() => new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance).Backup(this.save), Throws.TypeOf<FileNotFoundException>());
+            Assert.That(() => new NumberedSavefileBackupService().Backup(this.save), Throws.TypeOf<FileNotFoundException>());
         }
     }
 }

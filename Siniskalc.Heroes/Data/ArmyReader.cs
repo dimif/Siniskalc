@@ -4,6 +4,7 @@ namespace Siniskalc.Heroes.Data
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
 
     /// <summary>
@@ -12,11 +13,12 @@ namespace Siniskalc.Heroes.Data
     /// </summary>
     public static class ArmyReader
     {
+        private static readonly ILogger Logger = LogFactory.For(typeof(ArmyReader));
+
         /// <summary>
-        /// Reads the army that the tables of <paramref name="layout"/> hold. A type the editor has no creature for is logged at Trace to
-        /// <paramref name="logger"/> (the logger of the deserializer, inside its scope), when there is one.
+        /// Reads the army that the tables of <paramref name="layout"/> hold. A type the editor has no creature for is logged at Trace.
         /// </summary>
-        public static IArmy<TCreature> Read<TCreature>(BytesChunk chunk, ArmyLayout layout, ICreatureCodes<TCreature> codes, ILogger? logger = null)
+        public static IArmy<TCreature> Read<TCreature>(BytesChunk chunk, ArmyLayout layout, ICreatureCodes<TCreature> codes)
             where TCreature : class, IGameEntity
         {
             var slots = new ArmySlot<TCreature>?[layout.SlotCount];
@@ -31,7 +33,7 @@ namespace Siniskalc.Heroes.Data
                 var creature = codes.Find(type);
                 if (creature is null)
                 {
-                    logger?.LogTrace("Creature type {Code:X} in army slot {Slot} is unknown, read as the first known creature and the bytes are kept", type, slot + 1);
+                    Logger.LogTrace("Creature type {Code:X} in army slot {Slot} is unknown, read as the first known creature and the bytes are kept", type, slot + 1);
                 }
 
                 slots[slot] = new ArmySlot<TCreature>(creature ?? codes.Fallback, ReadNumber(chunk, layout.CountAt(slot), layout.CountSize));

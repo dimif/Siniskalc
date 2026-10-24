@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm2.Runtime
 {
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     /// <summary>
@@ -9,8 +8,8 @@
     /// </summary>
     public sealed class GameService : SavegameService<Game>, IGameService
     {
-        public GameService(ISavegameParser parser, ISavefileCodec codec, IFileBackupServiceProvider backups, ILogger<GameService> logger)
-            : base(parser, codec, backups, logger)
+        public GameService(ISavegameParser parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
+            : base(parser, codec, backups)
         {
         }
     }

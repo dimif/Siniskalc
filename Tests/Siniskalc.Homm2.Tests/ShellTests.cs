@@ -6,7 +6,6 @@
     using System.Windows.Threading;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm2.Views;
@@ -124,11 +123,11 @@
 
                 var window = new ShellWindow(
                     new RecentFilesMenuViewModel(this.services.RecentFiles),
-                    new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance),
+                    new ShellUrlLauncher(_ => { }),
                     this.services.About,
                     this.services.Help,
                     NoUserInteraction.Messages(),
-                    new SavegameFileCommands(this.services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages(), NullLogger<SavegameFileCommands>.Instance)) { DataContext = this.shell };
+                    new SavegameFileCommands(this.services.RecentFiles, NoUserInteraction.FileDialogs(), NoUserInteraction.Messages())) { DataContext = this.shell };
                 window.Show();
 
                 try

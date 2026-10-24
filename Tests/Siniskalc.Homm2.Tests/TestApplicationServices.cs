@@ -22,10 +22,9 @@
             this.Settings = new SettingsStore(settingsPath);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.factory = new Homm2ModuleFactory(
-                new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance), new DisabledFileBackupService()),
+                new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
                 new SavefileBytesPatcher(),
-                new BanishingTextProvider(),
-                NullLoggerFactory.Instance);
+                new BanishingTextProvider());
         }
 
         public SettingsStore Settings { get; }
@@ -43,6 +42,6 @@
         /// <summary>
         /// Makes a shell with the HoMM2 module only.
         /// </summary>
-        public ShellViewModel CreateShell() => new([this.Module], this.Settings, ApplicationName, NullLogger<ShellViewModel>.Instance);
+        public ShellViewModel CreateShell() => new([this.Module], this.Settings, ApplicationName);
     }
 }

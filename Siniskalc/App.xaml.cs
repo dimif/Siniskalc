@@ -13,8 +13,9 @@ namespace Siniskalc
     /// </summary>
     public partial class App : Application
     {
+        private static readonly ILogger<App> Logger = LogFactory.For<App>();
+
         private IMessageService? messages;
-        private ILogger<App>? logger;
         private AppServices? services;
         private bool isReporting;
 
@@ -30,7 +31,6 @@ namespace Siniskalc
             }
 
             this.services = services;
-            this.logger = services.LoggerFactory.CreateLogger<App>();
             this.messages = services.Messages;
             this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands);
             this.MainWindow.Show();
@@ -43,6 +43,7 @@ namespace Siniskalc
         /// </summary>
         protected override void OnExit(ExitEventArgs e)
         {
+            LogFactory.Reset();
             this.services?.LoggerFactory.Dispose();
             base.OnExit(e);
         }
@@ -99,7 +100,7 @@ namespace Siniskalc
         /// </summary>
         private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            this.logger?.LogCritical(e.Exception, "An unexpected exception reached the dispatcher");
+            Logger.LogCritical(e.Exception, "An unexpected exception reached the dispatcher");
             e.Handled = true;
 
             // The dialog is shown from inside the handler: an exception it raises itself (or raised again while it is open) must not
@@ -124,7 +125,7 @@ namespace Siniskalc
             }
             catch (Exception)
             {
-                this.logger?.LogError("The unexpected error window itself failed; the plain message box is the last resort");
+                Logger.LogError("The unexpected error window itself failed; the plain message box is the last resort");
                 MessageBox.Show(message, "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally

@@ -10,8 +10,10 @@
     /// <summary>
     /// Writes a <see cref="PlayerModel"/> back into a <see cref="PlayerChunk"/>, preserving unknown bits.
     /// </summary>
-    public sealed class SafePlayerSerializer(ILogger<SafePlayerSerializer> logger) : ISerializer<PlayerChunk, PlayerModel>
+    public sealed class SafePlayerSerializer : ISerializer<PlayerChunk, PlayerModel>
     {
+        private static readonly ILogger<SafePlayerSerializer> Logger = LogFactory.For<SafePlayerSerializer>();
+
         /// <summary>
         /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes and days left before banishing written into it. Everything else is left as it was.
         /// </summary>
@@ -19,8 +21,8 @@
         {
             // The number of towns (PlayerLayout.TownCount) and the list of their indices follow the owners of the castles in the saves, but
             // the order of the list is not established, so they are left as they were, also after a castle changed owner.
-            using var subject = logger.BeginSubject("Player", chunk.Name);
-            logger.LogDebug("Town count and town list not written, they may be stale after a castle owner edit");
+            using var subject = Logger.BeginSubject("Player", chunk.Name);
+            Logger.LogDebug("Town count and town list not written, they may be stale after a castle owner edit");
             return SerializeDaysLeft(SerializeTavern(SerializeResources(chunk, player.Resources), player.Tavern), player.DaysLeft);
         }
 

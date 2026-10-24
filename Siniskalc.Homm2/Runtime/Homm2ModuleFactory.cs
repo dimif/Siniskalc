@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm2.Runtime
 {
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
@@ -21,43 +20,40 @@
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        /// <param name="loggerFactory">Makes the loggers of the components that log.</param>
-        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, ILoggerFactory loggerFactory)
+        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText)
         {
             this.banishingText = banishingText;
 
-            var locator = new SaveLayoutLocator(loggerFactory.CreateLogger<SaveLayoutLocator>());
+            var locator = new SaveLayoutLocator();
             var pendingChanges = new Homm2PendingChangesFactory();
             this.GameService = new GameService(
                 new SavegameParser(
                     locator,
                     new BytesLoader(),
-                    new HeaderReader(loggerFactory.CreateLogger<HeaderReader>()),
+                    new HeaderReader(),
                     new SaveDocumentFactory(
-                        new HeroDeserializer(loggerFactory.CreateLogger<HeroDeserializer>()),
+                        new HeroDeserializer(),
                         new SafeHeroSerializer(),
                         new HeroDiffer(pendingChanges),
                         new PlayerDeserializer(),
                         new SafePlayerSerializer(),
                         new PlayerDiffer(pendingChanges),
-                        new CastleDeserializer(loggerFactory.CreateLogger<CastleDeserializer>()),
+                        new CastleDeserializer(),
                         new SafeCastleSerializer(),
                         new CastleDiffer(pendingChanges),
                         new ObeliskDeserializer(),
                         new SafeObeliskSerializer(),
                         new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
-                        new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(loggerFactory.CreateLogger<MineDeserializer>()), new SafeMineSerializer(), new MineDiffer()),
+                        new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
                         new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
                         new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
                         new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                         new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                         bytesPatcher),
-                    new MapPlacesReader(loggerFactory.CreateLogger<MapPlacesReader>()),
-                    new MapObjectsReader(),
-                    loggerFactory.CreateLogger<SavegameParser>()),
-                new RawSavefileCodec(loggerFactory.CreateLogger<RawSavefileCodec>()),
-                backup,
-                loggerFactory.CreateLogger<GameService>());
+                    new MapPlacesReader(),
+                    new MapObjectsReader()),
+                new RawSavefileCodec(),
+                backup);
             this.SaveRegionProvider = new SaveRegionProvider(locator);
             this.ByteEditTargets = new ByteEditTargetFactory();
             this.MaxSpellPointsCalculator = new MaxSpellPointsCalculator();

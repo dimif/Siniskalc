@@ -17,7 +17,11 @@ namespace Siniskalc.Tests
         }
 
         [TearDown]
-        public void DeleteFolder() => Directory.Delete(this.folder, recursive: true);
+        public void DeleteFolder()
+        {
+            LogFactory.Reset();
+            Directory.Delete(this.folder, recursive: true);
+        }
 
         [Test]
         public void TheApplicationWritesAPlainTextLogToTheFolderTheUserChose()
@@ -52,7 +56,7 @@ namespace Siniskalc.Tests
             var settingsPath = this.WriteSettings(new { LogFolder = logs, LogLevel = "Trace" });
 
             var services = new AppServices(settingsPath: settingsPath);
-            var logger = services.LoggerFactory.CreateLogger("Test.Category");
+            var logger = LogFactory.For(typeof(LoggingTests));
             using (logger.BeginSubject("Hero", "Sandro"))
             {
                 logger.LogTrace("Class byte {Code:X2} read as Knight", 0xFE);
@@ -62,8 +66,8 @@ namespace Siniskalc.Tests
             services.LoggerFactory.Dispose();
 
             var lines = File.ReadAllLines(Directory.GetFiles(logs).Single());
-            Assert.That(lines, Has.One.Matches<string>(l => l.Contains("[VRB] Test.Category (Hero Sandro): Class byte FE read as Knight")));
-            Assert.That(lines, Has.One.Matches<string>(l => l.EndsWith("[VRB] Test.Category: Outside any subject")));
+            Assert.That(lines, Has.One.Matches<string>(l => l.Contains("[VRB] Siniskalc.Tests.LoggingTests (Hero Sandro): Class byte FE read as Knight")));
+            Assert.That(lines, Has.One.Matches<string>(l => l.EndsWith("[VRB] Siniskalc.Tests.LoggingTests: Outside any subject")));
         }
 
         [Test]

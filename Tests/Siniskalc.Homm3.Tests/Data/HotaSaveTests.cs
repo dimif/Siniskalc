@@ -1,11 +1,9 @@
-using System.Text;
-using Siniskalc;
+﻿using System.Text;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
-using Siniskalc.Homm3.Runtime;
 
 namespace Siniskalc.Homm3.Tests.Data
 {
@@ -28,11 +26,11 @@ namespace Siniskalc.Homm3.Tests.Data
         public void LoadSave()
         {
             this.bytes = TestServices.SavefileCodec.Read(SavePath);
-            this.loader = new HeroBytesLoader(Encoding.Latin1, NullLogger<HeroBytesLoader>.Instance);
+            this.loader = new HeroBytesLoader(Encoding.Latin1);
             this.chunks = this.loader.LoadHeroChunks(this.bytes, new SavegameVersionDetector().Detect(this.bytes));
             this.offsets = new HeroOffsets(new SavegameVersionDetector().Detect(this.bytes));
             var entities = TestServices.VersionEntities.For(this.offsets.GameVersion);
-            this.deserializer = new HeroDeserializer(this.offsets, entities, NullLogger<HeroDeserializer>.Instance);
+            this.deserializer = new HeroDeserializer(this.offsets, entities);
         }
 
         [Test]

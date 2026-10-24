@@ -9,7 +9,6 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
-using Siniskalc.Homm3.Views;
 using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Wpf.Views;
 
@@ -31,10 +30,9 @@ namespace Siniskalc.Homm3.Tests
 
         private static readonly Homm3ModuleFactory Services = new(
             Encoding.Latin1,
-            new FileBackupServiceProvider(Settings, new NumberedSavefileBackupService(NullLogger<NumberedSavefileBackupService>.Instance), new DisabledFileBackupService()),
+            new FileBackupServiceProvider(Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
             Patcher,
-            Banishing,
-            NullLoggerFactory.Instance);
+            Banishing);
 
         private static readonly AboutInfo About = new(ApplicationName, "test", "A savegame editor.", "https://example.invalid", "https://example.invalid", "MIT", []);
 
@@ -91,8 +89,8 @@ namespace Siniskalc.Homm3.Tests
         {
             var recentFiles = CreateRecentFiles();
             var shownMessages = messages ?? CancellingMessages();
-            var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages, NullLogger<SavegameFileCommands>.Instance);
-            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }, NullLogger<ShellUrlLauncher>.Instance), About, Help, shownMessages, files) { DataContext = shell };
+            var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages);
+            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), About, Help, shownMessages, files) { DataContext = shell };
         }
 
         private static IMessageService CancellingMessages()
@@ -105,12 +103,12 @@ namespace Siniskalc.Homm3.Tests
         /// <summary>
         /// Returns a shell with the HoMM3 module only; the shell with both games is tested in the tests of the application.
         /// </summary>
-        public static ShellViewModel CreateShell() => new([Services.Module], Settings, ApplicationName, NullLogger<ShellViewModel>.Instance);
+        public static ShellViewModel CreateShell() => new([Services.Module], Settings, ApplicationName);
 
         /// <summary>
         /// Returns a shell whose HoMM3 editor is <paramref name="editor"/>, so a test can load a game into the editor and look at the window.
         /// </summary>
-        public static ShellViewModel CreateShell(Homm3EditorViewModel editor) => new([new Homm3Module(() => editor)], Settings, ApplicationName, NullLogger<ShellViewModel>.Instance);
+        public static ShellViewModel CreateShell(Homm3EditorViewModel editor) => new([new Homm3Module(() => editor)], Settings, ApplicationName);
 
         /// <summary>
         /// Writes <paramref name="castle"/> to <paramref name="chunk"/>.

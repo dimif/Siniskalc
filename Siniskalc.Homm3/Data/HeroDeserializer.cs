@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.Logging;
-    using Siniskalc;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
@@ -15,15 +14,15 @@
 
     public sealed class HeroDeserializer : IHeroDeserializer
     {
+        private static readonly ILogger<HeroDeserializer> Logger = LogFactory.For<HeroDeserializer>();
+
         private readonly HeroOffsets heroOffsets;
         private readonly VersionSpecificEntitiesProvider entities;
-        private readonly ILogger<HeroDeserializer> logger;
 
-        public HeroDeserializer(HeroOffsets heroOffsets, VersionSpecificEntitiesProvider entities, ILogger<HeroDeserializer> logger)
+        public HeroDeserializer(HeroOffsets heroOffsets, VersionSpecificEntitiesProvider entities)
         {
             this.heroOffsets = heroOffsets;
             this.entities = entities;
-            this.logger = logger;
         }
 
         public HeroModel Deserialize(HeroChunk chunk)
@@ -108,7 +107,7 @@
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
-        public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance, this.logger);
+        public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance);
 
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {
@@ -119,7 +118,7 @@
 
         public SecondarySkills DeserializeSecondarySkills(HeroChunk chunk)
         {
-            using var subject = this.logger.BeginSubject("Hero", chunk.Name);
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var skills = this.entities.SecondarySkills;
             var allSkillsToLevels = new Dictionary<SecondarySkill, SkillLevel>();
 
@@ -131,7 +130,7 @@
 
                 if (skillLevelByte > SkillLevel.Expert.Code)
                 {
-                    this.logger.LogTrace("Skill level byte {Code:X2} for {Skill} read as no level and kept", skillLevelByte, skill.Name);
+                    Logger.LogTrace("Skill level byte {Code:X2} for {Skill} read as no level and kept", skillLevelByte, skill.Name);
                 }
 
                 allSkillsToLevels.Add(skill, SkillLevel.Of(skillLevelByte));
@@ -151,7 +150,7 @@
                 }
                 else if (slot != 0)
                 {
-                    this.logger.LogTrace("Secondary skill slot value {Slot} is out of range for {Count} skills, skill {Skill} ignored", slot, slotCount, skill.Name);
+                    Logger.LogTrace("Secondary skill slot value {Slot} is out of range for {Count} skills, skill {Skill} ignored", slot, slotCount, skill.Name);
                 }
             }
 
@@ -170,11 +169,11 @@
 
         public HeroClass DeserializeClass(HeroChunk chunk)
         {
-            using var subject = this.logger.BeginSubject("Hero", chunk.Name);
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var code = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Class]);
             if (HeroClass.FromCode<HeroClass>(code) is null)
             {
-                this.logger.LogTrace("Class byte {Code:X2} read as Knight and kept until the class is changed", code);
+                Logger.LogTrace("Class byte {Code:X2} read as Knight and kept until the class is changed", code);
             }
 
             return HeroClass.FromByte(code);
@@ -189,7 +188,7 @@
 
         public HeroPosition DeserializePosition(HeroChunk chunk)
         {
-            using var subject = this.logger.BeginSubject("Hero", chunk.Name);
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var outside = chunk.OutsidePositionBytes;
             var x = outside != null ? BitConverter.ToInt16(outside, 0) : chunk.GetInt16At(this.heroOffsets[HeroOffsetName.PositionX]);
             var y = outside != null ? BitConverter.ToInt16(outside, 2) : chunk.GetInt16At(this.heroOffsets[HeroOffsetName.PositionY]);
@@ -200,7 +199,7 @@
             if (!ByteEnum.TryRead<FacingDirection>(facingByte, out var direction))
             {
                 direction = FacingDirection.North;
-                this.logger.LogTrace("Facing byte {Code:X2} read as North and kept", facingByte);
+                Logger.LogTrace("Facing byte {Code:X2} read as North and kept", facingByte);
             }
 
             var facing = direction;
@@ -231,7 +230,7 @@
 
         public Backpack DeserializeBackpack(HeroChunk chunk)
         {
-            using var subject = this.logger.BeginSubject("Hero", chunk.Name);
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var artifacts = new BackpackSlot[Constants.BackpackSlotCount];
 
             // Each slot is 8 bytes: a 4-byte artifact id followed by 4 bytes (the spell id for Spell Scrolls).
@@ -253,7 +252,7 @@
                 }
                 else
                 {
-                    this.logger.LogTrace("Artifact id {Code:X} in backpack slot {Slot} is unknown, the slot reads as empty and its bytes are kept", id, i);
+                    Logger.LogTrace("Artifact id {Code:X} in backpack slot {Slot} is unknown, the slot reads as empty and its bytes are kept", id, i);
                 }
             }
 
@@ -262,7 +261,7 @@
 
         public EquippedArtifacts DeserializeEquippedArtifacts(HeroChunk chunk)
         {
-            using var subject = this.logger.BeginSubject("Hero", chunk.Name);
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var slotsToArtifacts = new Dictionary<ArtifactSlots, Artifact>();
             var scrollSpells = new Dictionary<ArtifactSlots, Spell>();
 
@@ -287,7 +286,7 @@
                 }
                 else
                 {
-                    this.logger.LogTrace("Artifact id {Code:X} in slot {Slot} is unknown, the slot reads as empty and its bytes are kept", code, slot);
+                    Logger.LogTrace("Artifact id {Code:X} in slot {Slot} is unknown, the slot reads as empty and its bytes are kept", code, slot);
                 }
             }
 

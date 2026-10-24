@@ -16,7 +16,7 @@
     /// A file that is not GZip, or ends early, is a <see cref="CorruptSavefileException"/>; a file that cannot be opened is an
     /// <see cref="IOException"/> as usual.
     /// </remarks>
-    public sealed class GzipSavefileCodec(ILogger<GzipSavefileCodec> logger) : ISavefileCodec
+    public sealed class GzipSavefileCodec : ISavefileCodec
     {
         /// <summary>
         /// The number of bytes at the start of a file that tell whether it is a GZip file.
@@ -25,6 +25,8 @@
 
         private const byte FirstMagicByte = 0x1F;
         private const byte SecondMagicByte = 0x8B;
+
+        private static readonly ILogger<GzipSavefileCodec> Logger = LogFactory.For<GzipSavefileCodec>();
 
         /// <summary>
         /// Tells whether the first bytes of a file are those of a GZip file.
@@ -45,7 +47,7 @@
             }
             catch (Exception ex) when (ex is SharpZipBaseException or InvalidDataException or EndOfStreamException)
             {
-                logger.LogWarning(ex, "Could not decompress {File}", Path.GetFileName(filePath));
+                Logger.LogWarning(ex, "Could not decompress {File}", Path.GetFileName(filePath));
                 throw new CorruptSavefileException($"{Path.GetFileName(filePath)} is not a compressed savegame, or it is damaged: {ex.Message}", ex);
             }
         }
@@ -74,7 +76,7 @@
                 }
                 catch (IOException)
                 {
-                    logger.LogWarning("Could not remove the temporary file {File} after a failed save", Path.GetFileName(temporary));
+                    Logger.LogWarning("Could not remove the temporary file {File} after a failed save", Path.GetFileName(temporary));
 
                     // The write failed already; the leftover is only a stray file.
                 }

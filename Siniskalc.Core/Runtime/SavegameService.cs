@@ -12,14 +12,14 @@
     public abstract class SavegameService<TGame> : ISavegameService<TGame>
         where TGame : ISavegame
     {
+        private static readonly ILogger Logger = LogFactory.For(typeof(SavegameService<>));
+
         private readonly ISavegameParser<TGame> parser;
         private readonly ISavefileCodec codec;
         private readonly IFileBackupServiceProvider backups;
-        private readonly ILogger logger;
 
-        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups, ILogger logger)
+        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
         {
-            this.logger = logger;
             this.parser = parser;
             this.codec = codec;
             this.backups = backups;
@@ -69,7 +69,7 @@
 
             this.codec.Write(filePath, bytes);
 
-            this.logger.LogInformation("Saved {File} ({Length} bytes, backup {Backup})", Path.GetFileName(filePath), bytes.Length, backup is null ? "none" : Path.GetFileName(backup));
+            Logger.LogInformation("Saved {File} ({Length} bytes, backup {Backup})", Path.GetFileName(filePath), bytes.Length, backup is null ? "none" : Path.GetFileName(backup));
 
             // Reloading reads what was just saved, not the file the game was opened from.
             game.SavedTo(filePath);

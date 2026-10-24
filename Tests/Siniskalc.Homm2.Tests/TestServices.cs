@@ -14,13 +14,13 @@ namespace Siniskalc.Homm2.Tests
     /// </summary>
     internal static class TestServices
     {
-        public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator(NullLogger<SaveLayoutLocator>.Instance);
+        public static ISaveLayoutLocator Locator { get; } = new SaveLayoutLocator();
 
         public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
 
         public static BanishingTextProvider BanishingText { get; } = new();
 
-        public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer(NullLogger<HeroDeserializer>.Instance);
+        public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
 
         public static ISerializer<HeroChunk, HeroModel> HeroSerializer { get; } = new SafeHeroSerializer();
 
@@ -28,11 +28,11 @@ namespace Siniskalc.Homm2.Tests
 
         public static ISerializer<PlayerChunk, PlayerModel> PlayerSerializer { get; } = new SafePlayerSerializer();
 
-        public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer(NullLogger<CastleDeserializer>.Instance);
+        public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer();
 
         public static ISerializer<CastleChunk, CastleModel> CastleSerializer { get; } = new SafeCastleSerializer();
 
-        public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(NullLogger<MineDeserializer>.Instance), new SafeMineSerializer());
+        public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
 
         public static MapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(), new SafeShrineSerializer());
 
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Tests
         public static ISavegameParser Parser { get; } = new SavegameParser(
             Locator,
             new BytesLoader(),
-            new HeaderReader(NullLogger<HeaderReader>.Instance),
+            new HeaderReader(),
             new SaveDocumentFactory(
                 HeroDeserializer,
                 HeroSerializer,
@@ -57,15 +57,14 @@ namespace Siniskalc.Homm2.Tests
                 new ObeliskDeserializer(),
                 new SafeObeliskSerializer(),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, PendingChanges.ForObelisks),
-                new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(NullLogger<MineDeserializer>.Instance), new SafeMineSerializer(), new MineDiffer()),
+                new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
                 new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
                 new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
                 new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                 new SavefileBytesPatcher()),
-            new MapPlacesReader(NullLogger<MapPlacesReader>.Instance),
-            new MapObjectsReader(),
-            NullLogger<SavegameParser>.Instance);
+            new MapPlacesReader(),
+            new MapObjectsReader());
 
         /// <summary>
         /// Loads the savegame at <paramref name="path"/>.

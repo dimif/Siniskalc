@@ -24,6 +24,8 @@
     /// </summary>
     public sealed class AppServices
     {
+        private static readonly ILogger<AppServices> Logger = LogFactory.For<AppServices>();
+
         private readonly Homm3ModuleFactory homm3;
         private readonly H2Runtime.Homm2ModuleFactory homm2;
 
@@ -39,21 +41,22 @@
                 ? new SettingsStore(UserSettings.PathFor("Siniskalc"), UserSettings.PathFor("Heroes3Editor"))
                 : new SettingsStore(settingsPath);
             this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name);
+            LogFactory.Install(this.LoggerFactory);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
-            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(this.LoggerFactory.CreateLogger<NumberedSavefileBackupService>()), new DisabledFileBackupService());
+            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
             this.BanishingText = new BanishingTextProvider();
-            this.UrlLauncher = new ShellUrlLauncher(StartWithShell, this.LoggerFactory.CreateLogger<ShellUrlLauncher>());
+            this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
             this.Messages = new WpfMessageService();
             this.FileDialogs = new WpfFileDialogs();
-            this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages, this.LoggerFactory.CreateLogger<SavegameFileCommands>());
+            this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
             this.About = CreateAboutInfo();
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
 
-            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, this.LoggerFactory);
-            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText, this.LoggerFactory);
+            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
+            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
 
-            this.LoggerFactory.CreateLogger<AppServices>().LogInformation(
+            Logger.LogInformation(
                 "Started {App} {Version} on {Os} with {Runtime}",
                 this.About.Name,
                 this.About.Version,
@@ -149,7 +152,7 @@
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.
         /// </summary>
-        public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name, this.LoggerFactory.CreateLogger<ShellViewModel>());
+        public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);
 
         private static AboutInfo CreateAboutInfo()
         {

@@ -6,7 +6,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [TestFixture]
     internal sealed class SaveLayoutLocatorTests
     {
-        private readonly SaveLayoutLocator locator = new(NullLogger<SaveLayoutLocator>.Instance);
+        private readonly SaveLayoutLocator locator = new();
 
         [Test]
         public void EverySavegameOfBrokenAllianceIsOfTheBaseGameWithItsTablesWhereTheyAreExpected()

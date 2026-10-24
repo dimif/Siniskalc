@@ -27,7 +27,6 @@
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
         private HeroModel hero = null!;
-        private bool visionsActive;
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
@@ -88,14 +87,15 @@
                 () => this.session.Current,
                 edit => this.session.Update(edit));
 
-            // The active spells are kept in the view model only, as the savegames do not say where the game keeps them.
+            // Where the game keeps the active spells is not known, so the box is shown but cannot be changed: it is never read nor saved.
             this.ActiveSpells = new ActiveSpellsCardViewModel(
             [
                 new ToggleRowViewModel(
                     "Visions",
-                    () => this.visionsActive,
-                    active => this.visionsActive = active,
-                    toolTip: "The editor does not know yet where the game keeps this: the box is not read from the savegame and not saved."),
+                    () => false,
+                    _ => { },
+                    canToggle: () => false,
+                    toolTip: "Not editable: the editor does not know yet where the game keeps this spell, so it is not read from the savegame and not saved."),
             ]);
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",

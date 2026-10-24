@@ -10,7 +10,7 @@
     internal sealed class HeroActiveSpellsTests
     {
         [Test]
-        public void VisionsIsTheOnlySpellOfTheCardAndItsBoxIsKeptButNotSaved()
+        public void VisionsIsTheOnlySpellOfTheCardAndItsBoxIsShownDisabledAsItIsNotSaved()
         {
             var game = TestServices.LoadBrokenAlliance(24);
             var hero = game.History.Current.Heroes().GetModels().First(h => h.Owner != null);
@@ -18,11 +18,12 @@
 
             var visions = page.ActiveSpells.Spells.Single();
             Assert.That(visions.Name, Is.EqualTo("Visions"));
-            Assert.That(visions.IsChecked, Is.False);
+            Assert.That((visions.IsChecked, visions.CanToggle), Is.EqualTo((false, false)));
+            Assert.That(visions.ToolTip, Does.StartWith("Not editable"));
 
             visions.IsChecked = true;
 
-            Assert.That(visions.IsChecked, Is.True);
+            Assert.That(visions.IsChecked, Is.False, "the box keeps nothing that would not be saved");
             Assert.That(game.History.Current, Is.SameAs(game.History.Original), "the savegame is not touched");
         }
     }

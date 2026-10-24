@@ -31,5 +31,17 @@ namespace Siniskalc.Wpf.Views
 
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
+
+        /// <inheritdoc/>
+        public string? PickFolder(string? initialFolder, string title)
+        {
+            var dialog = new OpenFolderDialog { Title = title };
+            if (initialFolder != null && System.IO.Directory.Exists(initialFolder))
+            {
+                dialog.InitialDirectory = initialFolder;
+            }
+
+            return dialog.ShowDialog() == true ? dialog.FolderName : null;
+        }
     }
 }

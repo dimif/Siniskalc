@@ -150,6 +150,11 @@
         public Homm2EditorViewModel CreateHomm2Editor() => this.homm2.CreateEditor();
 
         /// <summary>
+        /// Makes the page of the settings where the user chooses the log level and the folder of the logs.
+        /// </summary>
+        public LoggingSettingsViewModel CreateLoggingSettings() => new(this.Settings, LogPaths.DefaultFolderFor(AppInfo.Name), this.FileDialogs);
+
+        /// <summary>
         /// Makes the shell of the application, with every game it can edit.
         /// </summary>
         public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);

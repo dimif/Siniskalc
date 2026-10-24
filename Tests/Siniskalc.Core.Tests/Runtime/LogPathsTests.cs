@@ -32,6 +32,39 @@ namespace Siniskalc.Core.Tests.Runtime
         }
 
         [Test]
+        public void AFolderIsUsableWhenAFileCanBeWrittenToItAndIsCreatedIfMissing()
+        {
+            var folder = Path.Combine(Path.GetTempPath(), "siniskalc-logpaths-" + Guid.NewGuid().ToString("N"), "logs");
+            try
+            {
+                Assert.That(LogPaths.TryUse(folder, out var problem), Is.True);
+                Assert.That(problem, Is.Null);
+                Assert.That(Directory.Exists(folder), Is.True);
+                Assert.That(Directory.GetFiles(folder), Is.Empty);
+            }
+            finally
+            {
+                Directory.Delete(Path.GetDirectoryName(folder)!, recursive: true);
+            }
+        }
+
+        [Test]
+        public void AFileWhereTheFolderShouldBeIsNotUsableAndSaysWhy()
+        {
+            var file = Path.Combine(Path.GetTempPath(), "siniskalc-logpaths-" + Guid.NewGuid().ToString("N"));
+            File.WriteAllText(file, string.Empty);
+            try
+            {
+                Assert.That(LogPaths.TryUse(file, out var problem), Is.False);
+                Assert.That(problem, Is.Not.Null);
+            }
+            finally
+            {
+                File.Delete(file);
+            }
+        }
+
+        [Test]
         public void ASavegameIsNamedByItsFileNameNeverByItsPath()
         {
             var file = Path.Combine(Path.GetTempPath(), "user", "slot1.GM1");

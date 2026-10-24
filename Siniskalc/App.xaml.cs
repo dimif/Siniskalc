@@ -32,7 +32,7 @@ namespace Siniskalc
 
             this.services = services;
             this.messages = services.Messages;
-            this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands);
+            this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands, services.CreateLoggingSettings);
             this.MainWindow.Show();
 
             this.MainWindow.DataContext = services.CreateShellViewModel();

@@ -62,6 +62,9 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.OpenIssues}"
                 Executed="OpenIssuesCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.EditLogging}"
+                Executed="EditLoggingCmdExecuted"
+                CanExecute="AlwaysCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.ShowLogs}"
                 Executed="ShowLogsCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
@@ -151,6 +154,9 @@
                           ToolTip="Keep a copy of the savegame (save.GM1.bak, save.GM1.bak1, ...) before it is saved over"/>
                 <MenuItem Header="_Advanced mode" IsCheckable="True" IsChecked="{Binding IsAdvancedMode, Mode=TwoWay}"
                           ToolTip="Show the Advanced menu and the hex tabs"/>
+                <Separator />
+                <MenuItem x:Name="loggingMenuItem" Header="_Logging..." Command="{x:Static cmd:EditorCommands.EditLogging}"
+                          ToolTip="Choose the log level and the folder of the log files"/>
             </MenuItem>
             <MenuItem Header="_Advanced" Visibility="{Binding IsAdvancedMode, Converter={StaticResource BoolToVisibility}}">
                 <MenuItem Header="Export save bytes" Command="{x:Static cmd:EditorCommands.DumpToFile}">

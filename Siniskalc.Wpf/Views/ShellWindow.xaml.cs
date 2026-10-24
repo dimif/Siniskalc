@@ -18,9 +18,11 @@ namespace Siniskalc.Wpf.Views
         private readonly HelpLinks help;
         private readonly IMessageService messages;
         private readonly SavegameFileCommands files;
+        private readonly Func<LoggingSettingsViewModel>? loggingSettings;
 
-        public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files)
+        public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files, Func<LoggingSettingsViewModel>? loggingSettings = null)
         {
+            this.loggingSettings = loggingSettings;
             this.messages = messages;
             this.files = files;
             this.urlLauncher = urlLauncher;
@@ -28,6 +30,7 @@ namespace Siniskalc.Wpf.Views
             this.help = help;
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
+            this.loggingMenuItem.Visibility = loggingSettings is null ? Visibility.Collapsed : Visibility.Visible;
             this.showLogsMenuItem.Visibility = help.LogFolder is null ? Visibility.Collapsed : Visibility.Visible;
             recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -136,6 +139,14 @@ namespace Siniskalc.Wpf.Views
         private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.UserGuideUrl);
 
         private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.IssuesUrl);
+
+        private void EditLoggingCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.loggingSettings is not null && new LoggingSettingsWindow(this.loggingSettings()) { Owner = this }.ShowDialog() == true)
+            {
+                this.ShowStatus("Logging settings saved. They apply the next time the editor starts.");
+            }
+        }
 
         private void ShowLogsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {

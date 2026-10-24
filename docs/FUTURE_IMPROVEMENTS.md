@@ -3,6 +3,25 @@
 What is planned or open.
 What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`; what the savefiles showed is in `docs/KNOWLEDGE_BASE.md`.
 
+## State of the HoMM2 / HoMM3 comparison (2026-10-24)
+
+The two editors now have the same pages and blocks (overview, players, heroes, castles, map, neutral); `docs/SHARING_REVIEW.md` and `docs/SHARING_REVIEW_UI.md` say what is shared and how.
+A feature audit of both games found these gaps; the cheap ones are closed (see `CHANGELOG.md`). What is left, and why:
+
+- **Needs a probe save or a test in the game before anything is written:**
+  - HoMM2 building rules (a turret or moat on a town without a castle, a shipyard inland, one building a day) and the guild's spell restrictions (any spell can be put in any slot today).
+  - HoMM2 map objects with state (daemon cave, windmills, water mills; known in `docs/HOMM2_SAVE_FORMAT.md`), map dwellings (the docs say none; the bytes are undecoded) and the guardians of mines.
+  - HoMM2 active adventure spells (Visions): the save location is unknown, so the box is shown disabled.
+  - HoMM3 morale, luck and the visited-building bits (built 2026-10-24, **not tried in the game**); the faerie ring, fountain and idol of fortune are shown but not editable because the saves do not say what they give.
+  - Giving a hero from a tavern to a player (the game refills the slot by a random draw), and how a garrisoned hero's owner is stored; both are refused with a message (`docs/KNOWLEDGE_BASE.md`, "The table of hero owners").
+  - Banishing or reviving a player; editing the date (which in HoMM2 must clear "built today").
+- **HoMM3 town count and list:** after a castle changes owner the player's town count (byte 23) and the list of towns from byte 25 are not written, although the count follows ownership in every save seen; the order of the list is not established.
+- **A defeated hero and the tavern:** a defeated hero goes back to the free pool and another player can hire it (found in `TestData/Hota/HeroOwners`); nothing seen keeps it out of the same player's tavern, and 12 draws per week are too few to tell. Hero 3 holds `0x41` in the table of hero owners in every save, unexplained. Probe: several week changes with defeated heroes away from their players.
+- **HoMM2 tree:** a player's countdown is in the node subtitle and is not refreshed after an edit (HoMM3 shows it as a note and refreshes it); the Map node exists only when the map has a shrine or a sphinx, so the Bytes tab of the map records cannot be reached on a map with neither.
+- **Weekly growth in HoMM3** shows the base growth only; the castle, horde-building and Grail bonuses are not documented.
+- **Housekeeping:** the `Game.cs` half of moving `SaveMetadata<TColor>` / `HeroesSavegameBase<TColor>` into use is a prepared patch (it touches files that were being edited); commit `ba3468b` has a `Co-Authored-By` trailer and a few commits (`d3ae097`, `15994da`, `54e4acf`, `2811099`, `9520538` to `0552fb1` for two test lines) do not build or pass on their own; `GzipSavefileCodecTests.WritingASmallerSavefileLeavesNothingOfTheLargerOne` failed twice in full runs and passed alone.
+- **Open design decision:** whether the lists of heroes and castles in a player's record stay in the HoMM2 model, or a document-level step keeps them in step (options A, B, C in `docs/SHARING_REVIEW.md`, M9a); test in the game first.
+
 ## Project structure
 
 - **Game modules** (done): the HoMM3 code is in `Siniskalc.Homm3` and the exe is a thin host with a shell (`IGameModule`, `IGameEditor`, `ShellViewModel`, `ShellWindow`); see `docs/HOMM2_PLAN.md`.
@@ -28,14 +47,14 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today.
 2. **Castle creatures growth**.
-   - **HoMM3**: we think we have found the growth table, but it isn't read.
+   - **HoMM3**: the base growth of the dwelling's creature is shown (2026-10-24); the growth table is still not read, so the bonuses are missing.
    - **HoMM2** (done 2026-10-22, `CastleModel.WeeklyGrowth`, shown as "+N a week" on each dwelling): the growth of the creature, +2 from the Well in every built dwelling, +8 from the second well of the faction in the first dwelling only, nothing in an unbuilt dwelling (`docs/HOMM2_SAVE_FORMAT.md`, "The Well and the second well").
      Left: the **Warlock** (Waterfall) was in none of the saves, so only five factions are confirmed; whether a **dwelling built or upgraded today gets its first creatures at once or at the next week** (the editor leaves the count alone; Threedom saves 15 and 16 suggest next week, not proven); and **none of it is tried in the game**.
    - **HoMM2: "Can build this turn"** (done 2026-10-22, `BuiltTodayModel`; a bit for each of the 72 castle slots, 0x48 bytes after the castle table; saves of `TestData/Homm2/BuiltThisTurn`).
      Left: the page writes the bit but **it is not tried in the game**; **changing the date must clear the whole set**, as the game does on a new day (belongs to item 3); and the low bits `0x3` of Xabran's dwelling mask (`+0x1A`) in `built_this_turn_13_corackston_well__xabran_well` are **unexplained** (nothing else in the saves sets them; ask what was done in that step).
 3. **Editing of the date, and whose turn it is**
    - HoMM2: the turn is editable (card "Order of play"; the turn byte is DateStart-14), **not tried in the game**. Editing the human/CPU seats is deliberately not built.
-   - **HoMM3: the Order of play buttons do nothing yet.** Probe saves needed: change the current player in the setup block and load it in the game.
+   - **HoMM3: the Order of play buttons are shown disabled (2026-10-24) because the editor does not write whose turn it is yet.** Probe saves needed: change the current player in the setup block and load it in the game.
 4. **Resource generators (mines etc.)** (mines, dwellings and the stock of the merchants are on the Map page of HoMM3; see below for what is open): as we're starting to understand tile structure, we could extract all the buildings from the save and make the owner editeable.
    - **HoMM3, found in the saves of `Island of HOTA tests 6p` (2026-10-22):** a table of 62-byte records, one for each mine object of the map, in the order of the map-object list; a record is x, y, z, owner (FF none, 0 Red, 1 Blue), kind (0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold), one byte, then **the guard: seven creature slots (u32 each, FF FF FF FF for none) and seven counts (u32 each)**. An abandoned mine has its record in the same table (its owner FF and its guard filled until it is taken, then its owner, the resource it turned into and an empty guard).
    - **The garrison of a mine is to be modelled too** (the seven slots, as the army of a hero or a castle is, with the shared army editor), together with the owner. The record's own x, y are about 5 tiles left of the object's position and are not where the mine is entered: where a hero stands on the entrance is the object's position minus (1, 3) in the seven mines checked, so the location comes from the map-object list (record k belongs to the k-th mine object).
@@ -44,7 +63,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
    Reading it would let the obelisk card mark a whole team at once.
 6. **Dug tiles and the visited-object table**: readable, but the meaning of the number and of the table is unclear.
    The Grail flag beside the date (`7F xx 02 yy`) is the same.
-7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known.
+7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known (see the state section above: defeated heroes are free again and the table of hero owners and the player's list are now kept in step).
    The tavern has table about 250 bytes before the date that changes when a hero is defeated, so it's probably that one.
 9. **Places a HoMM3 hero visited** (built 2026-10-22: Places tab of the hero page on the shared `VisitedPlacesCard`; a 32 bit number per kind in the hero record, bit = number of the place among its kind, positions from the map cells; see `docs/KNOWLEDGE_BASE.md`). Open:
    - Per-place lists of the **colossi and gazebos** (they are objects of the type 144 whose cells carry no number; the subtype in the definition tells a gazebo, 6, from other objects, but no colossus was identified) and the **dragon utopia "visited for Red only"** mark. The trees of knowledge have theirs (2026-10-24).

@@ -82,6 +82,46 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void ATownNodeHasTheCastleBadgeExactlyWhenItsCastleIsBuilt()
+        {
+            var castles = this.editor.CurrentGame!.History.Current.Castles().GetModels();
+            var towns = Descendants(this.editor.NavigationNodes[0]).Where(n => n.Kind == NavNodeKind.Castle).ToList();
+
+            Assert.That(towns.Select(n => castles[n.Index].HasCastle).Distinct().Count(), Is.EqualTo(2), "the save has castles and towns");
+            foreach (var town in towns)
+            {
+                Assert.That(town.Badges.Any(b => b.Key == NavigationBuilder.CastleBadge), Is.EqualTo(castles[town.Index].HasCastle), town.Title);
+            }
+        }
+
+        [Test]
+        public void BuildingTheCastleOfATownGivesItsNodeTheCastleBadge()
+        {
+            var history = this.editor.CurrentGame!.History;
+            var town = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.Castle && !history.Current.Castles().GetModel(n.Index).HasCastle);
+
+            history.CreateCastleSession(town.Index).Update(c => c with { Town = (c.Town & ~TownBuildings.TownOnly) | TownBuildings.Castle });
+
+            Assert.That(town.Badges.Single(b => b.Key == NavigationBuilder.CastleBadge).Tooltip, Is.EqualTo("Castle"));
+        }
+
+        [Test]
+        public void ATownNodeWithAHeroInItHasTheVisitorBadgeAndNote()
+        {
+            var game = this.editor.CurrentGame!;
+            var heroes = game.History.Current.Heroes().GetModels();
+            var castles = game.History.Current.Castles().GetModels();
+            var town = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.Castle);
+            var visitor = castles[town.Index].VisitingHeroId;
+            var hero = visitor ?? 0;
+
+            game.History.CreateCastleSession(town.Index).Update(c => c with { VisitingHeroId = hero });
+
+            Assert.That(town.Badges.Single(b => b.Key == NavigationBuilder.VisitorBadge).Tooltip, Is.EqualTo($"Visiting: {heroes[hero].Name}"));
+            Assert.That(town.Notes, Is.EqualTo(new[] { heroes[hero].Name }));
+        }
+
+        [Test]
         public void PickingAMineOfAPlayerShowsTheMinesTabOfThePlayerWithThatMinePicked()
         {
             var player = this.editor.NavigationNodes[0].Children.FirstOrDefault(n => n.Kind == NavNodeKind.Player && Descendants(n).Any(m => m.Kind == NavNodeKind.Mine));

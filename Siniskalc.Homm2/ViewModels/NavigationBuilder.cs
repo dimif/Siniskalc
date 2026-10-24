@@ -19,6 +19,16 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class NavigationBuilder : OwnerNavigationBuilderBase<Game, PlayerColor>
     {
+        /// <summary>
+        /// The key of the badge of a town whose castle is built.
+        /// </summary>
+        public const string CastleBadge = "castle";
+
+        /// <summary>
+        /// The key of the badge of a castle a hero is in.
+        /// </summary>
+        public const string VisitorBadge = "visitor";
+
         private static readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> Kinds = new Dictionary<NavNodeKind, ChunkKind>
         {
             [NavNodeKind.Player] = Homm2ChunkKinds.Player,
@@ -36,14 +46,20 @@ namespace Siniskalc.Homm2.ViewModels
             this.banishingText = banishingText;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Shows the castle badge and the visitor of the castles as they are in <paramref name="game"/> now, after an edit or an undo.
+        /// </summary>
         public override void RefreshMarks(NavigationTree tree, Game game)
         {
             var document = game.History.Current;
             var castles = document.Castles().GetModels();
+            var heroes = document.Heroes().GetModels();
             foreach (var (index, node) in tree.CastleNodes)
             {
-                node.Notes = NotesOf(VisitorName(document.Heroes().GetModels(), castles[index]));
+                if (index < castles.Count)
+                {
+                    MarkCastle(node, heroes, castles[index]);
+                }
             }
         }
 
@@ -98,12 +114,32 @@ namespace Siniskalc.Homm2.ViewModels
                 player == null ? string.Empty : this.banishingText.Nav(player),
                 HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
-                (node, index) => node.Notes = NotesOf(VisitorName(allHeroes, castleModels[index])),
+                (node, index) => MarkCastle(node, allHeroes, castleModels[index]),
                 MineGroupsOf(document.Mines().GetModels(), owner, hasLevels: false),
                 neutralPage: owner.IsNeutral);
         }
 
-        private static IReadOnlyList<string> NotesOf(string visitor) => visitor.Length > 0 ? [visitor] : [];
+        private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
+
+        // A town whose castle is built has the castle badge (HoMM2 has no capital, no Grail building that is known and no garrisoned
+        // hero); the hero in the castle has a badge and a note.
+        private static void MarkCastle(NavNodeViewModel node, IReadOnlyList<HeroModel> heroes, CastleModel castle)
+        {
+            var badges = new List<NavBadge>();
+            if (castle.HasCastle)
+            {
+                badges.Add(new NavBadge(CastleBadge, "♜", "Castle", NavBadgeTone.Accent));
+            }
+
+            var visitor = VisitorName(heroes, castle);
+            if (visitor.Length > 0)
+            {
+                badges.Add(new NavBadge(VisitorBadge, "⚑", $"Visiting: {visitor}", NavBadgeTone.Muted));
+            }
+
+            node.Badges = badges;
+            node.Notes = NotesOf(visitor);
+        }
 
         private static string VisitorName(IReadOnlyList<HeroModel> heroes, CastleModel castle) =>
             castle.VisitingHeroId is { } id && id >= 0 && id < heroes.Count ? heroes[id].Name : string.Empty;

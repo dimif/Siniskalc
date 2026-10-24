@@ -84,7 +84,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                     // Edit through the view model and look at the pending changes drawer.
                     var hero = viewModel.SelectedHero();
                     hero.ArmyViewModel.CreatureSlots[0].SelectedCreature = "Angel";
-                    hero.GeneralInfoViewModel.Attack = 33;
+                    hero.GeneralInfoViewModel.PrimarySkills.Attack.Base = 33;
                     shell.IsPendingChangesOpen = true;
                     Pump();
 
@@ -277,7 +277,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
                 var viewModel = TestServices.CreateHomm3Editor();
                 viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
                 viewModel.ShowHero("Christian");
-                viewModel.SelectedHero().GeneralInfoViewModel.Attack = 33;
+                viewModel.SelectedHero().GeneralInfoViewModel.PrimarySkills.Attack.Base = 33;
 
                 var window = new SaveHexWindow(viewModel.CreateSaveHexDump);
                 window.Show();

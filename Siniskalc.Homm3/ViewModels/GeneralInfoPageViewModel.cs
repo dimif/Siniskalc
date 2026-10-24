@@ -43,6 +43,10 @@
             this.hasUnderground = hasUnderground;
             this.canSleep = canSleep ?? (() => false);
 
+            this.PrimarySkills = new PrimarySkillsCardViewModel(
+                () => this.Hero.PrimarySkills,
+                edit => this.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
+                new NumberRange(Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill));
             this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
                 () => this.Hero.MovementPoints.Current,
                 value => this.Update(h => h.WithMovementLeft(value)),
@@ -126,52 +130,10 @@
         /// </summary>
         public ICommand SelectAllWarMachinesCommand { get; }
 
-        public byte Attack
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseAttack);
-            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s.WithBaseAttack(ClampSkill(value)));
-        }
-
-        public byte Defense
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseDefense);
-            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s.WithBaseDefense(ClampSkill(value)));
-        }
-
-        public byte SpellPower
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseSpellPower);
-            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s.WithBaseSpellPower(ClampSkill(value)));
-        }
-
-        public byte Knowledge
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseKnowledge);
-            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s.WithBaseKnowledge(ClampSkill(value)));
-        }
-
         /// <summary>
-        /// Gets the attack skill with what the hero's artifacts add, which is what counts in the game and what the savefile holds.
-        /// <see cref="Attack"/> is what is left without the artifacts.
+        /// Gets the card of the primary skills: the base the hero learned, the total with its artifacts and what they add.
         /// </summary>
-        public int AttackTotal => this.Hero.PrimarySkills.Attack;
-
-        public int DefenseTotal => this.Hero.PrimarySkills.Defense;
-
-        public int SpellPowerTotal => this.Hero.PrimarySkills.SpellPower;
-
-        public int KnowledgeTotal => this.Hero.PrimarySkills.Knowledge;
-
-        /// <summary>
-        /// Gets what the hero's artifacts add to the attack skill, such as "+2 from artifacts". Empty when they add nothing.
-        /// </summary>
-        public string AttackArtifactNote => SkillNote(this.ArtifactEffects.Atk);
-
-        public string DefenseArtifactNote => SkillNote(this.ArtifactEffects.Def);
-
-        public string SpellPowerArtifactNote => SkillNote(this.ArtifactEffects.Pow);
-
-        public string KnowledgeArtifactNote => SkillNote(this.ArtifactEffects.Kno);
+        public PrimarySkillsCardViewModel PrimarySkills { get; }
 
         public string? Biography => this.Hero.Biography;
 
@@ -264,6 +226,7 @@
             try
             {
                 this.RefreshWarMachines();
+                this.PrimarySkills.Refresh();
                 this.MovementAndSpellPoints.Refresh();
                 this.LevelAndClass.Refresh();
                 this.Position.Refresh();
@@ -304,12 +267,6 @@
 
             this.Update(h => h with { WarMachines = updated });
         }
-
-        private static byte ClampSkill(int value) => (byte)RangeGuard.Clamp<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
-
-        private static string SkillNote(short fromArtifacts) => fromArtifacts == 0
-            ? string.Empty
-            : $"{fromArtifacts:+0;-0} from artifacts";
 
         private static WarMachine? GetWarMachine(string name) => name switch
         {
@@ -388,14 +345,6 @@
             name,
             () => this.Hero.ActiveSpells.HasFlag(spell),
             active => this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell }));
-
-        private void SetPrimarySkills(byte current, byte value, Func<PrimarySkills, PrimarySkills> edit)
-        {
-            if (current != value)
-            {
-                this.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) });
-            }
-        }
 
         private void RefreshWarMachines()
         {

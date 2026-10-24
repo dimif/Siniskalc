@@ -228,7 +228,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);
-            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
+            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold" }));
         }
 
         [Test]
@@ -339,7 +339,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             page.SetAllResourcesCommand.Execute(null);
 
             Assert.That(page.Resources.Single(r => r.Name == "Gold").Value, Is.EqualTo(gold + 100_000));
-            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + 99));
+            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + Constants.Player.AllResourcesIncrease));
         }
 
         [Test]
@@ -348,10 +348,28 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             this.editor.ShowHero(7);
             var page = (HeroViewModel)this.editor.CurrentPage!;
 
-            page.PrimarySkills.Single(r => r.Name == "Attack").Value = 20;
+            page.PrimarySkills.Attack.Base = 20;
 
             Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).PrimarySkills.Attack, Is.EqualTo(20));
             Assert.That(page.HasPendingChanges, Is.True);
+        }
+
+        [Test]
+        public void TheHeroPageEditsTheBaseOfASkillAndSavesItWithWhatTheArtifactsAdd()
+        {
+            this.editor.ShowHero(7);
+            var page = (HeroViewModel)this.editor.CurrentPage!;
+            var history = this.editor.CurrentGame!.History;
+            history.CreateHeroSession(7).Update(h => h.WithArtifact(0, Artifact.DragonSwordOfDominion));
+
+            page.PrimarySkills.Attack.Base = 20;
+
+            var hero = history.Current.Heroes().GetModel(7);
+            Assert.That((page.PrimarySkills.Attack.Base, page.PrimarySkills.Attack.Total, page.PrimarySkills.Attack.ArtifactNote), Is.EqualTo((20L, 23, "+3 from artifacts")));
+            Assert.That(hero.PrimarySkills.Attack, Is.EqualTo(23), "the savegame holds the skill with the bonus of the artifact");
+
+            var saved = TestServices.HeroDeserializer.Deserialize(TestServices.HeroSerializer.Serialize(history.Current.Heroes()[7], hero));
+            Assert.That(saved.PrimarySkills.BaseAttack, Is.EqualTo(20));
         }
 
         [Test]

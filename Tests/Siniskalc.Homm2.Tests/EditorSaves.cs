@@ -251,9 +251,10 @@
         private static void GallantStats(Game game)
         {
             var page = Hero(game, 1);
-            foreach (var row in page.PrimarySkills)
+            // The skills the savegame holds are 20: the base is what is left once the artifacts are taken off.
+            foreach (var row in page.PrimarySkills.Rows)
             {
-                row.Value = 20;
+                row.Base += 20 - row.Total;
             }
 
             page.LevelAndClass.Level = 20;

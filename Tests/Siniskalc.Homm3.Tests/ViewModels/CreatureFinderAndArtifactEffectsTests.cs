@@ -143,21 +143,21 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void GeneralPageNotesWhatArtifactsAddToSkillsAndMovement()
         {
             var general = this.hero.GeneralInfoViewModel;
-            var baseAttack = general.Attack;
-            Assert.That(general.AttackArtifactNote, Is.Empty);
+            var baseAttack = general.PrimarySkills.Attack.Base;
+            Assert.That(general.PrimarySkills.Attack.ArtifactNote, Is.Empty);
 
             this.hero.ArtifactsViewModel.SelectedHelm = Artifact.HelmOfHeavenlyEnlightenment.Name;
 
-            Assert.That(general.AttackArtifactNote, Is.EqualTo("+6 from artifacts"));
-            Assert.That(general.AttackTotal, Is.EqualTo(baseAttack + 6));
+            Assert.That(general.PrimarySkills.Attack.ArtifactNote, Is.EqualTo("+6 from artifacts"));
+            Assert.That(general.PrimarySkills.Attack.Total, Is.EqualTo(baseAttack + 6));
             Assert.That(general.LevelAndClass.NextLevelNote, Does.Contain("XP to level"));
-            Assert.That(general.KnowledgeArtifactNote, Does.Contain("from artifacts"));
+            Assert.That(general.PrimarySkills.Knowledge.ArtifactNote, Does.Contain("from artifacts"));
             Assert.That(general.MovementAndSpellPoints.MovementNote, Is.Empty);
             Assert.That(general.MovementAndSpellPoints.MaxMovementText, Does.StartWith("Maximum "));
 
             this.game.History.Undo();
 
-            Assert.That(general.AttackArtifactNote, Is.Empty);
+            Assert.That(general.PrimarySkills.Attack.ArtifactNote, Is.Empty);
         }
 
         [Test]

@@ -14,59 +14,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <WrapPanel Margin="2">
 
-            <Border Style="{StaticResource CardStyle}" Width="330">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Primary skills"/>
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="100"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Attack"/>
-                        <TextBlock Grid.Column="1" Margin="0,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Base"/>
-                        <wpf:Stepper Grid.Column="2" HorizontalAlignment="Stretch" Value="{Binding Attack}" Minimum="{x:Static app:Constants+Hero.MinPrimarySkill}" Maximum="{x:Static app:Constants+Hero.MaxPrimarySkill}" Step="1"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource FieldNoteStyle}" Text="{Binding AttackArtifactNote}"/>
-                        <TextBlock Grid.Column="3" Margin="12,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Total"/>
-                        <StackPanel Grid.Column="4" VerticalAlignment="Center" ToolTip="The skill with its artifacts, as it counts in the game">
-                            <TextBlock Style="{StaticResource TotalValueStyle}" Text="{Binding AttackTotal}"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="100"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Defense"/>
-                        <TextBlock Grid.Column="1" Margin="0,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Base"/>
-                        <wpf:Stepper Grid.Column="2" HorizontalAlignment="Stretch" Value="{Binding Defense}" Minimum="{x:Static app:Constants+Hero.MinPrimarySkill}" Maximum="{x:Static app:Constants+Hero.MaxPrimarySkill}" Step="1"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource FieldNoteStyle}" Text="{Binding DefenseArtifactNote}"/>
-                        <TextBlock Grid.Column="3" Margin="12,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Total"/>
-                        <StackPanel Grid.Column="4" VerticalAlignment="Center" ToolTip="The skill with its artifacts, as it counts in the game">
-                            <TextBlock Style="{StaticResource TotalValueStyle}" Text="{Binding DefenseTotal}"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="100"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Spell power"/>
-                        <TextBlock Grid.Column="1" Margin="0,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Base"/>
-                        <wpf:Stepper Grid.Column="2" HorizontalAlignment="Stretch" Value="{Binding SpellPower}" Minimum="{x:Static app:Constants+Hero.MinPrimarySkill}" Maximum="{x:Static app:Constants+Hero.MaxPrimarySkill}" Step="1"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource FieldNoteStyle}" Text="{Binding SpellPowerArtifactNote}"/>
-                        <TextBlock Grid.Column="3" Margin="12,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Total"/>
-                        <StackPanel Grid.Column="4" VerticalAlignment="Center" ToolTip="The skill with its artifacts, as it counts in the game">
-                            <TextBlock Style="{StaticResource TotalValueStyle}" Text="{Binding SpellPowerTotal}"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="100"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Knowledge"/>
-                        <TextBlock Grid.Column="1" Margin="0,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Base"/>
-                        <wpf:Stepper Grid.Column="2" HorizontalAlignment="Stretch" Value="{Binding Knowledge}" Minimum="{x:Static app:Constants+Hero.MinPrimarySkill}" Maximum="{x:Static app:Constants+Hero.MaxPrimarySkill}" Step="1"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" Style="{StaticResource FieldNoteStyle}" Text="{Binding KnowledgeArtifactNote}"/>
-                        <TextBlock Grid.Column="3" Margin="12,0,6,0" Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Text="Total"/>
-                        <StackPanel Grid.Column="4" VerticalAlignment="Center" ToolTip="The skill with its artifacts, as it counts in the game">
-                            <TextBlock Style="{StaticResource TotalValueStyle}" Text="{Binding KnowledgeTotal}"/>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
-            </Border>
+            <heroes:PrimarySkillsCard DataContext="{Binding PrimarySkills}"/>
 
             <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
 

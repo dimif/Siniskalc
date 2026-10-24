@@ -21,7 +21,6 @@
     {
         private readonly Action<int> openCastle;
         private readonly HeroEditSession session;
-        private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
         private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
@@ -38,13 +37,10 @@
             this.HeroId = heroId;
             this.openCastle = openCastle;
             this.session = game.History.CreateHeroSession(heroId);
-            this.primarySkills =
-            [
-                this.Row("Attack", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Attack, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Attack = (int)v } }),
-                this.Row("Defense", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Defense, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Defense = (int)v } }),
-                this.Row("Spell power", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.SpellPower, (h, v) => h with { PrimarySkills = h.PrimarySkills with { SpellPower = (int)v } }),
-                this.Row("Knowledge", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Knowledge, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Knowledge = (int)v } }),
-            ];
+            this.PrimarySkills = new PrimarySkillsCardViewModel(
+                () => this.session.Current.PrimarySkills,
+                edit => this.session.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
+                new NumberRange(Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill));
             this.battleBonus =
             [
                 this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
@@ -217,7 +213,10 @@
         /// </summary>
         public ActiveSpellsCardViewModel ActiveSpells { get; }
 
-        public IReadOnlyList<AmountRowViewModel> PrimarySkills => this.primarySkills;
+        /// <summary>
+        /// Gets the card of the primary skills: the base the hero learned, the total with its artifacts (what the savegame holds) and what they add.
+        /// </summary>
+        public PrimarySkillsCardViewModel PrimarySkills { get; }
 
         /// <summary>
         /// Gets the morale and the luck the hero has for its next battle only (a temple, a fountain, a faerie ring).
@@ -285,7 +284,8 @@
             var hero = document.Heroes().GetModel(this.HeroId);
             this.hero = hero;
 
-            foreach (var row in this.primarySkills.Concat(this.battleBonus))
+            this.PrimarySkills.Refresh();
+            foreach (var row in this.battleBonus)
             {
                 row.Refresh();
             }

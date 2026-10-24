@@ -103,7 +103,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.Attack = 42;
+            general.PrimarySkills.Attack.Base = 42;
             general.MovementAndSpellPoints.CurrentSpellPoints = 99;
             general.UpdateWarMachine("Ammo_Cart", true);
 

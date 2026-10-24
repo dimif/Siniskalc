@@ -1,6 +1,6 @@
-using Siniskalc;
 using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.Models;
+using Siniskalc;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -145,7 +145,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = this.hero.GeneralInfoViewModel;
 
-            general.Attack = byte.MaxValue;
+            general.PrimarySkills.Attack.Base = byte.MaxValue;
             general.Position.X = short.MaxValue;
             general.Destination.Y = short.MinValue;
             general.MovementAndSpellPoints.CurrentSpellPoints = ushort.MaxValue;

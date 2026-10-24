@@ -95,7 +95,7 @@ namespace Siniskalc.Homm3.Tests.Models
         {
             var game = HeroEditingTests.LoadPrepared();
             using var hero = TestServices.CreateHeroViewModel(game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")));
-            hero.GeneralInfoViewModel.Attack = 42;
+            hero.GeneralInfoViewModel.PrimarySkills.Attack.Base = 42;
             Assert.That(hero.HasPendingChanges, Is.True);
 
             TestServices.GameService.SaveGame(game, this.path);

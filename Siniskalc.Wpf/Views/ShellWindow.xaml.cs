@@ -30,7 +30,6 @@ namespace Siniskalc.Wpf.Views
             this.help = help;
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
-            this.loggingMenuItem.Visibility = loggingSettings is null ? Visibility.Collapsed : Visibility.Visible;
             this.showLogsMenuItem.Visibility = help.LogFolder is null ? Visibility.Collapsed : Visibility.Visible;
             recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -140,11 +139,11 @@ namespace Siniskalc.Wpf.Views
 
         private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.IssuesUrl);
 
-        private void EditLoggingCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void EditSettingsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this.loggingSettings is not null && new LoggingSettingsWindow(this.loggingSettings()) { Owner = this }.ShowDialog() == true)
+            if (this.ViewModel is { } shell && new SettingsWindow(new SettingsViewModel(shell, this.loggingSettings?.Invoke())) { Owner = this }.ShowDialog() == true)
             {
-                this.ShowStatus("Logging settings saved. They apply the next time the editor starts.");
+                this.ShowStatus(this.loggingSettings is null ? "Settings saved." : "Settings saved. The logging choices apply the next time the editor starts.");
             }
         }
 

@@ -46,9 +46,9 @@ Pages:
 
 The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them.
 
-- **Settings > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
+- **Settings... > Saving > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
   See below.
-- **Settings > Advanced mode** (off by default): shows the tools for working with the raw bytes.
+- **Settings... > Tools > Advanced mode** (off by default): shows the tools for working with the raw bytes.
   See below.
 
 ### Backups

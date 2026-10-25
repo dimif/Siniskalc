@@ -9,7 +9,7 @@ Failures that the user must see are in `ERROR_MODEL.md`; this file is about what
 |---|---|
 | Where do I get a logger? | `private static readonly ILogger<T> Logger = LogFactory.For<T>();` (`LogFactory.For(typeof(T))` in a static class). Not through the constructor, and never `Serilog.Log`. |
 | Who installs the real logger? | `AppServices` (the composition root) calls `LogFactory.Install` once with the factory `LoggingSetup` builds in the exe; until then, and in the tests, loggers write nowhere. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
-| Where is the file? | `<LocalApplicationData>/Siniskalc/logs/siniskalc-<date>.log` (`LogPaths`), unless `LogFolder` is set in `settings.json`. Settings > Logging... changes the folder and the level, and Help > Show logs opens the folder. The file is shared, so two copies of the editor can log to it. |
+| Where is the file? | `<LocalApplicationData>/Siniskalc/logs/siniskalc-<date>.log` (`LogPaths`), unless `LogFolder` is set in `settings.json`. Settings... (Logging) changes the folder and the level, and Help > Show logs opens the folder. The file is shared, so two copies of the editor can log to it. |
 | How do I write a message? | A constant template with named placeholders, never `$"..."`: `Logger.LogWarning("Skipped the backup of {File}", name)`. `CA2254` enforces it. |
 | Which level? | Warning = surprising but handled. Error = the user saw an operation fail. See the table below. |
 | Where not to log? | Models and reducers, views, property setters, anything per byte or per item of a list. |

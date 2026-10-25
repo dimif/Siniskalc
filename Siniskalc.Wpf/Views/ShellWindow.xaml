@@ -62,8 +62,8 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.OpenIssues}"
                 Executed="OpenIssuesCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
-        <CommandBinding Command="{x:Static cmd:EditorCommands.EditLogging}"
-                Executed="EditLoggingCmdExecuted"
+        <CommandBinding Command="{x:Static cmd:EditorCommands.EditSettings}"
+                Executed="EditSettingsCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.ShowLogs}"
                 Executed="ShowLogsCmdExecuted"
@@ -149,15 +149,8 @@
             <MenuItem Header="_View">
                 <MenuItem Header="_Pending changes" IsCheckable="True" IsChecked="{Binding IsPendingChangesOpen, Mode=TwoWay}" IsEnabled="{Binding IsGameLoaded}"/>
             </MenuItem>
-            <MenuItem Header="_Settings">
-                <MenuItem Header="_Back up on save" IsCheckable="True" IsChecked="{Binding BackupOnSave, Mode=TwoWay}"
-                          ToolTip="Keep a copy of the savegame (save.GM1.bak, save.GM1.bak1, ...) before it is saved over"/>
-                <MenuItem Header="_Advanced mode" IsCheckable="True" IsChecked="{Binding IsAdvancedMode, Mode=TwoWay}"
-                          ToolTip="Show the Advanced menu and the hex tabs"/>
-                <Separator />
-                <MenuItem x:Name="loggingMenuItem" Header="_Logging..." Command="{x:Static cmd:EditorCommands.EditLogging}"
-                          ToolTip="Choose the log level and the folder of the log files"/>
-            </MenuItem>
+            <MenuItem Header="_Settings..." Command="{x:Static cmd:EditorCommands.EditSettings}"
+                      ToolTip="Saving, the advanced tools and the logging"/>
             <MenuItem Header="_Advanced" Visibility="{Binding IsAdvancedMode, Converter={StaticResource BoolToVisibility}}">
                 <MenuItem Header="Export save bytes" Command="{x:Static cmd:EditorCommands.DumpToFile}">
                     <MenuItem.Icon>

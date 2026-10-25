@@ -29,9 +29,9 @@
             nameof(ShowLogs),
             typeof(EditorCommands));
 
-        public static readonly RoutedUICommand EditLogging = new RoutedUICommand(
-            "Logging",
-            nameof(EditLogging),
+        public static readonly RoutedUICommand EditSettings = new RoutedUICommand(
+            "Settings",
+            nameof(EditSettings),
             typeof(EditorCommands));
 
         public static readonly RoutedUICommand About = new RoutedUICommand(

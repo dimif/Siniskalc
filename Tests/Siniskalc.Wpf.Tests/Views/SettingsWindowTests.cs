@@ -8,16 +8,17 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
+using Siniskalc.Wpf.Tests.ViewModels;
 using Siniskalc.Wpf.Views;
 
 namespace Siniskalc.Wpf.Tests.Views
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    internal sealed class LoggingSettingsWindowTests
+    internal sealed class SettingsWindowTests
     {
         [Test]
-        public void TheWindowShowsTheLevelsTheFolderAndTheDefaultWithoutBindingErrors()
+        public void TheWindowShowsTheSavingTheToolsAndTheLoggingWithoutBindingErrors()
         {
             var folder = Path.Combine(Path.GetTempPath(), "siniskalc-logging-window-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(folder);
@@ -31,7 +32,8 @@ namespace Siniskalc.Wpf.Tests.Views
                 var store = new SettingsStore(Path.Combine(folder, "settings.json"));
                 store.Settings.LogLevel = LogLevel.Debug;
                 store.Settings.LogFolder = Path.Combine(folder, "logs");
-                var window = new LoggingSettingsWindow(new LoggingSettingsViewModel(store, Path.Combine(folder, "default"), new Mock<IFileDialogs>().Object));
+                var shell = new ShellViewModel([new FakeGameModule("First Game", 0x11, "*.F1")], store, "Editor");
+                var window = new SettingsWindow(new SettingsViewModel(shell, new LoggingSettingsViewModel(store, Path.Combine(folder, "default"), new Mock<IFileDialogs>().Object)));
                 window.Show();
 
                 try
@@ -44,6 +46,8 @@ namespace Siniskalc.Wpf.Tests.Views
                     Assert.That(levels.SelectedItem, Is.EqualTo(LogLevel.Debug));
                     Assert.That(Descendants<TextBox>(window).Single().Text, Is.EqualTo(Path.Combine(folder, "logs")));
                     Assert.That(Descendants<Button>(window).Select(b => b.Content), Is.EquivalentTo(new object[] { "Browse...", "Use default", "OK", "Cancel" }));
+                    Assert.That(Descendants<CheckBox>(window).Select(c => (c.Content, c.IsChecked)), Is.EqualTo(new[] { ((object)"Back up on save", (bool?)true), ("Advanced mode", false) }));
+                    Assert.That(Descendants<TextBlock>(window).Select(t => t.Text), Is.SupersetOf(new[] { "Saving", "Tools", "Logging" }));
                     Assert.That(Descendants<TextBlock>(window).Any(t => t.Text.Contains(Path.Combine(folder, "default"))), Is.True);
                     Assert.That(errors.Messages, Is.Empty);
                 }

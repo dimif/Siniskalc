@@ -7,7 +7,6 @@
     using System.Windows.Input;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -33,7 +32,7 @@
         private readonly Func<bool> canSleep;
         private bool isRefreshing;
 
-        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null)
+        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<CastleDestination>>? castlesToSendTo = null)
             : base("General Info")
         {
             this.getHero = getHero;
@@ -85,7 +84,8 @@
                 coordinates,
                 this.LevelChoices,
                 () => this.Hero.Position.FacingDirection,
-                facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
+                facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
+                castlesToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.Hero.Destination,
                 destination => this.Update(h => h with { Destination = destination }),

@@ -21,6 +21,7 @@
     public class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
         private readonly HeroEditSession session;
+        private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
         private object shownRevision;
         private string notice = string.Empty;
@@ -32,12 +33,13 @@
             : base(session.Current.Name, session)
         {
             this.session = session;
+            this.hasUnderground = hasUnderground;
             this.byteEditTargets = byteEditTargets;
             this.OpenGarrisonCastleCommand = new DelegateCommand(
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
-            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep);
+            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep, this.CastlesToSendTo);
             this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.History.Current.GameVersion());
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,
@@ -357,6 +359,27 @@
             this.SpellsViewModel.Refresh();
 
             this.RaiseAllPropertiesChanged();
+        }
+
+        /// <summary>
+        /// Gives the castles of the player of the hero. The hero at the gate of a castle stands on the castle's own tile, so that is the entrance;
+        /// a castle is taken when another hero is at its gate. Nothing for a hero that serves nobody.
+        /// </summary>
+        private IReadOnlyList<CastleDestination> CastlesToSendTo()
+        {
+            var hero = this.HeroModel;
+            if (hero.Owner.IsNeutral)
+            {
+                return [];
+            }
+
+            var castles = this.session.History.Current.Castles();
+            var hasLevels = this.hasUnderground;
+            return Enumerable.Range(0, castles.Count)
+                .Select(castles.GetModel)
+                .Where(c => c.IsUsed && c.Owner == hero.Owner)
+                .Select(c => new CastleDestination(c.Name, c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id))
+                .ToList();
         }
 
         private void Update(Func<HeroModel, HeroModel> edit)

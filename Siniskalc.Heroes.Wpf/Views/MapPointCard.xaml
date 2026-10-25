@@ -36,6 +36,26 @@
                     <Button Width="28" Margin="4,0,0,0" Content="↻" FontSize="15" Padding="0,0,0,2" Command="{Binding RotateRightCommand}" ToolTip="Rotate right (clockwise)" AutomationProperties.Name="Rotate right"/>
                 </StackPanel>
             </Grid>
+            <StackPanel Margin="0,6,0,0" Orientation="Horizontal" Visibility="{Binding HasSendToCastle, Converter={StaticResource BoolToVisibility}}">
+                <Button x:Name="sendToggle" Style="{StaticResource PillButtonStyle}" Content="Send to castle ▾" Command="{Binding SendToCastle.OpenCommand}"
+                        ToolTip="Move the hero to the entrance of a castle of its player"/>
+                <Popup IsOpen="{Binding SendToCastle.IsOpen, Mode=TwoWay}" StaysOpen="False" PlacementTarget="{Binding ElementName=sendToggle}" Placement="Bottom" AllowsTransparency="True">
+                    <Border Style="{StaticResource CardStyle}" Margin="0,4,0,0" Width="300">
+                        <StackPanel>
+                            <TextBox x:Name="castleSearch" Text="{Binding SendToCastle.SearchText, UpdateSourceTrigger=PropertyChanged}" ToolTip="Type to search the castles by name"/>
+                            <ItemsControl Margin="0,6,0,0" ItemsSource="{Binding SendToCastle.Castles}" MaxHeight="220">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button HorizontalContentAlignment="Left" BorderThickness="0" Background="Transparent" Padding="6,3" ToolTip="{Binding ToolTip}"
+                                                Command="{Binding DataContext.SendToCastle.SendCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"
+                                                Content="{Binding Label}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </StackPanel>
             <Button Margin="0,6,0,0" Padding="10,2" HorizontalAlignment="Left" Content="Remove" Command="{Binding RemoveCommand}" ToolTip="{Binding RemoveToolTip}"
                     Visibility="{Binding CanRemove, Converter={StaticResource BoolToVisibility}}"/>
         </StackPanel>

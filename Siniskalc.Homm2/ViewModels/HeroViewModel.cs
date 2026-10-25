@@ -115,7 +115,8 @@
                 position => this.session.Update(h => h with { Position = (HeroPosition)position }),
                 new NumberRange(Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate),
                 getFacing: () => this.session.Current.Position.FacingDirection,
-                setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
+                setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
+                castles: this.CastlesToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.session.Current.Destination,
                 destination => this.session.Update(h => h with { Destination = destination }),
@@ -320,6 +321,33 @@
             this.RaisePropertyChanged(nameof(this.Notice));
             this.RaisePropertyChanged(nameof(this.HasNotice));
             this.OwnerField.Refresh();
+        }
+
+        /// <summary>
+        /// Gives the castles of the player of the hero, with the tile in front of the entrance of each (the one under the castle's own tile) and
+        /// whether another hero stands there or is in the castle. Nothing for a hero that serves nobody.
+        /// </summary>
+        private IReadOnlyList<CastleDestination> CastlesToSendTo()
+        {
+            var hero = this.session.Current;
+            if (hero.Owner.IsNeutral)
+            {
+                return [];
+            }
+
+            var document = this.Game.History.Current;
+            var castles = document.Castles();
+            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            return castles.UsedIndexes()
+                .Select(castles.GetModel)
+                .Where(c => c.Owner == hero.Owner)
+                .Select(c =>
+                {
+                    var entrance = c.Position with { Y = c.Position.Y + 1 };
+                    var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
+                    return new CastleDestination(c.Name, entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied);
+                })
+                .ToList();
         }
 
         private ToggleRowViewModel Source(string name, HeroEffects effect, int morale, int luck, string toolTip) => new(

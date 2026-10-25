@@ -1,8 +1,7 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
@@ -43,6 +42,6 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         private static string LocationOf(Siniskalc.Homm3.Runtime.Game game, int merchant) =>
-            game.Places.Merchants.Where(m => m.Number == merchant).Select(m => $"At {MapLevelText.Coordinates(m.Position.X, m.Position.Y)}").FirstOrDefault() ?? string.Empty;
+            game.Places.Merchants.Where(m => m.Number == merchant).Select(m => $"At {MapLevelText.Place(m.Position.X, m.Position.Y)}").FirstOrDefault() ?? string.Empty;
     }
 }

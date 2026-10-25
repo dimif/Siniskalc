@@ -170,7 +170,7 @@ namespace Siniskalc.Heroes.Tests.Data
 
             sink.AddPosition(new HeroPosition(3, 4, FacingDirection.North), new HeroPosition(3, 4, FacingDirection.East), hasLevels: false, (h, position) => h with { Position = position });
 
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Position", "X: 3, Y: 4, facing North", "X: 3, Y: 4, facing East") }));
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Position", "Pos: 3, 4, facing North", "Pos: 3, 4, facing East") }));
         }
 
         [Test]
@@ -182,7 +182,7 @@ namespace Siniskalc.Heroes.Tests.Data
 
             Assert.That(
                 sink.All.Select(c => (c.Change.Before, c.Change.After)),
-                Is.EqualTo(new[] { ("X: 3, Y: 4, Surface (0), facing North", "X: 3, Y: 4, Underground (1), facing North") }));
+                Is.EqualTo(new[] { ("Pos: 3, 4, Surface, facing North", "Pos: 3, 4, Underground, facing North") }));
         }
 
         [Test]
@@ -192,7 +192,7 @@ namespace Siniskalc.Heroes.Tests.Data
 
             sink.AddDestination(MapPosition.None, new MapPosition(30, 31), hasLevels: false, (h, destination) => h with { Destination = destination });
 
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Destination", "none", "X: 30, Y: 31") }));
+            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Destination", "none", "Pos: 30, 31") }));
         }
 
         [Test]

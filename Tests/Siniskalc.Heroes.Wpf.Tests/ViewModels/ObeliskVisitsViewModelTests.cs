@@ -32,14 +32,14 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         private static ObeliskVisitsViewModel<TestColor> Visits(SaveDocumentHistory history, TestColor color) =>
-            new(history, Obelisks, color, "Prize", at => $"{at.X}/{at.Y}/{at.Level}");
+            new(history, Obelisks, color, "Prize", hasLevels: true);
 
         [Test]
         public void EachObeliskShowsWhetherThePlayerVisitedItAndWhereItIsInTheWordsOfTheGame()
         {
             var visits = Visits(History([0b01, 0b10], new MapPosition(3, 4, 1), null), TestColor.Blue);
 
-            Assert.That(visits.Obelisks.Select(o => (o.Number, o.Coordinates, o.IsVisited)), Is.EqualTo(new[] { (1, "3/4/1", false), (2, string.Empty, true) }));
+            Assert.That(visits.Obelisks.Select(o => (o.Number, o.Coordinates, o.IsVisited)), Is.EqualTo(new[] { (1, "Pos: 3, 4, Underground", false), (2, string.Empty, true) }));
             Assert.That(visits.Summary, Is.EqualTo("1 of 2 visited"));
         }
 

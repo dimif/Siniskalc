@@ -1,12 +1,10 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System.Globalization;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
 
@@ -43,12 +41,12 @@ namespace Siniskalc.Homm3.ViewModels
         public int Level => this.session.Current.Position.Level;
 
         /// <summary>
-        /// Gets the level of the map the dwelling is on, such as "Underground (1)".
+        /// Gets the level of the map the dwelling is on, such as "Underground".
         /// </summary>
         public string LevelText => MapLevelText.Of(this.Level);
 
         /// <summary>
-        /// Gets the tile the savegame gives for the dwelling, as the other lists show it, such as "X: 31, Y: 56, Surface (0)". A hero stood on it
+        /// Gets the tile the savegame gives for the dwelling, as the other lists show it, such as "Pos: 31, 56, Surface". A hero stood on it
         /// to flag the dwellings of the Castle and the Rampart of the test map, and 3 tiles lower to visit the neutral ones in the row above, so
         /// it is only where the dwelling is, give or take its entrance.
         /// </summary>

@@ -82,7 +82,6 @@
                     <heroes:PrimarySkillsCard DataContext="{Binding PrimarySkills}"/>
                     <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
                     <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
-                    <heroes:ActiveSpellsCard DataContext="{Binding ActiveSpells}"/>
                     <heroes:MapPointCard DataContext="{Binding Position}"/>
                     <heroes:NextBattleCard DataContext="{Binding NextBattle}"/>
                     <!-- Last, so that it is not stretched to the height of the tall card beside it. -->

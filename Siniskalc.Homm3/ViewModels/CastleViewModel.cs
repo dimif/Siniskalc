@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -112,7 +111,7 @@ namespace Siniskalc.Homm3.ViewModels
         public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
-        /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".
+        /// Gets where the town is on the map, such as "Pos: 33, 23, Surface".
         /// </summary>
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 

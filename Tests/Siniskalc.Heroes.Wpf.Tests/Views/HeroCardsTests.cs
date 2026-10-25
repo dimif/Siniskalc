@@ -83,14 +83,14 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
         public void ThePlacesCardOpensAKindToTheCoordinatesOfItsPlacesWithoutRepeatingTheKind()
         {
             var visited = true;
-            var place = new Siniskalc.Wpf.ViewModels.ToggleRowViewModel("At X: 1, Y: 4", () => visited, value => visited = value);
+            var place = new Siniskalc.Wpf.ViewModels.ToggleRowViewModel("At 1, 4", () => visited, value => visited = value);
             var kind = new VisitedPlaceRowViewModel("Forts", () => visited ? 1 : 0, () => visited = false, () => visited = true, "A point of defense", [place]) { IsExpanded = true };
             var card = new VisitedPlacesCard { DataContext = new VisitedPlacesCardViewModel("Visited once per hero", [kind], []) };
 
             using var hosted = WpfTestApplication.Show(card);
 
             var texts = WpfTestApplication.Descendants<TextBlock>(card).Where(t => t.IsVisible).Select(t => t.Text).ToList();
-            Assert.That(texts, Is.SupersetOf(new[] { "Visited once per hero", "Forts", "1 of 1", "At X: 1, Y: 4" }));
+            Assert.That(texts, Is.SupersetOf(new[] { "Visited once per hero", "Forts", "1 of 1", "At 1, 4" }));
             Assert.That(texts, Has.None.Contain("Fort at"));
         }
     }

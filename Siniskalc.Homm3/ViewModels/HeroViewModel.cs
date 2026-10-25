@@ -1,11 +1,10 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -118,14 +117,14 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
 
         /// <summary>
-        /// Gets where the hero is on the map, such as "X: 5, Y: 28, Surface (0)", or nothing for a hero that is not on the map.
+        /// Gets where the hero is on the map, such as "Pos: 5, 28, Surface", or nothing for a hero that is not on the map.
         /// </summary>
         public string PositionText => this.HeroModel.Position.X < 0 || this.HeroModel.Position.Y < 0
             ? string.Empty
             : MapLevelText.Coordinates(this.HeroModel.Position.X, this.HeroModel.Position.Y, this.HeroModel.Position.Level);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4, Surface (0)".
+        /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4, Surface".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.HeroModel.HeroClass.Name, $"Level {this.LevelNumber}", this.PositionText }.Where(t => t.Length > 0));
 

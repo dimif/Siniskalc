@@ -48,7 +48,7 @@ namespace Siniskalc.Homm3.Tests.Views
                 player.SelectedTab = 0;
                 Show(window);
                 var texts = Descendants<TextBlock>((Page)frame.Content).Where(t => t.IsVisible).Select(t => t.Text).ToList();
-                Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick add" }));
+                Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick" }));
 
                 Assert.That(editor.ShowHero("Christian"), Is.True);
                 Pump();

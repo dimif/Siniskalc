@@ -11,7 +11,6 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **Needs a probe save or a test in the game before anything is written:**
   - HoMM2 building rules (a turret or moat on a town without a castle, a shipyard inland, one building a day) and the guild's spell restrictions (any spell can be put in any slot today).
   - HoMM2 map objects with state (daemon cave, windmills, water mills; known in `docs/HOMM2_SAVE_FORMAT.md`), map dwellings (the docs say none; the bytes are undecoded) and the guardians of mines.
-  - HoMM2 active adventure spells (Visions): the save location is unknown, so the box is shown disabled.
   - HoMM3 morale, luck and the visited-building bits (built 2026-10-24, **not tried in the game**); the faerie ring, fountain and idol of fortune are shown but not editable because the saves do not say what they give.
   - Giving a hero from a tavern to a player (the game refills the slot by a random draw), and how a garrisoned hero's owner is stored; both are refused with a message (`docs/KNOWLEDGE_BASE.md`, "The table of hero owners").
   - Banishing or reviving a player; editing the date (which in HoMM2 must clear "built today").

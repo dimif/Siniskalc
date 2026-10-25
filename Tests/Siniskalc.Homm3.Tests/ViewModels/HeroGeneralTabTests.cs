@@ -1,6 +1,4 @@
-using Siniskalc;
-using Siniskalc.Core.Entities;
-using Siniskalc.Heroes.Models;
+﻿using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -77,7 +75,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void ResetPutsTheWholeHeroBackAndTheHeaderNamesWhereItIs()
         {
             var original = this.hero.HeroModel;
-            Assert.That(this.hero.PositionText, Does.Match(@"^X: \d+, Y: \d+, (Surface \(0\)|Underground \(1\))$"));
+            Assert.That(this.hero.PositionText, Does.Match(@"^Pos: \d+, \d+, (Surface|Underground)$"));
             Assert.That(this.hero.ResetCommand.CanExecute(null), Is.False);
 
             this.hero.GeneralInfoViewModel.MovementAndSpellPoints.MaxMovementCommand.Execute(null);

@@ -54,8 +54,22 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             Assert.That(editor.Rows.Single(r => r.Resource == Resource.Ore).AddPresetLabel, Is.EqualTo("+10"));
             Assert.That(editor.Rows.Single(r => r.IsGold).AddPresetLabel, Is.EqualTo("+250"));
-            Assert.That((editor.SetAllLabel, editor.SetRichLabel), Is.EqualTo(("All +99", "Gold +500")));
+            Assert.That((editor.SetAllLabel, editor.SetRichLabel), Is.EqualTo(("Res +99", "Gold +500")));
             Assert.That((AmountText.Plus(10_000), AmountText.Plus(100_000), AmountText.Plus(1_500)), Is.EqualTo(("+10k", "+100k", "+1,500")));
+        }
+
+        [Test]
+        public void TheZeroButtonsClearTheResourcesButGoldOrGoldAlone()
+        {
+            var editor = this.Editor();
+            this.state = this.state.With(Resource.Wood, 5).With(Resource.Gems, 7).With(Resource.Gold, 900);
+
+            editor.ClearAllCommand.Execute(null);
+            Assert.That((this.state[Resource.Wood], this.state[Resource.Gems], this.state[Resource.Gold]), Is.EqualTo((0L, 0L, 900L)));
+
+            this.state = this.state.With(Resource.Wood, 5);
+            editor.ClearRichCommand.Execute(null);
+            Assert.That((this.state[Resource.Wood], this.state[Resource.Gold]), Is.EqualTo((5L, 0L)));
         }
 
         [Test]

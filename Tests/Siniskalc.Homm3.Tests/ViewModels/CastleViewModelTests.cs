@@ -1,5 +1,4 @@
-﻿using Siniskalc.Homm3.Runtime;
-using Siniskalc.Homm3.ViewModels;
+﻿using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
@@ -49,7 +48,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(castle.Name, Is.EqualTo("Castle Haret"));
             Assert.That(castle.FactionText, Is.EqualTo("Castle"));
             Assert.That(castle.OwnerText, Is.EqualTo("Tan"));
-            Assert.That(castle.PositionText, Is.EqualTo("X: 33, Y: 23, Surface (0)"));
+            Assert.That(castle.PositionText, Is.EqualTo("Pos: 33, 23, Surface"));
         }
 
         [Test]

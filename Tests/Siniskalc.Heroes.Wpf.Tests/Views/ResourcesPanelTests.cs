@@ -33,13 +33,13 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             using var hosted = WpfTestApplication.Show(panel);
 
             var texts = WpfTestApplication.Descendants<TextBlock>(panel).Select(t => t.Text).ToList();
-            Assert.That(texts, Does.Contain("Resources").And.Contain("Quick add").And.Contain("Amounts are limited."));
+            Assert.That(texts, Does.Contain("Resources").And.Contain("Quick").And.Contain("Amounts are limited."));
             var names = new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold" };
             Assert.That(texts.Where(names.Contains), Is.EqualTo(names));
             Assert.That(WpfTestApplication.Descendants<Border>(panel).Count(b => b.Width == 672), Is.EqualTo(1), "one card of double width");
             var buttons = WpfTestApplication.Descendants<Button>(panel).ToList();
-            Assert.That(buttons.Select(b => b.Content), Is.SupersetOf(new object[] { "All +100", "Gold +100k" }));
-            Assert.That(buttons.First(b => Equals(b.Content, "All +100")).Command, Is.SameAs(page.SetAllResourcesCommand));
+            Assert.That(buttons.Select(b => b.Content), Is.SupersetOf(new object[] { "Res +100", "Gold +100k" }));
+            Assert.That(buttons.First(b => Equals(b.Content, "Res +100")).Command, Is.SameAs(page.SetAllResourcesCommand));
             Assert.That(buttons.Count(b => Equals(b.Content, "+10")), Is.EqualTo(6), "a button on each resource but gold");
             Assert.That(buttons.Count(b => Equals(b.Content, "+10k")), Is.EqualTo(1), "and the thousands of gold");
             Assert.That(WpfTestApplication.Descendants<System.Windows.Shapes.Ellipse>(panel).Select(e => e.Fill), Has.All.InstanceOf<System.Windows.Media.SolidColorBrush>(), "each resource has its colour");

@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Models
     public sealed record MineModel(int Index, MineKind Kind, PlayerColor Owner, MapPosition Position, IArmy<Creature> Guard) : IMineModel<PlayerColor>
     {
         /// <summary>
-        /// Gets the name of the mine with its place, such as "Gold mine at X: 12, Y: 7, Underground (1)", as the pending changes name it.
+        /// Gets the name of the mine with its place, such as "Gold mine at 12, 7, Underground", as the pending changes name it.
         /// </summary>
         public string Name => MineKinds.NameAt(this.Kind, this.Position, hasLevels: true);
     }

@@ -17,7 +17,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var row = Row(Session(new TestMine(4, MineKind.OreMine, TestColor.Blue, new MapPosition(5, 6, MapPosition.Underground))));
 
-            Assert.That((row.Index, row.Kind, row.PositionText, row.OwnerField.Selected, row.IsOwned), Is.EqualTo((4, "Ore mine", "X: 5, Y: 6, Underground (1)", "Blue", true)));
+            Assert.That((row.Index, row.Kind, row.PositionText, row.OwnerField.Selected, row.IsOwned), Is.EqualTo((4, "Ore mine", "Pos: 5, 6, Underground", "Blue", true)));
             Assert.That(row.OwnerField.ToolTip, Is.EqualTo("Who owns it."));
         }
 

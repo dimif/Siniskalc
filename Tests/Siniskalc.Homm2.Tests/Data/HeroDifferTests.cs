@@ -45,7 +45,7 @@ namespace Siniskalc.Homm2.Tests.Data
             this.game.History.CreateHeroSession(Maximus).Update(h => h with { Position = h.Position with { FacingDirection = turned } });
 
             var change = this.game.History.GetPendingChanges().Single();
-            var tile = $"X: {original.Position.X}, Y: {original.Position.Y}";
+            var tile = $"Pos: {original.Position.X}, {original.Position.Y}";
             Assert.That(
                 (change.Change.Description, change.Change.Before, change.Change.After),
                 Is.EqualTo(("Position", $"{tile}, facing {original.Position.FacingDirection}", $"{tile}, facing {turned}")));

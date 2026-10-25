@@ -31,10 +31,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         {
             this.update = update;
             this.Rows = Enum.GetValues<Resource>().Select(resource => new ResourceRowViewModel(resource, limits, current, original, update, note)).ToList();
-            this.SetAllLabel = $"All {AmountText.Plus(limits.AllIncrease)}";
+            this.SetAllLabel = $"Res {AmountText.Plus(limits.AllIncrease)}";
             this.SetRichLabel = $"Gold {AmountText.Plus(limits.GoldIncrease)}";
             this.SetAllCommand = new DelegateCommand(_ => this.Add(this.Rows.Where(r => !r.IsGold), limits.AllIncrease));
             this.SetRichCommand = new DelegateCommand(_ => this.Add(this.Rows.Where(r => r.IsGold), limits.GoldIncrease));
+            this.ClearAllCommand = new DelegateCommand(_ => this.Clear(this.Rows.Where(r => !r.IsGold)));
+            this.ClearRichCommand = new DelegateCommand(_ => this.Clear(this.Rows.Where(r => r.IsGold)));
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public IReadOnlyList<ResourceRowViewModel> Rows { get; }
 
         /// <summary>
-        /// Gets the text of the button that adds to every resource but gold, such as "All +100".
+        /// Gets the text of the button that adds to every resource but gold, such as "Res +100".
         /// </summary>
         public string SetAllLabel { get; }
 
@@ -63,6 +65,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public ICommand SetRichCommand { get; }
 
         /// <summary>
+        /// Gets the command that sets every resource but gold to 0.
+        /// </summary>
+        public ICommand ClearAllCommand { get; }
+
+        /// <summary>
+        /// Gets the command that sets gold to 0.
+        /// </summary>
+        public ICommand ClearRichCommand { get; }
+
+        /// <summary>
         /// Shows the amounts again, after the resources changed.
         /// </summary>
         public void Refresh()
@@ -71,6 +83,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             {
                 row.Refresh();
             }
+        }
+
+        private void Clear(IEnumerable<ResourceRowViewModel> rows)
+        {
+            var kinds = rows.Select(r => r.Resource).ToList();
+            this.update(resources => kinds.Aggregate(resources, (set, kind) => set.With(kind, 0)));
         }
 
         private void Add(IEnumerable<ResourceRowViewModel> rows, int amount)

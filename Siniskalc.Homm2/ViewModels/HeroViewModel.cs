@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -86,16 +85,6 @@
                 () => this.session.Current,
                 edit => this.session.Update(edit));
 
-            // Where the game keeps the active spells is not known, so the box is shown but cannot be changed: it is never read nor saved.
-            this.ActiveSpells = new ActiveSpellsCardViewModel(
-            [
-                new ToggleRowViewModel(
-                    "Visions",
-                    () => false,
-                    _ => { },
-                    canToggle: () => false,
-                    toolTip: "Not editable: the editor does not know yet where the game keeps this spell, so it is not read from the savegame and not saved."),
-            ]);
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
                 OwnerNames<PlayerColor>.Choices,
@@ -176,7 +165,7 @@
         public string PositionText => this.hero.Owner.IsNeutral ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4".
+        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 
@@ -206,11 +195,6 @@
         /// Gets the card of the marker of the hero.
         /// </summary>
         public MapPointCardViewModel Destination { get; }
-
-        /// <summary>
-        /// Gets the card of the adventure spells that are active on the hero this turn.
-        /// </summary>
-        public ActiveSpellsCardViewModel ActiveSpells { get; }
 
         /// <summary>
         /// Gets the card of the primary skills: the base the hero learned, the total with its artifacts (what the savegame holds) and what they add.
@@ -295,7 +279,6 @@
             this.LevelAndClass?.Refresh();
             this.Position?.Refresh();
             this.Destination?.Refresh();
-            this.ActiveSpells?.Refresh();
             this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
@@ -362,7 +345,7 @@
             // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
             var places = game.Places.Of(kind)
                 .Select((position, index) => new ToggleRowViewModel(
-                    $"At {MapLevelText.Coordinates(position.X, position.Y)}",
+                    $"At {MapLevelText.Place(position.X, position.Y)}",
                     () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
                     visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
                     toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))

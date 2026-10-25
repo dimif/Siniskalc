@@ -1,6 +1,7 @@
 namespace Siniskalc.Heroes.Wpf.Tests.Views
 {
     using System.Windows.Controls;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Wpf.Views;
 
@@ -15,16 +16,55 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
         public void MakeTheApplication() => WpfTestApplication.Ensure();
 
         [Test]
-        public void TheCardShowsTheSummaryTheTwoButtonsAndATileForEachObelisk()
+        public void TheCardShowsTheSummaryTheTwoButtonsAndARowForEachObeliskWithAVisitedBox()
         {
             var obelisks = new FakeObelisks(3) { Visited = { [1] = true } };
             var card = new ObeliskVisitsCard { DataContext = obelisks };
 
             using var hosted = WpfTestApplication.Show(card);
 
-            var texts = WpfTestApplication.Descendants<TextBlock>(card).Select(t => t.Text).ToList();
-            Assert.That(texts, Is.SupersetOf(new[] { "Visited obelisks", "1 of 3 visited", "Visit all", "None", "Obelisk 1", "Obelisk 2", "Obelisk 3", "X: 2, Y: 2" }));
-            Assert.That(WpfTestApplication.Descendants<CheckBox>(card).Select(c => c.IsChecked), Is.EqualTo(new bool?[] { false, true, false }));
+            var texts = WpfTestApplication.Descendants<TextBlock>(card).Where(t => t.IsVisible).Select(t => t.Text).ToList();
+            Assert.That(texts, Is.SupersetOf(new[] { "Visited obelisks", "1 of 3 visited", "Obelisk 1", "Obelisk 2", "Obelisk 3", "2" }));
+            var buttons = WpfTestApplication.Descendants<Button>(card).Select(b => b.Content?.ToString()).ToList();
+            Assert.That(buttons, Is.SupersetOf(new[] { "Visit all", "None", "Obelisk", "X", "Y", "Visited" }));
+            Assert.That(WpfTestApplication.Descendants<ComboBox>(card).Select(c => c.SelectedItem), Is.EqualTo(new[] { "No", "Yes", "No" }));
+            Assert.That(texts, Has.None.EqualTo("Level"), "a game whose map has one level has no level column");
+        }
+
+        [Test]
+        public void TheVisitedBoxesStartWhereTheirHeadingStarts()
+        {
+            var card = new ObeliskVisitsCard { DataContext = new FakeObelisks(2) };
+            using var hosted = WpfTestApplication.Show(card);
+
+            double LeftOf(System.Windows.FrameworkElement element) => element.TranslatePoint(new System.Windows.Point(0, 0), card).X;
+            var heading = WpfTestApplication.Descendants<Button>(card).Single(b => b.Content?.ToString() == "Visited");
+            var box = WpfTestApplication.Descendants<ComboBox>(card).First();
+
+            Assert.That(LeftOf(box), Is.EqualTo(LeftOf(heading)).Within(0.5));
+        }
+
+        [Test]
+        public void ClickingAHeadingSortsTheObeliskAndAnotherClickReversesThem()
+        {
+            var obelisks = new FakeObelisks(3);
+
+            obelisks.List.Columns["X"].SortCommand.Execute(null);
+            Assert.That(obelisks.List.Items.Select(o => o.Number), Is.EqualTo(new[] { 1, 2, 3 }));
+
+            obelisks.List.Columns["X"].SortCommand.Execute(null);
+            Assert.That(obelisks.List.Items.Select(o => o.Number), Is.EqualTo(new[] { 3, 2, 1 }));
+        }
+
+        [Test]
+        public void PickingYesOrNoInTheVisitedBoxMarksTheObelisk()
+        {
+            var obelisks = new FakeObelisks(2);
+
+            obelisks.Obelisks[1].VisitedText = "Yes";
+
+            Assert.That(obelisks.Visited, Is.EqualTo(new[] { false, true }));
+            Assert.That(obelisks.Obelisks[1].VisitedText, Is.EqualTo("Yes"));
         }
 
         [Test]
@@ -70,7 +110,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             {
             }
 
-            protected override string CoordinatesOf(int index) => $"X: {index + 1}, Y: {index + 1}";
+            protected override MapPosition? PositionOf(int index) => new MapPosition(index + 1, index + 1, MapPosition.Above);
 
             protected override bool IsVisited(int index) => this.Visited[index];
 

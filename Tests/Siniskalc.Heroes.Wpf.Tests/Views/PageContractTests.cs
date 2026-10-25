@@ -42,8 +42,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             using var hosted = WpfTestApplication.Show(grid);
 
             var texts = WpfTestApplication.Descendants<TextBlock>(grid).Select(t => t.Text).ToList();
-            Assert.That(texts, Is.SupersetOf(new[] { "Blue", "Gold", "Resources", "Quick add", "Ariel", "Knight, level 3", "Limits.", "No towns" }));
-            Assert.That(WpfTestApplication.Descendants<Button>(grid).Select(b => b.Content), Is.SupersetOf(new object[] { "All +100", "Gold +100k", "+10k", "Reset", "Ariel" }));
+            Assert.That(texts, Is.SupersetOf(new[] { "Blue", "Gold", "Resources", "Quick", "Ariel", "Knight, level 3", "Limits.", "No towns" }));
+            Assert.That(WpfTestApplication.Descendants<Button>(grid).Select(b => b.Content), Is.SupersetOf(new object[] { "Res +100", "Gold +100k", "+10k", "Reset", "Ariel" }));
         }
 
         [Test]
@@ -135,7 +135,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
 
             public ICommand SetRichCommand { get; } = new NoCommand();
 
-            public string SetAllLabel => "All +100";
+            public ICommand ClearAllResourcesCommand { get; } = new NoCommand();
+
+            public ICommand ClearRichCommand { get; } = new NoCommand();
+
+            public string SetAllLabel => "Res +100";
 
             public string SetRichLabel => "Gold +100k";
 

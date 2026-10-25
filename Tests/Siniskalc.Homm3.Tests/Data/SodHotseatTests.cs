@@ -1,8 +1,7 @@
-using Siniskalc.Heroes.Models;
+﻿using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
-using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
 namespace Siniskalc.Homm3.Tests.Data
@@ -158,7 +157,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var game = Hotseat("five_teams_00_game_begin");
             using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText);
 
-            Assert.That(red.Obelisks.Obelisks[0].Coordinates, Is.EqualTo("X: 47, Y: 8, Surface (0)"));
+            Assert.That(red.Obelisks.Obelisks[0].Coordinates, Is.EqualTo("Pos: 47, 8, Surface"));
         }
     }
 }

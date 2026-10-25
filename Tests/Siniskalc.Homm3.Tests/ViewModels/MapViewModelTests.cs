@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var page = new MapViewModel(game, TestServices.EffectLines);
 
             Assert.That(page.Merchants.Select(m => m.Name), Is.EqualTo(new[] { "Black market 1", "Black market 2", "Black market 3", "Black market 4" }));
-            Assert.That(page.Merchants.Select(m => m.Location), Is.EqualTo(new[] { "At X: 28, Y: 34", "At X: 28, Y: 37", "At X: 31, Y: 34", "At X: 31, Y: 37" }));
+            Assert.That(page.Merchants.Select(m => m.Location), Is.EqualTo(new[] { "At 28, 34", "At 28, 37", "At 31, 34", "At 31, 37" }));
             Assert.That(page.Merchants.Select(m => string.Join(",", m.Slots.Select(s => s.ArtifactName))).Distinct().Count(), Is.EqualTo(4));
             var before = game.History.Current.Merchants().GetModels().Select(m => m.Slots.ToList()).ToList();
 

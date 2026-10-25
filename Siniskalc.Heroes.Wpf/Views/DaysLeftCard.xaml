@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels">
     <!-- The data context is a DaysLeftCardViewModel. Only a player who owns no town has days left; the buttons of a banished player are disabled. -->
-    <Border Margin="0,12,0,0" HorizontalAlignment="Left" Width="440">
+    <Border Margin="0,6" HorizontalAlignment="Left" Width="440">
         <Border.Style>
             <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -16,7 +16,7 @@
         </Border.Style>
         <StackPanel>
             <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0,0,0,8" Text="Banishing"
-                       ToolTip="A player who owns no town is banished when the days run out. Giving the player a town stops the countdown."/>
+                       ToolTip="A player who owns no town is banished when the days run out."/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{StaticResource MutedBrush}" Text="Days left"/>
                 <ItemsControl ItemsSource="{Binding DayChoices}">

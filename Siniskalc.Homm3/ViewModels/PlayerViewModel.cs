@@ -56,7 +56,7 @@ namespace Siniskalc.Homm3.ViewModels
                 () => this.session.Current.DaysLeft,
                 days => this.session.Update(player => player.WithDaysLeft(days)),
                 () => this.session.Current.IsBanished);
-            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", at => MapLevelText.Coordinates(at.X, at.Y, at.Level));
+            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(session.History, Homm3ChunkKinds.Obelisks, session.Current.Color, "Grail", hasLevels: true);
             this.MapObjects = new OwnedMapObjectsViewModel(session.History, session.Current.Color, byteEditTargets);
             this.TavernPlaces = TavernPlaceViewModel.ForTavern(
                 () => this.session.Current.Tavern,
@@ -155,6 +155,16 @@ namespace Siniskalc.Homm3.ViewModels
 
         /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
+
+        /// <summary>
+        /// Gets the command that sets every resource but gold to 0.
+        /// </summary>
+        public ICommand ClearAllResourcesCommand => this.resources.ClearAllCommand;
+
+        /// <summary>
+        /// Gets the command that sets gold to 0.
+        /// </summary>
+        public ICommand ClearRichCommand => this.resources.ClearRichCommand;
 
         /// <inheritdoc/>
         public string SetAllLabel => this.resources.SetAllLabel;

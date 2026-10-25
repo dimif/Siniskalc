@@ -59,10 +59,10 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             using var hosted = WpfTestApplication.Show(card);
 
             var texts = WpfTestApplication.Descendants<TextBlock>(card).Where(t => t.IsVisible).Select(t => t.Text).ToList();
-            Assert.That(texts, Is.SupersetOf(new[] { "Level", "Surface (0)", "Underground (1)" }));
+            Assert.That(texts, Is.SupersetOf(new[] { "Level", "Surface", "Underground" }));
             double LeftOf(System.Windows.FrameworkElement element) => element.TranslatePoint(new System.Windows.Point(0, 0), card).X;
             var heading = WpfTestApplication.Descendants<TextBlock>(card).Single(t => t.IsVisible && t.Text == "Level");
-            var cell = WpfTestApplication.Descendants<TextBlock>(card).First(t => t.IsVisible && t.Text == "Surface (0)");
+            var cell = WpfTestApplication.Descendants<TextBlock>(card).First(t => t.IsVisible && t.Text == "Surface");
             var ownerHeading = WpfTestApplication.Descendants<Button>(card).Single(b => b.Content?.ToString() == "Owner");
             var ownerCell = WpfTestApplication.Descendants<ComboBox>(card).First();
             Assert.That(LeftOf(cell), Is.EqualTo(LeftOf(heading)).Within(0.5));

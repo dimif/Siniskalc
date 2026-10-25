@@ -31,8 +31,8 @@ namespace Siniskalc.Heroes.Models
         MapPosition Position { get; }
 
         /// <summary>
-        /// Gets the name of the mine with its place, as the pending changes name it: "Gold mine at X: 12, Y: 7", with the level in a game whose map
-        /// has two ("Gold mine at X: 12, Y: 7, Underground (1)"); see <see cref="MineKinds.NameAt"/>.
+        /// Gets the name of the mine with its place, as the pending changes name it: "Gold mine at 12, 7", with the level in a game whose map
+        /// has two ("Gold mine at 12, 7, Underground"); see <see cref="MineKinds.NameAt"/>.
         /// </summary>
         string Name { get; }
     }

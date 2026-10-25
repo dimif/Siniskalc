@@ -67,7 +67,7 @@
                 ((PlayerViewModel)editor.CurrentPage!).SelectedTab = 0;
                 Show(window);
                 var texts = Descendants<TextBlock>(Find<Page>(window)!).Where(t => t.IsVisible).Select(t => t.Text).ToList();
-                Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick add" }));
+                Assert.That(texts, Is.SupersetOf(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold", "Quick" }));
 
                 editor.ShowHero(hero.Id);
                 foreach (var tab in Enumerable.Range(0, 5))

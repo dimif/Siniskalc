@@ -47,7 +47,7 @@
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
             this.Mines = MinesLists.Create(game, color);
-            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
+            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", hasLevels: false);
             this.resources = new ResourcesEditorViewModel(
                 Limits,
                 () => this.session.Current.Resources,
@@ -97,6 +97,16 @@
 
         /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
+
+        /// <summary>
+        /// Gets the command that sets every resource but gold to 0.
+        /// </summary>
+        public ICommand ClearAllResourcesCommand => this.resources.ClearAllCommand;
+
+        /// <summary>
+        /// Gets the command that sets gold to 0.
+        /// </summary>
+        public ICommand ClearRichCommand => this.resources.ClearRichCommand;
 
         /// <inheritdoc/>
         public string SetAllLabel => this.resources.SetAllLabel;

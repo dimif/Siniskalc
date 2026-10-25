@@ -1,8 +1,7 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Linq;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
@@ -45,7 +44,7 @@ namespace Siniskalc.Homm3.ViewModels
             var found = this.places.Of(kind);
             var toggles = found
                 .Select(place => new ToggleRowViewModel(
-                    $"At {MapLevelText.Coordinates(place.Position.X, place.Position.Y)}",
+                    $"At {MapLevelText.Place(place.Position.X, place.Position.Y)}",
                     () => (this.getHero().PlaceVisits.Of(kind) & (1u << place.Number)) != 0,
                     visited => this.update(h => h with { PlaceVisits = h.PlaceVisits.With(kind, visited ? h.PlaceVisits.Of(kind) | (1u << place.Number) : h.PlaceVisits.Of(kind) & ~(1u << place.Number)) }),
                     toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))

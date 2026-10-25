@@ -133,7 +133,7 @@ namespace Siniskalc.Homm3
             public const int RichGoldPreset = 1_000_000;
 
             /// <summary>
-            /// What the "All +100" and "Gold +100k" buttons add.
+            /// What the "Res +100" and "Gold +100k" buttons add.
             /// </summary>
             public const int AllResourcesIncrease = 100;
             public const int GoldIncrease = 100_000;

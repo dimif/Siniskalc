@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             var game = TestServices.LoadThreedom(71);
             var blue = MinesLists.Create(game, PlayerColor.Blue);
             var green = MinesLists.Create(game, PlayerColor.Green);
-            var mine = blue.Rows.Single(m => m.PositionText == "X: 34, Y: 53");
+            var mine = blue.Rows.Single(m => m.PositionText == "Pos: 34, 53");
             var greenBefore = green.Rows.Count;
 
             mine.OwnerField.Selected = "Green";

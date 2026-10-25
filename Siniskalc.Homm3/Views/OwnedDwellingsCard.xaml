@@ -2,33 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+             xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
              xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels">
     <!-- The dwellings of one owner, and the bytes of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
     <UserControl.Resources>
-        <!-- A row is picked while the focus is in it, so its bytes show below. -->
-        <Style x:Key="DwellingRowStyle" TargetType="ListBoxItem">
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border x:Name="mark" BorderThickness="2,0,0,0" BorderBrush="Transparent" Padding="4,0,0,0">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="mark" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                    <Setter Property="IsSelected" Value="True"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- A dwelling: the creature it gives, where it is, its owner and the creatures that can be hired. -->
         <DataTemplate x:Key="DwellingTemplate" DataType="{x:Type vm:MapDwellingRowViewModel}">
             <Grid Margin="0,2">
@@ -37,14 +14,14 @@
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="120"/>
-                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="130"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock FontWeight="SemiBold" VerticalAlignment="Center" Text="{Binding CreatureName}"/>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding X}" ToolTip="Column of the dwelling on the map. A hero stood on this tile to flag a dwelling of the Castle, and 3 tiles lower to visit a neutral one: the entrance can be a few tiles off."/>
                 <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding Y}" ToolTip="Row of the dwelling on the map"/>
                 <TextBlock Grid.Column="3" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding LevelText}" ToolTip="Level of the map the dwelling is on"/>
-                <ComboBox Grid.Column="4" HorizontalAlignment="Left" Width="140" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}"
+                <ComboBox Grid.Column="4" HorizontalAlignment="Left" Width="110" ItemsSource="{Binding OwnerField.Choices}" SelectedItem="{Binding OwnerField.Selected}"
                           ToolTip="{Binding OwnerField.ToolTip}"/>
                 <TextBox Grid.Column="5" HorizontalAlignment="Left" Width="90" HorizontalContentAlignment="Right" Text="{Binding StockText, UpdateSourceTrigger=LostFocus}"
                          ToolTip="The creatures that can be hired now"/>
@@ -53,32 +30,25 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-            <StackPanel>
-                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Dwellings"/>
-                <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                           Text="Who owns each dwelling and how many creatures can be hired there now. Click a dwelling to see its bytes in advanced mode. Not yet tried in the game."/>
-                <Grid Margin="0,0,0,2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="160"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Creature].Label}" Command="{Binding DwellingList.Columns[Creature].SortCommand}" ToolTip="Sort by creature"/>
-                    <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[X].Label}" Command="{Binding DwellingList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
-                    <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Y].Label}" Command="{Binding DwellingList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
-                    <TextBlock Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Text="Level"/>
-                    <Button Grid.Column="4" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Owner].Label}" Command="{Binding DwellingList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
-                    <Button Grid.Column="5" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Available].Label}" Command="{Binding DwellingList.Columns[Available].SortCommand}" ToolTip="Sort by the creatures that can be hired"/>
-                </Grid>
-                <ListBox ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}" ItemContainerStyle="{StaticResource DwellingRowStyle}"
-                         SelectedItem="{Binding SelectedDwelling, Mode=TwoWay}" BorderThickness="0" Background="Transparent"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
-            </StackPanel>
-        </Border>
+        <heroes:ListCard Heading="Dwellings" CardWidth="860" ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"
+                         SelectedItem="{Binding SelectedDwelling, Mode=TwoWay}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="130"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Creature].Label}" Command="{Binding DwellingList.Columns[Creature].SortCommand}" ToolTip="Sort by creature"/>
+                <Button Grid.Column="1" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[X].Label}" Command="{Binding DwellingList.Columns[X].SortCommand}" ToolTip="Sort by X (X, then Y)"/>
+                <Button Grid.Column="2" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Y].Label}" Command="{Binding DwellingList.Columns[Y].SortCommand}" ToolTip="Sort by Y (Y, then X)"/>
+                <TextBlock Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Text="Level"/>
+                <Button Grid.Column="4" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Owner].Label}" Command="{Binding DwellingList.Columns[Owner].SortCommand}" ToolTip="Sort by owner"/>
+                <Button Grid.Column="5" Style="{StaticResource SortHeadingStyle}" Content="{Binding DwellingList.Columns[Available].Label}" Command="{Binding DwellingList.Columns[Available].SortCommand}" ToolTip="Sort by the creatures that can be hired"/>
+            </Grid>
+        </heroes:ListCard>
 
         <!-- Hex: the bytes of the dwelling that is picked -->
         <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">

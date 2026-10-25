@@ -1,8 +1,7 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
-using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Homm3.Tests.Models;
@@ -215,8 +214,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         {
             var general = new GeneralInfoPageViewModel(() => this.hero.HeroModel, edit => this.hero.Session.Update(edit), TestServices.SpellPoints(this.hero.GameVersion), this.hero.GameVersion, hasUnderground: false);
 
-            Assert.That(general.Position.LevelChoices.Select(c => c.Label), Is.EqualTo(new[] { "Surface (0)" }).Or.EqualTo(new[] { "Surface (0)", "None" }));
-            Assert.That(this.hero.GeneralInfoViewModel.Position.LevelChoices.Select(c => c.Label), Does.Contain("Underground (1)"));
+            Assert.That(general.Position.LevelChoices.Select(c => c.Label), Is.EqualTo(new[] { "Surface" }).Or.EqualTo(new[] { "Surface", "None" }));
+            Assert.That(this.hero.GeneralInfoViewModel.Position.LevelChoices.Select(c => c.Label), Does.Contain("Underground"));
         }
     }
 }

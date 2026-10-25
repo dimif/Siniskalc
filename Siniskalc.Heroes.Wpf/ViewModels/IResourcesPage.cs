@@ -25,7 +25,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         ICommand SetRichCommand { get; }
 
         /// <summary>
-        /// Gets the text of the button that adds to every resource but gold, such as "All +100".
+        /// Gets the text of the button that adds to every resource but gold, such as "Res +100".
         /// </summary>
         string SetAllLabel { get; }
 
@@ -33,5 +33,15 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets the text of the button that adds to gold, such as "Gold +100k".
         /// </summary>
         string SetRichLabel { get; }
+
+        /// <summary>
+        /// Gets the command that sets every resource but gold to 0.
+        /// </summary>
+        ICommand ClearAllResourcesCommand { get; }
+
+        /// <summary>
+        /// Gets the command that sets gold to 0.
+        /// </summary>
+        ICommand ClearRichCommand { get; }
     }
 }

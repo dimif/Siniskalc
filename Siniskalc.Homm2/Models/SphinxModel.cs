@@ -30,7 +30,7 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public const int NoArtifact = 96;
 
-        public string Name => this.Position is { } at ? $"Sphinx at X: {at.X}, Y: {at.Y}" : $"Sphinx {this.Index + 1}";
+        public string Name => this.Position is { } at ? $"Sphinx at {at.X}, {at.Y}" : $"Sphinx {this.Index + 1}";
 
         public bool Equals(SphinxModel? other) =>
             other is not null

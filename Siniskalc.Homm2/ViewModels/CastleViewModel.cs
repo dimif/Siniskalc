@@ -6,7 +6,6 @@
     using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -30,6 +29,7 @@
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
+        private DwellingStockActions? dwellingActions;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
         private CastleModel castle = null!;
         private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
@@ -187,6 +187,11 @@
         public ToggleRowViewModel CanBuildThisTurn { get; }
 
         public IReadOnlyList<DwellingRowViewModel> Dwellings => this.dwellings;
+
+        /// <summary>
+        /// Gets the buttons that fill every dwelling (all +1 week, all +100, all empty).
+        /// </summary>
+        public DwellingStockActions DwellingActions => this.dwellingActions ??= new DwellingStockActions(() => this.dwellings);
 
         /// <summary>
         /// Gets the army that defends the castle when no hero is in it: its slots and the finder of creatures.

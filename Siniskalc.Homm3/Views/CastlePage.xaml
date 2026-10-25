@@ -34,6 +34,8 @@
         <!-- A creature level: the dwelling that serves it with its state, and the creatures waiting in it on the right. -->
         <DataTemplate x:Key="DwellingRowTemplate" DataType="{x:Type vm:DwellingRowViewModel}">
             <DockPanel Margin="0,3">
+                <Button DockPanel.Dock="Right" Style="{StaticResource PillButtonStyle}" Margin="12,0,0,0" VerticalAlignment="Center" Content="+1 wk" Command="{Binding AddWeekCommand}"
+                        ToolTip="Add a week of growth to the dwelling"/>
                 <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" Value="{Binding Count}" Minimum="0" Maximum="{Binding Maximum}"
                                ToolTip="How many creatures wait in this dwelling">
                     <wpf:Stepper.Style>
@@ -232,8 +234,11 @@
 
                 <!-- Available creatures -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <heroes:HeadedCard Heading="Available creatures" Summary="{Binding DwellingsSummary}">
-                        <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingRowTemplate}"/>
+                    <heroes:HeadedCard Heading="Available creatures" Summary="{Binding DwellingsSummary}" CardWidth="672">
+                        <StackPanel>
+                            <heroes:DwellingStockQuickRow DataContext="{Binding DwellingActions}"/>
+                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingRowTemplate}"/>
+                        </StackPanel>
                     </heroes:HeadedCard>
                 </WrapPanel>
 

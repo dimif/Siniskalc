@@ -27,6 +27,7 @@
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
         private readonly int castleIndex;
+        private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
         private string notice = string.Empty;
 
@@ -155,6 +156,11 @@
         /// Gets the seven creature levels with the dwelling that serves each and the creatures waiting in it.
         /// </summary>
         public IReadOnlyList<DwellingRowViewModel> Dwellings { get; private set; } = [];
+
+        /// <summary>
+        /// Gets the buttons that fill every dwelling (all +1 week, all +100, all empty).
+        /// </summary>
+        public DwellingStockActions DwellingActions => this.dwellingActions ??= new DwellingStockActions(() => this.Dwellings);
 
         /// <summary>
         /// Gets a line such as "123 Total".

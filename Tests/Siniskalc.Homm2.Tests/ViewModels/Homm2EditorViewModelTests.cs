@@ -649,6 +649,26 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheWeekAndQuickButtonsFillTheBuiltDwellingsOfACastleFromTheirOwnGrowth()
+        {
+            this.editor.ShowCastle(this.editor.CurrentGame!.History.Current.Castles().FindByName("Xabran"));
+            var page = (CastleViewModel)this.editor.CurrentPage!;
+            var built = page.Dwellings.First(d => !d.IsBuilt);
+            built.Built.Selected = built.Built.Choices[1];
+            built.Waiting.Value = 10;
+            var growth = ((Siniskalc.Heroes.Wpf.ViewModels.IStockedDwelling)built).WeeklyGrowthAmount;
+
+            built.AddWeekCommand.Execute(null);
+            Assert.That(built.Waiting.Value, Is.EqualTo(10 + growth), "the dwelling adds what it gains each week");
+
+            page.DwellingActions.AddHundredToAllCommand.Execute(null);
+            Assert.That(built.Waiting.Value, Is.EqualTo(110 + growth));
+
+            page.DwellingActions.ClearAllCommand.Execute(null);
+            Assert.That(page.Dwellings.Where(d => d.IsBuilt).Select(d => d.Waiting.Value), Has.All.EqualTo(0));
+        }
+
+        [Test]
         public void TheMageGuildIsEditedByLevelAndByPlace()
         {
             var page = this.OpenCastleOf(PlayerColor.Blue);

@@ -1,12 +1,14 @@
 ﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
+    using System.Windows.Input;
     using Siniskalc.Core;
+    using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// A creature level of the castle, as a line of the page: the dwelling that serves it and the creatures waiting in it.
     /// </summary>
-    public sealed class DwellingRowViewModel
+    public sealed class DwellingRowViewModel : IStockedDwelling
     {
         private readonly Action<int>? setCount;
         private long count;
@@ -17,6 +19,8 @@
         public DwellingRowViewModel(int level, string dwelling, string state, string creatures, bool isBuilt, int? count = null, Action<int>? setCount = null, string creatureNames = "", int weeklyGrowth = 0)
         {
             this.WeeklyGrowthText = Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(weeklyGrowth);
+            this.WeeklyGrowthAmount = weeklyGrowth;
+            this.AddWeekCommand = DwellingStockActions.AddWeekCommandOf(this);
             this.CreatureNames = creatureNames;
             this.setCount = setCount;
             this.count = count ?? 0;
@@ -68,5 +72,25 @@
         /// Gets the base weekly growth of the creatures, such as "+14 a week", or nothing for a dwelling that is not built.
         /// </summary>
         public string WeeklyGrowthText { get; }
+
+        /// <summary>
+        /// Gets the base weekly growth of the creatures, 0 for a dwelling that is not built.
+        /// </summary>
+        public int WeeklyGrowthAmount { get; }
+
+        /// <summary>
+        /// Gets the command that adds a week of growth to the dwelling.
+        /// </summary>
+        public ICommand AddWeekCommand { get; }
+
+        /// <inheritdoc/>
+        bool IStockedDwelling.CanStock => this.CanEdit;
+
+        /// <inheritdoc/>
+        long IStockedDwelling.Stock
+        {
+            get => this.Count;
+            set => this.Count = value;
+        }
     }
 }

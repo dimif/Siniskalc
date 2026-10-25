@@ -50,7 +50,8 @@
                     this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
                     this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
                 ],
-                "What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game.");
+                "What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game.",
+                () => this.session.Update(h => h with { NextBattle = default, Effects = h.Effects & ~(HeroEffects.Temple | HeroEffects.Fountain | HeroEffects.Oasis | HeroEffects.FaerieRing | HeroEffects.Graveyard) }));
             this.usedOnce =
             [
                 this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),

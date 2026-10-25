@@ -1,13 +1,28 @@
 <UserControl x:Class="Siniskalc.Heroes.Wpf.Views.NextBattleCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- The data context is a NextBattleCardViewModel. -->
+    <!-- The data context is a NextBattleCardViewModel. It is laid out like the card of the places a hero visited: the heading, a pill that
+         takes everything away, then the places that give a bonus under a line with how many of them there are. -->
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
     <Border Style="{StaticResource CardStyle}" Width="330">
         <StackPanel>
             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Title}"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,4" Visibility="{Binding HasClear, Converter={StaticResource BoolToVisibility}}">
+                <Button Style="{StaticResource PillButtonStyle}" Content="All none" Command="{Binding ClearCommand}"
+                        ToolTip="Take every bonus away: morale and luck back to 0 and no place visited. Not tried in the game."/>
+            </StackPanel>
             <ItemsControl ItemsSource="{Binding Bonus}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
-            <TextBlock Margin="0,8,0,2" Foreground="{StaticResource MutedBrush}" Text="Given by"/>
-            <ItemsControl ItemsSource="{Binding Sources}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+            <Expander Margin="0,6,0,2" IsExpanded="True">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Width="104" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="Given by"/>
+                        <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SourcesText}"/>
+                    </StackPanel>
+                </Expander.Header>
+                <ItemsControl Margin="20,2,0,4" ItemsSource="{Binding Sources}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+            </Expander>
             <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0" Text="{Binding Note}"/>
         </StackPanel>
     </Border>

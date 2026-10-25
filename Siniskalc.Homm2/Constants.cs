@@ -148,9 +148,10 @@ namespace Siniskalc.Homm2
             public const long MaxCreatures = 65_535;
 
             /// <summary>
-            /// The most creatures the editor lets wait in a dwelling. The savegame holds more, but the game was only seen with a few dozen.
+            /// The most creatures the editor lets wait in a dwelling: what the savegame holds (16 bits), the same as the most a stack can hold, so
+            /// both can be tried at the limit. The game was only seen with a few dozen.
             /// </summary>
-            public const long MaxWaiting = 999;
+            public const long MaxWaiting = MaxCreatures;
 
             /// <summary>
             /// The creatures the Well adds each week to every dwelling that is built.

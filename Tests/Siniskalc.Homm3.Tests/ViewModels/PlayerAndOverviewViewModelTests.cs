@@ -1,4 +1,5 @@
 ﻿using Siniskalc.Heroes.Wpf.ViewModels;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
@@ -112,6 +113,19 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold" }));
             Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(220976));
             Assert.That(player.Resources.Single(r => r.Name == "Mercury").Value, Is.EqualTo(153));
+        }
+
+        [Test]
+        public void EachResourceSaysWhatTheMinesAndTheTownHallsOfThePlayerGiveEachDay()
+        {
+            this.PlayerNode("Purple").IsSelected = true;
+
+            var player = this.main.CurrentPageOf<PlayerViewModel>();
+            var document = this.main.LoadedGame().History.Current;
+            var income = Siniskalc.Homm3.Models.DailyIncome.Of(Siniskalc.Homm3.Entities.PlayerColor.Purple, document.Mines().GetModels(), document.Castles().GetModels());
+            Assert.That(
+                player.Resources.Select(r => r.Note),
+                Is.EqualTo(Enum.GetValues<Siniskalc.Heroes.Entities.Resource>().Select(r => income[r] > 0 ? $"+{income[r]:N0} a day" : string.Empty)));
         }
 
         [Test]

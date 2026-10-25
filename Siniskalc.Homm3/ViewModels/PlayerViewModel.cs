@@ -51,7 +51,8 @@ namespace Siniskalc.Homm3.ViewModels
                 Limits,
                 () => this.session.Current.Resources,
                 () => this.Session.Original.Resources,
-                edit => this.session.Update(player => player with { Resources = edit(player.Resources) }));
+                edit => this.session.Update(player => player with { Resources = edit(player.Resources) }),
+                this.IncomeNote);
             this.DaysLeftCard = new DaysLeftCardViewModel(
                 () => this.session.Current.DaysLeft,
                 days => this.session.Update(player => player.WithDaysLeft(days)),
@@ -218,6 +219,14 @@ namespace Siniskalc.Homm3.ViewModels
             this.RaisePropertyChanged(nameof(this.HasHeroes));
             this.RaisePropertyChanged(nameof(this.Castles));
             this.RaisePropertyChanged(nameof(this.HasCastles));
+        }
+
+        // The savegame keeps no income: it is worked out from the mines and the town halls the player owns, so it is what the player earns at least.
+        private string IncomeNote(Resource resource)
+        {
+            var document = this.session.History.Current;
+            var income = DailyIncome.Of(this.session.Current.Color, document.Mines().GetModels(), document.Castles().GetModels());
+            return income[resource] > 0 ? $"+{income[resource]:N0} a day" : string.Empty;
         }
 
         private void RefreshBanishing()

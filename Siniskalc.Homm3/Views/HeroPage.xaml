@@ -86,7 +86,7 @@
             </Grid>
             <Grid Style="{StaticResource TabPanel4}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <WrapPanel Margin="-6,0,0,0">
+                    <WrapPanel>
                         <heroes:VisitedPlacesCard DataContext="{Binding PlacesViewModel.PlacesVisited}"/>
                     </WrapPanel>
                 </ScrollViewer>

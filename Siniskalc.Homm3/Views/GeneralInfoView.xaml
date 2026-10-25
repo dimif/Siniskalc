@@ -12,7 +12,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <WrapPanel Margin="2">
+        <WrapPanel>
 
             <heroes:PrimarySkillsCard DataContext="{Binding PrimarySkills}"/>
 

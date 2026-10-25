@@ -146,7 +146,7 @@
 
             var selected = new Trigger { Property = DataGridCell.IsSelectedProperty, Value = true };
             selected.Setters.Add(new Setter(Control.BackgroundProperty, HexPalette.SelectedBackground));
-            selected.Setters.Add(new Setter(Control.ForegroundProperty, System.Windows.Media.Brushes.Black));
+            selected.Setters.Add(new Setter(Control.ForegroundProperty, HexPalette.SelectedForeground));
             style.Triggers.Add(selected);
 
             return style;

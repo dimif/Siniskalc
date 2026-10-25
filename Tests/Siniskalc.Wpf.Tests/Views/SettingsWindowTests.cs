@@ -44,7 +44,7 @@ namespace Siniskalc.Wpf.Tests.Views
                     var levels = Descendants<ComboBox>(window).Single();
                     Assert.That(levels.Items, Has.Count.EqualTo(6));
                     Assert.That(levels.SelectedItem, Is.EqualTo(LogLevel.Debug));
-                    Assert.That(Descendants<TextBox>(window).Single().Text, Is.EqualTo(Path.Combine(folder, "logs")));
+                    Assert.That(Descendants<TextBox>(window).Single(t => t.TemplatedParent is not ComboBox).Text, Is.EqualTo(Path.Combine(folder, "logs")));
                     Assert.That(Descendants<Button>(window).Select(b => b.Content), Is.EquivalentTo(new object[] { "Browse...", "Use default", "OK", "Cancel" }));
                     Assert.That(Descendants<CheckBox>(window).Select(c => (c.Content, c.IsChecked)), Is.EqualTo(new[] { ((object)"Back up on save", (bool?)true), ("Advanced mode", false) }));
                     Assert.That(Descendants<TextBlock>(window).Select(t => t.Text), Is.SupersetOf(new[] { "Saving", "Tools", "Logging" }));

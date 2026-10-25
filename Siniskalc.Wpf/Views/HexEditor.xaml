@@ -90,6 +90,7 @@
                                     <TreeView.ItemContainerStyle>
                                         <Style TargetType="TreeViewItem">
                                             <EventSetter Event="Selected" Handler="RegionSelected"/>
+                                            <EventSetter Event="MouseLeftButtonUp" Handler="RegionClicked"/>
                                         </Style>
                                     </TreeView.ItemContainerStyle>
                                     <TreeView.ItemTemplate>

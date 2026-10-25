@@ -20,6 +20,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
+        /// Gets the hit points of one creature of the stack.
+        /// </summary>
+        public string CreatureHealth => Format(this.info.Health);
+
+        /// <summary>
+        /// Gets the damage one creature of the stack deals, as a range such as "2-5", or one number when it does not vary.
+        /// </summary>
+        public string CreatureDamage => this.info.MinDamage == this.info.MaxDamage ? Format(this.info.MinDamage) : $"{Format(this.info.MinDamage)}-{Format(this.info.MaxDamage)}";
+
+        /// <summary>
         /// Gets the hit points of the whole stack.
         /// </summary>
         public string Health => Format((long)this.info.Health * this.amount);
@@ -75,8 +85,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<StackFact> ToFacts() =>
         [
-            new("HP Total", this.Health),
-            new("Damage", this.Damage),
+            new("HP", this.CreatureHealth, "Hit points of one creature"),
+            new("Damage", this.CreatureDamage, "Damage of one creature"),
+            new("Stack HP", this.Health, "Hit points of the whole stack"),
+            new("Stack Damage", this.Damage, "Damage of the whole stack"),
             new("Cost", this.Cost),
             new(string.Empty, this.OtherCost, IsNote: true),
             new("AI value", this.AiValue, "What the computer player counts the stack as worth"),
@@ -88,8 +100,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<StackFact> ToHealthAndDamageFacts() =>
         [
-            new("HP Total", this.Health),
-            new("Damage", this.Damage),
+            new("HP", this.CreatureHealth, "Hit points of one creature"),
+            new("Damage", this.CreatureDamage, "Damage of one creature"),
+            new("Stack HP", this.Health, "Hit points of the whole stack"),
+            new("Stack Damage", this.Damage, "Damage of the whole stack"),
         ];
 
         private static string Format(long number) => number.ToString("N0", CultureInfo.CurrentCulture);

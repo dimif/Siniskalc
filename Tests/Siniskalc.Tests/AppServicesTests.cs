@@ -40,7 +40,7 @@ namespace Siniskalc.Tests
         {
             this.shell.LoadGame(Saves.Homm2());
 
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (Base game)"));
+            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (The Succession Wars)"));
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Homm2));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
         }

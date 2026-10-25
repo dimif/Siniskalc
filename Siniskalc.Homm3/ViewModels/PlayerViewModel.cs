@@ -27,7 +27,9 @@ namespace Siniskalc.Homm3.ViewModels
             Constants.Resources.GoldStep,
             Constants.Resources.OtherStep,
             Constants.Resources.AllResourcesIncrease,
-            Constants.Resources.GoldIncrease);
+            Constants.Resources.GoldIncrease,
+            Constants.Resources.OtherPreset,
+            Constants.Resources.GoldPreset);
 
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
@@ -46,7 +48,6 @@ namespace Siniskalc.Homm3.ViewModels
             this.openCastle = openCastle;
             this.ControlText = PlayerTypeText.Describe(control, isCurrent);
             this.resources = new ResourcesEditorViewModel(
-                ResourceSet.All.OrderBy(resource => resource != Resource.Gold),
                 Limits,
                 () => this.session.Current.Resources,
                 () => this.Session.Original.Resources,
@@ -154,6 +155,12 @@ namespace Siniskalc.Homm3.ViewModels
 
         /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
+
+        /// <inheritdoc/>
+        public string SetAllLabel => this.resources.SetAllLabel;
+
+        /// <inheritdoc/>
+        public string SetRichLabel => this.resources.SetRichLabel;
 
         /// <summary>
         /// Gets the player as the savefile had it when it was loaded or last saved.

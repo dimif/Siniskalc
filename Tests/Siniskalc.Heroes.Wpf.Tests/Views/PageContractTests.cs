@@ -5,6 +5,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     using System.Windows.Controls;
     using System.Windows.Input;
     using Moq;
+    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Wpf.Views;
@@ -40,8 +42,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
             using var hosted = WpfTestApplication.Show(grid);
 
             var texts = WpfTestApplication.Descendants<TextBlock>(grid).Select(t => t.Text).ToList();
-            Assert.That(texts, Is.SupersetOf(new[] { "Blue", "Gold", "Quick add", "Ariel", "Knight, level 3", "Limits.", "No towns" }));
-            Assert.That(WpfTestApplication.Descendants<Button>(grid).Select(b => b.Content), Is.SupersetOf(new object[] { "All +99", "Gold +100k", "Reset", "Ariel" }));
+            Assert.That(texts, Is.SupersetOf(new[] { "Blue", "Gold", "Resources", "Quick add", "Ariel", "Knight, level 3", "Limits.", "No towns" }));
+            Assert.That(WpfTestApplication.Descendants<Button>(grid).Select(b => b.Content), Is.SupersetOf(new object[] { "All +100", "Gold +100k", "+10k", "Reset", "Ariel" }));
         }
 
         [Test]
@@ -126,11 +128,16 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
 
             public ICommand ResetCommand { get; } = new NoCommand();
 
-            public IReadOnlyList<AmountRowViewModel> Resources { get; } = [new("Gold", "#D4A91C", 0, 999, 1, () => 5, () => 5, _ => { })];
+            public IReadOnlyList<AmountRowViewModel> Resources { get; } =
+                [new ResourceRowViewModel(Resource.Gold, new ResourceLimits(0, 999, 999, 1, 1, 100, 100_000, 10, 10_000), () => ResourceSet.None, () => ResourceSet.None, _ => { })];
 
             public ICommand SetAllResourcesCommand { get; } = new NoCommand();
 
             public ICommand SetRichCommand { get; } = new NoCommand();
+
+            public string SetAllLabel => "All +100";
+
+            public string SetRichLabel => "Gold +100k";
 
             public string Name => "Blue";
 

@@ -10,7 +10,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [TestFixture]
     internal sealed class ResourcesEditorViewModelTests
     {
-        private static readonly ResourceLimits Limits = new(0, 1000, 100, 100, 1, 99, 500);
+        private static readonly ResourceLimits Limits = new(0, 1000, 100, 100, 1, 99, 500, 10, 250);
 
         private ResourceSet state = ResourceSet.None;
 
@@ -18,7 +18,6 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         public void StartWithNothing() => this.state = ResourceSet.None;
 
         private ResourcesEditorViewModel Editor(Func<Resource, string>? note = null) => new(
-            [Resource.Gold, Resource.Wood, Resource.Ore],
             Limits,
             () => this.state,
             () => ResourceSet.None,
@@ -26,9 +25,37 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             note);
 
         [Test]
-        public void ThereIsARowForEachResourceInTheOrderTheGameLists()
+        public void ThereIsARowForEachResourceInTheOrderOfTheGameWithGoldLast()
         {
-            Assert.That(this.Editor().Rows.Select(r => r.Resource), Is.EqualTo(new[] { Resource.Gold, Resource.Wood, Resource.Ore }));
+            Assert.That(
+                this.Editor().Rows.Select(r => r.Resource),
+                Is.EqualTo(new[] { Resource.Wood, Resource.Mercury, Resource.Ore, Resource.Sulfur, Resource.Crystal, Resource.Gems, Resource.Gold }));
+        }
+
+        [Test]
+        public void TheButtonsOfARowAddAFixedAmountAndStopAtTheLimit()
+        {
+            var rows = this.Editor().Rows;
+            var wood = rows.Single(r => r.Resource == Resource.Wood);
+            var gold = rows.Single(r => r.IsGold);
+            this.state = this.state.With(Resource.Wood, 95).With(Resource.Gold, 900);
+
+            wood.AddPresetCommand.Execute(null);
+            gold.AddPresetCommand.Execute(null);
+
+            Assert.That((this.state[Resource.Wood], this.state[Resource.Gold]), Is.EqualTo((100L, 1000L)));
+            Assert.That((wood.AddPresetCommand.CanExecute(null), gold.AddPresetCommand.CanExecute(null)), Is.EqualTo((false, false)), "nothing is left to add");
+        }
+
+        [Test]
+        public void TheButtonsSayWhatTheyAddInThousandsWhenTheyCan()
+        {
+            var editor = this.Editor();
+
+            Assert.That(editor.Rows.Single(r => r.Resource == Resource.Ore).AddPresetLabel, Is.EqualTo("+10"));
+            Assert.That(editor.Rows.Single(r => r.IsGold).AddPresetLabel, Is.EqualTo("+250"));
+            Assert.That((editor.SetAllLabel, editor.SetRichLabel), Is.EqualTo(("All +99", "Gold +500")));
+            Assert.That((AmountText.Plus(10_000), AmountText.Plus(100_000), AmountText.Plus(1_500)), Is.EqualTo(("+10k", "+100k", "+1,500")));
         }
 
         [Test]
@@ -36,7 +63,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var rows = this.Editor().Rows;
 
-            Assert.That((rows[0].Maximum, rows[0].Step, rows[1].Maximum, rows[1].Step), Is.EqualTo((1000L, 100L, 100L, 1L)));
+            Assert.That((rows[6].Maximum, rows[6].Step, rows[0].Maximum, rows[0].Step), Is.EqualTo((1000L, 100L, 100L, 1L)));
         }
 
         [Test]
@@ -72,7 +99,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var rows = this.Editor(resource => resource == Resource.Gold ? "+1,000 a day" : string.Empty).Rows;
 
-            Assert.That(rows.Select(r => r.Note), Is.EqualTo(new[] { "+1,000 a day", string.Empty, string.Empty }));
+            Assert.That(rows.Select(r => r.Note), Is.EqualTo(new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, "+1,000 a day" }));
         }
     }
 }

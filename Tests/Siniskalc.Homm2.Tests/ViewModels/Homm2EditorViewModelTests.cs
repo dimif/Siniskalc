@@ -268,7 +268,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);
-            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
+            Assert.That(player.Resources.Select(r => r.Name), Is.EqualTo(new[] { "Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold" }));
         }
 
         [Test]
@@ -379,7 +379,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             page.SetAllResourcesCommand.Execute(null);
 
             Assert.That(page.Resources.Single(r => r.Name == "Gold").Value, Is.EqualTo(gold + 100_000));
-            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + 99));
+            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + Constants.Player.AllResourcesIncrease));
         }
 
         [Test]

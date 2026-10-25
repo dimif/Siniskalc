@@ -111,10 +111,16 @@ namespace Siniskalc.Homm2
             public const long OtherStep = 1;
 
             /// <summary>
-            /// What the "All +99" and "Gold +100k" buttons add.
+            /// What the "All +100" and "Gold +100k" buttons add.
             /// </summary>
-            public const int AllResourcesIncrease = 99;
+            public const int AllResourcesIncrease = 100;
             public const int GoldIncrease = 100_000;
+
+            /// <summary>
+            /// What the "+10" button of a resource and the "+10k" button of gold add.
+            /// </summary>
+            public const int OtherPreset = 10;
+            public const int GoldPreset = 10_000;
         }
 
         /// <summary>

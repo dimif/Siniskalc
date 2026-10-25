@@ -10,18 +10,28 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     public interface IResourcesPage
     {
         /// <summary>
-        /// Gets a row for each resource, gold first, each editable.
+        /// Gets a row for each resource, in the order the game lists them (gold last), each editable.
         /// </summary>
         IReadOnlyList<AmountRowViewModel> Resources { get; }
 
         /// <summary>
-        /// Gets the command that adds 99 of every resource but gold.
+        /// Gets the command that adds to every resource but gold.
         /// </summary>
         ICommand SetAllResourcesCommand { get; }
 
         /// <summary>
-        /// Gets the command that adds 100,000 gold.
+        /// Gets the command that adds to gold.
         /// </summary>
         ICommand SetRichCommand { get; }
+
+        /// <summary>
+        /// Gets the text of the button that adds to every resource but gold, such as "All +100".
+        /// </summary>
+        string SetAllLabel { get; }
+
+        /// <summary>
+        /// Gets the text of the button that adds to gold, such as "Gold +100k".
+        /// </summary>
+        string SetRichLabel { get; }
     }
 }

@@ -330,27 +330,6 @@
         </Setter>
     </Style>
 
-    <!-- A number of a model as a card: its name, a stepper, and how far it is from the savegame (resources). The card turns brass-edged while it differs. -->
-    <DataTemplate x:Key="AmountCardTemplate" DataType="{x:Type vm:AmountRowViewModel}">
-        <Border Width="210">
-            <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsChanged}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <StackPanel>
-                <TextBlock Margin="0,0,0,8" FontWeight="SemiBold" Text="{Binding Name}"/>
-                <local:Stepper HorizontalAlignment="Stretch" Value="{Binding Value}" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Step="{Binding Step}"/>
-                <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="{Binding DeltaText}"/>
-                <TextBlock Style="{StaticResource FieldNoteStyle}" Text="{Binding Note}"/>
-            </StackPanel>
-        </Border>
-    </DataTemplate>
-
     <!-- A number of a model as a line of a card: the name on the left, a stepper on the right, and a note under it. -->
     <DataTemplate x:Key="AmountFieldTemplate" DataType="{x:Type vm:AmountRowViewModel}">
         <Grid Margin="0,3">

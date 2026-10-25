@@ -9,21 +9,20 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The resources of a player as a page shows them: a row for each resource in the order the game lists them, and the two buttons that
-    /// add to every resource but gold or to gold alone, each stopping at the limit of the resource.
+    /// The resources of a player as a page shows them: a row for each resource in the order the game lists them (wood, mercury, ore, sulfur,
+    /// crystal, gems and gold last, which is the order of <see cref="Resource"/>), the two buttons that add to every resource but gold or to
+    /// gold alone, and a button on each row, each stopping at the limit of the resource.
     /// </summary>
     public sealed class ResourcesEditorViewModel
     {
         private readonly Action<Func<ResourceSet, ResourceSet>> update;
 
-        /// <param name="order">The resources in the order the page lists them.</param>
         /// <param name="limits">What the player may hold, and what the buttons add.</param>
         /// <param name="current">Gets the resources of the player now.</param>
         /// <param name="original">Gets the resources of the player as the savefile had them.</param>
         /// <param name="update">Changes the resources of the player.</param>
         /// <param name="note">Tells what is shown beside the amount of a resource, such as its income; nothing when omitted.</param>
         public ResourcesEditorViewModel(
-            IEnumerable<Resource> order,
             ResourceLimits limits,
             Func<ResourceSet> current,
             Func<ResourceSet> original,
@@ -31,7 +30,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Func<Resource, string>? note = null)
         {
             this.update = update;
-            this.Rows = order.Select(resource => new ResourceRowViewModel(resource, limits, current, original, update, note)).ToList();
+            this.Rows = Enum.GetValues<Resource>().Select(resource => new ResourceRowViewModel(resource, limits, current, original, update, note)).ToList();
+            this.SetAllLabel = $"All {AmountText.Plus(limits.AllIncrease)}";
+            this.SetRichLabel = $"Gold {AmountText.Plus(limits.GoldIncrease)}";
             this.SetAllCommand = new DelegateCommand(_ => this.Add(this.Rows.Where(r => !r.IsGold), limits.AllIncrease));
             this.SetRichCommand = new DelegateCommand(_ => this.Add(this.Rows.Where(r => r.IsGold), limits.GoldIncrease));
         }
@@ -40,6 +41,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets a row for each resource.
         /// </summary>
         public IReadOnlyList<ResourceRowViewModel> Rows { get; }
+
+        /// <summary>
+        /// Gets the text of the button that adds to every resource but gold, such as "All +100".
+        /// </summary>
+        public string SetAllLabel { get; }
+
+        /// <summary>
+        /// Gets the text of the button that adds to gold, such as "Gold +100k".
+        /// </summary>
+        public string SetRichLabel { get; }
 
         /// <summary>
         /// Gets the command that adds to every resource but gold.

@@ -1,10 +1,8 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Windows.Input;
-    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -27,12 +25,9 @@ namespace Siniskalc.Homm2.ViewModels
             Constants.Player.GoldStep,
             Constants.Player.OtherStep,
             Constants.Player.AllResourcesIncrease,
-            Constants.Player.GoldIncrease);
-
-        private static readonly Resource[] ResourceOrder =
-        [
-            Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems,
-        ];
+            Constants.Player.GoldIncrease,
+            Constants.Player.OtherPreset,
+            Constants.Player.GoldPreset);
 
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
@@ -54,7 +49,6 @@ namespace Siniskalc.Homm2.ViewModels
             this.Mines = MinesLists.Create(game, color);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
             this.resources = new ResourcesEditorViewModel(
-                ResourceOrder,
                 Limits,
                 () => this.session.Current.Resources,
                 () => this.Game.History.Original.Players().GetModel(this.Color.Code).Resources,
@@ -103,6 +97,12 @@ namespace Siniskalc.Homm2.ViewModels
 
         /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
+
+        /// <inheritdoc/>
+        public string SetAllLabel => this.resources.SetAllLabel;
+
+        /// <inheritdoc/>
+        public string SetRichLabel => this.resources.SetRichLabel;
 
         /// <summary>
         /// Gets the mines of the map that the player owns, for the Mines tab.

@@ -11,9 +11,9 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     {
         private static readonly CastleDestination[] Castles =
         [
-            new("Whiteshield", new MapPosition(30, 17), "30, 17", false),
-            new("Colar Blau", new MapPosition(12, 9), "12, 9", true),
-            new("Xabran", new MapPosition(3, 4), "3, 4", false),
+            new("Whiteshield", new MapPosition(30, 17), "30, 17", false, "Knight"),
+            new("Colar Blau", new MapPosition(12, 9), "12, 9", true, "Sorceress"),
+            new("Xabran", new MapPosition(3, 4), "3, 4", false, "Necromancer"),
         ];
 
         [Test]
@@ -25,6 +25,28 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             list.SearchText = "  AR ";
             Assert.That(list.Castles.Select(c => c.Name), Is.EqualTo(new[] { "Colar Blau" }));
+        }
+
+        [Test]
+        public void TheSearchAlsoFindsACastleByItsPositionOrItsFaction()
+        {
+            var list = new SendToCastleViewModel(() => Castles, _ => { });
+
+            list.SearchText = "30, 1";
+            Assert.That(list.Castles.Select(c => c.Name), Is.EqualTo(new[] { "Whiteshield" }));
+
+            list.SearchText = "necro";
+            Assert.That(list.Castles.Select(c => c.Name), Is.EqualTo(new[] { "Xabran" }));
+
+            list.SearchText = "nothing like it";
+            Assert.That(list.Castles, Is.Empty);
+        }
+
+        [Test]
+        public void TheLineOfACastleNamesItsPlaceAndItsFactionAndSkipsWhatItHasNot()
+        {
+            Assert.That(Castles[0].Label, Is.EqualTo("Whiteshield  ·  30, 17  ·  Knight"));
+            Assert.That(new CastleDestination("Hut", new MapPosition(1, 2), "1, 2", false).Label, Is.EqualTo("Hut  ·  1, 2"));
         }
 
         [Test]

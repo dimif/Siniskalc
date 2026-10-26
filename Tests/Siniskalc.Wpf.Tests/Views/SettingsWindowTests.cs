@@ -49,6 +49,17 @@ namespace Siniskalc.Wpf.Tests.Views
                     Assert.That(Descendants<CheckBox>(window).Select(c => (c.Content, c.IsChecked)), Is.EqualTo(new[] { ((object)"Back up on save", (bool?)true), ("Advanced mode", false) }));
                     Assert.That(Descendants<TextBlock>(window).Select(t => t.Text), Is.SupersetOf(new[] { "Saving", "Tools", "Logging" }));
                     Assert.That(Descendants<TextBlock>(window).Any(t => t.Text.Contains(Path.Combine(folder, "default"))), Is.True);
+                    var box = Descendants<TextBox>(window).Single(t => t.TemplatedParent is not ComboBox);
+                    var label = Descendants<TextBlock>(window).Single(t => t.Text == "Log folder");
+                    var browse = Descendants<Button>(window).Single(b => Equals(b.Content, "Browse..."));
+                    var useDefault = Descendants<Button>(window).Single(b => Equals(b.Content, "Use default"));
+                    Point TopLeft(FrameworkElement element) => element.TranslatePoint(new Point(0, 0), window);
+                    Assert.That(box.ActualWidth, Is.GreaterThan(250), "the folder box takes the room of the row");
+                    Assert.That(box.HorizontalContentAlignment, Is.EqualTo(HorizontalAlignment.Left));
+                    Assert.That(TopLeft(label).X, Is.LessThan(TopLeft(box).X), "the label comes first");
+                    Assert.That(TopLeft(box).X, Is.LessThan(TopLeft(browse).X));
+                    Assert.That(TopLeft(browse).X, Is.LessThan(TopLeft(useDefault).X));
+                    Assert.That(Math.Abs((TopLeft(box).Y + (box.ActualHeight / 2)) - (TopLeft(browse).Y + (browse.ActualHeight / 2))), Is.LessThan(3), "label, box and buttons are one row");
                     Assert.That(errors.Messages, Is.Empty);
                 }
                 finally

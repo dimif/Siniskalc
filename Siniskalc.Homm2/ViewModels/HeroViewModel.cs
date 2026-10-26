@@ -346,7 +346,7 @@
                 {
                     var entrance = c.Position with { Y = c.Position.Y + 1 };
                     var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
-                    return new CastleDestination(c.Name, entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied);
+                    return new CastleDestination(c.Name, entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
                 })
                 .ToList();
         }

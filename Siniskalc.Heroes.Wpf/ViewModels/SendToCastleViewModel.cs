@@ -35,7 +35,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public bool HasCastles => this.castles().Count > 0;
 
         /// <summary>
-        /// Gets or sets the text the list is searched with, which keeps the castles whose name contains it.
+        /// Gets or sets the text the list is searched with, which keeps the castles whose name, place or faction contains it.
         /// </summary>
         public string SearchText
         {
@@ -69,10 +69,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Gets the castles that match the search, by name.
+        /// Gets the castles whose name, place or faction contains the search text, by name.
         /// </summary>
         public IReadOnlyList<CastleDestination> Castles => this.castles()
-            .Where(c => c.Name.Contains(this.searchText.Trim(), StringComparison.CurrentCultureIgnoreCase))
+            .Where(c => c.Matches(this.searchText.Trim()))
             .OrderBy(c => c.Name, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
 

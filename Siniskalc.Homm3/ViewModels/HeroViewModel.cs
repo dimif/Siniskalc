@@ -378,7 +378,7 @@
             return Enumerable.Range(0, castles.Count)
                 .Select(castles.GetModel)
                 .Where(c => c.IsUsed && c.Owner == hero.Owner)
-                .Select(c => new CastleDestination(c.Name, c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id))
+                .Select(c => new CastleDestination(c.Name, c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id, c.Faction?.Name ?? string.Empty))
                 .ToList();
         }
 

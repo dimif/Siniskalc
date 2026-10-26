@@ -59,6 +59,40 @@ namespace Siniskalc.Homm3.Tests.Views
             }
         }
 
+        [Test]
+        public void TheOtherCardIsTheLastCardOfTheGeneralTabAndThePositionComesBeforeIt()
+        {
+            TestApplication.Ensure();
+            var path = Path.Combine("TestData", "Hota", "Dwellings", "dwellings_05_tazar_flags_portal_of_glory.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            var shell = TestServices.CreateShell(editor);
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            var window = TestServices.CreateShellWindow(shell);
+            window.Show();
+            try
+            {
+                Pump();
+                editor.NavigationNodes.Descendants().First(n => n.Kind == NavNodeKind.Hero).IsSelected = true;
+                Pump();
+                window.UpdateLayout();
+                Pump();
+                var page = (Page)window.HeroFrame().Content;
+                var headings = Find<Border>(page)
+                    .Where(b => b.IsVisible && b.CornerRadius.TopLeft == 4 && b.Padding.Left == 14)
+                    .OrderBy(b => b.TranslatePoint(new Point(0, 0), page).Y)
+                    .ThenBy(b => b.TranslatePoint(new Point(0, 0), page).X)
+                    .Select(b => Find<TextBlock>(b).FirstOrDefault(t => t.IsVisible && !string.IsNullOrEmpty(t.Text))?.Text)
+                    .ToList();
+
+                Assert.That(headings.Last(), Is.EqualTo("Other"));
+                Assert.That(headings.IndexOf("Position"), Is.GreaterThanOrEqualTo(0).And.LessThan(headings.IndexOf("Other")));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
         private static IEnumerable<T> Find<T>(DependencyObject root)
             where T : DependencyObject
         {

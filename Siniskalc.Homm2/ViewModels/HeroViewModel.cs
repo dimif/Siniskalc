@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -117,7 +118,7 @@
                 new NumberRange(Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate),
                 getFacing: () => this.session.Current.Position.FacingDirection,
                 setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
-                castles: this.CastlesToSendTo);
+                destinations: this.DestinationsToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.session.Current.Destination,
                 destination => this.session.Update(h => h with { Destination = destination }),
@@ -325,10 +326,11 @@
         }
 
         /// <summary>
-        /// Gives the castles of the player of the hero, with the tile in front of the entrance of each (the one under the castle's own tile) and
-        /// whether another hero stands there or is in the castle. Nothing for a hero that serves nobody.
+        /// Gives the castles and the mines of the player of the hero. A castle is entered from the tile under its own tile and is taken when
+        /// another hero stands there or is in the castle; a mine is sent to by the tile of its record, which is only near its entrance. Nothing
+        /// for a hero that serves nobody.
         /// </summary>
-        private IReadOnlyList<CastleDestination> CastlesToSendTo()
+        private IReadOnlyList<MapDestination> DestinationsToSendTo()
         {
             var hero = this.session.Current;
             if (hero.Owner.IsNeutral)
@@ -339,16 +341,27 @@
             var document = this.Game.History.Current;
             var castles = document.Castles();
             var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
-            return castles.UsedIndexes()
+            var mines = document.Mines();
+            var castleDestinations = castles.UsedIndexes()
                 .Select(castles.GetModel)
                 .Where(c => c.Owner == hero.Owner)
                 .Select(c =>
                 {
                     var entrance = c.Position with { Y = c.Position.Y + 1 };
                     var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
-                    return new CastleDestination(c.Name, entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
-                })
-                .ToList();
+                    return new MapDestination(c.Name, "Castle", entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
+                });
+            var mineDestinations = Enumerable.Range(0, mines.Count)
+                .Select(mines.GetModel)
+                .Where(m => m.Owner == hero.Owner)
+                .Select(m => new MapDestination(
+                    MineKinds.NameOf(m.Kind),
+                    "Mine",
+                    m.Position,
+                    MapLevelText.Place(m.Position.X, m.Position.Y),
+                    others.Any(h => h.Position.X == m.Position.X && h.Position.Y == m.Position.Y),
+                    IsApproximate: true));
+            return castleDestinations.Concat(mineDestinations).ToList();
         }
 
         private ToggleRowViewModel Source(string name, HeroEffects effect, int morale, int luck, string toolTip) => new(

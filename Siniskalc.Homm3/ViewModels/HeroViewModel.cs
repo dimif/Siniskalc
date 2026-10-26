@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -39,7 +40,7 @@
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
-            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep, this.CastlesToSendTo);
+            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
             this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.History.Current.GameVersion());
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,
@@ -362,10 +363,12 @@
         }
 
         /// <summary>
-        /// Gives the castles of the player of the hero. The hero at the gate of a castle stands on the castle's own tile, so that is the entrance;
-        /// a castle is taken when another hero is at its gate. Nothing for a hero that serves nobody.
+        /// Gives the castles, the mines and the dwellings of the player of the hero. The hero at the gate of a castle stands on the castle's own
+        /// tile, so that is the entrance, and a castle is taken when another hero is at its gate. A dwelling is sent to by the tile a hero stands
+        /// on to flag it, and a mine by the tile of its record, which is only near its entrance. A place is taken when another hero stands on its
+        /// tile. Nothing for a hero that serves nobody.
         /// </summary>
-        private IReadOnlyList<CastleDestination> CastlesToSendTo()
+        private IReadOnlyList<MapDestination> DestinationsToSendTo()
         {
             var hero = this.HeroModel;
             if (hero.Owner.IsNeutral)
@@ -373,13 +376,23 @@
                 return [];
             }
 
-            var castles = this.session.History.Current.Castles();
+            var document = this.session.History.Current;
             var hasLevels = this.hasUnderground;
-            return Enumerable.Range(0, castles.Count)
+            var castles = document.Castles();
+            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            bool HeroStandsOn(MapPosition tile) => others.Any(h => h.Position.X == tile.X && h.Position.Y == tile.Y && h.Position.Level == tile.Level);
+
+            var castleDestinations = Enumerable.Range(0, castles.Count)
                 .Select(castles.GetModel)
                 .Where(c => c.IsUsed && c.Owner == hero.Owner)
-                .Select(c => new CastleDestination(c.Name, c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id, c.Faction?.Name ?? string.Empty))
-                .ToList();
+                .Select(c => new MapDestination(c.Name, "Castle", c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id, c.Faction?.Name ?? string.Empty));
+            var mineDestinations = document.Mines().GetModels()
+                .Where(m => m.Owner == hero.Owner)
+                .Select(m => new MapDestination(MineKinds.NameOf(m.Kind), "Mine", m.Position, MapLevelText.Place(m.Position, hasLevels), HeroStandsOn(m.Position), IsApproximate: true));
+            var dwellingDestinations = document.Dwellings().GetModels()
+                .Where(d => d.Owner == hero.Owner)
+                .Select(d => new MapDestination($"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} dwelling", "Dwelling", d.Position, MapLevelText.Place(d.Position, hasLevels), HeroStandsOn(d.Position)));
+            return castleDestinations.Concat(mineDestinations).Concat(dwellingDestinations).ToList();
         }
 
         private void Update(Func<HeroModel, HeroModel> edit)

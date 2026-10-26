@@ -43,7 +43,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="remove">Takes the point away, or <c>null</c> for a point that cannot be taken away.</param>
         /// <param name="isSet">Tells whether there is a point to take away.</param>
         /// <param name="removeToolTip">What the remove button says it does.</param>
-        /// <param name="sendToCastle">The command that moves the hero to a castle of its player, or <c>null</c> for a card that has none.</param>
+        /// <param name="sendTo">The command that moves the hero to a place of its player (a castle, a mine or a dwelling), or <c>null</c> for a card that has none.</param>
         public MapPointCardViewModel(
             string heading,
             Func<int> getX,
@@ -59,9 +59,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Action? remove = null,
             Func<bool>? isSet = null,
             string removeToolTip = "",
-            SendToCastleViewModel? sendToCastle = null)
+            SendToViewModel? sendTo = null)
         {
-            this.SendToCastle = sendToCastle;
+            this.SendTo = sendTo;
             this.Heading = heading;
             this.getX = getX;
             this.setX = setX;
@@ -83,14 +83,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string Heading { get; }
 
         /// <summary>
-        /// Gets the command that moves the hero to a castle of its player, or <c>null</c> when the card has none.
+        /// Gets the command that moves the hero to a place of its player (a castle, a mine or a dwelling), or <c>null</c> when the card has none.
         /// </summary>
-        public SendToCastleViewModel? SendToCastle { get; }
+        public SendToViewModel? SendTo { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the card has the send to castle command.
+        /// Gets a value indicating whether the card has the send to command.
         /// </summary>
-        public bool HasSendToCastle => this.SendToCastle != null;
+        public bool HasSendTo => this.SendTo != null;
 
         public NumberRange Coordinates { get; }
 
@@ -166,7 +166,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="levelChoices">Gives the levels of the map to pick from for the level the point is on now, or <c>null</c> in a game whose map has one level.</param>
         /// <param name="getFacing">Reads the direction the hero faces, or <c>null</c> when the game has none.</param>
         /// <param name="setFacing">Writes it.</param>
-        /// <param name="castles">Gives the castles of the player of the hero it can be sent to, or <c>null</c> for a hero that cannot be.</param>
+        /// <param name="destinations">Gives the castles, mines and dwellings of the player of the hero, which it can be sent to, or <c>null</c> for a hero that cannot be.</param>
         public static MapPointCardViewModel ForPosition(
             Func<MapPosition> get,
             Action<MapPosition> set,
@@ -174,9 +174,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Func<int, IReadOnlyList<MapLevelChoice>>? levelChoices = null,
             Func<FacingDirection>? getFacing = null,
             Action<FacingDirection>? setFacing = null,
-            Func<IReadOnlyList<CastleDestination>>? castles = null)
+            Func<IReadOnlyList<MapDestination>>? destinations = null)
         {
-            return Build("Position", get, set, coordinates, levelChoices, getFacing, setFacing, takeAway: false, castles is null ? null : new SendToCastleViewModel(castles, entrance => set(get() with { X = entrance.X, Y = entrance.Y, Level = entrance.Level })));
+            return Build("Position", get, set, coordinates, levelChoices, getFacing, setFacing, takeAway: false, destinations is null ? null : new SendToViewModel(destinations, entrance => set(get() with { X = entrance.X, Y = entrance.Y, Level = entrance.Level })));
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public void Refresh()
         {
             this.RaiseAllPropertiesChanged();
-            this.SendToCastle?.Refresh();
+            this.SendTo?.Refresh();
         }
 
         private static MapPointCardViewModel Build(
@@ -214,7 +214,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Func<FacingDirection>? getFacing,
             Action<FacingDirection>? setFacing,
             bool takeAway,
-            SendToCastleViewModel? sendToCastle = null)
+            SendToViewModel? sendTo = null)
         {
             return new MapPointCardViewModel(
                 heading,
@@ -231,7 +231,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 takeAway ? () => set(MapPosition.None) : null,
                 takeAway ? () => get() != MapPosition.None : null,
                 takeAway ? $"Take the {heading.ToLowerInvariant()} away: sets its X, Y{(levelChoices is null ? string.Empty : " and level")} to -1" : string.Empty,
-                sendToCastle);
+                sendTo);
         }
 
         private static void SetIfChanged<T>(T current, T value, Action<T> set)

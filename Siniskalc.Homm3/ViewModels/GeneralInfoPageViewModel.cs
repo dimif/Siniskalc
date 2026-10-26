@@ -32,7 +32,7 @@
         private readonly Func<bool> canSleep;
         private bool isRefreshing;
 
-        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<CastleDestination>>? castlesToSendTo = null)
+        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<MapDestination>>? destinationsToSendTo = null)
             : base("General Info")
         {
             this.getHero = getHero;
@@ -85,7 +85,7 @@
                 this.LevelChoices,
                 () => this.Hero.Position.FacingDirection,
                 facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
-                castlesToSendTo);
+                destinationsToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.Hero.Destination,
                 destination => this.Update(h => h with { Destination = destination }),

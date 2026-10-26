@@ -4,11 +4,11 @@ using Siniskalc.Homm3.ViewModels;
 namespace Siniskalc.Homm3.Tests.ViewModels
 {
     /// <summary>
-    /// The send to castle command of the position card on the roe_61_inferno_garrison_and_visiting savegame, where Tazar visits "4_Inferno".
+    /// The send to command of the position card on the roe_61_inferno_garrison_and_visiting savegame, where Tazar visits "4_Inferno".
     /// </summary>
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    internal sealed class HeroSendToCastleTests
+    internal sealed class HeroSendToTests
     {
         [Test]
         public void ACastleOfThePlayerIsListedAtItsGateAndIsTakenWhileAnotherHeroVisitsIt()
@@ -23,12 +23,16 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var other = heroes.GetModels().First(h => h.Owner == owner && h.Id != inferno.VisitingHeroId && !string.IsNullOrEmpty(h.Name));
 
             Assert.That(main.ShowHero(other.Name), Is.True);
-            var send = main.CurrentPageOf<HeroViewModel>().GeneralInfoViewModel.Position.SendToCastle!;
+            var send = main.CurrentPageOf<HeroViewModel>().GeneralInfoViewModel.Position.SendTo!;
 
-            var listed = send.Castles.Single(c => c.Name == "4_Inferno");
+            var listed = send.Destinations.Single(c => c.Name == "4_Inferno");
             Assert.That((listed.Entrance.X, listed.Entrance.Y, listed.Entrance.Level), Is.EqualTo((inferno.Position.X, inferno.Position.Y, inferno.Position.Level)));
             Assert.That(listed.IsOccupied, Is.True, "Tazar visits it");
-            Assert.That(send.Castles.All(c => castles.GetModels().Any(m => m.Name == c.Name && m.Owner == owner)), Is.True, "only the castles of the player");
+            var document = main.LoadedGame().History.Current;
+            Assert.That(send.Destinations.Where(c => c.Kind == "Castle").All(c => castles.GetModels().Any(m => m.Name == c.Name && m.Owner == owner)), Is.True, "only the castles of the player");
+            Assert.That(send.Destinations.Count(c => c.Kind == "Mine"), Is.EqualTo(document.Mines().GetModels().Count(m => m.Owner == owner)));
+            Assert.That(send.Destinations.Count(c => c.Kind == "Dwelling"), Is.EqualTo(document.Dwellings().GetModels().Count(d => d.Owner == owner)));
+            Assert.That(send.Destinations.Where(c => c.Kind != "Castle").All(c => c.PlaceText.Length > 0), Is.True);
         }
     }
 }

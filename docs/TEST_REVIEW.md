@@ -879,3 +879,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: 442 pass (the whole project); no other project was run, no production code changed.
 - Left for 17d: `MineDiffer`, `ShrineDiffer`, `SphinxDiffer` and a look at the other HoMM2 fixtures that may be unit-shaped.
 
+## Slice 17d - HoMM2 map-object differs and the spell points calculator as units
+
+- New Unit fixtures in `Tests\Siniskalc.Homm2.Tests\Data`, one per differ: `MineDifferTests` (2 cases), `ShrineDifferTests` (3) and `SphinxDifferTests` (2). They check the wording of Before/After, the order of the sphinx changes, the chunk kind and index of each change and the name of the record. Their revert functions run through a chunk and a history, so putting back stays covered by the Integration tests (`EditingTests`, `MapObjectsTests`).
+- `MaxSpellPointsCalculatorTests` moved to `Models\` as Unit (it only needed a skill set, not a savegame) and gained the case of negative knowledge.
+- Mutation check (all caught, production restored from git after one restore was refused by the file system): the Ore reward skipped by the sphinx differ, negative knowledge allowed in the calculator, the mine differ using the shrine chunk kind. Not checked: the shrine revert and the other cases.
+- Homm2.Tests: 450 pass (the whole project); no other project was run, no production code changed.
+- Slice 17 is done for the differs, serializers of hero and castle, and the hero and castle models. The other HoMM2 fixtures that read saves (`CastleWeeklyGrowthTests`, `HeroDestinationAndFacingTests`, `MapObjectsTests`, `MinesListsTests`, `HeroActiveSpellsTests`) were not rewritten; the handover lists them as an optional 17e. The HoMM2 serializers and deserializers of players and map objects have no tests of their own yet (slices 21-22).
+

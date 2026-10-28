@@ -34,7 +34,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void ExposesTitleBytesAndRegions()
+        public void TheTargetOfAHeroHasTheNameOfTheHeroItsBytesAndItsRegions()
         {
             Assert.That(this.target.Title, Is.EqualTo("Christian"));
             Assert.That(this.target.GetBytes(), Is.EqualTo(this.session.Chunk.ToArray()));

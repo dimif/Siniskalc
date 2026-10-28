@@ -44,7 +44,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void EveryHeroDeserializes()
+        public void EveryHeroRecordOfTheSaveIsReadWithoutAnError()
         {
             foreach (var chunk in this.chunks)
             {
@@ -53,7 +53,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void SirMullichIsDeserialized()
+        public void SirMullichIsReadWithTheOwnerClassLevelSkillsAndSpellsOfTheSave()
         {
             var hero = this.Hero("Sir Mullich");
 
@@ -111,7 +111,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void MaximusIsDeserialized()
+        public void MaximusIsReadWithTheOwnerClassLevelSkillsAndSpellsOfTheSave()
         {
             var hero = this.Hero("Maximus");
 
@@ -180,7 +180,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void ChristianIsDeserialized()
+        public void ChristianIsReadWithTheOwnerClassLevelSkillsAndSpellsOfTheSave()
         {
             var hero = this.Hero("Christian");
 

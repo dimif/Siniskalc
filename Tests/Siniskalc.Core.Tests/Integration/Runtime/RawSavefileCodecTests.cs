@@ -20,7 +20,7 @@ namespace Siniskalc.Core.Tests.Integration.Runtime
         public void DeleteFolder() => Directory.Delete(this.folder, recursive: true);
 
         [Test]
-        public void ReadsWhatWasWrittenAndTheFileHoldsTheBytesAsTheyAre()
+        public void ASavefileIsReadBackAsItWasWrittenAndTheFileHoldsItsBytesAsTheyAre()
         {
             var path = Path.Combine(this.folder, "save.GM1");
             var bytes = Enumerable.Range(0, 5000).Select(i => (byte)(i % 251)).ToArray();

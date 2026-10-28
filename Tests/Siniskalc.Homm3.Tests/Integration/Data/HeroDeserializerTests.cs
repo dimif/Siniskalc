@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void DeserializingHeroDeserializes()
+        public void TheSkillsClassSpellBookAndArmyOfAPreHotaHeroAreReadFromItsRecord()
         {
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_maximus_pre_hota.bin"));
             var bytesChunk = new HeroChunk("Maximus", bytes, 0);
@@ -61,7 +61,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void DeserializingFullMaximusDumpDeserializesHero()
+        public void TheWholeModelOfMaximusIsReadFromADumpOfHisHotaRecord()
         {
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_maximus_hota.bin"));
             var bytesChunk = new HeroChunk("Maximus", bytes, 0);
@@ -143,7 +143,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void DeserializingHasSpellBookForHeroWithDeserializes()
+        public void AHeroWhoHoldsASpellBookIsReadAsHavingOne()
         {
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_orrin_with_spellbook.bin"));
             var bytesChunk = new HeroChunk("Orrin", bytes, 0);
@@ -156,7 +156,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void DeserializingHasSpellBookForHeroWithoutDeserializes()
+        public void AHeroWithoutASpellBookIsReadAsHavingNone()
         {
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_orrin_no_spellbook.bin"));
             var bytesChunk = new HeroChunk("Orrin", bytes, 0);

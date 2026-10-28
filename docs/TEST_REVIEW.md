@@ -933,3 +933,15 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (caught, production restored): the facing byte never written, the destination Y never written. Not checked: the moved page tests.
 - Homm2.Tests: 452 pass (the whole project; 450 plus the two tests gained by the split); no other project was run; no production code changed.
 
+## Slice 20b - Test names that did not state the behaviour
+
+- Renamed 15 methods in 7 fixtures (bodies untouched), following `CLAUDE.md`: a save, hero or castle is named with what it shows, and a name never repeats the subject.
+  - `HeroDeserializerTests`: `DeserializingHeroDeserializes` is `TheSkillsClassSpellBookAndArmyOfAPreHotaHeroAreReadFromItsRecord`; its three siblings now say what they read (`TheWholeModelOfMaximusIsReadFromADumpOfHisHotaRecord`, `AHeroWhoHoldsASpellBookIsReadAsHavingOne`, `AHeroWithoutASpellBookIsReadAsHavingNone`).
+  - `HotaSaveTests`: `EveryHeroDeserializes` is `EveryHeroRecordOfTheSaveIsReadWithoutAnError`; the three `...IsDeserialized` are `<Hero>IsReadWithTheOwnerClassLevelSkillsAndSpellsOfTheSave`.
+  - `CreatureInfoTests`: `EveryCreatureHasHealthSpeedAndGoldAndANonInvertedDamageRange`, `TheGemsAndMercuryACreatureCostsAreImported`, `ARangedCreatureHasItsShotsAndAMeleeCreatureHasNone`.
+  - `GzipSavefileCodecTests` and `RawSavefileCodecTests`: both now start with the subject (`ASavefileIsReadBackAsItWasWritten...`).
+  - `GrantedSpellsResolverTests`: `ResolversOfTheSameGameVersionAreEqualAndTheTomeOfFireMagicGrantsFireball`.
+  - `HeroByteEditTargetTests`: `TheTargetOfAHeroHasTheNameOfTheHeroItsBytesAndItsRegions`.
+- Not renamed here: `PlayerAndOverviewViewModelTests.QuickSetCommandsAndResetPlayerWork` and `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`, which belong to fixtures that slice 20c splits (the limit for a mechanical slice is eight fixtures). The telegraphic names without articles (`SingleByteEditCanBeUndoneAndRedone`, ...) pass the rule and were left.
+- Run: the renamed fixtures only (Core 3, Homm3 30) pass; no production code changed.
+

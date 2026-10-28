@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Tests.Models
     internal sealed class GrantedSpellsResolverTests
     {
         [Test]
-        public void OneVersionsResolversAreEqualAndResolveThatVersionsSpells()
+        public void ResolversOfTheSameGameVersionAreEqualAndTheTomeOfFireMagicGrantsFireball()
         {
             var hota = new GrantedSpellsResolver(GameVersion.HornOfTheAbyss);
             var tome = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Misc1, Artifact.TomeOfFireMagic);

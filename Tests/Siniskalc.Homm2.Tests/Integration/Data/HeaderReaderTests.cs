@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
 
@@ -6,6 +6,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// The difficulty of the game, the difficulty of the map and the size of the map, from the saves of TestData/Homm2/MapDifficultySize.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeaderReaderTests
     {
         private const string Series = Saves.MapDifficultySize;

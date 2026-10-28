@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// The raw bytes of the records of the map that the hex editor works on (Threedom 71: mines, shrines, a sphinx and obelisks).
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ByteEditTargetFactoryTests
     {
         private readonly ByteEditTargetFactory factory = new();

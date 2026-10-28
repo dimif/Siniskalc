@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// The set of the castles that have built today, as the saves of TestData/Homm2/BuiltThisTurn and Threedom show it.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class BuiltTodayTests
     {
         private const string Folder = "BuiltThisTurn";

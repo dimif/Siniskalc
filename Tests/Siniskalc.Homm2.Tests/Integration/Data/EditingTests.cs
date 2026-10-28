@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -11,6 +11,7 @@
     /// Editing models and saving them: only the bytes that were edited change, and what the editor does not know is left alone.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class EditingTests
     {
         private Game game = null!;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -9,6 +9,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// What the pending changes of a castle say, and how they are put back.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class CastleDifferTests
     {
         private const int Xabran = 3;

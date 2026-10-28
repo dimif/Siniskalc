@@ -233,6 +233,19 @@ All three Core classification slices are complete.
 - Slices 06a–06e are complete; no production code or test assertions changed.
   Later isolation, assertion-strengthening and performance work remains open.
 
+### Slice 07a: first HoMM2 data fixtures
+
+- Moved eight real-save fixtures to `Integration/Data/`: built-today, byte-edit targets, castle differ, castles, edited saves, editing, editor saves and header reader.
+  Their whole fixtures remain Integration, even when some cases inspect only in-memory values.
+- Added project-local `TestKinds` and an additional method-level Manual category to the two Explicit save-writing helpers in this batch.
+  Explicit markers are unchanged; neither writer was invoked.
+- Adjusted the two `CallerFilePath` parent traversals for the extra folder depth.
+  Verified that each still resolves to this worktree's root without running the writer.
+  Other bodies and all assertions/names are unchanged; category/path/namespace agreement was checked.
+- Only HoMM2 was run: 389 passed in about 17 seconds.
+  Three Explicit helpers remain unexecuted (392 discovered); they are not counted as passed.
+  Thirty-eight fixtures remain unclassified.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

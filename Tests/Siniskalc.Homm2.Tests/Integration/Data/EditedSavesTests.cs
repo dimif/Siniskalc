@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -13,6 +13,7 @@
     /// the explicit test <see cref="WriteTheSavesForTheGame"/> writes them.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class EditedSavesTests
     {
         private static IReadOnlyList<EditedSave> Built { get; } = EditedSaves.Build();
@@ -109,9 +110,10 @@
         /// </summary>
         [Test]
         [Explicit("Writes TestData/Homm2/out for the write test with the game")]
+        [Category(TestKinds.Manual)]
         public void WriteTheSavesForTheGame()
         {
-            var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(ThisFile())!, "..", "..", ".."));
+            var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(ThisFile())!, "..", "..", "..", ".."));
             var folder = Path.Combine(root, "TestData", "Homm2", "out");
             Directory.CreateDirectory(folder);
 

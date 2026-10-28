@@ -19,14 +19,12 @@ namespace Siniskalc.Homm3.Tests.Data
             var failures = new List<string>();
             foreach (var path in CastleSamples.All().Where(p => VerifiedFactions.Any(f => Path.GetDirectoryName(p)!.EndsWith(f.Name)) && !p.EndsWith("cove_inland_all_cheat.GM1")))
             {
-                foreach (var chunk in CastleSamples.Load(path).History.Current.Castles())
+                var castles = CastleSamples.Load(path).History.Current.Castles()
+                    .Select(chunk => (Chunk: chunk, Model: TestServices.CastleDeserializer.Deserialize(chunk)))
+                    .Where(c => VerifiedFactions.Contains(c.Model.Faction)).ToList();
+                Assert.That(castles, Is.Not.Empty, $"{path}: at least one castle has a verified faction");
+                foreach (var (chunk, saved) in castles)
                 {
-                    var saved = TestServices.CastleDeserializer.Deserialize(chunk);
-                    if (saved.Faction == null || !VerifiedFactions.Contains(saved.Faction))
-                    {
-                        continue;
-                    }
-
                     foreach (var building in saved.Buildings.Where(b => CastleBuilder.GetUnbuildFailureReason(saved, b) == CastleBuildFailureReason.None))
                     {
                         var unbuilt = CastleBuilder.Unbuild(saved, building);

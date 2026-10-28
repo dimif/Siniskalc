@@ -48,7 +48,6 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var from = Load(before).History.Current.Castles();
             var to = Load(after).History.Current.Castles();
-            var checkedCastles = 0;
 
             foreach (var name in RedCastles)
             {
@@ -56,18 +55,18 @@ namespace Siniskalc.Homm3.Tests.Data
                 var model = TestServices.CastleDeserializer.Deserialize(chunk);
                 var actual = to[to.FindByName(name)];
                 var added = TestServices.CastleDeserializer.Deserialize(actual).Buildings.Except(model.Buildings).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
-                if (added.Count != 1)
+                Assert.That(added, Has.Count.LessThanOrEqualTo(1), $"{after} {name}: at most one manual building is added");
+                if (added.Count == 0)
                 {
-                    continue;
+                    Assert.That(Masks(actual), Is.EqualTo(Masks(chunk)), $"{after} {name}: no building was added");
                 }
+                else
+                {
+                    var edited = TestServices.CastleSerializer.Serialize(chunk, CastleBuilder.Build(model, added[0]));
 
-                var edited = TestServices.CastleSerializer.Serialize(chunk, CastleBuilder.Build(model, added[0]));
-
-                Assert.That(Masks(edited), Is.EqualTo(Masks(actual)), $"{name}: {added[0].Name}");
-                checkedCastles++;
+                    Assert.That(Masks(edited), Is.EqualTo(Masks(actual)), $"{name}: {added[0].Name}");
+                }
             }
-
-            Assert.That(checkedCastles, Is.GreaterThanOrEqualTo(after.Contains("capitol") ? 1 : 0));
         }
 
         [Test]

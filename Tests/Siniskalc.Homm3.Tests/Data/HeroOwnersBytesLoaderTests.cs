@@ -99,6 +99,7 @@ namespace Siniskalc.Homm3.Tests.Data
             }
 
             var players = document.Players();
+            Assert.That(players, Is.Not.Empty, $"{path}: the save contains players");
             var listed = new HashSet<int>();
             for (var p = 0; p < players.Count; p++)
             {
@@ -109,11 +110,8 @@ namespace Siniskalc.Homm3.Tests.Data
             }
 
             // A hero a player owns that is in no list is garrisoned in a castle.
-            if (players.Count > 0)
-            {
-                var unlisted = Enumerable.Range(0, table.Heroes.Count).Where(id => !table.Heroes[id].Owner.IsNeutral && !listed.Contains(id));
-                Assert.That(unlisted.Select(document.Castles().FindByGarrisonedHero), Has.All.GreaterThanOrEqualTo(0), "the owned heroes in no list");
-            }
+            var unlisted = Enumerable.Range(0, table.Heroes.Count).Where(id => !table.Heroes[id].Owner.IsNeutral && !listed.Contains(id));
+            Assert.That(unlisted.Select(document.Castles().FindByGarrisonedHero), Has.All.GreaterThanOrEqualTo(0), "the owned heroes in no list");
         }
     }
 }

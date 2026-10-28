@@ -22,6 +22,30 @@ Line references refer to that snapshot and may move as tests change.
 - Subsequent slices run tests only for affected projects, as directed by the user.
   The full-solution run started for this slice was stopped on that instruction and is not reported as completed validation.
 
+### Slice 02: silent skips and conditional assertions
+
+- `CastleBuilderTests` now compares masks for every eligible transition, including no-building steps and transitions with multiple additions.
+  The first strengthened run exposed two additions in `bulwark_34_spirit_guardian__nothing.GM1` for Still Water, which the old single-addition condition skipped.
+  Replaying additions in upgrade-code order and removing them in reverse order checks this transition in both directions.
+- The two full-castle replays explicitly select castles of verified factions and require at least one such castle in every selected save.
+- `RoeBuildingEditsTests` now asserts unchanged masks for castles with no additions and fails on unexpected multiple manual additions.
+  Every named castle is checked, replacing the aggregate counter that allowed a case to check no castles.
+- `SodSeriesTests` explicitly selects owned heroes with meaningful movement data, requires an eligible sample in every save, and requires both moved and unmoved heroes across the sample.
+- `HeroOwnersBytesLoaderTests` requires players in every save and always checks unlisted owned heroes against castle garrisons.
+- The nullable Oidana expectations became 13 explicit save/hero/on-map cases, retaining all eight Akka checks and all five Oidana checks with an explicit hero-presence assertion.
+- Validation ran only the six affected HoMM3 fixtures: 655 passed, zero failed, skipped or unexecuted, in about 2 minutes 5 seconds.
+  The 12 additional discovered cases come from splitting one aggregate hero test into 13 cases, not from adding new savefiles.
+  These targeted measurements are not a like-for-like full-suite performance comparison.
+
+| Affected fixture | Passed | Sum of test durations (s) |
+|---|---:|---:|
+| `CastleBuilderTests` | 4 | 41.22 |
+| `CastleBuilderRulesTests` | 13 | 11.91 |
+| `RoeBuildingEditsTests` | 62 | 8.12 |
+| `SodSeriesTests` | 92 | 25.87 |
+| `HeroOwnersBytesLoaderTests` | 454 | 36.51 |
+| `HotaSleepGarrisonVisitingTests` | 30 | 2.11 |
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -31,8 +55,8 @@ Line references refer to that snapshot and may move as tests change.
   `TestData` grew to 448 saves, and every test that walks all saves grows with it.
 - **No test has a `[Category]`, and no project has `Integration/` or `MultiUnit/` folders yet**, so the kinds `CLAUDE.md` asks for cannot be run apart.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
-- **Inconclusive tests remain**: six silent `continue` loops and two conditional asserts.
-  Slice 01 removed the assertion-free diagnostic and replaced the `Assert.Pass` and output-only spell-source check.
+- **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
+  Weak value assertions and the serializer assertion issues below remain open.
 - **Four serializer tests check their output through the deserializer**, which `CLAUDE.md` forbids for the production code and which hides symmetric bugs in tests.
 - **Gaps**: most HoMM2 deserializers and serializers, several HoMM3 loaders and differs, and many Core, Wpf and Heroes.Wpf types have no test class of their own; the unknown-byte rule is not tested for HoMM3 players and obelisks or any HoMM2 record except heroes.
 - **Every test is in the project of the class it tests**, and no shared project names a game type.
@@ -44,6 +68,7 @@ Line references refer to that snapshot and may move as tests change.
 - The suite grew from 1,911 tests in 2 min 22 s to 4,000 tests in about 13 min; the growth is almost all in HoMM3 savefile tests.
 - At review time the `Assert.Pass`, the `continue` loops, the `TestContext.Out` line and the serializer-through-deserializer tests reported then were all still there.
   Slice 01 subsequently addressed the `Assert.Pass` and the `TestContext.Out` line.
+  Slice 02 addressed the six reported `continue` sites and the two reported conditional checks.
 
 ## How the review was done
 
@@ -374,11 +399,12 @@ Wait at least 15 minutes, or use `--blame-hang-timeout` well above 2 minutes.
 - `Homm3.Tests/Data/ObeliskVisitsTests.cs`: replaced `Assert.Pass` with absent-model and untouched-save byte-preservation assertions.
 - `SkillsAndSpellsViewModelTests.cs`: replaced diagnostic output with a failing assertion for unknown spell sources.
 
-**Remaining skipped checks:**
+**Skipped checks addressed in slice 02:**
 
-- Silent `continue` that skips the assertion: `CastleBuilderTests.cs:47-49,77-79,110-112`, `CastleBuilderRulesTests.cs:25-27`, `RoeBuildingEditsTests.cs:59-61`, `SodSeriesTests.cs:184-186`.
-  Filter the case source instead, so a case that cannot be checked does not exist.
-- Conditional asserts: `HeroOwnersBytesLoaderTests.cs:112` (`if (players.Count > 0)`), `HotaSleepGarrisonVisitingTests.cs:64` (`oidana != null`).
+- The six reported `continue` sites in `CastleBuilderTests`, `CastleBuilderRulesTests`, `RoeBuildingEditsTests` and `SodSeriesTests` were replaced by assertions or explicit eligible samples with presence guards.
+  In particular, zero-building and multiple-building transitions are checked rather than filtered out.
+- The player-count guard in `HeroOwnersBytesLoaderTests` became a player-presence assertion.
+- The nullable Oidana guard in `HotaSleepGarrisonVisitingTests` became explicit parameterized expectations.
 
 **Manual helpers, intentional**: `[Explicit]` tests that write edited saves for checking in the game: Homm2 `EditedSavesTests:111`, `EditorSavesTests:169`, `ThreedomEditorSavesTests:102`, Homm3 `GoldLimitSavesTests:52`.
 They are fine; mark them `[Category("Manual")]` as well, so a filter never picks them up by accident.
@@ -486,8 +512,8 @@ Adopted in `CLAUDE.md` with the first review, not yet applied:
 
 ## Backlog (in order)
 
-1. Finish assertion cleanup: slice 01 removed `TmpTurnDump` and replaced the `Assert.Pass` and diagnostic output.
-   Repair the remaining `continue` loops and conditional assertions, excluding only genuinely inapplicable scenarios and failing when promised fixture data is absent.
+1. The originally reported assertion-free and skipped-check cleanup is complete in slices 01 and 02.
+   The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).

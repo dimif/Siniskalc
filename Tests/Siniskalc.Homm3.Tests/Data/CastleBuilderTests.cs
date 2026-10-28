@@ -44,15 +44,15 @@ namespace Siniskalc.Homm3.Tests.Data
                 {
                     var model = TestServices.CastleDeserializer.Deserialize(before);
                     var added = Added(model, TestServices.CastleDeserializer.Deserialize(after)).ToList();
-                    if (added.Count != 1)
+                    foreach (var building in added.OrderBy(b => b.Code))
                     {
-                        continue;
+                        model = CastleBuilder.Build(model, building);
                     }
 
-                    var built = TestServices.SerializeCastle(before, CastleBuilder.Build(model, added[0]));
+                    var built = TestServices.SerializeCastle(before, model);
                     if (Masks(built) != Masks(after))
                     {
-                        failures.Add($"{save} {name} + {added[0].Name}: got {Hex(Masks(built))}, expected {Hex(Masks(after))}");
+                        failures.Add($"{save} {name} + {string.Join(", ", added.Select(b => b.Name))}: got {Hex(Masks(built))}, expected {Hex(Masks(after))}");
                     }
 
                     checkedSteps++;
@@ -74,15 +74,15 @@ namespace Siniskalc.Homm3.Tests.Data
                 {
                     var model = TestServices.CastleDeserializer.Deserialize(after);
                     var added = Added(TestServices.CastleDeserializer.Deserialize(before), model).ToList();
-                    if (added.Count != 1)
+                    foreach (var building in added.OrderByDescending(b => b.Code))
                     {
-                        continue;
+                        model = CastleBuilder.Unbuild(model, building);
                     }
 
-                    var removed = TestServices.SerializeCastle(after, CastleBuilder.Unbuild(model, added[0]));
+                    var removed = TestServices.SerializeCastle(after, model);
                     if (Masks(removed) != Masks(before))
                     {
-                        failures.Add($"{save} {name} - {added[0].Name}: got {Hex(Masks(removed))}, expected {Hex(Masks(before))}");
+                        failures.Add($"{save} {name} - {string.Join(", ", added.Select(b => b.Name))}: got {Hex(Masks(removed))}, expected {Hex(Masks(before))}");
                     }
 
                     checkedSteps++;
@@ -104,14 +104,12 @@ namespace Siniskalc.Homm3.Tests.Data
                 // which no rule seen elsewhere explains, so it is not used as proof.
                 && !p.EndsWith("cove_inland_all_cheat.GM1")))
             {
-                foreach (var chunk in CastleSamples.Load(path).History.Current.Castles())
+                var castles = CastleSamples.Load(path).History.Current.Castles()
+                    .Select(chunk => (Chunk: chunk, Model: TestServices.CastleDeserializer.Deserialize(chunk)))
+                    .Where(c => VerifiedFactions.Contains(c.Model.Faction)).ToList();
+                Assert.That(castles, Is.Not.Empty, $"{path}: at least one castle has a verified faction");
+                foreach (var (chunk, saved) in castles)
                 {
-                    var saved = TestServices.CastleDeserializer.Deserialize(chunk);
-                    if (saved.Faction == null || !VerifiedFactions.Contains(saved.Faction))
-                    {
-                        continue;
-                    }
-
                     // Start from a town that has nothing but the village hall, with the hidden bits of the companions cleared.
                     var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, VisibleBuildings = new HashSet<Building> { Building.VillageHall } };
                     var empty = TestServices.SerializeCastle(chunk, model);

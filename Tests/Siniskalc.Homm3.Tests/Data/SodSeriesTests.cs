@@ -173,21 +173,20 @@ namespace Siniskalc.Homm3.Tests.Data
             // Every hero of a player in every Shadow of Death savefile of the repository: a hero has moved when it has fewer movement points than its maximum.
             var seen = new Dictionary<int, (HashSet<byte> Moved, HashSet<byte> Unmoved)>();
             var moved = 0;
+            var unmoved = 0;
             foreach (var path in Directory.GetFiles("TestData", "*.GM1", SearchOption.AllDirectories).Where(p => p.Contains("Sod") || p.Contains("Roe")))
             {
                 var game = TestServices.GameService.LoadGameFromFile(path);
                 var heroes = game.History.Current.Heroes();
-                for (var i = 0; i < heroes.Count; i++)
+                var eligible = heroes.Where(chunk => chunk.GetByteAt(26) != 0xFF
+                    && chunk.GetUInt32At(57) > 0 && chunk.GetUInt32At(57) <= 100_000).ToList();
+                Assert.That(eligible, Is.Not.Empty, $"{path}: owned heroes have meaningful movement points");
+                foreach (var chunk in eligible)
                 {
-                    var chunk = heroes[i];
                     var maximum = chunk.GetUInt32At(57);
-                    if (chunk.GetByteAt(26) == 0xFF || maximum == 0 || maximum > 100_000)
-                    {
-                        continue;
-                    }
-
                     var hasMoved = chunk.GetUInt32At(61) < maximum;
                     moved += hasMoved ? 1 : 0;
+                    unmoved += hasMoved ? 0 : 1;
                     for (var offset = 0; offset < chunk.Length; offset++)
                     {
                         if (!seen.TryGetValue(offset, out var sets))
@@ -203,6 +202,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var separating = seen.Where(p => p.Value.Moved.Count > 0 && p.Value.Unmoved.Count > 0 && !p.Value.Moved.Overlaps(p.Value.Unmoved)).Select(p => p.Key).ToList();
 
             Assert.That(moved, Is.GreaterThan(30));
+            Assert.That(unmoved, Is.GreaterThan(0));
             Assert.That(separating, Is.All.InRange(61, 64), "only the current movement points tell");
         }
 

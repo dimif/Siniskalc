@@ -49,23 +49,26 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That((castle.GarrisonedHeroId, castle.VisitingHeroId), Is.EqualTo((garrisoned, visiting)));
         }
 
-        [Test]
-        public void AHeroInsideTheCastleIsOffTheMapAndOneAtTheGateIsOnIt()
+        [TestCase("sleep_garrison_visiting_01_akka_visiting", "Akka", 1)]
+        [TestCase("sleep_garrison_visiting_02_akka_garrisoned", "Akka", 0)]
+        [TestCase("sleep_garrison_visiting_03_akka_asleep", "Akka", 1)]
+        [TestCase("sleep_garrison_visiting_04_akka_garrisoned_oidana_visiting", "Akka", 0)]
+        [TestCase("sleep_garrison_visiting_05_oidana_not_visiting", "Akka", 0)]
+        [TestCase("sleep_garrison_visiting_06_garrison_visit_swap1", "Akka", 1)]
+        [TestCase("sleep_garrison_visiting_07_garrison_visit_swap2", "Akka", 0)]
+        [TestCase("sleep_garrison_visiting_08_oidana_asleep", "Akka", 0)]
+        [TestCase("sleep_garrison_visiting_04_akka_garrisoned_oidana_visiting", "Oidana", 1)]
+        [TestCase("sleep_garrison_visiting_05_oidana_not_visiting", "Oidana", 1)]
+        [TestCase("sleep_garrison_visiting_06_garrison_visit_swap1", "Oidana", 0)]
+        [TestCase("sleep_garrison_visiting_07_garrison_visit_swap2", "Oidana", 1)]
+        [TestCase("sleep_garrison_visiting_08_oidana_asleep", "Oidana", 1)]
+        public void AHeroInsideTheCastleIsOffTheMapAndOneAtTheGateIsOnIt(string save, string hero, int onMap)
         {
             // Byte 6 of the hero (the same as in Shadow of Death): 1 for a hero on the map, a visiting one too, 0 for one inside the castle.
-            foreach (var (save, akka, oidana) in new[]
-            {
-                ("sleep_garrison_visiting_01_akka_visiting", 1, (int?)null), ("sleep_garrison_visiting_02_akka_garrisoned", 0, null), ("sleep_garrison_visiting_03_akka_asleep", 1, null), ("sleep_garrison_visiting_04_akka_garrisoned_oidana_visiting", 0, 1),
-                ("sleep_garrison_visiting_05_oidana_not_visiting", 0, 1), ("sleep_garrison_visiting_06_garrison_visit_swap1", 1, 0), ("sleep_garrison_visiting_07_garrison_visit_swap2", 0, 1), ("sleep_garrison_visiting_08_oidana_asleep", 0, 1),
-            })
-            {
-                var game = Load(save);
-                Assert.That(Chunk(game, "Akka").GetByteAt(OnMap), Is.EqualTo(akka), $"{save}: Akka");
-                if (oidana != null)
-                {
-                    Assert.That(Chunk(game, "Oidana").GetByteAt(OnMap), Is.EqualTo(oidana), $"{save}: Oidana");
-                }
-            }
+            var game = Load(save);
+
+            Assert.That(game.History.Current.Heroes().FindByName(hero), Is.GreaterThanOrEqualTo(0), $"{save}: {hero} is present");
+            Assert.That(Chunk(game, hero).GetByteAt(OnMap), Is.EqualTo(onMap), $"{save}: {hero}");
         }
 
         [Test]

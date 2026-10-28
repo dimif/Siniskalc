@@ -905,3 +905,13 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all caught, production restored): catching every exception for the owner, no revision check, sleep box always on, factory not passed, dispose that does not unsubscribe.
 - Run: whole solution builds; Core 79, Wpf 58, Heroes 134, Heroes.Wpf 143, Homm2 450 pass; Homm3 1922 pass (view models, hero fixtures and all Unit/MultiUnit); the exe tests and the rest of the HoMM3 project were not run.
 
+## Slice 19 - HoMM3 model and differ tests by their real dependencies
+
+- Surveyed the HoMM3 data, runtime and model fixtures by what they load. Most read a savefile because the save is the contract (deserializers, serializers, region providers, loaders, the series and scenario tests) and stay Integration. Three only needed models:
+- `MaxSpellPointsCalculatorTests` (2 cases) is Unit in `Models\`: the skills come from `HeroModels.Christian()` instead of Valeska in a HotA save.
+- `CastleModelTests` (2 cases) is Unit in `Models\` on `CastleModels.Village(Faction.Rampart)`: the shared-interface case and the weekly growth of the Centaur Stables. The save-based reading of a castle stays covered by `CastleDeserializerTests` and the castle series.
+- New `PlayerDifferTests` (7 cases, Unit) with a Moq `IPendingChangesFactory` (`PendingChangesFake` of Homm3.Tests): wording of resources, tavern, days left (incl. "not counting") and heroes, the order, and that the heroes change is made without the factory. The save-based case is `PlayerDifferSavegameTests` (Integration) and still checks the revert through a history.
+- Mutation check (all caught, production restored): heroes listed before the other changes, selected hero ignored, HotA percentages never used, weekly growth off by one. Not checked: the other cases.
+- Run: Homm3 Unit, MultiUnit and the save-based player differ pass (the full HoMM3 project was not run; files moved and tests added only; no production code changed).
+- Left for 19b: see the handover.
+

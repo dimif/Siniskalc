@@ -979,3 +979,13 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: the whole project passes (504); no other project was run; no production code changed.
 - Left for 22b and 22c: see the handover.
 
+## Slice 22b - HoMM2 sphinxes and obelisks
+
+- Four new Unit fixtures on records made by hand: `SphinxDeserializerTests` (9 cases, its `Sphinx(set)` builds a sphinx with room for a riddle of 99 characters), `SafeSphinxSerializerTests` (8), `ObeliskDeserializerTests` (4) and `SafeObeliskSerializerTests` (6).
+- Sphinx, reading: the riddle is not answered for any non-zero first byte (0 means answered), the seven rewards are four-byte numbers and the artifact two bytes, the answers are as many texts as the count byte says, each up to its first zero, the riddle is read up to its first zero and the room it has is the bytes after it minus one, and a reward too big for the model reads as the number the cast gives (-16 for `0xFFFFFFF0`) without an error.
+- Sphinx, writing: the model read from a record leaves every byte alone, any non-zero active byte is kept while the model says active (and set to 0 or 1 when it says otherwise), a reward is written in four little-endian bytes, a reward that reads as the stored one is kept while a negative one is refused, the artifact in two bytes, new answers and a new riddle clear the old text before they are written, and an empty or too many answers, an answer of 13 characters, an empty riddle and a riddle longer than the room are refused and leave the record unchanged.
+- Obelisks: one byte for each tile found, with a bit for each colour; bits of colours the game does not have are read as they are; only as many bytes as there are tiles are read or written (a record with more bytes keeps the others); fewer visits than tiles leave the rest of the bytes alone.
+- Mutation check (all caught, production restored): any non-zero active byte read as only 1, the answer area and the riddle area not cleared, the active byte always rewritten, the answer length limit off by one, the obelisk reader reading all bytes, and the obelisk writer writing past the tiles (the first version of the test had exactly as many bytes as tiles and missed it; fixed).
+- Homm2.Tests: the whole project passes (531); no other project was run; no production code changed.
+- Left for 22c: see the handover.
+

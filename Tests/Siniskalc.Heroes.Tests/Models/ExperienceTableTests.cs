@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests how a level is worked out from experience, whatever thresholds a game gives.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ExperienceTableTests
     {
         private static readonly long[] Thresholds = [0, 1000, 2500, 5000];

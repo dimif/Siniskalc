@@ -130,6 +130,14 @@ All three Core classification slices are complete.
 - Added project-local `TestKinds`; all 132 Heroes tests passed with no failures or skipped cases.
   Bodies and method names are unchanged; 27 fixtures remain for the later Heroes batches.
 
+### Slice 05b: Heroes basic models
+
+- Categorized seven basic model fixtures as Unit: army, banishable player base, change areas, experience table, game date, game-rule exception and game setup.
+- Moved `HeroLevelTests` to `MultiUnit/Models/`: the reducer calls a real `ExperienceTable` lookup, rather than a mocked service.
+  No production API or test body was changed.
+- All 132 Heroes cases passed; unchanged bodies/names and category/path/namespace agreement were verified.
+  Nineteen fixtures remain unclassified.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

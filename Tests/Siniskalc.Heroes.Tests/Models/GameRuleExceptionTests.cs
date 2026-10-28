@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the exception for a rule of the game that an edit would break.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class GameRuleExceptionTests
     {
         [Test]

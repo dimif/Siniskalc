@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Tests.Models
+namespace Siniskalc.Heroes.Tests.MultiUnit.Models
 {
     using Siniskalc.Heroes.Models;
 
@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the level and the experience of a hero, which every game keeps in step through its table of experience.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class HeroLevelTests
     {
         [Test]

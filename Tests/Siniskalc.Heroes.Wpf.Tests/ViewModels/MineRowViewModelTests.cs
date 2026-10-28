@@ -1,17 +1,16 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the row of a mine read from the savegame through its edit session, with the owner picked from the colours of a made-up game.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.MultiUnit)]
+    [Category(TestKinds.Unit)]
     internal sealed class MineRowViewModelTests
     {
         [Test]

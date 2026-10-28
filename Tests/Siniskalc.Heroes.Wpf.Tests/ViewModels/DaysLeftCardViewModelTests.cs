@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Siniskalc.Heroes.Wpf.ViewModels;
 
@@ -6,7 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
     /// Tests the Banishing card of a player page.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.MultiUnit)]
+    [Category(TestKinds.Unit)]
     internal sealed class DaysLeftCardViewModelTests
     {
         private readonly List<int> written = [];

@@ -840,3 +840,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - `ShellViewModelTests` uses a mocked `ISettingsStore`; it stays Integration because the shell reads the files it is asked to open. `LoggingSettingsViewModelTests` stays Integration on purpose: the page creates and probes folders and writes the settings file, and that is the contract.
 - Not done in Core: the MultiUnit `SaveDocument`/`RecordChunkCollection`/`ChunkPendingChange` fixtures were not rewritten with mocks.
 - Core 79, Wpf 58, Heroes 134, Heroes.Wpf 142 and the exe tests (9) pass; the Homm2/Homm3 projects only built.
+
+## Slice 16 - Heroes.Wpf view models that are units
+
+- Reclassified as Unit and moved to `ViewModels\`: `MineRowViewModelTests` (the edit session is a Moq fake), `DaysLeftCardViewModelTests` and `PrimarySkillsCardViewModelTests` (their only collaborators are injected delegates and immutable values). Bodies and names unchanged.
+- Left MultiUnit on purpose: `SessionPageViewModelBaseTests` (needs a real `SaveDocumentHistory`, which is sealed and returned by `IEditSession.History`), `RecordsPageViewModelBaseTests`, the rendered controls, and the view models that build real child view models. `ResourcesEditorViewModelTests` and four other candidates are left for a later sub-slice (three-subject limit).
+- Heroes tests need no change: their unit-shaped fixtures were already Unit. Heroes.Wpf: 142 pass; the Unit filter now runs 49 cases in 93 ms.
+- Added `docs\TEST_REVIEW_HANDOVER.md`: the plan, what is done, working rules and open items for another agent.

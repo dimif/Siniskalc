@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests.Integration
 {
     using System.Diagnostics;
     using System.Windows;
@@ -17,6 +17,7 @@
     /// The shell with the Heroes of Might and Magic II editor: opening a savegame shows its editor and its title. The shell with both games is tested in Siniskalc.Tests.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ShellTests
     {

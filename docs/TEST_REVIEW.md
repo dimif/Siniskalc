@@ -286,6 +286,29 @@ All three Core classification slices are complete.
 - All 389 automated HoMM2 cases passed; three Explicit helpers remained unexecuted.
   Category/path/namespace agreement was checked; six fixtures remain.
 
+### Slice 07f: complete HoMM2 classification
+
+- Moved the remaining mines, player, save-command, rendered-page and shell scenarios to Integration with matching folders/namespaces.
+  The layering fixture also belongs there: it checks actual build-output files, not an isolated in-memory subject.
+- All 46 fixtures now have exactly one kind: three Unit, four MultiUnit and 39 Integration.
+  Automated cases partition exactly into 18 Unit, 36 MultiUnit and 335 Integration (389 passed).
+  Three additional save-writing methods retain both Explicit and Manual; their full-run outcomes were NotExecuted.
+  They were never selected for execution.
+- Verified all 392 discovered fixture/case identities and outcomes against 07a, ignoring the intentional namespace moves.
+  Compared every fixture body/name against the pre-slice baseline, allowing only category/namespace/import changes and the three documented manual output-root corrections.
+  Preserved rendering assertions, STA attributes, setup/cleanup, Explicit attributes and test-case sources.
+- Only the affected HoMM2 project was run, per the requested validation scope.
+  Final project duration was about 8 seconds; filtered runs passed 18/36/335 cases without overlap or omissions.
+  The Integration filter explicitly excluded Manual.
+  `--list-tests --filter` returned the complete inventory on this runner, so Manual tagging was verified against source and the three unexecuted TRX results instead.
+- Final full-run case-duration sum: Unit 0.126 s, MultiUnit 0.008 s, Integration 8.368 s.
+  Slowest Integration cases were unedited save serialization (2.136 s), shell bindings (1.509 s) and rendered pages (0.979 s).
+  The creature ranged/shots Unit case took 115 ms in the full run but 11 ms in the Unit-only run; this is a run-order/startup observation, not an established persistent unit-performance defect.
+  MultiUnit's filtered maximum was 54 ms.
+  These measurements do not replace the historical review timings below.
+- Classification is complete, not isolation/coverage remediation: mixed save-backed fixtures remain Integration.
+  Splitting pure cases, improving weak assertions and reducing replay cost remain later slices.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -300,6 +323,7 @@ All three Core classification slices are complete.
   Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
   Slices 05a–05e completed Heroes: all 35 fixtures and 132 cases are categorized and placed (104 Unit, 28 MultiUnit).
   Slices 06a–06e completed Heroes.Wpf: all 35 fixtures and 142 cases are categorized and placed (35 Unit, 107 MultiUnit).
+  Slices 07a–07f completed HoMM2: all 46 fixtures and 392 discovered cases are categorized and placed (18 Unit, 36 MultiUnit, 335 automated Integration and three Explicit/Manual Integration helpers).
   The original automated classification counted 92 unit, 19 multi-unit, 94 integration and 58 unit-shaped classes.
   These are historical estimates, not current category totals; source review has corrected mixed fixtures, real collaborations and filesystem use as detailed above.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -9,6 +9,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// The list of the mines an owner has on the map (Threedom).
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class MinesListsTests
     {
         [Test]

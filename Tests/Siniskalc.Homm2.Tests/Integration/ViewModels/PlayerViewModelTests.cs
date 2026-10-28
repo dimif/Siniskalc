@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -8,6 +8,7 @@
     /// Tests the towns of a player, as the player page and the overview card of HoMM2 list them.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class PlayerViewModelTests
     {
         [Test]

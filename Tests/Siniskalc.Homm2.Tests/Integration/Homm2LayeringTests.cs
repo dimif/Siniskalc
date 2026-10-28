@@ -1,9 +1,10 @@
-﻿namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests.Integration
 {
     /// <summary>
     /// Tests that the tests of a game need nothing of another game or of the application that hosts both.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class Homm2LayeringTests
     {
         [TestCase("Siniskalc.Homm3.dll")]

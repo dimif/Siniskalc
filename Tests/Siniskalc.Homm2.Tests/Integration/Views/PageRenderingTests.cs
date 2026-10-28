@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Views
+﻿namespace Siniskalc.Homm2.Tests.Integration.Views
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -17,6 +17,7 @@
     /// page from loading, and a block whose template did not apply is simply empty, so these tests look at what is on the page.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     [Apartment(ApartmentState.STA)]
     internal sealed class PageRenderingTests
     {

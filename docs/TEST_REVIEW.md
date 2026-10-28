@@ -998,3 +998,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: the whole project passes (see the count in the report); no other project was run; no production code changed.
 - Left for 22d: `BytesLoader`, `SaveRegionProvider`, `MapPlacesReader`, `MapObjectsReader`.
 
+## Slice 22d - HoMM2 `BytesLoader` and `SaveRegionProvider`
+
+- `BytesLoaderTests` (11 cases, Unit) cut the chunks out of a savegame made by hand: a `SaveLayout` record with the tables one after the other, and a zeroed byte array of about 26 KB. Covered: 54 hero chunks named by the text of the record (up to the first zero) and of the size of a record; 72 castle chunks named by the text at the end of the record; a chunk holds a copy of its bytes; player chunks come in the order of the colours whatever order the records are in (the record says which colour it is) and, when the records do not name six different colours, in the order of the colours; no table of tiles, no obelisk tile, or a savegame cut before the flags of the obelisks (also when the tiles are found) give no obelisk chunk; the obelisk chunk is the 48 bytes of flags after the castles with the tiles of the obelisks, and only the first 48 obelisks of a map are taken.
+- `SaveRegionProviderTests` (5 cases, MultiUnit): with no layout there are no regions; the header has the map name, the description and the date with its three parts; each player, hero and named castle has a region of its whole record (an unnamed castle has none); the regions are in the order of the bytes; the fields of a record are shifted to where the record is. The collections are the real ones over fake readers, hence MultiUnit.
+- Mutation check (all caught, production restored): a hero chunk one byte short, players in the order of the records, no limit of 48 obelisks, no length check before the flags (survived the first version, whose truncated savegame was cut before the tiles; and the second, whose obelisk tile was overwritten by an all-zero hero record; fixed), a castle name read from the wrong place, unnamed castles listed, regions not ordered, fields not shifted, and regions listed with no layout.
+- Homm2.Tests: the whole project passes (see the report); no other project was run; no production code changed.
+- Left for 22e: `MapPlacesReader` and `MapObjectsReader`.
+

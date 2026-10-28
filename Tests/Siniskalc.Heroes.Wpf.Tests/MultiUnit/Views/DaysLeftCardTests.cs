@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows.Controls;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests what the Banishing card shows: a card whose template did not apply is empty and raises no binding error.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class DaysLeftCardTests
     {

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows.Controls;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests what the card of the obelisks a player visited shows, and what the base of its view model does for any game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ObeliskVisitsCardTests
     {

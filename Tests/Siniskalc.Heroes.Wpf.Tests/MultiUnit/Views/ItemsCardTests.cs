@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests the card with a heading and a list.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ItemsCardTests
     {

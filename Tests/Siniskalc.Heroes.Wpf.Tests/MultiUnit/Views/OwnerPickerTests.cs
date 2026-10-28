@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.ComponentModel;
     using System.Windows.Controls;
@@ -9,6 +9,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests the choice of who owns a hero or a castle.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class OwnerPickerTests
     {

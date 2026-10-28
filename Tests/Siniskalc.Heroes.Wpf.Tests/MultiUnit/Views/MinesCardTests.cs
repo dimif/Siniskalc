@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows.Controls;
     using Siniskalc.Heroes.Entities;
@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests what the card of the mines of a map shows: a card whose template did not apply is empty and raises no binding error.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class MinesCardTests
     {

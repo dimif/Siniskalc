@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Styles
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Styles
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Styles
     /// Tests the styles and templates the pages of every Heroes game share.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class PageStylesTests
     {

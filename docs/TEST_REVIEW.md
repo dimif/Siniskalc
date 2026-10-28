@@ -204,6 +204,14 @@ All three Core classification slices are complete.
 - All 142 Heroes.Wpf cases passed; bodies/names and category/path/namespace agreement were verified.
   Eleven style/view fixtures remain.
 
+### Slice 06d: Heroes.Wpf styles and rendered controls
+
+- Moved `PageStylesTests` into `MultiUnit/Styles/` and seven control fixtures into `MultiUnit/Views/`: days-left, headed card, hero cards, items card, mines card, obelisk-visits card and owner picker.
+  Their minimal WPF application loads compiled resources and hosts controls in memory; it does not compose the editor or load real savegame files.
+- Retained every STA/setup attribute and every rendered-text, visibility, selection, geometry and command assertion.
+  Test bodies/names and category/path/namespace agreement were checked.
+- All 142 Heroes.Wpf cases passed; three view fixtures remain for 06e.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

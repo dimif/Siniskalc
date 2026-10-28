@@ -7,7 +7,7 @@
     /// Undo/redo history over immutable <see cref="SaveDocument"/> snapshots.
     /// There is one history per savefile, shared by every hero edited in it.
     /// </summary>
-    public sealed class SaveDocumentHistory
+    public sealed class SaveDocumentHistory : IHistoryEvents
     {
         private readonly Stack<SaveDocument> undo = new();
         private readonly Stack<SaveDocument> redo = new();
@@ -21,6 +21,7 @@
         /// <summary>
         /// Raised whenever <see cref="Current"/> or <see cref="Original"/> changes, whichever hero the change was made to.
         /// </summary>
+        /// <inheritdoc/>
         public event EventHandler? Changed;
 
         public SaveDocument Current { get; private set; }

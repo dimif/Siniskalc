@@ -15,6 +15,12 @@ namespace Siniskalc.Core.Data
         SaveDocumentHistory History { get; }
 
         /// <summary>
+        /// Gets what tells that the history of the savefile changed. A page listens to this, not to <see cref="History"/>, so that it can be
+        /// shown with a session that has no savefile behind it.
+        /// </summary>
+        IHistoryEvents Events { get; }
+
+        /// <summary>
         /// Gets the place of the record among the records of its kind.
         /// </summary>
         int Index { get; }

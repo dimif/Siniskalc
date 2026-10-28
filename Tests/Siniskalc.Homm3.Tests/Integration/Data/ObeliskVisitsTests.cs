@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Models;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -65,7 +66,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(EverySavefile))]
         public void TheObelisksMatchTheMapObjectsAndSavesWithoutAnEditableBlockKeepTheirBytes(string path)
         {
-            var game = TestServices.GameService.LoadGameFromFile(path);
+            var game = ReadOnlySaves.Load(path);
             if (!game.History.Current.Obelisks().Any)
             {
                 Assert.That(game.History.Current.Obelisks().GetModel(), Is.Null, path);

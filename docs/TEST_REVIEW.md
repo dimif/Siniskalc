@@ -822,3 +822,8 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - New MultiUnit fixture `MultiUnit\ViewModels\CastleBuildMessageProviderTests` holds the message wording that used to ride along in the savefile tests.
 - Integration: `CastleBuilderTests` became `CastleBuilderReplayTests` (replays of real saves); `CastleBuilderRulesTests` became `CastleBuilderSavefileRulesTests` and keeps only the checks that compare against real saves.
 - 27 tests in the affected fixtures pass (about 48 s, mostly the save replays). Mutation was not checked.
+
+## Slice 13 - Shared loads in the every-savefile contracts
+
+- New `Data\ReadOnlySaves` loads each savefile once for tests that only read it. `ObeliskVisitsTests` and `PlayerHeadTests` use it for their every-savefile cases (511 saves); tests that edit, undo or serialize a changed document still load their own copy.
+- Same 925 tests, none removed. The two fixtures ran in 82 s before and 46 s after (one run each, so a rough figure). Hero-owner contracts are slice 14.

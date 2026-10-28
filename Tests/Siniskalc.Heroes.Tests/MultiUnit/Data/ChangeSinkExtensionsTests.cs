@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Tests.Data
+namespace Siniskalc.Heroes.Tests.MultiUnit.Data
 {
     using Siniskalc.Heroes.Tests.Entities;
     using Siniskalc.Core.Data;
@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Tests.Data
     /// Tests the changes that every game's differs report in the same way.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class ChangeSinkExtensionsTests
     {
         private static ChangeSink<Holder> NewSink() =>

@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Entities
     /// Tests the skill levels the games share.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SkillLevelTests
     {
         [Test]

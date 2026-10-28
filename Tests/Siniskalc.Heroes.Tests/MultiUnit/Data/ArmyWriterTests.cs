@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Tests.Data
+namespace Siniskalc.Heroes.Tests.MultiUnit.Data
 {
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Tests.Data
     /// Tests how the army of a record is written: only what the model changes, and nothing the game could not hold.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class ArmyWriterTests
     {
         private static IArmy<Creature> Empty(int slots) => new Army<Creature>(slots);

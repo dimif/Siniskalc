@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Entities
     /// Tests the resources the games share.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ResourceTests
     {
         [Test]

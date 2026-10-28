@@ -120,6 +120,16 @@ All three Core classification slices are complete.
   Fixture namespaces and folders match their categories.
   The full project run reported 630 ms; this is not a performance improvement claim.
 
+### Slice 05a: Heroes data, entities and layering
+
+- Categorized `ArmyReaderTests`, the two obelisk Data fixtures, `ResourceTests`, `SkillLevelTests` and `HeroesLayeringTests` as Unit.
+  The obelisk collaborators are mocked; the army reader uses test creature codes and plain chunk/layout inputs.
+- Moved `ArmyWriterTests` and `ChangeSinkExtensionsTests` into `MultiUnit/Data/` with matching namespaces and categories.
+  Their real reader/writer round trip and real change-sink collaboration respectively make the historical Unit labels inaccurate.
+  Retained every assertion, including the legitimate byte-for-byte round trip.
+- Added project-local `TestKinds`; all 132 Heroes tests passed with no failures or skipped cases.
+  Bodies and method names are unchanged; 27 fixtures remain for the later Heroes batches.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

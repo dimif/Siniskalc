@@ -10,7 +10,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class CastleDifferTests
+    internal sealed class CastleDifferSavegameTests
     {
         private const int Xabran = 3;
 

@@ -10,7 +10,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class HeroDifferTests
+    internal sealed class HeroDifferSavegameTests
     {
         private const int Maximus = 7;
 

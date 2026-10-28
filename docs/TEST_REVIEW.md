@@ -854,3 +854,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Left MultiUnit on purpose: `VisitedPlacesCardViewModelTests` (card over real `VisitedPlaceRowViewModel` and `ToggleRowViewModel` rows), `HeroesArmyViewModelBaseTests` (real `StackSlotViewModel` slots and `CreatureFinderViewModel`), `OwnerNavGroupTests` (real `NavigationTree` and nodes). They check how real view models fit together.
 - Heroes.Wpf: 142 pass; the Unit filter runs 58 cases in 105 ms. Only this project was run.
 
+## Slice 17 - HoMM2 differs as units
+
+- New Unit fixtures in `Tests\Siniskalc.Homm2.Tests\Data`: `HeroDifferTests` (9 cases), `PlayerDifferTests` (5) and `CastleDifferTests` (8). They build records by hand (`DifferSamples`) and use a Moq `IPendingChangesFactory` (`PendingChangesFake`) that keeps the revert function of each change by its description, so each test checks the wording of Before/After, the order, which changes bypass the factory (owner) and what the revert function gives back.
+- The save-based fixtures keep their cases and are renamed `HeroDifferSavegameTests`, `PlayerDifferSavegameTests` and `CastleDifferSavegameTests` (Integration): they still cover the revert through a real history (owner, lists, countdown). Some wording cases overlap the new Unit ones; removal is for slice 29.
+- Mutation check: swapping the known/not-known revert of a spell in `HeroDiffer` made `ALearnedSpellAndASecondarySkillAreListedByName` fail; reverted. Other cases were not mutation-checked.
+- Left for 17b: the HoMM2 serializer and model-reducer fixtures and the other differs.
+- Homm2.Tests: 412 pass (the whole project); no other project was run, no production code changed.
+

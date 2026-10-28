@@ -10,7 +10,7 @@
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class PlayerDifferTests
+    internal sealed class PlayerDifferSavegameTests
     {
         private Game game = null!;
 

@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class SafeCastleSerializerTests
+    internal sealed class SafeCastleSerializerSavegameTests
     {
         private static CastleChunk Xabran() => TestServices.LoadBrokenAlliance(5).History.Current.Castles()[3];
 

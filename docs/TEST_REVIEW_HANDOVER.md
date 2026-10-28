@@ -50,6 +50,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 16 | `b9f2031` | Heroes.Wpf: `MineRowViewModelTests`, `DaysLeftCardViewModelTests`, `PrimarySkillsCardViewModelTests` reclassified Unit and moved to `ViewModels\` |
 | 16b | see git log | Heroes.Wpf: `ResourcesEditorViewModelTests`, `MineRowViewModelBaseTests` reclassified Unit; `VisitedPlacesCardViewModelTests`, `HeroesArmyViewModelBaseTests`, `OwnerNavGroupTests` stay MultiUnit on purpose |
 | 17 | see git log | HoMM2: `HeroDifferTests`, `PlayerDifferTests`, `CastleDifferTests` are Unit on records made by hand (`DifferSamples`, `PendingChangesFake`); the save-based ones are now `...DifferSavegameTests` (Integration) |
+| 17b | see git log | HoMM2: `SafeHeroSerializerTests`, `SafeCastleSerializerTests` (literal bytes via `ByteDiff`) and `BuiltTodayDifferTests` are Unit; the save-based serializer ones are now `...SerializerSavegameTests` (Integration) |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -57,7 +58,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 
 | ID | Scope |
 |---|---|
-| 17b | Isolate the rest of the HoMM2 unit-shaped tests: serializers (`SafeHeroSerializerTests`, `SafeCastleSerializerTests`), model reducers (`HeroModelTests`, `CastleModelTests`), other differs (`BuiltTodayDiffer`, `MineDiffer`, `ShrineDiffer`, `SphinxDiffer`, `TurnDiffer`); keep a save-based path |
+| 17c | Isolate the HoMM2 model reducers (`HeroModelTests`, `CastleModelTests`) and the other differs (`MineDiffer`, `ShrineDiffer`, `SphinxDiffer`, `TurnDiffer`); keep a save-based path |
 | 18 | Isolate HoMM3 hero/castle view-model tests; keep representative end-to-end editor scenarios |
 | 19 | Isolate remaining HoMM3 data/runtime/model tests by real dependencies, not names |
 | 20 | Split multi-subject fixtures, fix names that do not describe behaviour (scenario/feature integration fixtures are allowed). Split by project |

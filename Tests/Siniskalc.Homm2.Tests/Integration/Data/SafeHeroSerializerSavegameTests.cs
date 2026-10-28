@@ -9,7 +9,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class SafeHeroSerializerTests
+    internal sealed class SafeHeroSerializerSavegameTests
     {
         private const int Hero = 7;
 

@@ -862,3 +862,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Left for 17b: the HoMM2 serializer and model-reducer fixtures and the other differs.
 - Homm2.Tests: 412 pass (the whole project); no other project was run, no production code changed.
 
+## Slice 17b - HoMM2 serializers and BuiltTodayDiffer as units
+
+- New Unit fixtures in `Tests\Siniskalc.Homm2.Tests\Data`: `SafeHeroSerializerTests` (11 cases), `SafeCastleSerializerTests` (9) and `BuiltTodayDifferTests` (2). The serializers write into records made by hand (a zero record filled by the sample model, `DifferSamples`) and `ByteDiff` lists exactly which bytes changed, so each case states the offsets and values of one field and that no other byte moves. They do not call a deserializer. Covered: field widths, signed bonuses, artifact and spell marks, secondary skill bytes, unknown owner, faction and facing bytes kept while the model says the stand-in, an oversized coordinate kept, where the creatures of a dwelling move on an upgrade or a take-down, the dragon mark, the count beside the upgraded ones left alone, and out-of-range values refused without touching the record.
+- The save-based fixtures are renamed `SafeHeroSerializerSavegameTests` and `SafeCastleSerializerSavegameTests` (Integration) and keep their cases (they read back through the deserializer, which is the round-trip contract). Overlap is for slice 29.
+- Mutation check (all caught, production restored): castle creature lists no longer emptied on a move (3 tests fail), hero owner always written (1), built-today castles not ordered (1). Not checked: the other cases.
+- Homm2.Tests: 434 pass (the whole project); no other project was run, no production code changed.
+- Left for 17c: `HeroModelTests`, `CastleModelTests` and the Mine, Shrine, Sphinx and Turn differs.
+

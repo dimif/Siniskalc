@@ -1,4 +1,5 @@
 using System.IO;
+using Moq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.Tests.ViewModels;
 using Siniskalc.Wpf.ViewModels;
@@ -10,7 +11,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
     internal sealed class ShellViewModelTests
     {
         private string folder = string.Empty;
-        private SettingsStore settings = null!;
+        private Mock<ISettingsStore> settings = null!;
         private FakeGameModule first = null!;
         private FakeGameModule second = null!;
         private ShellViewModel shell = null!;
@@ -20,10 +21,12 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-shell-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.settings = new SettingsStore(Path.Combine(this.folder, "settings.json"));
+            this.settings = new Mock<ISettingsStore>();
+            this.settings.SetupAllProperties();
+            this.settings.Object.BackupOnSave = true;
             this.first = new FakeGameModule("First Game", 0x11, "*.F1;*.F2");
             this.second = new FakeGameModule("Second Game", 0x22, "*.S1");
-            this.shell = new ShellViewModel([this.first, this.second], this.settings, "Editor");
+            this.shell = new ShellViewModel([this.first, this.second], this.settings.Object, "Editor");
         }
 
         [TearDown]
@@ -42,7 +45,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
         [Test]
         public void AShellWithoutGamesCannotBeMade()
         {
-            Assert.That(() => new ShellViewModel([], this.settings, "Editor"), Throws.ArgumentException);
+            Assert.That(() => new ShellViewModel([], this.settings.Object, "Editor"), Throws.ArgumentException);
         }
 
         [Test]
@@ -169,7 +172,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
         [Test]
         public void TheOpenFilterOfASingleGameOffersItsFilesOnly()
         {
-            var single = new ShellViewModel([this.first], this.settings, "Editor");
+            var single = new ShellViewModel([this.first], this.settings.Object, "Editor");
 
             Assert.That(single.OpenFilter, Is.EqualTo("First Game savegames |*.F1;*.F2"));
         }
@@ -190,9 +193,8 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
             this.shell.BackupOnSave = false;
             this.shell.IsAdvancedMode = true;
 
-            var again = new SettingsStore(Path.Combine(this.folder, "settings.json"));
-            Assert.That(again.BackupOnSave, Is.False);
-            Assert.That(again.AdvancedMode, Is.True);
+            this.settings.VerifySet(s => s.BackupOnSave = false, Times.Once);
+            this.settings.VerifySet(s => s.AdvancedMode = true, Times.Once);
         }
 
         [Test]

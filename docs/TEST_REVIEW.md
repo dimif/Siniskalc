@@ -832,3 +832,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 
 - `HeroOwnersBytesLoaderTests` and `SafeHeroOwnersSerializerTests` (every-savefile cases) and `CastleBuilderReplayTests` now load saves through `ReadOnlySaves`. The owner serializer does not change the chunk it is given, and the replays only read the loaded castles and serialize through `TestServices`. Tests that edit keep a fresh history.
 - Same tests, none removed: the hero-owner pair (906 cases) ran in 34 s from a cold cache; the four replays went from 36 s to 9 s (one run each). Other castle-series fixtures still load their own saves.
+
+## Slice 15 - Isolating the settings-dependent Wpf view models
+
+- Production change (small): `ISettingsStore` and `IRecentFilesStore` in `Siniskalc.Core.Runtime`, implemented by `SettingsStore` and `RecentFilesStore`. `ShellViewModel`, `LoggingSettingsViewModel`, `RecentFilesMenuViewModel`, `SavegameFileCommands` and `FileBackupServiceProvider` take the interfaces; `AppServices` still builds the concrete stores.
+- `RecentFilesMenuViewModelTests` is now a Unit fixture (`ViewModels\`) over a Moq store, no temp folder. Its two real-store cases (add and remove through the store) are not repeated there; `RecentFilesStoreTests` in Core covers the store. One case was added for rebuilding on change and unsubscribing on dispose.
+- `ShellViewModelTests` uses a mocked `ISettingsStore`; it stays Integration because the shell reads the files it is asked to open. `LoggingSettingsViewModelTests` stays Integration on purpose: the page creates and probes folders and writes the settings file, and that is the contract.
+- Not done in Core: the MultiUnit `SaveDocument`/`RecordChunkCollection`/`ChunkPendingChange` fixtures were not rewritten with mocks.
+- Core 79, Wpf 58, Heroes 134, Heroes.Wpf 142 and the exe tests (9) pass; the Homm2/Homm3 projects only built.

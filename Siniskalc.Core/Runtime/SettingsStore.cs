@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Core.Runtime
+namespace Siniskalc.Core.Runtime
 {
     using System.IO;
 
@@ -6,7 +6,7 @@
     /// The one place that holds the <see cref="UserSettings"/> of the user and writes them to their file. Everything that keeps a
     /// preference shares one store, so that saving one preference never overwrites another.
     /// </summary>
-    public sealed class SettingsStore
+    public sealed class SettingsStore : ISettingsStore
     {
         private readonly string path;
         private readonly UserSettings settings;

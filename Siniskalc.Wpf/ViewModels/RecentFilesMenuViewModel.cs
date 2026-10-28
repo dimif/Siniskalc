@@ -10,9 +10,9 @@ namespace Siniskalc.Wpf.ViewModels
     /// </summary>
     public sealed class RecentFilesMenuViewModel : IDisposable
     {
-        private readonly RecentFilesStore store;
+        private readonly IRecentFilesStore store;
 
-        public RecentFilesMenuViewModel(RecentFilesStore store)
+        public RecentFilesMenuViewModel(IRecentFilesStore store)
         {
             this.store = store;
             this.store.Changed += this.OnStoreChanged;

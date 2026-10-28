@@ -13,7 +13,7 @@ namespace Siniskalc.Wpf.ViewModels
     /// </summary>
     public sealed class LoggingSettingsViewModel : AbstractViewModelBase
     {
-        private readonly SettingsStore store;
+        private readonly ISettingsStore store;
         private readonly IFileDialogs dialogs;
         private LogLevel level;
         private string folder;
@@ -22,7 +22,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="store">Where the preferences of the user are kept.</param>
         /// <param name="defaultFolder">The folder the logs go to when the user chooses none.</param>
         /// <param name="dialogs">Asks the user for a folder.</param>
-        public LoggingSettingsViewModel(SettingsStore store, string defaultFolder, IFileDialogs dialogs)
+        public LoggingSettingsViewModel(ISettingsStore store, string defaultFolder, IFileDialogs dialogs)
         {
             this.store = store;
             this.DefaultFolder = defaultFolder;

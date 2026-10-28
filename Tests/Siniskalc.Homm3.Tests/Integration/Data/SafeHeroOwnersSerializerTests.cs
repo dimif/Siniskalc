@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -23,7 +24,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(EverySavefile))]
         public void TheTableOfEverySavefileIsWrittenBackAsItWasRead(string path)
         {
-            var owners = TestServices.GameService.LoadGameFromFile(path).History.Current.HeroOwners();
+            var owners = ReadOnlySaves.Load(path).History.Current.HeroOwners();
 
             for (var i = 0; i < owners.Count; i++)
             {

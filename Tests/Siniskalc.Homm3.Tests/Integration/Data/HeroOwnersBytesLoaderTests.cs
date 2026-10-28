@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Moq;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -87,7 +88,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(EverySavefile))]
         public void EverySavefileHasATableThatAgreesWithTheHeroesAndThePlayers(string path)
         {
-            var document = TestServices.GameService.LoadGameFromFile(path).History.Current;
+            var document = ReadOnlySaves.Load(path).History.Current;
             var owners = document.HeroOwners();
             Assert.That(owners, Has.Count.EqualTo(1), "the table is found");
 

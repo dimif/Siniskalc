@@ -827,3 +827,8 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 
 - New `Data\ReadOnlySaves` loads each savefile once for tests that only read it. `ObeliskVisitsTests` and `PlayerHeadTests` use it for their every-savefile cases (511 saves); tests that edit, undo or serialize a changed document still load their own copy.
 - Same 925 tests, none removed. The two fixtures ran in 82 s before and 46 s after (one run each, so a rough figure). Hero-owner contracts are slice 14.
+
+## Slice 14 - Shared loads in hero-owner contracts and castle replays
+
+- `HeroOwnersBytesLoaderTests` and `SafeHeroOwnersSerializerTests` (every-savefile cases) and `CastleBuilderReplayTests` now load saves through `ReadOnlySaves`. The owner serializer does not change the chunk it is given, and the replays only read the loaded castles and serialize through `TestServices`. Tests that edit keep a fresh history.
+- Same tests, none removed: the hero-owner pair (906 cases) ran in 34 s from a cold cache; the four replays went from 36 s to 9 s (one run each). Other castle-series fixtures still load their own saves.

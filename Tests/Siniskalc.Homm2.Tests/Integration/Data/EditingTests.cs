@@ -124,6 +124,27 @@
         }
 
         [Test]
+        public void ChangingOnlyTheArmyOfAHeroWithValuesTheEditorDoesNotKnowWritesOnlyTheTypeAndCountOfThatSlot()
+        {
+            var heroes = this.game.History.Current.Heroes();
+            var bytes = heroes[7].ToArray();
+            bytes[HeroLayout.ArmyTypes] = 0xC8;
+            bytes[HeroLayout.Artifacts + 5] = 0xC9;
+            bytes[HeroLayout.Owner] = 0x77;
+            var chunk = heroes[7].WithBytes(bytes);
+            var model = TestServices.HeroDeserializer.Deserialize(chunk);
+
+            var written = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 258)) }).ToArray();
+
+            var allowed = new[] { HeroLayout.ArmyTypes, HeroLayout.ArmyCounts, HeroLayout.ArmyCounts + 1 };
+            Assert.That(DifferingOffsets(bytes, written), Is.Not.Empty.And.All.AnyOf(allowed));
+            Assert.That(written[HeroLayout.ArmyTypes], Is.EqualTo(1));
+            Assert.That(written.AsSpan(HeroLayout.ArmyCounts, 2).ToArray(), Is.EqualTo(new byte[] { 0x02, 0x01 }));
+            Assert.That(written[HeroLayout.Artifacts + 5], Is.EqualTo(0xC9));
+            Assert.That(written[HeroLayout.Owner], Is.EqualTo(0x77));
+        }
+
+        [Test]
         public void ThePriceOfLoyaltyBytesAtTheEndOfAHeroAreNeverTouched()
         {
             var game = TestServices.Load(Saves.Path(Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));

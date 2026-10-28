@@ -811,3 +811,7 @@ The two host fixtures (AppServicesTests, LoggingTests) build the whole graph and
 ## Slice 10: Independent byte assertions for HoMM3 serializers
 
 SafeHeroSerializerTests gained five tests that assert literal bytes (hero class code, the four primary-skill bytes, little-endian experience and one-byte level, creature type and count slots, secondary-skill count/level/slot bytes) and a changed-offsets helper; SafeCastleSerializerTests gained a literal-byte garrison test. The existing round-trip tests stay as their own labelled contract. 42/42 passed in the two fixtures (37 s).
+
+## Slice 11: ArmyWriter and HoMM2 unknown-byte checks
+
+ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two tests with literal expected bytes (a matching army leaves every byte alone; changing only the count of an unknown creature keeps its number). HoMM2 EditingTests: a new test asserts that editing only the army of a hero holding unknown values changes just the slot's type byte and the two count bytes (little-endian 258) and keeps the unknown artifact and owner bytes. Heroes ArmyWriterTests 8/8, HoMM2 EditingTests 10/10.

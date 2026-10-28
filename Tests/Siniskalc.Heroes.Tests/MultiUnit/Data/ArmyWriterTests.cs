@@ -68,6 +68,28 @@ namespace Siniskalc.Heroes.Tests.MultiUnit.Data
             var bytes = Enumerable.Repeat((byte)255, 15).ToArray();
 
             Assert.That(() => ArmyWriter.Write(bytes, Narrow, Empty(5).WithSlot(0, Archer, 1001), Numbering, "army"), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(bytes, Is.All.EqualTo(255));
+        }
+
+        [Test]
+        public void AnArmyThatMatchesTheBytesLeavesEveryByteAlone()
+        {
+            var original = new byte[] { 77, 1, 255, 255, 255, 5, 0, 8, 0, 0, 0, 0, 0, 0, 0 };
+            var bytes = (byte[])original.Clone();
+
+            ArmyWriter.Write(bytes, Narrow, Empty(5).WithSlot(0, Peasant, 5).WithSlot(1, Archer, 8), Numbering, "army");
+
+            Assert.That(bytes, Is.EqualTo(original));
+        }
+
+        [Test]
+        public void ChangingOnlyTheCountOfAnUnknownCreatureKeepsItsNumber()
+        {
+            var bytes = new byte[] { 77, 255, 255, 255, 255, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            ArmyWriter.Write(bytes, Narrow, Empty(5).WithSlot(0, Peasant, 6), Numbering, "army");
+
+            Assert.That(bytes, Is.EqualTo(new byte[] { 77, 255, 255, 255, 255, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0 }));
         }
 
         [Test]

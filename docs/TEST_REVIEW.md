@@ -48,8 +48,8 @@ Line references refer to that snapshot and may move as tests change.
 
 ### Slice 03a: Core filesystem fixture classification
 
-Core's 20 fixtures are being migrated in three bounded commits (03a runtime, 03b Data, 03c remaining fixtures).
-Slices 03a and 03b are complete; 03c remains open.
+Core's 20 fixtures were migrated in three bounded commits (03a runtime, 03b Data, 03c remaining fixtures).
+All three Core classification slices are complete.
 
 - Moved eight fixtures to `Tests/Siniskalc.Core.Tests/Integration/Runtime/` and updated their namespaces to match.
   Each fixture now has `[Category(TestKinds.Integration)]`, using the project-local `TestKinds` constants.
@@ -76,8 +76,29 @@ Slices 03a and 03b are complete; 03c remains open.
 - Validation ran only Core: 79 passed in the full project run, 12 passed with `TestCategory=Unit`, and 14 passed with `TestCategory=MultiUnit`.
   All runs had zero failures, skipped or unexecuted tests.
   Reported durations were 156 ms, 18 ms and 26 ms respectively; no performance improvement is claimed.
-- Core now has 16 categorized fixtures (68 cases): 42 Integration, 12 Unit and 14 MultiUnit cases.
-  Four fixtures (11 cases) remain uncategorized for 03c; project-wide enforcement is still deferred.
+- At the 03b checkpoint Core had 16 categorized fixtures (68 cases): 42 Integration, 12 Unit and 14 MultiUnit cases.
+  Four fixtures (11 cases) remained for 03c.
+
+### Slice 03c: complete Core classification
+
+- Classified the four remaining fixtures as Unit: `RangeGuardTests`, `NumbersTests`, `VersionedEnumerationTests` and `LogFactoryTests`.
+  The first three exercise pure functions, immutable values or a minimal enumeration subclass.
+  `LogFactoryTests` uses an in-memory recording factory/logger and resets the global factory in teardown; no filesystem or application graph is involved.
+  Its existing recording doubles are preserved; collaborator/mock refactoring is outside this classification-only slice.
+- All four fixture bodies and method names are unchanged.
+  All 79 discovered Core identities match the preceding checkpoint exactly.
+- All 20 Core fixtures now have exactly one kind, with matching folder and namespace.
+  The three category-filtered result sets partition the full set of 79 tests without overlap or omissions.
+  Cross-project enforcement remains deferred to slice 09.
+- Validation ran only Core: 79 passed in the full project run (172 ms); category runs passed 23 Unit (28 ms), 14 MultiUnit (26 ms) and 42 Integration (120 ms).
+  There were zero failures, skipped or unexecuted tests; no performance improvement is claimed.
+
+| Core kind | Fixtures | Cases |
+|---|---:|---:|
+| Unit | 9 | 23 |
+| MultiUnit | 3 | 14 |
+| Integration | 8 | 42 |
+| Total | 20 | 79 |
 
 ## Summary
 
@@ -89,6 +110,7 @@ Slices 03a and 03b are complete; 03c remains open.
 - **At review time no test had a `[Category]`, and no project had `Integration/` or `MultiUnit/` folders.**
   Slice 03a has since categorized eight Core fixtures (42 cases) as Integration and moved them into `Integration/Runtime/`; the rest of the migration remains open.
   Slice 03b added five Unit fixtures (12 cases) and three MultiUnit fixtures (14 cases), placing the latter in `MultiUnit/Data/`.
+  Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
   Weak value assertions and the serializer assertion issues below remain open.
@@ -552,7 +574,7 @@ Adopted in `CLAUDE.md` with the first review; classification migration started i
 1. The originally reported assertion-free and skipped-check cleanup is complete in slices 01 and 02.
    The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
-   Slices 03a and 03b completed eight Core runtime and eight Core Data fixtures; the four remaining Core fixtures are scheduled as 03c.
+   Slices 03a through 03c completed all 20 Core fixtures; migration of the other six projects and cross-project enforcement remain open.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).
 5. Cache loaded saves for the every-save sources and series, or check all saves in one test per rule (saves several minutes).

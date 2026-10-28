@@ -6,6 +6,7 @@ namespace Siniskalc.Core.Tests.Entities
     /// Tests the entities that appear from a version of a game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class VersionedEnumerationTests
     {
         private enum Release

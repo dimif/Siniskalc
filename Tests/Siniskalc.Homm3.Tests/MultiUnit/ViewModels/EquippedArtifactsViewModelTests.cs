@@ -1,10 +1,10 @@
-﻿using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;
 
-namespace Siniskalc.Homm3.Tests.Integration.ViewModels;
+namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels;
 
-[Category(TestKinds.Integration)]
+[Category(TestKinds.MultiUnit)]
 public sealed class EquippedArtifactsViewModelTests
 {
     private static string[] PickableNames(EquippedArtifactsViewModel vm, ArtifactSlots slot) =>
@@ -13,7 +13,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void PickingInASlotFinderEquipsAndClosesThePopup()
     {
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
         var slot = vm.SlotFor(ArtifactSlots.Helmet);
         slot.IsOpen = true;
 
@@ -28,7 +28,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingCombinationArtifactMirrorsBlockedSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
         var admiral = Artifact.AdmiralsHat;
 
         vm.SelectedHelm = admiral.Name;
@@ -44,7 +44,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void ClearingCombinationArtifactClearsAllMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
         var admiral = Artifact.AdmiralsHat;
 
         vm.SelectedHelm = admiral.Name;
@@ -59,7 +59,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SwappingCombinationArtifactToAnotherArtifactUpdatesMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
         var admiral = Artifact.AdmiralsHat;
         var necklace = Artifact.Necklaces.First(a => !a.IsCombination);
 
@@ -76,7 +76,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingMiscArtifactsKeepsTheOtherMiscSlots()
     {
         EquippedArtifacts? changed = null;
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), m => changed = m);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), m => changed = m);
 
         vm.SelectedItem1 = Artifact.CharmOfSpellPoints.Name;
         vm.SelectedItem2 = Artifact.MysticOrbOfSpellPoints.Name;
@@ -91,7 +91,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void RefreshShowsTheModelWithoutReportingAChange()
     {
         var changes = 0;
-        var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), _ => changes++);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), _ => changes++);
 
         vm.Refresh(new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Helmet, Artifact.AdmiralsHat));
 

@@ -1,14 +1,14 @@
-﻿using Siniskalc;
-using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;
-using Siniskalc.Homm3.Tests.Integration.Models;
 
-namespace Siniskalc.Homm3.Tests.Integration.ViewModels
+namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 {
+    /// <summary>
+    /// The finder of artifacts and the way the equipment picks from it, on equipment made by hand.
+    /// </summary>
     [TestFixture]
-    [Category(TestKinds.Integration)]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class ArtifactFinderTests
     {
         private static string[] Names(ArtifactFinderViewModel finder) =>
@@ -19,6 +19,8 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
         private static ArtifactFinderViewModel NewFinder(List<Artifact> chosen, Func<Artifact, bool>? canChoose = null) =>
             new(GameVersion.HornOfTheAbyss, new EffectLineProvider(), "Find", "Pick", chosen.Add, canChoose);
+
+        private static EquippedArtifactsViewModel NewEquipment() => new(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
 
         [Test]
         public void OneSearchBoxMatchesNameSlotTypeAndEffectTogether()
@@ -43,7 +45,6 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(Names(finder), Does.Contain(Artifact.AngelicAlliance.Name).And.Not.Contain(Artifact.SkullHelmet.Name));
         }
 
-
         [Test]
         public void PickingHandsTheArtifactToTheOwnerOnlyWhenAllowed()
         {
@@ -64,7 +65,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void EquippingFromTheFinderUsesTheArtifactsSlotAndFirstFreeRingOrItem()
         {
-            var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+            var vm = NewEquipment();
             var finder = vm.Finder;
 
             finder.Choose(Choice(finder, Artifact.SkullHelmet));
@@ -85,30 +86,9 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void TheBackpackButtonOfTheEquipFinderSendsTheArtifactToTheBackpack()
-        {
-            var game = HeroEditingTests.LoadPrepared();
-            using var hero = TestServices.CreateHeroViewModel(game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")));
-            var finder = hero.ArtifactsViewModel.Finder;
-            var backpack = hero.BackpackViewModel;
-            var empty = backpack.Slots1To32.Concat(backpack.Slots33To64).First(s => string.IsNullOrEmpty(s.SelectedArtifact));
-            var helmet = Choice(finder, Artifact.SkullHelmet);
-
-            Assert.That(finder.HasSecondaryAction, Is.True);
-            Assert.That(finder.SecondaryActionLabel, Is.EqualTo("Backpack"));
-            Assert.That(finder.ChooseSecondaryCommand.CanExecute(helmet), Is.True);
-
-            finder.ChooseSecondaryCommand.Execute(helmet);
-
-            Assert.That(empty.SelectedArtifact, Is.EqualTo(Artifact.SkullHelmet.Name));
-            Assert.That(hero.HeroModel.Backpack.All.Any(s => s?.Art == Artifact.SkullHelmet), Is.True);
-            Assert.That(backpack.Finder.HasSecondaryAction, Is.False, "the backpack finder only has Add");
-        }
-
-        [Test]
         public void TheEquipFinderPutsAScrollWithItsSpellInAFreeItemSlot()
         {
-            var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+            var vm = NewEquipment();
             var scroll = vm.Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Single(c => c.Spell == Spell.TownPortal);
 
             vm.Finder.Choose(scroll);
@@ -119,48 +99,10 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void OnlyTheItemSlotsOfferScrolls()
         {
-            var vm = new EquippedArtifactsViewModel(TestServices.EffectLines, new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+            var vm = NewEquipment();
 
             Assert.That(vm.SlotFor(ArtifactSlots.Misc3).Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Any(c => c.Spell == Spell.Fly), Is.True);
             Assert.That(vm.SlotFor(ArtifactSlots.Helmet).Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Any(c => c.Artifact == Artifact.SpellScroll), Is.False);
-        }
-
-        [Test]
-        public void AddingFromTheBackpackFinderFillsTheFirstEmptySlot()
-        {
-            var game = HeroEditingTests.LoadPrepared();
-            using var hero = TestServices.CreateHeroViewModel(game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")));
-            var backpack = hero.BackpackViewModel;
-            var empty = backpack.Slots1To32.Concat(backpack.Slots33To64).First(s => string.IsNullOrEmpty(s.SelectedArtifact));
-
-            backpack.Finder.Choose(Choice(backpack.Finder, Artifact.SkullHelmet));
-
-            Assert.That(empty.SelectedArtifact, Is.EqualTo(Artifact.SkullHelmet.Name));
-
-            game.History.Undo();
-
-            Assert.That(empty.SelectedArtifact, Is.Null.Or.Empty);
-        }
-
-        [Test]
-        public void TheBackpackFinderListsAScrollPerSpellAndKeepsTheSpell()
-        {
-            var game = HeroEditingTests.LoadPrepared();
-            using var hero = TestServices.CreateHeroViewModel(game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")));
-            var backpack = hero.BackpackViewModel;
-            var empty = backpack.Slots1To32.Concat(backpack.Slots33To64).First(s => string.IsNullOrEmpty(s.SelectedArtifact));
-            var scroll = backpack.Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Single(c => c.Spell == Spell.TownPortal);
-
-            Assert.That(backpack.Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Count(c => c.Artifact == Artifact.SpellScroll), Is.GreaterThan(1));
-            Assert.That(backpack.Finder.Artifacts.Cast<ArtifactChoiceViewModel>().Any(c => c.Artifact == Artifact.SpellScroll && c.Spell == null), Is.False);
-
-            backpack.Finder.Choose(scroll);
-
-            Assert.That(empty.SelectedArtifact, Is.EqualTo(SpellScroll.NameOf(Spell.TownPortal)));
-            var slot = game.History.Current.Heroes().FindByName("Christian");
-            var saved = game.History.CreateHeroSession(slot).Current.Backpack.All[empty.SlotNumber - 1];
-            Assert.That(saved?.Art, Is.EqualTo(Artifact.SpellScroll));
-            Assert.That(saved?.Spell, Is.EqualTo(Spell.TownPortal));
         }
     }
 }

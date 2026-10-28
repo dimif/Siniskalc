@@ -887,3 +887,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: 450 pass (the whole project); no other project was run, no production code changed.
 - Slice 17 is done for the differs, serializers of hero and castle, and the hero and castle models. The other HoMM2 fixtures that read saves (`CastleWeeklyGrowthTests`, `HeroDestinationAndFacingTests`, `MapObjectsTests`, `MinesListsTests`, `HeroActiveSpellsTests`) were not rewritten; the handover lists them as an optional 17e. The HoMM2 serializers and deserializers of players and map objects have no tests of their own yet (slices 21-22).
 
+## Slice 18 - HoMM3 view models that need no savegame
+
+- Surveyed `Tests\Siniskalc.Homm3.Tests\Integration\ViewModels`: only the artifact fixtures read no savegame. The hero view models take a concrete `HeroEditSession`, which exists only over a loaded save, and the castle and player ones are driven through the whole editor, so they stay Integration (end-to-end scenarios are wanted by the plan anyway).
+- `EquippedArtifactsViewModelTests` moved to `MultiUnit\ViewModels` and builds `EffectLineProvider` itself instead of taking it from `TestServices` (the whole graph).
+- `ArtifactFinderTests` is now MultiUnit (5 cases: search words, pick only when allowed, equip from the finder, scroll in an item slot, scrolls only in item slots), on equipment made by hand. The 3 cases that edit the hero page (equip finder to backpack, backpack add and undo, scroll in the backpack) are `ArtifactFinderHeroTests` (Integration).
+- Mutation check (caught, production restored with git): `canChoose` ignored by the finder, mirroring of the slots a combination artifact blocks removed (4 tests). Not checked: the other cases.
+- Homm3.Tests: the 14 artifact finder and equipment cases and the 95 Unit and MultiUnit cases pass; the full HoMM3 project was not run (the files only moved and one fixture was split).
+- Left for 18b: isolating the hero view models needs a small production seam, to be decided with the user (see the handover).
+

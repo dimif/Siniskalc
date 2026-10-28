@@ -53,6 +53,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 17b | see git log | HoMM2: `SafeHeroSerializerTests`, `SafeCastleSerializerTests` (literal bytes via `ByteDiff`) and `BuiltTodayDifferTests` are Unit; the save-based serializer ones are now `...SerializerSavegameTests` (Integration) |
 | 17c | see git log | HoMM2: `HeroModelTests` and `CastleModelTests` are Unit on records made by hand, `TurnDifferTests` is new; the save-dependent cases are in `HeroModelSavegameTests` and `CastleModelSavegameTests` (Integration) |
 | 17d | see git log | HoMM2: `MineDifferTests`, `ShrineDifferTests`, `SphinxDifferTests` (new, Unit) and `MaxSpellPointsCalculatorTests` (reclassified Unit, now two cases on a skill set made by hand) |
+| 18 | see git log | HoMM3: `EquippedArtifactsViewModelTests` reclassified MultiUnit (no `TestServices`, no save); `ArtifactFinderTests` split into MultiUnit (finder and equipment made by hand) and `ArtifactFinderHeroTests` (Integration, the hero page backpack and equip finders) |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -61,7 +62,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | ID | Scope |
 |---|---|
 | 17e (optional) | Look at the other HoMM2 fixtures that may be unit-shaped: `CastleWeeklyGrowthTests` (needs saves for the Well/Farm facts, the no-Well case can be in memory), `HeroDestinationAndFacingTests`, `MapObjectsTests`, `MinesListsTests`, `HeroActiveSpellsTests`; decide per fixture whether the save is the contract |
-| 18 | Isolate HoMM3 hero/castle view-model tests; keep representative end-to-end editor scenarios |
+| 18b | HoMM3 hero view-model tests need a concrete `HeroEditSession` (a savegame), so isolating them (`HeroGeneralTabTests`, `SkillsAndSpellsViewModelTests`, `SpellsFromArtifactsTests`, the creature finder cases of `CreatureFinderAndArtifactEffectsTests`) needs a seam: `HeroViewModel` takes the session through an interface (`IEditSession<HeroModel>` is in Core) or a test builds a `HeroEditSession` over an in-memory `SaveDocumentHistory`. Decide with the user first. Castle view models (`CastleViewModelTests`, `CastleDetailsViewModelTests`, `CastleEditingViewModelTests`) were not surveyed in detail |
 | 19 | Isolate remaining HoMM3 data/runtime/model tests by real dependencies, not names |
 | 20 | Split multi-subject fixtures, fix names that do not describe behaviour (scenario/feature integration fixtures are allowed). Split by project |
 | 21-22 | Missing HoMM2 contracts: castle/player read-write boundaries, then map objects and remaining serializers/deserializers (stand-ins, byte preservation, explicit replacement) |

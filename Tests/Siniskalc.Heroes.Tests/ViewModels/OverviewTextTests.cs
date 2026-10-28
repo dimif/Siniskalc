@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the sentences the overview pages of the games share.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class OverviewTextTests
     {
         [Test]

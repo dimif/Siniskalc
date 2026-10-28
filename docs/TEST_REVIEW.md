@@ -152,6 +152,22 @@ All three Core classification slices are complete.
 - All 132 Heroes cases passed; unchanged bodies/names and category/path/namespace agreement were verified.
   Seven ViewModels fixtures remain for the final Heroes batch.
 
+### Slice 05e: complete Heroes classification
+
+- Categorized all seven remaining ViewModels fixtures as Unit.
+  `PlayerTypeTextTests` mocks game information; the creature-choice fixture uses test entities, and the other fixtures format immutable values.
+- All 35 Heroes fixtures now have exactly one kind: 31 Unit fixtures (104 cases) and four MultiUnit fixtures (28 cases).
+  There are no disk/savegame-backed Integration fixtures in this project; those belong to the game projects.
+- The full Heroes project passed all 132 cases in 156 ms.
+  Unit and MultiUnit filters passed 104 and 28 cases respectively; the Integration filter discovered zero cases.
+  These result sets partition the full discovery exactly, without overlaps or omissions.
+  No cases failed, skipped or remained unexecuted.
+- All test bodies and method names were retained and category/path/namespace agreement was checked.
+  The slowest individual case in the full run took 26 ms; no Unit or MultiUnit case exceeded the review's 100 ms threshold.
+  These measurements do not establish a performance improvement.
+- Slices 04 and 05 changed classification and placement only.
+  Later isolation, assertion-strengthening and coverage slices remain open.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -164,7 +180,9 @@ All three Core classification slices are complete.
   Slice 03b added five Unit fixtures (12 cases) and three MultiUnit fixtures (14 cases), placing the latter in `MultiUnit/Data/`.
   Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
   Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
-  By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
+  Slices 05a–05e completed Heroes: all 35 fixtures and 132 cases are categorized and placed (104 Unit, 28 MultiUnit).
+  The original automated classification counted 92 unit, 19 multi-unit, 94 integration and 58 unit-shaped classes.
+  These are historical estimates, not current category totals; source review has corrected mixed fixtures, real collaborations and filesystem use as detailed above.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
   Weak value assertions and the serializer assertion issues below remain open.
 - **Four serializer tests check their output through the deserializer**, which `CLAUDE.md` forbids for the production code and which hides symmetric bugs in tests.

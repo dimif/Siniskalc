@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             Assert.That(row.Source, Is.EqualTo("Sea Captain's Hat"));
             var rows = this.Spells.Finder.Items.Cast<SpellRowViewModel>().ToList();
             Assert.That(rows.Where(r => !r.IsAvailable).Select(r => r.Source), Is.All.Empty);
-            TestContext.Out.WriteLine("Unknown source: " + string.Join(", ", rows.Where(r => r.Source == "Unknown source").Select(r => r.Name)));
+            Assert.That(rows.Where(r => r.Source == "Unknown source").Select(r => r.Name), Is.Empty);
         }
 
         [Test]

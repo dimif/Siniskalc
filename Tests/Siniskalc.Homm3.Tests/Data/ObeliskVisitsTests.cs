@@ -62,12 +62,14 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [TestCaseSource(nameof(EverySavefile))]
-        public void TheNumberOfObelisksIsTheNumberOfObeliskObjectsOfTheMap(string path)
+        public void TheObelisksMatchTheMapObjectsAndSavesWithoutAnEditableBlockKeepTheirBytes(string path)
         {
             var game = TestServices.GameService.LoadGameFromFile(path);
             if (!game.History.Current.Obelisks().Any)
             {
-                Assert.Pass("no obelisks found in this savefile");
+                Assert.That(game.History.Current.Obelisks().GetModel(), Is.Null, path);
+                Assert.That(game.History.Current.ToBytes(), Is.EqualTo(game.Bytes), path);
+                return;
             }
 
             // An obelisk object on the map is its type (57), its definition and its number among the obelisks. A hero standing on one hides it behind the hero.

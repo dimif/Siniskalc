@@ -5,6 +5,23 @@ An earlier review on `main` (c352615) covered 1,911 tests in three projects; thi
 The rules for kinds, folders and names that this review checks against are in the "Tests" section of `CLAUDE.md`.
 The review is repeatable with the `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`).
 
+## Incremental fixes after the review
+
+The class table and original timings below remain the historical review snapshot, not a fresh measurement after each slice.
+Line references refer to that snapshot and may move as tests change.
+
+### Slice 01: assertion-free diagnostics and unchecked spell sources
+
+- Removed `TmpTurnDump`, an assertion-free diagnostic that wrote to a user-specific path.
+- Replaced the obelisk `Assert.Pass` with assertions that an absent editable block has no model and that serializing the untouched document preserves all save bytes.
+  All 448 save cases remain; cases with an editable block retain their map-object count and index checks.
+  The existing named-save tests still require known obelisk blocks to be found, so this is not a replacement for presence coverage.
+- Replaced the spell-source diagnostic output with an assertion that no displayed spell reports `Unknown source`.
+- Targeted validation: 481 passed, zero failed or skipped, including all 448 save cases.
+- HoMM2 project validation after removing the diagnostic: 389 passed, zero failed; three explicit manual save-writing helpers were not executed.
+- Subsequent slices run tests only for affected projects, as directed by the user.
+  The full-solution run started for this slice was stopped on that instruction and is not reported as completed validation.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -14,7 +31,8 @@ The review is repeatable with the `test-reviewer` agent (`.github/agents/test-re
   `TestData` grew to 448 saves, and every test that walks all saves grows with it.
 - **No test has a `[Category]`, and no project has `Integration/` or `MultiUnit/` folders yet**, so the kinds `CLAUDE.md` asks for cannot be run apart.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
-- **Inconclusive tests remain**: one `Assert.Pass`, six silent `continue` loops, two conditional asserts, one `TestContext.Out` instead of an assertion, and a leftover diagnostic test (`Homm2.Tests/Data/TmpTurnDump.cs`) that asserts nothing and writes to a hard-coded user path.
+- **Inconclusive tests remain**: six silent `continue` loops and two conditional asserts.
+  Slice 01 removed the assertion-free diagnostic and replaced the `Assert.Pass` and output-only spell-source check.
 - **Four serializer tests check their output through the deserializer**, which `CLAUDE.md` forbids for the production code and which hides symmetric bugs in tests.
 - **Gaps**: most HoMM2 deserializers and serializers, several HoMM3 loaders and differs, and many Core, Wpf and Heroes.Wpf types have no test class of their own; the unknown-byte rule is not tested for HoMM3 players and obelisks or any HoMM2 record except heroes.
 - **Every test is in the project of the class it tests**, and no shared project names a game type.
@@ -24,7 +42,8 @@ The review is repeatable with the `test-reviewer` agent (`.github/agents/test-re
 - Moq is now referenced by five test projects and used in 27 files, mostly in the Heroes.Wpf view-model tests.
 - `[Category]` is still used nowhere.
 - The suite grew from 1,911 tests in 2 min 22 s to 4,000 tests in about 13 min; the growth is almost all in HoMM3 savefile tests.
-- The `Assert.Pass`, the `continue` loops, the `TestContext.Out` line and the serializer-through-deserializer tests reported then are all still there.
+- At review time the `Assert.Pass`, the `continue` loops, the `TestContext.Out` line and the serializer-through-deserializer tests reported then were all still there.
+  Slice 01 subsequently addressed the `Assert.Pass` and the `TestContext.Out` line.
 
 ## How the review was done
 
@@ -349,14 +368,17 @@ Wait at least 15 minutes, or use `--blame-hang-timeout` well above 2 minutes.
 
 ## Inconclusive and weak tests
 
-**Pass without checking anything:**
+**Assertion-free findings addressed in slice 01:**
 
-- `Homm2.Tests/Data/TmpTurnDump.cs`: `[Test] Dump()` asserts nothing and writes to `C:\Users\dimit\AppData\Local\Temp\turn_dump.txt`; it is a leftover diagnostic and fails on any other machine. Remove it or make it `[Explicit]` with a temp path.
-- `Homm3.Tests/Data/ObeliskVisitsTests.cs:70`: `Assert.Pass` when a save has no obelisk.
+- `Homm2.Tests/Data/TmpTurnDump.cs`: removed the leftover `[Test] Dump()` and its hard-coded output path.
+- `Homm3.Tests/Data/ObeliskVisitsTests.cs`: replaced `Assert.Pass` with absent-model and untouched-save byte-preservation assertions.
+- `SkillsAndSpellsViewModelTests.cs`: replaced diagnostic output with a failing assertion for unknown spell sources.
+
+**Remaining skipped checks:**
+
 - Silent `continue` that skips the assertion: `CastleBuilderTests.cs:47-49,77-79,110-112`, `CastleBuilderRulesTests.cs:25-27`, `RoeBuildingEditsTests.cs:59-61`, `SodSeriesTests.cs:184-186`.
   Filter the case source instead, so a case that cannot be checked does not exist.
 - Conditional asserts: `HeroOwnersBytesLoaderTests.cs:112` (`if (players.Count > 0)`), `HotaSleepGarrisonVisitingTests.cs:64` (`oidana != null`).
-- `SkillsAndSpellsViewModelTests.cs:50` writes to `TestContext.Out` where an assertion belongs.
 
 **Manual helpers, intentional**: `[Explicit]` tests that write edited saves for checking in the game: Homm2 `EditedSavesTests:111`, `EditorSavesTests:169`, `ThreedomEditorSavesTests:102`, Homm3 `GoldLimitSavesTests:52`.
 They are fine; mark them `[Category("Manual")]` as well, so a filter never picks them up by accident.
@@ -415,7 +437,7 @@ What holds: every file has one test class named like the file, namespaces follow
 Where names drift:
 
 - **Feature classes outside `Integration/`**: the rubric allows `<Feature>Tests` only there; today they sit in `Data/` (`GenderTests`, `BiographyTests`, `ActiveSpellsTests`, `MovedTodayTests`, `PlayerControlTests`, `PlayerHeadTests`, `ObeliskVisitsTests`, `CastleEditingTests`, …), so moving them fixes the name too.
-- **`TmpTurnDump`** is not named `…Tests` and is not a sentence.
+- **`TmpTurnDump`** was not named `…Tests` and was not a sentence; removed in slice 01.
 - **Methods that say nothing about the behaviour**: `HeroDeserializerTests.DeserializingHeroDeserializes` and its siblings, `GrantedSpellsResolverTests.OneVersionsResolversAreEqualAndResolveThatVersionsSpells`, `RawSavefileCodecTests.ReadsWhatWasWrittenAnd…` (no subject), `HeroByteEditTargetTests.ExposesTitleBytesAndRegions`, `PlayerAndOverviewViewModelTests.QuickSetCommandsAndResetPlayerWork`, `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`.
 - **Telegraphic style** without articles in the older hero classes (`SingleByteEditCanBeUndoneAndRedone`, `RoundTripKeepsBytesIdentical`); both styles pass the rule, the full-sentence style is the one to keep.
 
@@ -464,7 +486,8 @@ Adopted in `CLAUDE.md` with the first review, not yet applied:
 
 ## Backlog (in order)
 
-1. Remove `TmpTurnDump`; replace the `Assert.Pass`, the `continue` loops and the conditional asserts by filtered case sources; turn the `TestContext.Out` line into an assertion.
+1. Finish assertion cleanup: slice 01 removed `TmpTurnDump` and replaced the `Assert.Pass` and diagnostic output.
+   Repair the remaining `continue` loops and conditional assertions, excluding only genuinely inapplicable scenarios and failing when promised fixture data is absent.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).

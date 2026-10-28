@@ -138,6 +138,13 @@ All three Core classification slices are complete.
 - All 132 Heroes cases passed; unchanged bodies/names and category/path/namespace agreement were verified.
   Nineteen fixtures remain unclassified.
 
+### Slice 05c: Heroes positions, ownership and hero values
+
+- Categorized eight model fixtures as Unit: hero position/summary, map position, movement points, obelisk visits, owner names, player-model extensions and primary skills.
+  Their records, test colours and test player subclasses are input values rather than real service collaborators.
+- All 132 Heroes cases passed.
+  Bodies and method names are unchanged and namespace/folder/category agreement was verified; eleven fixtures remain.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

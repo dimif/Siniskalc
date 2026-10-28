@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the obelisks each colour has visited, which both games keep as a byte for each obelisk with a bit for every colour.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ObeliskVisitsTests
     {
         private static ObeliskVisits<TestColor> Visits(params byte[] masks) => new(masks);

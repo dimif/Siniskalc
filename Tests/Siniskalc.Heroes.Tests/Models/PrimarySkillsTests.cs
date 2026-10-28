@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the primary skills of a hero, which the savefile holds with the bonus of the worn artifacts in them.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PrimarySkillsTests
     {
         private static readonly PrimarySkillBonus Sword = new(12, 0, 0, 0);

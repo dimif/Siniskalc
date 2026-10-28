@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests what a list of heroes shows under the name of a hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroSummaryTests
     {
         [Test]

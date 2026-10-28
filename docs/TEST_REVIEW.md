@@ -924,3 +924,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Run: Homm3 Unit, MultiUnit, `CastleDifferSavegameTests` and `PlayerDifferSavegameTests` pass; the full HoMM3 project was not run; no production code changed.
 - Environment note: the .NET SDK was removed by an installer during this slice and came back as 11.0.100-rc.3; the build prints warnings that it cannot download the 8.0.33 reference packs (no network), but compiles and runs with the installed ones.
 
+## Slice 20a - HoMM2 multi-subject fixtures
+
+- `Homm2EditorViewModelTests` (719 lines, 40 tests on eight subjects) is split by page: `Homm2EditorNavigationTests` (15), `Homm2EditorOverviewTests` (2), `Homm2EditorPlayerPageTests` (7), `Homm2EditorHeroPageTests` (10), `Homm2EditorCastlePageTests` (5) and `Homm2EditorHexTabTests` (1). The editor with a Broken Alliance savegame and its settings folder is built by `Homm2EditorHarness` (disposable, also `OpenCastleOf`), and each fixture keeps its own helpers. Test bodies and names are unchanged and the unused `using`s of the copies were dropped.
+- `HeroDestinationAndFacingTests` is split into `HeroDestinationTests` and `HeroFacingTests`. The one test that edited the destination and the facing together became three that each name the bytes they may change (the destination edit writes only the eight bytes of the destination, the facing edit only the facing byte, removing the destination writes the none marker).
+- `MapObjectsTests.TheSphinxOfArrax_TheJerkHasSixAnswersAndGivesMercury` lost its underscore (`TheSphinxOfArraxTheJerkHasSixAnswersAndGivesMercury`). The HoMM2 `Assert.Ignore` and conditional checks the handover mentioned were not found by a search of the test project; none were changed.
+- Method names were scanned in all test projects for underscores, `Test` and `Should` prefixes and very short names; the vague ones are listed in the handover as 20b. Fixture names were checked: every class ends in `Tests`, is named like its file and is alone in it.
+- Mutation check (caught, production restored): the facing byte never written, the destination Y never written. Not checked: the moved page tests.
+- Homm2.Tests: 452 pass (the whole project; 450 plus the two tests gained by the split); no other project was run; no production code changed.
+

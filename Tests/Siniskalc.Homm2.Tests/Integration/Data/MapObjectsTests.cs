@@ -164,7 +164,7 @@
         }
 
         [Test]
-        public void TheSphinxOfArrax_TheJerkHasSixAnswersAndGivesMercury()
+        public void TheSphinxOfArraxTheJerkHasSixAnswersAndGivesMercury()
         {
             var game = TestServices.Load(Saves.Path(Saves.ArraxTheJerk, "arrax_the_jerk_01_start"));
 

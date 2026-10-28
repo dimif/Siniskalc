@@ -46,6 +46,24 @@ Line references refer to that snapshot and may move as tests change.
 | `HeroOwnersBytesLoaderTests` | 454 | 36.51 |
 | `HotaSleepGarrisonVisitingTests` | 30 | 2.11 |
 
+### Slice 03a: Core filesystem fixture classification
+
+Core's 20 fixtures are being migrated in three bounded commits (03a runtime, 03b Data, 03c remaining fixtures).
+Only 03a is complete at this checkpoint.
+
+- Moved eight fixtures to `Tests/Siniskalc.Core.Tests/Integration/Runtime/` and updated their namespaces to match.
+  Each fixture now has `[Category(TestKinds.Integration)]`, using the project-local `TestKinds` constants.
+- Fixtures: `SettingsStoreTests`, `RecentFilesStoreTests`, `RawSavefileCodecTests`, `NumberedSavefileBackupTests`, `LogPathsTests`, `FileBackupServiceProviderTests`, `DisabledFileBackupServiceTests` and `ShellUrlLauncherTests`.
+- Classification reflects current behaviour: all eight fixtures use real filesystem operations, including setup or a subset of cases.
+  `ShellUrlLauncherTests` injects the shell callback but creates real directories for folder-launch tests; `LogPathsTests` includes real write probes.
+  These mixed fixtures remain Integration as a whole; separating pure cases or isolating collaborators is later work, not part of this placement-only commit.
+- All eight fixture bodies and method names are unchanged.
+  Comparing discovered identities before and after the move, normalizing the intentional namespace change, retained all 79 Core cases.
+- Validation ran only Core: 79 passed before and after the move; the Integration category filter passed all 42 migrated cases.
+  There were zero failures or skipped cases.
+  Reported test durations were 164 ms for the full Core run and 121 ms for the category-filtered run; this slice makes no performance improvement claim.
+- Twelve Core fixtures remain uncategorized pending 03b and 03c; cross-project category/folder enforcement remains deferred until migration is complete.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -53,7 +71,8 @@ Line references refer to that snapshot and may move as tests change.
 - **Run time is driven by savefile replays, not by units.**
   The four `CastleBuilderTests` take 132 s, and the every-save sources (`ObeliskVisitsTests`, `PlayerHeadTests`, `HeroOwnersBytesLoaderTests`, `SafeHeroOwnersSerializerTests`, 1,831 cases) another 148 s.
   `TestData` grew to 448 saves, and every test that walks all saves grows with it.
-- **No test has a `[Category]`, and no project has `Integration/` or `MultiUnit/` folders yet**, so the kinds `CLAUDE.md` asks for cannot be run apart.
+- **At review time no test had a `[Category]`, and no project had `Integration/` or `MultiUnit/` folders.**
+  Slice 03a has since categorized eight Core fixtures (42 cases) as Integration and moved them into `Integration/Runtime/`; the rest of the migration remains open.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
   Weak value assertions and the serializer assertion issues below remain open.
@@ -64,7 +83,7 @@ Line references refer to that snapshot and may move as tests change.
 ### Changes since the `main` review
 
 - Moq is now referenced by five test projects and used in 27 files, mostly in the Heroes.Wpf view-model tests.
-- `[Category]` is still used nowhere.
+- `[Category]` was used nowhere at review time; the Core migration started in slice 03a.
 - The suite grew from 1,911 tests in 2 min 22 s to 4,000 tests in about 13 min; the growth is almost all in HoMM3 savefile tests.
 - At review time the `Assert.Pass`, the `continue` loops, the `TestContext.Out` line and the serializer-through-deserializer tests reported then were all still there.
   Slice 01 subsequently addressed the `Assert.Pass` and the `TestContext.Out` line.
@@ -434,13 +453,15 @@ Multi-unit without saying so:
 - Heroes: `HeroesSavegameBaseTests` (real document graph).
 - Heroes.Wpf: `ObeliskVisitsViewModelTests`, `RecordsPageViewModelBaseTests`, `SessionPageViewModelBaseTests` (real `SaveDocument` and history), and every `Views/*` test and `Styles/PageStylesTests` (real WPF windows).
 
-Integration in a layer folder: the Core file tests (`SettingsStoreTests`, `RecentFilesStoreTests`, `NumberedBackupTests`, `RawSavefileCodecTests`, `LogPathsTests`, `FileBackupServiceProviderTests`, `DisabledFileBackupTests`), and nearly all Homm2 `Data` and `ViewModels` classes.
+Integration in a layer folder at review time: the Core file tests and nearly all Homm2 `Data` and `ViewModels` classes.
+Slice 03a moved the eight filesystem-using Core runtime fixtures to `Integration/Runtime/`.
 
 ## Placement and naming
 
 - **Projects**: every class is in the test project of the code it tests; `Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests` and `Siniskalc.Heroes.Wpf.Tests` name no HoMM2 or HoMM3 type.
   `HeroesLayeringTests` enforces it for `Siniskalc.Heroes` (it also rules out the planned `Siniskalc.Fheroes`).
-- **Folders**: classes follow the layer of their subject, but none are in `Integration/` or `MultiUnit/` yet (see above).
+- **Folders**: at review time none were in `Integration/` or `MultiUnit/`.
+  Slice 03a began migration with the eight Core runtime fixtures; the historical class table above retains their original paths.
 - **One class, several subjects** (against "one test class per subject"): Homm3 `SpellBookAndGrantsTests`, `CreatureFinderAndArtifactEffectsTests`, `CastlePillAndTavernLinkTests`, `PlayerAndOverviewViewModelTests`, `RampartAndBulwarkCastleTests`; Homm2 `HeroDestinationAndFacingTests`; and `CollectionAccessTests`.
   Scenario classes (`Roe*`, `Sod*`, `Hota*`, the faction `*CastleTests`) are allowed by `CLAUDE.md`.
 
@@ -503,7 +524,7 @@ Rules from `CLAUDE.md` with little direct coverage:
 
 ## Proposed conventions
 
-Adopted in `CLAUDE.md` with the first review, not yet applied:
+Adopted in `CLAUDE.md` with the first review; classification migration started in slice 03a:
 
 1. `[Category("Unit")]`, `[Category("MultiUnit")]` or `[Category("Integration")]` on every fixture, from one `TestKinds` constants class per project; `Integration/<Layer>/` and `MultiUnit/<Layer>/` folders; a check test that fails a fixture without a category or in the wrong folder.
 2. Moq fakes for every dependency of a unit test; `TestServices` only in multi-unit and integration tests.
@@ -515,6 +536,7 @@ Adopted in `CLAUDE.md` with the first review, not yet applied:
 1. The originally reported assertion-free and skipped-check cleanup is complete in slices 01 and 02.
    The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
+   Slice 03a completed eight Core runtime fixtures; remaining Core fixtures are scheduled as 03b and 03c.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).
 5. Cache loaded saves for the every-save sources and series, or check all saves in one test per rule (saves several minutes).

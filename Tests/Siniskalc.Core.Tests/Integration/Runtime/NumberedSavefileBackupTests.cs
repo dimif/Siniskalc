@@ -1,8 +1,9 @@
-﻿namespace Siniskalc.Core.Tests.Runtime
+﻿namespace Siniskalc.Core.Tests.Integration.Runtime
 {
     using Siniskalc.Core.Runtime;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class NumberedSavefileBackupTests
     {
         private string folder = string.Empty;

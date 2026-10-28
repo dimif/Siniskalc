@@ -1,8 +1,9 @@
 using Siniskalc.Core.Runtime;
 
-namespace Siniskalc.Core.Tests.Runtime
+namespace Siniskalc.Core.Tests.Integration.Runtime
 {
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ShellUrlLauncherTests
     {
         [Test]

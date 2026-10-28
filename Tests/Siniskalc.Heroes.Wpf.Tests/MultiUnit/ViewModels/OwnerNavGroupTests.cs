@@ -1,10 +1,11 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class OwnerNavGroupTests
     {
         private static readonly NavEntry[] Heroes = [new(3, "Orrin", "Knight, level 2")];

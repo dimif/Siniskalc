@@ -186,6 +186,16 @@ All three Core classification slices are complete.
 - Eight of 35 Heroes.Wpf fixtures are categorized; 27 remain for 06b–06e.
   Paused after this bounded commit under the existing checkpoint agreement.
 
+### Slice 06b: Heroes.Wpf mines, ownership and overview
+
+- Classified movement/spell-points and overview view-model fixtures as Unit, with test delegates and mocked game information.
+- Moved both mine-row fixtures, mines list, obelisk visits, owned links and owner navigation into `MultiUnit/ViewModels/`.
+  Their real choice fields, sorting, synthetic document/history, link builders or navigation tree participate in the assertions.
+  Synthetic bytes and mocked codecs do not make the obelisk fixture a real-savegame Integration test.
+- Preserved every test body and name; category/path/namespace agreement was checked.
+  Only Heroes.Wpf was run: all 142 cases passed, with no failures or skipped cases.
+  Nineteen fixtures remain unclassified.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

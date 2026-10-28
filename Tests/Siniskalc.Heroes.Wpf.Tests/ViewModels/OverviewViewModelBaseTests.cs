@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the words the overview page of any game says about the savefile that is open.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class OverviewViewModelBaseTests
     {
         private static AbstractSavegame Savegame(string? name)

@@ -1,16 +1,18 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the lists of what a colour owns, which the pages of every game show.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class OwnedLinksTests
     {
         private static IHeroSummaries<TestColor> Heroes()

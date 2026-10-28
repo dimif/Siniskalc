@@ -1,15 +1,17 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the obelisks a player visited, read from and written to the savefile of a made-up game through its own reader and writer.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ObeliskVisitsViewModelTests
     {

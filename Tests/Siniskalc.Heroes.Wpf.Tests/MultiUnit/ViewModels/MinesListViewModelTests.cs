@@ -1,16 +1,18 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using System;
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the list of the mines of a map that every game shows, over the mines of a made-up game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class MinesListViewModelTests
     {
         [Test]

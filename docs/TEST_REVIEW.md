@@ -915,3 +915,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Run: Homm3 Unit, MultiUnit and the save-based player differ pass (the full HoMM3 project was not run; files moved and tests added only; no production code changed).
 - Left for 19b: see the handover.
 
+## Slice 19b - HoMM3 hero model, castle differ and pending changes factory
+
+- `HeroModelTests` (7 cases) moved to `Models\` as Unit on `HeroModels.Christian()` (it took the first hero of a Bulwark save to test reducers).
+- New `CastleDifferTests` (9 cases, Unit) on `CastleModels.Village(Faction.Rampart)` with the Moq factory: equal castles, built and removed buildings, the automatic building not listed, allowed and forbidden wording with the revert function, and `RestoreBuilding` (what was built on top comes back, what a removed building needed comes back, a building not in the original is taken down). The Bulwark save fixture is now `CastleDifferSavegameTests` (Integration) and keeps the revert-through-history and several-castle cases.
+- `Homm3PendingChangesFactoryTests` gained the player, castle and obelisk cases (3 new, Unit).
+- Mutation check (all caught, production restored): castle changes filed as player changes, a neutral hero keeping its destination, `RestoreBuilding` ignoring the original. Not checked: the other cases.
+- Run: Homm3 Unit, MultiUnit, `CastleDifferSavegameTests` and `PlayerDifferSavegameTests` pass; the full HoMM3 project was not run; no production code changed.
+- Environment note: the .NET SDK was removed by an installer during this slice and came back as 11.0.100-rc.3; the build prints warnings that it cannot download the 8.0.33 reference packs (no network), but compiles and runs with the installed ones.
+

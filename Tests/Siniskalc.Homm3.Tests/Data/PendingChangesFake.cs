@@ -10,7 +10,7 @@ using Siniskalc.Homm3.Models;
 namespace Siniskalc.Homm3.Tests.Data
 {
     /// <summary>
-    /// A pending changes factory for the tests of the differs: it makes a change of a player with no way to put it back through a history,
+    /// A pending changes factory for the tests of the differs: it makes a change of a player or a castle with no way to put it back through a history,
     /// and keeps the function that puts the record back, by the description of the change.
     /// </summary>
     internal sealed class PendingChangesFake
@@ -24,11 +24,19 @@ namespace Siniskalc.Homm3.Tests.Data
                     this.PlayerReverts[change.Description] = revert;
                     return new PendingChange(name, change, Homm3ChunkKinds.Player, index, _ => { });
                 });
+            mock.Setup(f => f.ForCastle(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Change>(), It.IsAny<Func<CastleModel, CastleModel>>()))
+                .Returns((string name, int index, Change change, Func<CastleModel, CastleModel> revert) =>
+                {
+                    this.CastleReverts[change.Description] = revert;
+                    return new PendingChange(name, change, Homm3ChunkKinds.Castle, index, _ => { });
+                });
             this.Factory = mock.Object;
         }
 
         public IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> Factory { get; }
 
         public Dictionary<string, Func<PlayerModel, PlayerModel>> PlayerReverts { get; } = [];
+
+        public Dictionary<string, Func<CastleModel, CastleModel>> CastleReverts { get; } = [];
     }
 }

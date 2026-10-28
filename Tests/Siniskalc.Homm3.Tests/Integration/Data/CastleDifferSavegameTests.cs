@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class CastleDifferTests
+    internal sealed class CastleDifferSavegameTests
     {
         private SaveDocumentHistory history = null!;
         private CastleEditSession still = null!;

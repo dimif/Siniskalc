@@ -970,3 +970,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: the whole project passes; no other project was run; no production code changed.
 - Not covered here (slice 22): map objects and the remaining deserializers and serializers.
 
+## Slice 22a - HoMM2 mines and shrines
+
+- Four new Unit fixtures over `MapObjectChunk` records made by hand (the chunk carries the tile, the place in the table, a tag and the parts that are the flags drawn on the tiles): `MineDeserializerTests` (4 cases), `SafeMineSerializerTests` (7), `ShrineDeserializerTests` (4) and `SafeShrineSerializerTests` (5).
+- Mines: the kind, tile, index and owner are read; an owner byte that is the neutral byte or no colour reads as `Neutral`. The writer returns the very same chunk when the owner reads the same (so a mine whose flag the game never drew stays so, also for an owner byte that is no colour while the model says `Neutral`), writes the colour byte, draws the flag (class `0x38`, picture 14, 21 or 28 plus the colour by kind) on every tile that does not already show the new owner, clears the flags for `Neutral`, and never writes the kind, tile or index.
+- Shrines: the circle is the two low bits of the tag and the spell is the number above the low three bits of the word; a hidden shrine reads with spell -1. The writer changes only the spell number, keeps the three low bits, leaves hidden shrines, models with no spell and unchanged spells alone, and refuses a number that does not fit a byte without touching the record. A spell number the game does not have reads as the number it is (`Spell` is `null`), which is what the code does and what the test states.
+- Mutation check (all caught, production restored): the low bits of the shrine word dropped, the hidden check removed, the flags never redrawn, the unchanged-owner shortcut removed, the shrine circle mask widened (found a gap in the first version of the test; fixed), and the mine owner byte masked. Not checked: the other cases.
+- Homm2.Tests: the whole project passes (504); no other project was run; no production code changed.
+- Left for 22b and 22c: see the handover.
+

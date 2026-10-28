@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Models
+﻿namespace Siniskalc.Homm2.Tests.Integration.Models
 {
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
@@ -7,6 +7,7 @@
     using Siniskalc.Homm2.Models;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class CastleModelTests
     {
         private static CastleModel Xabran() => TestServices.LoadBrokenAlliance(5).History.Current.Castles().GetModel(3);

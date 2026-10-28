@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Entities
+﻿namespace Siniskalc.Homm2.Tests.MultiUnit.Entities
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -9,6 +9,7 @@
     /// Tests that the colours, factions, skills and skill levels of the game are what the editor's shared pages ask for.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class SharedEntityTests
     {
         [Test]

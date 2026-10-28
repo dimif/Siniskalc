@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -10,6 +10,7 @@
     /// remembers of the places it visited.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ThreedomTests
     {
         private const int Charity = 49;

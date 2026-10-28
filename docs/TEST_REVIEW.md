@@ -263,6 +263,17 @@ All three Core classification slices are complete.
 - HoMM2 validation passed 389 cases; three Explicit helpers remained unexecuted.
   Category/path/namespace agreement was checked; 22 fixtures remain unclassified.
 
+### Slice 07d: HoMM2 entities, models and Threedom
+
+- Classified creature and spell fixed-data fixtures as Unit.
+- Moved entity-table and shared-entity fixtures to `MultiUnit/Entities/`: they span several entity subjects and the shared palette contract.
+  Their subject/naming consolidation remains later work.
+- Moved hero-level tests to `MultiUnit/Models/`, reflecting calls through the real shared experience table.
+- Moved Threedom, castle-model and hero-model fixtures to Integration with matching layer folders.
+  Reducer assertions do not make a fixture isolated when its inputs are loaded from real saves.
+- All 389 automated HoMM2 cases passed; three Explicit helpers remained unexecuted.
+  Bodies/names and category/path/namespace agreement were checked; fourteen fixtures remain.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

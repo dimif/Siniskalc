@@ -1,8 +1,9 @@
-namespace Siniskalc.Homm2.Tests.Models
+namespace Siniskalc.Homm2.Tests.MultiUnit.Models
 {
     using Siniskalc.Homm2.Models;
 
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class HeroLevelsTests
     {
         [TestCase(0, 1)]

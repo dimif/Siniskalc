@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Entities
+namespace Siniskalc.Homm2.Tests.MultiUnit.Entities
 {
     using Siniskalc.Homm2.Entities;
 
@@ -6,6 +6,7 @@ namespace Siniskalc.Homm2.Tests.Entities
     /// The tables of entities, against the numbers the savegames proved and the shape of the game (66 creatures, 65 spells, 14 skills).
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class EntityTablesTests
     {
         [Test]

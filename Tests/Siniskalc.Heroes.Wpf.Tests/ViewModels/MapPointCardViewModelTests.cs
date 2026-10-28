@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the card of the position or the marker of a hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MapPointCardViewModelTests
     {
         private int x = -1;

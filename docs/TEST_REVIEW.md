@@ -168,6 +168,24 @@ All three Core classification slices are complete.
 - Slices 04 and 05 changed classification and placement only.
   Later isolation, assertion-strengthening and coverage slices remain open.
 
+### Slice 06a: first Heroes.Wpf view-model fixtures
+
+- Classified five fixtures as Unit: army totals, banishing text, castle links, level/class card and map-point card.
+  Their inputs are immutable values, test delegates or mocked interfaces; the castle-link command is carried, not exercised.
+- Moved `CastleHeroRowsTests`, `DaysLeftCardViewModelTests` and `HeroesArmyViewModelBaseTests` to `MultiUnit/ViewModels/`, with matching namespaces and categories.
+  They exercise returned commands, real child-choice notifications, or army/slot/finder collaboration.
+  Kept the shared test entities in their existing namespace.
+- Added project-local `TestKinds`; all bodies, method names and assertions are unchanged.
+  Styled-control rendering checks are untouched.
+- Only Heroes.Wpf was run: all 142 cases passed, with no failures, skipped or unexecuted cases.
+  The combined Unit/MultiUnit filter passed exactly the 36 newly categorized cases (18 of each), matching their full-run identities.
+  Category/path/namespace agreement was checked.
+- The full project reported 2 seconds; the filtered run reported 132 ms.
+  The empty castle-row case took 239 ms in the full run and 39 ms in the filtered run; the filtered run's slowest selected case took 59 ms.
+  This run-order-sensitive observation is not evidence of a performance improvement or a persistent slow unit.
+- Eight of 35 Heroes.Wpf fixtures are categorized; 27 remain for 06b–06e.
+  Paused after this bounded commit under the existing checkpoint agreement.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -181,6 +199,7 @@ All three Core classification slices are complete.
   Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
   Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
   Slices 05a–05e completed Heroes: all 35 fixtures and 132 cases are categorized and placed (104 Unit, 28 MultiUnit).
+  Slice 06a started Heroes.Wpf: eight of 35 fixtures are categorized (18 Unit and 18 MultiUnit cases); 27 fixtures remain.
   The original automated classification counted 92 unit, 19 multi-unit, 94 integration and 58 unit-shaped classes.
   These are historical estimates, not current category totals; source review has corrected mixed fixtures, real collaborations and filesystem use as detailed above.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**

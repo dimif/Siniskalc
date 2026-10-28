@@ -1,8 +1,9 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
@@ -10,6 +11,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the army editor that every game shares.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class HeroesArmyViewModelBaseTests
     {
         private sealed class Army : HeroesArmyViewModelBase<TestCreature, StackSlotViewModel>

@@ -7,6 +7,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
     /// Tests the behaviour every finder shares, with a small finder of fruit.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class FinderViewModelTests
     {
         private sealed record Fruit(string Name, string Colour);

@@ -100,6 +100,15 @@ All three Core classification slices are complete.
 | Integration | 8 | 42 |
 | Total | 20 | 79 |
 
+### Slice 04a: Wpf view-model classification
+
+- Classified `AboutViewModelTests`, `FinderViewModelTests` and `SortableListViewModelTests` as Unit.
+- Moved `LoggingSettingsViewModelTests`, `RecentFilesMenuViewModelTests` and `ShellViewModelTests` to `Integration/ViewModels/`, with matching namespaces and Integration categories.
+  Their real settings stores and filesystem setup make them integration fixtures even where individual assertions only inspect state.
+- Added project-local `TestKinds`; preserved test bodies and helper ownership.
+- Wpf project validation: all 58 tests passed, with no failures or skipped cases.
+  Four view fixtures remain for 04b.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

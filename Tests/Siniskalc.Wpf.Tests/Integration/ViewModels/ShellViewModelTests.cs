@@ -1,10 +1,12 @@
 using System.IO;
 using Siniskalc.Core.Runtime;
+using Siniskalc.Wpf.Tests.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
-namespace Siniskalc.Wpf.Tests.ViewModels
+namespace Siniskalc.Wpf.Tests.Integration.ViewModels
 {
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ShellViewModelTests
     {
         private string folder = string.Empty;

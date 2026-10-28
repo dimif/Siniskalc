@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Tests.ViewModels
+namespace Siniskalc.Wpf.Tests.Integration.ViewModels
 {
     using System;
     using System.IO;
@@ -9,6 +9,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
     using Siniskalc.Wpf.Views;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class LoggingSettingsViewModelTests
     {
         private string folder = string.Empty;

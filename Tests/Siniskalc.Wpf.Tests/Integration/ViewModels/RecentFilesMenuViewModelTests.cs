@@ -3,9 +3,10 @@ using System.Linq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
 
-namespace Siniskalc.Wpf.Tests.ViewModels
+namespace Siniskalc.Wpf.Tests.Integration.ViewModels
 {
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class RecentFilesMenuViewModelTests
     {
         private string folder = string.Empty;

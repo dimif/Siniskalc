@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm2.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// Tests the heroes of a HoMM2 savegame as the lists of the pages need them.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeroChunkCollectionTests
     {
         private static IHeroSummaries<PlayerColor> Heroes() => TestServices.LoadBrokenAlliance(10).History.Current.Heroes();

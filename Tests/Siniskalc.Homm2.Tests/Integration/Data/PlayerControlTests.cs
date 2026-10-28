@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
@@ -9,6 +9,7 @@
     /// Who plays each colour and whose turn it is, read from the saves of <c>TestData/Homm2/HumanCpu</c>.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class PlayerControlTests
     {
         private static Game Load(string name) => TestServices.Load(Directory.GetFiles(Path.Combine("TestData", "Homm2", "HumanCpu"), name + ".*").Single());

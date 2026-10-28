@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -10,6 +10,7 @@
     /// The obelisks of Threedom (TestData/Homm2/Threedom): nine on the map, a byte each with a bit for every colour that visited it.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ObeliskTests
     {
         private static ObeliskVisits<PlayerColor> Visits(int save) => TestServices.LoadThreedom(save).History.Current.Obelisks().GetModel()!;

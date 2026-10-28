@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
@@ -9,6 +9,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// What the pending changes of a hero say, and how they are put back.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeroDifferTests
     {
         private const int Maximus = 7;

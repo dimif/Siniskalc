@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -11,6 +11,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// (TestData/Homm2/MarkerFacing): Colar Blau stands at 1, 65 in all of them.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeroDestinationAndFacingTests
     {
         private const int ColarBlau = 50;

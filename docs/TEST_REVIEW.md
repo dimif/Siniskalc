@@ -246,6 +246,14 @@ All three Core classification slices are complete.
   Three Explicit helpers remain unexecuted (392 discovered); they are not counted as passed.
   Thirty-eight fixtures remain unclassified.
 
+### Slice 07b: HoMM2 heroes, map objects and player control
+
+- Moved eight fixtures to `Integration/Data/`: hero collection, destination/facing, hero differ, heroes, map objects, obelisks, player control and player differ.
+  Their real-save reads and `TestServices` composition make them Integration regardless of subject-shaped class names.
+- Retained every series case, byte assertion and method name; category/path/namespace agreement was checked.
+- HoMM2 validation passed 389 cases; three Explicit helpers remained unexecuted.
+  Thirty fixtures remain unclassified.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

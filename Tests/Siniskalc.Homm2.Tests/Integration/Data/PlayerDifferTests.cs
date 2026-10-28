@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -9,6 +9,7 @@
     /// What the pending changes of a player say, including what the player has selected and what the tavern offers.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class PlayerDifferTests
     {
         private Game game = null!;

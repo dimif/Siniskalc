@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -10,6 +10,7 @@
     /// The mines, the shrines and the sphinx of Threedom (and the map of Arrax the Jerk): read from the saves, edited, and written back.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class MapObjectsTests
     {
         private static MineModel Mine(int save, int x, int y) => TestServices.LoadThreedom(save).History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(x, y));

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
@@ -9,6 +9,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the page that edits the records of some kinds of the savefile of a made-up game, whose record is one byte.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class RecordsPageViewModelBaseTests
     {
         private static readonly ChunkKind Mines = new("Mines", 0);

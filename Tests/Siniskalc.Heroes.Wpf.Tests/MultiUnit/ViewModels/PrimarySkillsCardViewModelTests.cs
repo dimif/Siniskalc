@@ -1,9 +1,10 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class PrimarySkillsCardViewModelTests
     {
         private PrimarySkills skills = null!;

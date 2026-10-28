@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the page of a record that is edited through a session.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class SessionPageViewModelBaseTests
     {
         private sealed class Page : SessionPageViewModelBase<string>

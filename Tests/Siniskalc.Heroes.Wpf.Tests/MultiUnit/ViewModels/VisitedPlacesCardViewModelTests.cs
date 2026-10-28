@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// The two commands at the top of the card of visited places, which make a hero forget or remember everything at once.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class VisitedPlacesCardViewModelTests
     {
         private static VisitedPlaceRowViewModel Kind(string name, bool[] visited) =>

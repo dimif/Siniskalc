@@ -196,6 +196,14 @@ All three Core classification slices are complete.
   Only Heroes.Wpf was run: all 142 cases passed, with no failures or skipped cases.
   Nineteen fixtures remain unclassified.
 
+### Slice 06c: remaining Heroes.Wpf view models
+
+- Classified tavern-choice filtering and weekly-growth text as Unit.
+- Moved primary-skills card, resources editor, records page, session page, tavern place and visited-places card fixtures to `MultiUnit/ViewModels/`.
+  Their assertions exercise child rows, model reducers, choice builders or real document/history behaviour; mocked outer boundaries do not isolate those collaborations.
+- All 142 Heroes.Wpf cases passed; bodies/names and category/path/namespace agreement were verified.
+  Eleven style/view fixtures remain.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

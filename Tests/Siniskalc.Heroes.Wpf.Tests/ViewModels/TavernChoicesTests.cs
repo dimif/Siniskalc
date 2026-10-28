@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests who a place of a tavern can be given to.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class TavernChoicesTests
     {
         private static readonly HeroSummary<TestColor>[] Heroes =

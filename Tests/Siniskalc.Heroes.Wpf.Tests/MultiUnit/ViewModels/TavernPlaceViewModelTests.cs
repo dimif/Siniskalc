@@ -1,14 +1,16 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.Tests.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the two places of the tavern of a player, which both games make from the heroes of their savefile.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class TavernPlaceViewModelTests
     {
         private TavernHeroes tavern = TavernHeroes.Empty;

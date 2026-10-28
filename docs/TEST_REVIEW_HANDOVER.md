@@ -63,6 +63,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 21 | see git log | HoMM2 castle and player boundaries as Unit tests on records made by hand: new `CastleDeserializerTests` (14 cases), `PlayerDeserializerTests` (5), `SafePlayerSerializerTests` (7), 6 more cases in `SafeCastleSerializerTests`; helper `BlankRecords` |
 | 22a | see git log | HoMM2 mines and shrines: `MineDeserializerTests`, `SafeMineSerializerTests`, `ShrineDeserializerTests`, `SafeShrineSerializerTests` (Unit, `MapObjectChunk` records made by hand) |
 | 22b | see git log | HoMM2 sphinxes and obelisks: `SphinxDeserializerTests`, `SafeSphinxSerializerTests`, `ObeliskDeserializerTests`, `SafeObeliskSerializerTests` (Unit, records made by hand) |
+| 22c | see git log | HoMM2 turn and built-today: `TurnDeserializerTests`, `SafeTurnSerializerTests`, `BuiltTodayDeserializerTests`, `SafeBuiltTodaySerializerTests` (Unit, records made by hand) |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -74,7 +75,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 18c | Use the new seam for the rest of the HoMM3 hero view-model fixtures: `HeroGeneralTabTests`, `SkillsAndSpellsViewModelTests`, `SpellsFromArtifactsTests`, `CreatureFinderAndArtifactEffectsTests`, `HeroEditingViewModelTests` (new Unit/MultiUnit cases on `FakeHeroSession` + `HeroModels.Christian()`; keep the save-based ones as Integration). Castle view models were not surveyed in detail (the same seam idea would need an `ICastleSession`) |
 | 19c | Remaining HoMM3 candidates: `MageGuildLevelTests` (the save is the contract; a Unit case on an in-memory castle could pin the rule), `CastleRegionProviderTests`, `HeroEditSessionTests`, `CastleEditSessionTests`; then the multi-subject save fixtures belong to slice 20 |
 | 20d | Left from the review's "one class, several subjects": `RampartAndBulwarkCastleTests` (scenario fixture, allowed to stay); then re-run the name scan (`names.py` idea: very short names, telegraphic names without articles) and decide whether the older telegraphic names are worth rewriting before slice 29 |
-| 22c | Turn and built-today (`TurnDeserializer`/`SafeTurnSerializer`, `BuiltTodayDeserializer`/`SafeBuiltTodaySerializer`), then `BytesLoader`, `SaveRegionProvider`, `MapPlacesReader`, `MapObjectsReader` (stand-ins, byte preservation, malformed input) |
+| 22d | HoMM2 readers of a savegame, two per sub-slice: `BytesLoader` and `SaveRegionProvider` first, then `MapPlacesReader` and `MapObjectsReader` (the largest, 198 lines; a record made by hand needs the block markers of `MapObjectLayout`). Cover stand-ins, byte preservation and malformed input (truncated chunks, missing markers) without inventing error semantics: say what the code does today |
 | 23 | HoMM3 player/obelisk unknown-byte contracts and malformed input, without inventing error semantics |
 | 24 | HoMM3 loader, differ, region and document/version construction gaps |
 | 25-28 | Gaps in Core services and chunk/edit-session infrastructure; Wpf commands, navigation, hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |

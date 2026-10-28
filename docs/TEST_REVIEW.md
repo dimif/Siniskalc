@@ -989,3 +989,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: the whole project passes (531); no other project was run; no production code changed.
 - Left for 22c: see the handover.
 
+## Slice 22c - HoMM2 turn and built-today records
+
+- Four new Unit fixtures on records made by hand: `TurnDeserializerTests` (4 cases), `SafeTurnSerializerTests` (4), `BuiltTodayDeserializerTests` (3) and `SafeBuiltTodaySerializerTests` (4).
+- Turn: the record is the first byte; its colour comes from the packed order of the colours that sits in the tag of the chunk (`PlayerRecordOrder`), so the same record can be another colour in another savegame; a record past the six players has no colour and is kept as the number it is. The writer returns the same chunk when the record is unchanged (whatever colour the model holds, also for a record past six), writes only the byte of the turn otherwise, and refuses a record that is not a player without touching the chunk. A tag that packs a colour past the sixth (7) would make the reader index past the list; the code that makes the tag (`PlayerRecordOrder.ColorsOf`) never gives one, so no test states what would happen.
+- Built-today: nine bytes, one bit for each of the 72 castles of the table, the first in the lowest bit of the first byte. The reader lists the set bits in table order; the writer sets and clears only the bit of each castle, and returns the same chunk when nothing changes.
+- Mutation check (all caught, production restored): the colour read without the packed order, the record limit changed, the unchanged shortcut removed, the range guard removed, the bit order reversed, bits never cleared, and a new chunk always made.
+- Homm2.Tests: the whole project passes (see the count in the report); no other project was run; no production code changed.
+- Left for 22d: `BytesLoader`, `SaveRegionProvider`, `MapPlacesReader`, `MapObjectsReader`.
+

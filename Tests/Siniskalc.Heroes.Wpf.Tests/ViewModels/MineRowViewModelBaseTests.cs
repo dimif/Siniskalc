@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -9,7 +9,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
     /// Tests the row of a mine that every game shows: what it gives, where it is and who owns it.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.MultiUnit)]
+    [Category(TestKinds.Unit)]
     internal sealed class MineRowViewModelBaseTests
     {
         [Test]

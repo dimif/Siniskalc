@@ -20,7 +20,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 
 - Work in small slices; one commit per slice; **stop after each commit** and report. Never start the next slice on your own.
 - Never push.
-- Test only the affected projects per step (`dotnet test Tests\<Project> --artifacts-path $env:TEMP\<folder> --filter ...`). The full solution takes about 10 minutes on the HoMM3 project; run it once per batch, say so, and never claim a measurement that was not like-for-like.
+- Test only the affected projects per step (`dotnet test Tests\<Project> --artifacts-path $env:TEMP\<folder> --filter ...`). Run only the affected tests. Do not rerun the full solution (about 10 minutes on the HoMM3 project) unless there is a good reason, such as profiling run time; say so when you do, and never claim a measurement that was not like-for-like.
 - Do not change production behaviour. Small seams (an interface so a test can mock a collaborator) are acceptable if they keep behaviour; state them in the report.
 - Do not share loaded mutable documents between tests. `Tests\Siniskalc.Homm3.Tests\Data\ReadOnlySaves` shares a loaded `Game` only for tests that read; check the code under test does not mutate before using it.
 - Commit trailer: `Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>`.
@@ -47,7 +47,8 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 13 | `822e375` | `ReadOnlySaves`: obelisk and player-head every-save contracts load each save once (82 s to 46 s) |
 | 14 | `7f26565` | Same for hero-owner contracts and castle replays (replays 36 s to 9 s) |
 | 15 | `1fb6894` | `ISettingsStore` / `IRecentFilesStore` seams; `RecentFilesMenuViewModelTests` is Unit, `ShellViewModelTests` uses a mocked store |
-| 16 | see git log | Heroes.Wpf: `MineRowViewModelTests`, `DaysLeftCardViewModelTests`, `PrimarySkillsCardViewModelTests` reclassified Unit and moved to `ViewModels\` |
+| 16 | `b9f2031` | Heroes.Wpf: `MineRowViewModelTests`, `DaysLeftCardViewModelTests`, `PrimarySkillsCardViewModelTests` reclassified Unit and moved to `ViewModels\` |
+| 16b | see git log | Heroes.Wpf: `ResourcesEditorViewModelTests`, `MineRowViewModelBaseTests` reclassified Unit; `VisitedPlacesCardViewModelTests`, `HeroesArmyViewModelBaseTests`, `OwnerNavGroupTests` stay MultiUnit on purpose |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -55,7 +56,6 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 
 | ID | Scope |
 |---|---|
-| 16 (rest) | Heroes.Wpf still-MultiUnit view models that might become Unit: `ResourcesEditorViewModelTests`, `MineRowViewModelBaseTests`, `VisitedPlacesCardViewModelTests`, `HeroesArmyViewModelBaseTests`, `OwnerNavGroupTests`. `SessionPageViewModelBaseTests` and `RecordsPageViewModelBaseTests` stay MultiUnit unless `SaveDocumentHistory` (sealed) gets an interface. Rendered controls stay MultiUnit |
 | 17 | Isolate HoMM2 unit-shaped tests (differs, serializers, model reducers); keep a save-based path |
 | 18 | Isolate HoMM3 hero/castle view-model tests; keep representative end-to-end editor scenarios |
 | 19 | Isolate remaining HoMM3 data/runtime/model tests by real dependencies, not names |

@@ -847,3 +847,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Left MultiUnit on purpose: `SessionPageViewModelBaseTests` (needs a real `SaveDocumentHistory`, which is sealed and returned by `IEditSession.History`), `RecordsPageViewModelBaseTests`, the rendered controls, and the view models that build real child view models. `ResourcesEditorViewModelTests` and four other candidates are left for a later sub-slice (three-subject limit).
 - Heroes tests need no change: their unit-shaped fixtures were already Unit. Heroes.Wpf: 142 pass; the Unit filter now runs 49 cases in 93 ms.
 - Added `docs\TEST_REVIEW_HANDOVER.md`: the plan, what is done, working rules and open items for another agent.
+
+## Slice 16b - Remaining Heroes.Wpf view-model candidates
+
+- Reclassified as Unit and moved to `ViewModels\`: `ResourcesEditorViewModelTests` (state and update are injected delegates, limits and resources are immutable values) and `MineRowViewModelBaseTests` (injected delegates plus a passive `ChoiceFieldViewModel`). Bodies and names unchanged.
+- Left MultiUnit on purpose: `VisitedPlacesCardViewModelTests` (card over real `VisitedPlaceRowViewModel` and `ToggleRowViewModel` rows), `HeroesArmyViewModelBaseTests` (real `StackSlotViewModel` slots and `CreatureFinderViewModel`), `OwnerNavGroupTests` (real `NavigationTree` and nodes). They check how real view models fit together.
+- Heroes.Wpf: 142 pass; the Unit filter runs 58 cases in 105 ms. Only this project was run.
+

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -8,7 +8,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
     /// Tests the resources of a player as both games' pages show them: a row for each, and the buttons that add to them up to a limit.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.MultiUnit)]
+    [Category(TestKinds.Unit)]
     internal sealed class ResourcesEditorViewModelTests
     {
         private static readonly ResourceLimits Limits = new(0, 1000, 100, 100, 1, 99, 500);

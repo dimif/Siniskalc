@@ -69,6 +69,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 23 | see git log | HoMM3 player and obelisk: `PlayerDeserializerTests` (6 cases x 2 layouts), `SafePlayerSerializerTests` (11 x 2), `ObeliskDeserializerTests` (4), `SafeObeliskSerializerTests` (5), Unit, records made by hand (`PlayerRecords`, `ByteDiff`); the save-based player deserializer cases are `PlayerDeserializerSavegameTests` |
 | 24a | see git log | HoMM3 `HeroDifferTests` (15) and `HeroOwnersDifferTests` (1), Unit, on `HeroModels.Christian()` with the Moq factory (`PendingChangesFake` now also makes hero changes) |
 | 24b | see git log | HoMM3 `MineDifferTests` (4) and `DwellingDifferTests` (4), Unit, records made by hand |
+| 24c | see git log | HoMM3 `SavegameVersionDetectorTests` (24 cases, every edge of every range) and `MerchantStockDifferTests` (2), Unit |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -81,7 +82,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 19c | Remaining HoMM3 candidates: `MageGuildLevelTests` (the save is the contract; a Unit case on an in-memory castle could pin the rule), `CastleRegionProviderTests`, `HeroEditSessionTests`, `CastleEditSessionTests`; then the multi-subject save fixtures belong to slice 20 |
 | 20d | Left from the review's "one class, several subjects": `RampartAndBulwarkCastleTests` (scenario fixture, allowed to stay); then re-run the name scan (`names.py` idea: very short names, telegraphic names without articles) and decide whether the older telegraphic names are worth rewriting before slice 29 |
 | 23b | HoMM3 malformed input and loaders: `PlayerBytesLoader`, `ObeliskBytesLoader` on savegames made by hand (`MapSavegame` of HoMM2 is the model; HoMM3 needs its own builder), and what a record shorter than its count does today (the obelisk reader reads past the chunk and throws; nobody decided what it should do, so no test states it; ask before adding one) |
-| 24c | HoMM3 `MerchantStockDiffer` (same pattern as 24b), `SavegameVersionDetector`, `SaveDocumentFactory`, `VersionSpecificEntitiesProvider(Factory)`, `CastleBytesLoader`, `HeroBytesLoader`, `PlayerSetupLocation`/`MapHeaderLocator`, `HeroRegionProvider` (217 lines): check which are tested under another name first (`TestServices` hides many); then 23b |
+| 24d | HoMM3 region providers (`HeroRegionProvider` 217 lines, `CastleRegionProvider`, `PlayerRegionProvider`, mine and dwelling providers: save-based tests exist; look for rules a record made by hand can pin), `SaveDocumentFactory`, `VersionSpecificEntitiesProvider(Factory)`, `PlayerSetupLocation`, `MapHeaderLocator`, `MapObjectPositions` |
 | 25-28 | Gaps in Core services and chunk/edit-session infrastructure; Wpf commands, navigation, hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |

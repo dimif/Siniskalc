@@ -1039,3 +1039,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all caught, production restored): the guard not listed, the wrong chunk kind, the guard before the owner, the stock not listed, the wording of the stock change.
 - Homm3.Tests: the new fixtures pass (8); no other tests were run in this step; no production code changed.
 
+## Slice 24c - HoMM3 version detection and the merchant differ
+
+- `SavegameVersionDetectorTests` (24 cases, Unit) on headers made by hand: the signature (`H3SVG`, the campaign signature `H3SVC`, and the Heroes Chronicles signature, which is enough by itself), and the major and minor numbers of the format. Stated at both edges of each range: 16 to 41 with minor 0 is Restoration of Erathia, 42.1 is Armageddon's Blade, 42 and 43 with a minor up to 4 are Shadow of Death (42.0 included), 44 and up with a minor of 5 or more is Horn of the Abyss; the pairs between the ranges (15.0, 16.1, 41.1, 43.5, 44.4, 0.0) are an unknown game, as is a signature of no Heroes game and bytes too short to hold the numbers (and the shortest length that holds them is detected).
+- `MerchantStockDifferTests` (2, Unit): equal stocks, and a changed slot listed by its place in the shop (from one) with "(sold)" for an empty one.
+- Mutation check (all caught, production restored): each edge of each range moved by one, the campaign signature refused, the length check moved, the Chronicles signature ignored, the wording of a sold slot and its numbering.
+- Homm3.Tests: the new fixtures pass (26); no production code changed.
+

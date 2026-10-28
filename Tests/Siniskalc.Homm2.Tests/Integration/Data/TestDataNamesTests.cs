@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using System.Text.RegularExpressions;
 
@@ -7,6 +7,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// The saves of Heroes of Might and Magic II are not checked by the tests of the HoMM3 saves, which read every savefile as a HoMM3 one.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed partial class TestDataNamesTests
     {
         [GeneratedRegex("^[a-z][a-z0-9]*(_[a-z0-9]+)*(__[a-z0-9]+(_[a-z0-9]+)*)*$")]

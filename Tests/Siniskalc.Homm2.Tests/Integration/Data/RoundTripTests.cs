@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Homm2.Data;
 
@@ -7,6 +7,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// savegame whose values it does not fully understand.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class RoundTripTests
     {
         [Test]

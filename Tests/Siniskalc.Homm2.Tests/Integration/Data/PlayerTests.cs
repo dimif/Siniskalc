@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -9,6 +9,7 @@
     /// What the players of Broken Alliance hold, as written in the README of the saves (TestData/Homm2/BrokenAlliance).
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class PlayerTests
     {
         private const int Blue = 0;

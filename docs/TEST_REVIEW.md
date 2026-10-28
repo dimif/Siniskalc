@@ -254,6 +254,15 @@ All three Core classification slices are complete.
 - HoMM2 validation passed 389 cases; three Explicit helpers remained unexecuted.
   Thirty fixtures remain unclassified.
 
+### Slice 07c: HoMM2 serialization, parsing and layout
+
+- Moved players, round trips, castle/hero serializers, parser, layout locator, test-data naming and Threedom edited-save fixtures to `Integration/Data/`.
+  Their real-save inputs or filesystem enumeration make them Integration; the isolated binary-contract work remains later.
+- Added Manual to the third Explicit writer and adjusted its source-relative output root for the extra folder depth.
+  Verified all three writer roots without executing them; all other test bodies and all assertions/names are unchanged.
+- HoMM2 validation passed 389 cases; three Explicit helpers remained unexecuted.
+  Category/path/namespace agreement was checked; 22 fixtures remain unclassified.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

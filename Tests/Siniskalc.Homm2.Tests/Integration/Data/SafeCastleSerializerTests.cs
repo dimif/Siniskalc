@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// Tests where the creatures that wait in a dwelling are written in the savegame.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class SafeCastleSerializerTests
     {
         private static CastleChunk Xabran() => TestServices.LoadBrokenAlliance(5).History.Current.Castles()[3];

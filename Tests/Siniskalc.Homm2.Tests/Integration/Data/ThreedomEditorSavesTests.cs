@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using System.Runtime.CompilerServices;
     using System.Text;
@@ -10,6 +10,7 @@
     /// they hold is checked here, and the explicit test <see cref="WriteTheThreedomSavesMadeWithTheEditor"/> writes the missing ones.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class ThreedomEditorSavesTests
     {
         private static IReadOnlyList<EditedSave> Built { get; } = ThreedomEditorSaves.Build();
@@ -100,9 +101,10 @@
         /// </summary>
         [Test]
         [Explicit("Writes TestData/Homm2/out for the write test with the game")]
+        [Category(TestKinds.Manual)]
         public void WriteTheThreedomSavesMadeWithTheEditor()
         {
-            var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(ThisFile())!, "..", "..", ".."));
+            var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(ThisFile())!, "..", "..", "..", ".."));
             var folder = Path.Combine(root, "TestData", "Homm2", "out");
             Directory.CreateDirectory(folder);
 

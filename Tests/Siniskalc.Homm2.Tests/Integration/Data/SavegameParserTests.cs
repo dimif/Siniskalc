@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
@@ -8,6 +8,7 @@
     using Siniskalc.Homm2.Models;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class SavegameParserTests
     {
         [Test]

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Data
     /// How a hero is written back: what the editor cannot hold is left as the savegame has it.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class SafeHeroSerializerTests
     {
         private const int Hero = 7;

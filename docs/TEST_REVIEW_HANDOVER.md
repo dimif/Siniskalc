@@ -65,6 +65,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 22b | see git log | HoMM2 sphinxes and obelisks: `SphinxDeserializerTests`, `SafeSphinxSerializerTests`, `ObeliskDeserializerTests`, `SafeObeliskSerializerTests` (Unit, records made by hand) |
 | 22c | see git log | HoMM2 turn and built-today: `TurnDeserializerTests`, `SafeTurnSerializerTests`, `BuiltTodayDeserializerTests`, `SafeBuiltTodaySerializerTests` (Unit, records made by hand) |
 | 22d | see git log | HoMM2 `BytesLoaderTests` (11, Unit, a savegame made by hand with a synthetic `SaveLayout`) and `SaveRegionProviderTests` (5, MultiUnit, real collections over fakes) |
+| 22e | see git log | HoMM2 `MapPlacesReaderTests` (6) and `MapObjectsReaderTests` (15), Unit, over a savegame made by hand (`MapSavegame`: tile table, mines, shrines, sphinx blocks, heroes on tiles). Slice 22 is complete |
 
 Each slice's details, timings and caveats are in its section of `docs\TEST_REVIEW.md`.
 
@@ -76,7 +77,6 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 18c | Use the new seam for the rest of the HoMM3 hero view-model fixtures: `HeroGeneralTabTests`, `SkillsAndSpellsViewModelTests`, `SpellsFromArtifactsTests`, `CreatureFinderAndArtifactEffectsTests`, `HeroEditingViewModelTests` (new Unit/MultiUnit cases on `FakeHeroSession` + `HeroModels.Christian()`; keep the save-based ones as Integration). Castle view models were not surveyed in detail (the same seam idea would need an `ICastleSession`) |
 | 19c | Remaining HoMM3 candidates: `MageGuildLevelTests` (the save is the contract; a Unit case on an in-memory castle could pin the rule), `CastleRegionProviderTests`, `HeroEditSessionTests`, `CastleEditSessionTests`; then the multi-subject save fixtures belong to slice 20 |
 | 20d | Left from the review's "one class, several subjects": `RampartAndBulwarkCastleTests` (scenario fixture, allowed to stay); then re-run the name scan (`names.py` idea: very short names, telegraphic names without articles) and decide whether the older telegraphic names are worth rewriting before slice 29 |
-| 22e | HoMM2 `MapPlacesReader` and `MapObjectsReader` (198 lines; a savegame made by hand needs the tile table, the block markers of `MapObjectLayout` and the add-ons; say what the code does today for truncated blocks and missing markers) |
 | 23 | HoMM3 player/obelisk unknown-byte contracts and malformed input, without inventing error semantics |
 | 24 | HoMM3 loader, differ, region and document/version construction gaps |
 | 25-28 | Gaps in Core services and chunk/edit-session infrastructure; Wpf commands, navigation, hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |

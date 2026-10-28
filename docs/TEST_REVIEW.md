@@ -145,6 +145,13 @@ All three Core classification slices are complete.
 - All 132 Heroes cases passed.
   Bodies and method names are unchanged and namespace/folder/category agreement was verified; eleven fixtures remain.
 
+### Slice 05d: Heroes sets and savegame base
+
+- Categorized resource sets, spell sets and tavern heroes as Unit.
+- Moved `HeroesSavegameBaseTests` to `MultiUnit/Runtime/`: it constructs a real document/history and calls through a real game setup, but does not touch disk or a savegame file.
+- All 132 Heroes cases passed; unchanged bodies/names and category/path/namespace agreement were verified.
+  Seven ViewModels fixtures remain for the final Heroes batch.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

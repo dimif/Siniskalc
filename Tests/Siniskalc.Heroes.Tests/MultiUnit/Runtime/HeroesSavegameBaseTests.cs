@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Tests.Runtime
+namespace Siniskalc.Heroes.Tests.MultiUnit.Runtime
 {
     using Moq;
     using Siniskalc.Core.Data;
@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Tests.Runtime
     /// Tests what a savefile of any game says about the game: the date, the map, the difficulty, whose turn it is and who plays each colour.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class HeroesSavegameBaseTests
     {
         private static readonly MapHeader Map = new("Broken Alliance", "Two against one", GameDifficulty.Knight, 72);

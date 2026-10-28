@@ -803,3 +803,7 @@ Adopted in `CLAUDE.md` with the first review; classification migration started i
 ## Slice 08: HoMM3 classification
 
 All 115 HoMM3 fixtures classified (Unit 11, MultiUnit 3, Integration the rest) and moved to Integration/MultiUnit folders. Bodies and names unchanged. Run excluding Manual: 3198/3198 passed in 10m28s (save-reading integration tests dominate). GoldLimitSaves writer marked Manual and never run. Known weak: HeroEditingTests.SecondarySkillsEditsSurviveSerialization does not serialize.
+
+## Slice 09: Host tests and cross-project consistency
+
+The two host fixtures (AppServicesTests, LoggingTests) build the whole graph and touch the filesystem, so they are Integration under Tests/Siniskalc.Tests/Integration (9/9 passed, 3 s). LoggingTests' expected log lines now carry the new namespace. A scan of all 263 test files in the seven projects found each has exactly one kind category and a folder that matches it (Integration/ and MultiUnit/ folders for those kinds; Unit in the layer folders): 0 mismatches.

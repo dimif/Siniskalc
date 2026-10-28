@@ -1,4 +1,4 @@
-namespace Siniskalc.Tests
+namespace Siniskalc.Tests.Integration
 {
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.ViewModels;
@@ -9,6 +9,7 @@ namespace Siniskalc.Tests
     /// shows the editor and the title of that game. The behaviour of each game is tested in the test project of the game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class AppServicesTests
     {
         private string folder = string.Empty;

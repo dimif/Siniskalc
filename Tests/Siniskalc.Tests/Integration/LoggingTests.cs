@@ -1,10 +1,11 @@
-namespace Siniskalc.Tests
+namespace Siniskalc.Tests.Integration
 {
     using System.Text.Json;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class LoggingTests
     {
         private string folder = string.Empty;
@@ -66,8 +67,8 @@ namespace Siniskalc.Tests
             services.LoggerFactory.Dispose();
 
             var lines = File.ReadAllLines(Directory.GetFiles(logs).Single());
-            Assert.That(lines, Has.One.Matches<string>(l => l.Contains("[VRB] Siniskalc.Tests.LoggingTests (Hero Sandro): Class byte FE read as Knight")));
-            Assert.That(lines, Has.One.Matches<string>(l => l.EndsWith("[VRB] Siniskalc.Tests.LoggingTests: Outside any subject")));
+            Assert.That(lines, Has.One.Matches<string>(l => l.Contains("[VRB] Siniskalc.Tests.Integration.LoggingTests (Hero Sandro): Class byte FE read as Knight")));
+            Assert.That(lines, Has.One.Matches<string>(l => l.EndsWith("[VRB] Siniskalc.Tests.Integration.LoggingTests: Outside any subject")));
         }
 
         [Test]

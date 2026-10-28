@@ -72,9 +72,31 @@ namespace Siniskalc.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Reads the game again from its file, discarding the edits.
+        /// Reads the game again from its file, discarding the edits. When there are unsaved edits the user is asked first: save them, throw
+        /// them away, or cancel. False when the game was not reloaded.
         /// </summary>
-        public bool Reload(ShellViewModel shell) => this.Run(shell.ReloadGame, "Reload Game Error", "reload game");
+        public bool Reload(ShellViewModel shell)
+        {
+            if (shell.HasPendingChanges)
+            {
+                switch (this.messages.AskYesNoCancel("Reload save", "Reloading throws away your unsaved changes. Save them first?"))
+                {
+                    case MessageAnswer.Yes:
+                        if (this.Save(shell) == null)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case MessageAnswer.No:
+                        break;
+                    default:
+                        return false;
+                }
+            }
+
+            return this.Run(shell.ReloadGame, "Reload Game Error", "reload game");
+        }
 
         /// <summary>
         /// Saves over the file the game has (it is backed up first), or asks for one when the game has none.

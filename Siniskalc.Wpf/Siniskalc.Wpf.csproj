@@ -26,6 +26,7 @@
     <Resource Include="Resources\VS2026\DownloadDocument.png" />
     <Resource Include="Resources\VS2026\Exit.png" />
     <Resource Include="Resources\VS2026\OpenFile.png" />
+    <Resource Include="Resources\VS2026\OpenFolder.png" />
     <Resource Include="Resources\VS2026\Redo.png" />
     <Resource Include="Resources\VS2026\Refresh.png" />
     <Resource Include="Resources\VS2026\Save.png" />

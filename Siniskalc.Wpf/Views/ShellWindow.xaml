@@ -50,6 +50,9 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.Reload}"
                         Executed="ReloadCmdExecuted"
                         CanExecute="ReloadCmdCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.OpenFolder}"
+                        Executed="OpenFolderCmdExecuted"
+                        CanExecute="ReloadCmdCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.DumpToFile}"
                 Executed="DumpToFileCmdExecuted"
                 CanExecute="GameLoadedCanExecute"/>
@@ -102,6 +105,11 @@
                 <MenuItem Command="{x:Static cmd:EditorCommands.Reload}">
                     <MenuItem.Icon>
                         <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{x:Static cmd:EditorCommands.OpenFolder}">
+                    <MenuItem.Icon>
+                        <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="recentMenuItem" Header="_Recent" ItemsSource="{Binding Items}">
@@ -181,6 +189,9 @@
             </Button>
             <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.Reload}" AutomationProperties.Name="Reload" ToolTip="Reload">
                 <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png" Width="16" Height="16"/>
+            </Button>
+            <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.OpenFolder}" AutomationProperties.Name="Open folder" ToolTip="Open the folder of the savegame">
+                <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png" Width="16" Height="16"/>
             </Button>
             <Separator Style="{StaticResource AppToolBarSeparatorStyle}"/>
             <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static ApplicationCommands.Undo}" AutomationProperties.Name="Undo" ToolTip="Undo">

@@ -46,6 +46,20 @@
             </StackPanel>
         </HierarchicalDataTemplate>
 
+        <!-- The menu of the node of the game: what is done to the savegame as a whole. -->
+        <ContextMenu x:Key="GameNodeMenu">
+            <MenuItem Header="Reload save" Command="{x:Static local:EditorCommands.Reload}">
+                <MenuItem.Icon>
+                    <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{x:Static local:EditorCommands.OpenFolder}">
+                <MenuItem.Icon>
+                    <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png"/>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
         <Style x:Key="NavTreeItemStyle" TargetType="TreeViewItem">
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -53,6 +67,9 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsVisible}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Kind}" Value="{x:Static vm:NavNodeKind.Overview}">
+                    <Setter Property="ContextMenu" Value="{StaticResource GameNodeMenu}"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>

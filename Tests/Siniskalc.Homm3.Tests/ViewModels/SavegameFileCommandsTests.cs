@@ -162,6 +162,59 @@
         }
 
         [Test]
+        public void ReloadingWithNothingUnsavedDoesNotAsk()
+        {
+            this.shell.LoadGame(Save);
+
+            Assert.That(this.commands.Reload(this.shell), Is.True);
+            this.messages.Verify(m => m.AskYesNoCancel(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public void ReloadingWithUnsavedChangesAsksAndCancelingKeepsTheChanges()
+        {
+            this.shell.LoadGame(Save);
+            this.EditGold(4242);
+            this.answer = MessageAnswer.Cancel;
+
+            Assert.That(this.commands.Reload(this.shell), Is.False);
+
+            this.messages.Verify(m => m.AskYesNoCancel("Reload save", It.IsAny<string>()), Times.Once);
+            Assert.That(this.shell.HasPendingChanges, Is.True);
+        }
+
+        [Test]
+        public void ReloadingWithUnsavedChangesAndNoThrowsTheChangesAway()
+        {
+            this.shell.LoadGame(Save);
+            this.EditGold(4242);
+            this.answer = MessageAnswer.No;
+
+            Assert.That(this.commands.Reload(this.shell), Is.True);
+
+            Assert.That(this.shell.HasPendingChanges, Is.False);
+        }
+
+        [Test]
+        public void ReloadingWithUnsavedChangesAndYesSavesThemFirstSoTheyAreKept()
+        {
+            var copy = Path.Combine(this.folder, "copy.GM1");
+            File.Copy(Save, copy);
+            this.shell.LoadGame(copy);
+            this.EditGold(4242);
+            this.answer = MessageAnswer.Yes;
+
+            Assert.That(this.commands.Reload(this.shell), Is.True);
+
+            Assert.That(this.shell.HasPendingChanges, Is.False);
+            var gold = ((Homm3EditorViewModel)this.shell.Editor).LoadedGame().History.Current.Players().GetModel(0).Resources[Resource.Gold];
+            Assert.That(gold, Is.EqualTo(4242));
+        }
+
+        private void EditGold(int amount) =>
+            ((Homm3EditorViewModel)this.shell.Editor).LoadedGame().History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, amount) });
+
+        [Test]
         public void ClosingWithNothingUnsavedDoesNotAsk()
         {
             this.shell.LoadGame(Save);

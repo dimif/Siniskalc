@@ -85,12 +85,12 @@ namespace Siniskalc.Homm3.Tests
         /// <summary>
         /// Returns the main window showing <paramref name="viewModel"/>, with a launcher that opens nothing and messages that show nothing.
         /// </summary>
-        public static ShellWindow CreateShellWindow(ShellViewModel shell, IMessageService? messages = null)
+        public static ShellWindow CreateShellWindow(ShellViewModel shell, IMessageService? messages = null, IUrlLauncher? launcher = null)
         {
             var recentFiles = CreateRecentFiles();
             var shownMessages = messages ?? CancellingMessages();
             var files = new SavegameFileCommands(recentFiles, new Mock<IFileDialogs>().Object, shownMessages);
-            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), new ShellUrlLauncher(_ => { }), About, Help, shownMessages, files) { DataContext = shell };
+            return new ShellWindow(new RecentFilesMenuViewModel(recentFiles), launcher ?? new ShellUrlLauncher(_ => { }), About, Help, shownMessages, files) { DataContext = shell };
         }
 
         private static IMessageService CancellingMessages()

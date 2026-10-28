@@ -2,6 +2,7 @@ namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Windows;
     using System.Windows.Input;
     using Siniskalc.Core.Runtime;
@@ -109,6 +110,14 @@ namespace Siniskalc.Wpf.Views
         private void ReloadCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.WithViewModel(this.files.Reload);
+        }
+
+        private void OpenFolderCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.ViewModel?.File is { } file && Path.GetDirectoryName(Path.GetFullPath(file)) is { Length: > 0 } folder && !this.urlLauncher.TryOpenFolder(folder))
+            {
+                this.messages.ShowInformation("Open folder", $"Could not open the folder of the savegame. It is at:\n{folder}");
+            }
         }
 
         private async void DumpToFileCmdExecuted(object sender, ExecutedRoutedEventArgs e)

@@ -9,6 +9,11 @@
             nameof(Reload),
             typeof(EditorCommands));
 
+        public static readonly RoutedUICommand OpenFolder = new RoutedUICommand(
+            "Open folder...",
+            nameof(OpenFolder),
+            typeof(EditorCommands));
+
         public static readonly RoutedUICommand DumpToFile = new RoutedUICommand(
             "Export save bytes",
             nameof(DumpToFile),

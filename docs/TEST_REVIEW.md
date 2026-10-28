@@ -945,3 +945,17 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Not renamed here: `PlayerAndOverviewViewModelTests.QuickSetCommandsAndResetPlayerWork` and `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`, which belong to fixtures that slice 20c splits (the limit for a mechanical slice is eight fixtures). The telegraphic names without articles (`SingleByteEditCanBeUndoneAndRedone`, ...) pass the rule and were left.
 - Run: the renamed fixtures only (Core 3, Homm3 30) pass; no production code changed.
 
+## Slice 20c - HoMM3 multi-subject fixtures
+
+- Six Integration fixtures that named two or more subjects were split by subject, 66 tests in all (the count by attribute is 66 before and 66 after, and all 66 pass). Test bodies are unchanged; each new fixture keeps only the fields, `SetUp`/`TearDown` and helpers its tests use, and the unused `using`s were dropped.
+  - `SpellBookAndGrantsTests` (11): `SpellBookTests` (3), `ArtifactSpellGrantsTests` (6), `HeroArtifactBonusesTests` (2).
+  - `CastlePillAndTavernLinkTests` (5): `CastleHeroLinksTests` (3), `CastleGrailAndCapitolPillTests` (2).
+  - `CreatureFinderAndArtifactEffectsTests` (11): `CreatureFinderViewModelTests` (7), `ArtifactEffectsViewModelTests` (4).
+  - `PlayerAndOverviewViewModelTests` (19): `PlayerNavigationTests` (9), `PlayerViewModelTests` (4), `OverviewViewModelTests` (5).
+  - `CollectionAccessTests` (5): `HeroAndCastleLookupTests` (3), `SessionRevisionTests` (1), `PlayerCollectionTests` (1). Note this fixture was in HoMM3 `Data`, not Core as the first review had it.
+  - `SkillsAndSpellsViewModelTests` (16): `SecondarySkillsViewModelTests` (6), `SpellsViewModelTests` (10).
+- The two names left from 20b were rewritten: `TheQuickSetButtonsAddToTheResourcesAndResetPutsThePlayerBack` and `ASkillPickedInASlotKeepsTheLevelOfTheSlotAndASkillTheHeroHasIsNotAddedTwice`.
+- `RampartAndBulwarkCastleTests` stays: it is a scenario fixture, which `CLAUDE.md` allows.
+- Other multi-subject candidates were not looked for beyond the review's list; the name scan found nothing more.
+- Run: the 15 new fixtures (66 tests) pass; the rest of the HoMM3 project was not run (files were split by script and the test count is unchanged); no production code changed.
+

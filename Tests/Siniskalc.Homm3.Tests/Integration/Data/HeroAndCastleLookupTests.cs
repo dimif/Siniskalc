@@ -1,4 +1,3 @@
-﻿using Siniskalc;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
@@ -6,12 +5,11 @@ using Siniskalc.Homm3.Runtime;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
-    /// The collections answer the questions view models ask (a hero by id, the castle that holds a hero, every castle as a model),
-    /// so that the view models never read chunks.
+    /// Tests that the collections answer the questions view models ask of heroes and castles, so that the view models never read chunks.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class CollectionAccessTests
+    internal sealed class HeroAndCastleLookupTests
     {
         private static Game Load(params string[] path) => TestServices.GameService.LoadGameFromFile(Path.Combine(["TestData", "Hota", .. path]));
 
@@ -62,39 +60,6 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(castles.GetModels(), Is.SameAs(models));
             Assert.That(models, Has.Count.EqualTo(castles.Count));
             Assert.That(castles.GetModel(0).Name, Is.EqualTo(castles.GetModels()[0].Name));
-        }
-
-        [Test]
-        public void ASessionKnowsWhetherItIsEditedAndItsRevisionChangesWithEveryEdit()
-        {
-            var game = Load("empire_of_the_world_01_m5w4d6.GM1");
-            var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));
-            var other = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Maximus"));
-            var revision = session.Revision;
-
-            Assert.That(session.IsDirty, Is.False);
-
-            other.Update(h => h with { SpellPoints = (ushort)(h.SpellPoints + 1) });
-            Assert.That(session.Revision, Is.SameAs(revision), "another hero's edit leaves the revision alone");
-
-            session.Update(h => h with { SpellPoints = (ushort)(h.SpellPoints + 1) });
-            Assert.That(session.IsDirty, Is.True);
-            Assert.That(session.Revision, Is.Not.SameAs(revision));
-
-            game.History.Undo();
-            Assert.That(session.IsDirty, Is.False);
-        }
-
-        [Test]
-        public void ThePlayersAndTheDocumentTellTheirColourAndGameVersion()
-        {
-            var game = Load("empire_of_the_world_01_m5w4d6.GM1");
-            var players = game.History.Current.Players();
-
-            Assert.That(game.History.Current.GameVersion(), Is.EqualTo(GameVersion.HornOfTheAbyss));
-            Assert.That(players.GetColor(0), Is.EqualTo(players.GetColors()[0]));
-            Assert.That(players.GetModel(0), Is.Not.Null);
-            Assert.That(game.History.Original.Players().GetModel(0).Resources, Is.EqualTo(players.GetModel(0).Resources));
         }
     }
 }

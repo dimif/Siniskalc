@@ -1,6 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
-using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
@@ -9,12 +8,11 @@ using Siniskalc.Homm3.Tests.ViewModels;
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     /// <summary>
-    /// The castles of a player as they are listed on the overview and the page of a player (the grail mark, the heroes in the castle as links),
-    /// and the heroes of the tavern as links.
+    /// Tests the links from the page of a castle, the overview and the tavern to the heroes that are in them.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class CastlePillAndTavernLinkTests
+    internal sealed class CastleHeroLinksTests
     {
         private static Game Load(string folder, string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", folder, save + ".GM1"));
 
@@ -54,21 +52,6 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void ACastleWithTheGrailStructureIsMarkedAndItsStructureIsNamed()
-        {
-            var game = Load("Sod", "conflux_34_grail");
-            using var red = Red(game, []);
-
-            var conflux = red.Castles.Single(c => c.Name == "Conflux");
-            var other = red.Castles.Single(c => c.Name == "5_necropolis");
-
-            Assert.That(conflux.HasGrail, Is.True);
-            Assert.That(conflux.GrailText, Is.EqualTo("Aurora Borealis"));
-            Assert.That(conflux.Heroes.Select(h => (h.Role, h.Name)), Is.EqualTo(new[] { ("Visiting", "Tazar") }));
-            Assert.That(other.HasGrail, Is.False);
-        }
-
-        [Test]
         public void TheHeroesOfTheTavernOpenTheirPage()
         {
             var game = Load("Roe", "roe_67_damacon_defeated");
@@ -82,24 +65,6 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             red.TavernPlaces[1].Selected = red.TavernPlaces[1].Choices[0];
 
             Assert.That(red.TavernPlaces[1].OpenCommand.CanExecute(null), Is.False, "an empty place has nobody to open");
-        }
-
-        [Test]
-        public void TheCastlesOfTheNavigationTreeShowTheCapitolAndTheGrailAndFollowEdits()
-        {
-            var main = TestServices.CreateHomm3Editor();
-            var path = Path.Combine("TestData", "Sod", "conflux_34_grail.GM1");
-            main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
-            var nodes = main.NavigationNodes.Descendants().Where(n => n.Kind == NavNodeKind.Castle).ToList();
-
-            var conflux = nodes.Single(n => n.Title == "Conflux");
-            var necropolis = nodes.Single(n => n.Title == "5_necropolis");
-            Assert.That((conflux.HasBadge(NavigationBuilder.CapitalBadge), conflux.HasBadge(NavigationBuilder.GrailBadge), conflux.BadgeTooltip(NavigationBuilder.GrailBadge)), Is.EqualTo((true, true, "Grail: Aurora Borealis")));
-            Assert.That((necropolis.HasBadge(NavigationBuilder.CapitalBadge), necropolis.HasBadge(NavigationBuilder.GrailBadge)), Is.EqualTo((false, false)));
-
-            main.CurrentGame!.History.CreateCastleSession(conflux.Index).Update(c => CastleBuilder.Unbuild(c, Building.Capitol));
-
-            Assert.That(main.NavigationNodes.Descendants().Single(n => n.Title == "Conflux").HasBadge(NavigationBuilder.CapitalBadge), Is.False);
         }
     }
 }

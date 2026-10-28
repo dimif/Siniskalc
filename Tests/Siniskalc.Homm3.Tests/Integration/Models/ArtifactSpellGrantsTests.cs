@@ -1,4 +1,3 @@
-﻿using Siniskalc;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -8,58 +7,15 @@ using Siniskalc.Homm3.ViewModels;
 namespace Siniskalc.Homm3.Tests.Integration.Models
 {
     /// <summary>
-    /// The spells a hero can cast come from the spell book (learned), from equipped artifacts (granted) and from elsewhere (other).
-    /// The Arts saves in TestData/Hota/Arts are the proof of what artifacts grant: Edric wears the four tomes and Titan's Thunder,
-    /// Valeska the Sea Captain's Hat, Ingham the tome of water magic.
+    /// Tests the spells the artifacts of a hero grant, in the saves that show them.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class SpellBookAndGrantsTests
+    internal sealed class ArtifactSpellGrantsTests
     {
         private static Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Arts", name + ".GM1"));
 
         private static HeroModel Hero(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name)).Current;
-
-        private static ISet<Spell> Set(params Spell[] spells) => new HashSet<Spell>(spells);
-
-        [Test]
-        public void ASpellIsAvailableWhenLearnedGrantedOrAvailableForAnotherReason()
-        {
-            var book = new SpellBook(Set(Spell.Haste), Set(Spell.Fly))
-                .WithGrants(new Dictionary<Spell, string> { [Spell.Armageddon] = "Armageddon's Blade" }, false);
-
-            Assert.That(book.IsAvailable(Spell.Haste), Is.True);
-            Assert.That(book.IsAvailable(Spell.Armageddon), Is.True);
-            Assert.That(book.IsAvailable(Spell.Fly), Is.True);
-            Assert.That(book.IsAvailable(Spell.Slow), Is.False);
-            Assert.That(book.Source(Spell.Armageddon), Is.EqualTo("Armageddon's Blade"));
-            Assert.That(book.Source(Spell.Fly), Is.EqualTo("Unknown source"));
-            Assert.That(book.Source(Spell.Haste), Is.Empty);
-            Assert.That(book.Source(Spell.Slow), Is.Empty);
-        }
-
-        [Test]
-        public void LearningAndForgettingLeaveTheGrantsAlone()
-        {
-            var book = new SpellBook(Set(), Set())
-                .WithGrants(new Dictionary<Spell, string> { [Spell.Prayer] = "Tome" }, false)
-                .WithLearned(Spell.Prayer, true)
-                .WithLearned(Spell.Prayer, false);
-
-            Assert.That(book.IsLearned(Spell.Prayer), Is.False);
-            Assert.That(book.IsAvailable(Spell.Prayer), Is.True);
-        }
-
-        [Test]
-        public void WithGrantsReturnsTheSameBookWhenNothingChanges()
-        {
-            var grants = new Dictionary<Spell, string> { [Spell.Prayer] = "Tome" };
-            var book = new SpellBook(Set(), Set()).WithGrants(grants, false);
-
-            Assert.That(book.WithGrants(new Dictionary<Spell, string>(grants), false), Is.SameAs(book));
-            Assert.That(book.WithGrants(grants, true), Is.Not.SameAs(book));
-            Assert.That(book.WithHasSpellBook(false), Is.SameAs(book));
-        }
 
         [Test]
         public void TomesGrantTheirSchoolAndTheSpellsOfNoSchool()
@@ -105,31 +61,6 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             Assert.That(unequipped.SpellBook.HasSpellBook, Is.True);
             Assert.That(unequipped.SpellBook.IsSpellBookGranted, Is.False);
             Assert.That(unequipped.SpellBook.IsAvailable(Spell.TitansLightningBolt), Is.False);
-        }
-
-        [Test]
-        public void SettingTheArtifactsWithoutTheReducerStillUpdatesSpellsAndSkillBonuses()
-        {
-            var game = Load("arts_00_before_arts");
-            var hero = Hero(game, "Valeska");
-            var withHat = hero with { EquippedArtifacts = hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, Artifact.SeaCaptainsHat) };
-
-            Assert.That(withHat.SpellBook.IsAvailable(Spell.SummonBoat), Is.True);
-            Assert.That(withHat.SpellBook.Source(Spell.SummonBoat), Is.EqualTo("Sea Captain's Hat"));
-            Assert.That(withHat.ArtifactEffects.WaterMovement, Is.GreaterThan((short)0));
-        }
-
-        [Test]
-        public void ArtifactsAddToTheSavedSkillsAndGiveTheSpellPointsOfTheHigherKnowledge()
-        {
-            var game = Load("arts_00_before_arts");
-            var hero = Hero(game, "Valeska");
-            var armed = hero.WithEquippedArtifacts(hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Weapon, Artifact.TitansThunder));
-
-            Assert.That(armed.PrimarySkills.Attack, Is.EqualTo(hero.PrimarySkills.Attack + 9), "the game saves the skills with the artifact in them");
-            Assert.That(armed.PrimarySkills.BaseAttack, Is.EqualTo(hero.PrimarySkills.BaseAttack), "what the hero learned is the same");
-            Assert.That(armed.PrimarySkills, Is.Not.EqualTo(hero.PrimarySkills));
-            Assert.That(TestServices.SpellPoints(game.GameVersion).GetMaximum(armed.PrimarySkills, armed.SecondarySkills), Is.GreaterThan(TestServices.SpellPoints(game.GameVersion).GetMaximum(hero.PrimarySkills, hero.SecondarySkills)));
         }
 
         [Test]

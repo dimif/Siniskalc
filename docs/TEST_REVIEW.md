@@ -815,3 +815,10 @@ SafeHeroSerializerTests gained five tests that assert literal bytes (hero class 
 ## Slice 11: ArmyWriter and HoMM2 unknown-byte checks
 
 ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two tests with literal expected bytes (a matching army leaves every byte alone; changing only the count of an unknown creature keeps its number). HoMM2 EditingTests: a new test asserts that editing only the army of a hero holding unknown values changes just the slot's type byte and the two count bytes (little-endian 258) and keeps the unknown artifact and owner bytes. Heroes ArmyWriterTests 8/8, HoMM2 EditingTests 10/10.
+
+## Slice 12 - CastleBuilder rules on in-memory castles
+
+- New Unit fixture `Models\CastleBuilderTests` checks the build/remove rules (upgrade needs base, faction, map, village hall, lighthouse/shipyard, horde, mage guild levels, dwelling creatures) on castles made by `CastleModels`, with no savefile.
+- New MultiUnit fixture `MultiUnit\ViewModels\CastleBuildMessageProviderTests` holds the message wording that used to ride along in the savefile tests.
+- Integration: `CastleBuilderTests` became `CastleBuilderReplayTests` (replays of real saves); `CastleBuilderRulesTests` became `CastleBuilderSavefileRulesTests` and keeps only the checks that compare against real saves.
+- 27 tests in the affected fixtures pass (about 48 s, mostly the save replays). Mutation was not checked.

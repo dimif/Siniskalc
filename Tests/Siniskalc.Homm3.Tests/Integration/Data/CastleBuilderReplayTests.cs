@@ -14,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed partial class CastleBuilderTests
+    internal sealed partial class CastleBuilderReplayTests
     {
         private static readonly string[] Folders = ["Rampart", "Bulwark"];
 

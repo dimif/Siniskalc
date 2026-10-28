@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.ComponentModel;
     using System.Windows;
@@ -10,6 +10,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests the header of a page.
     /// </summary>
     [TestFixture]
+    [NUnit.Framework.Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class PageHeaderTests
     {

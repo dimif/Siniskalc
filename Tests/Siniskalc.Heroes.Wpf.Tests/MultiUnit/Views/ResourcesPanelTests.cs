@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -9,6 +9,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// Tests the resources of a player.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ResourcesPanelTests
     {

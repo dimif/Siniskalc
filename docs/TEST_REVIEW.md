@@ -212,6 +212,27 @@ All three Core classification slices are complete.
   Test bodies/names and category/path/namespace agreement were checked.
 - All 142 Heroes.Wpf cases passed; three view fixtures remain for 06e.
 
+### Slice 06e: complete Heroes.Wpf classification
+
+- Moved the three remaining view fixtures (page contract, page header and resources panel) to `MultiUnit/Views/`.
+  Preserved their rendered-content and notification assertions, setup and STA attributes.
+- Exact category-filter verification initially found seven omitted cases.
+  `System.ComponentModel.CategoryAttribute` had shadowed NUnit's globally imported attribute in owner-picker, page-contract and page-header fixtures.
+  Qualified those three attributes as `NUnit.Framework.Category`; the final filters now include every case.
+- All 35 Heroes.Wpf fixtures are categorized and placed: nine Unit fixtures (35 cases), 26 MultiUnit fixtures (107 cases), no Integration fixtures.
+  Their resources, synthetic binary documents and minimal WPF hosting are in-memory collaborations, not real-savegame or editor-composition integration tests.
+- Validation ran only Heroes.Wpf.
+  All 142 cases passed, as did the category-filtered runs (35 Unit, 107 MultiUnit, zero Integration discovered).
+  The result sets partition discovery exactly without overlap or omissions, failures, skips or unexecuted cases.
+  All 35 fixture bodies/names match the pre-slice baseline after normalizing only intentional imports, namespaces and categories; all 142 discovered identities were retained.
+- The final full run reported about 2 seconds (2.223 seconds summed case durations).
+  Two rendering cases exceeded the 100 ms Unit/MultiUnit review threshold: tab-panel visibility (338 ms) and level-card gender visibility (119 ms).
+  The MultiUnit-only run again had slow tab-panel visibility (350 ms).
+  The Unit-only run had one 281 ms castle-link case, while all Unit cases were below 100 ms in the full run; this is a run-order-sensitive observation, not a proven persistent unit slowdown.
+  Rendering/startup performance remains for the later runtime slice; no category was broadened to hide these timings.
+- Slices 06a–06e are complete; no production code or test assertions changed.
+  Later isolation, assertion-strengthening and performance work remains open.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -225,7 +246,7 @@ All three Core classification slices are complete.
   Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
   Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
   Slices 05a–05e completed Heroes: all 35 fixtures and 132 cases are categorized and placed (104 Unit, 28 MultiUnit).
-  Slice 06a started Heroes.Wpf: eight of 35 fixtures are categorized (18 Unit and 18 MultiUnit cases); 27 fixtures remain.
+  Slices 06a–06e completed Heroes.Wpf: all 35 fixtures and 142 cases are categorized and placed (35 Unit, 107 MultiUnit).
   The original automated classification counted 92 unit, 19 multi-unit, 94 integration and 58 unit-shaped classes.
   These are historical estimates, not current category totals; source review has corrected mixed fixtures, real collaborations and filesystem use as detailed above.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**

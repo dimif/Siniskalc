@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.Views
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.ComponentModel;
     using System.Windows;
@@ -15,6 +15,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.Views
     /// view model has only that gets the same page. These tests build a page of nothing else and put the blocks on it.
     /// </summary>
     [TestFixture]
+    [NUnit.Framework.Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class PageContractTests
     {

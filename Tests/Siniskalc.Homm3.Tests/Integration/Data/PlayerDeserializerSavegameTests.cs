@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class PlayerDeserializerTests
+    internal sealed class PlayerDeserializerSavegameTests
     {
         private static readonly string Save1 = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
         private static readonly string Save2 = Path.Combine("TestData", "Hota", "empire_of_the_world_02_m5w4d6_purple_gifts_red.GM1");

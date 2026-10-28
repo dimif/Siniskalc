@@ -870,3 +870,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm2.Tests: 434 pass (the whole project); no other project was run, no production code changed.
 - Left for 17c: `HeroModelTests`, `CastleModelTests` and the Mine, Shrine, Sphinx and Turn differs.
 
+## Slice 17c - HoMM2 model reducers and TurnDiffer as units
+
+- `HeroModelTests` (12 cases) and `CastleModelTests` (9) are now Unit fixtures in `Models\`, on the hero and castle of `DifferSamples` (a Warlock or a Wizard is the sample with another faction). The cases that depend on what a savegame holds are kept as Integration in `HeroModelSavegameTests` (faction by hero number, the sword moving between two heroes of a save) and `CastleModelSavegameTests` (Whiteshield's dwelling bits, the guilds and Library of Peacekeeper, Dragontooth, Vertigo and Woodhaven, the shared interface on Xabran, used records, Hillstone's creatures). The in-memory sword case uses a hero made by hand instead of Sir Gallant.
+- `SecondarySkillsTests` gained the slot test that was in the hero fixture (`SecondarySkillsCanBeSwappedReplacedAndRemovedBySlot`), since it tests `SecondarySkills`.
+- New `TurnDifferTests` (4 cases) on records made by hand.
+- Mutation check: the first run left two mutants alive (the Library ignored when a guild is built later; `TurnDiffer` comparing the colour instead of the record). A case was added for each and both are now caught. Also caught: a neutral hero keeping its destination. Not checked: the other cases.
+- Homm2.Tests: 442 pass (the whole project); no other project was run, no production code changed.
+- Left for 17d: `MineDiffer`, `ShrineDiffer`, `SphinxDiffer` and a look at the other HoMM2 fixtures that may be unit-shaped.
+

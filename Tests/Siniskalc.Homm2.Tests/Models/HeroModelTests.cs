@@ -1,16 +1,18 @@
-namespace Siniskalc.Homm2.Tests.Integration.Models
+namespace Siniskalc.Homm2.Tests.Models
 {
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
+    using Siniskalc.Homm2.Tests.Data;
 
+    /// <summary>
+    /// Tests the reducers of the model of a hero on a hero made by hand: owner, level, points, spell book and the bonuses of artifacts.
+    /// </summary>
     [TestFixture]
-    [Category(TestKinds.Integration)]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroModelTests
     {
-        private static HeroModel Maximus() => TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModel(7);
+        private static HeroModel Maximus() => DifferSamples.Hero();
 
         [Test]
         public void AHeroTellsItsArmyThroughTheSharedInterface()
@@ -88,15 +90,6 @@ namespace Siniskalc.Homm2.Tests.Integration.Models
         }
 
         [Test]
-        public void TheFactionOfAHeroFollowsItsNumberNineToAFaction()
-        {
-            var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();
-
-            Assert.That(heroes.Select(h => h.Faction), Is.EqualTo(heroes.Select(h => Faction.All[Math.Min(h.Id / 9, Faction.All.Count - 1)])));
-            Assert.That((heroes[0].Faction, heroes[9].Faction, heroes[53].Faction), Is.EqualTo((Faction.Knight, Faction.Barbarian, Faction.Necromancer)));
-        }
-
-        [Test]
         public void AnArtifactThatGivesSkillsAddsThemWhenItIsGivenAndTakesThemOffWhenItIsTakenAway()
         {
             var maximus = Maximus();
@@ -109,17 +102,15 @@ namespace Siniskalc.Homm2.Tests.Integration.Models
         }
 
         [Test]
-        public void GivingTheUltimateSwordToAnotherHeroMovesItsTwelveAttackPointsAsTheGameDidInSaveE13ArtSw()
+        public void GivingTheUltimateSwordToAnotherHeroMovesItsTwelveAttackPoints()
         {
-            // In the game Maximus (attack 15 with the sword) gave it to Sir Gallant (attack 2): they ended on 3 and 14.
             var maximus = (Maximus() with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(Artifact.UltimateSwordOfDominion);
-            var gallant = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModel(1);
+            var gallant = Maximus() with { Id = 1, Name = "Sir Gallant", PrimarySkills = new PrimarySkills(2, 2, 2, 2) };
 
             var maximusAfter = maximus.WithoutArtifact(Artifact.UltimateSwordOfDominion);
             var gallantAfter = gallant.WithArtifact(Artifact.UltimateSwordOfDominion);
 
-            Assert.That(gallantAfter.PrimarySkills.Attack, Is.EqualTo(gallant.PrimarySkills.Attack + 12));
-            Assert.That(maximusAfter.PrimarySkills.Attack, Is.EqualTo(maximus.PrimarySkills.Attack - 12));
+            Assert.That((maximusAfter.PrimarySkills.Attack, gallantAfter.PrimarySkills.Attack), Is.EqualTo((15, 14)));
         }
 
         [Test]
@@ -148,22 +139,6 @@ namespace Siniskalc.Homm2.Tests.Integration.Models
             var maximus = Maximus();
 
             Assert.That(maximus.WithArtifact(Artifact.IceCloak).WithArtifact(Artifact.AmmoCart).PrimarySkills, Is.EqualTo(maximus.PrimarySkills));
-        }
-
-        [Test]
-        public void SecondarySkillsCanBeSwappedReplacedAndRemovedBySlot()
-        {
-            var skills = new SecondarySkills(
-            [
-                new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner),
-                new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert),
-                new SkillEntry(SecondarySkill.Luck, SkillLevel.Intermediate),
-            ]);
-
-            Assert.That(skills.Swap(0, 2).Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Luck, SecondarySkill.Wisdom, SecondarySkill.Archery }));
-            Assert.That(skills.WithoutSlot(1).Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Archery, SecondarySkill.Luck }));
-            Assert.That(skills.WithSkillInSlot(1, SecondarySkill.Mysticism).Entries[1], Is.EqualTo(new SkillEntry(SecondarySkill.Mysticism, SkillLevel.Expert)));
-            Assert.That(skills.WithSkillInSlot(1, SecondarySkill.Luck), Is.EqualTo(skills), "a skill the hero has already is not put twice");
         }
     }
 }

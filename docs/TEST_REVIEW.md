@@ -1032,3 +1032,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all caught, production restored; three gaps found in the first version and fixed: the revert of a visited building cleared the other buildings, the "not shown" skills and the order of the war machines): owner order, class and gender revert and wording, asleep not listed, active spell and visit effect reverts, unsigned morale, places as a mask, scroll spell not named, backpack slot numbering, spell book flag and learned spells.
 - Homm3.Tests: the 200 Unit and MultiUnit cases pass; the full HoMM3 project was not run; no production code changed.
 
+## Slice 24b - HoMM3 `MineDiffer` and `DwellingDiffer`
+
+- `MineDifferTests` (4, Unit): equal mines; a new owner as one change named by the mine with its level ("... Underground (1)") and filed under the mines; a stack of the guard as a change of its slot under the garrison; the owner before the guard. `DwellingDifferTests` (4, Unit): equal dwellings; a new owner named by the dwelling and filed under the dwellings; the creatures to hire as one change; a dwelling of a creature the game does not have is named by its code ("Creature 200 dwelling ...").
+- These differs make their changes through `ChunkPendingChange` directly, so no fake factory is needed.
+- Mutation check (all caught, production restored): the guard not listed, the wrong chunk kind, the guard before the owner, the stock not listed, the wording of the stock change.
+- Homm3.Tests: the new fixtures pass (8); no other tests were run in this step; no production code changed.
+

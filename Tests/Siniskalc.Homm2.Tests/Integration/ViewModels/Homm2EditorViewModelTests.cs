@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Core.Models;
@@ -12,6 +12,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     using Siniskalc.Wpf.ViewModels;
 
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class Homm2EditorViewModelTests
     {
         private string folder = string.Empty;

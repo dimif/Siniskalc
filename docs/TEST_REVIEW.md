@@ -274,6 +274,18 @@ All three Core classification slices are complete.
 - All 389 automated HoMM2 cases passed; three Explicit helpers remained unexecuted.
   Bodies/names and category/path/namespace agreement were checked; fourteen fixtures remain.
 
+### Slice 07e: HoMM2 models and editor scenarios
+
+- Classified secondary skills as Unit and moved army view-model tests to `MultiUnit/ViewModels/` for their real army/slot/reducer collaboration.
+- Moved the spell-points calculator and weekly-growth tests to `Integration/Models/`.
+  The latter was incorrectly under ViewModels: it tests `CastleModel.WeeklyGrowth`.
+  Both fixtures take their input from real saves.
+- Moved active-spell, visited-place, editor and map-page fixtures to `Integration/ViewModels/`.
+  Kept save-based setup and assertions unchanged.
+- Existing HoMM2 editor `Assert.Ignore`/conditional checks and the underscore in a map-object test name remain for later assertion/isolation/naming work, not silently fixed in this placement-only slice.
+- All 389 automated HoMM2 cases passed; three Explicit helpers remained unexecuted.
+  Category/path/namespace agreement was checked; six fixtures remain.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**

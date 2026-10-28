@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.Models
+﻿namespace Siniskalc.Homm2.Tests.Integration.Models
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Models;
@@ -7,6 +7,7 @@
     /// The most spell points a HoMM2 hero can have.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class MaxSpellPointsCalculatorTests
     {
         [Test]

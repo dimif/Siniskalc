@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.ViewModels;
@@ -7,6 +7,7 @@
     /// Tests the card of the adventure spells that are active on a HoMM2 hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeroActiveSpellsTests
     {
         [Test]

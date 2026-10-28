@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -10,6 +10,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// The places a hero has visited, listed with where they are on the map (the saves of Threedom) and forgotten one at a time.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class HeroVisitedPlacesTests
     {
         private const int ColarBlau = 50;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.Integration.Models
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// How many creatures a dwelling gains each week, as the saves of TestData/Homm2/SecondWell and BrokenAlliance show it.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class CastleWeeklyGrowthTests
     {
         private const int Xabran = 3;

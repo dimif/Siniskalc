@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Models
     /// Tests the secondary skills of a hero, which hold at most eight skills in the order they were learned.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SecondarySkillsTests
     {
         private static SecondarySkills Full() => SecondarySkills.None

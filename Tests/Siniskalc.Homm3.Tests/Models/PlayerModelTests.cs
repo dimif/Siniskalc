@@ -9,6 +9,7 @@ namespace Siniskalc.Homm3.Tests.Models
     /// The reducers of the list of heroes of a player, as the game changes it in the saves of <c>TestData/Hota/HeroOwners</c>.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PlayerModelTests
     {
         private static PlayerModel Player(int? selected, params int[] heroIds) =>

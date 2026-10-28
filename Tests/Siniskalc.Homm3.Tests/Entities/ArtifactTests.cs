@@ -2,6 +2,7 @@
 
 namespace Siniskalc.Homm3.Tests.Entities;
 
+[Category(TestKinds.Unit)]
 public sealed class ArtifactTests
 {
     [Test]

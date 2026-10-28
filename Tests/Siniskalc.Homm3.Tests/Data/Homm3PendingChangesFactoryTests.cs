@@ -9,6 +9,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// Tests the pending changes the editor of Heroes of Might and Magic III makes.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class Homm3PendingChangesFactoryTests
     {
         private static readonly Change SomeChange = new(ChangeAreas.General, "Owner", "Neutral", "Red");

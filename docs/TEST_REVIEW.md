@@ -799,3 +799,7 @@ Adopted in `CLAUDE.md` with the first review; classification migration started i
 7. Split the multi-subject classes and rename the methods listed under [Naming consistency](#naming-consistency).
 8. Fill the gaps, starting with the HoMM2 serializers and deserializers and the unknown-byte tests for HoMM3 players and obelisks and HoMM2 castles and players.
 9. Remove duplicated coverage once the unit tests that replace it are in place.
+
+## Slice 08: HoMM3 classification
+
+All 115 HoMM3 fixtures classified (Unit 11, MultiUnit 3, Integration the rest) and moved to Integration/MultiUnit folders. Bodies and names unchanged. Run excluding Manual: 3198/3198 passed in 10m28s (save-reading integration tests dominate). GoldLimitSaves writer marked Manual and never run. Known weak: HeroEditingTests.SecondarySkillsEditsSurviveSerialization does not serialize.

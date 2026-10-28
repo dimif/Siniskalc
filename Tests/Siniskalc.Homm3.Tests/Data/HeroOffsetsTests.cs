@@ -5,6 +5,7 @@ using Siniskalc.Homm3.Entities;
 namespace Siniskalc.Homm3.Tests.Data
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroOffsetsTests
     {
         [TestCase(GameVersion.RestorationOfErathia, 236)]

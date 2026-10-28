@@ -959,3 +959,14 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Other multi-subject candidates were not looked for beyond the review's list; the name scan found nothing more.
 - Run: the 15 new fixtures (66 tests) pass; the rest of the HoMM3 project was not run (files were split by script and the test count is unchanged); no production code changed.
 
+## Slice 21 - HoMM2 castle and player read/write boundaries
+
+- `BlankRecords` builds a castle or a player record as the game writes a fresh one (every id, creature and spell the empty mark, the rest zero); a test sets only the bytes it is about. `ByteDiff` (slice 17b) states exactly which bytes a serializer moved.
+- `CastleDeserializerTests` (14 cases): tile, boat and visiting hero (and their empty marks), owner bytes (a colour, the neutral byte and bytes that are no colour read as `Neutral`), faction bytes (an unknown one reads as `Neutral`), the name up to the first zero, the creatures read from the list of the level of each dwelling (own, upgraded, upgraded twice, with a stale count left in the own list), the Mage Guild counts and spell numbers (an empty mark, the byte past the last spell and a byte that is no spell read as none), and a garrison creature code that is no creature read as Peasant with its count.
+- `PlayerDeserializerTests` (5 cases): the colour is the name of the record, resources and income and the separate gold income, lists that skip the empty mark, and selections, days left and tavern as ids or none.
+- `SafePlayerSerializerTests` (7 cases): a model read from a record leaves every byte alone, an amount is written in four little-endian bytes, income places, a stored amount past the limit is kept while the model says it and refused when written elsewhere, a list and its count are written together, a list that reads as the model says is left with its count even with gaps, and ids taken out of a selection leave the empty mark.
+- `SafeCastleSerializerTests` gained 6 cases: owner byte that is no colour kept for `Neutral` and replaced for a colour, visiting hero id and empty mark, garrison stack bytes, a creature code that is no creature kept for the Peasant stand-in and replaced by another creature, the buildings and dwellings as little-endian numbers, and the name and the number of the castle never written.
+- Mutation check (caught, production restored): the list count not written, the owner stand-in lost, the gold income read from the table, the visiting hero always written. One mutant survived on purpose of the check: writing the selected castle as its plain id is the same as the code that keeps the existing byte for every id from 0 to 254, so it is equivalent, not a gap.
+- Homm2.Tests: the whole project passes; no other project was run; no production code changed.
+- Not covered here (slice 22): map objects and the remaining deserializers and serializers.
+

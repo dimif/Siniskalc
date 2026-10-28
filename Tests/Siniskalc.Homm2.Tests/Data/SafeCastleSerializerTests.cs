@@ -150,6 +150,86 @@ namespace Siniskalc.Homm2.Tests.Data
             Assert.That(chunk.ToArray(), Is.EqualTo(before));
         }
 
+        [Test]
+        public void AnOwnerByteThatIsNoColourIsKeptWhileTheModelSaysNeutralAndReplacedWhenItSaysAColour()
+        {
+            var chunk = this.Baseline(null, bytes => bytes[CastleLayout.Owner] = 0x09);
+
+            Assert.That(ByteDiff.Of(chunk.ToArray(), this.Written(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Neutral })), Is.Empty);
+            Assert.That(ByteDiff.Of(chunk.ToArray(), this.Written(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Green })), Is.EqualTo(new[] { (CastleLayout.Owner, (byte)0x09, PlayerColor.Green.Code) }));
+        }
+
+        [Test]
+        public void TheVisitingHeroIsWrittenAsItsIdAndNoHeroGetsTheEmptyMark()
+        {
+            var chunk = this.Baseline();
+
+            var visited = this.Written(chunk, DifferSamples.Castle() with { VisitingHeroId = 9 });
+            Assert.That(ByteDiff.Of(chunk.ToArray(), visited), Is.EqualTo(new[] { (CastleLayout.VisitingHero, (byte)0xFF, (byte)9) }));
+
+            var left = this.serializer.Serialize(this.serializer.Serialize(chunk, DifferSamples.Castle() with { VisitingHeroId = 9 }), DifferSamples.Castle());
+            Assert.That(left.ToArray(), Is.EqualTo(chunk.ToArray()));
+        }
+
+        [Test]
+        public void AStackOfTheGarrisonIsWrittenAsItsCreatureCodeAndItsCountInTwoBytes()
+        {
+            var chunk = this.Baseline();
+
+            var written = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(1, Creature.Archer, 0x0102) });
+
+            Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[]
+            {
+                (CastleLayout.GarrisonTypes + 1, (byte)0xFF, (byte)1),
+                (CastleLayout.GarrisonCounts + 2, (byte)0, (byte)0x02),
+                (CastleLayout.GarrisonCounts + 3, (byte)0, (byte)0x01),
+            }));
+        }
+
+        [Test]
+        public void ACreatureCodeThatIsNoCreatureIsKeptWhileTheModelHoldsThePeasantItReadsAsAndReplacedByAnotherCreature()
+        {
+            var chunk = this.Baseline(null, bytes =>
+            {
+                bytes[CastleLayout.GarrisonTypes] = 0xC8;
+                BitConverter.GetBytes((ushort)7).CopyTo(bytes, CastleLayout.GarrisonCounts);
+            });
+            var stoodIn = DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, Creature.Peasant, 7) };
+
+            Assert.That(ByteDiff.Of(chunk.ToArray(), this.Written(chunk, stoodIn)), Is.Empty);
+
+            var replaced = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, Creature.Archer, 7) });
+            Assert.That(ByteDiff.Of(chunk.ToArray(), replaced), Is.EqualTo(new[] { (CastleLayout.GarrisonTypes, (byte)0xC8, (byte)1) }));
+        }
+
+        [Test]
+        public void TheBuildingsAndTheDwellingsAreWrittenAsLittleEndianNumbers()
+        {
+            var chunk = this.Baseline();
+            var model = DifferSamples.Castle();
+
+            var written = this.Written(chunk, (model with { Town = TownBuildings.Castle | TownBuildings.Well }).WithDwellingLevel(1, 1));
+
+            var changed = ByteDiff.Of(chunk.ToArray(), written);
+            Assert.That(changed.Select(d => d.Offset), Is.All.Matches<int>(o => o is >= CastleLayout.TownBuildings and < CastleLayout.TownBuildings + 2 || o is >= CastleLayout.Dwellings and < CastleLayout.Dwellings + 4), "only the two numbers change");
+            Assert.That(BitConverter.ToUInt16(written, CastleLayout.TownBuildings), Is.EqualTo((ushort)(TownBuildings.Castle | TownBuildings.Well)));
+            Assert.That(BitConverter.ToUInt32(written, CastleLayout.Dwellings), Is.EqualTo((uint)Dwellings.Dwelling1));
+        }
+
+        [Test]
+        public void TheNameAndTheNumberOfTheCastleAreNeverWrittenWhateverTheModelSays()
+        {
+            var chunk = this.Baseline(null, bytes =>
+            {
+                System.Text.Encoding.Latin1.GetBytes("Xabran").CopyTo(bytes, CastleLayout.Name);
+                bytes[CastleLayout.Index] = 3;
+            });
+
+            var written = this.Written(chunk, DifferSamples.Castle() with { Name = "Other", Index = 9 });
+
+            Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.Empty);
+        }
+
         private static byte[] WithBytes(byte[] bytes, int offset, ushort value)
         {
             BitConverter.GetBytes(value).CopyTo(bytes, offset);

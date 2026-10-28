@@ -807,3 +807,7 @@ All 115 HoMM3 fixtures classified (Unit 11, MultiUnit 3, Integration the rest) a
 ## Slice 09: Host tests and cross-project consistency
 
 The two host fixtures (AppServicesTests, LoggingTests) build the whole graph and touch the filesystem, so they are Integration under Tests/Siniskalc.Tests/Integration (9/9 passed, 3 s). LoggingTests' expected log lines now carry the new namespace. A scan of all 263 test files in the seven projects found each has exactly one kind category and a folder that matches it (Integration/ and MultiUnit/ folders for those kinds; Unit in the layer folders): 0 mismatches.
+
+## Slice 10: Independent byte assertions for HoMM3 serializers
+
+SafeHeroSerializerTests gained five tests that assert literal bytes (hero class code, the four primary-skill bytes, little-endian experience and one-byte level, creature type and count slots, secondary-skill count/level/slot bytes) and a changed-offsets helper; SafeCastleSerializerTests gained a literal-byte garrison test. The existing round-trip tests stay as their own labelled contract. 42/42 passed in the two fixtures (37 s).

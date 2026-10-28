@@ -88,6 +88,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
+        public void TheGarrisonIsWrittenAsLittleEndianTypeAndCountIntegersInTheirOwnTables()
+        {
+            var chunk = StillWater();
+            var castle = TestServices.CastleDeserializer.Deserialize(chunk);
+
+            var written = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3) });
+
+            Assert.That(written.GetBytesAt(CastleLayout.GarrisonTypes + 4, 4), Is.EqualTo(new byte[] { 0x0E, 0, 0, 0 }));
+            Assert.That(written.GetBytesAt(CastleLayout.GarrisonCounts + 4, 4), Is.EqualTo(new byte[] { 0xD2, 0x04, 0, 0 }));
+            Assert.That(written.GetBytesAt(CastleLayout.GarrisonTypes + 24, 4), Is.EqualTo(new byte[] { 0x1B, 0, 0, 0 }));
+            Assert.That(written.GetBytesAt(CastleLayout.GarrisonCounts + 24, 4), Is.EqualTo(new byte[] { 3, 0, 0, 0 }));
+        }
+
+        [Test]
         public void AnOwnerByteThatIsNoColourIsKeptWhileTheCastleStaysNeutral()
         {
             var chunk = StillWater();

@@ -304,6 +304,82 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(result.GetBytesAt(classic[HeroOffsetName.SpellBook], 8), Is.EqualTo(new byte[] { 0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF }));
         }
 
+        [Test]
+        public void WritingTheClassChangesOnlyTheClassByte()
+        {
+            var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
+
+            var result = this.serializer.SerializeClass(chunk, HeroClass.Cleric);
+
+            Assert.That(ChangedOffsets(chunk, result), Is.EqualTo(new[] { HotaOffsets[HeroOffsetName.Class] }));
+            Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.Class]), Is.EqualTo(0x01));
+        }
+
+        [Test]
+        public void WritingThePrimarySkillsChangesOnlyTheFourSkillBytes()
+        {
+            var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
+
+            var result = this.serializer.SerializePrimarySkills(chunk, new PrimarySkills(7, 8, 9, 10));
+
+            var expected = new[] { HeroOffsetName.AttributeAtk, HeroOffsetName.AttributeDef, HeroOffsetName.AttributePow, HeroOffsetName.AttributeKno };
+            Assert.That(ChangedOffsets(chunk, result), Is.SubsetOf(expected.Select(n => HotaOffsets[n])));
+            Assert.That(expected.Select(n => result.GetByteAt(HotaOffsets[n])), Is.EqualTo(new byte[] { 7, 8, 9, 10 }));
+        }
+
+        [Test]
+        public void WritingTheLevelStoresTheExperienceAsALittleEndianIntegerAndTheLevelAsOneByte()
+        {
+            var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
+
+            var result = this.serializer.SerializeLevel(chunk, new HeroLevel { Level = 10, Experience = 1000 });
+
+            Assert.That(result.GetBytesAt(HotaOffsets[HeroOffsetName.ExperiencePoints], 4), Is.EqualTo(new byte[] { 0xE8, 0x03, 0x00, 0x00 }));
+            Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.Level]), Is.EqualTo(10));
+        }
+
+        [Test]
+        public void WritingCreaturesPutsEachTypeAndCountInItsOwnLittleEndianSlot()
+        {
+            var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
+            var creatures = new Army<Creature>(Constants.CreatureSlotCount)
+                .WithSlot(1, Creature.Archangel, 7)
+                .WithSlot(2, Creature.RoyalGriffin, 300);
+
+            var result = this.serializer.SerializeCreatures(chunk, creatures);
+
+            var types = HotaOffsets[HeroOffsetName.Creatures];
+            var counts = HotaOffsets[HeroOffsetName.CreaturesAmounts];
+            Assert.That(result.GetBytesAt(types + 4, 8), Is.EqualTo(new byte[] { 0x0D, 0, 0, 0, 0x05, 0, 0, 0 }));
+            Assert.That(result.GetBytesAt(counts + 4, 8), Is.EqualTo(new byte[] { 7, 0, 0, 0, 0x2C, 0x01, 0, 0 }));
+        }
+
+        [Test]
+        public void ARemovedSecondarySkillWritesAZeroLevelAndSlotAndOneFewerSkillInTheCount()
+        {
+            var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
+            var skills = this.deserializer.DeserializeSecondarySkills(chunk);
+            var removed = skills.GetSkillInSlot(skills.SlotCount - 1)!;
+            var before = chunk.GetByteAt(HotaOffsets[HeroOffsetName.NumOfSkills]);
+            var levels = SecondarySkill.All
+                .Where(s => s.IsAvailableIn(GameVersion.HornOfTheAbyss))
+                .ToDictionary(s => s, s => s == removed ? SkillLevel.None : skills.GetSkillLevel(s));
+            var slots = Enumerable.Range(0, skills.SlotCount - 1).Select(skills.GetSkillInSlot).OfType<SecondarySkill>().ToArray();
+
+            var result = this.serializer.SerializeSecondarySkills(chunk, new SecondarySkills(levels, slots));
+
+            Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.NumOfSkills]), Is.EqualTo(before - 1));
+            Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.Skills] + removed.Code), Is.EqualTo(0));
+            Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.SkillSlots] + removed.Code), Is.EqualTo(0));
+        }
+
+        private static List<int> ChangedOffsets(HeroChunk before, HeroChunk after)
+        {
+            var a = before.ToArray();
+            var b = after.ToArray();
+            return Enumerable.Range(0, a.Length).Where(i => a[i] != b[i]).ToList();
+        }
+
         private static byte[] ReadDump(string file) => File.ReadAllBytes(Path.Combine("TestData", "Heroes", file));
     }
 }

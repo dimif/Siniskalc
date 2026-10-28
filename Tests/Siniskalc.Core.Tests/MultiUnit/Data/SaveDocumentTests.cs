@@ -1,9 +1,11 @@
-namespace Siniskalc.Core.Tests.Data
+namespace Siniskalc.Core.Tests.MultiUnit.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Tests.Data;
 
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class SaveDocumentTests
     {
         private static SaveDocument Create()

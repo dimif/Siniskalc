@@ -1,14 +1,16 @@
-namespace Siniskalc.Core.Tests.Data
+namespace Siniskalc.Core.Tests.MultiUnit.Data
 {
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Core.Tests.Data;
 
     /// <summary>
     /// Tests the records of one kind of a savefile read, written and compared with the kit of their kind.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class RecordChunkCollectionTests
     {
         private static readonly RecordKit<RecordChunk, TestModel> Kit = new(new Reader(), new Writer(), new Differ());

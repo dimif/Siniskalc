@@ -3,6 +3,7 @@ namespace Siniskalc.Core.Tests.Data
     using Siniskalc.Core.Data;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SavefileBytesPatcherTests
     {
         private readonly SavefileBytesPatcher patcher = new();

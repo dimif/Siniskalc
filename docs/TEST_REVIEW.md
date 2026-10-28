@@ -49,7 +49,7 @@ Line references refer to that snapshot and may move as tests change.
 ### Slice 03a: Core filesystem fixture classification
 
 Core's 20 fixtures are being migrated in three bounded commits (03a runtime, 03b Data, 03c remaining fixtures).
-Only 03a is complete at this checkpoint.
+Slices 03a and 03b are complete; 03c remains open.
 
 - Moved eight fixtures to `Tests/Siniskalc.Core.Tests/Integration/Runtime/` and updated their namespaces to match.
   Each fixture now has `[Category(TestKinds.Integration)]`, using the project-local `TestKinds` constants.
@@ -62,7 +62,22 @@ Only 03a is complete at this checkpoint.
 - Validation ran only Core: 79 passed before and after the move; the Integration category filter passed all 42 migrated cases.
   There were zero failures or skipped cases.
   Reported test durations were 164 ms for the full Core run and 121 ms for the category-filtered run; this slice makes no performance improvement claim.
-- Twelve Core fixtures remain uncategorized pending 03b and 03c; cross-project category/folder enforcement remains deferred until migration is complete.
+- At the 03a checkpoint, twelve Core fixtures remained uncategorized pending 03b and 03c.
+
+### Slice 03b: Core Data fixture classification
+
+- Classified `ByteEnumTests`, `ChangeSinkTests`, `ChunkCollectionTests`, `RecordChunkTests` and `SavefileBytesPatcherTests` as Unit, retaining their `Data/` location.
+  Their assertions exercise one subject with enum/chunk/model values, an injected delegate factory or minimal test subclasses.
+  `ChunkCollectionTests` checks lookup behaviour; its test subclass's reader/writer helpers do not participate in those checks.
+- Classified `ChunkPendingChangeTests`, `RecordChunkCollectionTests` and `SaveDocumentTests` as MultiUnit.
+  They compose real document/history, collection, record kit, patcher or edit-session behaviour without filesystem I/O.
+  Moved them into `MultiUnit/Data/` with matching namespaces and imports for the existing shared Data helpers.
+- All eight fixture bodies and method names are unchanged; all 79 discovered Core identities remain after normalizing the intentional namespace changes.
+- Validation ran only Core: 79 passed in the full project run, 12 passed with `TestCategory=Unit`, and 14 passed with `TestCategory=MultiUnit`.
+  All runs had zero failures, skipped or unexecuted tests.
+  Reported durations were 156 ms, 18 ms and 26 ms respectively; no performance improvement is claimed.
+- Core now has 16 categorized fixtures (68 cases): 42 Integration, 12 Unit and 14 MultiUnit cases.
+  Four fixtures (11 cases) remain uncategorized for 03c; project-wide enforcement is still deferred.
 
 ## Summary
 
@@ -73,6 +88,7 @@ Only 03a is complete at this checkpoint.
   `TestData` grew to 448 saves, and every test that walks all saves grows with it.
 - **At review time no test had a `[Category]`, and no project had `Integration/` or `MultiUnit/` folders.**
   Slice 03a has since categorized eight Core fixtures (42 cases) as Integration and moved them into `Integration/Runtime/`; the rest of the migration remains open.
+  Slice 03b added five Unit fixtures (12 cases) and three MultiUnit fixtures (14 cases), placing the latter in `MultiUnit/Data/`.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
   Weak value assertions and the serializer assertion issues below remain open.
@@ -448,7 +464,7 @@ Unit-shaped classes (named after one type, but loading saves or the whole servic
 
 Multi-unit without saying so:
 
-- Core: `SaveDocumentTests`, `ChunkPendingChangeTests`, `RecordChunkCollectionTests`.
+- Core: `SaveDocumentTests`, `ChunkPendingChangeTests`, `RecordChunkCollectionTests` (categorized and placed in `MultiUnit/Data/` in slice 03b).
 - Wpf: `ErrorWindowTests`, `ShellWindowTests` (real windows); `LoggingSettingsViewModelTests`, `RecentFilesMenuViewModelTests`, `ShellViewModelTests` use the real `SettingsStore` on disk, so they are integration.
 - Heroes: `HeroesSavegameBaseTests` (real document graph).
 - Heroes.Wpf: `ObeliskVisitsViewModelTests`, `RecordsPageViewModelBaseTests`, `SessionPageViewModelBaseTests` (real `SaveDocument` and history), and every `Views/*` test and `Styles/PageStylesTests` (real WPF windows).
@@ -461,7 +477,7 @@ Slice 03a moved the eight filesystem-using Core runtime fixtures to `Integration
 - **Projects**: every class is in the test project of the code it tests; `Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests` and `Siniskalc.Heroes.Wpf.Tests` name no HoMM2 or HoMM3 type.
   `HeroesLayeringTests` enforces it for `Siniskalc.Heroes` (it also rules out the planned `Siniskalc.Fheroes`).
 - **Folders**: at review time none were in `Integration/` or `MultiUnit/`.
-  Slice 03a began migration with the eight Core runtime fixtures; the historical class table above retains their original paths.
+  Slices 03a and 03b migrated the eight Core runtime and eight Core Data fixtures; the historical class table above retains their original paths.
 - **One class, several subjects** (against "one test class per subject"): Homm3 `SpellBookAndGrantsTests`, `CreatureFinderAndArtifactEffectsTests`, `CastlePillAndTavernLinkTests`, `PlayerAndOverviewViewModelTests`, `RampartAndBulwarkCastleTests`; Homm2 `HeroDestinationAndFacingTests`; and `CollectionAccessTests`.
   Scenario classes (`Roe*`, `Sod*`, `Hota*`, the faction `*CastleTests`) are allowed by `CLAUDE.md`.
 
@@ -536,7 +552,7 @@ Adopted in `CLAUDE.md` with the first review; classification migration started i
 1. The originally reported assertion-free and skipped-check cleanup is complete in slices 01 and 02.
    The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
-   Slice 03a completed eight Core runtime fixtures; remaining Core fixtures are scheduled as 03b and 03c.
+   Slices 03a and 03b completed eight Core runtime and eight Core Data fixtures; the four remaining Core fixtures are scheduled as 03c.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).
 5. Cache loaded saves for the every-save sources and series, or check all saves in one test per rule (saves several minutes).

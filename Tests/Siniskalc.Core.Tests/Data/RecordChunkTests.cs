@@ -6,6 +6,7 @@ namespace Siniskalc.Core.Tests.Data
     /// Tests the chunk of one record of a list of records of the same kind.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class RecordChunkTests
     {
         [Test]

@@ -1,13 +1,15 @@
-namespace Siniskalc.Core.Tests.Data
+namespace Siniskalc.Core.Tests.MultiUnit.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Core.Tests.Data;
 
     /// <summary>
     /// Tests the pending change of a record that is a chunk with a model, and the edit session that puts it back.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class ChunkPendingChangeTests
     {
         private static SaveDocumentHistory Create(byte value)

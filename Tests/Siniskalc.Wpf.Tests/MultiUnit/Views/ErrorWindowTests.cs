@@ -1,10 +1,11 @@
-namespace Siniskalc.Wpf.Tests.Views
+namespace Siniskalc.Wpf.Tests.MultiUnit.Views
 {
     using System.Windows;
     using System.Windows.Controls;
     using Siniskalc.Wpf.Views;
 
     [TestFixture]
+    [Category(TestKinds.MultiUnit)]
     [Apartment(ApartmentState.STA)]
     internal sealed class ErrorWindowTests
     {

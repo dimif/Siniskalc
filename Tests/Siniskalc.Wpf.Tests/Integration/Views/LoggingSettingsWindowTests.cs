@@ -10,9 +10,10 @@ using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Wpf.Views;
 
-namespace Siniskalc.Wpf.Tests.Views
+namespace Siniskalc.Wpf.Tests.Integration.Views
 {
     [TestFixture]
+    [Category(TestKinds.Integration)]
     [Apartment(ApartmentState.STA)]
     internal sealed class LoggingSettingsWindowTests
     {

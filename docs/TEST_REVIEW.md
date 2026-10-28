@@ -109,6 +109,17 @@ All three Core classification slices are complete.
 - Wpf project validation: all 58 tests passed, with no failures or skipped cases.
   Four view fixtures remain for 04b.
 
+### Slice 04b: complete Wpf classification
+
+- Classified `HexFormatTests` as Unit and moved `ErrorWindowTests` to `MultiUnit/Views/`.
+- Moved `LoggingSettingsWindowTests` and `ShellWindowTests` to `Integration/Views/`, reflecting their real settings and filesystem use in addition to rendering.
+  This corrects the earlier prose that described `ShellWindowTests` as MultiUnit.
+- Preserved all test bodies, STA attributes, helpers and rendered-content checks.
+- Wpf now has four Unit fixtures (21 cases), one MultiUnit fixture (3 cases) and five Integration fixtures (34 cases).
+  Full project and all three category-filtered runs passed; the filtered sets partition all 58 cases without overlap or omissions.
+  Fixture namespaces and folders match their categories.
+  The full project run reported 630 ms; this is not a performance improvement claim.
+
 ## Summary
 
 - **4,000 tests in 263 classes and 7 projects, all passing.**
@@ -120,6 +131,7 @@ All three Core classification slices are complete.
   Slice 03a has since categorized eight Core fixtures (42 cases) as Integration and moved them into `Integration/Runtime/`; the rest of the migration remains open.
   Slice 03b added five Unit fixtures (12 cases) and three MultiUnit fixtures (14 cases), placing the latter in `MultiUnit/Data/`.
   Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
+  Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
   By what they read, 92 classes are unit tests, 19 multi-unit, 94 integration, and 58 are named after one production type (unit-shaped) but load a savefile through `TestServices` or the samples.
 - **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
   Weak value assertions and the serializer assertion issues below remain open.
@@ -496,7 +508,9 @@ Unit-shaped classes (named after one type, but loading saves or the whole servic
 Multi-unit without saying so:
 
 - Core: `SaveDocumentTests`, `ChunkPendingChangeTests`, `RecordChunkCollectionTests` (categorized and placed in `MultiUnit/Data/` in slice 03b).
-- Wpf: `ErrorWindowTests`, `ShellWindowTests` (real windows); `LoggingSettingsViewModelTests`, `RecentFilesMenuViewModelTests`, `ShellViewModelTests` use the real `SettingsStore` on disk, so they are integration.
+- Wpf: `ErrorWindowTests` is MultiUnit; `ShellWindowTests` also uses the real disk and settings, so it is Integration.
+  The three disk-backed view-model fixtures are Integration as well.
+  All Wpf placement/category changes were completed in 04a and 04b.
 - Heroes: `HeroesSavegameBaseTests` (real document graph).
 - Heroes.Wpf: `ObeliskVisitsViewModelTests`, `RecordsPageViewModelBaseTests`, `SessionPageViewModelBaseTests` (real `SaveDocument` and history), and every `Views/*` test and `Styles/PageStylesTests` (real WPF windows).
 
@@ -584,6 +598,7 @@ Adopted in `CLAUDE.md` with the first review; classification migration started i
    The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
 2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
    Slices 03a through 03c completed all 20 Core fixtures; migration of the other six projects and cross-project enforcement remain open.
+   Slices 04a and 04b completed all 10 Wpf fixtures.
 3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
 4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).
 5. Cache loaded saves for the every-save sources and series, or check all saves in one test per rule (saves several minutes).

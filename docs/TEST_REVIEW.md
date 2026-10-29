@@ -1389,3 +1389,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (46 mutants, production restored): the first run let two through (the summary test had as many learned as available spells, which hides a swap) and four patterns did not apply and were redone. Two are equivalent and not tested: the check that a spell exists in the game version in `SpellGrantProvider` (every spell of HoMM3 is in Restoration of Erathia), and the effect lines in `HasSelectedInfo` (every artifact with effect lines also has a cost or a text).
 - Observation: `Effects` is `null` for an artifact with no text (a default struct), though typed `string`; bindings take it, so it is left.
 - Homm3.Tests: the five fixtures pass (51); no production code changed.
+
+## Slice 28i - the chunk collections and the war machine offsets of HoMM3
+
+- `PlayerChunkCollectionTests` (3, Unit, fake deserializer): found by colour, colours listed, a replaced collection keeps the other chunks, the readers and the way heroes are named for the differ.
+- `HeroChunkCollectionTests` (3, Unit): found by id, summaries (owner, class, level), owners, a replaced collection keeps the offsets and readers, the asleep mark only in the versions that have it.
+- `CastleChunkCollectionTests` (2, Unit): the castle a hero is garrisoned in (not the one it visits), owners, replacing one castle.
+- `WarMachineOffsetsTests` (2, Unit): each machine has its place and every machine of the game has one. (The branch that refuses a machine of no place cannot be reached with the machines of the game.)
+- Mutation check (19 mutants, production restored): one let through (the way heroes are named in a replaced player collection), which got a test that goes through `GetPendingChanges`; one pattern was invalid and not rerun (`h5`, the owner in the hero summary, which `GetOwners` and the summary test already cover through `Equals` of the summary).
+- Homm3.Tests: the four fixtures pass (10); no production code changed.

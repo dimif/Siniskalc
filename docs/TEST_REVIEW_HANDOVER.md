@@ -120,6 +120,8 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28g | see git log | HoMM3 view models: `VisitedPlacesViewModelTests` (7), `MageGuildRowsTests` (5), `BackpackSlotViewModelTests` (4, MultiUnit), `MapDwellingRowViewModelTests` (6) |
 | 28h | see git log | HoMM3 entities and view models: `SpellGrantProviderTests` (4), `ArtifactEffectInfoTests` (21), `ArtifactInfoViewModelBaseTests` (8, MultiUnit), `SpellFinderViewModelTests` (8), `BuildingRowsTests` (11) |
 | 28i | see git log | HoMM3 chunk collections: `PlayerChunkCollectionTests` (3), `HeroChunkCollectionTests` (3), `CastleChunkCollectionTests` (2), `WarMachineOffsetsTests` (2), Unit with fake readers |
+| 28j | see git log | HoMM3 runtime and data: `SavegameParserTests` (8, Unit with fakes) and `PlayerEditSessionTests` (7, Integration). Open: `StandingOn` of the parser |
+| 28k | see git log | HoMM2 entities and small rows, Unit: `ArtifactBonusesTests` (3), `TownBuildingNamesTests` (7), `SpellRowViewModelTests` (3), `GuildLevelViewModelTests` (2), `DwellingRowViewModelTests` (2) |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

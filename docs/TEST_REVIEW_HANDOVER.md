@@ -93,7 +93,8 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 24d-iii | see git log | HoMM3 `PlayerSetupLocationTests`, `MapHeaderLocatorTests` and `MapObjectPositionsTests`, Unit, on bytes made by hand |
 | 25a | see git log | Core: `BytesChunkTests` (12, Unit), `ChunkByteEditTargetTests` (13, MultiUnit) and `ByteEditTargetExtensionsTests` (3, MultiUnit) |
 | 25b | see git log | Core: `ByteRegionTests` (9) and `ByteRegionMapTests` (11), Unit |
-| 25c-28 | Still open. Core: `SavegameService`, `ByteBufferHelper`, `SaveHexDump`, `AbstractSavegame`, `ForwardingLogger`; then Wpf commands, navigation and hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
+| 25c | see git log | Core: `SavegameServiceTests` (13 cases, Unit, parser, codec and backup are fakes) and `AbstractSavegameTests` (6, Unit); `Moq` added to `Siniskalc.Core.Tests` like the other test projects |
+| 25d-28 | Still open. Core: `ByteBufferHelper`, `SaveHexDump`, `ForwardingLogger` (all small); then Wpf commands, navigation and hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

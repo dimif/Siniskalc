@@ -1175,3 +1175,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all caught, production restored): the end, the full name, both edges of `Contains`, the leaves, the shift of the start, of the group prefix and of the parts, the order of the leaves, the shade, the clip at the length and at zero, the first owner, `FindAll`, and the bounds of `FindLeaf` and `GetShade`.
 - Core.Tests: the new fixtures pass (20); no production code changed.
 - Not done (25c): `SavegameService`, `ByteBufferHelper`, `SaveHexDump`, `AbstractSavegame`, `ForwardingLogger`.
+
+## Slice 25c - loading and saving a game (Core)
+
+- `SavegameServiceTests` (13 cases, Unit) with a fake parser, codec and backup service that note what was done and in which order: loading a file reads it with the codec and gives the parser the bytes and the path; no path (null, empty, blanks) is refused before anything is read; loading bytes gives the parser no file and the name asked; reloading reads the file the game came from again and a game with no file (or a blank one) cannot be reloaded; saving to a new file writes the bytes to save and makes no backup; saving over a file backs it up first and then writes; afterwards the game is the file saved, has nothing pending and its baseline moved; if the backup fails nothing is written and the game is not marked saved; if the write fails the game keeps its file and is not marked saved; and if the edits cannot be applied the file is neither backed up nor touched.
+- `AbstractSavegameTests` (6, Unit) on a game made of three bytes in a savefile of seven (`TestSavegame`): the name is the one given, else the file name, else "Savefile"; a game from bytes has no file until it is saved; the bytes to save are the original ones, or have the edits of the chunks and nothing else changed; the original bytes are kept and each call gives an array of its own.
+- `Moq` 4.20.72 was added to `Siniskalc.Core.Tests` (the other test projects have it). `TestSavegame` is public because Moq cannot make a fake of a generic interface over an internal type here.
+- Mutation check (all caught, production restored): the blank path check, the path and the name given to the parser, the reload check, the backup condition and the backup itself, the write, `SavedTo`, `MarkSaved`, the order (bytes before the file is touched), the name fallbacks, and the bytes to save.
+- Core.Tests: the new fixtures pass (19); no production code changed.
+- Not done (25d): `ByteBufferHelper`, `SaveHexDump`, `ForwardingLogger`.

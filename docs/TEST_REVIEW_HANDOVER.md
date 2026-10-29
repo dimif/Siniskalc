@@ -99,7 +99,8 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 26b | see git log | Wpf: `EditorViewModelBaseTests` (30 cases, Unit; new `TestGame`, `TestEditor` and `TestNavigationBuilder` fakes) and `DelegateCommandTests` (6) |
 | 26c | see git log | Wpf: `AmountRowViewModelTests` (13 cases) and `TextFieldViewModelTests` (10), Unit |
 | 26d | see git log | Wpf: `ToggleRowViewModelTests` (7) and `ChoiceFieldViewModelTests` (7 cases), Unit |
-| 26e-28 | Still open. Wpf: `SortColumnViewModel`, `RecentMenuItemViewModel`, `TabbedPageViewModelBase`, `PageViewModelBase`, and the views (hex editor, hex viewer, hex rows and palette, finder view, stepper, nav button; most need a window); then Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
+| 26e | see git log | Wpf: `SortColumnViewModelTests` (4) and `RecentMenuItemViewModelTests` (10 cases), Unit (both were also exercised through `SortableListViewModelTests` and `RecentFilesMenuViewModelTests`) |
+| 26f-28 | Still open. Wpf: `TabbedPageViewModelBase`, `PageViewModelBase`, and the views (hex editor, hex viewer, hex rows and palette, finder view, stepper, nav button; most need a window); then Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

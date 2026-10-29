@@ -1227,3 +1227,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 14 caught, production restored): the same-value check of each, the write, the condition and its default of each, the note, the tooltip, the choices, the empty-box rule, and refresh.
 - Wpf.Tests: the new fixtures pass (14); no production code changed.
 - Not done (26e): `SortColumnViewModel`, `RecentMenuItemViewModel`, `TabbedPageViewModelBase`, `PageViewModelBase`.
+
+## Slice 26e - the sort heading and the recent files entry (Wpf)
+
+- `SortColumnViewModelTests` (4, Unit): a new heading shows its name and holds its command; showing a direction puts the arrow after the name (up or down) and showing none takes it away; showing a direction tells that the label changed.
+- `RecentMenuItemViewModelTests` (10 cases, Unit): an entry shows its kind, header, tooltip and command (none when not given); only the separator is a separator; every entry can be chosen except the one that says the list is empty.
+- Both types were already exercised through `SortableListViewModelTests` and `RecentFilesMenuViewModelTests`; they now have a fixture that names them.
+- Mutation check (all 12 caught, production restored): the label with and without an arrow, the arrow, the stored direction, the notification, the command, the separator rule, the enabled rule (two ways), and the tooltip, command and header.
+- Wpf.Tests: the new fixtures pass (14); no production code changed.
+- Not done (26f): `TabbedPageViewModelBase`, `PageViewModelBase`.

@@ -99,4 +99,46 @@ public sealed class EquippedArtifactsViewModelTests
         Assert.That(vm.SelectedNeck, Is.EqualTo(Artifact.AdmiralsHat.Name));
         Assert.That(changes, Is.EqualTo(0));
     }
+
+    [Test]
+    public void EffectLinesListOnlyEffectsThatAreNotZero()
+    {
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        Assert.That(vm.TotalEffectLines, Is.Empty);
+        Assert.That(vm.HasNoEffects, Is.True);
+
+        vm.SelectedHelm = Artifact.ThunderHelmet.Name;
+
+        Assert.That(vm.HasNoEffects, Is.False);
+        Assert.That(vm.TotalEffectLines, Is.EqualTo(new[] { new EffectLine("Spell power", "-2"), new EffectLine("Knowledge", "+10") }));
+    }
+
+    [Test]
+    public void ClearSlotCommandTakesTheArtifactOffAndMirroredSlotsGoToo()
+    {
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        vm.SelectedHelm = Artifact.AdmiralsHat.Name;
+
+        Assert.That(vm.ClearSlotCommand.CanExecute(ArtifactSlots.Necklace), Is.True);
+        Assert.That(vm.ClearSlotCommand.CanExecute(ArtifactSlots.Feet), Is.False);
+
+        vm.ClearSlotCommand.Execute(ArtifactSlots.Necklace);
+
+        Assert.That(vm.SelectedHelm, Is.Null);
+        Assert.That(vm.SelectedNeck, Is.Null);
+    }
+
+    [Test]
+    public void HoveredArtifactInfoComesAndGoes()
+    {
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        Assert.That(vm.HasSelectedInfo, Is.False);
+
+        vm.ShowArtifactInfoByName(Artifact.PendantOfCourage.Name);
+        Assert.That(vm.HasSelectedInfo, Is.True);
+        Assert.That(vm.SelectedEffectLines, Is.EqualTo(new[] { new EffectLine("Morale", "+3"), new EffectLine("Luck", "+3") }));
+
+        vm.ClearArtifactInfo();
+        Assert.That(vm.HasSelectedInfo, Is.False);
+    }
 }

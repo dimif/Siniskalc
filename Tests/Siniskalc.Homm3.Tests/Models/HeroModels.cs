@@ -9,8 +9,8 @@ namespace Siniskalc.Homm3.Tests.Models
     /// <summary>Heroes built in memory, so a view model can be tested without a savefile.</summary>
     internal static class HeroModels
     {
-        /// <summary>A Blue Knight of level 5 standing on the surface with ten pikemen, no artifacts, no spells and nothing visited.</summary>
-        public static HeroModel Christian()
+        /// <summary>A Blue Knight of level 5 standing on the surface with ten pikemen, no artifacts, no spells and nothing visited. Artifacts grant no spells unless a resolver is given.</summary>
+        public static HeroModel Christian(IGrantedSpellsResolver? grants = null)
         {
             var resolver = new Mock<IGrantedSpellsResolver>();
             resolver.Setup(r => r.ResolveGrantedSpells(It.IsAny<EquippedArtifacts>())).Returns(new Dictionary<Spell, string>());
@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.Models
                 new PrimarySkills(3, 4, 1, 2),
                 new SecondarySkills(SecondarySkill.All.ToDictionary(s => s, _ => SkillLevel.None), []),
                 new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10),
-                resolver.Object,
+                grants ?? resolver.Object,
                 HeroClass.Knight,
                 new Backpack(new BackpackSlot?[Constants.BackpackSlotCount]),
                 equipped,

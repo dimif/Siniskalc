@@ -1135,3 +1135,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - The originals stay as Integration (slice 29 decides what is duplicate).
 - Mutation check (caught, production restored): the count of buildings not allowed, the replaced mark, the "not allowed" text for a dwelling and for a building, the upgraded state, the total, the no-guild text, the inland text, the automatic buildings, the weekly growth text, and the garrison rule.
 - Homm3.Tests: the castle fixtures and the models pass; no production code changed.
+
+## Slice 18h - castle links, hero links and pills off the savefile
+
+- `CastleLinksTests` (16 cases, MultiUnit) from `CastleHeroLinksTests` and `CastleGrailAndCapitolPillTests`, on a document made by hand (real hero records and collections through `SaveDocumentFactory`, castle records read by a fake reader): only the castles of the owner, by name, opening by their place among all castles; a record with no name not listed; the garrisoned and visiting heroes as links opening by their place among the heroes, and "Unknown hero N"; the Grail structure named and no mark on others; only the Capitol is the capital; the settlement (village, town, city, capitol) and fort (fort, citadel, castle) text; and the Mage Guild and dwellings in the status.
+- Not ported: the tavern places that open a hero, the overview's players and castles, and the badges of the navigation tree. They sit behind `PlayerViewModel`, which takes the concrete `PlayerEditSession` and builds the obelisk and map-object view models from the history; a fake would need a seam wider than the hero and castle ones. The logic they show (the links, heroes, pills) is what `CastleLinksTests` now states, so the save-based fixtures stay Integration and no new seam was added.
+- Mutation check (caught, production restored): the Capitol, the Grail text, each hall and fort name, the owner filter, unused records, the order, the castle index, the unknown hero name, the hero index, the visiting hero, and the Mage Guild text.
+- Homm3.Tests: the new fixture passes; no production code changed.

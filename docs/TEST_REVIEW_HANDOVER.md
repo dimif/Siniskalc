@@ -123,6 +123,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28j | see git log | HoMM3 runtime and data: `SavegameParserTests` (8, Unit with fakes) and `PlayerEditSessionTests` (7, Integration). Open: `StandingOn` of the parser |
 | 28k | see git log | HoMM2 entities and small rows, Unit: `ArtifactBonusesTests` (3), `TownBuildingNamesTests` (7), `SpellRowViewModelTests` (3), `GuildLevelViewModelTests` (2), `DwellingRowViewModelTests` (2) |
 | 28l | see git log | HoMM2 view models, Unit: `ShrineRowViewModelTests` (9), `SecondarySkillsViewModelTests` (3) |
+| 28m | see git log | HoMM2 view models: `SpellFinderViewModelTests` (5, Unit) and `SphinxViewModelTests` (10, MultiUnit) |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

@@ -124,7 +124,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28k | see git log | HoMM2 entities and small rows, Unit: `ArtifactBonusesTests` (3), `TownBuildingNamesTests` (7), `SpellRowViewModelTests` (3), `GuildLevelViewModelTests` (2), `DwellingRowViewModelTests` (2) |
 | 28l | see git log | HoMM2 view models, Unit: `ShrineRowViewModelTests` (9), `SecondarySkillsViewModelTests` (3) |
 | 28m | see git log | HoMM2 view models: `SpellFinderViewModelTests` (5, Unit) and `SphinxViewModelTests` (10, MultiUnit) |
-| 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
+| 29 | see git log | Removed six Integration fixtures duplicated by the MultiUnit ports of slices 18c to 18g (`SecondarySkillsViewModelTests`, `SpellsViewModelTests`, `CreatureFinderViewModelTests`, `CastleDetailsViewModelTests`, `HeroGeneralTabTests`, `SpellsFromArtifactsTests`) and 12 of the 14 tests of `HeroEditingViewModelTests`; each mapped to its retained test and checked by 32 mutants |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 
 Slice size limits: mechanical slices at most eight fixtures, isolation at most three subjects, gap-filling at most two new subjects. Split larger entries into lettered slices first.

@@ -1429,3 +1429,27 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (27 mutants, production restored): the first run let five through (the refresh of the toggle, the answers, the riddle and the rewards, which read the model anyway, and the length of an answer); the tests now watch the notifications and the room of an answer, and the five were run again and caught.
 - Homm2.Tests: the two fixtures pass (15); no production code changed.
 - HoMM2 not tested by a class of its own, and why: the sessions of the hero, the castle and the player (`ChangeOwner`, `RestoreOwner`, `RestoreHeroes`, `RestoreCastles`) are exercised by `HeroDifferSavegameTests`, `CastleDifferSavegameTests` and `PlayerDifferSavegameTests`; `RecordRegions` by `SaveRegionProviderTests`; `ArtifactsViewModel` and `SpellsViewModel` by `Homm2EditorHeroPageTests` and `Homm2EditorCastlePageTests`; `Homm2Module` by `TestApplicationServices`. Left without any direct test: `PageViewModel` (needs a whole game), `CastleLinks`, `Homm2SaveDocuments` and `Homm2EditSessions` (thin accessors).
+
+## Slice 29 - duplicated Integration fixtures removed
+
+Six Integration fixtures whose behaviour was ported to MultiUnit tests in slices 18c to 18g were removed, and a seventh was cut to the two tests that were not ported. Each removed test is mapped to the test that keeps its behaviour, and the claim was checked by mutation.
+
+**Mapping (removed test → retained test, all MultiUnit unless said):**
+
+| Removed | Kept in |
+|---|---|
+| `SecondarySkillsViewModelTests` (6) | `SecondarySkillsPageTests`: slots in order, moving, clearing, picking and replacing, level change, a skill not added twice, only the first free slot, the rows with placement, extra skills beyond eight, raising and removing an extra, hiding and showing, put back (13) |
+| `SpellsViewModelTests` (10) | `SpellsPageTests`: same names for the source of a granted spell, ticking selected and unselected, the list with its flags, learning and put back, read-only available, name and level filters, Learn all; plus Forget all and the spell book rules (12) |
+| `CreatureFinderViewModelTests` (7) | `CreatureFinderPageTests`: same names for the list, the word filters, the town names, the stats, the totals of a stack, adding to the first empty slot, adding refused when all are used; plus an empty slot has no totals (8) |
+| `CastleDetailsViewModelTests` (7) | `CastleDetailsPageTests`: same names for the buildings the map disables, the replaced building, the dwellings, base growth, the Mage Guild, the boats and inland (split in two), the upgraded growth buildings not listed (12) |
+| `HeroGeneralTabTests` (9) | `HeroViewModelTests` (Max, Reset, the moved flag and active spells, clamped values, the header) and `HeroArmyTabTests` (a stack's values, the army summary, the creature finder, a creature choice) |
+| `SpellsFromArtifactsTests` (4) | `SpellsFromArtifactsViewModelTests`: tome, Spellbinder's Hat, spells from other sources surviving a swap, Sea Captain's Hat (7) |
+| `HeroEditingViewModelTests`, 12 of 14 | `HeroEditingPageTests`: slots, moving, clearing, picking, level and experience, ballista and cannon, select all, restore movement, spell points, rotating, removing the marker, the level choices (21 cases) |
+
+**Kept on purpose:** the two tests of `HeroEditingViewModelTests` that were never ported, `EditsFromThePageLandInThePendingChanges` (a fake session has no history, so only a real savegame shows the pending changes) and `MakingAHeroNeutralTakesItOffTheMap` (the session does the work).
+
+**Check:** 32 mutants (the operators `==`, `!=`, `&&`, `||`, `>=`, `<=` swapped, one at a time, in `SecondarySkillsViewModel`, `SpellsViewModel`, `HeroViewModel`, `CastleViewModel` and `ArmyViewModel`) were run against the seven originals together with every Unit and MultiUnit test. 26 were killed, 4 survived, 2 did not build. All 26 killed mutants were also killed by tests that stay; **none was killed only by an original**. The sample is small, and the names above are the evidence for the rest, so a behaviour that an original asserted and a port does not would not necessarily show.
+
+**Not removed:** `CastleHeroLinksTests`, `CastleGrailAndCapitolPillTests` and `CastleGarrisonedHeroTests` (the player page, the overview and the navigation tree are tested on a real savegame there; `CastleLinksTests` has only the logic), and every other Integration fixture.
+
+Test methods removed: 55 (6 + 10 + 7 + 7 + 9 + 4 + 12). Homm3.Tests: Unit, MultiUnit and the Integration view-model fixtures pass (933); the whole project was not run for this slice; no production code changed.

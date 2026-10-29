@@ -151,7 +151,9 @@ namespace Siniskalc.Homm3.Tests.Data
             yield return ["no owner", Record(owner: 0xFF)];
             yield return ["the last colour", Record(owner: 7)];
             yield return ["level 1", Record(level: 1)];
-            yield return ["the last tile before the limit", Record(x: (int)Constants.Map.MaxCoordinate - 1, y: (int)Constants.Map.MaxCoordinate - 1)];
+            yield return ["the last tile of the map", Record(x: (int)Constants.Map.MaxCoordinate, y: (int)Constants.Map.MaxCoordinate)];
+            yield return ["the last column with another row", Record(x: (int)Constants.Map.MaxCoordinate, y: 1)];
+            yield return ["the last row with another column", Record(x: 1, y: (int)Constants.Map.MaxCoordinate)];
         }
     }
 }

@@ -1332,3 +1332,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (12 mutants, all caught, production restored): the owner test always or never true, the guard write removed, a shifted owner code, the stock test as `>=` or always true, the range guard removed or with a wrong bound on either side, a shifted stock, the owner write removed. The first version of one mutant did not compile and was redone.
 - Homm3.Tests: the two fixtures pass (15); no production code changed.
 - Left: `SafeMerchantStockSerializer`.
+
+## Slice 28c - the merchant stock writer and reader of HoMM3 on lists made by hand
+
+- `SafeMerchantStockSerializerTests` (8 cases, Unit): an artifact as its code in a little-endian integer in its slot; an emptied slot back to FFFFFFFF; one changed slot changes only its four bytes; a code that is no artifact, or above a byte, kept while the model still holds what it reads as and replaced (or emptied) when the model changes; a list that is not seven long refused; the source untouched.
+- `MerchantStockDeserializerTests` (3, Unit): index and name of the record; each slot from its four bytes with FFFFFFFF as empty; a code that is no artifact, above a byte (also when its low byte is an artifact) or FFFFFFFE reads as the first artifact.
+- Mutation check (11 mutants, production restored): the first run let two through. The check that a code fits a byte needed a code whose low byte is an artifact other than the first (now 0x17E); the other was a mutant that did not compile and was redone. One is equivalent and documented: a lower bound of 0 on the length of the list, because a list of six fails on the seventh slot with the same exception.
+- Homm3.Tests: the two fixtures pass (11); no production code changed.

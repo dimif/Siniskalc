@@ -1,7 +1,6 @@
 namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>

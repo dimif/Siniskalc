@@ -1,7 +1,6 @@
 namespace Siniskalc.Homm3.Tests.Data
 {
     using Siniskalc.Homm3.Data;
-    using Siniskalc.Homm3.Models;
     /// <summary>
     /// The mage guild level of a castle is the highest mage guild it has built, whatever the faction and the series of savefiles.
     /// </summary>

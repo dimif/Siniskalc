@@ -1,10 +1,8 @@
 namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the army editor that every game shares.

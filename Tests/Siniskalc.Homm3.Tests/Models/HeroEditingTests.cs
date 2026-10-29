@@ -1,4 +1,3 @@
-using Siniskalc;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;

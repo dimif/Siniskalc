@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using Siniskalc.Core.Data;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
 {

@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;

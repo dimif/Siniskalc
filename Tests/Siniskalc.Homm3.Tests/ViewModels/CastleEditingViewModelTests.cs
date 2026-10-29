@@ -1,12 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Siniskalc;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
-using Siniskalc.Homm3.Models;
-using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Homm3.Views;

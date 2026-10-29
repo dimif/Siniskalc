@@ -1,13 +1,10 @@
 namespace Siniskalc.Homm2.ViewModels
 {
-    using System;
     using System.Linq;
-    using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Runtime;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A page of the editor about one hero, player or castle: its tab, whether the savegame holds edits of it, and Reset. The page reads

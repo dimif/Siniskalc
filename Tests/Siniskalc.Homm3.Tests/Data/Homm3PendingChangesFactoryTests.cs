@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm3.Tests.Data
 {
-    using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Data;

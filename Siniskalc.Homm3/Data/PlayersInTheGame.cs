@@ -3,7 +3,6 @@ namespace Siniskalc.Homm3.Data
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Homm3.Entities;
 
     /// <summary>
     /// Tells which of the players found in a savefile are in the game, from the setup of the game. The scan that finds the players looks at

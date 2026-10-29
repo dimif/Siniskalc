@@ -7,7 +7,6 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Wpf.ViewModels;
 

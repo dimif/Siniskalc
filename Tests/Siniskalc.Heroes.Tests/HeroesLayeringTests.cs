@@ -1,6 +1,5 @@
 namespace Siniskalc.Heroes.Tests
 {
-    using System.Reflection;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>

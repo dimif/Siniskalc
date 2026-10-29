@@ -6,7 +6,6 @@ namespace Siniskalc.Homm3.Runtime
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Runtime;
-    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 

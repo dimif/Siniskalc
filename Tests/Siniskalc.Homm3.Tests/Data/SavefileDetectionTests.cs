@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.Tests.Data
 {
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Data;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// A savefile is recognised as the game it was saved by and holds all the heroes of that game.

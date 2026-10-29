@@ -1,5 +1,4 @@
 ﻿using Siniskalc.Homm3.Data;
-using Siniskalc.Homm3.Runtime;
 
 namespace Siniskalc.Homm3.Tests.Models
 {

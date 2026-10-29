@@ -5,7 +5,6 @@
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
 
     [TestFixture]
     internal sealed class SavegameParserTests

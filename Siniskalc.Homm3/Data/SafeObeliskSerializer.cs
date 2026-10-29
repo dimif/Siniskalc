@@ -4,7 +4,6 @@
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Writes the obelisk flags: the byte of every obelisk, as the model holds it.

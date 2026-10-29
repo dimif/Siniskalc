@@ -3,14 +3,10 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A mine of the map: the row every game shows (what it gives, where its record says it is, who owns it) and the creatures that guard it,

@@ -1,5 +1,3 @@
-using Siniskalc.Core;
-
 namespace Siniskalc.Core.Tests
 {
     [TestFixture]

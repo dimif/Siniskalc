@@ -3,7 +3,6 @@
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
-    using Siniskalc.Homm2.Runtime;
 
     /// <summary>
     /// What the saves of Threedom (TestData/Homm2/Threedom, Price of Loyalty) showed about the buildings of a town and about what a hero

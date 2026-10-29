@@ -1,11 +1,9 @@
 namespace Siniskalc.Homm3.Data
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Describes where each known field lives in a player chunk, using the offsets of <see cref="PlayerLayout"/>.

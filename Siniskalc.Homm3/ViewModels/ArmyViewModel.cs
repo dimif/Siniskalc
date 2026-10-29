@@ -3,14 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Core;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// ViewModel for an army of Heroes of Might and Magic III: the seven creature slots of a hero, and a <see cref="Finder"/> to look up

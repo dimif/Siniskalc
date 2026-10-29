@@ -3,7 +3,6 @@ namespace Siniskalc.Homm2.Data
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// Where each known field lives inside a record of Heroes of Might and Magic II: a hero, a player, a castle, and the records of the map

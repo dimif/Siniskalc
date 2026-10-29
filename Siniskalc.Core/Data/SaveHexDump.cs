@@ -1,8 +1,6 @@
 namespace Siniskalc.Core.Data
 {
-    using System;
     using System.Collections.Generic;
-    using Siniskalc.Core.Data;
 
     /// <summary>
     /// The bytes of a whole savefile at one moment, with its known regions, for showing in a hex view.

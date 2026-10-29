@@ -1,5 +1,4 @@
-﻿using Siniskalc;
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 
 namespace Siniskalc.Homm3.Tests.Entities
 {

@@ -2,14 +2,9 @@
 {
     using System;
     using System.Linq;
-    using Siniskalc.Core;
-    using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The army of a hero or the garrison of a castle in Heroes of Might and Magic II: five slots and a finder to add creatures. The slots,

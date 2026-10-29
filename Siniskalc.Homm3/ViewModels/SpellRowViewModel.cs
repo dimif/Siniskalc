@@ -1,10 +1,8 @@
 namespace Siniskalc.Homm3.ViewModels
 {
     using System;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One spell in the spells list: whether the hero has learned it, and whether an artifact makes it available.

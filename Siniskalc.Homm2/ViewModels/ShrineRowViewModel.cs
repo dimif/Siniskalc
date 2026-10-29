@@ -4,7 +4,6 @@
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.ViewModels;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Wpf.ViewModels;

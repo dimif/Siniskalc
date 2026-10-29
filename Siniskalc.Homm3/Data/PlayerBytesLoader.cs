@@ -6,7 +6,6 @@
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Finds the table of players in a savefile and loads each as a <see cref="PlayerChunk"/> named after its colour.

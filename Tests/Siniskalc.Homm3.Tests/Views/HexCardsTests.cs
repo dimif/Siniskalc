@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Siniskalc.Homm3.Tests.ViewModels;
-using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.Views

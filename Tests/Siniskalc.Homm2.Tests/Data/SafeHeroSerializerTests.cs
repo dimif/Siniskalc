@@ -1,8 +1,6 @@
 namespace Siniskalc.Homm2.Tests.Data
 {
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Runtime;
 
     /// <summary>
     /// How a hero is written back: what the editor cannot hold is left as the savegame has it.

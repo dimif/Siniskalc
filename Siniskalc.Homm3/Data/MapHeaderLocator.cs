@@ -5,7 +5,6 @@
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Finds the map's name, description and difficulty. The difficulty is the one the map was made with, which is not the difficulty the game was started at.

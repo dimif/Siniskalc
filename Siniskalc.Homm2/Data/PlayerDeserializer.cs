@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
-    using System;
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;

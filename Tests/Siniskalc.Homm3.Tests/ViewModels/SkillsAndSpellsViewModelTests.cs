@@ -2,12 +2,9 @@
 using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Data;
-using Siniskalc.Homm3.Models;
-using Siniskalc;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
-using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Homm3.Tests.Models;
 
 namespace Siniskalc.Homm3.Tests.ViewModels

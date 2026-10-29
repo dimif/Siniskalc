@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Core;
     using Siniskalc.Heroes.Models;
 
     /// <summary>

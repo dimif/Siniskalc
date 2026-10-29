@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
 

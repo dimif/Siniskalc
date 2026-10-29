@@ -1,7 +1,6 @@
 namespace Siniskalc.Core.Data
 {
     using System.Collections.Generic;
-    using Siniskalc.Core.Data;
 
     /// <summary>
     /// Describes where each known field lives in the whole savefile.

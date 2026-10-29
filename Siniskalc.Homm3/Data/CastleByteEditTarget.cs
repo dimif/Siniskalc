@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm3.Data
 {
-    using System;
     using Siniskalc.Core.Data;
 
     /// <summary>

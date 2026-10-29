@@ -3,8 +3,6 @@
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// What a savegame says about the game besides its heroes, players and castles.

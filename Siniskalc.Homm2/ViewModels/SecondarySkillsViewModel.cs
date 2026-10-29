@@ -1,13 +1,10 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The secondary skills page of a hero of Heroes of Might and Magic II: up to eight skills in the order they were learned, which is

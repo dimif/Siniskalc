@@ -3,8 +3,6 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// ViewModel for a single creature slot in an army of Heroes of Might and Magic III: the shared slot, and the totals of the whole stack

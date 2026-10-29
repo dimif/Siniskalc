@@ -3,7 +3,6 @@ namespace Siniskalc.Homm3.Data
     using System;
     using System.Collections.Generic;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Entities;
 
     /// <summary>
     /// Finds where the objects of the map are, in a savefile that has them: after the table of object definitions (a 16-bit length, the

@@ -5,7 +5,6 @@
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Reads the obelisk flags of a savefile: one byte for each obelisk with a bit for every colour that visited it.

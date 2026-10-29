@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm2.ViewModels
 {
-    using System;
     using System.Linq;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;

@@ -1,7 +1,5 @@
 using Siniskalc.Heroes.Entities;
-using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
-using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 

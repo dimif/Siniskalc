@@ -3,7 +3,6 @@ namespace Siniskalc.Homm2.ViewModels
     using System;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One spell in the spells list: whether the hero has it in the spell book, and what it costs to cast.

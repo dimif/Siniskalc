@@ -1302,3 +1302,18 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 49 caught, production restored): the first version let three through (a player of the savefile with no hero or castle, the order of mines by X before Y, and an overview name that is already empty, which is equivalent: `GetFileName` of an empty name is empty); the first two got a case each.
 - Heroes.Wpf.Tests: the new fixtures pass (25); no production code changed.
 - Left, optional (27h): the small cards and rows of Heroes.Wpf, all exercised through the pages of both games.
+
+## Slice 27h - the small cards and rows of Heroes.Wpf
+
+- Eight fixtures that follow the same pattern (a mechanical slice, so more than two subjects), all Unit:
+  - `PlayerCardViewModelTests` (5): the name, colour and control text; no resources give no text; the gold alone with thousands separators and the other resources in the order of the game in one line; the banishing text; heroes and castles only when given.
+  - `PrimarySkillRowViewModelTests` (9 cases): the label, range, base and total; a base outside the range is shown as the limit; a new base is written, one beyond the range as the limit, and the same value not at all; the note of artifacts ("+6 from artifacts", "-2 from artifacts", none for no bonus); refresh.
+  - `ResourceRowViewModelTests` (6): gold has the gold limit and step and the other resources theirs; the name and colour of the resource; only gold is gold; the value and the change against the original set; setting a value changes only that resource within the limits; the note for the resource.
+  - `ObeliskRowViewModelTests` (4): the label, number and place (any text is a place, empty is none); the check box writes only a change; refresh.
+  - `ResourcePaletteTests` (13 cases): the colour of each of the seven resources, matching ignoring the case, the colour of what is unknown, and each resource of the game having its own.
+  - `ResettablePageViewModelBaseTests` (5): the title and the Reset button off at the start; Reset offered only with pending changes and running the game's reset; every change of the history tells the page; a disposed page no longer follows it; the tab is kept.
+  - `HeroChoiceViewModelTests` (4): a hero keeps its id as key, nobody has key -1, a hero with id 0 is not nobody, and the name is the text.
+  - `CastleHeroRowViewModelTests` (2): the role, name and command, the role as the detail and in lower case as text.
+- Mutation check (all 53 caught, production restored): the first run let two through (the banishing text tried only with a long text, and a place tried only with a long text); each got a case with a short one. A fixture that shared state through its fields (NUnit uses one instance for all of a fixture's tests) failed once until its state was set up in `[SetUp]`.
+- Heroes.Wpf.Tests: the new fixtures pass (45); no production code changed.
+- Left (pure holders): `HeroLinkViewModel`, `OrderOfPlayItemViewModel`, `NextBattleCardViewModel`.

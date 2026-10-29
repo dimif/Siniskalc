@@ -1167,3 +1167,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (caught, production restored): the copies in and out, the end, `CopyTo`, `GetBytesAt`, the equality of bytes, the length check (a longer array survived the first version and got a case), the title, the original bytes, the result of an update, the local flag, the other-chunk filter, the baseline check, dispose, and the three limits of the helpers. Equivalent: reading a signed 16-bit number as a cast of the unsigned one.
 - Core.Tests: all pass; no production code changed.
 - Not done (25b): `ByteRegionMap` and `ByteRegion`, `SavegameService`, `ByteBufferHelper`, `SaveHexDump`, `AbstractSavegame`, `ForwardingLogger`.
+
+## Slice 25b - regions of a record and the map of its bytes (Core)
+
+- `ByteRegionTests` (9, Unit): where a region ends, its full name with and without a group, which bytes it holds (start in, end out), its leaves (itself, or those of its parts in depth), and shifting (start moved, length and kind kept, the group prefix made the group or put in front of the one it has, the parts moved with the same prefix, the original region unchanged).
+- `ByteRegionMapTests` (11, Unit): every byte of a region maps to it; offsets outside the map have no region and shade 0; a region past the length is cut, and one that starts before the first byte maps only what is inside; the parts of a region are mapped and not the region holding them; neighbouring regions alternate shade by the order of their bytes, not of the list; two regions sharing a byte (the ballista and cannon) map to the first and `FindAll` lists both; the shade stays that of the region that owns the byte; an empty map.
+- Mutation check (all caught, production restored): the end, the full name, both edges of `Contains`, the leaves, the shift of the start, of the group prefix and of the parts, the order of the leaves, the shade, the clip at the length and at zero, the first owner, `FindAll`, and the bounds of `FindLeaf` and `GetShade`.
+- Core.Tests: the new fixtures pass (20); no production code changed.
+- Not done (25c): `SavegameService`, `ByteBufferHelper`, `SaveHexDump`, `AbstractSavegame`, `ForwardingLogger`.

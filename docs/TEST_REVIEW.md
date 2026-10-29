@@ -1108,3 +1108,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (caught, production restored): Learn all learning nothing or forgetting, its condition, the move up and down limits, the level of a free slot, the free-slot condition and summary of the finder, and the amount added. Two survived the first version and got a case each (Learn all without a spell book, the level of a free slot).
 - Homm3.Tests: Unit, MultiUnit and the Integration view-model fixtures pass; no production code changed. The three originals stay (slice 29).
 - Not done (18e): `HeroEditingViewModelTests` and the castle view models.
+
+## Slice 18e - hero editing page off the savefile
+
+- `HeroEditingPageTests` (21 cases, MultiUnit) from `HeroEditingViewModelTests`, on `FakeHeroSession` with ten pikemen and five archers: the creature slots and their allowed moves, moving, clearing and putting the hero back, picking a creature (one to start, then an amount) and picking none, level and experience in step, a skill, spell points and a war machine edited on the page landing on the hero, ballista and cannon exclusive, unticking a war machine, select all, restore movement, resetting spell points, the Intelligence bonus per game (Shadow of Death 25, 50, 100 percent; Horn of the Abyss 20, 35, 50), rotating and wrapping, removing the destination marker, and the level choices with and without an underground.
+- Not ported: the pending-changes list (a fake session has no history; `HeroDifferTests` and the history tests cover it) and making a hero neutral (the session does it; `HeroViewModelTests` covers the page asking the session). The save-based original stays.
+- Mutation check (caught, production restored): ballista and cannon sharing a slot, unticking a war machine (survived the first version, now a case), restore movement and its condition, rotation direction and wrap, and the Intelligence percentages for both games.
+- Homm3.Tests: the MultiUnit and Integration view-model fixtures pass; no production code changed.
+- Not done (18f): the castle view models, which need an `ICastleSession` seam like the hero one (`IHeroSession`).

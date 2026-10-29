@@ -1262,3 +1262,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Heroes.Tests: the new fixtures pass (27); no production code changed.
 - Left, optional: `LinkViewModel` (three properties) and `ObeliskEditSession` (a subclass that only fixes the type); both are used by the pages of both games and covered by their tests.
 - Not done (27c): the Heroes.Wpf bases and cards.
+
+## Slice 27c - a stack and a slot of an army (Heroes.Wpf)
+
+- `StackTotalsTests` (10, Unit): the hit points, cost, AI value and fight value of a stack are those of one creature times the amount; a damage that does not vary is one number and one that varies is a range; thousands separators; the price beyond gold lists each resource in the order of the game (wood, ore, mercury, sulfur, crystal, gems) and only those the creature costs, with "and" in front and none for a creature that costs only gold; the full list of facts (hit points, damage, cost, the other cost as a note, the two values with their tooltips) and the short list of hit points and damage.
+- `StackSlotViewModelTests` (20, Unit): a new slot is empty and shown from one; picking a creature or changing the amount tells the army with the other half of the stack, and the same value tells nothing; initializing shows what the page holds, tells nobody and tells every property; the move buttons only where the slot can move that way, with the slot and direction; clear only with a creature; the facts are asked for the amount and only for a slot with a creature, and follow the amount; the upgrade: none, one (changes the stack into it, keeping the amount), several (the one named, an unknown one refused), and the tooltips; the picker opens and closes, is made only when first asked for, and picking from it closes it and sets the creature.
+- Mutation check (all 50 caught, production restored): the first run let two through (the resource lines, whose mutants did not compile, were redone; and a picker set to the state it is in already, which got a case).
+- Heroes.Wpf.Tests: the new fixtures pass (30); no production code changed.
+- Not done (27d): `ArmyViewModelBase` (needs a fake finder and slots), then the skill and spell bases, the cards and rows.

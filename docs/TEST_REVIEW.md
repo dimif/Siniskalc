@@ -1317,3 +1317,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 53 caught, production restored): the first run let two through (the banishing text tried only with a long text, and a place tried only with a long text); each got a case with a short one. A fixture that shared state through its fields (NUnit uses one instance for all of a fixture's tests) failed once until its state was set up in `[SetUp]`.
 - Heroes.Wpf.Tests: the new fixtures pass (45); no production code changed.
 - Left (pure holders): `HeroLinkViewModel`, `OrderOfPlayItemViewModel`, `NextBattleCardViewModel`.
+
+## Slice 28a - the castle writer of HoMM3 on a record made by hand
+
+- `SafeCastleSerializerTests` (26, Unit) writes castles into a record of zeros and asserts the bytes: the two hero bytes (FF for none, 254 the highest, -1 and 255 refused), the Mage Guild level, the five spell counts (fewer counts leave the other levels alone, 256 refused), the spells written into the slots that hold a known spell and a level whose list does not match left alone, the creatures waiting as little-endian shorts (moved between the slot of the dwelling and of its upgrade, the slot not holding the count kept, out of range refused), the three masks (built, visible, enabled), unknown bits kept, the companion bits of the town hall, city hall, capitol and fort, and a castle of no faction leaving the masks alone.
+- The save-based tests of the same writer were renamed `SafeCastleSerializerSavegameTests` (Integration).
+- Mutation check (14 mutants, 13 caught): the survivor (the faction test in front of the upgrade lookup of the creatures) is equivalent, because no building is found for the neutral faction anyway. Production restored.
+- Homm3.Tests: the fixture passes with the savegame one (41); no production code changed.

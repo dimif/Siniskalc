@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class SafeCastleSerializerTests
+    internal sealed class SafeCastleSerializerSavegameTests
     {
         [Test]
         public void EveryCastleOfEverySampleSaveSerializesToTheBytesItWasReadFrom()

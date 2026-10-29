@@ -1211,3 +1211,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (caught, production restored): about 30 changes. Survivors fixed in the first version: a blank file name taken for a file, the page of the picked node (the fake editor now has a node that shows another node's page, like the Mines tab of a player), and reverting all done as an undo (the test now makes two edits). Not testable: `PendingChanges.Clear()` when a game is loaded (the refresh right after empties the list anyway) and `RaiseCanExecuteChanged` (it only asks the window's `CommandManager`, which needs a dispatcher).
 - Wpf.Tests: the Unit and MultiUnit fixtures pass; no production code changed.
 - Not done (26c): the field view models, `SortColumnViewModel`, `RecentMenuItemViewModel`, `TabbedPageViewModelBase`, `PageViewModelBase`.
+
+## Slice 26c - the amount row and the text field (Wpf)
+
+- `AmountRowViewModelTests` (13 cases, Unit): what the row shows; the badge is the first two letters of the name (the whole name when it is shorter); a value inside the limits is written as it is, one beyond is written as the nearest limit and the limits themselves are allowed; the row is changed when the value is not the one in the savefile; the delta text is empty when nothing changed and otherwise "+2,500 from save" or "-600 from save"; the note; refresh tells every binding; the value is read from the source each time.
+- `TextFieldViewModelTests` (10, Unit): what the field shows; a new text is written, the same text is not written again, no text is written as an empty string (and nothing when the field is already empty); the maximum and the counter are empty without a limit or with a limit of zero, and "5 of 12" with one, following the text; the limit is asked again each time; refresh.
+- Mutation check (all 16 caught, production restored): the badge and its short-name rule, the clamp and its lower limit, the changed flag, the delta (zero, sign and wording), the note, refresh (both), the same-text check, the null text, the counter and its zero limit, and the limit.
+- Wpf.Tests: the new fixtures pass (23); no production code changed.
+- Not done (26d): `ToggleRowViewModel`, `ChoiceFieldViewModel`; then `SortColumnViewModel`, `RecentMenuItemViewModel` and the two page bases.

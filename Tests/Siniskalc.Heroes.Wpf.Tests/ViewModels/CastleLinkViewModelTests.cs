@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the link to a castle that any game can make from what every castle has.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CastleLinkViewModelTests
     {
         private static ICastleModel<TestColor, IGameEntity, IFaction> Castle(int mageGuildLevel, string faction, int dwellings)

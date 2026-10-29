@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Data
 
         IByteEditTarget ForPlayer(PlayerEditSession session);
 
-        IByteEditTarget ForCastle(SaveDocumentHistory history, int castleIndex);
+        IByteEditTarget ForCastle(CastleEditSession session);
 
         IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex);
 

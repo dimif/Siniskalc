@@ -3,6 +3,7 @@ namespace Siniskalc.Wpf.Tests.Views
     using Siniskalc.Wpf.Views;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HexFormatTests
     {
         [TestCase((byte)'A', 'A')]

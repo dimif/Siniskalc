@@ -1,0 +1,10 @@
+namespace Siniskalc.Homm2.Tests
+{
+    internal static class TestKinds
+    {
+        public const string Unit = "Unit";
+        public const string MultiUnit = "MultiUnit";
+        public const string Integration = "Integration";
+        public const string Manual = "Manual";
+    }
+}

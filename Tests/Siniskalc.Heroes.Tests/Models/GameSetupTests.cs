@@ -8,6 +8,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the setup of a game: who plays each colour.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class GameSetupTests
     {
         [Test]

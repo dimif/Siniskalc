@@ -10,6 +10,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the row of a mine read from the savegame through its edit session, with the owner picked from the colours of a made-up game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MineRowViewModelTests
     {
         [Test]

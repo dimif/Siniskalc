@@ -1,46 +1,53 @@
 namespace Siniskalc.Homm3.Tests.Models
 {
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Tests.Data;
+    using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// Tests what a castle of HoMM3 tells through the interface every game's castle has.
+    /// Tests what a castle of HoMM3 tells through the interface every game's castle has, and its weekly growth, on a town made by hand.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CastleModelTests
     {
         [Test]
         public void ACastleTellsWhatEveryGameCastleHasThroughTheSharedInterface()
         {
-            var castles = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles();
-            var model = TestServices.CastleDeserializer.Deserialize(castles.First(c => c.Name == "Still Water"));
+            var model = CastleModels.With(CastleModels.Village(Faction.Rampart), Building.RampartCentaurStables);
 
             ICastleModel<PlayerColor, Creature, Faction> castle = model;
 
-            Assert.That((castle.Name, castle.Faction?.Name), Is.EqualTo(("Still Water", model.Faction!.Name)));
+            Assert.That((castle.Name, castle.Faction?.Name), Is.EqualTo(("Test Town", "Rampart")));
             Assert.That(castle.Faction, Is.SameAs(model.Faction));
             Assert.That((castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((7, 7)));
             Assert.That(castle.Garrison, Is.SameAs(model.Garrison));
             Assert.That(castle.IsUsed, Is.True);
-            Assert.That(castle.DwellingCount, Is.EqualTo(model.Buildings.Count(b => b.IsDwelling)));
+            Assert.That(castle.DwellingCount, Is.EqualTo(1));
             Assert.That(castle.GarrisonedHeroId, Is.EqualTo(model.GarrisonedHeroId));
         }
 
         [Test]
         public void TheBaseWeeklyGrowthIsTheGrowthOfTheCreatureOnceItsDwellingIsBuilt()
         {
-            var castles = CastleSamples.Load(CastleSamples.Folder("Bulwark").Single(p => p.EndsWith("bulwark_13_mage_guild_4.GM1"))).History.Current.Castles();
-            var still = TestServices.CastleDeserializer.Deserialize(castles.First(c => c.Name == "Still Water"));
+            var still = CastleModels.Village(Faction.Rampart);
 
-            Assert.That(still.BaseWeeklyGrowth(0), Is.EqualTo(0), "Still Water has no Centaur Stables in this save");
+            Assert.That(still.BaseWeeklyGrowth(0), Is.EqualTo(0), "the town has no Centaur Stables yet");
 
-            var built = Siniskalc.Homm3.Models.CastleBuilder.Build(still, Building.RampartCentaurStables);
+            var built = CastleBuilder.Build(still, Building.RampartCentaurStables);
             Assert.That(built.BaseWeeklyGrowth(0), Is.EqualTo(14));
 
-            var upgraded = Siniskalc.Homm3.Models.CastleBuilder.Build(built, Building.RampartUpgCentaurStables);
+            var upgraded = CastleBuilder.Build(built, Building.RampartUpgCentaurStables);
             Assert.That(upgraded.BaseWeeklyGrowth(0), Is.EqualTo(14), "an upgraded dwelling has the growth of the creature it upgrades");
+        }
+
+        [Test]
+        public void TheGarrisonOfACastleCannotBeSetWhileAHeroIsGarrisonedButCanOnceNoneIs()
+        {
+            var garrisoned = CastleModels.Village(Faction.Inferno) with { GarrisonedHeroId = 21 };
+
+            Assert.That(() => garrisoned.WithGarrison(garrisoned.Garrison), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => (garrisoned with { GarrisonedHeroId = null }).WithGarrison(garrisoned.Garrison), Throws.Nothing);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Siniskalc.Core.Tests.Data
     /// Tests the lookups every collection of chunks has.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ChunkCollectionTests
     {
         private static readonly RawBytesChunk[] Chunks = [new("Ann", [0], 0), new("", [0], 1), new("Bob", [0], 2)];

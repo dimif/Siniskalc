@@ -99,7 +99,19 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - **A test method is a PascalCase sentence that states the behaviour being checked**, such as `TheDateOfEachSavegameIsRead`, `RemovingABuildingGivesTheMasksOfNeverHavingBuiltIt` or `ACreatureIsRangedExactlyWhenItHasShots`.
   No `Method_State_Result` underscores, no `Test` or `Should` prefix, and not just the name of a hero or type.
   Name the thing under test the way the code does (`GrantedSpellsResolver`, not an older name).
+  Write full sentences with articles, subject first and the observable result after it (`ANeutralCastleIsWrittenAsTheByteFF`, not `NeutralCastleWrittenAsFF`).
+  Start with a member name only when that member is the public API under test (`ToBytesAppliesChunkEdits`).
+  A save, hero or castle is named only together with what it shows (`TazarStartsWithEquestriansGlovesAndNoSpellBook`, not `TazarIsDeserialized`), and a name never just repeats the subject (`DeserializingHeroDeserializes`).
 - Tests that rely on what a savefile contains say which save, and test data lives in `TestData/`.
   **How savefiles are named and organised (`<series>_<NN>_<what changed>.GM1`, folders, numbering, what to update when adding one) is in `TestData/README.md`: read it before adding, renaming or looking for a save.** `TestDataNamesTests` enforces it; each `TestData` folder's own `README.md` says what its saves hold.
 - A class that tests one scenario, save or game version across several subjects (`RoeCastleTests`, `HotaSaveTests`, `SodSaveTests`) is allowed to be named after that scenario instead of one subject.
+  An integration test of one savefile feature through every layer (reader, writer, history, view model) may be named after that feature (`GenderTests`, `ObeliskVisitsTests`).
   Its methods are still sentences about the behaviour.
+  Unit and multi-unit test classes are always named after one production type.
+- **Say what kind of test a class is** (target convention, being adopted; see `docs/TEST_REVIEW.md`).
+  A unit test checks one class, with Moq fakes for its collaborators and no savefiles; it is `[Category("Unit")]` and lives in the layer folder.
+  A test of several real classes without savefiles is `[Category("MultiUnit")]` under `MultiUnit/<Layer>/`.
+  A test that reads `TestData`, writes to disk or builds the whole graph (`TestServices`) is `[Category("Integration")]` under `Integration/<Layer>/`.
+  Only integration tests and tests on binary data (deserializers, serializers) may be slow.
+- A test never ends in `Assert.Pass` or skips its assertions with `continue`; a serializer test asserts the bytes, not what the deserializer reads back.
+- The `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`) repeats the review and updates `docs/TEST_REVIEW.md`.

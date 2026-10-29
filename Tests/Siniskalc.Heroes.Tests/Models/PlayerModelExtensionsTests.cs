@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the reducers of a player of any game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PlayerModelExtensionsTests
     {
         [Test]

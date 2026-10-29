@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the date of a game.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class GameDateTests
     {
         [Test]

@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Tests.Data
     /// Tests the changes the visited obelisks of any game are listed with.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ObeliskDifferTests
     {
         private static readonly ChunkKind Kind = new("Obelisks", 3);

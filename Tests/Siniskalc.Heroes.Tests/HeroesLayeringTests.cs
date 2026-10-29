@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests
     /// Tests that what the games of the series share knows no game, and no UI.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroesLayeringTests
     {
         [Test]

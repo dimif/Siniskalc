@@ -6,6 +6,7 @@ namespace Siniskalc.Core.Tests.Models
     /// Tests the list of numbers a model keeps.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class NumbersTests
     {
         [Test]

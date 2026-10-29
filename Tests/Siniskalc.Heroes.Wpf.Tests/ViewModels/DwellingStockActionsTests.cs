@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the buttons that fill the dwellings of a castle, which both games use.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class DwellingStockActionsTests
     {
         [Test]

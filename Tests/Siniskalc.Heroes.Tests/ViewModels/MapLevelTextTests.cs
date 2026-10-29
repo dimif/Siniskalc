@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the words for a place on the map.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MapLevelTextTests
     {
         [Test]

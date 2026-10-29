@@ -16,28 +16,26 @@
 
     /// <summary>
     /// ViewModel of the page of a castle (a town): its owner, position, garrison and buildings. It reads from a
-    /// <see cref="CastleEditSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
+    /// <see cref="ICastleSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
     /// the pending changes and follow undo and redo.
     /// </summary>
     public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
-        private readonly SaveDocumentHistory history;
+        private readonly ICastleSession castleSession;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
-        private readonly int castleIndex;
         private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
         private string notice = string.Empty;
 
-        public CastleViewModel(SaveDocumentHistory history, int castleIndex, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
-            : base(history.Current.Castles().GetName(castleIndex), history.CreateCastleSession(castleIndex))
+        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
+            : base(session.Name, session)
         {
-            this.history = history;
+            this.castleSession = session;
             this.byteEditTargets = byteEditTargets;
             this.buildMessages = buildMessages;
-            this.castleIndex = castleIndex;
             this.openHero = openHero;
             this.Castle = this.Session.Current;
             this.Refresh();
@@ -45,14 +43,14 @@
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
             // the place of the castle's: the editor shows that army and cannot change anything.
             this.GarrisonEditor = new ArmyViewModel(
-                history.Current.GameVersion(),
+                session.GameVersion,
                 () => this.GarrisonedHeroModel?.Army ?? this.Castle.Garrison,
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
             this.GarrisonEditor.SetTitle("Garrison");
         }
 
-        public int CastleIndex => this.castleIndex;
+        public int CastleIndex => this.castleSession.Index;
 
         public string Name => this.Castle.Name;
 
@@ -86,7 +84,7 @@
             set
             {
                 var owner = OwnerNames<PlayerColor>.Parse(value);
-                this.history.CreateCastleSession(this.castleIndex).ChangeOwner(owner);
+                this.castleSession.ChangeOwner(owner);
             }
         }
 
@@ -230,9 +228,7 @@
                     return null;
                 }
 
-                var heroes = this.history.Current.Heroes();
-                var index = heroes.IndexOfId(id);
-                return index < 0 ? null : heroes.GetModel(index);
+                return this.castleSession.FindHero(id);
             }
         }
 
@@ -242,7 +238,7 @@
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.
         /// </summary>
-        public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForCastle(this.history, this.castleIndex);
+        public IByteEditTarget CreateByteEditTarget() => this.castleSession.CreateByteEditTarget(this.byteEditTargets);
 
         /// <summary>
         /// Shows the castle again from the current document.
@@ -256,7 +252,7 @@
                 .Select(slot => new GarrisonSlotRowViewModel(slot, this.Castle.Garrison.Slots[slot - 1]))
                 .ToList();
 
-            this.Heroes = CastleHeroRows.For(this.Castle, this.history.Current.Heroes(), this.openHero);
+            this.Heroes = CastleHeroRows.For(this.Castle, this.castleSession.Heroes, this.openHero);
 
             // The upgraded horde buildings (bits 19 and 25) are no buildings of the game: it sets the bits by itself when a growth building and the
             // upgrade of its dwelling both exist, and the growth building works on both dwellings. They are not listed or counted.

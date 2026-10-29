@@ -3,6 +3,7 @@
 namespace Siniskalc.Homm3.Tests.Entities
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class BuildingTests
     {
         private static readonly Faction[] OriginalFactions =

@@ -43,6 +43,9 @@ namespace Siniskalc.Core.Data
 
         public SaveDocumentHistory History { get; }
 
+        /// <inheritdoc/>
+        public IHistoryEvents Events => this.History;
+
         public ChunkKind Kind { get; }
 
         /// <inheritdoc/>

@@ -4,6 +4,7 @@ namespace Siniskalc.Core.Tests.Runtime
     using Siniskalc.Core.Runtime;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class LogFactoryTests
     {
         [TearDown]

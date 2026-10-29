@@ -16,12 +16,12 @@
 
     /// <summary>
     /// ViewModel that wraps a hero for UI binding.
-    /// Reads the hero from a <see cref="HeroEditSession"/> and writes every change back through it, so edits land in
+    /// Reads the hero from a <see cref="IHeroSession"/> and writes every change back through it, so edits land in
     /// the savefile's undo/redo history. Refreshes itself whenever that history changes.
     /// </summary>
     public class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
-        private readonly HeroEditSession session;
+        private readonly IHeroSession session;
         private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
         private object shownRevision;
@@ -30,7 +30,7 @@
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
-        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
+        public HeroViewModel(IHeroSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
             : base(session.Current.Name, session)
         {
             this.session = session;
@@ -40,8 +40,8 @@
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
-            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
-            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.History.Current.GameVersion());
+            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
+            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,
                 () => this.HeroModel.SecondarySkills,
@@ -108,7 +108,7 @@
         /// <summary>
         /// Gets the edit session for this hero.
         /// </summary>
-        public new HeroEditSession Session => this.session;
+        public new IHeroSession Session => this.session;
 
         /// <summary>
         /// Gets the hero as it is in the current document.
@@ -144,7 +144,7 @@
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. The lists of heroes of the players and the table of hero owners
-        /// change with it (<see cref="HeroEditSession.ChangeOwner"/>). A hero that is made neutral leaves the map: its position and destination
+        /// change with it (<see cref="IHeroSession.ChangeOwner"/>). A hero that is made neutral leaves the map: its position and destination
         /// become -1, -1, -1 and it faces east. A change the editor cannot make as the game would is not made; <see cref="Notice"/> says why.
         /// </summary>
         public string SelectedOwner
@@ -202,7 +202,7 @@
             get
             {
                 var index = this.GarrisonCastleIndex;
-                return index < 0 ? string.Empty : this.session.History.Current.Castles().GetName(index);
+                return index < 0 ? string.Empty : this.session.CastleName(index);
             }
         }
 
@@ -300,14 +300,14 @@
         /// <summary>
         /// Gets the game version that wrote the savefile the hero is in.
         /// </summary>
-        public GameVersion GameVersion => this.session.History.Current.GameVersion();
+        public GameVersion GameVersion => this.session.GameVersion;
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 
         /// <summary>
         /// Gets whether the savefile's game version stores that a hero was put to sleep. The checkbox is only shown when it does.
         /// </summary>
-        public bool CanSleep => this.session.History.Current.Heroes().SupportsAsleep;
+        public bool CanSleep => this.session.SupportsAsleep;
 
         /// <summary>
         /// Gets or sets whether the hero is asleep. A hero that moves wakes up, so this is mostly for waking one that would not move.
@@ -323,14 +323,14 @@
             get
             {
                 // Castles hold the id of the hero, which is not its place among the heroes.
-                return this.session.History.Current.Castles().FindByGarrisonedHero(this.HeroModel.Id);
+                return this.session.GarrisonCastleIndex;
             }
         }
 
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the hero. The caller disposes it.
         /// </summary>
-        public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForHero(this.session);
+        public IByteEditTarget CreateByteEditTarget() => this.session.CreateByteEditTarget(this.byteEditTargets);
 
         /// <inheritdoc/>
         protected override void OnHistoryChanged()

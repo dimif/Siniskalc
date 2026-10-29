@@ -1,252 +1,288 @@
 namespace Siniskalc.Heroes.Tests.Data
 {
-    using Siniskalc.Heroes.Tests.Entities;
+    using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using static Siniskalc.Heroes.Tests.Data.ArmySamples;
+    using Siniskalc.Heroes.Tests.Entities;
 
     /// <summary>
-    /// Tests the changes that every game's differs report in the same way.
+    /// Tests the changes a differ words for the things every game's records have in common (owner, army, skills, level, position,
+    /// resources, tavern...): the area, the description, the text before and after, and the revert that puts the old value back.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ChangeSinkExtensionsTests
     {
-        private static ChangeSink<Holder> NewSink() =>
-            new((change, _) => new PendingChange("Holder", change, new ChunkKind("Holder", 0), 0, _ => { }));
+        private sealed record Thing(
+            TestColor Owner,
+            IArmy<ArmySamples.Creature> Army,
+            PrimarySkills Skills,
+            HeroLevel Level,
+            HeroPosition Position,
+            MapPosition Destination,
+            MovementPoints Movement,
+            int SpellPoints,
+            ResourceSet Resources,
+            TavernHeroes Tavern,
+            int? DaysLeft);
 
-        [Test]
-        public void ANewOwnerIsListedWithTheNamesOfTheColoursAndNeutralForNobody()
+        private static readonly ChunkKind Kind = new("Thing", 0);
+
+        private static readonly ExperienceTable Table = new([0, 1000, 2000, 3200], 4);
+
+        private static Thing Blank() => new(
+            TestColor.Red,
+            new Army<ArmySamples.Creature>(3),
+            new PrimarySkills(1, 2, 3, 4),
+            HeroLevel.AtLevel(Table, 1),
+            new HeroPosition(5, 6, 0, FacingDirection.North),
+            new MapPosition(7, 8, 0),
+            new MovementPoints(1000, 1500),
+            20,
+            ResourceSet.None,
+            new TavernHeroes(null, null),
+            null);
+
+        private static ChangeSink<Thing> NewSink(out List<Func<Thing, Thing>> reverts)
         {
-            var sink = NewSink();
-
-            sink.AddOwner<Holder, TestColor>(TestColor.Neutral, TestColor.Red, (h, owner) => h with { Owner = owner });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Owner", "Neutral", "Red") }));
-        }
-
-        [Test]
-        public void AnOwnerThatDidNotChangeIsNotListed()
-        {
-            var sink = NewSink();
-
-            sink.AddOwner<Holder, TestColor>(TestColor.Red, TestColor.Red, (h, owner) => h with { Owner = owner });
-
-            Assert.That(sink.All, Is.Empty);
-        }
-
-        private sealed record Player(ResourceSet Resources, TavernHeroes Tavern, int? DaysLeft);
-
-        private static ChangeSink<Player> NewPlayerSink() =>
-            new((change, _) => new PendingChange("Player", change, new ChunkKind("Player", 0), 0, _ => { }));
-
-        [Test]
-        public void EachResourceThatDiffersIsListedWithItsAmountsBeforeAndAfter()
-        {
-            var sink = NewPlayerSink();
-            var before = new ResourceSet(1, 2, 3, 4, 5, 6, 1500);
-            var after = before.With(Resource.Gold, 2500).With(Resource.Ore, 9);
-
-            sink.AddResources(before, after, p => p.Resources, (p, resources) => p with { Resources = resources });
-
-            Assert.That(
-                sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)),
-                Is.EquivalentTo(new[] { ("Gold", "1,500", "2,500"), ("Ore", "3", "9") }));
-        }
-
-        [Test]
-        public void EachPlaceOfTheTavernThatDiffersIsListedWithTheNamesOfTheHeroes()
-        {
-            var sink = NewPlayerSink();
-
-            sink.AddTavern(new TavernHeroes(4, null), new TavernHeroes(4, 7), id => $"Hero {id}", p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Tavern hero 2", "(none)", "Hero 7") }));
-        }
-
-        [Test]
-        public void ChangedDaysLeftAreListedAndNoCountdownReadsAsNotCounting()
-        {
-            var sink = NewPlayerSink();
-
-            sink.AddDaysLeft(null, 5, (p, days) => p with { DaysLeft = days });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Days left without a castle", "not counting", "5") }));
-        }
-
-        [Test]
-        public void DaysLeftThatDidNotChangeAreNotListed()
-        {
-            var sink = NewPlayerSink();
-
-            sink.AddDaysLeft(3, 3, (p, days) => p with { DaysLeft = days });
-
-            Assert.That(sink.All, Is.Empty);
-        }
-
-        [Test]
-        public void EachSlotThatDiffersIsListedWithItsStackBeforeAndAfter()
-        {
-            var sink = NewSink();
-            var before = new Army<Creature>(5).WithSlot(0, Peasant, 10).WithSlot(2, Archer, 3);
-            var after = before.WithSlot(0, Peasant, 12).WithoutSlot(2);
-
-            sink.AddArmy(ChangeAreas.Creatures, before, after, h => h.Army, (h, army) => h with { Army = army });
-
-            Assert.That(
-                sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)),
-                Is.EqualTo(new[] { ("Slot 1", "Peasant × 10", "Peasant × 12"), ("Slot 3", "Archer × 3", "empty") }));
-        }
-
-        [Test]
-        public void EachPrimarySkillThatDiffersIsListedWithItsValuesBeforeAndAfter()
-        {
-            var sink = new ChangeSink<Skilled>((change, _) => new PendingChange("Skilled", change, new ChunkKind("Skilled", 0), 0, _ => { }));
-
-            sink.AddPrimarySkills(new PrimarySkills(1, 2, 3, 4), new PrimarySkills(1, 5, 3, 7), h => h.Skills, (h, skills) => h with { Skills = skills });
-
-            Assert.That(
-                sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)),
-                Is.EqualTo(new[] { ("Defense", "2", "5"), ("Knowledge", "4", "7") }));
-        }
-
-        [Test]
-        public void APrimarySkillThatWasChangedIsPutBackWithoutTouchingTheOthers()
-        {
-            var reverts = new List<Func<Skilled, Skilled>>();
-            var recording = new ChangeSink<Skilled>((change, revert) =>
+            var list = new List<Func<Thing, Thing>>();
+            reverts = list;
+            return new ChangeSink<Thing>((change, revert) =>
             {
-                reverts.Add(revert);
-                return new PendingChange("Skilled", change, new ChunkKind("Skilled", 0), 0, _ => { });
+                list.Add(revert);
+                return new PendingChange("thing", change, Kind, 0, _ => { });
             });
-            recording.AddPrimarySkills(new PrimarySkills(1, 2, 3, 4), new PrimarySkills(9, 2, 3, 4), h => h.Skills, (h, skills) => h with { Skills = skills });
-
-            var putBack = reverts.Single()(new Skilled(new PrimarySkills(9, 8, 7, 6)));
-
-            Assert.That(putBack.Skills, Is.EqualTo(new PrimarySkills(1, 8, 7, 6)));
         }
 
-        [Test]
-        public void AChangedLevelIsOneChangeOfTheExperienceWithTheLevelBeforeAndAfter()
-        {
-            var sink = new ChangeSink<Leveled>((change, _) => new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { }));
-
-            sink.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(2_000, 3), (h, level) => h with { Level = level });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Experience", "1,000 (level 2)", "2,000 (level 3)") }));
-        }
+        private static IEnumerable<(string Area, string What, string Before, string After)> Texts(ChangeSink<Thing> sink) =>
+            sink.All.Select(c => (c.Change.Area.DisplayName, c.Change.Description, c.Change.Before, c.Change.After));
 
         [Test]
-        public void AChangedLevelIsPutBackWithItsExperienceSoTheTwoStayInStep()
+        public void AnOwnerThatDidNotChangeIsNoChange()
         {
-            var reverts = new List<Func<Leveled, Leveled>>();
-            var recording = new ChangeSink<Leveled>((change, revert) =>
-            {
-                reverts.Add(revert);
-                return new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { });
-            });
-            recording.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(2_000, 3), (h, level) => h with { Level = level });
+            var sink = NewSink(out _);
 
-            var putBack = reverts.Single()(new Leveled(new HeroLevel(5_000, 5)));
-
-            Assert.That(putBack.Level, Is.EqualTo(new HeroLevel(1_000, 2)));
-        }
-
-        [Test]
-        public void ALevelThatDidNotChangeIsNotListed()
-        {
-            var sink = new ChangeSink<Leveled>((change, _) => new PendingChange("Leveled", change, new ChunkKind("Leveled", 0), 0, _ => { }));
-
-            sink.AddHeroLevel(new HeroLevel(1_000, 2), new HeroLevel(1_000, 2), (h, level) => h with { Level = level });
+            sink.AddOwner(TestColor.Red, TestColor.Red, (t, c) => t with { Owner = c });
 
             Assert.That(sink.All, Is.Empty);
         }
 
         [Test]
-        public void ANewPositionOrFacingIsOneChangeThatShowsThePlaceAndTheFacingBeforeAndAfter()
+        public void AnOwnerThatChangedIsWordedWithTheNamesAndRevertsToTheOldOwner()
         {
-            var sink = NewMoverSink();
+            var sink = NewSink(out var reverts);
 
-            sink.AddPosition(new HeroPosition(3, 4, FacingDirection.North), new HeroPosition(3, 4, FacingDirection.East), hasLevels: false, (h, position) => h with { Position = position });
+            sink.AddOwner(TestColor.Red, TestColor.Blue, (t, c) => t with { Owner = c });
 
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Position", "Pos: 3, 4, facing North", "Pos: 3, 4, facing East") }));
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Owner", "Red", "Blue") }));
+            Assert.That(reverts[0](Blank() with { Owner = TestColor.Blue }).Owner, Is.EqualTo(TestColor.Red));
         }
 
         [Test]
-        public void APositionSaysItsLevelInAGameWhoseMapHasTwo()
+        public void AnArmyChangeIsOneChangeForEachSlotThatDiffersAndEmptySlotsSayEmpty()
         {
-            var sink = NewMoverSink();
+            var sink = NewSink(out var reverts);
+            var before = new Army<ArmySamples.Creature>(3).WithSlot(0, ArmySamples.Peasant, 10).WithSlot(1, ArmySamples.Archer, 5);
+            var after = before.WithSlot(1, null).WithSlot(2, ArmySamples.Archer, 1200);
 
-            sink.AddPosition(new HeroPosition(3, 4, 0, FacingDirection.North), new HeroPosition(3, 4, 1, FacingDirection.North), hasLevels: true, (h, position) => h with { Position = position });
+            sink.AddArmy(ChangeAreas.Creatures, before, after, t => t.Army, (t, a) => t with { Army = a });
 
-            Assert.That(
-                sink.All.Select(c => (c.Change.Before, c.Change.After)),
-                Is.EqualTo(new[] { ("Pos: 3, 4, Surface, facing North", "Pos: 3, 4, Underground, facing North") }));
-        }
-
-        [Test]
-        public void ADestinationThatWasSetReadsAsNoneBefore()
-        {
-            var sink = NewMoverSink();
-
-            sink.AddDestination(MapPosition.None, new MapPosition(30, 31), hasLevels: false, (h, destination) => h with { Destination = destination });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Destination", "none", "Pos: 30, 31") }));
-        }
-
-        [Test]
-        public void ChangedMovementShowsWhatIsLeftAndWhatAFullDayGivesAndIsPutBackWhole()
-        {
-            var reverts = new List<Func<Mover, Mover>>();
-            var sink = new ChangeSink<Mover>((change, revert) =>
+            Assert.That(Texts(sink), Is.EqualTo(new[]
             {
-                reverts.Add(revert);
-                return new PendingChange("Mover", change, new ChunkKind("Mover", 0), 0, _ => { });
-            });
-
-            sink.AddMovement(new MovementPoints(320, 1_500), new MovementPoints(1_500, 1_500), (h, movement) => h with { Movement = movement });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Movement points", "320 / 1,500", "1,500 / 1,500") }));
-            Assert.That(reverts.Single()(Mover.Nowhere with { Movement = new MovementPoints(9, 9) }).Movement, Is.EqualTo(new MovementPoints(320, 1_500)));
+                ("Creatures", "Slot 2", "Archer × 5", "empty"),
+                ("Creatures", "Slot 3", "empty", "Archer × 1,200"),
+            }));
+            var reverted = reverts[0](Blank() with { Army = after });
+            Assert.That(reverted.Army.Slots[1], Is.EqualTo(before.Slots[1]));
+            Assert.That(reverted.Army.Slots[2], Is.EqualTo(after.Slots[2]), "only the slot of the change is put back");
         }
 
         [Test]
-        public void ChangedSpellPointsAreListedWithThePointsBeforeAndAfter()
+        public void TwoEqualArmiesHaveNoChanges()
         {
-            var sink = NewMoverSink();
+            var sink = NewSink(out _);
+            var army = new Army<ArmySamples.Creature>(3).WithSlot(0, ArmySamples.Peasant, 10);
 
-            sink.AddSpellPoints(10, 1_200, (h, points) => h with { SpellPoints = points });
-
-            Assert.That(sink.All.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Spell points", "10", "1,200") }));
-        }
-
-        [Test]
-        public void APlaceMovementOrSpellPointsThatDidNotChangeAreNotListed()
-        {
-            var sink = NewMoverSink();
-            var here = new HeroPosition(3, 4, FacingDirection.North);
-
-            sink.AddPosition(here, here with { }, hasLevels: true, (h, position) => h with { Position = position });
-            sink.AddDestination(new MapPosition(1, 2), new MapPosition(1, 2), hasLevels: true, (h, destination) => h with { Destination = destination });
-            sink.AddMovement(new MovementPoints(1, 2), new MovementPoints(1, 2), (h, movement) => h with { Movement = movement });
-            sink.AddSpellPoints(5, 5, (h, points) => h with { SpellPoints = points });
+            sink.AddArmy(ChangeAreas.Creatures, army, army, t => t.Army, (t, a) => t with { Army = a });
 
             Assert.That(sink.All, Is.Empty);
         }
 
-        private static ChangeSink<Mover> NewMoverSink() =>
-            new((change, _) => new PendingChange("Mover", change, new ChunkKind("Mover", 0), 0, _ => { }));
-
-        private sealed record Mover(HeroPosition Position, MapPosition Destination, MovementPoints Movement, int SpellPoints)
+        [Test]
+        public void ArmiesOfDifferentSizesAreComparedUpToTheShorterOne()
         {
-            public static Mover Nowhere { get; } = new(new HeroPosition(0, 0, FacingDirection.North), MapPosition.None, default, 0);
+            var sink = NewSink(out _);
+            var before = new Army<ArmySamples.Creature>(2).WithSlot(1, ArmySamples.Peasant, 1);
+            var after = new Army<ArmySamples.Creature>(4).WithSlot(1, ArmySamples.Peasant, 1).WithSlot(3, ArmySamples.Archer, 9);
+
+            sink.AddArmy(ChangeAreas.Creatures, before, after, t => t.Army, (t, a) => t with { Army = a });
+
+            Assert.That(sink.All, Is.Empty);
         }
 
-        private sealed record Leveled(HeroLevel Level);
+        [Test]
+        public void ALongerArmyBeforeThanAfterIsComparedUpToTheShorterOneToo()
+        {
+            var sink = NewSink(out _);
+            var before = new Army<ArmySamples.Creature>(4).WithSlot(1, ArmySamples.Peasant, 1).WithSlot(3, ArmySamples.Archer, 9);
+            var after = new Army<ArmySamples.Creature>(2).WithSlot(1, ArmySamples.Peasant, 1);
 
-        private sealed record Skilled(PrimarySkills Skills);
+            Assert.That(() => sink.AddArmy(ChangeAreas.Creatures, before, after, t => t.Army, (t, a) => t with { Army = a }), Throws.Nothing);
+            Assert.That(sink.All, Is.Empty);
+        }
 
-        private sealed record Holder(TestColor Owner, IArmy<Creature> Army);
+        [Test]
+        public void EachPrimarySkillThatChangedIsItsOwnChangeAndRevertsOnlyThatSkill()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddPrimarySkills(new PrimarySkills(1, 2, 3, 4), new PrimarySkills(9, 2, 8, 7), t => t.Skills, (t, s) => t with { Skills = s });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[]
+            {
+                ("Primary skills", "Attack", "1", "9"),
+                ("Primary skills", "Spell power", "3", "8"),
+                ("Primary skills", "Knowledge", "4", "7"),
+            }));
+            var now = Blank() with { Skills = new PrimarySkills(9, 2, 8, 7) };
+            Assert.That(reverts[0](now).Skills, Is.EqualTo(new PrimarySkills(1, 2, 8, 7)));
+            Assert.That(reverts[1](now).Skills, Is.EqualTo(new PrimarySkills(9, 2, 3, 7)));
+            Assert.That(reverts[2](now).Skills, Is.EqualTo(new PrimarySkills(9, 2, 8, 4)));
+        }
+
+        [Test]
+        public void ADefenceThatChangedIsListedAsDefense()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddPrimarySkills(new PrimarySkills(1, 2, 3, 4), new PrimarySkills(1, 5, 3, 4), t => t.Skills, (t, s) => t with { Skills = s });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("Primary skills", "Defense", "2", "5") }));
+            Assert.That(reverts[0](Blank() with { Skills = new PrimarySkills(1, 5, 3, 4) }).Skills.Defense, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TheLevelIsWordedWithTheExperienceAndTheLevel()
+        {
+            var sink = NewSink(out var reverts);
+            var before = HeroLevel.AtLevel(Table, 1);
+            var after = HeroLevel.AtExperience(Table, 2500);
+
+            sink.AddHeroLevel(before, after, (t, l) => t with { Level = l });
+            sink.AddHeroLevel(before, before, (t, l) => t with { Level = l });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Experience", "0 (level 1)", "2,500 (level 3)") }));
+            Assert.That(reverts[0](Blank() with { Level = after }).Level, Is.EqualTo(before));
+        }
+
+        [Test]
+        public void ThePositionIsWordedWithTheTileTheLevelAndTheFacingAccordingToTheLevelsOfTheMap()
+        {
+            var before = new HeroPosition(5, 6, 0, FacingDirection.North);
+            var after = new HeroPosition(9, 10, 1, FacingDirection.South);
+            var withLevels = NewSink(out var reverts);
+            var withoutLevels = NewSink(out _);
+
+            withLevels.AddPosition(before, after, true, (t, p) => t with { Position = p });
+            withoutLevels.AddPosition(before, after, false, (t, p) => t with { Position = p });
+            withoutLevels.AddPosition(before, before, false, (t, p) => t with { Position = p });
+
+            Assert.That(Texts(withLevels), Is.EqualTo(new[] { ("General", "Position", "Pos: 5, 6, Surface, facing North", "Pos: 9, 10, Underground, facing South") }));
+            Assert.That(Texts(withoutLevels), Is.EqualTo(new[] { ("General", "Position", "Pos: 5, 6, facing North", "Pos: 9, 10, facing South") }));
+            Assert.That(reverts[0](Blank() with { Position = after }).Position, Is.EqualTo(before));
+        }
+
+        [Test]
+        public void ADestinationOfNoneIsWordedAsNone()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddDestination(MapPosition.None, new MapPosition(3, 4, 0), true, (t, d) => t with { Destination = d });
+            sink.AddDestination(MapPosition.None, MapPosition.None, true, (t, d) => t with { Destination = d });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Destination", "none", "Pos: 3, 4, Surface") }));
+            Assert.That(reverts[0](Blank()).Destination, Is.EqualTo(MapPosition.None));
+        }
+
+        [Test]
+        public void MovementPointsAreWordedAsCurrentOverMaximum()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddMovement(new MovementPoints(1000, 1500), new MovementPoints(0, 2000), (t, m) => t with { Movement = m });
+            sink.AddMovement(new MovementPoints(1, 1), new MovementPoints(1, 1), (t, m) => t with { Movement = m });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Movement points", "1,000 / 1,500", "0 / 2,000") }));
+            Assert.That(reverts[0](Blank()).Movement, Is.EqualTo(new MovementPoints(1000, 1500)));
+        }
+
+        [Test]
+        public void SpellPointsAreWordedWithThousandsSeparators()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddSpellPoints(20, 1234, (t, s) => t with { SpellPoints = s });
+            sink.AddSpellPoints(7, 7, (t, s) => t with { SpellPoints = s });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Spell points", "20", "1,234") }));
+            Assert.That(reverts[0](Blank() with { SpellPoints = 1234 }).SpellPoints, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void EachResourceThatChangedIsItsOwnChangeAndRevertsOnlyThatResource()
+        {
+            var sink = NewSink(out var reverts);
+            var before = ResourceSet.None.With(Resource.Gold, 10000).With(Resource.Wood, 5);
+            var after = before.With(Resource.Gold, 25000).With(Resource.Gems, 2);
+
+            sink.AddResources(before, after, t => t.Resources, (t, r) => t with { Resources = r });
+
+            Assert.That(Texts(sink).Select(t => (t.Area, t.What, t.Before, t.After)), Is.EquivalentTo(new[]
+            {
+                ("Resources", "Gems", "0", "2"),
+                ("Resources", "Gold", "10,000", "25,000"),
+            }));
+            var gold = sink.All.ToList().FindIndex(c => c.Change.Description == "Gold");
+            var reverted = reverts[gold](Blank() with { Resources = after });
+            Assert.That((reverted.Resources[Resource.Gold], reverted.Resources[Resource.Gems]), Is.EqualTo((10000L, 2L)));
+        }
+
+        [Test]
+        public void ATavernHeroThatChangedIsNamedByTheFunctionAndNoHeroIsWordedAsNone()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddTavern(new TavernHeroes(4, null), new TavernHeroes(null, 9), id => $"Hero {id}", t => t.Tavern, (t, v) => t with { Tavern = v });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[]
+            {
+                ("General", "Tavern hero 1", "Hero 4", "(none)"),
+                ("General", "Tavern hero 2", "(none)", "Hero 9"),
+            }));
+            var reverted = reverts[0](Blank() with { Tavern = new TavernHeroes(null, 9) });
+            Assert.That(reverted.Tavern.Ids, Is.EqualTo(new int?[] { 4, 9 }));
+        }
+
+        [Test]
+        public void DaysLeftWithoutACastleAreWordedAsADayCountOrAsNotCounting()
+        {
+            var sink = NewSink(out var reverts);
+
+            sink.AddDaysLeft(null, 5, (t, d) => t with { DaysLeft = d });
+            sink.AddDaysLeft(5, null, (t, d) => t with { DaysLeft = d });
+            sink.AddDaysLeft(3, 3, (t, d) => t with { DaysLeft = d });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[]
+            {
+                ("General", "Days left without a castle", "not counting", "5"),
+                ("General", "Days left without a castle", "5", "not counting"),
+            }));
+            Assert.That(reverts[0](Blank() with { DaysLeft = 5 }).DaysLeft, Is.Null);
+            Assert.That(reverts[1](Blank()).DaysLeft, Is.EqualTo(5));
+        }
     }
 }

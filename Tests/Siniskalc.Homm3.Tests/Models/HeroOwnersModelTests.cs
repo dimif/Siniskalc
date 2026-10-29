@@ -4,6 +4,7 @@ using Siniskalc.Homm3.Models;
 namespace Siniskalc.Homm3.Tests.Models
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroOwnersModelTests
     {
         private static readonly HeroOwnersModel Table = new([HeroOwnership.Free, new HeroOwnership(PlayerColor.Blue, false), HeroOwnership.Reserved]);

@@ -56,8 +56,8 @@ namespace Siniskalc.Homm3.Data
             return bytes[start + DwellingLayout.ObjectType] == DwellingLayout.CreatureGeneratorType
                 && (owner == DwellingLayout.NoOwner || owner < PlayerColor.All.Count)
                 && bytes[start + DwellingLayout.Level] <= 1
-                && bytes[start + DwellingLayout.X] < Constants.Map.MaxCoordinate
-                && bytes[start + DwellingLayout.Y] < Constants.Map.MaxCoordinate;
+                && bytes[start + DwellingLayout.X] <= Constants.Map.MaxCoordinate
+                && bytes[start + DwellingLayout.Y] <= Constants.Map.MaxCoordinate;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the set of spells a hero knows.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SpellSetTests
     {
         private static readonly Spell Bless = new("Bless", 3);

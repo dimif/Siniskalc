@@ -8,6 +8,7 @@
     /// Heroes of Might and Magic III as a game module.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class Homm3ModuleTests
     {
         [Test]

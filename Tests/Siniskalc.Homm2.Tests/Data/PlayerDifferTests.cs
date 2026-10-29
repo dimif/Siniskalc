@@ -1,86 +1,92 @@
-﻿namespace Siniskalc.Homm2.Tests.Data
+namespace Siniskalc.Homm2.Tests.Data
 {
+    using Siniskalc.Core.Data;
+    using Siniskalc.Core.Models;
+    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Homm2.Models;
 
     /// <summary>
-    /// What the pending changes of a player say, including what the player has selected and what the tavern offers.
+    /// What the differ of a player lists for two versions of the record: the stock, the days left, the tavern, the lists of heroes and
+    /// castles and what is selected, on records made by hand.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PlayerDifferTests
     {
-        private Game game = null!;
+        private PendingChangesFake fake = null!;
 
         [SetUp]
-        public void LoadTheStart() => this.game = TestServices.LoadBrokenAlliance(1);
+        public void StartWithNoReverts() => this.fake = new();
+
+        private IReadOnlyList<PendingChange> Diff(PlayerModel original, PlayerModel current) =>
+            new PlayerDiffer(this.fake.Factory).Diff(0, original, current, id => $"Hero {id}");
 
         [Test]
-        public void TheSelectedHeroAndCastleAndTheTavernAreListedAndPutBack()
+        public void TwoEqualPlayersHaveNoChanges()
         {
-            var original = this.game.History.Current.Players().GetModel(0);
+            Assert.That(this.Diff(DifferSamples.Player(), DifferSamples.Player()), Is.Empty);
+        }
 
-            this.game.History.CreatePlayerSession(0).Update(p => p with
+        [Test]
+        public void TheSelectedHeroAndCastleAreListedWithTheirNumbersAndPutBack()
+        {
+            var original = DifferSamples.Player();
+            var current = original with { SelectedHero = 9, SelectedCastle = null };
+
+            var changes = this.Diff(original, current);
+
+            Assert.That(changes.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[]
             {
-                SelectedHero = p.SelectedHero == 5 ? 6 : 5,
-                SelectedCastle = p.SelectedCastle == 5 ? 6 : 5,
-                Tavern = new TavernHeroes((p.Tavern.First ?? 0) + 1, (p.Tavern.Second ?? 0) + 1),
-            });
+                ("Selected hero", ChangeText.Number(7), ChangeText.Number(9)),
+                ("Selected castle", ChangeText.Number(3), ChangeText.Number(null)),
+            }));
+            Assert.That(this.fake.PlayerReverts["Selected hero"](current).SelectedHero, Is.EqualTo(7));
+            Assert.That(this.fake.PlayerReverts["Selected castle"](current).SelectedCastle, Is.EqualTo(3));
+        }
 
-            var changes = this.game.History.GetPendingChanges();
-            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Selected hero", "Selected castle", "Tavern hero 1", "Tavern hero 2" }));
+        [Test]
+        public void TheTavernHeroesAreWordedWithTheNamesTheCallerGives()
+        {
+            var original = DifferSamples.Player();
+            var current = original with { Tavern = new TavernHeroes(12, 20) };
 
-            foreach (var change in changes)
+            var change = this.Diff(original, current).Single();
+
+            Assert.That(change.Change.Description, Does.Contain("Tavern"));
+            Assert.That((change.Change.Before, change.Change.After), Is.EqualTo(("Hero 13", "Hero 20")));
+        }
+
+        [Test]
+        public void TheListsOfHeroesAndCastlesAreListedAfterTheStockAndBeforeWhatIsSelected()
+        {
+            var original = DifferSamples.Player();
+            var current = original with
             {
-                change.Revert(this.game.History);
-            }
+                Resources = original.Resources.With(Resource.Gold, 1),
+                HeroIds = Numbers.Of(7),
+                CastleIds = new Numbers([]),
+                SelectedHero = null,
+            };
 
-            Assert.That(this.game.History.Current.Players().GetModel(0), Is.EqualTo(original));
-            Assert.That(this.game.History.GetPendingChanges(), Is.Empty);
+            var changes = this.Diff(original, current);
+
+            Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Gold", "Heroes", "Castles", "Selected hero" }));
+            Assert.That((changes[1].Change.Before, changes[1].Change.After), Is.EqualTo(("7, 9", "7")));
+            Assert.That((changes[2].Change.Before, changes[2].Change.After), Is.EqualTo(("3", "none")));
+            Assert.That(changes.Select(c => c.OwnerName).Distinct(), Is.EqualTo(new[] { "Blue" }));
         }
 
         [Test]
-        public void LosingTheSelectedCastleToAnotherOwnerShowsAsAChangeOfThePlayer()
+        public void TheDaysLeftToOwnACastleAreAChangeOfThePlayer()
         {
-            var blue = this.game.History.Current.Players().GetModel(0);
-            var selected = blue.SelectedCastle ?? blue.CastleIds[0];
-            this.game.History.CreatePlayerSession(0).Update(p => p with { SelectedCastle = selected });
-            this.game.History.MarkSaved();
+            var original = DifferSamples.Player();
+            var current = original with { DaysLeft = PlayerModel.DaysToOwnACastle };
 
-            this.game.History.CreateCastleSession(selected).ChangeOwner(PlayerColor.Neutral);
+            var change = this.Diff(original, current).Single();
 
-            Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Selected castle"));
-        }
-
-        [Test]
-        public void RevertingTheHeroesOfAPlayerGivesTheHeroesTheirOwnersBack()
-        {
-            var history = this.game.History;
-            var original = history.Current.ToBytes();
-            var hero = history.Current.Players().GetModel(0).HeroIds[0];
-
-            history.CreateHeroSession(hero).ChangeOwner(PlayerColor.Green);
-            history.GetPendingChanges().Single(c => c.OwnerName == PlayerColor.Blue.ToString() && c.Change.Description == "Heroes").Revert(history);
-
-            Assert.That(history.Current.Heroes().GetModel(hero).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(history.GetPendingChanges(), Is.Empty);
-            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
-        }
-
-        [Test]
-        public void RevertingTheCastlesOfAPlayerGivesTheCastlesTheirOwnersBack()
-        {
-            var history = this.game.History;
-            var original = history.Current.ToBytes();
-            var castle = history.Current.Players().GetModel(0).CastleIds[0];
-
-            history.CreateCastleSession(castle).ChangeOwner(PlayerColor.Neutral);
-            history.GetPendingChanges().Single(c => c.Change.Description == "Castles").Revert(history);
-
-            Assert.That(history.Current.Castles().GetModel(castle).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(history.GetPendingChanges(), Is.Empty);
-            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+            Assert.That(this.fake.PlayerReverts[change.Change.Description](current).DaysLeft, Is.Null);
         }
     }
 }

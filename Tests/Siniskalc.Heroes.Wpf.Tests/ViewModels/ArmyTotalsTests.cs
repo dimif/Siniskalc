@@ -4,6 +4,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ArmyTotalsTests
     {
         private static CreatureInfo Info(short health, short minDamage, short maxDamage, int gold = 0, int ai = 0, int fight = 0, short gems = 0) =>

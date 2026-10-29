@@ -2,10 +2,11 @@
 
 namespace Siniskalc.Homm3.Tests.Entities;
 
+[Category(TestKinds.Unit)]
 public sealed class CreatureInfoTests
 {
     [Test]
-    public void EveryCreatureHasStats()
+    public void EveryCreatureHasHealthSpeedAndGoldAndANonInvertedDamageRange()
     {
         foreach (var creature in Creature.All)
         {
@@ -18,7 +19,7 @@ public sealed class CreatureInfoTests
     }
 
     [Test]
-    public void ResourceCostIsImported()
+    public void TheGemsAndMercuryACreatureCostsAreImported()
     {
         Assert.That(Creature.Angel.Info.Gems, Is.EqualTo(1));
         Assert.That(Creature.Archangel.Info.Gems, Is.EqualTo(3));
@@ -26,7 +27,7 @@ public sealed class CreatureInfoTests
     }
 
     [Test]
-    public void ShotsAreImported()
+    public void ARangedCreatureHasItsShotsAndAMeleeCreatureHasNone()
     {
         Assert.That(Creature.Marksman.Info.Shots, Is.EqualTo(24));
         Assert.That(Creature.Pikeman.Info.Shots, Is.EqualTo(0));

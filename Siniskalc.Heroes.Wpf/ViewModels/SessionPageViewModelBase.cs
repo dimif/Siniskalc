@@ -16,7 +16,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="title">The title of the page.</param>
         /// <param name="session">The session that edits the chunk.</param>
         protected SessionPageViewModelBase(string title, IEditSession<TModel> session)
-            : base(title, session.History)
+            : base(title, session.Events)
         {
             this.Session = session;
         }

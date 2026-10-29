@@ -7,6 +7,7 @@ namespace Siniskalc.Core.Tests.Data
     /// Tests the collecting of the pending changes a differ finds.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ChangeSinkTests
     {
         private static readonly ChangeArea Area = new("General");

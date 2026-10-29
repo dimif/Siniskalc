@@ -1,6 +1,7 @@
 namespace Siniskalc.Core.Tests
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class RangeGuardTests
     {
         [Test]

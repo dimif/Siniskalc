@@ -1,46 +1,38 @@
 ﻿using Siniskalc.Heroes.Entities;
-using Siniskalc.Homm3.Data;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
 namespace Siniskalc.Homm3.Tests.Models
 {
     /// <summary>
-    /// The most spell points a hero can have in a savefile of each version of the game.
+    /// The most spell points a hero can have in each version of the game, from the skills of a hero made by hand.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MaxSpellPointsCalculatorTests
     {
-        private static HeroModel HeroWith(int knowledge, SkillLevel intelligence)
+        private static int Maximum(GameVersion version, int knowledge, SkillLevel intelligence)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Arts", "arts_00_before_arts.GM1"));
-            var hero = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Valeska")).Current;
-            return hero with
-            {
-                PrimarySkills = hero.PrimarySkills.WithBaseKnowledge((byte)Math.Max(0, knowledge)),
-                SecondarySkills = hero.SecondarySkills.WithSkillLevel(SecondarySkill.Intelligence, intelligence),
-            };
+            var hero = HeroModels.Christian();
+            var primary = hero.PrimarySkills.WithBaseKnowledge((byte)Math.Max(0, knowledge));
+            var secondary = hero.SecondarySkills.WithSkillLevel(SecondarySkill.Intelligence, intelligence);
+            return new MaxSpellPointsCalculator(version).GetMaximum(primary, secondary);
         }
-
-        private static int Maximum(MaxSpellPointsCalculator calculator, HeroModel hero) => calculator.GetMaximum(hero.PrimarySkills, hero.SecondarySkills);
 
         [Test]
         public void SpellPointsFollowKnowledgeAndIntelligenceInTheOriginalGames()
         {
-            var calculator = new MaxSpellPointsCalculator(GameVersion.ShadowOfDeath);
-
-            Assert.That(Maximum(calculator, HeroWith(10, SkillLevel.None)), Is.EqualTo(100));
-            Assert.That(Maximum(calculator, HeroWith(10, SkillLevel.Beginner)), Is.EqualTo(125));
-            Assert.That(Maximum(calculator, HeroWith(10, SkillLevel.Expert)), Is.EqualTo(200));
+            Assert.That(Maximum(GameVersion.ShadowOfDeath, 10, SkillLevel.None), Is.EqualTo(100));
+            Assert.That(Maximum(GameVersion.ShadowOfDeath, 10, SkillLevel.Beginner), Is.EqualTo(125));
+            Assert.That(Maximum(GameVersion.ShadowOfDeath, 10, SkillLevel.Expert), Is.EqualTo(200));
         }
 
         [Test]
         public void IntelligenceAddsLessInHornOfTheAbyss()
         {
-            var calculator = new MaxSpellPointsCalculator(GameVersion.HornOfTheAbyss);
-
-            Assert.That(Maximum(calculator, HeroWith(10, SkillLevel.Intermediate)), Is.EqualTo(135));
-            Assert.That(Maximum(calculator, HeroWith(10, SkillLevel.Expert)), Is.EqualTo(150));
+            Assert.That(Maximum(GameVersion.HornOfTheAbyss, 10, SkillLevel.Intermediate), Is.EqualTo(135));
+            Assert.That(Maximum(GameVersion.HornOfTheAbyss, 10, SkillLevel.Expert), Is.EqualTo(150));
         }
     }
 }

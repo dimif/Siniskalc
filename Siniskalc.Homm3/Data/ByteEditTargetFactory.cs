@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Data
 
         public IByteEditTarget ForPlayer(PlayerEditSession session) => new PlayerByteEditTarget(session, this.playerRegions);
 
-        public IByteEditTarget ForCastle(SaveDocumentHistory history, int castleIndex) => new CastleByteEditTarget(history, castleIndex, this.castleRegions);
+        public IByteEditTarget ForCastle(CastleEditSession session) => new CastleByteEditTarget(session, this.castleRegions);
 
         public IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex) => new MineByteEditTarget(history, mineIndex, this.mineRegions);
 

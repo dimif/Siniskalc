@@ -1,15 +1,20 @@
-﻿namespace Siniskalc.Homm2.Tests.Models
+namespace Siniskalc.Homm2.Tests.Models
 {
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
+    using Siniskalc.Homm2.Tests.Data;
 
+    /// <summary>
+    /// Tests the reducers of the model of a castle on a castle made by hand: buildings, dwellings with the creatures that wait in them,
+    /// the Mage Guild and the Library.
+    /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CastleModelTests
     {
-        private static CastleModel Xabran() => TestServices.LoadBrokenAlliance(5).History.Current.Castles().GetModel(3);
+        private static CastleModel Xabran() => DifferSamples.Castle();
 
         [Test]
         public void BuildingTheCastleTakesAwayTownOnlyAndTakingItDownPutsItBack()
@@ -24,11 +29,11 @@
         [Test]
         public void OtherBuildingsChangeOnlyTheirOwnBit()
         {
-            var before = Xabran();
+            var before = Xabran() with { Town = TownBuildings.Castle | TownBuildings.Statue };
 
             var after = before.WithBuilding(TownBuildings.Tavern, true).WithBuilding(TownBuildings.Statue, false);
 
-            Assert.That(after.Town, Is.EqualTo((before.Town | TownBuildings.Tavern) & ~TownBuildings.Statue));
+            Assert.That(after.Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.Tavern));
         }
 
         [Test]
@@ -47,7 +52,7 @@
         }
 
         [Test]
-        public void TheMageGuildIsOneOfTwoLevelsAndTheSecondReplacesTheFirst()
+        public void TheMageGuildIsOneOfFiveLevelsAndTheLevelIsANumberInThreeBits()
         {
             var none = Xabran().WithMageGuildLevel(0);
             Assert.That(none.MageGuildLevel, Is.EqualTo(0));
@@ -64,7 +69,7 @@
 
             var five = two.WithMageGuildLevel(5);
             Assert.That(five.MageGuildLevel, Is.EqualTo(5));
-            Assert.That((uint)five.Dwellings & 0x70000, Is.EqualTo(0x50000u), "the level is a number in three bits, as in Peacekeeper");
+            Assert.That((uint)five.Dwellings & 0x70000, Is.EqualTo(0x50000u));
             Assert.That(five.MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
             Assert.That(five.WithMageGuildLevel(2).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 0, 0, 0)));
         }
@@ -72,20 +77,19 @@
         [Test]
         public void ASpellOfTheGuildIsChangedByLevelAndPlace()
         {
-            var castle = Xabran().WithMageGuildSpell(2, 1, Spell.Fireball);
+            var castle = Xabran().WithMageGuildLevel(2).WithMageGuildSpell(2, 1, Spell.Fireball);
 
             Assert.That(castle.MageGuildSpell(2, 1), Is.EqualTo(Spell.Fireball));
             Assert.That(castle.WithMageGuildSpell(2, 1, null).MageGuildSpell(2, 1), Is.Null);
-            Assert.That(castle.MageGuildSpell(1, 1), Is.EqualTo(Xabran().MageGuildSpell(1, 1)), "the other levels stay");
+            Assert.That(castle.WithMageGuildSpell(1, 1, Spell.Fireblast).MageGuildSpell(2, 1), Is.EqualTo(Spell.Fireball), "the other levels stay");
         }
 
         [Test]
         public void ADwellingThatIsUpgradedLosesItsOwnBitAndTheUpgradesStopWhereTheCreaturesDo()
         {
-            var warlock = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1);
+            var warlock = (Xabran() with { Faction = Faction.Warlock }).WithDwelling(1, true).WithDwelling(4, true).WithDwellingLevel(4, 2);
 
-            Assert.That(warlock.Faction, Is.EqualTo(Faction.Warlock));
-            Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 1, 1, 2, 1, 1 }), "Whiteshield has a Minotaur King: dwelling 4 is upgraded");
+            Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 0, 0, 2, 0, 0 }));
             Assert.That(((uint)warlock.Dwellings & 0x40) == 0 && ((uint)warlock.Dwellings & 0x800) != 0, Is.True);
 
             var downgraded = warlock.WithDwellingLevel(4, 1);
@@ -97,50 +101,28 @@
         }
 
         [Test]
-        public void TheGuildOfTheCastlesOfTheSavesHasTheLevelInThreeBitsAndTheSpellsOfItsLevels()
+        public void OnlyAWizardHasALibraryAndItAddsOneSpellToEveryLevelOfTheGuild()
         {
-            var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();
+            var wizard = (Xabran() with { Faction = Faction.Wizard }).WithMageGuildLevel(5);
 
-            var peacekeeper = castles.GetModel(castles.FindByName("Peacekeeper"));
-            Assert.That((peacekeeper.MageGuildLevel, peacekeeper.MageGuildSpellCounts), Is.EqualTo((5, Numbers.Of(3, 3, 2, 2, 1))));
-            var dragontooth = castles.GetModel(castles.FindByName("Dragontooth"));
-            Assert.That((dragontooth.MageGuildLevel, dragontooth.MageGuildSpellCounts), Is.EqualTo((3, Numbers.Of(3, 3, 2, 0, 0))));
-            var vertigo = castles.GetModel(castles.FindByName("Vertigo"));
-            Assert.That((vertigo.MageGuildLevel, vertigo.HasLibrary, vertigo.MageGuildSpellCounts), Is.EqualTo((5, true, Numbers.Of(4, 4, 3, 3, 2))));
-            Assert.That(castles.GetModel(castles.FindByName("Woodhaven")).HasLibrary, Is.False);
-            Assert.That(vertigo.WithLibrary(false).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
+            var library = wizard.WithLibrary(true);
+
+            Assert.That((library.HasLibrary, library.MageGuildSpellCounts), Is.EqualTo((true, Numbers.Of(4, 4, 3, 3, 2))));
+            Assert.That(library.WithLibrary(false).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(3, 3, 2, 2, 1)));
             Assert.That(Xabran().WithLibrary(true), Is.EqualTo(Xabran()), "only a Wizard has a Library");
-        }
-
-        [Test]
-        public void ACastleTellsWhatEveryGameCastleHasThroughTheSharedInterface()
-        {
-            ICastleModel<PlayerColor, Creature, Faction> castle = Xabran();
-
-            Assert.That((castle.Name, castle.Faction.Name, castle.Owner), Is.EqualTo(("Xabran", "Knight", (PlayerColor?)PlayerColor.Blue)));
-            Assert.That((castle.MageGuildLevel, castle.CreaturesAvailable.Count, castle.Garrison.Slots.Count), Is.EqualTo((0, 6, 5)));
-        }
-
-        [Test]
-        public void ACastleIsUsedByTheMapWhenItHasANameAndTheTableHoldsRecordsThatAreNot()
-        {
-            var castles = TestServices.LoadBrokenAlliance(10).History.Current.Castles().GetModels();
-
-            Assert.That(((ICastleModel<PlayerColor, Creature, Faction>)Xabran()).IsUsed, Is.True);
-            Assert.That(castles.Count(c => c.IsUsed), Is.GreaterThan(0).And.LessThan(castles.Count));
-            Assert.That(castles.Where(c => !c.IsUsed).Select(c => c.Name), Is.All.Empty);
+            Assert.That(library.WithMageGuildLevel(3).MageGuildSpellCounts, Is.EqualTo(Numbers.Of(4, 4, 3, 0, 0)), "a guild built later shows the extra spell too");
         }
 
         [Test]
         public void ACastleCountsItsDwellingsAndHasNoGarrisonHero()
         {
-            var castle = Xabran();
+            var castle = Xabran().WithDwelling(1, true).WithDwelling(2, true);
 
             ICastleModel<PlayerColor, Creature, Faction> shared = castle;
 
-            Assert.That(shared.DwellingCount, Is.EqualTo(Enumerable.Range(1, 6).Count(castle.HasDwelling)));
-            var none = Enumerable.Range(1, 6).Aggregate(castle, (c, d) => c.WithDwelling(d, false));
+            Assert.That(shared.DwellingCount, Is.EqualTo(2));
             var all = Enumerable.Range(1, 6).Aggregate(castle, (c, d) => c.WithDwelling(d, true));
+            var none = Enumerable.Range(1, 6).Aggregate(castle, (c, d) => c.WithDwelling(d, false));
             Assert.That((none.DwellingCount, all.DwellingCount), Is.EqualTo((0, 6)));
             Assert.That(shared.GarrisonedHeroId, Is.Null);
         }
@@ -148,17 +130,68 @@
         [Test]
         public void TheCreaturesOfAnUpgradedDwellingAreTheSameCountAsTheOnesOfTheDwelling()
         {
-            var castles = TestServices.LoadBrokenAlliance(24).History.Current.Castles();
-
-            var hillstone = castles.GetModel(castles.FindByName("Hillstone"));
-            Assert.That((hillstone.DwellingLevel(2), hillstone.CreaturesWaiting(2), hillstone.CreaturesAvailable[1]), Is.EqualTo((2, 10, 10)));
-
             var upgraded = Xabran().WithCreaturesWaiting(2, 7).WithDwellingLevel(2, 2);
             Assert.That((upgraded.CreaturesWaiting(2), upgraded.CreaturesAvailable[1]), Is.EqualTo((7, 7)));
             Assert.That(upgraded.WithDwellingLevel(2, 1).CreaturesWaiting(2), Is.EqualTo(7));
 
-            var dragons = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
+            var dragons = (Xabran() with { Faction = Faction.Warlock }).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
             Assert.That(dragons.WithDwellingLevel(6, 3).CreaturesWaiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
+        }
+
+        [Test]
+        public void ABuiltDwellingGainsTheGrowthOfItsCreatureEachWeek()
+        {
+            var town = Xabran().WithDwelling(1, true).WithDwelling(2, true).WithDwelling(3, true);
+
+            Assert.That((town.WeeklyGrowth(1), town.WeeklyGrowth(2), town.WeeklyGrowth(3)), Is.EqualTo((12, 8, 5)), "peasants, archers, pikemen");
+        }
+
+        [Test]
+        public void TheWellAddsTwoToEveryBuiltDwellingAndTheGrowthBuildingEightToTheFirstOnly()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.Well | TownBuildings.GrowthBuilding }).WithDwelling(1, true).WithDwelling(2, true);
+
+            Assert.That(town.WeeklyGrowth(1), Is.EqualTo(12 + 2 + 8));
+            Assert.That(town.WeeklyGrowth(2), Is.EqualTo(8 + 2));
+        }
+
+        [Test]
+        public void TheGrowthBuildingWithoutTheWellAddsItsEightAloneToTheFirstDwelling()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.GrowthBuilding }).WithDwelling(1, true).WithDwelling(2, true);
+
+            Assert.That((town.WeeklyGrowth(1), town.WeeklyGrowth(2)), Is.EqualTo((12 + 8, 8)));
+        }
+
+        [Test]
+        public void ADwellingThatIsNotBuiltGainsNothingEvenWithTheWellAndTheGrowthBuilding()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.Well | TownBuildings.GrowthBuilding }).WithDwelling(2, true);
+
+            Assert.That(Enumerable.Range(1, 6).Where(d => d != 2).Select(town.WeeklyGrowth), Is.All.Zero);
+        }
+
+        [Test]
+        public void AnUpgradedDwellingGainsTheGrowthOfTheUpgradedCreature()
+        {
+            var town = Xabran().WithDwellingLevel(3, 2);
+
+            Assert.That(town.WeeklyGrowth(3), Is.EqualTo(Creature.VeteranPikeman.Info.Growth));
+        }
+
+        [Test]
+        public void ACastleOfNoFactionGainsNothing()
+        {
+            var town = (Xabran() with { Faction = Faction.Neutral }).WithDwelling(1, true);
+
+            Assert.That(town.WeeklyGrowth(1), Is.Zero);
+        }
+
+        [TestCase(0)]
+        [TestCase(7)]
+        public void ADwellingNumberOutsideOneToSixIsRefused(int dwelling)
+        {
+            Assert.That(() => Xabran().WeeklyGrowth(dwelling), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
     }
 }

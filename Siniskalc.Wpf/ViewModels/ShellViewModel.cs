@@ -31,7 +31,7 @@ namespace Siniskalc.Wpf.ViewModels
         private static readonly ILogger<ShellViewModel> Logger = LogFactory.For<ShellViewModel>();
 
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
-        private readonly SettingsStore settings;
+        private readonly ISettingsStore settings;
         private readonly string applicationName;
         private readonly Dictionary<IGameModule<IObservableGameEditor>, IObservableGameEditor> editors = new();
         private IGameModule<IObservableGameEditor> currentModule;
@@ -41,7 +41,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
-        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName)
+        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, ISettingsStore settings, string applicationName)
         {
             if (modules.Count == 0)
             {

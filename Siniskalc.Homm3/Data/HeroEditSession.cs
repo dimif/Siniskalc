@@ -9,7 +9,7 @@ namespace Siniskalc.Homm3.Data
     /// A view onto a single hero in a <see cref="SaveDocumentHistory"/>. The hero keeps what depends on its artifacts (spells, skill
     /// bonuses) up to date itself, so its model is written as it is.
     /// </summary>
-    public sealed class HeroEditSession : EditSession<HeroChunk, HeroModel>
+    public sealed class HeroEditSession : EditSession<HeroChunk, HeroModel>, IHeroSession
     {
         public HeroEditSession(SaveDocumentHistory history, int heroIndex)
             : base(history, Homm3ChunkKinds.Hero, heroIndex, history.Current.Heroes().Deserializer, history.Current.Heroes().Serializer)
@@ -23,6 +23,21 @@ namespace Siniskalc.Homm3.Data
         /// Gets where the hero fields are in the chunk, for the savefile's game version.
         /// </summary>
         public HeroOffsets Offsets { get; }
+
+        /// <inheritdoc/>
+        public GameVersion GameVersion => this.History.Current.GameVersion();
+
+        /// <inheritdoc/>
+        public bool SupportsAsleep => this.History.Current.Heroes().SupportsAsleep;
+
+        /// <inheritdoc/>
+        public int GarrisonCastleIndex => this.History.Current.Castles().FindByGarrisonedHero(this.Current.Id);
+
+        /// <inheritdoc/>
+        public string CastleName(int castleIndex) => this.History.Current.Castles().GetName(castleIndex);
+
+        /// <inheritdoc/>
+        public IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForHero(this);
 
         /// <summary>
         /// Gives the hero to a player, or to nobody, in one step of the history: the hero (<see cref="HeroModel.WithOwner"/>), the list of heroes of

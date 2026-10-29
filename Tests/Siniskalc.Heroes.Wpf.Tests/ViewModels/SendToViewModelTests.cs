@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the "send to" list of the position card of a hero, which both games use.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SendToViewModelTests
     {
         private static readonly MapDestination[] Places =

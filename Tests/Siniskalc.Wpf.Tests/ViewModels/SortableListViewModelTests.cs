@@ -6,6 +6,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
     /// A list of rows sorted by the heading of a column.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SortableListViewModelTests
     {
         private static SortableListViewModel<(string Name, int Size)> Create(string? initial = null) => new(

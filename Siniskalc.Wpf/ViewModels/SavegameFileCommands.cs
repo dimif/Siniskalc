@@ -19,11 +19,11 @@ namespace Siniskalc.Wpf.ViewModels
 
         private static readonly ILogger<SavegameFileCommands> Logger = LogFactory.For<SavegameFileCommands>();
 
-        private readonly RecentFilesStore recentFiles;
+        private readonly IRecentFilesStore recentFiles;
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
 
-        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
+        public SavegameFileCommands(IRecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;
             this.dialogs = dialogs;

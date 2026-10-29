@@ -3,6 +3,7 @@ using Siniskalc.Heroes.Models;
 namespace Siniskalc.Homm3.Tests.Models
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ChangeAreaTests
     {
         [Test]

@@ -8,7 +8,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class HeroRegionProviderTests
+    internal sealed class HeroRegionProviderSavegameTests
     {
         private static readonly HeroOffsets HotaOffsets = new(GameVersion.HornOfTheAbyss);
 

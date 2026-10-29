@@ -84,7 +84,8 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 20d | Left from the review's "one class, several subjects": `RampartAndBulwarkCastleTests` (scenario fixture, allowed to stay); then re-run the name scan (`names.py` idea: very short names, telegraphic names without articles) and decide whether the older telegraphic names are worth rewriting before slice 29 |
 | 23c | HoMM3 `HeroBytesLoader` and `CastleBytesLoader` are heuristic scanners (shape of a hero, shape of a castle) with save-based tests only; a hand-made savegame needs the hero struct (about 700 bytes) or the castle struct; decide whether a few hand-made shapes (a valid one and one with each rule broken) are worth it. Also still open: what a record of obelisks shorter than its count does (no test states it)|
 | 24d-i | see git log | HoMM3 `MineRegionProviderTests`, `DwellingRegionProviderTests`, `PlayerRegionProviderTests` (both layouts) and `CastleRegionProviderTests`, Unit |
-| 24d | Open: `HeroRegionProvider` (217 lines; save-based test exists), `SaveDocumentFactory`, `VersionSpecificEntitiesProvider(Factory)`, `PlayerSetupLocation`, `MapHeaderLocator`, `MapObjectPositions` |
+| 24d-ii | see git log | HoMM3 `HeroRegionProviderTests` (Unit; the save-based fixture is now `HeroRegionProviderSavegameTests`), `VersionSpecificEntitiesProviderTests` (provider and factory, Unit), `SaveDocumentFactoryTests` (MultiUnit) |
+| 24d | Open: `PlayerSetupLocation`, `MapHeaderLocator`, `MapObjectPositions` |
 | 25-28 | Gaps in Core services and chunk/edit-session infrastructure; Wpf commands, navigation, hex rows; Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |

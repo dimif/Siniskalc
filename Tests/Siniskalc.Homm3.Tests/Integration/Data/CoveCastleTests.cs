@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
@@ -16,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Lakenshire(string save)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", $"cove_inland_{save}.GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Cove", $"cove_inland_{save}.GM1"));
             var castles = game.History.Current.Castles();
             var index = castles.FindByName("Lakenshire");
             Assert.That(index, Is.GreaterThanOrEqualTo(0), save);
@@ -25,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static IReadOnlySet<Building> Current(string save)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", $"cove_inland_{save}.GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Cove", $"cove_inland_{save}.GM1"));
             var castles = game.History.Current.Castles();
             return TestServices.CastleDeserializer.DeserializeVisibleBuildings(castles[castles.FindByName("Lakenshire")]);
         }
@@ -148,7 +149,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static CastleModel Named(string save, string name)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", $"{save}.GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Cove", $"{save}.GM1"));
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), name + " in " + string.Join("; ", castles.Select(c => c.Name)));
@@ -189,7 +190,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in new[] { "cove_coastal_05_visiting_hero", "cove_coastal_06_garrisoned_hero" })
             {
-                var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", file + ".GM1"));
+                var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Cove", file + ".GM1"));
                 var heroes = game.History.Current.Heroes();
                 var orrin = heroes.Single(h => h.Name == "Orrin");
                 var ufretin = heroes.Single(h => h.Name == "Ufretin");
@@ -201,7 +202,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheHeroIdIsInTheHeroStruct()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Cove", "cove_coastal_05_visiting_hero.GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Cove", "cove_coastal_05_visiting_hero.GM1"));
             var heroes = game.History.Current.Heroes();
 
             Assert.That(heroes.Single(h => h.Name == "Ufretin").GetByteAt(HeroOffsets.HeroIdOffset), Is.EqualTo(17));

@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
@@ -15,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Castle(string save, string name)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Bulwark", save + ".GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Bulwark", save + ".GM1"));
             var castles = game.History.Current.Castles();
             return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
         }

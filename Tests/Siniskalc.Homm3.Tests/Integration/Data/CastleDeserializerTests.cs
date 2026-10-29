@@ -38,7 +38,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void EveryCastleOfEverySavefileHasANameSoTheMapUsesIt()
         {
-            foreach (var path in Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
+            var paths = Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal).ToList();
+            ReadOnlySaves.LoadAll(paths);
+            foreach (var path in paths)
             {
                 var game = ReadOnlySaves.Load(path);
 

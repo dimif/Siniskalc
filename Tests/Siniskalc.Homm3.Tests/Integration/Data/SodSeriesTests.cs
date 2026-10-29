@@ -21,7 +21,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static string Path(string save) => System.IO.Path.Combine("TestData", "Sod", save + ".GM1");
 
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path(save));
+        // The tests of this class only read what they load, so a save is parsed once per run.
+        private static Game Load(string save) => ReadOnlySaves.Load(Path(save));
 
         private static List<string> Saves() => SeriesSaves.Names("Sod", "conflux");
 

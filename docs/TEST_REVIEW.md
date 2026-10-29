@@ -25,6 +25,10 @@ The cleanup was merged into `feature/homm2-support` (tip `ebf7b75`, 17 commits a
 - Tests of the cleanup that asserted wording the branch changed were updated: positions read "Pos: x, y, Surface", an army slot lists HP, Damage, Stack HP and Stack Damage, the resources are listed in game order with gold last, the toolbar has 6 icons and the menus 10. Two tests of the branch that had to move with the fixtures slice 29 removed went to the ports that kept their behaviour (`PlayerViewModelTests`, `Homm2EditorCastlePageTests`).
 - `HeroActiveSpellsTests` of HoMM2 was deleted by the branch (replaced by `HeroNextBattleTests`) and stays deleted.
 
+### Run time after the merge
+
+After the merge the HoMM3 tests were made cheaper in three steps, with the same 3,895 tests passing each time: the series classes `RoeCastleTests`, `RoeCastleBuildingsTests`, `SodSeriesTests`, `RampartAndBulwarkCastleTests` and `CoveCastleTests` read their saves through `ReadOnlySaves` (sum of test durations 317 s to 226 s), and `CastleDeserializerTests` loads the 448 saves eight at a time with `ReadOnlySaves.LoadAll` (26.5 s to 5 s). `Siniskalc.Homm3.Tests` now takes about 3 m 18 s with 198 s of test durations (5 m 16 s and 317 s before); the class table below was measured earlier. What is left is mostly WPF windows (`PageRenderingTests`, `ShellSmokeTests`, `CastleEditingViewModelTests`, the layout tests: about 70 s) and `CastleBuilderReplayTests` (10 s of reducer replays).
+
 ### Since the first review
 
 | | First review (dc14cef) | Now |
@@ -575,7 +579,7 @@ Rules from `CLAUDE.md` and their coverage:
 ## Backlog (in order of value)
 
 1. D3: a check test per project for category and folder.
-2. Other series classes that load each save per case (`SodSeriesTests` 15 s, `RampartAndBulwarkCastleTests` 12 s, `CoveCastleTests` 4 s) could use `ReadOnlySaves` like `RoeCastleTests`, `RoeCastleBuildingsTests` and `OtherFactionsCastleTests` now do; check first that each only reads.
+2. The time that is left in the HoMM3 project is WPF windows (about 70 s) and the reducer replays of `CastleBuilderReplayTests` (10 s); other classes that load a save in `[SetUp]` could use `ReadOnlySaves` where they only read.
 3. D4 and D5: the parser's `StandingOn`, `PageViewModel` and the editor-session accessors.
 4. D1: strengthen the four weak assertions.
 5. D6, D7: the remaining untested view models and the split of `HeroAndCastleLookupTests`.

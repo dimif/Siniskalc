@@ -1413,3 +1413,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - `SpellRowViewModelTests` (3), `GuildLevelViewModelTests` (2) and `DwellingRowViewModelTests` (2), all Unit: the spell row (level, type, magic, cost; no magic gives no text; a tick reaches the caller), the level of a guild (heading, refresh of every field) and the dwelling row (built and growth read when asked, refresh of its fields and the bindings).
 - Mutation check (23 mutants, production restored): all caught; two patterns that removed a table entry or a line did not compile and were not rerun (the full table is tested entry by entry).
 - Homm2.Tests: the five fixtures pass (17); no production code changed.
+
+## Slice 28l - the shrine row and the secondary skills page of HoMM2
+
+- `ShrineRowViewModelTests` (9 cases, Unit): the circle, position and spell of the shrine; the picked spell written by its name; a shrine with a hero on it cannot be edited and says so; a spell the editor does not know is named by its number; refresh.
+- `SecondarySkillsViewModelTests` (3, Unit): the skills of the version listed, the eight slots, a skill shown in its slot with its level, and the note.
+- Mutation check (14 mutants, production restored): all caught but one, which is equivalent: the filter on the version of the game for the secondary skills, because every secondary skill of HoMM2 is in the base game.
+- Homm2.Tests: the two fixtures pass (11); no production code changed.
+- Left in HoMM2 (not tested by name): `PageViewModel` (the base of the pages, over a whole game), `CastleLinks`, `MapPlaces`, `Homm2Module`, `Homm2SaveDocuments`, `Homm2EditSessions` and the sessions of the hero, the castle and the player, `RecordRegions`, `SphinxViewModel`, `ArtifactsViewModel`, `SpellsViewModel` and `SpellFinderViewModel`.

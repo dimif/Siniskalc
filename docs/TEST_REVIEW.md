@@ -1253,3 +1253,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 33 caught, production restored): the first version let one through (the bound of the army comparison, tried only with a shorter army before), and a case with a longer army before fixed it.
 - Heroes.Tests: the new fixtures pass; no production code changed.
 - Not done (27b): `MineKinds`, `MapSizes`, `LinkViewModel`, `ObeliskEditSession`; then the Heroes.Wpf bases and cards.
+
+## Slice 27b - mine kinds and map sizes (Heroes)
+
+- `MineKindsTests` (16 cases, Unit): the name of each of the seven kinds, the resource each gives, a code that is no kind read as a gold mine (name and resource), and the name at a place (coordinates, with the level only for a map with levels).
+- `MapSizesTests` (11 cases, Unit): the name of each standard size from 36 to 252, a size that is not standard written as the number twice ("40 x 40"), and no size (zero or negative) as no text.
+- Mutation check (all 24 caught on the first run, production restored): each name, each resource, the default of both, the place text and its level rule, each size, and the two rules for other sizes.
+- Heroes.Tests: the new fixtures pass (27); no production code changed.
+- Left, optional: `LinkViewModel` (three properties) and `ObeliskEditSession` (a subclass that only fixes the type); both are used by the pages of both games and covered by their tests.
+- Not done (27c): the Heroes.Wpf bases and cards.

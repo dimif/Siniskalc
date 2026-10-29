@@ -1055,3 +1055,9 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Homm3.Tests: the Unit, MultiUnit and the renamed save-based fixture pass (the count is in the report); the full HoMM3 project was not run; no production code changed.
 - Not done (23c): `HeroBytesLoader` and `CastleBytesLoader`, and what a record of obelisks shorter than its count does.
 
+## Slice 24d-i - HoMM3 region providers of mine, dwelling, player and castle
+
+- `MineRegionProviderTests` (5), `DwellingRegionProviderTests` (4), `PlayerRegionProviderTests` (7 cases over both layouts) and `CastleRegionProviderTests` (8), all Unit, on records of zeros: each states the name, start and length of every region the hex editor is given, in the order of the bytes. The parts of a slot list (guard, garrison, dwellings, spell counts, resources) are stated, no byte belongs to two fields, and a record or chunk cut short leaves out the fields that would run past its end. Castle: the fields after the name are counted from its end, so a longer name moves them; a castle with no name has no name region.
+- Mutation check (all caught, production restored): a moved owner offset, the cut-short rule off by one, a moved days-left offset, spell counts counted from the start of the name instead of its end, and empty regions kept.
+- Homm3.Tests: the `RegionProviderTests` fixtures pass (56, including the existing ones); no production code changed.
+- Not done (rest of 24d): `HeroRegionProvider`, `SaveDocumentFactory`, `VersionSpecificEntitiesProvider(Factory)`, `PlayerSetupLocation`, `MapHeaderLocator`, `MapObjectPositions`.

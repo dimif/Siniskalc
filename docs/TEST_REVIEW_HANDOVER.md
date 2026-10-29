@@ -125,7 +125,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28l | see git log | HoMM2 view models, Unit: `ShrineRowViewModelTests` (9), `SecondarySkillsViewModelTests` (3) |
 | 28m | see git log | HoMM2 view models: `SpellFinderViewModelTests` (5, Unit) and `SphinxViewModelTests` (10, MultiUnit) |
 | 29 | see git log | Removed six Integration fixtures duplicated by the MultiUnit ports of slices 18c to 18g (`SecondarySkillsViewModelTests`, `SpellsViewModelTests`, `CreatureFinderViewModelTests`, `CastleDetailsViewModelTests`, `HeroGeneralTabTests`, `SpellsFromArtifactsTests`) and 12 of the 14 tests of `HeroEditingViewModelTests`; each mapped to its retained test and checked by 32 mutants |
-| 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
+| 30 | see git log | `docs/TEST_REVIEW.md` rewritten from a fresh run (5,411 tests, 423 classes, all categorized; defects D1 to D9 separated from the intentional exceptions; the class table generated from the TRX files); `test-reviewer` agent updated in both places; fixed on the way: `Assume` and three `Assert.Ignore` guards, a test name ending in "StillWorks", the folder of `SphinxViewModelTests` |
 
 Slice size limits: mechanical slices at most eight fixtures, isolation at most three subjects, gap-filling at most two new subjects. Split larger entries into lettered slices first.
 
@@ -133,15 +133,14 @@ The session plan with the full per-slice acceptance text is `C:\Users\dimit\.cop
 
 ## Known weak spots and open items
 
-- `HeroEditingTests.SecondarySkillsEditsSurviveSerialization` (HoMM3) does not serialize.
-- Some HoMM2 editor `Assert.Ignore` / conditional checks and one map-object test name with an underscore remain.
-- Category/folder consistency was verified once by script (slice 09); no test enforces it. A guard test is worth adding after the migrations end.
-- Mutation was not checked for the new byte and rule tests (slices 10-12).
-- `GoldLimitSaves` writer is `Manual`/`[Explicit]`; it has never been run.
-- `SessionPageViewModelBaseTests` needs a real `SaveDocumentHistory` because `IEditSession.History` returns the sealed class.
-- Core MultiUnit fixtures (`SaveDocument`, `RecordChunkCollection`, `ChunkPendingChange`) were not rewritten with mocks (slice 15 only handled the settings stores).
-- Other castle-series fixtures (not `CastleBuilderReplayTests`) still load their own saves.
-- Several types have no test class (most HoMM2 serializers/deserializers, some HoMM3 loaders/differs). A missing test file is not proof of a gap: confirm first.
+The current list, with places and fixes, is "Findings" in `docs\TEST_REVIEW.md` (defects D1 to D9, questions about production behaviour and the intentional exceptions). The ones to start from:
+
+- No test enforces that a fixture has a category and sits in the matching folder (D3); a script was the only check.
+- Several tests load every save more than once (D2); the HoMM3 project takes about 7.5 minutes.
+- `SavegameParser.StandingOn`, HoMM2 `PageViewModel` and the editor-session accessors are untested (D4, D5).
+- The Unit tests of the HoMM3 hero and hero-owner serializers on records made by hand are missing (D9).
+- Four questions about production behaviour are open (an obelisk record shorter than its count, `MovedToday` for every version, the "3 of 2" text of a visited place, a `null` `Effects`).
+- Mutation checks were done per slice and are recorded in the slice log of the review; survivors that were left are listed there.
 
 ## How to run
 
@@ -150,4 +149,4 @@ dotnet test Tests\Siniskalc.Heroes.Wpf.Tests --artifacts-path $env:TEMP\siniskal
 dotnet test Tests\Siniskalc.Homm3.Tests --artifacts-path $env:TEMP\siniskalc-x --filter "FullyQualifiedName~CastleBuilder"
 ```
 
-The WPF exe is often running and locks the normal output, so always pass `--artifacts-path`. Last known full HoMM3 run: 3198 non-Manual tests passed in about 10.5 minutes (slice 08).
+The WPF exe is often running and locks the normal output, so always pass `--artifacts-path`. Last full run (slice 30): 5,411 tests passed; `Siniskalc.Homm3.Tests` 3,882 tests in 7 minutes 29 seconds. The projects must be run one by one with their own `LogFileName` to get a TRX file for each.

@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = Load(save);
             var later = Load(next);
             var (from, to) = (RampartOwner(game), RampartOwner(later));
-            Assume.That(from, Is.Not.EqualTo(to), "the Rampart changes hands between the two saves");
+            Assert.That(from, Is.Not.EqualTo(to), "the Rampart changes hands between the two saves");
             Assert.That(new[] { from, to }, Does.Contain(PlayerColor.Blue));
 
             game.History.CreateCastleSession(RampartIndex(game)).ChangeOwner(to);

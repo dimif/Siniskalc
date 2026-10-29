@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;

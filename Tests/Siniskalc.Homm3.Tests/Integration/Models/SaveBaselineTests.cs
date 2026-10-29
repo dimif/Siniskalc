@@ -67,7 +67,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         }
 
         [Test]
-        public void SavedFileHoldsTheEditsAndSavingAgainStillWorks()
+        public void SavingTwiceLeavesTheLatestEditInTheFile()
         {
             var game = HeroEditingTests.LoadPrepared();
             var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));

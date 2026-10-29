@@ -53,10 +53,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var neutral = this.main.PlayerNodes().Single(n => n.Title == "Neutral");
             var dwellings = neutral.Children.SingleOrDefault(c => c.Title == "Dwellings");
-            if (dwellings == null)
-            {
-                Assert.Ignore("The save has no dwellings.");
-            }
+            Assert.That(dwellings, Is.Not.Null, "the save has neutral dwellings");
 
             var titles = dwellings!.Children.Select(g => g.Title).ToList();
             Assert.That(titles, Is.Unique);

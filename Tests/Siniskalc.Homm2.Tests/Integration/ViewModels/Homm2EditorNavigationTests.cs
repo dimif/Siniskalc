@@ -125,10 +125,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         public void PickingAMineOfAPlayerShowsTheMinesTabOfThePlayerWithThatMinePicked()
         {
             var player = this.editor.NavigationNodes[0].Children.FirstOrDefault(n => n.Kind == NavNodeKind.Player && Descendants(n).Any(m => m.Kind == NavNodeKind.Mine));
-            if (player == null)
-            {
-                Assert.Ignore("No player of the savegame owns a mine.");
-            }
+            Assert.That(player, Is.Not.Null, "a player of the savegame owns a mine");
 
             var mine = Descendants(player!).First(n => n.Kind == NavNodeKind.Mine);
             Assert.That(Descendants(player!).Where(n => n.Kind == NavNodeKind.OwnerSubGroup).Select(n => n.Tab), Has.All.EqualTo(OwnerTabs.Mines));
@@ -153,10 +150,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Heroes));
 
             var mine = Descendants(neutral).FirstOrDefault(n => n.Kind == NavNodeKind.Mine);
-            if (mine == null)
-            {
-                Assert.Ignore("The savegame has no mine nobody owns.");
-            }
+            Assert.That(mine, Is.Not.Null, "the savegame has a mine nobody owns");
 
             mine!.IsSelected = true;
 

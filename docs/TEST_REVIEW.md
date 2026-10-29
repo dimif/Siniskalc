@@ -1,11 +1,591 @@
 # Test review
 
-Reviewed on `feature/homm2-support` at dc14cef, which is the base of all current work.
-An earlier review on `main` (c352615) covered 1,911 tests in three projects; this one replaces it.
+Reviewed on `dimif-test-suite-review` at e5c478d, after slices 01 to 29 of the cleanup (branch based on `feature/homm2-support`).
+The first review of this tree (at dc14cef, 4,000 tests, 263 classes) is kept as history in the slice log at the end of this file; this text replaces its summary, tables and findings with measurements of the final suite.
 The rules for kinds, folders and names that this review checks against are in the "Tests" section of `CLAUDE.md`.
-The review is repeatable with the `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`).
+The review is repeatable with the `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`); "How this review was done" says which numbers come from a script.
 
-## Incremental fixes after the review
+## Summary
+
+- **5,411 tests in 423 classes and 7 projects, all passing.** The test host time is about 7.5 minutes for `Siniskalc.Homm3.Tests` and under 20 seconds for all the others together; the sum of test durations is 467 s.
+- **Every class has a kind and sits in the matching folder**: 207 Unit, 59 MultiUnit and 157 Integration classes, none without `[Category(TestKinds.X)]`. Four `[Explicit]` helpers carry the method-level label `Manual` and are never run.
+- **Unit and MultiUnit tests are fast and need no savefile.** 1,527 Unit tests take 1.9 s and 433 MultiUnit tests 3.1 s in all. The only ones over 100 ms are WPF windows (intentional) and the first test of a class that creates a Moq proxy.
+- **Integration tests carry the run time**: 3,451 tests, 462 s, 99% of it, almost all in the HoMM3 savefile series.
+- **No `Assert.Pass`, `Assert.Inconclusive`, `Assert.Ignore`, `[Ignore]` or `Assume` is left**, and no test skips its assertions with `continue`, `return` or a guard (the `continue` left in a test is an allow-list in a layering check and a skip of existing files in a manual writer).
+- **Every serializer of both games has tests that assert the literal bytes.** All but two have a Unit class on records made by hand (D9); the savefile round trips are separate Integration classes (`...SerializerSavegameTests`) and say so.
+- **Every test is in the project of the class it tests**, and no shared project names a game type (`...LayeringTests` of each project enforce it).
+- **Open**: the defects listed below, mostly gaps in coverage of thin or window-bound types and a few savefile-heavy tests that load every save more than once.
+
+### Since the first review
+
+| | First review (dc14cef) | Now |
+|---|---:|---:|
+| Tests | 4,000 | 5,411 |
+| Classes | 263 | 423 |
+| Classes with a kind | 0 | 423 |
+| Sum of test durations | 804 s | 467 s |
+| `Siniskalc.Homm3.Tests` | 3,186 tests, 775 s | 3,883 tests, 449 s |
+| Tests that are Unit or MultiUnit | not counted | 1,960 (36%) |
+
+Production changes made along the way, all with their own tests (details in the slice log):
+
+- Seams that keep behaviour: `ISettingsStore` and `IRecentFilesStore` (slice 15), `IHistoryEvents` and `IHeroSession` (18b), `ICastleSession` (18f).
+- Fixes: a map tile at the largest coordinate (251) was refused by `MapObjectPositions` (24d-iii) and by the finders of the mine and dwelling tables (28d).
+
+## Findings
+
+### Defects (open)
+
+| # | Where | Problem | Fix |
+|---|---|---|---|
+| D1 | `ObeliskVisitsTests:182`, HoMM2 `PlayerViewModelTests:20`, `ShellWindowTests:54,63` | Weak assertions: only that something is not null or not empty | Assert the value that is known (the position, the castle names, the icon count) |
+| D2 | `CastleDeserializerTests` (36.6 s, one test), `SafeCastleSerializerSavegameTests` (24.3 s), `OtherFactionsCastleTests` (28.1 s), `CastleBuilderReplayTests` and `CastleBuilderSavefileRulesTests` (10 s each) | One test loads every one of the 448 saves; the same saves are loaded by other classes | Load each save once per run (`ReadOnlySaves`) as slices 13 and 14 did for the obelisk, player and hero-owner contracts |
+| D3 | all projects | Nothing fails when a fixture has no `[Category]` or sits in the wrong folder (a MultiUnit fixture of slice 28m was placed wrongly and found only by this review) | One check test per project over its own assembly: category present, `Integration` and `MultiUnit` fixtures in namespaces that contain those folder names |
+| D4 | HoMM3 `SavegameParser.StandingOn` | A hero standing on a place hides it on the map; its three conditions (type at +11, visitable at +15, number at +16) are untested | A parser test with a hero record that stands on a place |
+| D5 | HoMM2 `PageViewModel`, `CastleLinks`, `Homm2SaveDocuments`, `Homm2EditSessions`; HoMM3 `Homm3SaveDocuments`, `Homm3EditSessions`, `ByteEditTargetFactory`, `MapHeaderLocation`, `DwellingDeserializer` | No test names them; they are thin and used by every Integration test, so only a wrong wiring would fail | Direct tests where a rule is in them (`PageViewModel`: reset and refresh) |
+| D6 | Heroes.Wpf `HeroesSecondarySkillsViewModel`, `NextBattleCardViewModel`, `HeroLinkViewModel`, `OrderOfPlayItemViewModel`; Wpf `HexRowList`, `HexRow`, `HexPalette`, `NavButton`, `RegionNode`, `EditorCommands`, `WpfMessageService`, `WpfFileDialogs`, `AdvancedModeVisibility`; Core `ForwardingLogger` | No test names them (most of the Wpf ones need a window) | Test the ones with logic (`HexRowList`, `EditorCommands`); leave the rest to the rendered-view tests |
+| D7 | `HeroAndCastleLookupTests` | Joins two subjects in one class | Split by subject |
+| D9 | HoMM3 `SafeHeroSerializer` and `SafeHeroOwnersSerializer` | Their literal-byte tests are Integration (real saves); there is no Unit class on a hero or hero-owner record made by hand | `SafeHeroSerializerTests` and `SafeHeroOwnersSerializerTests` as Unit tests on records of zeros, the savefile ones renamed `...SavegameTests` |
+| D8 | HoMM3 loaders | The end bound of the cell scan in `MapPlacesLoader` (`i + 10 <= firstDefinition`) and a few other mutants were left open on purpose (see the slice log) | None needed unless the layout changes |
+
+Questions about production behaviour, not defects of the tests; each is written down where it was found:
+
+- A record of obelisks shorter than its count makes the reader throw (slice 23b).
+- `MovedToday` is listed for every game version in `HeroRegionProvider` (slice 24d-ii).
+- The text of a visited-place row counts every bit of the hero's mask, so it can read "3 of 2" (slice 28g).
+- `Effects` of an artifact with no text is `null` though typed `string` (slice 28h).
+
+### Intentional exceptions
+
+These look like findings and are not; a reviewer should not report them again.
+
+| What | Why it stays |
+|---|---|
+| `[Explicit]` tests with `[Category(TestKinds.Manual)]` that write edited saves to `TestData/*/out` (HoMM2 `EditedSavesTests`, `EditorSavesTests`, `ThreedomEditorSavesTests`; HoMM3 `GoldLimitSavesTests`) | They exist to be opened in the game; a filter `TestCategory!=Manual` never runs them |
+| MultiUnit view tests that open real WPF windows and take 100 to 400 ms (`PageStylesTests`, `DaysLeftCardTests`, `HeroCardsTests`) | A template that did not apply leaves a control empty and raises no binding error; only a rendered window shows it (`CLAUDE.md`) |
+| Integration tests over 2 s that walk every save or replay a reducer over a series (15 classes) | They are data contracts over 448 saves; the cost is in D2, not in their existence |
+| Scenario classes `Roe*`, `Sod*`, `Hota*`, the faction `*CastleTests`, `RampartAndBulwarkCastleTests`, `CastleGrailAndCapitolPillTests` | `CLAUDE.md` allows a class named after a scenario or a feature tested through every layer |
+| Savegame serializer tests (`...SerializerSavegameTests`) that use the reader to build or compare a model | They are the round-trip contract on a real save; the byte contract is in the Unit class of the same subject |
+| HoMM2 fixtures of slice 17e (`HeroDestination`, `MapObjects`, `MinesLists`, `HeroActiveSpells`) kept Integration | The saves are the contract |
+| HoMM3 tavern, overview and navigation-badge fixtures kept Integration | `PlayerViewModel` takes the concrete `PlayerEditSession`; `CastleLinksTests` covers their logic on a hand-made document |
+| `CastleHeroLinksTests`, `CastleGrailAndCapitolPillTests`, `CastleGarrisonedHeroTests` | They test the player page, the overview and the navigation tree on a real save, which no port covers |
+| Equivalent mutants documented in the slice log (for example the version filter of `SpellGrantProvider`, the outer scan bound of `MineBytesLoader`) | No behaviour differs, so no test can tell |
+| The first test of a Unit class over 100 ms (`CastleChunkCollectionTests`, 0.25 s) | It creates the Moq proxies; later tests of the class are under 1 ms |
+| Moq fakes of `IEditSession<T>` in the view-model tests | A fake session has no history, so "undo" there is "put the model back"; the history is tested with the real session in the Integration classes |
+
+### Fixed during the cleanup
+
+Slice numbers refer to the slice log below.
+
+- Assertion-free and conditional tests (01, 02); in this review also the `Assume` of `CastleEditSessionTests`, three `Assert.Ignore` guards (two in HoMM2 `Homm2EditorNavigationTests`, one in HoMM3 `NavigationBuilderTests`, each now an assertion that the save has what the test needs), a test name that ended in "StillWorks", and the placement of `SphinxViewModelTests`.
+- Serializer tests that went through the deserializer now assert literal bytes (10, 11, 17b, 21, 28a to 28c).
+- Unit-shaped classes that loaded savefiles became Unit or MultiUnit tests on records made by hand (12, 16 to 19b, 22 to 24); the save-based cases remain as Integration classes with `Savegame` in their names.
+- Multi-subject classes split and test names rewritten (20a to 20d).
+- Gaps filled: both games' loaders, differs, region providers, view models, Core and Wpf types (22 to 28).
+- Duplicates removed after the ports (29).
+
+## Every test class
+
+Generated from the TRX files of the run and the sources; "Reads" is a text search of the class for `TestServices`, saves, `TestData`, the disk and windows.
+
+| Class | Folder | Kind | Tests | Total s | Max s | Reads |
+|---|---|---|---:|---:|---:|---|
+| `AppServicesTests` | Siniskalc.Tests/Integration | Integration | 4 | 0.28 | 0.18 | disk, saves |
+| `LoggingTests` | Siniskalc.Tests/Integration | Integration | 5 | 0.16 | 0.1 | disk |
+| `ByteBufferHelperTests` | Siniskalc.Core.Tests/Data | Unit | 6 | 0.01 | 0.0 |  |
+| `ByteEnumTests` | Siniskalc.Core.Tests/Data | Unit | 3 | 0.0 | 0.0 |  |
+| `ByteRegionMapTests` | Siniskalc.Core.Tests/Data | Unit | 11 | 0.01 | 0.0 |  |
+| `ByteRegionTests` | Siniskalc.Core.Tests/Data | Unit | 9 | 0.0 | 0.0 |  |
+| `BytesChunkTests` | Siniskalc.Core.Tests/Data | Unit | 12 | 0.01 | 0.0 |  |
+| `ChangeSinkTests` | Siniskalc.Core.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `ChunkCollectionTests` | Siniskalc.Core.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `RecordChunkTests` | Siniskalc.Core.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `SaveHexDumpTests` | Siniskalc.Core.Tests/Data | Unit | 3 | 0.05 | 0.05 |  |
+| `SavefileBytesPatcherTests` | Siniskalc.Core.Tests/Data | Unit | 3 | 0.0 | 0.0 |  |
+| `VersionedEnumerationTests` | Siniskalc.Core.Tests/Entities | Unit | 2 | 0.01 | 0.0 |  |
+| `DisabledFileBackupServiceTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 2 | 0.0 | 0.0 | disk |
+| `FileBackupServiceProviderTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 3 | 0.02 | 0.02 | disk |
+| `LogPathsTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 8 | 0.0 | 0.0 | disk |
+| `NumberedSavefileBackupTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 5 | 0.01 | 0.01 | disk |
+| `RawSavefileCodecTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 3 | 0.02 | 0.01 | disk |
+| `RecentFilesStoreTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 5 | 0.02 | 0.01 | disk |
+| `SettingsStoreTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 8 | 0.03 | 0.01 | disk |
+| `ShellUrlLauncherTests` | Siniskalc.Core.Tests/Integration/Runtime | Integration | 8 | 0.0 | 0.0 | WPF window, disk |
+| `NumbersTests` | Siniskalc.Core.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `ByteEditTargetExtensionsTests` | Siniskalc.Core.Tests/MultiUnit/Data | MultiUnit | 3 | 0.0 | 0.0 |  |
+| `ChunkByteEditTargetTests` | Siniskalc.Core.Tests/MultiUnit/Data | MultiUnit | 13 | 0.0 | 0.0 |  |
+| `ChunkPendingChangeTests` | Siniskalc.Core.Tests/MultiUnit/Data | MultiUnit | 3 | 0.0 | 0.0 |  |
+| `RecordChunkCollectionTests` | Siniskalc.Core.Tests/MultiUnit/Data | MultiUnit | 4 | 0.0 | 0.0 |  |
+| `SaveDocumentTests` | Siniskalc.Core.Tests/MultiUnit/Data | MultiUnit | 7 | 0.0 | 0.0 |  |
+| `RangeGuardTests` | Siniskalc.Core.Tests | Unit | 4 | 0.0 | 0.0 |  |
+| `AbstractSavegameTests` | Siniskalc.Core.Tests/Runtime | Unit | 6 | 0.0 | 0.0 |  |
+| `LogFactoryTests` | Siniskalc.Core.Tests/Runtime | Unit | 3 | 0.0 | 0.0 |  |
+| `LogScopeExtensionsTests` | Siniskalc.Core.Tests/Runtime | Unit | 2 | 0.01 | 0.01 |  |
+| `SavegameServiceTests` | Siniskalc.Core.Tests/Runtime | Unit | 13 | 0.03 | 0.01 | disk |
+| `ArmyReaderTests` | Siniskalc.Heroes.Tests/Data | Unit | 4 | 0.01 | 0.01 |  |
+| `ChangeSinkExtensionsTests` | Siniskalc.Heroes.Tests/Data | Unit | 16 | 0.02 | 0.0 |  |
+| `ObeliskChunkCollectionTests` | Siniskalc.Heroes.Tests/Data | Unit | 4 | 0.04 | 0.03 |  |
+| `ObeliskDifferTests` | Siniskalc.Heroes.Tests/Data | Unit | 4 | 0.02 | 0.01 |  |
+| `MineKindsTests` | Siniskalc.Heroes.Tests/Entities | Unit | 16 | 0.0 | 0.0 |  |
+| `ResourceTests` | Siniskalc.Heroes.Tests/Entities | Unit | 1 | 0.0 | 0.0 |  |
+| `SkillLevelTests` | Siniskalc.Heroes.Tests/Entities | Unit | 2 | 0.0 | 0.0 |  |
+| `HeroesLayeringTests` | Siniskalc.Heroes.Tests | Unit | 1 | 0.01 | 0.01 | WPF window |
+| `ArmyTests` | Siniskalc.Heroes.Tests/Models | Unit | 7 | 0.0 | 0.0 |  |
+| `BanishablePlayerBaseTests` | Siniskalc.Heroes.Tests/Models | Unit | 10 | 0.0 | 0.0 |  |
+| `ChangeAreasTests` | Siniskalc.Heroes.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `ChangeTextTests` | Siniskalc.Heroes.Tests/Models | Unit | 3 | 0.0 | 0.0 |  |
+| `ExperienceTableTests` | Siniskalc.Heroes.Tests/Models | Unit | 10 | 0.0 | 0.0 |  |
+| `GameDateTests` | Siniskalc.Heroes.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `GameRuleExceptionTests` | Siniskalc.Heroes.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `GameSetupTests` | Siniskalc.Heroes.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `HeroPositionTests` | Siniskalc.Heroes.Tests/Models | Unit | 3 | 0.0 | 0.0 |  |
+| `HeroSummaryTests` | Siniskalc.Heroes.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `MapPositionTests` | Siniskalc.Heroes.Tests/Models | Unit | 3 | 0.0 | 0.0 |  |
+| `MapSizesTests` | Siniskalc.Heroes.Tests/Models | Unit | 11 | 0.0 | 0.0 |  |
+| `MovementPointsTests` | Siniskalc.Heroes.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `ObeliskVisitsTests` | Siniskalc.Heroes.Tests/Models | Unit | 8 | 0.0 | 0.0 |  |
+| `OwnerNamesTests` | Siniskalc.Heroes.Tests/Models | Unit | 3 | 0.0 | 0.0 |  |
+| `PlayerModelExtensionsTests` | Siniskalc.Heroes.Tests/Models | Unit | 4 | 0.0 | 0.0 |  |
+| `PrimarySkillsTests` | Siniskalc.Heroes.Tests/Models | Unit | 8 | 0.0 | 0.0 |  |
+| `ResourceSetTests` | Siniskalc.Heroes.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `SpellSetTests` | Siniskalc.Heroes.Tests/Models | Unit | 3 | 0.01 | 0.0 |  |
+| `TavernHeroesTests` | Siniskalc.Heroes.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `ArmyWriterTests` | Siniskalc.Heroes.Tests/MultiUnit/Data | MultiUnit | 8 | 0.0 | 0.0 |  |
+| `ChangeSinkExtensionsTests` | Siniskalc.Heroes.Tests/MultiUnit/Data | MultiUnit | 18 | 0.01 | 0.0 |  |
+| `HeroLevelTests` | Siniskalc.Heroes.Tests/MultiUnit/Models | MultiUnit | 2 | 0.0 | 0.0 |  |
+| `HeroesSavegameBaseTests` | Siniskalc.Heroes.Tests/MultiUnit/Runtime | MultiUnit | 2 | 0.0 | 0.0 |  |
+| `CreatureChoiceViewModelTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 4 | 0.01 | 0.01 |  |
+| `MapLevelTextTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `OverviewTextTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `PlayerPaletteTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `PlayerTypeTextTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `PrimarySkillBonusTextTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `TurnTextTests` | Siniskalc.Heroes.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `PageStylesTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Styles | MultiUnit | 11 | 0.4 | 0.4 | WPF window |
+| `CastleHeroRowsTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.07 | 0.06 |  |
+| `HeroesArmyViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 7 | 0.02 | 0.01 |  |
+| `MinesListViewModelTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 7 | 0.02 | 0.01 |  |
+| `ObeliskVisitsViewModelTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.01 | 0.01 |  |
+| `OwnedLinksTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.03 | 0.02 |  |
+| `OwnerNavGroupTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 7 | 0.01 | 0.0 |  |
+| `RecordsPageViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 2 | 0.01 | 0.01 |  |
+| `TavernPlaceViewModelTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.01 | 0.01 |  |
+| `VisitedPlacesCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/ViewModels | MultiUnit | 2 | 0.0 | 0.0 |  |
+| `DaysLeftCardTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 3 | 0.27 | 0.11 | WPF window |
+| `HeadedCardTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 1 | 0.08 | 0.08 | WPF window |
+| `HeroCardsTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 5 | 0.46 | 0.11 | WPF window |
+| `ItemsCardTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 2 | 0.15 | 0.07 | WPF window |
+| `MinesCardTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 4 | 0.35 | 0.09 | WPF window |
+| `ObeliskVisitsCardTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 3 | 0.09 | 0.08 | WPF window |
+| `OwnerPickerTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 2 | 0.15 | 0.08 | WPF window |
+| `PageContractTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 3 | 0.24 | 0.09 | WPF window |
+| `PageHeaderTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 2 | 0.16 | 0.08 | WPF window |
+| `ResourcesPanelTests` | Siniskalc.Heroes.Wpf.Tests/MultiUnit/Views | MultiUnit | 1 | 0.09 | 0.09 | WPF window |
+| `ArmyTotalsTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `ArmyViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 23 | 0.02 | 0.01 |  |
+| `ArtifactPickerViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 9 | 0.0 | 0.0 |  |
+| `BanishingTextProviderTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `CastleHeroRowViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `CastleLinkViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `DaysLeftCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 6 | 0.0 | 0.0 |  |
+| `HeroChoiceViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `LevelAndClassCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `MapPointCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `MineRowViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `MineRowViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `MovementAndSpellPointsCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `NeutralPageViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 12 | 0.0 | 0.0 |  |
+| `ObeliskRowViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `OverviewViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 7 | 0.01 | 0.01 |  |
+| `OwnerNavigationBuilderBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 16 | 0.01 | 0.0 |  |
+| `PlayerCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `PrimarySkillRowViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 9 | 0.0 | 0.0 |  |
+| `PrimarySkillsCardViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `ResettablePageViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `ResourcePaletteTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 10 | 0.0 | 0.0 |  |
+| `ResourceRowViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 6 | 0.0 | 0.0 |  |
+| `ResourcesEditorViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 6 | 0.0 | 0.0 |  |
+| `SecondarySkillsViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 34 | 0.01 | 0.0 |  |
+| `SessionPageViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 3 | 0.01 | 0.0 |  |
+| `SkillLevelNamesTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 14 | 0.0 | 0.0 |  |
+| `SkillSlotViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 21 | 0.0 | 0.0 |  |
+| `SpellsViewModelBaseTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 15 | 0.0 | 0.0 |  |
+| `StackSlotViewModelTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 20 | 0.02 | 0.01 |  |
+| `StackTotalsTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 10 | 0.0 | 0.0 |  |
+| `TavernChoicesTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `WeeklyGrowthTextTests` | Siniskalc.Heroes.Wpf.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `BuiltTodayDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 3 | 0.01 | 0.01 |  |
+| `BuiltTodayDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 2 | 0.01 | 0.01 |  |
+| `BytesLoaderTests` | Siniskalc.Homm2.Tests/Data | Unit | 11 | 0.01 | 0.01 |  |
+| `CastleDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 14 | 0.01 | 0.01 |  |
+| `CastleDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 8 | 0.05 | 0.05 |  |
+| `HeroDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 9 | 0.03 | 0.01 |  |
+| `MapObjectsReaderTests` | Siniskalc.Homm2.Tests/Data | Unit | 15 | 0.01 | 0.0 |  |
+| `MapPlacesReaderTests` | Siniskalc.Homm2.Tests/Data | Unit | 6 | 0.0 | 0.0 |  |
+| `MineDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `MineDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `ObeliskDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `PlayerDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 5 | 0.01 | 0.01 |  |
+| `PlayerDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 5 | 0.01 | 0.0 |  |
+| `SafeBuiltTodaySerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `SafeCastleSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 15 | 0.01 | 0.0 |  |
+| `SafeHeroSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 11 | 0.01 | 0.0 |  |
+| `SafeMineSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 7 | 0.0 | 0.0 |  |
+| `SafeObeliskSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 6 | 0.0 | 0.0 |  |
+| `SafePlayerSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 7 | 0.0 | 0.0 |  |
+| `SafeShrineSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 5 | 0.0 | 0.0 |  |
+| `SafeSphinxSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 9 | 0.0 | 0.0 |  |
+| `SafeTurnSerializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `ShrineDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `ShrineDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 3 | 0.0 | 0.0 |  |
+| `SphinxDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 8 | 0.0 | 0.0 |  |
+| `SphinxDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `TurnDeserializerTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `TurnDifferTests` | Siniskalc.Homm2.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `ArtifactBonusesTests` | Siniskalc.Homm2.Tests/Entities | Unit | 3 | 0.0 | 0.0 |  |
+| `CreatureTests` | Siniskalc.Homm2.Tests/Entities | Unit | 6 | 0.01 | 0.0 |  |
+| `SpellTests` | Siniskalc.Homm2.Tests/Entities | Unit | 8 | 0.0 | 0.0 |  |
+| `TownBuildingNamesTests` | Siniskalc.Homm2.Tests/Entities | Unit | 7 | 0.0 | 0.0 |  |
+| `BuiltTodayTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 7 | 0.03 | 0.01 | TestData, TestServices, saves |
+| `ByteEditTargetFactoryTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 4 | 0.01 | 0.0 | TestServices |
+| `CastleDifferSavegameTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 5 | 0.05 | 0.05 | TestServices |
+| `CastleTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 8 | 0.01 | 0.0 | TestData, TestServices |
+| `EditedSavesTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 7 | 0.05 | 0.02 | TestData, TestServices, disk, saves |
+| `EditingTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 10 | 0.01 | 0.0 | TestServices, saves |
+| `EditorSavesTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 7 | 0.29 | 0.25 | TestData, TestServices, disk, saves |
+| `HeaderReaderTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 21 | 0.01 | 0.0 | TestData, TestServices, saves |
+| `HeroChunkCollectionTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 2 | 0.02 | 0.02 | TestServices |
+| `HeroDestinationTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 11 | 0.02 | 0.0 | TestData, TestServices |
+| `HeroDifferSavegameTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 4 | 0.05 | 0.04 | TestServices |
+| `HeroFacingTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 5 | 0.12 | 0.11 | TestData, TestServices, saves |
+| `HeroTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 13 | 0.01 | 0.0 | TestData, TestServices |
+| `MapObjectsTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 12 | 0.14 | 0.08 | TestServices, saves |
+| `ObeliskTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 5 | 0.01 | 0.0 | TestData, TestServices |
+| `PlayerControlTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 30 | 0.22 | 0.08 | TestData, TestServices, disk, saves |
+| `PlayerDifferSavegameTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 4 | 0.08 | 0.04 | TestServices |
+| `PlayerTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 8 | 0.01 | 0.0 | TestData, TestServices |
+| `RoundTripTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 4 | 1.56 | 0.77 | TestServices, saves |
+| `SafeCastleSerializerSavegameTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 4 | 0.01 | 0.0 | TestServices, saves |
+| `SafeHeroSerializerSavegameTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 2 | 0.0 | 0.0 | TestServices |
+| `SaveLayoutLocatorTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 7 | 0.02 | 0.01 | saves |
+| `SavegameParserTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 5 | 2.55 | 2.52 | TestServices, disk, saves |
+| `TestDataNamesTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 5 | 0.01 | 0.0 | TestData, disk |
+| `ThreedomEditorSavesTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 7 | 0.15 | 0.14 | TestData, TestServices, disk, saves |
+| `ThreedomTests` | Siniskalc.Homm2.Tests/Integration/Data | Integration | 33 | 0.06 | 0.02 | TestData, TestServices |
+| `Homm2LayeringTests` | Siniskalc.Homm2.Tests/Integration | Integration | 2 | 0.0 | 0.0 | disk |
+| `CastleModelSavegameTests` | Siniskalc.Homm2.Tests/Integration/Models | Integration | 5 | 0.0 | 0.0 | TestServices |
+| `CastleWeeklyGrowthTests` | Siniskalc.Homm2.Tests/Integration/Models | Integration | 4 | 0.0 | 0.0 | TestData, TestServices |
+| `HeroModelSavegameTests` | Siniskalc.Homm2.Tests/Integration/Models | Integration | 2 | 0.0 | 0.0 | TestServices |
+| `ShellTests` | Siniskalc.Homm2.Tests/Integration | Integration | 6 | 6.74 | 6.62 | WPF window, disk, saves |
+| `HeroActiveSpellsTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 1 | 0.0 | 0.0 | TestServices |
+| `HeroVisitedPlacesTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 5 | 0.01 | 0.0 | TestServices |
+| `Homm2EditorCastlePageTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 5 | 0.04 | 0.02 |  |
+| `Homm2EditorHeroPageTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 10 | 0.06 | 0.01 | TestServices |
+| `Homm2EditorHexTabTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 1 | 0.01 | 0.01 |  |
+| `Homm2EditorNavigationTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 15 | 0.08 | 0.04 | TestServices |
+| `Homm2EditorOverviewTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 2 | 0.0 | 0.0 |  |
+| `Homm2EditorPlayerPageTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 7 | 0.04 | 0.01 | TestServices |
+| `MapViewModelTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 6 | 0.01 | 0.0 | TestServices |
+| `MinesListsTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 2 | 0.0 | 0.0 | TestServices |
+| `PlayerViewModelTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 5 | 0.01 | 0.0 | TestServices |
+| `SavegameFileCommandsTests` | Siniskalc.Homm2.Tests/Integration/ViewModels | Integration | 13 | 0.06 | 0.03 | disk, saves |
+| `PageRenderingTests` | Siniskalc.Homm2.Tests/Integration/Views | Integration | 1 | 0.92 | 0.92 | WPF window, disk, saves |
+| `CastleModelTests` | Siniskalc.Homm2.Tests/Models | Unit | 17 | 0.0 | 0.0 |  |
+| `HeroModelTests` | Siniskalc.Homm2.Tests/Models | Unit | 12 | 0.01 | 0.0 |  |
+| `MaxSpellPointsCalculatorTests` | Siniskalc.Homm2.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `SecondarySkillsTests` | Siniskalc.Homm2.Tests/Models | Unit | 5 | 0.0 | 0.0 |  |
+| `SaveRegionProviderTests` | Siniskalc.Homm2.Tests/MultiUnit/Data | MultiUnit | 5 | 0.02 | 0.01 |  |
+| `EntityTablesTests` | Siniskalc.Homm2.Tests/MultiUnit/Entities | MultiUnit | 21 | 0.01 | 0.0 |  |
+| `SharedEntityTests` | Siniskalc.Homm2.Tests/MultiUnit/Entities | MultiUnit | 5 | 0.01 | 0.0 |  |
+| `HeroLevelsTests` | Siniskalc.Homm2.Tests/MultiUnit/Models | MultiUnit | 7 | 0.0 | 0.0 |  |
+| `ArmyViewModelTests` | Siniskalc.Homm2.Tests/MultiUnit/ViewModels | MultiUnit | 3 | 0.0 | 0.0 |  |
+| `SphinxViewModelTests` | Siniskalc.Homm2.Tests/MultiUnit/ViewModels | MultiUnit | 10 | 0.01 | 0.0 |  |
+| `DwellingRowViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `GuildLevelViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `SecondarySkillsViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `ShrineRowViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 8 | 0.01 | 0.0 |  |
+| `SpellFinderViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `SpellRowViewModelTests` | Siniskalc.Homm2.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `CastleBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 35 | 0.01 | 0.0 |  |
+| `CastleChunkCollectionTests` | Siniskalc.Homm3.Tests/Data | Unit | 2 | 0.25 | 0.25 |  |
+| `CastleDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 9 | 0.05 | 0.02 |  |
+| `CastleRegionProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 8 | 0.01 | 0.0 |  |
+| `DwellingBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 21 | 0.02 | 0.01 |  |
+| `DwellingDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `DwellingRegionProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `HeroBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 60 | 0.03 | 0.01 |  |
+| `HeroChunkCollectionTests` | Siniskalc.Homm3.Tests/Data | Unit | 3 | 0.02 | 0.01 |  |
+| `HeroDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 15 | 0.06 | 0.03 |  |
+| `HeroOffsetsTests` | Siniskalc.Homm3.Tests/Data | Unit | 7 | 0.0 | 0.0 |  |
+| `HeroOwnersDeserializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 1 | 0.0 | 0.0 |  |
+| `HeroOwnersDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 1 | 0.0 | 0.0 |  |
+| `HeroRegionProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 16 | 0.02 | 0.01 |  |
+| `Homm3PendingChangesFactoryTests` | Siniskalc.Homm3.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `MapHeaderLocatorTests` | Siniskalc.Homm3.Tests/Data | Unit | 30 | 0.01 | 0.0 |  |
+| `MapObjectPositionsTests` | Siniskalc.Homm3.Tests/Data | Unit | 16 | 0.0 | 0.0 |  |
+| `MerchantBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 10 | 0.01 | 0.0 |  |
+| `MerchantStockDeserializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 3 | 0.0 | 0.0 |  |
+| `MerchantStockDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `MineBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 27 | 0.0 | 0.0 |  |
+| `MineDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `MineRegionProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 5 | 0.0 | 0.0 |  |
+| `ObeliskBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 11 | 0.0 | 0.0 |  |
+| `ObeliskDeserializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 4 | 0.0 | 0.0 |  |
+| `PlayerBytesLoaderTests` | Siniskalc.Homm3.Tests/Data | Unit | 12 | 0.01 | 0.0 |  |
+| `PlayerChunkCollectionTests` | Siniskalc.Homm3.Tests/Data | Unit | 3 | 0.01 | 0.0 |  |
+| `PlayerDeserializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 12 | 0.01 | 0.0 |  |
+| `PlayerDifferTests` | Siniskalc.Homm3.Tests/Data | Unit | 7 | 0.01 | 0.0 |  |
+| `PlayerRegionProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 11 | 0.01 | 0.0 |  |
+| `PlayerSetupLocationTests` | Siniskalc.Homm3.Tests/Data | Unit | 5 | 0.0 | 0.0 |  |
+| `SafeCastleSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 26 | 0.02 | 0.0 |  |
+| `SafeDwellingSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 8 | 0.0 | 0.0 |  |
+| `SafeMerchantStockSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 8 | 0.0 | 0.0 |  |
+| `SafeMineSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 7 | 0.0 | 0.0 |  |
+| `SafeObeliskSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 5 | 0.0 | 0.0 |  |
+| `SafePlayerSerializerTests` | Siniskalc.Homm3.Tests/Data | Unit | 22 | 0.01 | 0.0 |  |
+| `SavegameVersionDetectorTests` | Siniskalc.Homm3.Tests/Data | Unit | 24 | 0.0 | 0.0 |  |
+| `VersionSpecificEntitiesProviderTests` | Siniskalc.Homm3.Tests/Data | Unit | 6 | 0.0 | 0.0 |  |
+| `WarMachineOffsetsTests` | Siniskalc.Homm3.Tests/Data | Unit | 2 | 0.0 | 0.0 |  |
+| `ArtifactEffectInfoTests` | Siniskalc.Homm3.Tests/Entities | Unit | 19 | 0.0 | 0.0 |  |
+| `ArtifactTests` | Siniskalc.Homm3.Tests/Entities | Unit | 1 | 0.0 | 0.0 |  |
+| `BuildingTests` | Siniskalc.Homm3.Tests/Entities | Unit | 9 | 0.02 | 0.01 |  |
+| `CreatureInfoTests` | Siniskalc.Homm3.Tests/Entities | Unit | 4 | 0.0 | 0.0 |  |
+| `SpellGrantProviderTests` | Siniskalc.Homm3.Tests/Entities | Unit | 4 | 0.0 | 0.0 |  |
+| `ActiveSpellsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 12 | 1.7 | 0.45 | TestData, TestServices |
+| `BiographyTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 6 | 0.57 | 0.18 | TestData, TestServices |
+| `CastleBuilderReplayTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 4 | 10.54 | 10.48 | TestServices, saves |
+| `CastleBuilderSavefileRulesTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 10.15 | 9.3 | TestServices, saves |
+| `CastleDeserializerTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 10 | 37.14 | 36.59 | TestData, TestServices, disk |
+| `CastleDifferSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 13 | 1.3 | 0.15 | saves |
+| `CastleEditSessionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 0.77 | 0.15 | TestData, TestServices, disk |
+| `CastleEditingTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 11 | 1.74 | 0.3 | TestServices, saves |
+| `CastleRegionProviderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 1 | 0.05 | 0.05 | TestData, TestServices |
+| `CoveCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 16 | 3.99 | 0.97 | TestData, TestServices |
+| `DwellingTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 3.79 | 2.22 | TestData, TestServices, disk |
+| `FactoryCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 21 | 3.07 | 0.17 | TestData, TestServices |
+| `GameDateLocatorTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 16 | 4.53 | 2.48 | TestData, TestServices, saves |
+| `GenderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 12 | 0.64 | 0.09 | TestData, TestServices |
+| `GoldLimitSavesTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 2 | 1.09 | 1.09 | TestData, TestServices, disk |
+| `HeroAndCastleLookupTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 3 | 0.24 | 0.09 | TestData, TestServices |
+| `HeroByteEditTargetTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 9 | 2.33 | 0.28 | TestData, TestServices |
+| `HeroDeserializerTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 5 | 0.02 | 0.01 | TestData, TestServices, disk |
+| `HeroDestinationTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 3 | 0.28 | 0.11 | TestData, TestServices |
+| `HeroEditSessionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 3 | 0.0 | 0.0 | TestData, TestServices, disk |
+| `HeroOwnerEditsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 18 | 1.86 | 0.2 | TestData, TestServices |
+| `HeroOwnersBytesLoaderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 454 | 25.91 | 0.31 | TestData, TestServices, disk, saves |
+| `HeroRegionProviderSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 9 | 2.27 | 0.26 | TestData, TestServices |
+| `HotaFourCornersTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 2 | 0.25 | 0.12 | TestData, TestServices |
+| `HotaSaveTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 6 | 0.69 | 0.68 | TestData, TestServices, disk |
+| `HotaSleepGarrisonVisitingTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 30 | 2.07 | 0.34 | TestData, TestServices, saves |
+| `MageGuildLevelTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 12 | 0.84 | 0.08 | TestData, TestServices |
+| `MageGuildSpellEditingTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 10 | 1.22 | 0.23 | TestServices, saves |
+| `MageGuildSpellsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 8 | 0.54 | 0.08 | TestData, TestServices |
+| `MapDifficultyTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 6 | 0.67 | 0.25 | TestData, TestServices |
+| `MapHeaderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 8 | 1.0 | 0.29 | TestData, TestServices |
+| `MapObjectByteEditTargetTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 4 | 0.31 | 0.08 | TestData, TestServices |
+| `MerchantStockTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 5 | 2.57 | 2.27 | TestData, TestServices, disk |
+| `MineTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 4.08 | 1.61 | TestData, TestServices, disk |
+| `MovedTodayTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 13 | 1.04 | 0.15 | TestData, TestServices |
+| `ObeliskVisitsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 465 | 12.57 | 1.64 | TestData, TestServices, disk, saves |
+| `OtherFactionsCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 49 | 85.01 | 28.12 | TestData, TestServices, disk |
+| `PlayerBanishingTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 25 | 5.14 | 1.38 | TestData, TestServices, disk |
+| `PlayerBytesLoaderSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 0.54 | 0.1 | TestData, TestServices, disk |
+| `PlayerCollectionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 1 | 0.26 | 0.26 | TestData, TestServices |
+| `PlayerControlLocatorTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 14 | 1.2 | 0.25 | TestData, TestServices |
+| `PlayerDeserializerSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 8 | 2.35 | 0.53 | TestData, TestServices |
+| `PlayerDifferSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 1 | 0.07 | 0.07 | TestData, TestServices, disk |
+| `PlayerEditSessionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 7 | 0.54 | 0.09 | TestData, TestServices |
+| `PlayerHeadTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 460 | 0.97 | 0.25 | TestData, TestServices, disk, saves |
+| `PlayerRegionProviderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 3 | 0.26 | 0.26 | TestData, TestServices |
+| `PlayersInTheGameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 5 | 0.04 | 0.01 | TestData, TestServices |
+| `RampartAndBulwarkCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 39 | 11.58 | 0.34 | TestData, TestServices |
+| `RampartCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 31 | 4.81 | 0.18 | TestData, TestServices |
+| `RoeBuildingEditsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 62 | 8.36 | 0.22 | TestData, TestServices, saves |
+| `RoeCastleBuildingsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 146 | 50.82 | 5.83 | TestData, TestServices, disk |
+| `RoeCastleTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 45 | 15.09 | 1.15 | TestData, TestServices |
+| `RoeHeroTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 16 | 2.6 | 1.03 | TestData, TestServices |
+| `RoeMapStateTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 32 | 3.71 | 0.46 | TestData, TestServices |
+| `RoeSanyaMovementTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 5 | 1.58 | 0.41 | TestData, TestServices |
+| `SafeCastleSerializerSavegameTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 15 | 31.31 | 24.3 | TestServices, saves |
+| `SafeHeroOwnersSerializerTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 452 | 0.01 | 0.0 | TestData, disk, saves |
+| `SafeHeroSerializerTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 27 | 0.02 | 0.0 | TestData, TestServices, disk |
+| `SaveRegionProviderTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 15 | 2.91 | 0.75 | TestData, TestServices |
+| `SavefileDetectionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 21 | 1.55 | 0.25 | TestData, TestServices, disk |
+| `SavefileRoundTripTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 14 | 1.76 | 0.47 | TestData, TestServices |
+| `SessionRevisionTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 1 | 0.25 | 0.25 | TestData, TestServices |
+| `SodHotseatTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 12 | 1.82 | 0.33 | TestData, TestServices |
+| `SodSaveTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 11 | 0.57 | 0.13 | TestData, TestServices, disk |
+| `SodSeriesTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 92 | 22.59 | 8.28 | TestData, TestServices, disk, saves |
+| `TestDataNamesTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 10 | 0.01 | 0.0 | TestData, disk, saves |
+| `VisitedBuildingEffectsTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 12 | 1.46 | 0.33 | TestData, TestServices |
+| `VisitedPlacesTests` | Siniskalc.Homm3.Tests/Integration/Data | Integration | 19 | 5.84 | 2.44 | TestData, TestServices, disk |
+| `Homm3LayeringTests` | Siniskalc.Homm3.Tests/Integration | Integration | 2 | 0.0 | 0.0 | disk |
+| `ArtifactSpellGrantsTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 6 | 0.15 | 0.08 | TestData, TestServices |
+| `HeroArtifactBonusesTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 2 | 0.16 | 0.08 | TestData, TestServices |
+| `HeroEditingTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 15 | 4.19 | 0.73 | TestData, TestServices |
+| `HeroPrimarySkillsTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 14 | 1.64 | 0.22 | TestData, TestServices |
+| `SaveBaselineTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 7 | 5.26 | 1.09 | TestServices, disk |
+| `SpellBookTests` | Siniskalc.Homm3.Tests/Integration/Models | Integration | 3 | 0.0 | 0.0 |  |
+| `GameServiceTests` | Siniskalc.Homm3.Tests/Integration/Runtime | Integration | 8 | 0.63 | 0.16 | TestData, TestServices, disk |
+| `GzipSavefileCodecTests` | Siniskalc.Homm3.Tests/Integration/Runtime | Integration | 5 | 0.12 | 0.05 | disk |
+| `SavegameParserTests` | Siniskalc.Homm3.Tests/Integration/Runtime | Integration | 2 | 0.01 | 0.01 | TestServices |
+| `ArtifactFinderHeroTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 3 | 1.48 | 0.5 | TestServices |
+| `BanishingViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 9 | 0.89 | 0.24 | TestData, TestServices, disk |
+| `CastleEditingViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 10 | 2.66 | 1.88 | TestServices, WPF window, saves |
+| `CastleGarrisonedHeroTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 4 | 0.32 | 0.1 | TestData, TestServices, WPF window |
+| `CastleGrailAndCapitolPillTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 2 | 0.14 | 0.07 | TestData, TestServices |
+| `CastleHeroLinksTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 3 | 0.2 | 0.07 | TestData, TestServices |
+| `CastleViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 9 | 0.44 | 0.09 | TestData, TestServices |
+| `HeroEditingViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 2 | 0.98 | 0.49 | TestServices |
+| `HeroOwnerPickerTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 2 | 0.17 | 0.09 | TestData, TestServices |
+| `MapViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 2 | 0.17 | 0.09 | TestData, TestServices |
+| `NavigationBuilderTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 10 | 1.02 | 0.16 | TestData, TestServices |
+| `OrderOfPlayTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 1 | 0.08 | 0.08 | TestData, TestServices |
+| `OverviewViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 5 | 1.58 | 0.54 | TestData, TestServices |
+| `OwnedMapObjectsViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 8 | 0.6 | 0.08 | TestData, TestServices |
+| `PlayerNavigationTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 9 | 2.35 | 0.28 | TestData, TestServices |
+| `PlayerViewModelTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 4 | 1.12 | 0.32 | TestData, TestServices |
+| `SavegameFileCommandsTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 9 | 0.58 | 0.15 | TestData, TestServices, disk |
+| `ShellSmokeTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 7 | 8.09 | 2.92 | TestData, TestServices, WPF window, disk |
+| `ViewModelLayeringTests` | Siniskalc.Homm3.Tests/Integration/ViewModels | Integration | 1 | 0.02 | 0.02 | disk |
+| `HexCardsTests` | Siniskalc.Homm3.Tests/Integration/Views | Integration | 1 | 0.77 | 0.77 | TestData, TestServices, WPF window |
+| `PageRenderingTests` | Siniskalc.Homm3.Tests/Integration/Views | Integration | 3 | 4.72 | 3.04 | TestData, TestServices, WPF window |
+| `CastleBuilderTests` | Siniskalc.Homm3.Tests/Models | Unit | 11 | 0.0 | 0.0 |  |
+| `CastleModelTests` | Siniskalc.Homm3.Tests/Models | Unit | 3 | 0.0 | 0.0 |  |
+| `ChangeAreaTests` | Siniskalc.Homm3.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `GrantedSpellsResolverTests` | Siniskalc.Homm3.Tests/Models | Unit | 1 | 0.0 | 0.0 |  |
+| `HeroModelTests` | Siniskalc.Homm3.Tests/Models | Unit | 7 | 0.0 | 0.0 |  |
+| `HeroOwnersModelTests` | Siniskalc.Homm3.Tests/Models | Unit | 4 | 0.0 | 0.0 |  |
+| `MaxSpellPointsCalculatorTests` | Siniskalc.Homm3.Tests/Models | Unit | 2 | 0.0 | 0.0 |  |
+| `PlayerModelTests` | Siniskalc.Homm3.Tests/Models | Unit | 10 | 0.0 | 0.0 | TestData |
+| `ConstantsTests` | Siniskalc.Homm3.Tests/MultiUnit | MultiUnit | 3 | 0.0 | 0.0 |  |
+| `DwellingCreaturesTests` | Siniskalc.Homm3.Tests/MultiUnit/Data | MultiUnit | 15 | 0.0 | 0.0 |  |
+| `MapPlacesLoaderTests` | Siniskalc.Homm3.Tests/MultiUnit/Data | MultiUnit | 18 | 0.0 | 0.0 |  |
+| `SaveDocumentFactoryTests` | Siniskalc.Homm3.Tests/MultiUnit/Data | MultiUnit | 8 | 0.02 | 0.01 |  |
+| `EntityTablesTests` | Siniskalc.Homm3.Tests/MultiUnit/Entities | MultiUnit | 5 | 0.01 | 0.0 |  |
+| `SharedEntityTests` | Siniskalc.Homm3.Tests/MultiUnit/Entities | MultiUnit | 5 | 0.0 | 0.0 |  |
+| `ArtifactFinderTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.01 | 0.0 |  |
+| `ArtifactInfoViewModelBaseTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 9 | 0.0 | 0.0 | TestServices |
+| `BackpackSlotViewModelTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 4 | 0.0 | 0.0 | TestServices |
+| `CastleBuildMessageProviderTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 5 | 0.0 | 0.0 |  |
+| `CastleDetailsPageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 22 | 0.02 | 0.0 |  |
+| `CastleLinksTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 16 | 0.01 | 0.0 |  |
+| `CastlePageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 20 | 0.03 | 0.01 |  |
+| `CreatureFinderPageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 8 | 0.03 | 0.01 |  |
+| `EquippedArtifactsViewModelTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 9 | 0.01 | 0.0 |  |
+| `GeneralTabArtifactNotesTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 4 | 0.01 | 0.01 |  |
+| `HeroArmyTabTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 6 | 0.01 | 0.0 |  |
+| `HeroEditingPageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 21 | 0.08 | 0.02 |  |
+| `HeroViewModelTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 16 | 0.05 | 0.01 |  |
+| `MerchantViewModelTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 6 | 0.01 | 0.0 | TestServices |
+| `SecondarySkillsPageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 13 | 0.05 | 0.02 |  |
+| `SpellsFromArtifactsViewModelTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 7 | 0.02 | 0.01 |  |
+| `SpellsPageTests` | Siniskalc.Homm3.Tests/MultiUnit/ViewModels | MultiUnit | 12 | 0.04 | 0.02 |  |
+| `Homm3ModuleTests` | Siniskalc.Homm3.Tests/Runtime | Unit | 1 | 0.0 | 0.0 | TestServices |
+| `SavegameParserTests` | Siniskalc.Homm3.Tests/Runtime | Unit | 8 | 0.68 | 0.09 | saves |
+| `ArmySlotViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `BuildingRowsTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 11 | 0.0 | 0.0 |  |
+| `DwellingRowViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `MageGuildRowsTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 5 | 0.0 | 0.0 |  |
+| `MapDwellingRowViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 6 | 0.0 | 0.0 |  |
+| `MineRowViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `SpellFinderViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 8 | 0.0 | 0.0 |  |
+| `VisitedPlacesViewModelTests` | Siniskalc.Homm3.Tests/ViewModels | Unit | 7 | 0.0 | 0.0 |  |
+| `LoggingSettingsViewModelTests` | Siniskalc.Wpf.Tests/Integration/ViewModels | Integration | 9 | 0.09 | 0.04 | disk |
+| `ShellViewModelTests` | Siniskalc.Wpf.Tests/Integration/ViewModels | Integration | 17 | 0.06 | 0.02 | disk |
+| `LoggingSettingsWindowTests` | Siniskalc.Wpf.Tests/Integration/Views | Integration | 1 | 0.36 | 0.36 | WPF window, disk |
+| `ShellWindowTests` | Siniskalc.Wpf.Tests/Integration/Views | Integration | 1 | 0.16 | 0.16 | WPF window, disk |
+| `ErrorWindowTests` | Siniskalc.Wpf.Tests/MultiUnit/Views | MultiUnit | 3 | 0.01 | 0.0 | WPF window |
+| `AboutViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `AmountRowViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 13 | 0.0 | 0.0 |  |
+| `ChoiceFieldViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 7 | 0.0 | 0.0 |  |
+| `DelegateCommandTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 6 | 0.01 | 0.0 | WPF window |
+| `EditorViewModelBaseTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 30 | 0.04 | 0.01 |  |
+| `FinderViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 4 | 0.03 | 0.03 | WPF window |
+| `NavNodeViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 15 | 0.0 | 0.0 |  |
+| `NavigationTreeTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 18 | 0.01 | 0.0 |  |
+| `PageViewModelBaseTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 2 | 0.0 | 0.0 |  |
+| `RecentFilesMenuViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 6 | 0.01 | 0.0 |  |
+| `RecentMenuItemViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 10 | 0.0 | 0.0 | WPF window |
+| `SortColumnViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 4 | 0.0 | 0.0 |  |
+| `SortableListViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `TabbedPageViewModelBaseTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 3 | 0.0 | 0.0 |  |
+| `TextFieldViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 10 | 0.01 | 0.0 |  |
+| `ToggleRowViewModelTests` | Siniskalc.Wpf.Tests/ViewModels | Unit | 7 | 0.0 | 0.0 |  |
+| `HexFormatTests` | Siniskalc.Wpf.Tests/Views | Unit | 12 | 0.0 | 0.0 |  |
+
+## Run time
+
+Thresholds: a Unit or MultiUnit test should take under 100 ms and an Integration test under 2 s.
+
+| Project | Classes | Tests | Test time (s) | Unit (classes / tests / s) | MultiUnit | Integration |
+|---|---:|---:|---:|---|---|---|
+| `Siniskalc.Tests` | 2 | 9 | 0.4 | 0 / 0 / 0.0 | 0 / 0 / 0.0 | 2 / 9 / 0.4 |
+| `Siniskalc.Core.Tests` | 30 | 157 | 0.2 | 17 / 85 / 0.1 | 5 / 30 / 0.0 | 8 / 42 / 0.1 |
+| `Siniskalc.Heroes.Tests` | 39 | 180 | 0.1 | 35 / 150 / 0.1 | 4 / 30 / 0.0 | 0 / 0 / 0.0 |
+| `Siniskalc.Heroes.Wpf.Tests` | 53 | 362 | 2.7 | 33 / 280 / 0.1 | 20 / 82 / 2.6 | 0 / 0 / 0.0 |
+| `Siniskalc.Homm2.Tests` | 92 | 637 | 13.7 | 42 / 264 / 0.2 | 6 / 51 / 0.1 | 44 / 322 / 13.5 |
+| `Siniskalc.Homm3.Tests` | 185 | 3883 | 449.1 | 63 / 596 / 1.3 | 23 / 237 / 0.4 | 99 / 3050 / 447.4 |
+| `Siniskalc.Wpf.Tests` | 22 | 183 | 0.8 | 17 / 152 / 0.1 | 1 / 3 / 0.0 | 4 / 28 / 0.7 |
+
+- **No hidden I/O in a Unit or MultiUnit test**: none of them loads a save.
+- **Where the time goes**: the 25 slowest classes take 85% of the HoMM3 time and all of them are savefile series or every-save contracts (D2).
+- **Variation**: one full run of `Siniskalc.Homm3.Tests` took 48 minutes 45 seconds on this machine (the cause was not found) and the run measured here 7 minutes 29 seconds; repeat the measurement before trusting a slow one.
+- **Waiting**: `Siniskalc.Homm3.Tests` can print nothing for a minute while one test loads every save; it is slow, not hung. Use `--blame-hang-timeout 20m` or more.
+
+## Gaps
+
+Production types, 25 lines or longer, that no test names by name (checked by script: no `<Type>Tests` class and the type is mentioned in no test file). Types that tests exercise only through a page or a session are not listed; D4 to D6 are the actionable ones.
+
+| Project | Types |
+|---|---|
+| Core | `ForwardingLogger`, `ByteEnumerations` (used by every serializer) |
+| Wpf | `HexRowList`, `NavButton`, `HexPalette`, `WpfMessageService`, `WpfFileDialogs`, `EditorCommands`, `HexRow`, `RegionNode`, `AdvancedModeVisibility` |
+| Heroes | none |
+| Heroes.Wpf | `HeroesSecondarySkillsViewModel` (through the games' pages), `NextBattleCardViewModel`, `HeroLinkViewModel`, `OrderOfPlayItemViewModel` |
+| Homm2 | `RecordRegions` (through `SaveRegionProviderTests`), `HeroEditSession`, `CastleEditSession`, `PlayerEditSession` (through the three `...DifferSavegameTests`), `ArtifactsViewModel`, `SpellsViewModel` (through the hero and castle page tests), `PageViewModel`, `Homm2Module`, `Homm2SaveDocuments`, `MapPlaces`, `CastleLinks`, `Homm2EditSessions` |
+| Homm3 | `Homm3SaveDocuments`, `BuildingType`, `Homm3EditSessions`, `ByteEditTargetFactory`, `ArtifactSlotViewModel` (through the merchant and backpack tests), `MapHeaderLocation`, `DwellingDeserializer` |
+| App | `LoggingSetup` |
+
+Rules from `CLAUDE.md` and their coverage:
+
+- **An unknown value reads as a stand-in and the serializer keeps the byte**: tested for HoMM3 castles, heroes, hero owners, mines, dwellings and merchants, and for the Core and Heroes types behind them. HoMM3 players and obelisks and HoMM2 castles, players and map objects have it only in part.
+- **Malformed input**: the finders of both games are tested with short, cut and wrong bytes; the savefile parsers are still tested only with empty and random bytes.
+- **Reading and writing a chunk are independent**: enforced by the layering tests and by the Unit serializer tests, which never call a deserializer.
+
+## Conventions the suite now follows
+
+1. `[Category(TestKinds.Unit|MultiUnit|Integration)]` on every fixture, one `TestKinds` class per project; `Integration/<Layer>/` and `MultiUnit/<Layer>/` folders, Unit tests in the layer folder (D3 asks for a check).
+2. Moq fakes for every dependency of a Unit test; `TestServices` only in MultiUnit and Integration tests; a seam is added to production code only when it keeps behaviour and the user agrees.
+3. Savefile tests only read; a save is loaded once per run where many tests need it (`ReadOnlySaves`).
+4. No `Assert.Pass`, no silent `continue`, no conditional assert, no `Assume`; a serializer test asserts bytes.
+5. A test checks the notification, not only the value, when the getter reads the model anyway (a `Refresh` test that watches `PropertyChanged`); this found several weak tests in slices 27 and 28.
+6. A claim that a test covers a behaviour is checked by changing the production code and watching the test fail (mutation checks, kept in the slice log with their survivors).
+7. A test class per subject, named `<Subject>Tests`; methods are sentences that state the behaviour.
+
+## Backlog (in order of value)
+
+1. D3: a check test per project for category and folder.
+2. D2: load each save once for the remaining every-save tests (saves several minutes of the 7).
+3. D4 and D5: the parser's `StandingOn`, `PageViewModel` and the editor-session accessors.
+4. D1: strengthen the four weak assertions.
+5. D6, D7: the remaining untested view models and the split of `HeroAndCastleLookupTests`.
+6. Decide the four questions about production behaviour above.
+
+## How this review was done
+
+1. `dotnet test` of each project with `--logger "trx;LogFileName=<project>.trx"` and the artifacts outside the repo (the solution run overwrites one file for all projects, so run them one by one); `Siniskalc.Homm3.Tests` with `--blame-hang-timeout 20m`.
+2. A script parsed the TRX files (`UnitTestResult/@duration` joined to `UnitTest/TestMethod/@className`) into the per-class table; the kind comes from the `[Category]` of the class and the folder from its source file.
+3. A script checked every fixture for a category, the folder against the kind, the markers `[Explicit]`, `Assert.Pass`, `Assert.Inconclusive`, `Assert.Ignore`, `Assert.Warn`, `[Ignore]` and `Assume.`, and for `continue;` or `return;` after an `if`, method names (underscores, `Test`/`Should` prefixes, names ending in "Works" or shorter than 14 characters) and class names containing `And`.
+4. A script listed the production types of 25 lines or more that no test class and no test file names.
+5. The weak assertions were found by searching for `Is.Not.Null)` and `Is.Not.Empty)` (59 hits). The hits in the files that the first review named were read, and 4 remain weak; the other hits were not read one by one.
+6. Findings of the first review were checked again at their lines; the ones that no longer exist are not repeated.
+
+# Slice log
+
+What follows is the record of each slice, newest last; the numbers in it were true when it was written.
+
+## Incremental fixes after the first review (slices 01 to 07)
 
 The class table and original timings below remain the historical review snapshot, not a fresh measurement after each slice.
 Line references refer to that snapshot and may move as tests change.
@@ -308,497 +888,6 @@ All three Core classification slices are complete.
   These measurements do not replace the historical review timings below.
 - Classification is complete, not isolation/coverage remediation: mixed save-backed fixtures remain Integration.
   Splitting pure cases, improving weak assertions and reducing replay cost remain later slices.
-
-## Summary
-
-- **4,000 tests in 263 classes and 7 projects, all passing.**
-  The sum of test durations is 804 s; `Siniskalc.Homm3.Tests` alone takes 775 s (about 13 minutes) and every other project together under 30 s.
-- **Run time is driven by savefile replays, not by units.**
-  The four `CastleBuilderTests` take 132 s, and the every-save sources (`ObeliskVisitsTests`, `PlayerHeadTests`, `HeroOwnersBytesLoaderTests`, `SafeHeroOwnersSerializerTests`, 1,831 cases) another 148 s.
-  `TestData` grew to 448 saves, and every test that walks all saves grows with it.
-- **At review time no test had a `[Category]`, and no project had `Integration/` or `MultiUnit/` folders.**
-  Slice 03a has since categorized eight Core fixtures (42 cases) as Integration and moved them into `Integration/Runtime/`; the rest of the migration remains open.
-  Slice 03b added five Unit fixtures (12 cases) and three MultiUnit fixtures (14 cases), placing the latter in `MultiUnit/Data/`.
-  Slice 03c completed Core: all 20 fixtures and 79 cases are now categorized; migration of the other projects remains open.
-  Slices 04a and 04b completed Wpf: all 10 fixtures and 58 cases are categorized and placed.
-  Slices 05a–05e completed Heroes: all 35 fixtures and 132 cases are categorized and placed (104 Unit, 28 MultiUnit).
-  Slices 06a–06e completed Heroes.Wpf: all 35 fixtures and 142 cases are categorized and placed (35 Unit, 107 MultiUnit).
-  Slices 07a–07f completed HoMM2: all 46 fixtures and 392 discovered cases are categorized and placed (18 Unit, 36 MultiUnit, 335 automated Integration and three Explicit/Manual Integration helpers).
-  The original automated classification counted 92 unit, 19 multi-unit, 94 integration and 58 unit-shaped classes.
-  These are historical estimates, not current category totals; source review has corrected mixed fixtures, real collaborations and filesystem use as detailed above.
-- **The reported assertion-free and skipped-check findings are addressed in slices 01 and 02.**
-  Weak value assertions and the serializer assertion issues below remain open.
-- **Four serializer tests check their output through the deserializer**, which `CLAUDE.md` forbids for the production code and which hides symmetric bugs in tests.
-- **Gaps**: most HoMM2 deserializers and serializers, several HoMM3 loaders and differs, and many Core, Wpf and Heroes.Wpf types have no test class of their own; the unknown-byte rule is not tested for HoMM3 players and obelisks or any HoMM2 record except heroes.
-- **Every test is in the project of the class it tests**, and no shared project names a game type.
-
-### Changes since the `main` review
-
-- Moq is now referenced by five test projects and used in 27 files, mostly in the Heroes.Wpf view-model tests.
-- `[Category]` was used nowhere at review time; the Core migration started in slice 03a.
-- The suite grew from 1,911 tests in 2 min 22 s to 4,000 tests in about 13 min; the growth is almost all in HoMM3 savefile tests.
-- At review time the `Assert.Pass`, the `continue` loops, the `TestContext.Out` line and the serializer-through-deserializer tests reported then were all still there.
-  Slice 01 subsequently addressed the `Assert.Pass` and the `TestContext.Out` line.
-  Slice 02 addressed the six reported `continue` sites and the two reported conditional checks.
-
-## How the review was done
-
-1. `dotnet test Siniskalc.sln --logger trx` with the artifacts outside the repo; `Siniskalc.Homm3.Tests` again alone with `--blame-hang-timeout 10m`, because its host prints nothing for minutes while one test loads all 448 saves.
-2. Per-test durations parsed from the TRX files and summed per class.
-3. Every test file read by one reviewer per area (Core, Wpf and the app; Heroes; Heroes.Wpf; Homm2; Homm3 Data A–L; Homm3 Data M–Z; Homm3 other layers), and every finding below checked at its line.
-4. Each class classified by script: a class that reads `TestServices`, `Saves`, `CastleSamples`, `SeriesSaves`, `TestData` or the disk is integration (or unit-shaped, when it is named after one production type); a class that opens a WPF window or composes several real collaborators is multi-unit; the rest are unit tests.
-
-Thresholds: a unit or multi-unit test should take under 100 ms, and an integration test under 2 s.
-
-## Every test class
-
-Kind is what the class does, not where it is.
-**Unit-shaped** marks a class named after one production type that nevertheless loads a savefile; it should become a unit test with fakes, or move to `Integration/` and be renamed.
-
-| Class | Project / folder | Kind | Tests | Total s | Max s |
-|---|---|---|---:|---:|---:|
-| `RangeGuardTests` | Core / (root) | Unit | 4 | 0.00 | 0.00 |
-| `ByteEnumTests` | Core / Data | Unit | 3 | 0.01 | 0.00 |
-| `ChangeSinkTests` | Core / Data | Unit | 2 | 0.00 | 0.00 |
-| `ChunkCollectionTests` | Core / Data | Unit | 2 | 0.00 | 0.00 |
-| `ChunkPendingChangeTests` | Core / Data | MultiUnit | 3 | 0.00 | 0.00 |
-| `RecordChunkCollectionTests` | Core / Data | MultiUnit | 4 | 0.01 | 0.00 |
-| `RecordChunkTests` | Core / Data | Unit | 2 | 0.00 | 0.00 |
-| `SaveDocumentTests` | Core / Data | MultiUnit | 7 | 0.01 | 0.00 |
-| `SavefileBytesPatcherTests` | Core / Data | Unit | 3 | 0.00 | 0.00 |
-| `VersionedEnumerationTests` | Core / Entities | Unit | 2 | 0.00 | 0.00 |
-| `NumbersTests` | Core / Models | Unit | 2 | 0.00 | 0.00 |
-| `DisabledFileBackupServiceTests` | Core / Runtime | Integration | 2 | 0.00 | 0.00 |
-| `FileBackupServiceProviderTests` | Core / Runtime | Integration | 3 | 0.02 | 0.02 |
-| `LogFactoryTests` | Core / Runtime | Unit | 3 | 0.00 | 0.00 |
-| `LogPathsTests` | Core / Runtime | Integration | 8 | 0.00 | 0.00 |
-| `NumberedSavefileBackupTests` | Core / Runtime | Integration | 5 | 0.02 | 0.01 |
-| `RawSavefileCodecTests` | Core / Runtime | Integration | 3 | 0.03 | 0.02 |
-| `RecentFilesStoreTests` | Core / Runtime | Integration | 5 | 0.05 | 0.02 |
-| `SettingsStoreTests` | Core / Runtime | Integration | 8 | 0.06 | 0.01 |
-| `ShellUrlLauncherTests` | Core / Runtime | Integration | 8 | 0.00 | 0.00 |
-| `AboutViewModelTests` | Wpf / ViewModels | Unit | 2 | 0.25 | 0.25 |
-| `FinderViewModelTests` | Wpf / ViewModels | Unit | 4 | 0.06 | 0.05 |
-| `LoggingSettingsViewModelTests` | Wpf / ViewModels | Integration | 9 | 0.05 | 0.03 |
-| `RecentFilesMenuViewModelTests` | Wpf / ViewModels | Integration | 6 | 0.01 | 0.00 |
-| `ShellViewModelTests` | Wpf / ViewModels | Integration | 17 | 0.04 | 0.01 |
-| `SortableListViewModelTests` | Wpf / ViewModels | Unit | 3 | 0.01 | 0.00 |
-| `ErrorWindowTests` | Wpf / Views | Unit | 3 | 0.17 | 0.16 |
-| `HexFormatTests` | Wpf / Views | Unit | 12 | 0.00 | 0.00 |
-| `LoggingSettingsWindowTests` | Wpf / Views | Integration | 1 | 0.23 | 0.23 |
-| `ShellWindowTests` | Wpf / Views | Integration | 1 | 0.24 | 0.24 |
-| `HeroesLayeringTests` | Heroes / (root) | Unit | 1 | 0.00 | 0.00 |
-| `ArmyReaderTests` | Heroes / Data | Unit | 4 | 0.02 | 0.02 |
-| `ArmyWriterTests` | Heroes / Data | Unit | 6 | 0.01 | 0.01 |
-| `ChangeSinkExtensionsTests` | Heroes / Data | Unit | 18 | 0.02 | 0.00 |
-| `ObeliskChunkCollectionTests` | Heroes / Data | Unit | 4 | 0.16 | 0.14 |
-| `ObeliskDifferTests` | Heroes / Data | Unit | 4 | 0.02 | 0.01 |
-| `ResourceTests` | Heroes / Entities | Unit | 1 | 0.00 | 0.00 |
-| `SkillLevelTests` | Heroes / Entities | Unit | 2 | 0.00 | 0.00 |
-| `ArmyTests` | Heroes / Models | Unit | 7 | 0.00 | 0.00 |
-| `BanishablePlayerBaseTests` | Heroes / Models | Unit | 10 | 0.00 | 0.00 |
-| `ChangeAreasTests` | Heroes / Models | Unit | 1 | 0.01 | 0.01 |
-| `ExperienceTableTests` | Heroes / Models | Unit | 10 | 0.00 | 0.00 |
-| `GameDateTests` | Heroes / Models | Unit | 2 | 0.00 | 0.00 |
-| `GameRuleExceptionTests` | Heroes / Models | Unit | 1 | 0.00 | 0.00 |
-| `GameSetupTests` | Heroes / Models | Unit | 2 | 0.00 | 0.00 |
-| `HeroLevelTests` | Heroes / Models | Unit | 2 | 0.00 | 0.00 |
-| `HeroPositionTests` | Heroes / Models | Unit | 3 | 0.00 | 0.00 |
-| `HeroSummaryTests` | Heroes / Models | Unit | 1 | 0.00 | 0.00 |
-| `MapPositionTests` | Heroes / Models | Unit | 3 | 0.00 | 0.00 |
-| `MovementPointsTests` | Heroes / Models | Unit | 1 | 0.00 | 0.00 |
-| `ObeliskVisitsTests` | Heroes / Models | Unit | 8 | 0.00 | 0.00 |
-| `OwnerNamesTests` | Heroes / Models | Unit | 3 | 0.00 | 0.00 |
-| `PlayerModelExtensionsTests` | Heroes / Models | Unit | 4 | 0.00 | 0.00 |
-| `PrimarySkillsTests` | Heroes / Models | Unit | 8 | 0.00 | 0.00 |
-| `ResourceSetTests` | Heroes / Models | Unit | 2 | 0.00 | 0.00 |
-| `SpellSetTests` | Heroes / Models | Unit | 3 | 0.01 | 0.00 |
-| `TavernHeroesTests` | Heroes / Models | Unit | 2 | 0.00 | 0.00 |
-| `HeroesSavegameBaseTests` | Heroes / Runtime | MultiUnit | 2 | 0.00 | 0.00 |
-| `CreatureChoiceViewModelTests` | Heroes / ViewModels | Unit | 4 | 0.01 | 0.01 |
-| `MapLevelTextTests` | Heroes / ViewModels | Unit | 2 | 0.00 | 0.00 |
-| `OverviewTextTests` | Heroes / ViewModels | Unit | 2 | 0.00 | 0.00 |
-| `PlayerPaletteTests` | Heroes / ViewModels | Unit | 3 | 0.00 | 0.00 |
-| `PlayerTypeTextTests` | Heroes / ViewModels | Unit | 2 | 0.01 | 0.00 |
-| `PrimarySkillBonusTextTests` | Heroes / ViewModels | Unit | 2 | 0.00 | 0.00 |
-| `TurnTextTests` | Heroes / ViewModels | Unit | 2 | 0.00 | 0.00 |
-| `PageStylesTests` | Heroes.Wpf / Styles | MultiUnit | 11 | 0.67 | 0.67 |
-| `ArmyTotalsTests` | Heroes.Wpf / ViewModels | Unit | 3 | 0.01 | 0.01 |
-| `BanishingTextProviderTests` | Heroes.Wpf / ViewModels | Unit | 4 | 0.01 | 0.01 |
-| `CastleHeroRowsTests` | Heroes.Wpf / ViewModels | Unit | 5 | 0.36 | 0.35 |
-| `CastleLinkViewModelTests` | Heroes.Wpf / ViewModels | Unit | 3 | 0.01 | 0.01 |
-| `DaysLeftCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 6 | 0.02 | 0.01 |
-| `HeroesArmyViewModelBaseTests` | Heroes.Wpf / ViewModels | Unit | 7 | 0.05 | 0.02 |
-| `LevelAndClassCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 4 | 0.00 | 0.00 |
-| `MapPointCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 4 | 0.00 | 0.00 |
-| `MineRowViewModelBaseTests` | Heroes.Wpf / ViewModels | Unit | 3 | 0.00 | 0.00 |
-| `MineRowViewModelTests` | Heroes.Wpf / ViewModels | Unit | 3 | 0.02 | 0.02 |
-| `MinesListViewModelTests` | Heroes.Wpf / ViewModels | Unit | 7 | 0.04 | 0.03 |
-| `MovementAndSpellPointsCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 4 | 0.00 | 0.00 |
-| `ObeliskVisitsViewModelTests` | Heroes.Wpf / ViewModels | MultiUnit | 5 | 0.04 | 0.02 |
-| `OverviewViewModelBaseTests` | Heroes.Wpf / ViewModels | Unit | 7 | 0.07 | 0.05 |
-| `OwnedLinksTests` | Heroes.Wpf / ViewModels | Unit | 5 | 0.20 | 0.14 |
-| `OwnerNavGroupTests` | Heroes.Wpf / ViewModels | Unit | 7 | 0.12 | 0.04 |
-| `PrimarySkillsCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 5 | 0.02 | 0.01 |
-| `RecordsPageViewModelBaseTests` | Heroes.Wpf / ViewModels | MultiUnit | 2 | 0.06 | 0.05 |
-| `ResourcesEditorViewModelTests` | Heroes.Wpf / ViewModels | Unit | 6 | 0.07 | 0.03 |
-| `SessionPageViewModelBaseTests` | Heroes.Wpf / ViewModels | MultiUnit | 2 | 0.03 | 0.03 |
-| `TavernChoicesTests` | Heroes.Wpf / ViewModels | Unit | 4 | 0.03 | 0.02 |
-| `TavernPlaceViewModelTests` | Heroes.Wpf / ViewModels | Unit | 5 | 0.02 | 0.01 |
-| `VisitedPlacesCardViewModelTests` | Heroes.Wpf / ViewModels | Unit | 2 | 0.01 | 0.01 |
-| `WeeklyGrowthTextTests` | Heroes.Wpf / ViewModels | Unit | 2 | 0.00 | 0.00 |
-| `DaysLeftCardTests` | Heroes.Wpf / Views | MultiUnit | 3 | 0.43 | 0.20 |
-| `HeadedCardTests` | Heroes.Wpf / Views | MultiUnit | 1 | 0.12 | 0.12 |
-| `HeroCardsTests` | Heroes.Wpf / Views | MultiUnit | 5 | 0.71 | 0.18 |
-| `ItemsCardTests` | Heroes.Wpf / Views | MultiUnit | 2 | 0.23 | 0.12 |
-| `MinesCardTests` | Heroes.Wpf / Views | MultiUnit | 4 | 0.91 | 0.30 |
-| `ObeliskVisitsCardTests` | Heroes.Wpf / Views | MultiUnit | 3 | 0.24 | 0.23 |
-| `OwnerPickerTests` | Heroes.Wpf / Views | MultiUnit | 2 | 0.33 | 0.17 |
-| `PageContractTests` | Heroes.Wpf / Views | MultiUnit | 3 | 0.66 | 0.24 |
-| `PageHeaderTests` | Heroes.Wpf / Views | MultiUnit | 2 | 0.20 | 0.10 |
-| `ResourcesPanelTests` | Heroes.Wpf / Views | MultiUnit | 1 | 0.13 | 0.13 |
-| `Homm2LayeringTests` | Homm2 / (root) | Unit | 2 | 0.00 | 0.00 |
-| `ShellTests` | Homm2 / (root) | Integration | 6 | 3.95 | 3.86 |
-| `BuiltTodayTests` | Homm2 / Data | Integration | 7 | 0.34 | 0.20 |
-| `ByteEditTargetFactoryTests` | Homm2 / Data | **Unit-shaped** | 4 | 0.03 | 0.02 |
-| `CastleDifferTests` | Homm2 / Data | **Unit-shaped** | 5 | 0.09 | 0.06 |
-| `CastleTests` | Homm2 / Data | **Unit-shaped** | 8 | 0.11 | 0.02 |
-| `EditedSavesTests` | Homm2 / Data | Integration | 7 | 0.06 | 0.03 |
-| `EditingTests` | Homm2 / Data | Integration | 9 | 0.03 | 0.01 |
-| `EditorSavesTests` | Homm2 / Data | Integration | 7 | 0.44 | 0.39 |
-| `HeaderReaderTests` | Homm2 / Data | **Unit-shaped** | 21 | 0.33 | 0.06 |
-| `HeroChunkCollectionTests` | Homm2 / Data | **Unit-shaped** | 2 | 0.00 | 0.00 |
-| `HeroDestinationAndFacingTests` | Homm2 / Data | Integration | 14 | 2.86 | 2.76 |
-| `HeroDifferTests` | Homm2 / Data | **Unit-shaped** | 4 | 0.13 | 0.12 |
-| `HeroTests` | Homm2 / Data | **Unit-shaped** | 13 | 0.03 | 0.00 |
-| `MapObjectsTests` | Homm2 / Data | Integration | 12 | 0.49 | 0.23 |
-| `ObeliskTests` | Homm2 / Data | Integration | 5 | 0.02 | 0.01 |
-| `PlayerControlTests` | Homm2 / Data | Integration | 30 | 0.49 | 0.17 |
-| `PlayerDifferTests` | Homm2 / Data | **Unit-shaped** | 4 | 0.24 | 0.12 |
-| `PlayerTests` | Homm2 / Data | **Unit-shaped** | 8 | 0.02 | 0.01 |
-| `RoundTripTests` | Homm2 / Data | Integration | 4 | 2.11 | 1.05 |
-| `SafeCastleSerializerTests` | Homm2 / Data | **Unit-shaped** | 4 | 0.01 | 0.00 |
-| `SafeHeroSerializerTests` | Homm2 / Data | **Unit-shaped** | 2 | 0.00 | 0.00 |
-| `SaveLayoutLocatorTests` | Homm2 / Data | **Unit-shaped** | 7 | 0.03 | 0.02 |
-| `SavegameParserTests` | Homm2 / Data | **Unit-shaped** | 5 | 4.10 | 4.07 |
-| `TestDataNamesTests` | Homm2 / Data | Integration | 5 | 0.02 | 0.01 |
-| `ThreedomEditorSavesTests` | Homm2 / Data | Integration | 7 | 0.30 | 0.28 |
-| `ThreedomTests` | Homm2 / Data | Integration | 33 | 0.07 | 0.01 |
-| `CreatureTests` | Homm2 / Entities | Unit | 6 | 0.01 | 0.00 |
-| `EntityTablesTests` | Homm2 / Entities | Unit | 21 | 0.01 | 0.00 |
-| `SharedEntityTests` | Homm2 / Entities | Unit | 5 | 0.01 | 0.00 |
-| `SpellTests` | Homm2 / Entities | Unit | 8 | 0.00 | 0.00 |
-| `CastleModelTests` | Homm2 / Models | **Unit-shaped** | 11 | 0.02 | 0.00 |
-| `HeroLevelsTests` | Homm2 / Models | Unit | 7 | 0.00 | 0.00 |
-| `HeroModelTests` | Homm2 / Models | **Unit-shaped** | 14 | 0.02 | 0.00 |
-| `MaxSpellPointsCalculatorTests` | Homm2 / Models | **Unit-shaped** | 1 | 0.00 | 0.00 |
-| `SecondarySkillsTests` | Homm2 / Models | Unit | 4 | 0.00 | 0.00 |
-| `ArmyViewModelTests` | Homm2 / ViewModels | MultiUnit | 3 | 0.00 | 0.00 |
-| `CastleWeeklyGrowthTests` | Homm2 / ViewModels | Integration | 4 | 0.01 | 0.00 |
-| `HeroActiveSpellsTests` | Homm2 / ViewModels | Integration | 1 | 0.00 | 0.00 |
-| `HeroVisitedPlacesTests` | Homm2 / ViewModels | Integration | 5 | 0.02 | 0.01 |
-| `Homm2EditorViewModelTests` | Homm2 / ViewModels | **Unit-shaped** | 40 | 0.38 | 0.05 |
-| `MapViewModelTests` | Homm2 / ViewModels | **Unit-shaped** | 6 | 0.01 | 0.00 |
-| `MinesListsTests` | Homm2 / ViewModels | **Unit-shaped** | 2 | 0.03 | 0.02 |
-| `PlayerViewModelTests` | Homm2 / ViewModels | **Unit-shaped** | 5 | 0.01 | 0.00 |
-| `SavegameFileCommandsTests` | Homm2 / ViewModels | **Unit-shaped** | 13 | 0.38 | 0.28 |
-| `PageRenderingTests` | Homm2 / Views | Integration | 1 | 2.72 | 2.72 |
-| `ConstantsTests` | Homm3 / (root) | Unit | 3 | 0.01 | 0.01 |
-| `Homm3LayeringTests` | Homm3 / (root) | Unit | 2 | 0.00 | 0.00 |
-| `ActiveSpellsTests` | Homm3 / Data | Integration | 12 | 1.62 | 0.35 |
-| `BiographyTests` | Homm3 / Data | Integration | 6 | 0.60 | 0.18 |
-| `CastleBuilderRulesTests` | Homm3 / Data | Integration | 13 | 36.92 | 32.70 |
-| `CastleBuilderTests` | Homm3 / Data | **Unit-shaped** | 4 | 132.34 | 42.15 |
-| `CastleDeserializerTests` | Homm3 / Data | **Unit-shaped** | 10 | 34.04 | 33.44 |
-| `CastleDifferTests` | Homm3 / Data | **Unit-shaped** | 13 | 1.43 | 0.16 |
-| `CastleEditSessionTests` | Homm3 / Data | **Unit-shaped** | 7 | 0.89 | 0.19 |
-| `CastleEditingTests` | Homm3 / Data | Integration | 11 | 1.82 | 0.30 |
-| `CastleRegionProviderTests` | Homm3 / Data | **Unit-shaped** | 1 | 0.05 | 0.05 |
-| `CollectionAccessTests` | Homm3 / Data | Integration | 5 | 0.78 | 0.27 |
-| `CoveCastleTests` | Homm3 / Data | Integration | 16 | 4.10 | 1.06 |
-| `DwellingCreaturesTests` | Homm3 / Data | Unit | 15 | 0.00 | 0.00 |
-| `DwellingTests` | Homm3 / Data | Integration | 7 | 3.94 | 2.32 |
-| `FactoryCastleTests` | Homm3 / Data | Integration | 21 | 3.21 | 0.21 |
-| `GameDateLocatorTests` | Homm3 / Data | **Unit-shaped** | 16 | 4.57 | 2.43 |
-| `GenderTests` | Homm3 / Data | Integration | 12 | 0.66 | 0.09 |
-| `GoldLimitSavesTests` | Homm3 / Data | Integration | 2 | 0.96 | 0.96 |
-| `HeroByteEditTargetTests` | Homm3 / Data | **Unit-shaped** | 9 | 2.54 | 0.35 |
-| `HeroDeserializerTests` | Homm3 / Data | **Unit-shaped** | 5 | 0.01 | 0.00 |
-| `HeroDestinationTests` | Homm3 / Data | Integration | 3 | 0.23 | 0.08 |
-| `HeroEditSessionTests` | Homm3 / Data | **Unit-shaped** | 3 | 0.00 | 0.00 |
-| `HeroOffsetsTests` | Homm3 / Data | Unit | 7 | 0.00 | 0.00 |
-| `HeroOwnerEditsTests` | Homm3 / Data | **Unit-shaped** | 18 | 1.86 | 0.19 |
-| `HeroOwnersBytesLoaderTests` | Homm3 / Data | **Unit-shaped** | 454 | 36.46 | 0.30 |
-| `HeroOwnersDeserializerTests` | Homm3 / Data | Unit | 1 | 0.00 | 0.00 |
-| `HeroRegionProviderTests` | Homm3 / Data | **Unit-shaped** | 9 | 2.51 | 0.32 |
-| `Homm3PendingChangesFactoryTests` | Homm3 / Data | Unit | 1 | 0.00 | 0.00 |
-| `HotaFourCornersTests` | Homm3 / Data | Integration | 2 | 0.28 | 0.14 |
-| `HotaSaveTests` | Homm3 / Data | Integration | 6 | 0.78 | 0.77 |
-| `HotaSleepGarrisonVisitingTests` | Homm3 / Data | Integration | 18 | 2.02 | 0.36 |
-| `MageGuildLevelTests` | Homm3 / Data | Integration | 12 | 0.94 | 0.09 |
-| `MageGuildSpellEditingTests` | Homm3 / Data | Integration | 10 | 1.25 | 0.24 |
-| `MageGuildSpellsTests` | Homm3 / Data | Integration | 8 | 0.57 | 0.10 |
-| `MapDifficultyTests` | Homm3 / Data | Integration | 6 | 0.70 | 0.27 |
-| `MapHeaderTests` | Homm3 / Data | **Unit-shaped** | 8 | 1.04 | 0.29 |
-| `MapObjectByteEditTargetTests` | Homm3 / Data | Integration | 4 | 0.31 | 0.08 |
-| `MerchantStockTests` | Homm3 / Data | Integration | 5 | 2.79 | 2.48 |
-| `MineTests` | Homm3 / Data | Integration | 7 | 4.66 | 1.84 |
-| `MovedTodayTests` | Homm3 / Data | Integration | 13 | 1.16 | 0.15 |
-| `ObeliskVisitsTests` | Homm3 / Data | Integration | 465 | 39.85 | 1.72 |
-| `OtherFactionsCastleTests` | Homm3 / Data | Integration | 49 | 89.91 | 29.22 |
-| `PlayerBanishingTests` | Homm3 / Data | Integration | 25 | 5.57 | 1.49 |
-| `PlayerBytesLoaderTests` | Homm3 / Data | **Unit-shaped** | 7 | 0.62 | 0.10 |
-| `PlayerControlLocatorTests` | Homm3 / Data | **Unit-shaped** | 14 | 1.26 | 0.27 |
-| `PlayerDeserializerTests` | Homm3 / Data | **Unit-shaped** | 8 | 2.48 | 0.55 |
-| `PlayerDifferTests` | Homm3 / Data | **Unit-shaped** | 1 | 0.08 | 0.08 |
-| `PlayerHeadTests` | Homm3 / Data | Integration | 460 | 37.10 | 0.31 |
-| `PlayerRegionProviderTests` | Homm3 / Data | **Unit-shaped** | 3 | 0.27 | 0.27 |
-| `PlayersInTheGameTests` | Homm3 / Data | **Unit-shaped** | 5 | 0.04 | 0.01 |
-| `RampartAndBulwarkCastleTests` | Homm3 / Data | Integration | 39 | 12.29 | 0.37 |
-| `RampartCastleTests` | Homm3 / Data | Integration | 31 | 5.02 | 0.22 |
-| `RoeBuildingEditsTests` | Homm3 / Data | Integration | 62 | 8.41 | 0.19 |
-| `RoeCastleBuildingsTests` | Homm3 / Data | Integration | 146 | 54.83 | 6.18 |
-| `RoeCastleTests` | Homm3 / Data | Integration | 45 | 16.58 | 1.36 |
-| `RoeHeroTests` | Homm3 / Data | Integration | 16 | 2.61 | 1.01 |
-| `RoeMapStateTests` | Homm3 / Data | Integration | 32 | 4.04 | 0.47 |
-| `RoeSanyaMovementTests` | Homm3 / Data | Integration | 5 | 1.68 | 0.45 |
-| `SafeCastleSerializerTests` | Homm3 / Data | **Unit-shaped** | 14 | 33.12 | 26.28 |
-| `SafeHeroOwnersSerializerTests` | Homm3 / Data | **Unit-shaped** | 452 | 35.04 | 0.28 |
-| `SafeHeroSerializerTests` | Homm3 / Data | **Unit-shaped** | 22 | 0.01 | 0.00 |
-| `SaveRegionProviderTests` | Homm3 / Data | **Unit-shaped** | 15 | 3.01 | 0.69 |
-| `SavefileDetectionTests` | Homm3 / Data | Integration | 21 | 1.63 | 0.27 |
-| `SavefileRoundTripTests` | Homm3 / Data | Integration | 14 | 1.80 | 0.49 |
-| `SodHotseatTests` | Homm3 / Data | Integration | 12 | 2.11 | 0.38 |
-| `SodSaveTests` | Homm3 / Data | Integration | 11 | 0.63 | 0.16 |
-| `SodSeriesTests` | Homm3 / Data | Integration | 92 | 23.87 | 8.52 |
-| `TestDataNamesTests` | Homm3 / Data | Integration | 10 | 0.01 | 0.00 |
-| `VisitedBuildingEffectsTests` | Homm3 / Data | **Unit-shaped** | 12 | 1.52 | 0.35 |
-| `VisitedPlacesTests` | Homm3 / Data | Integration | 19 | 6.39 | 2.74 |
-| `ArtifactTests` | Homm3 / Entities | Unit | 1 | 0.00 | 0.00 |
-| `BuildingTests` | Homm3 / Entities | Unit | 9 | 0.01 | 0.00 |
-| `CreatureInfoTests` | Homm3 / Entities | Unit | 4 | 0.00 | 0.00 |
-| `EntityTablesTests` | Homm3 / Entities | Unit | 5 | 0.01 | 0.00 |
-| `SharedEntityTests` | Homm3 / Entities | Unit | 5 | 0.00 | 0.00 |
-| `CastleModelTests` | Homm3 / Models | **Unit-shaped** | 2 | 0.17 | 0.09 |
-| `ChangeAreaTests` | Homm3 / Models | Unit | 1 | 0.00 | 0.00 |
-| `GrantedSpellsResolverTests` | Homm3 / Models | Unit | 1 | 0.00 | 0.00 |
-| `HeroEditingTests` | Homm3 / Models | Integration | 15 | 4.62 | 0.82 |
-| `HeroModelTests` | Homm3 / Models | **Unit-shaped** | 7 | 0.59 | 0.10 |
-| `HeroOwnersModelTests` | Homm3 / Models | Unit | 4 | 0.00 | 0.00 |
-| `HeroPrimarySkillsTests` | Homm3 / Models | Integration | 14 | 1.61 | 0.25 |
-| `MaxSpellPointsCalculatorTests` | Homm3 / Models | **Unit-shaped** | 2 | 0.38 | 0.23 |
-| `PlayerModelTests` | Homm3 / Models | Unit | 10 | 0.00 | 0.00 |
-| `SaveBaselineTests` | Homm3 / Models | Integration | 7 | 5.56 | 1.14 |
-| `SpellBookAndGrantsTests` | Homm3 / Models | Integration | 11 | 0.36 | 0.10 |
-| `GameServiceTests` | Homm3 / Runtime | **Unit-shaped** | 8 | 0.72 | 0.23 |
-| `GzipSavefileCodecTests` | Homm3 / Runtime | Integration | 5 | 0.10 | 0.05 |
-| `Homm3ModuleTests` | Homm3 / Runtime | **Unit-shaped** | 1 | 0.00 | 0.00 |
-| `SavegameParserTests` | Homm3 / Runtime | **Unit-shaped** | 2 | 0.00 | 0.00 |
-| `ArtifactFinderTests` | Homm3 / ViewModels | Integration | 8 | 1.66 | 0.61 |
-| `BanishingViewModelTests` | Homm3 / ViewModels | Integration | 9 | 0.96 | 0.25 |
-| `CastleDetailsViewModelTests` | Homm3 / ViewModels | Integration | 14 | 1.23 | 0.17 |
-| `CastleEditingViewModelTests` | Homm3 / ViewModels | Integration | 10 | 7.86 | 6.98 |
-| `CastleGarrisonedHeroTests` | Homm3 / ViewModels | Integration | 4 | 0.29 | 0.08 |
-| `CastlePillAndTavernLinkTests` | Homm3 / ViewModels | Integration | 5 | 0.36 | 0.07 |
-| `CastleViewModelTests` | Homm3 / ViewModels | **Unit-shaped** | 9 | 0.47 | 0.09 |
-| `CreatureFinderAndArtifactEffectsTests` | Homm3 / ViewModels | Integration | 11 | 5.85 | 0.58 |
-| `EquippedArtifactsViewModelTests` | Homm3 / ViewModels | **Unit-shaped** | 6 | 0.00 | 0.00 |
-| `HeroEditingViewModelTests` | Homm3 / ViewModels | Integration | 14 | 7.58 | 0.61 |
-| `HeroGeneralTabTests` | Homm3 / ViewModels | Integration | 9 | 4.81 | 0.61 |
-| `HeroOwnerPickerTests` | Homm3 / ViewModels | Integration | 2 | 0.18 | 0.10 |
-| `MapViewModelTests` | Homm3 / ViewModels | **Unit-shaped** | 2 | 0.16 | 0.09 |
-| `NavigationBuilderTests` | Homm3 / ViewModels | **Unit-shaped** | 10 | 1.03 | 0.17 |
-| `OrderOfPlayTests` | Homm3 / ViewModels | Integration | 1 | 0.09 | 0.09 |
-| `OwnedMapObjectsViewModelTests` | Homm3 / ViewModels | **Unit-shaped** | 8 | 0.64 | 0.10 |
-| `PlayerAndOverviewViewModelTests` | Homm3 / ViewModels | Integration | 18 | 5.42 | 0.56 |
-| `SavegameFileCommandsTests` | Homm3 / ViewModels | **Unit-shaped** | 9 | 0.68 | 0.15 |
-| `ShellSmokeTests` | Homm3 / ViewModels | Integration | 7 | 14.57 | 6.29 |
-| `SkillsAndSpellsViewModelTests` | Homm3 / ViewModels | Integration | 16 | 8.68 | 0.61 |
-| `SpellsFromArtifactsTests` | Homm3 / ViewModels | Integration | 4 | 2.13 | 0.61 |
-| `ViewModelLayeringTests` | Homm3 / ViewModels | Unit | 1 | 0.01 | 0.01 |
-| `HexCardsTests` | Homm3 / Views | Integration | 1 | 2.01 | 2.01 |
-| `PageRenderingTests` | Homm3 / Views | Integration | 3 | 14.47 | 9.57 |
-| `AppServicesTests` | App / (root) | **Unit-shaped** | 4 | 0.79 | 0.40 |
-| `LoggingTests` | App / (root) | Integration | 5 | 0.61 | 0.53 |
-
-## Run time
-
-| Project | Tests | Test time | Over threshold |
-|---|---:|---:|---|
-| `Siniskalc.Core.Tests` | 79 | 0.2 s | none |
-| `Siniskalc.Wpf.Tests` | 58 | 1.1 s | none |
-| `Siniskalc.Heroes.Tests` | 132 | 0.3 s | none |
-| `Siniskalc.Heroes.Wpf.Tests` | 142 | 5.9 s | 26 view tests between 100 and 700 ms (real windows) |
-| `Siniskalc.Homm2.Tests` | 393 | 19.9 s | 5 integration tests over 2 s; 3 `[Explicit]` tests not run |
-| `Siniskalc.Homm3.Tests` | 3,186 | 775 s | 21 integration tests over 2 s; 155 unit-shaped tests over 100 ms |
-| `Siniskalc.Tests` | 9 | 1.4 s | `AppServicesTests` 0.4 s |
-
-Slowest classes:
-
-| Class | Tests | Total s | Slowest s | Why |
-|---|---:|---:|---:|---|
-| `CastleBuilderTests` | 4 | 132.3 | 42.2 | replays the reducer over every castle of every series save |
-| `OtherFactionsCastleTests` | 49 | 89.9 | 29.2 | `EveryBuildingBuiltHasItsPrerequisitesBuilt` walks every save |
-| `RoeCastleBuildingsTests` | 146 | 54.8 | 6.2 | one save load per case |
-| `ObeliskVisitsTests` | 465 | 39.9 | 1.7 | every-save source |
-| `PlayerHeadTests` | 460 | 37.1 | 0.3 | every-save source |
-| `CastleBuilderRulesTests` | 13 | 36.9 | 32.7 | `RemovingABuilding…` replays every save |
-| `HeroOwnersBytesLoaderTests` | 454 | 36.5 | 0.3 | every-save source on a unit-shaped class |
-| `SafeHeroOwnersSerializerTests` | 452 | 35.0 | 0.3 | every-save source on a unit-shaped class |
-| `CastleDeserializerTests` | 10 | 34.0 | 33.4 | one test loads all 448 saves |
-| `SafeCastleSerializerTests` | 14 | 33.1 | 26.3 | `EveryCastleOfEverySampleSave…` |
-| `SodSeriesTests` | 92 | 23.9 | 8.5 | |
-| `RoeCastleTests` | 45 | 16.6 | 1.4 | |
-| `ShellSmokeTests` | 7 | 14.6 | 6.3 | real shell, every page |
-| `PageRenderingTests` (Homm3) | | 14.5 | | |
-
-The HoMM3 hero view-model classes take 0.3–0.6 s per test because each test loads a save in `[SetUp]`: `SkillsAndSpellsViewModelTests` 8.7 s, `HeroEditingViewModelTests` 7.6 s, `CreatureFinderAndArtifactEffectsTests` 5.8 s, `HeroGeneralTabTests` 4.8 s, `HeroEditingTests` 4.6 s.
-
-In HoMM2 the slow ones are `SavegameParserTests` (4.1 s in one test), `ShellTests` (3.9 s), `HeroDestinationAndFacingTests` (2.8 s in one test), `PageRenderingTests` (2.7 s) and `RoundTripTests` (2.1 s).
-
-Unit-shaped classes spend 307 s, integration classes 490 s, and unit and multi-unit classes together 7 s.
-Making the unit-shaped classes real unit tests and loading each save once would bring the suite back to about 5 minutes; the `CastleBuilder` reducer tests alone are 2 minutes of it.
-
-Running the suite: `Siniskalc.Homm3.Tests` prints nothing while `CastleDeserializerTests.EveryCastleOfEverySavefileHasANameSoTheMapUsesIt` runs (about 2 minutes); it is slow, not hung.
-Wait at least 15 minutes, or use `--blame-hang-timeout` well above 2 minutes.
-
-## Inconclusive and weak tests
-
-**Assertion-free findings addressed in slice 01:**
-
-- `Homm2.Tests/Data/TmpTurnDump.cs`: removed the leftover `[Test] Dump()` and its hard-coded output path.
-- `Homm3.Tests/Data/ObeliskVisitsTests.cs`: replaced `Assert.Pass` with absent-model and untouched-save byte-preservation assertions.
-- `SkillsAndSpellsViewModelTests.cs`: replaced diagnostic output with a failing assertion for unknown spell sources.
-
-**Skipped checks addressed in slice 02:**
-
-- The six reported `continue` sites in `CastleBuilderTests`, `CastleBuilderRulesTests`, `RoeBuildingEditsTests` and `SodSeriesTests` were replaced by assertions or explicit eligible samples with presence guards.
-  In particular, zero-building and multiple-building transitions are checked rather than filtered out.
-- The player-count guard in `HeroOwnersBytesLoaderTests` became a player-presence assertion.
-- The nullable Oidana guard in `HotaSleepGarrisonVisitingTests` became explicit parameterized expectations.
-
-**Manual helpers, intentional**: `[Explicit]` tests that write edited saves for checking in the game: Homm2 `EditedSavesTests:111`, `EditorSavesTests:169`, `ThreedomEditorSavesTests:102`, Homm3 `GoldLimitSavesTests:52`.
-They are fine; mark them `[Category("Manual")]` as well, so a filter never picks them up by accident.
-
-**Weak assertions** (`Is.Not.Null`, `Is.Not.Empty` where a value is known): `ObeliskVisitsTests:178`, `PlayerDeserializerTests:85`, `CollectionAccessTests:42,46,95`, `ChangeAreaTests:17`, `BuildingTests:42`, `EntityTablesTests:52-53`, `ShellWindowTests:53,62`, Homm2 `PlayerViewModelTests:18-31`, Heroes `ChangeAreasTests:14`.
-
-**Serializer tests that check through the deserializer** (should assert the bytes at their offsets):
-
-- Homm3 `SafeHeroSerializerTests:39` and `SafeCastleSerializerTests:22`.
-- Heroes `ArmyWriterTests.cs:76-81` (`WhatTheReaderReadsWritesBackAsTheSameBytes` uses `ArmyReader`); a round trip is a fine integration test, but the class should also pin bytes directly.
-- Homm2 `EditingTests:101-119` checks the unknown-byte rule through the read model rather than the byte.
-
-## Unit tests that are not isolated
-
-Unit-shaped classes (named after one type, but loading saves or the whole service graph):
-
-- **Homm3 Data**: `CastleDeserializerTests`, `CastleDifferTests`, `CastleEditSessionTests`, `CastleRegionProviderTests`, `GameDateLocatorTests`, `HeroByteEditTargetTests`, `HeroDeserializerTests`, `HeroEditSessionTests`, `HeroRegionProviderTests`, `HeroOwnersBytesLoaderTests`, `PlayerBytesLoaderTests`, `PlayerControlLocatorTests`, `PlayerDeserializerTests`, `PlayerDifferTests`, `PlayerRegionProviderTests`, `SaveRegionProviderTests`, `SafeCastleSerializerTests`, `SafeHeroSerializerTests`, `SafeHeroOwnersSerializerTests`.
-- **Homm3 Models**: `CastleBuilderTests` (a reducer, tested only by replaying saves), `CastleModelTests`, `HeroModelTests`, `MaxSpellPointsCalculatorTests`.
-- **Homm3 other**: `GameServiceTests`, `Homm3ModuleTests`, `SavegameParserTests`, `CastleViewModelTests`, `EquippedArtifactsViewModelTests` (real `EffectLineProvider` from `TestServices`; a small step to a fake), `MapViewModelTests`, `NavigationBuilderTests`, `OwnedMapObjectsViewModelTests`, `SavegameFileCommandsTests`.
-- **Homm2**: `ByteEditTargetFactoryTests`, `CastleDifferTests`, `HeaderReaderTests`, `HeroChunkCollectionTests`, `HeroDifferTests`, `PlayerDifferTests`, `SafeCastleSerializerTests`, `SafeHeroSerializerTests`, `SaveLayoutLocatorTests`, `SavegameParserTests`, `CastleModelTests`, `HeroModelTests`, `MaxSpellPointsCalculatorTests`, `Homm2EditorViewModelTests`, `MapViewModelTests`, `PlayerViewModelTests`, `SavegameFileCommandsTests`.
-- **App**: `AppServicesTests` (by nature a composition test; move it to `Integration/`).
-
-Multi-unit without saying so:
-
-- Core: `SaveDocumentTests`, `ChunkPendingChangeTests`, `RecordChunkCollectionTests` (categorized and placed in `MultiUnit/Data/` in slice 03b).
-- Wpf: `ErrorWindowTests` is MultiUnit; `ShellWindowTests` also uses the real disk and settings, so it is Integration.
-  The three disk-backed view-model fixtures are Integration as well.
-  All Wpf placement/category changes were completed in 04a and 04b.
-- Heroes: `HeroesSavegameBaseTests` (real document graph).
-- Heroes.Wpf: `ObeliskVisitsViewModelTests`, `RecordsPageViewModelBaseTests`, `SessionPageViewModelBaseTests` (real `SaveDocument` and history), and every `Views/*` test and `Styles/PageStylesTests` (real WPF windows).
-
-Integration in a layer folder at review time: the Core file tests and nearly all Homm2 `Data` and `ViewModels` classes.
-Slice 03a moved the eight filesystem-using Core runtime fixtures to `Integration/Runtime/`.
-
-## Placement and naming
-
-- **Projects**: every class is in the test project of the code it tests; `Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests` and `Siniskalc.Heroes.Wpf.Tests` name no HoMM2 or HoMM3 type.
-  `HeroesLayeringTests` enforces it for `Siniskalc.Heroes` (it also rules out the planned `Siniskalc.Fheroes`).
-- **Folders**: at review time none were in `Integration/` or `MultiUnit/`.
-  Slices 03a and 03b migrated the eight Core runtime and eight Core Data fixtures; the historical class table above retains their original paths.
-- **One class, several subjects** (against "one test class per subject"): Homm3 `SpellBookAndGrantsTests`, `CreatureFinderAndArtifactEffectsTests`, `CastlePillAndTavernLinkTests`, `PlayerAndOverviewViewModelTests`, `RampartAndBulwarkCastleTests`; Homm2 `HeroDestinationAndFacingTests`; and `CollectionAccessTests`.
-  Scenario classes (`Roe*`, `Sod*`, `Hota*`, the faction `*CastleTests`) are allowed by `CLAUDE.md`.
-
-### Naming consistency
-
-`CLAUDE.md` sets the format, including the rubric added with the first review:
-
-| Kind | Class | Example |
-|---|---|---|
-| Unit, multi-unit | `<ProductionType>Tests`, one type | `SafeCastleSerializerTests` |
-| Integration, one save or series | `<Version><Scenario>Tests` | `RoeCastleBuildingsTests`, `SodHotseatTests` |
-| Integration, one feature over every layer | `<Feature>Tests` in `Integration/` | `GenderTests`, `ObeliskVisitsTests` |
-
-Methods are a present-tense sentence with articles, subject first, then the observable result (`AnUnknownClassReadsAsKnightAndIsKept`).
-A member is named only when it is the public API under test; a save, hero or castle only together with what it shows.
-
-What holds: every file has one test class named like the file, namespaces follow folders, no method has an underscore or a `Test`/`Should` prefix, and helpers (`TestServices`, `CastleSamples`, `SeriesSaves`, …) have files of their own.
-167 of 263 classes are named after a production type.
-
-Where names drift:
-
-- **Feature classes outside `Integration/`**: the rubric allows `<Feature>Tests` only there; today they sit in `Data/` (`GenderTests`, `BiographyTests`, `ActiveSpellsTests`, `MovedTodayTests`, `PlayerControlTests`, `PlayerHeadTests`, `ObeliskVisitsTests`, `CastleEditingTests`, …), so moving them fixes the name too.
-- **`TmpTurnDump`** was not named `…Tests` and was not a sentence; removed in slice 01.
-- **Methods that say nothing about the behaviour**: `HeroDeserializerTests.DeserializingHeroDeserializes` and its siblings, `GrantedSpellsResolverTests.OneVersionsResolversAreEqualAndResolveThatVersionsSpells`, `RawSavefileCodecTests.ReadsWhatWasWrittenAnd…` (no subject), `HeroByteEditTargetTests.ExposesTitleBytesAndRegions`, `PlayerAndOverviewViewModelTests.QuickSetCommandsAndResetPlayerWork`, `SkillsAndSpellsViewModelTests.PickingSkillsAndLevelsInSlots`.
-- **Telegraphic style** without articles in the older hero classes (`SingleByteEditCanBeUndoneAndRedone`, `RoundTripKeepsBytesIdentical`); both styles pass the rule, the full-sentence style is the one to keep.
-
-Not findings: `Load`, `MakeTheApplication`, `LoadTheStyles`, `CreateFolder` and similar are `[SetUp]`/`[OneTimeSetUp]`/`[TearDown]` methods, not tests.
-
-## Excessive coverage
-
-- **Castle building progression** is asserted by the `CastleBuilder*` replays (169 s together), the faction `*CastleTests`, `RoeCastleBuildingsTests` and `RoeBuildingEditsTests`.
-  Keep the per-faction byte series; make `CastleBuilder` a unit test over castle models built in the test, with one integration replay per series.
-- **Every-save sources** (`ObeliskVisitsTests` 465, `PlayerHeadTests` 460, `HeroOwnersBytesLoaderTests` 454, `SafeHeroOwnersSerializerTests` 452, and `CastleDeserializerTests` in one test over 448 saves): useful as data contracts, but each loads every save again.
-  Load each save once per run in a shared cache, or check all saves in one test per rule.
-- **HoMM2 bulk save suites**: `EditedSavesTests`, `EditorSavesTests` and `ThreedomEditorSavesTests` overlap, and `PlayerControlTests` has about 30 cases over the same saves.
-- **Heroes.Wpf view tests** repeat view-model semantics (`HeroCardsTests`, `MinesCardTests`, `ObeliskVisitsCardTests`, `DaysLeftCardTests`); keep them to bindings and layout.
-- **Heroes**: `ExperienceTableTests` and `HeroLevelTests` check the same table.
-- **HoMM3 view-model classes** load the same save in `[SetUp]` for every test.
-
-## Gaps
-
-Production types without a test class of their own:
-
-| Project | Types |
-|---|---|
-| Core | `SavegameService`, `ByteBufferHelper`, `ByteRegionMap`, `ChunkByteEditTarget`, `EditSession`, `ModelChunkCollection`, `RecordKit` |
-| Wpf | `DelegateCommand`, `NavigationTree`, `NavNodeViewModel`, `SavegameFileCommands`, the field and row view models, the `HexRow` classes |
-| Heroes | `ObeliskEditSession`, `LinkViewModel`, `MapLevelChoice`, `MapSizes` |
-| Heroes.Wpf | `ActiveSpellsCardViewModel`, `ArtifactPickerViewModel`, `CreatureFinderViewModel`, `HeroChoiceViewModel`, `HeroLinkViewModel`, `NextBattleCardViewModel`, `OrderOfPlayItemViewModel`, `PlayerCardViewModel`, the skill, spell and stack slot view models, many views |
-| Homm2 Data | `BytesLoader`, `CastleDeserializer`, `PlayerDeserializer`, the mine, shrine, sphinx, turn and built-today deserializers, every `Safe*Serializer` except castle and hero, `SaveRegionProvider`, `MapPlacesReader`, `MapObjectsReader` |
-| Homm2 other | `GameService`, `Homm2Module`, `Homm2ModuleFactory`, `NavigationBuilder`, `OverviewViewModel`, the artifact, spell and skill view models |
-| Homm3 Data | `CastleBytesLoader`, `CastleChunkCollection`, the dwelling and mine deserializers, differs and region providers, `HeroBytesLoader`, `HeroDiffer`, `HeroOwnersDiffer`, `ObeliskDeserializer`, `PlayerBytesLoader`, `PlayerDiffer`, `SaveDocumentFactory`, `SavegameVersionDetector` |
-| Homm3 other | `SpellGrantProvider`, `GameVersionExtensions`, `MerchantViewModel`, `VisitedPlacesViewModel`, `SpellFinderViewModel`, the slot and row view models |
-
-Rules from `CLAUDE.md` with little direct coverage:
-
-- **Unknown value reads as a stand-in, and the serializer keeps the byte**: covered for HoMM3 castles (owner, creature), heroes (class, facing, creature, scroll, artifact slot) and hero owners, Core `ByteEnum`, Heroes `SkillLevel` and army creature codes, and HoMM2 heroes (through `EditingTests`).
-  Missing for HoMM3 players and obelisks, and HoMM2 castles, players and map objects.
-- **Malformed input** (truncated chunks, missing markers) is hardly tested; the parser tests only feed random or empty bytes.
-
-## Proposed conventions
-
-Adopted in `CLAUDE.md` with the first review; classification migration started in slice 03a:
-
-1. `[Category("Unit")]`, `[Category("MultiUnit")]` or `[Category("Integration")]` on every fixture, from one `TestKinds` constants class per project; `Integration/<Layer>/` and `MultiUnit/<Layer>/` folders; a check test that fails a fixture without a category or in the wrong folder.
-2. Moq fakes for every dependency of a unit test; `TestServices` only in multi-unit and integration tests.
-3. Load each save once per run; savefile tests only read.
-4. No `Assert.Pass`, no silent `continue`, no conditional assert; a serializer test asserts bytes.
-
-## Backlog (in order)
-
-1. The originally reported assertion-free and skipped-check cleanup is complete in slices 01 and 02.
-   The weak value assertions listed above remain to strengthen in the corresponding subject's isolation or coverage slice.
-2. Add `TestKinds` and `[Category]` on every fixture with the check test; move classes into `Integration/` and `MultiUnit/`; mark the `[Explicit]` helpers `Manual`.
-   Slices 03a through 03c completed all 20 Core fixtures; migration of the other six projects and cross-project enforcement remain open.
-   Slices 04a and 04b completed all 10 Wpf fixtures.
-3. Make the serializer tests assert bytes at offsets without the deserializer (HoMM3 hero and castle, Heroes army, HoMM2 editing).
-4. Turn `CastleBuilderTests` and `CastleBuilderRulesTests` into reducer unit tests over models built in the test, with one replay per series (saves about 2–3 minutes).
-5. Cache loaded saves for the every-save sources and series, or check all saves in one test per rule (saves several minutes).
-6. Isolate the unit-shaped classes with Moq fakes, starting with the HoMM3 hero and castle view models and the HoMM2 differs and serializers.
-7. Split the multi-subject classes and rename the methods listed under [Naming consistency](#naming-consistency).
-8. Fill the gaps, starting with the HoMM2 serializers and deserializers and the unknown-byte tests for HoMM3 players and obelisks and HoMM2 castles and players.
-9. Remove duplicated coverage once the unit tests that replace it are in place.
 
 ## Slice 08: HoMM3 classification
 

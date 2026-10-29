@@ -118,6 +118,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28 | Still open. Wpf views (hex editor 917 lines, hex viewer, hex rows and palette, finder view, stepper, nav button, shell window: most need a window, see what `ShellWindowTests` and `PageRenderingTests` already render); each game's runtime and remaining UI. Two subjects per sub-slice |
 | 28f | see git log | HoMM3 view models, Unit/MultiUnit: `DwellingRowViewModelTests` (5), `ArmySlotViewModelTests` (5), `MineRowViewModelTests` (4), `MerchantViewModelTests` (6) |
 | 28g | see git log | HoMM3 view models: `VisitedPlacesViewModelTests` (7), `MageGuildRowsTests` (5), `BackpackSlotViewModelTests` (4, MultiUnit), `MapDwellingRowViewModelTests` (6) |
+| 28h | see git log | HoMM3 entities and view models: `SpellGrantProviderTests` (4), `ArtifactEffectInfoTests` (21), `ArtifactInfoViewModelBaseTests` (8, MultiUnit), `SpellFinderViewModelTests` (8), `BuildingRowsTests` (11) |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

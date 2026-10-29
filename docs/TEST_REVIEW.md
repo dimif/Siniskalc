@@ -1378,3 +1378,14 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (34 mutants, production restored): the first run let two through (the page refresh not telling the rows and the owner field not being refreshed, because the getters read the model anyway); the tests now watch the notifications, and five mutants whose pattern did not apply were redone. All caught.
 - Observation, not pinned: the text of a kind of place counts all the bits of the mask of the hero, so with bits of places that are not on this map it reads "3 of 2". That may be intended (the hero visited them); it is not tested.
 - Homm3.Tests: the four fixtures pass (22); no production code changed.
+
+## Slice 28h - spell grants, artifact effects, artifact info, spell finder and building rows of HoMM3
+
+- `SpellGrantProviderTests` (4, Unit): named spells and their description; a school gives its spells and those of all schools; school and level never give the Titan's Lightning Bolt but naming it does; a level gives exactly its spells.
+- `ArtifactEffectInfoTests` (21 cases, Unit): no grants give no spells; spells granted by several grants are listed once; two effects are equal only when every field, the spell book flag and the grants are equal (one case for each of the fourteen numeric fields); equal effects have the same hash code.
+- `ArtifactInfoViewModelBaseTests` (8 cases, MultiUnit, real provider of lines): nothing shown at first; an artifact shows skills, class and cost and lines; no cost, no class line; the commands show by name and clear; an empty or unknown name clears; every binding is told.
+- `SpellFinderViewModelTests` (8 cases, Unit): the search matches name, school, level and type and every word must match; the summary counts learned and available and the number shown; the columns; a tick reaches the caller; the school names.
+- `BuildingRowsTests` (11, Unit) for `BuildingRowViewModel` and `BuildingGroupViewModel`: the count built, toggling, the tooltip (reason, build, remove, what is missing), the forbidden note, the warning for a building built without its requirements, the dwelling creatures and the count waiting, replaced, the allow button, children.
+- Mutation check (46 mutants, production restored): the first run let two through (the summary test had as many learned as available spells, which hides a swap) and four patterns did not apply and were redone. Two are equivalent and not tested: the check that a spell exists in the game version in `SpellGrantProvider` (every spell of HoMM3 is in Restoration of Erathia), and the effect lines in `HasSelectedInfo` (every artifact with effect lines also has a cost or a text).
+- Observation: `Effects` is `null` for an artifact with no text (a default struct), though typed `string`; bindings take it, so it is left.
+- Homm3.Tests: the five fixtures pass (51); no production code changed.

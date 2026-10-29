@@ -1184,3 +1184,13 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all caught, production restored): the blank path check, the path and the name given to the parser, the reload check, the backup condition and the backup itself, the write, `SavedTo`, `MarkSaved`, the order (bytes before the file is touched), the name fallbacks, and the bytes to save.
 - Core.Tests: the new fixtures pass (19); no production code changed.
 - Not done (25d): `ByteBufferHelper`, `SaveHexDump`, `ForwardingLogger`.
+
+## Slice 25d - buffer helpers, the dump of a savefile and the log scope (Core)
+
+- `ByteBufferHelperTests` (6, Unit): numbers read and written least significant byte first at an offset (16, 32 and 64 bits, signed and unsigned), nothing else in the buffer changes, what is written is read back, and going past the end of the buffer is refused.
+- `SaveHexDumpTests` (3, Unit, a fake region provider): the dump holds the title, the bytes now and the bytes the savefile had; the regions are what the provider gives for the current document and its bytes; after saving the two byte arrays are equal.
+- `LogScopeExtensionsTests` (2, Unit, a fake logger): the subject scope is a dictionary with "Subject" and "kind name", and the scope the logger gives is the one returned.
+- `ForwardingLogger` needed no new test: `LogFactoryTests` already covers it (nothing written until a factory is installed, a logger made earlier follows a later install, the arity left out of the category of a generic type).
+- Mutation check (all caught, production restored): the byte order of each read and write, the offset, the current and original bytes of the dump, the document given to the provider, the title, and the property and text of the scope.
+- Core.Tests: the new fixtures pass (11); no production code changed.
+- Core is finished: every class of `Siniskalc.Core` that does something is named by a test.

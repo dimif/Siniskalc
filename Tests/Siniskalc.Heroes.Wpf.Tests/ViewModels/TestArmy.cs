@@ -2,6 +2,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
@@ -9,15 +10,23 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// <summary>A finder that holds nothing and counts how often it was refreshed.</summary>
     internal sealed class TestFinder : AbstractFinderViewModel
     {
-        public TestFinder(Action<string>? onPicked = null)
-            : base("Creatures", "creatures", [], new ListCollectionView(new List<object>()))
+        private readonly int total;
+
+        public TestFinder(Action<string>? onPicked = null, IEnumerable<object>? items = null)
+            : this(onPicked, items?.ToList() ?? [])
+        {
+        }
+
+        private TestFinder(Action<string>? onPicked, List<object> items)
+            : base("Creatures", "creatures", [], new ListCollectionView(items))
         {
             this.OnPicked = onPicked;
+            this.total = items.Count;
         }
 
         public Action<string>? OnPicked { get; }
 
-        protected override int TotalCount => 0;
+        protected override int TotalCount => this.total;
 
         public override void ChooseRow(object? row)
         {

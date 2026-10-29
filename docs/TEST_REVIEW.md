@@ -1236,3 +1236,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 12 caught, production restored): the label with and without an arrow, the arrow, the stored direction, the notification, the command, the separator rule, the enabled rule (two ways), and the tooltip, command and header.
 - Wpf.Tests: the new fixtures pass (14); no production code changed.
 - Not done (26f): `TabbedPageViewModelBase`, `PageViewModelBase`.
+
+## Slice 26f - the page bases (Wpf)
+
+- `PageViewModelBaseTests` (2, Unit): a page keeps its title and starts with no pending changes; setting the pending-changes flag tells once and the same value tells nothing.
+- `TabbedPageViewModelBaseTests` (3, Unit): a tabbed page starts on the first tab and keeps its title; changing the tab tells once and keeps the new tab (the first version did not check the stored tab and a mutant that never stored it survived; fixed); a tabbed page is a page and has pending changes too.
+- Mutation check (all 8 caught, production restored): the title of each, the same-value check, the stored value and the notification of each.
+- Every view model of `Siniskalc.Wpf` is now named by a test. What is left in the project is the code-behind of the views.
+- Wpf.Tests: the new fixtures pass (5); no production code changed.

@@ -1126,3 +1126,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - A slip worth recording: a mutation helper that restores with `git checkout` also throws away uncommitted work. The seam was lost for a moment and restored from a copy; from then on the work was committed before mutating.
 - Homm3.Tests: Unit, MultiUnit and the hex editor fixtures pass (567).
 - Not done (18g): the save-based castle fixtures that only need a page (`CastleDetailsViewModelTests`, `CastleGarrisonedHeroTests`, `CastleHeroLinksTests`, `CastleGrailAndCapitolPillTests`).
+
+## Slice 18g - castle details and the garrisoned hero off the savefile
+
+- `CastleDetailsPageTests` (22 cases, MultiUnit) from `CastleDetailsViewModelTests`, on Cove towns made by hand: buildings the map disables are marked with the note and counted, none when the map allows everything, a building an upgrade replaced is marked, the dwellings (upgrade, built, not built, not allowed by the map) with the creatures waiting and the total, the base weekly growth, the Mage Guild per built level and with none, and the shipyard or the inland text. The upgraded growth buildings are not listed, for every faction but the Factory (a case for each): the Factory's "Upg. Gantry" is a real special building, so it is listed (the savegame test only covered the eight towns of Restoration of Erathia).
+- Garrisoned hero: the page cases went into `CastlePageTests` (the stored slots left alone while a hero is garrisoned, with the editor not editable) and the rule into `CastleModelTests` (the garrison cannot be set while a hero is garrisoned, and can once none is).
+- Not ported (18h): `CastleHeroLinksTests` and `CastleGrailAndCapitolPillTests` test the player page, the overview and the navigation tree; they need a fake player session (and a navigation fixture), not a castle one.
+- The originals stay as Integration (slice 29 decides what is duplicate).
+- Mutation check (caught, production restored): the count of buildings not allowed, the replaced mark, the "not allowed" text for a dwelling and for a building, the upgraded state, the total, the no-guild text, the inland text, the automatic buildings, the weekly growth text, and the garrison rule.
+- Homm3.Tests: the castle fixtures and the models pass; no production code changed.

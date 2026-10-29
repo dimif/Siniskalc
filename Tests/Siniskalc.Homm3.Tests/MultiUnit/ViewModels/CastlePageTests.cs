@@ -260,6 +260,21 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         [Test]
+        public void TheStoredSlotsOfACastleAreLeftAloneWhileAHeroIsGarrisonedAndTheNoticeSaysWhy()
+        {
+            var christian = HeroModels.Christian();
+            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { GarrisonedHeroId = christian.Id });
+            this.session.HeroModels[christian.Id] = christian;
+            using var page = this.Page();
+
+            page.GarrisonEditor.CreatureSlots[1].SelectedCreature = "Pikeman";
+            page.GarrisonEditor.CreatureSlots[1].CreatureAmount = 40;
+
+            Assert.That(this.session.IsDirty, Is.False);
+            Assert.That(this.session.Current.Garrison.Filled, Is.Empty);
+        }
+
+        [Test]
         public void ACastleWithNoGarrisonedHeroHasAnEditableGarrison()
         {
             using var page = this.Page();

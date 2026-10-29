@@ -40,5 +40,14 @@ namespace Siniskalc.Homm3.Tests.Models
             var upgraded = CastleBuilder.Build(built, Building.RampartUpgCentaurStables);
             Assert.That(upgraded.BaseWeeklyGrowth(0), Is.EqualTo(14), "an upgraded dwelling has the growth of the creature it upgrades");
         }
+
+        [Test]
+        public void TheGarrisonOfACastleCannotBeSetWhileAHeroIsGarrisonedButCanOnceNoneIs()
+        {
+            var garrisoned = CastleModels.Village(Faction.Inferno) with { GarrisonedHeroId = 21 };
+
+            Assert.That(() => garrisoned.WithGarrison(garrisoned.Garrison), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => (garrisoned with { GarrisonedHeroId = null }).WithGarrison(garrisoned.Garrison), Throws.Nothing);
+        }
     }
 }

@@ -38,7 +38,7 @@ Production changes made along the way, all with their own tests (details in the 
 
 | # | Where | Problem | Fix |
 |---|---|---|---|
-| D1 | `ObeliskVisitsTests:182`, HoMM2 `PlayerViewModelTests:20`, `ShellWindowTests:54,63` | Weak assertions: only that something is not null or not empty | Assert the value that is known (the position, the castle names, the icon count) |
+| D1 | ~~`ObeliskVisitsTests`, HoMM2 `PlayerViewModelTests`, `ShellWindowTests`~~ | Fixed: they now assert the position of the second obelisk (34,58), the three castles of Blue, and the 5 toolbar and 9 menu icons that the window has | none |
 | D2 | `CastleDeserializerTests` (36.6 s, one test), `SafeCastleSerializerSavegameTests` (24.3 s), `OtherFactionsCastleTests` (28.1 s), `CastleBuilderReplayTests` and `CastleBuilderSavefileRulesTests` (10 s each) | One test loads every one of the 448 saves; the same saves are loaded by other classes | Load each save once per run (`ReadOnlySaves`) as slices 13 and 14 did for the obelisk, player and hero-owner contracts |
 | D3 | all projects | Nothing fails when a fixture has no `[Category]` or sits in the wrong folder (a MultiUnit fixture of slice 28m was placed wrongly and found only by this review) | One check test per project over its own assembly: category present, `Integration` and `MultiUnit` fixtures in namespaces that contain those folder names |
 | D4 | HoMM3 `SavegameParser.StandingOn` | A hero standing on a place hides it on the map; its three conditions (type at +11, visitable at +15, number at +16) are untested | A parser test with a hero record that stands on a place |

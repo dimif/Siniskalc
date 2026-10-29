@@ -17,7 +17,7 @@
             var game = TestServices.LoadBrokenAlliance(24);
             var player = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
 
-            Assert.That(player.Castles, Is.Not.Empty);
+            Assert.That(player.Castles, Has.Count.EqualTo(3), "the three castles of Blue in save 24");
             foreach (var castle in player.Castles)
             {
                 Assert.That(castle.Status, Does.Match(@"^(Castle|Town)( · Mage Guild \d)? · \d+ dwellings?$"), castle.Name);

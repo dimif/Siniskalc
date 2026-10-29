@@ -51,7 +51,7 @@ namespace Siniskalc.Wpf.Tests.Integration.Views
                     Assert.That(window.Title, Is.EqualTo("Editor - Save game editor"));
 
                     var images = Descendants<Image>(window).ToList();
-                    Assert.That(images, Is.Not.Empty);
+                    Assert.That(images, Has.Count.EqualTo(5), "the toolbar icons");
                     foreach (var image in images)
                     {
                         Assert.That(image.Source, Is.InstanceOf<BitmapSource>());
@@ -60,7 +60,7 @@ namespace Siniskalc.Wpf.Tests.Integration.Views
 
                     // The icons of the menus are not in the visual tree until a menu opens: they are in the items.
                     var menuIcons = Descendants<Menu>(window).Single().Items.OfType<MenuItem>().SelectMany(Subitems).Select(m => m.Icon).OfType<Image>().ToList();
-                    Assert.That(menuIcons, Is.Not.Empty);
+                    Assert.That(menuIcons, Has.Count.EqualTo(9), "one for each item of the menus that has an icon");
                     foreach (var image in menuIcons)
                     {
                         Assert.That(((BitmapSource)image.Source).PixelWidth, Is.GreaterThan(0));

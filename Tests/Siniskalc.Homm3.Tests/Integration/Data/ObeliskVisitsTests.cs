@@ -179,7 +179,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var visits = Visits(Load("roe_68_tazar_obelisk"));
 
             Assert.That(visits.PositionOf(0), Is.Null);
-            Assert.That(visits.PositionOf(1), Is.Not.Null);
+            Assert.That(visits.PositionOf(1)!.X + "," + visits.PositionOf(1)!.Y, Is.EqualTo("34,58"), "the second obelisk keeps its place");
         }
     }
 }

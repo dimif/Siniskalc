@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void SessionsShareOneHistory()
+        public void SessionsOfTheSameHistoryShareIt()
         {
             var history = CreateHistory(2);
             var first = new HeroEditSession(history, 0);

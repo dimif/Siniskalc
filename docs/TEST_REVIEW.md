@@ -1150,3 +1150,10 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (caught, production restored): the Well, the growth building (its first-dwelling rule and its amount) and the unbuilt dwelling. Equivalent with today's tables, so not testable: the creature of an upgraded level (no faction has a different growth between a creature and its upgrade), the faction check (a castle of no faction has no creatures anyway) and the range check (the level lookup refuses the same numbers first).
 - Slice 17 is finished.
 - Homm2.Tests: the model fixture passes (17); no production code changed.
+
+## Slice 20d - final name scan
+
+- The scan (`names.py`: number of words in each test method name) over Core, Heroes, Heroes.Wpf, Homm2, Homm3, Wpf and the exe tests found 74 + 125 + 131 + 483 + 1130 + 48 + 9 test methods. No name has an underscore or a `Test` or `Should` prefix. The fewest words are in Core and Homm3; Homm2, Heroes and Wpf have no name of five words or fewer.
+- 19 names were rewritten so they say what is checked, for instance `PatchRejectsOverlappingChunks` is now `ThePatcherRefusesChunksThatOverlap`, `SavingLeavesNothingPending` is `AfterSavingNoChangeIsPending`, `RoundTripKeepsBytesIdentical` is `ReadingAndWritingAHeroUnchangedKeepsTheBytesIdentical`, and `AnotherCastleIsNotAffected` (it checks that the changes of two castles are listed each with its own castle) is `TheChangesOfTwoCastlesAreListedEachWithItsOwnCastle`. The other short names (such as `TheMapNameIsRead`) are sentences about one behaviour and stay.
+- Not renamed: `WriteTheGoldLimitSave` (a helper used three times, not a test).
+- Core.Tests (79) pass, and so do the 117 Homm3 tests of the renamed classes; names only, no code changed.

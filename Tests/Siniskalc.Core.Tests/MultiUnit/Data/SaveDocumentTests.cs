@@ -20,7 +20,7 @@ namespace Siniskalc.Core.Tests.MultiUnit.Data
         }
 
         [Test]
-        public void ToBytesAppliesChunkEdits()
+        public void ToBytesGivesTheSavefileWithTheEditsOfTheChunksApplied()
         {
             var document = Create().WithChunk(TestChunkKinds.Unit, 0, new RawBytesChunk("u", [7, 8], 4));
 
@@ -38,7 +38,7 @@ namespace Siniskalc.Core.Tests.MultiUnit.Data
         }
 
         [Test]
-        public void UndoAndRedoRestoreSnapshots()
+        public void UndoAndRedoMoveBetweenTheDocumentsOfTheHistory()
         {
             var history = new SaveDocumentHistory(Create());
             var edited = history.Current.WithChunk(TestChunkKinds.Unit, 0, new RawBytesChunk("u", [1, 1], 4));

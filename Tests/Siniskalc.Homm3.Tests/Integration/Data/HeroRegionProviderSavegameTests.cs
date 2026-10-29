@@ -35,7 +35,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void RegionsFitInTheChunk()
+        public void TheRegionsFitInTheChunk()
         {
             var regions = TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length);
 
@@ -65,7 +65,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void CannonOnlyExistsInHota()
+        public void TheCannonRegionExistsOnlyInHornOfTheAbyss()
         {
             var classic = TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.ShadowOfDeath));
 
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void ArraysHaveTheirRealSizes()
+        public void TheRegionsOfArraysHaveTheirRealSizes()
         {
             var regions = TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length);
 

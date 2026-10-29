@@ -129,7 +129,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void DisposedTargetStopsListening()
+        public void ADisposedTargetStopsListeningToTheHistory()
         {
             this.target.Dispose();
 

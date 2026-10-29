@@ -64,7 +64,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("players_human_red")]
         [TestCase("players_human_tan")]
         [TestCase("bios_standard")]
-        public void TheDifficultyIsRead(string save)
+        public void TheDifficultyOfTheGameIsRead(string save)
         {
             // empire_of_the_world_01_m5w4d6 is shown as Queen by the game; the others were all started at the same level.
             Assert.That(Load(save).Difficulty, Is.EqualTo(GameDifficulty.Queen));

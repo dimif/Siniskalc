@@ -31,7 +31,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("hero_orrin_no_spellbook.bin", GameVersion.ShadowOfDeath)]
         [TestCase("hero_orrin_no_spellbook.bin", GameVersion.RestorationOfErathia)]
         [TestCase("hero_maximus_pre_hota.bin", GameVersion.ArmageddonsBlade)]
-        public void RoundTripKeepsBytesIdentical(string file, GameVersion version)
+        public void ReadingAndWritingAHeroUnchangedKeepsTheBytesIdentical(string file, GameVersion version)
         {
             var offsets = new HeroOffsets(version);
             var bytes = ReadDump(file);
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void EditedPrimarySkillsAreWritten()
+        public void EditedPrimarySkillsAreWrittenToTheirBytes()
         {
             var bytes = ReadDump("hero_maximus_pre_hota.bin");
             var chunk = new HeroChunk("Maximus", bytes, 0);
@@ -102,7 +102,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void EditedCreaturesAreWritten()
+        public void AnEditedArmyIsWrittenToTheCreatureSlots()
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
             var creatures = new Army<Creature>(Constants.CreatureSlotCount)

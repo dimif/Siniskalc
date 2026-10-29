@@ -197,7 +197,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void ResetTownPutsEverythingBack()
+        public void ResetTownPutsTheWholeCastleBack()
         {
             var castle = this.Show("Still Water");
             castle.SelectedOwner = "Pink";

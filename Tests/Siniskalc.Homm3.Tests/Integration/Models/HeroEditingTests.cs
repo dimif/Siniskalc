@@ -130,7 +130,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         }
 
         [Test]
-        public void ExtraSkillsSurviveSerialization()
+        public void SkillsBeyondTheEightSlotsSurviveBeingWritten()
         {
             var game = LoadPrepared();
             var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));
@@ -272,7 +272,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         }
 
         [Test]
-        public void HistoryOriginalRestoresEverything()
+        public void PuttingBackTheOriginalDocumentRestoresEveryEdit()
         {
             var game = LoadPrepared();
             var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));

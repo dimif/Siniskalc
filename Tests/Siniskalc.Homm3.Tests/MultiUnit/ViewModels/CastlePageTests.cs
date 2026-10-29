@@ -208,7 +208,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         [Test]
-        public void ResetPutsEverythingBack()
+        public void ResetPutsTheWholeCastleBack()
         {
             using var page = this.Page();
             page.SelectedMageGuildLevel = 1;

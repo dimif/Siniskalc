@@ -114,7 +114,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void ARevertCanBeUndone()
+        public void ARevertOfAChangeCanBeUndone()
         {
             this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
             this.history.GetPendingChanges().Single().Revert(this.history);
@@ -159,7 +159,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void AnotherCastleIsNotAffected()
+        public void TheChangesOfTwoCastlesAreListedEachWithItsOwnCastle()
         {
             var jotunngard = this.history.CreateCastleSession(this.history.Current.Castles().FindByName("Jotunngard"));
             this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));

@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castles = 0;
             foreach (var path in CastleSamples.All())
             {
-                foreach (var chunk in CastleSamples.Load(path).History.Current.Castles())
+                foreach (var chunk in ReadOnlySaves.Load(path).History.Current.Castles())
                 {
                     var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk));
 
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var path in CastleSamples.All().Where(p => p.Contains("Bulwark") || p.Contains("castles_2")))
             {
-                var game = CastleSamples.Load(path);
+                var game = ReadOnlySaves.Load(path);
                 var document = game.History.Current;
                 for (var i = 0; i < document.Castles().Count; i++)
                 {

@@ -1,4 +1,5 @@
-﻿using Siniskalc.Heroes.Entities;
+using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -31,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static CastleModel Castle(string save, string name)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "OtherFactions", save + ".GM1"));
+            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "OtherFactions", save + ".GM1"));
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), name);

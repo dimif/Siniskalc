@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
@@ -85,7 +86,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(Path.Combine("TestData", "Hota", "Dwellings"), "*.GM2"))
             {
-                var dwellings = TestServices.GameService.LoadGameFromFile(file).History.Current.Dwellings();
+                var dwellings = ReadOnlySaves.Load(file).History.Current.Dwellings();
                 Assert.That(dwellings, Is.Not.Empty, file);
                 foreach (var chunk in dwellings)
                 {

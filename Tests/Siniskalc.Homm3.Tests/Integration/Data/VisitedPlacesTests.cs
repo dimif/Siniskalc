@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -113,7 +114,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(Path.Combine("TestData", "Hota", "VisitedPlaces"), "*.GM2"))
             {
-                var game = TestServices.GameService.LoadGameFromFile(file);
+                var game = ReadOnlySaves.Load(file);
                 var heroes = game.History.Current.Heroes();
                 foreach (var chunk in heroes)
                 {

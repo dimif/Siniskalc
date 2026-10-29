@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -82,7 +83,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(Path.Combine("TestData", "Hota", "VisitedPlaces"), "*.GM2"))
             {
-                var merchants = TestServices.GameService.LoadGameFromFile(file).History.Current.Merchants();
+                var merchants = ReadOnlySaves.Load(file).History.Current.Merchants();
                 foreach (var chunk in merchants)
                 {
                     Assert.That(merchants.Serializer.Serialize(chunk, merchants.Deserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{file}: {chunk.Name}");

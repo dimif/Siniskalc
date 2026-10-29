@@ -178,7 +178,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var unmoved = 0;
             foreach (var path in Directory.GetFiles("TestData", "*.GM1", SearchOption.AllDirectories).Where(p => p.Contains("Sod") || p.Contains("Roe")))
             {
-                var game = TestServices.GameService.LoadGameFromFile(path);
+                var game = ReadOnlySaves.Load(path);
                 var heroes = game.History.Current.Heroes();
                 var eligible = heroes.Where(chunk => chunk.GetByteAt(26) != 0xFF
                     && chunk.GetUInt32At(57) > 0 && chunk.GetUInt32At(57) <= 100_000).ToList();

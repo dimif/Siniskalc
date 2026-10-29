@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         public static Game Load(string path)
         {
-            return Loaded.GetOrAdd(path, p => new Lazy<Game>(() => TestServices.GameService.LoadGameFromFile(p))).Value;
+            return Loaded.GetOrAdd(Path.GetFullPath(path), p => new Lazy<Game>(() => TestServices.GameService.LoadGameFromFile(p))).Value;
         }
     }
 }

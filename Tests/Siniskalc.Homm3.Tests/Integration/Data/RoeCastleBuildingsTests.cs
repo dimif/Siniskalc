@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -297,7 +298,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Roe"), "*.GM1"))
             {
-                foreach (var chunk in TestServices.GameService.LoadGameFromFile(path).History.Current.Castles())
+                foreach (var chunk in ReadOnlySaves.Load(path).History.Current.Castles())
                 {
                     Assert.That(TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{chunk.Name} in {path}");
                 }

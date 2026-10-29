@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -39,7 +40,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var path in Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
             {
-                var game = TestServices.GameService.LoadGameFromFile(path);
+                var game = ReadOnlySaves.Load(path);
 
                 Assert.That(game.History.Current.Castles().GetModels().Where(c => !c.IsUsed), Is.Empty, Path.GetFileName(path));
             }

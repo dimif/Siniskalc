@@ -52,7 +52,7 @@ Parse the TRX files (`UnitTestResult/@duration`, joined to `UnitTest/TestMethod/
 Flag **unit and multi-unit tests over 100 ms** and **integration tests over 2 s**.
 Only integration tests, tests that read files, and tests on binary data (deserializers, serializers) may be slow; a slow test of another kind means hidden I/O (usually a save loaded in `[SetUp]`).
 Do not flag the first test of a class just for JIT or starting WPF.
-`Siniskalc.Homm3.Tests` takes about 7.5 minutes on its own and can print nothing for a minute while one test loads every save; if you add `--blame-hang-timeout`, set it to 20 minutes or more.
+`Siniskalc.Homm3.Tests` takes about 5 to 7.5 minutes on its own and can print nothing for a minute while one test loads every save; if you add `--blame-hang-timeout`, set it to 20 minutes or more.
 A long silence is not a hang until the blame dump says so.
 Run each project with its own `LogFileName` (`--logger "trx;LogFileName=<project>.trx"`): a solution run writes one file name for all projects and keeps only the last.
 Time varies a lot (one run took 49 minutes, the next 7.5); repeat a slow measurement before reporting it.

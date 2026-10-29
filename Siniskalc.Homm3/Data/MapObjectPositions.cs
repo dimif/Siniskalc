@@ -39,7 +39,7 @@ namespace Siniskalc.Homm3.Data
             for (var at = end + CountLength; positions.Count < count && at + PositionEntryLength <= searchEnd; at += PositionEntryLength)
             {
                 var (x, y, z) = (bytes[at + 2], bytes[at + 3], bytes[at + 4]);
-                if (z > 1 || x >= Constants.Map.MaxCoordinate || y >= Constants.Map.MaxCoordinate)
+                if (z > 1 || x > Constants.Map.MaxCoordinate || y > Constants.Map.MaxCoordinate)
                 {
                     break;
                 }

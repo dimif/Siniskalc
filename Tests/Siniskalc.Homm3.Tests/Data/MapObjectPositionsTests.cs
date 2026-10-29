@@ -42,9 +42,9 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void EveryObjectOfTheListHasItsTileInTheOrderOfTheList()
         {
-            var bytes = Savegame(FiveDefinitions, [(1, 2, 0), (30, 40, 1), (250, 250, 0)]);
+            var bytes = Savegame(FiveDefinitions, [(1, 2, 0), (30, 40, 1), (251, 250, 0)]);
 
-            Assert.That(Find(bytes), Is.EqualTo(new[] { new MapPosition(1, 2, 0), new MapPosition(30, 40, 1), new MapPosition(250, 250, 0) }));
+            Assert.That(Find(bytes), Is.EqualTo(new[] { new MapPosition(1, 2, 0), new MapPosition(30, 40, 1), new MapPosition(251, 250, 0) }));
         }
 
         [Test]
@@ -107,9 +107,9 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheUndergroundLevelAndTheTileAtTheCornerOfTheLargestMapAreTiles()
         {
-            var bytes = Savegame(FiveDefinitions, [(250, 250, 1), (0, 0, 0)]);
+            var bytes = Savegame(FiveDefinitions, [(251, 251, 1), (0, 0, 0)]);
 
-            Assert.That(Find(bytes), Is.EqualTo(new[] { new MapPosition(250, 250, 1), new MapPosition(0, 0, 0) }));
+            Assert.That(Find(bytes), Is.EqualTo(new[] { new MapPosition(251, 251, 1), new MapPosition(0, 0, 0) }));
         }
 
         [Test]

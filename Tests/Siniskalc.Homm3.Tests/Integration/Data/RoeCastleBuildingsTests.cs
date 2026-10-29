@@ -19,7 +19,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static readonly string[] RedCastles = ["1_Castle", "2_Rampart", "3_Tower", "4_Inferno", "5_necropolis", "6_Dung", "7_Strong", "8_Fort"];
 
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        // The tests of this class only read what they load, so the save is parsed once per run.
+        private static Game Load(string save) => ReadOnlySaves.Load(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static CastleModel Castle(string save, string name)
         {

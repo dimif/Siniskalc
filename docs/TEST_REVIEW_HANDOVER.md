@@ -136,7 +136,7 @@ The session plan with the full per-slice acceptance text is `C:\Users\dimit\.cop
 The current list, with places and fixes, is "Findings" in `docs\TEST_REVIEW.md` (defects D1 to D9, questions about production behaviour and the intentional exceptions). The ones to start from:
 
 - No test enforces that a fixture has a category and sits in the matching folder (D3); a script was the only check.
-- The series tests that load each save per case could share `ReadOnlySaves` too; the every-save loops already do (D2). The HoMM3 project takes about 5 to 7.5 minutes (a slow machine once made it 15 and 49).
+- Three smaller series classes (`SodSeriesTests`, `RampartAndBulwarkCastleTests`, `CoveCastleTests`) could share `ReadOnlySaves` too; the every-save loops and the Roe and OtherFactions series already do (D2). The HoMM3 project takes about 4 to 7.5 minutes (a slow machine once made it 15 and 49).
 - `SavegameParser.StandingOn`, HoMM2 `PageViewModel` and the editor-session accessors are untested (D4, D5).
 - The Unit tests of the HoMM3 hero and hero-owner serializers on records made by hand are missing (D9).
 - Four questions about production behaviour are open (an obelisk record shorter than its count, `MovedToday` for every version, the "3 of 2" text of a visited place, a `null` `Effects`).

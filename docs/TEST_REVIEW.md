@@ -48,7 +48,7 @@ Production changes made along the way, all with their own tests (details in the 
 | # | Where | Problem | Fix |
 |---|---|---|---|
 | D1 | ~~`ObeliskVisitsTests`, HoMM2 `PlayerViewModelTests`, `ShellWindowTests`~~ | Fixed: they now assert the position of the second obelisk (34,58), the three castles of Blue, and the 5 toolbar and 9 menu icons that the window has | none |
-| D2 | ~~every-save tests~~ | Fixed: the read-only every-save tests (15 load sites in 11 classes) now use `ReadOnlySaves`, so a save is parsed once per run. `CastleDeserializerTests` pays the one pass (about 24 s); the sum of the HoMM3 test durations fell from 449 s to 317 s. Left: `CastleBuilderReplayTests` (10 s, already shared) and the series tests that load each save per case | none |
+| D2 | ~~every-save tests~~ | Fixed: the read-only every-save tests (15 load sites in 11 classes) now use `ReadOnlySaves`, so a save is parsed once per run. `CastleDeserializerTests` pays the one pass (about 24 s); the sum of the HoMM3 test durations fell from 449 s to 317 s. The Roe and OtherFactions series classes share the cache too (the two Roe classes went from 67 s to 6 s alone and to about 0 s in a full run; the HoMM3 test durations from 317 s to 245 s, the project from 5 m 16 s to 4 m 5 s). Left: `CastleBuilderReplayTests` (10 s, already shared) and three smaller series classes | none |
 | D3 | all projects | Nothing fails when a fixture has no `[Category]` or sits in the wrong folder (a MultiUnit fixture of slice 28m was placed wrongly and found only by this review) | One check test per project over its own assembly: category present, `Integration` and `MultiUnit` fixtures in namespaces that contain those folder names |
 | D4 | HoMM3 `SavegameParser.StandingOn` | A hero standing on a place hides it on the map; its three conditions (type at +11, visitable at +15, number at +16) are untested | A parser test with a hero record that stands on a place |
 | D5 | HoMM2 `PageViewModel`, `CastleLinks`, `Homm2SaveDocuments`, `Homm2EditSessions`; HoMM3 `Homm3SaveDocuments`, `Homm3EditSessions`, `ByteEditTargetFactory`, `MapHeaderLocation`, `DwellingDeserializer` | No test names them; they are thin and used by every Integration test, so only a wrong wiring would fail | Direct tests where a rule is in them (`PageViewModel`: reset and refresh) |
@@ -575,7 +575,7 @@ Rules from `CLAUDE.md` and their coverage:
 ## Backlog (in order of value)
 
 1. D3: a check test per project for category and folder.
-2. The series tests that load each save per case (`RoeCastleTests`, `RoeCastleBuildingsTests`, `OtherFactionsCastleTests`) could use `ReadOnlySaves` too; D2 is fixed for the every-save loops.
+2. Other series classes that load each save per case (`SodSeriesTests` 15 s, `RampartAndBulwarkCastleTests` 12 s, `CoveCastleTests` 4 s) could use `ReadOnlySaves` like `RoeCastleTests`, `RoeCastleBuildingsTests` and `OtherFactionsCastleTests` now do; check first that each only reads.
 3. D4 and D5: the parser's `StandingOn`, `PageViewModel` and the editor-session accessors.
 4. D1: strengthen the four weak assertions.
 5. D6, D7: the remaining untested view models and the split of `HeroAndCastleLookupTests`.

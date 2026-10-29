@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -25,7 +26,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             "roe_07_blacksmith", "roe_08_marketplace", "roe_09_town_hall", "roe_10_mage_guild_1", "roe_11_city_hall",
         ];
 
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        // The tests of this class only read what they load, so the save is parsed once per run.
+        private static Game Load(string save) => ReadOnlySaves.Load(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static CastleModel Castle(string save, string name)
         {

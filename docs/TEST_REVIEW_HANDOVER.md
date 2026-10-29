@@ -116,6 +116,7 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 28d | see git log | HoMM3: new Unit `MineBytesLoaderTests` (23 cases) and `DwellingBytesLoaderTests` (21 cases) on bytes made by hand. Production fix (approved): both loaders rejected a tile at `Constants.Map.MaxCoordinate` (251) with `>=`, like `MapObjectPositions` before 24d-iii; they now accept it and 252 is the first refused. Left: `SavegameParser` |
 | 28e | see git log | HoMM3: new Unit `MerchantBytesLoaderTests` (13 cases) and MultiUnit `MapPlacesLoaderTests` (18 cases, over the real `MapObjectPositions`), on bytes made by hand |
 | 28 | Still open. Wpf views (hex editor 917 lines, hex viewer, hex rows and palette, finder view, stepper, nav button, shell window: most need a window, see what `ShellWindowTests` and `PageRenderingTests` already render); each game's runtime and remaining UI. Two subjects per sub-slice |
+| 28f | see git log | HoMM3 view models, Unit/MultiUnit: `DwellingRowViewModelTests` (5), `ArmySlotViewModelTests` (5), `MineRowViewModelTests` (4), `MerchantViewModelTests` (6) |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

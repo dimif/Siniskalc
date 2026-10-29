@@ -1359,3 +1359,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (35 mutants, production restored): the first run let six through. Four got tests (the third and fourth byte of the type, a place above 255, merchants with bytes after the number, a `.def` at the start); two are equivalent: a count of 0 as a valid count of merchants (no stock can be found in no list) and the check that definitions exist in `MapPlacesLoader` (the finder of the objects returns none without them). One is left: the end bound of the scan of the cells (`i + 10 <= firstDefinition`), because the only cell that reaches it would share its last bytes with the length of the first definition.
 - Homm3.Tests: the two fixtures pass (31); no production code changed.
 - Left in the data layer of HoMM3: `SavegameParser`.
+
+## Slice 28f - four small HoMM3 view models
+
+- `DwellingRowViewModelTests` (5, Unit): what the row shows; editable only when built and given an action to write; the count clamped to the limits and written; no action only changes the row.
+- `ArmySlotViewModelTests` (5, Unit): no totals without the info; hit points, damage range, cost, AI and fight values are those of the info times the amount; a change of amount or of info updates them and tells the bindings (including the facts of the base slot); no info clears them.
+- `MineRowViewModelTests` of HoMM3 (4, Unit): owner picked from the colours of the game and written with the reducer; the position shows the level; "Unguarded" or the count of slots of the guard; `UpdateGuard` writes the guard.
+- `MerchantViewModelTests` (6, MultiUnit, real slot and finder): name, seven slots labelled from 1, location only when given, what each slot shows, a clear and a pick in the finder written to the session, refresh.
+- Mutation check (25 mutants, production restored): the first run let three through (the facts the base slot tells, the levels of the position of a mine, an artifact picked by name); each got an assertion and the three mutants were run again and caught.
+- Homm3.Tests: the four fixtures pass (20); no production code changed.

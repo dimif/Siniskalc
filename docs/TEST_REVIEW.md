@@ -1368,3 +1368,13 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - `MerchantViewModelTests` (6, MultiUnit, real slot and finder): name, seven slots labelled from 1, location only when given, what each slot shows, a clear and a pick in the finder written to the session, refresh.
 - Mutation check (25 mutants, production restored): the first run let three through (the facts the base slot tells, the levels of the position of a mine, an artifact picked by name); each got an assertion and the three mutants were run again and caught.
 - Homm3.Tests: the four fixtures pass (20); no production code changed.
+
+## Slice 28g - visited places, Mage Guild rows, backpack slot and map dwelling row of HoMM3
+
+- `VisitedPlacesViewModelTests` (7, Unit): a row for each kind of the game and the kinds of Horn of the Abyss only there; a box for each place of the map labelled with its tile; a box ticked by the bit of the place number; ticking and unticking sets and clears only that bit; Forget clears one kind and leaves the others; Remember adds the places of the map and keeps other bits; refresh tells the rows and the boxes.
+- `MageGuildRowsTests` (5, Unit): the spell slot (spell, choices, a pick reported only when it is another spell and not nothing, refresh) and the level row (built or not, the text of its spells, an update refreshes its slots).
+- `BackpackSlotViewModelTests` (4, MultiUnit, real picker and finder): number and label, setting the artifact shows it and reports it once, a pick in the finder and a clear.
+- `MapDwellingRowViewModelTests` (6, Unit): what the row shows (an unknown creature by its code), the owner picked and written, the stock typed as text and clamped, text that is no number or the same stock written to nothing, refresh.
+- Mutation check (34 mutants, production restored): the first run let two through (the page refresh not telling the rows and the owner field not being refreshed, because the getters read the model anyway); the tests now watch the notifications, and five mutants whose pattern did not apply were redone. All caught.
+- Observation, not pinned: the text of a kind of place counts all the bits of the mask of the hero, so with bits of places that are not on this map it reads "3 of 2". That may be intended (the hero visited them); it is not tested.
+- Homm3.Tests: the four fixtures pass (22); no production code changed.

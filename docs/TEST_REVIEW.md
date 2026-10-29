@@ -1324,3 +1324,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - The save-based tests of the same writer were renamed `SafeCastleSerializerSavegameTests` (Integration).
 - Mutation check (14 mutants, 13 caught): the survivor (the faction test in front of the upgrade lookup of the creatures) is equivalent, because no building is found for the neutral faction anyway. Production restored.
 - Homm3.Tests: the fixture passes with the savegame one (41); no production code changed.
+
+## Slice 28b - the mine and dwelling writers of HoMM3 on records made by hand
+
+- `SafeMineSerializerTests` (7, Unit): the owner as the code of its colour and Neutral as FF; an owner byte that is no colour kept while the mine stays Neutral and replaced by a colour; the guard as little-endian type and count integers in their own tables; an emptied slot back to the empty mark; only the owner and the guard bytes change; the kind and the tile never written; the source record untouched and the size kept.
+- `SafeDwellingSerializerTests` (8, Unit): the same for the owner; the stock as a little-endian integer; 0 and the most allowed, one beyond and a negative stock refused; a stock above the limit that the savefile holds kept while the model still says it; only the owner and the stock change; the creature and tile never written.
+- Mutation check (12 mutants, all caught, production restored): the owner test always or never true, the guard write removed, a shifted owner code, the stock test as `>=` or always true, the range guard removed or with a wrong bound on either side, a shifted stock, the owner write removed. The first version of one mutant did not compile and was redone.
+- Homm3.Tests: the two fixtures pass (15); no production code changed.
+- Left: `SafeMerchantStockSerializer`.

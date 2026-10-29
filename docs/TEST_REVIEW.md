@@ -1219,3 +1219,11 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 - Mutation check (all 16 caught, production restored): the badge and its short-name rule, the clamp and its lower limit, the changed flag, the delta (zero, sign and wording), the note, refresh (both), the same-text check, the null text, the counter and its zero limit, and the limit.
 - Wpf.Tests: the new fixtures pass (23); no production code changed.
 - Not done (26d): `ToggleRowViewModel`, `ChoiceFieldViewModel`; then `SortColumnViewModel`, `RecentMenuItemViewModel` and the two page bases.
+
+## Slice 26d - the check box row and the drop-down field (Wpf)
+
+- `ToggleRowViewModelTests` (7, Unit): what the row shows; a check that changes the value is written, one that leaves it as it is writes nothing, and unchecking is written; the row may be toggled unless its condition says no (and with no condition it may); the note; refresh tells every binding.
+- `ChoiceFieldViewModelTests` (7 cases, Unit): what the field shows and the list of choices it offers; picking another choice writes it, the same choice writes nothing, and a cleared box (null or empty) writes nothing so the stored choice is kept; enabled unless the condition says no; refresh.
+- Mutation check (all 14 caught, production restored): the same-value check of each, the write, the condition and its default of each, the note, the tooltip, the choices, the empty-box rule, and refresh.
+- Wpf.Tests: the new fixtures pass (14); no production code changed.
+- Not done (26e): `SortColumnViewModel`, `RecentMenuItemViewModel`, `TabbedPageViewModelBase`, `PageViewModelBase`.

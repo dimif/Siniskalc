@@ -137,5 +137,61 @@ namespace Siniskalc.Homm2.Tests.Models
             var dragons = (Xabran() with { Faction = Faction.Warlock }).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
             Assert.That(dragons.WithDwellingLevel(6, 3).CreaturesWaiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
         }
+
+        [Test]
+        public void ABuiltDwellingGainsTheGrowthOfItsCreatureEachWeek()
+        {
+            var town = Xabran().WithDwelling(1, true).WithDwelling(2, true).WithDwelling(3, true);
+
+            Assert.That((town.WeeklyGrowth(1), town.WeeklyGrowth(2), town.WeeklyGrowth(3)), Is.EqualTo((12, 8, 5)), "peasants, archers, pikemen");
+        }
+
+        [Test]
+        public void TheWellAddsTwoToEveryBuiltDwellingAndTheGrowthBuildingEightToTheFirstOnly()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.Well | TownBuildings.GrowthBuilding }).WithDwelling(1, true).WithDwelling(2, true);
+
+            Assert.That(town.WeeklyGrowth(1), Is.EqualTo(12 + 2 + 8));
+            Assert.That(town.WeeklyGrowth(2), Is.EqualTo(8 + 2));
+        }
+
+        [Test]
+        public void TheGrowthBuildingWithoutTheWellAddsItsEightAloneToTheFirstDwelling()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.GrowthBuilding }).WithDwelling(1, true).WithDwelling(2, true);
+
+            Assert.That((town.WeeklyGrowth(1), town.WeeklyGrowth(2)), Is.EqualTo((12 + 8, 8)));
+        }
+
+        [Test]
+        public void ADwellingThatIsNotBuiltGainsNothingEvenWithTheWellAndTheGrowthBuilding()
+        {
+            var town = (Xabran() with { Town = TownBuildings.Castle | TownBuildings.Well | TownBuildings.GrowthBuilding }).WithDwelling(2, true);
+
+            Assert.That(Enumerable.Range(1, 6).Where(d => d != 2).Select(town.WeeklyGrowth), Is.All.Zero);
+        }
+
+        [Test]
+        public void AnUpgradedDwellingGainsTheGrowthOfTheUpgradedCreature()
+        {
+            var town = Xabran().WithDwellingLevel(3, 2);
+
+            Assert.That(town.WeeklyGrowth(3), Is.EqualTo(Creature.VeteranPikeman.Info.Growth));
+        }
+
+        [Test]
+        public void ACastleOfNoFactionGainsNothing()
+        {
+            var town = (Xabran() with { Faction = Faction.Neutral }).WithDwelling(1, true);
+
+            Assert.That(town.WeeklyGrowth(1), Is.Zero);
+        }
+
+        [TestCase(0)]
+        [TestCase(7)]
+        public void ADwellingNumberOutsideOneToSixIsRefused(int dwelling)
+        {
+            Assert.That(() => Xabran().WeeklyGrowth(dwelling), Throws.InstanceOf<ArgumentOutOfRangeException>());
+        }
     }
 }

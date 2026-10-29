@@ -101,7 +101,9 @@ Each slice's details, timings and caveats are in its section of `docs\TEST_REVIE
 | 26d | see git log | Wpf: `ToggleRowViewModelTests` (7) and `ChoiceFieldViewModelTests` (7 cases), Unit |
 | 26e | see git log | Wpf: `SortColumnViewModelTests` (4) and `RecentMenuItemViewModelTests` (10 cases), Unit (both were also exercised through `SortableListViewModelTests` and `RecentFilesMenuViewModelTests`) |
 | 26f | see git log | Wpf: `PageViewModelBaseTests` (2) and `TabbedPageViewModelBaseTests` (3), Unit. Every view model of `Siniskalc.Wpf` is now named by a test. |
-| 26g-28 | Still open. Wpf views (hex editor 917 lines, hex viewer, hex rows and palette, finder view, stepper, nav button, shell window: most need a window, see what `ShellWindowTests` and `PageRenderingTests` already render); then Heroes/Heroes.Wpf edit sessions and cards; both games' runtime and remaining UI. Two subjects per sub-slice |
+| 26g | Open: the views of Wpf. |
+| 27a | see git log | Heroes: `ChangeSinkExtensionsTests` (16) and `ChangeTextTests` (3), Unit |
+| 27b-28 | Still open. Wpf views (hex editor 917 lines, hex viewer, hex rows and palette, finder view, stepper, nav button, shell window: most need a window, see what `ShellWindowTests` and `PageRenderingTests` already render); then Heroes: `MineKinds`, `MapSizes`, `LinkViewModel`, `ObeliskEditSession`; Heroes.Wpf: `SecondarySkillsViewModelBase`, `ArmyViewModelBase`, `OwnerNavigationBuilderBase`, `SpellsViewModelBase`, `SkillSlotViewModel`, `StackTotals`, `SpellChoiceViewModel`, `NeutralPageViewModelBase`, `ArtifactPickerViewModel`, `PlayerCardViewModel`, the row and card view models (most are exercised through the HoMM2 and HoMM3 pages); both games' runtime and remaining UI. Two subjects per sub-slice |
 | 29 | Remove demonstrably duplicated contracts, only after mapping each removed assertion to retained coverage |
 | 30 | Refresh the full review and the reviewer agent from the final suite; separate intentional exceptions from defects |
 

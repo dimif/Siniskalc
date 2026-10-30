@@ -7,7 +7,7 @@
     /// Undo/redo history over immutable <see cref="SaveDocument"/> snapshots.
     /// There is one history per savefile, shared by every hero edited in it.
     /// </summary>
-    public sealed class SaveDocumentHistory : IHistoryEvents
+    public sealed class SaveDocumentHistory : IPendingChangeHistory
     {
         private readonly Stack<SaveDocument> undo = new();
         private readonly Stack<SaveDocument> redo = new();
@@ -54,6 +54,11 @@
         /// Returns what has been edited since the savefile was loaded or last saved.
         /// </summary>
         public IReadOnlyList<PendingChange> GetPendingChanges() => this.Current.GetPendingChanges(this.Original);
+
+        /// <summary>
+        /// Puts the value of <paramref name="change"/> back through this history, leaving every other edit alone.
+        /// </summary>
+        public void Revert(PendingChange change) => change.Revert(this);
 
         public void Apply(SaveDocument next)
         {

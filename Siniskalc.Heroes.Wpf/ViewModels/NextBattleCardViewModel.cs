@@ -18,7 +18,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="sources">The places that give them, each a box.</param>
         /// <param name="note">What the card says under the boxes, such as how far it was tried in the game.</param>
         /// <param name="clearAll">Takes every bonus and every place away, or <c>null</c> for a card that has no such button.</param>
-        public NextBattleCardViewModel(string title, IReadOnlyList<AmountRowViewModel> bonus, IReadOnlyList<ToggleRowViewModel> sources, string note, Action? clearAll = null)
+        public NextBattleCardViewModel(string title, IReadOnlyList<IAmountRow> bonus, IReadOnlyList<IToggleRow> sources, string note, Action? clearAll = null)
         {
             this.HasClear = clearAll != null;
             this.ClearCommand = new DelegateCommand(_ => clearAll?.Invoke(), _ => clearAll != null && (this.Bonus.Any(b => b.Value != 0) || this.Sources.Any(s => s.IsChecked)));
@@ -36,12 +36,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the morale and the luck for the next battle.
         /// </summary>
-        public IReadOnlyList<AmountRowViewModel> Bonus { get; }
+        public IReadOnlyList<IAmountRow> Bonus { get; }
 
         /// <summary>
         /// Gets the places that give them.
         /// </summary>
-        public IReadOnlyList<ToggleRowViewModel> Sources { get; }
+        public IReadOnlyList<IToggleRow> Sources { get; }
 
         /// <summary>
         /// Gets how many of the places that give a bonus the hero has visited, such as "2 of 5".

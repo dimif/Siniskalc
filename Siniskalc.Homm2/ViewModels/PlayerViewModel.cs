@@ -39,8 +39,9 @@
         private string banishing = string.Empty;
 
         public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
         {
+            this.Game = game;
             this.Color = color;
             this.banishingText = banishingText;
             this.openHero = openHero;
@@ -65,6 +66,8 @@
                 () => this.session.Current.IsBanished);
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public PlayerColor Color { get; }
 

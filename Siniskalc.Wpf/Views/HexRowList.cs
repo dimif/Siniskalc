@@ -19,10 +19,10 @@
 
         private readonly byte[] bytes;
         private readonly byte[] original;
-        private readonly ByteRegionMap map;
+        private readonly IByteRegionLookup map;
         private readonly Dictionary<int, HexRow> cache = [];
 
-        public HexRowList(byte[] bytes, byte[] original, ByteRegionMap map)
+        public HexRowList(byte[] bytes, byte[] original, IByteRegionLookup map)
         {
             this.bytes = bytes;
             this.original = original;

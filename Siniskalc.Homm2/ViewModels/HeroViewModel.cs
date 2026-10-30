@@ -29,8 +29,9 @@
         private int castleIndex = -1;
 
         public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
         {
+            this.Game = game;
             this.HeroId = heroId;
             this.openCastle = openCastle;
             this.session = game.History.CreateHeroSession(heroId);
@@ -126,6 +127,8 @@
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public int HeroId { get; }
 

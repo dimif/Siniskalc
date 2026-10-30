@@ -9,7 +9,7 @@ namespace Siniskalc.Wpf.ViewModels
     /// from the model, writes every edit back through a delegate, and knows how far the value is from what the savegame had.
     /// It knows no game: the game's view model gives it a name, the limits and the delegates. Call <see cref="Refresh"/> after the model changed.
     /// </summary>
-    public class AmountRowViewModel : AbstractViewModelBase
+    public class AmountRowViewModel : AbstractViewModelBase, IAmountRow
     {
         private readonly Func<long> current;
         private readonly Func<long> original;

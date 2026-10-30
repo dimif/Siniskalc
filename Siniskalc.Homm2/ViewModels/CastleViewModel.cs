@@ -37,8 +37,9 @@
         private string notice = string.Empty;
 
         public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
         {
+            this.Game = game;
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
             this.session = game.History.CreateCastleSession(castleIndex);
@@ -119,6 +120,8 @@
 
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public int CastleIndex { get; }
 

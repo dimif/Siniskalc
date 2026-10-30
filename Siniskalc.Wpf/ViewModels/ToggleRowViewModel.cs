@@ -6,7 +6,7 @@ namespace Siniskalc.Wpf.ViewModels
     /// A yes or no the user edits with a check box: a building of a town that is built or not. It reads its value from the model and
     /// writes every edit back through a delegate. It knows no game. Call <see cref="Refresh"/> after the model changed.
     /// </summary>
-    public sealed class ToggleRowViewModel : AbstractViewModelBase
+    public sealed class ToggleRowViewModel : AbstractViewModelBase, IToggleRow
     {
         private readonly Func<bool> get;
         private readonly Action<bool> set;

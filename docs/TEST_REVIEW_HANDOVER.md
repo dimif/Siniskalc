@@ -22,7 +22,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 - Never push.
 - Test only the affected projects per step (`dotnet test Tests\<Project> --artifacts-path $env:TEMP\<folder> --filter ...`). Run only the affected tests. Do not rerun the full solution (about 10 minutes on the HoMM3 project) unless there is a good reason, such as profiling run time; say so when you do, and never claim a measurement that was not like-for-like.
 - Do not change production behaviour. Small seams (an interface so a test can mock a collaborator) are acceptable if they keep behaviour; state them in the report.
-- Do not share loaded mutable documents between tests. `Tests\Siniskalc.Homm3.Tests\Data\SavedGames` shares a loaded `Game` only for tests that read; check the code under test does not mutate before using it.
+- Do not share loaded mutable documents between tests. `Tests\Siniskalc.Homm3.Tests\Data\SavedGames` (over `SaveCache` of `Siniskalc.Tests.Homm.Common`) parses each savefile once and gives every call a game of its own, so a test may edit it; a test whose subject is loading or saving uses `TestServices.GameService`, which reads the file each time.
 - Commit trailer: `Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>`.
 - Branch `dimif-test-suite-review`, based on `feature/homm2-support`. On Windows PowerShell there is no `&&`; each call starts in the repo root.
 - Report honestly: say what was and was not run, what was not mutation-checked, and what is left.

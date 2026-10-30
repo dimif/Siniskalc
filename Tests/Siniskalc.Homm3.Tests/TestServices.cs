@@ -8,6 +8,7 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
+using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Wpf.Views;
@@ -28,17 +29,28 @@ namespace Siniskalc.Homm3.Tests
 
         private static readonly BanishingTextProvider Banishing = new();
 
+        private static IGameService plainGameService = null!;
+
         private static readonly Homm3ModuleFactory Services = new(
             Encoding.Latin1,
             new FileBackupServiceProvider(Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
             Patcher,
-            Banishing);
+            Banishing,
+            service =>
+            {
+                plainGameService = service;
+                return new CachingGameService(service, SavedGames.Cache);
+            });
 
         private static readonly AboutInfo About = new(ApplicationName, "test", "A savegame editor.", "https://example.invalid", "https://example.invalid", "MIT", []);
 
         private static readonly HelpLinks Help = new("https://example.invalid", "https://example.invalid");
 
-        public static IGameService GameService => Services.GameService;
+        /// <summary>
+        /// Gets the service that parses the file or the bytes it is given each time. The editors of <see cref="CreateHomm3Editor"/> load through
+        /// <see cref="CachingGameService"/> instead, which serves the files of <c>TestData</c> from <see cref="SavedGames"/>.
+        /// </summary>
+        public static IGameService GameService => plainGameService;
 
         public static ISavefileCodec SavefileCodec => Services.SavefileCodec;
 

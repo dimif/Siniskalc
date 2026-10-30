@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm3.Runtime
 {
+    using System;
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -19,7 +20,16 @@ namespace Siniskalc.Homm3.Runtime
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public Homm3ModuleFactory(Encoding heroNameEncoding, IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText)
+        /// <param name="decorateGameService">
+        /// Wraps the service that loads and saves games, for the editor and everything else the factory builds with it; <c>null</c> (the
+        /// application) uses the service as it is. The tests use it to serve a savefile they have already parsed.
+        /// </param>
+        public Homm3ModuleFactory(
+            Encoding heroNameEncoding,
+            IFileBackupServiceProvider backup,
+            ISavefileBytesPatcher bytesPatcher,
+            BanishingTextProvider banishingText,
+            Func<IGameService, IGameService>? decorateGameService = null)
         {
             this.BytesPatcher = bytesPatcher;
             this.BanishingText = banishingText;
@@ -55,7 +65,7 @@ namespace Siniskalc.Homm3.Runtime
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
-            this.GameService = new GameService(
+            IGameService gameService = new GameService(
                 new SavegameParser(
                     new SavegameVersionDetector(),
                     new HeroBytesLoader(heroNameEncoding),
@@ -73,6 +83,7 @@ namespace Siniskalc.Homm3.Runtime
                     this.DocumentFactory),
                 this.SavefileCodec,
                 backup);
+            this.GameService = decorateGameService?.Invoke(gameService) ?? gameService;
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider());
             this.EffectLines = new EffectLineProvider();

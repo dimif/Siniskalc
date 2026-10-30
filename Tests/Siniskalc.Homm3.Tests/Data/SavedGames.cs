@@ -6,11 +6,12 @@ namespace Siniskalc.Homm3.Tests.Data
     /// <summary>
     /// The savefiles of the tests, each parsed once for the whole run. <see cref="Get"/> gives every test a game of its own (its edits, its
     /// undo and its save do not reach any other test), made around the parsed document, so asking for a file again costs almost nothing.
-    /// The tests whose subject is the loading itself call <c>TestServices.GameService</c> instead.
+    /// The tests whose subject is the loading itself call <c>TestServices.GameService</c>, which parses the file each time; the editors the
+    /// tests build load through <see cref="CachingGameService"/>, which takes the file from here.
     /// </summary>
     internal static class SavedGames
     {
-        private static readonly SaveCache<Game> Cache = new(
+        internal static readonly SaveCache<Game> Cache = new(
             path => TestServices.GameService.LoadGameFromFile(path),
             (game, file, name) => new Game(file, (byte[])game.Bytes.Clone(), game.GameVersion, new SaveDocumentHistory(game.History.Original), name, game.Metadata, game.Places));
 

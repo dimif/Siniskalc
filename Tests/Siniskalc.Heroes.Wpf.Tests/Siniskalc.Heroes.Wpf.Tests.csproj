@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="../Siniskalc.Tests.Homm.Common/TestFixtureConventions.cs" Link="TestFixtureConventions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Siniskalc.Heroes.Wpf\Siniskalc.Heroes.Wpf.csproj" />
   </ItemGroup>
 

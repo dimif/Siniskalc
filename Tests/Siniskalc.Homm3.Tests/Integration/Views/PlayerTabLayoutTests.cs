@@ -77,6 +77,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
             }
         }
 
+        /// <summary>
+        /// Lets WPF finish the work that is queued on the dispatcher (data binding, template application, layout, rendering) before the test
+        /// measures anything. The test thread has no message loop of its own, so nothing queued runs unless it is asked for: invoking an empty
+        /// action at <see cref="DispatcherPriority.ContextIdle"/> returns only after every item of a higher priority has been processed.
+        /// </summary>
         private static void Pump() => Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
     }
 }

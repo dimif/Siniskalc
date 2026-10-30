@@ -39,10 +39,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void EveryCastleOfEverySavefileHasANameSoTheMapUsesIt()
         {
             var paths = Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal).ToList();
-            ReadOnlySaves.LoadAll(paths);
+            SavedGames.LoadAll(paths);
             foreach (var path in paths)
             {
-                var game = ReadOnlySaves.Load(path);
+                var game = SavedGames.Get(path);
 
                 Assert.That(game.History.Current.Castles().GetModels().Where(c => !c.IsUsed), Is.Empty, Path.GetFileName(path));
             }

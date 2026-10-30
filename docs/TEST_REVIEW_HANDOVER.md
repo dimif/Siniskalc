@@ -22,7 +22,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 - Never push.
 - Test only the affected projects per step (`dotnet test Tests\<Project> --artifacts-path $env:TEMP\<folder> --filter ...`). Run only the affected tests. Do not rerun the full solution (about 10 minutes on the HoMM3 project) unless there is a good reason, such as profiling run time; say so when you do, and never claim a measurement that was not like-for-like.
 - Do not change production behaviour. Small seams (an interface so a test can mock a collaborator) are acceptable if they keep behaviour; state them in the report.
-- Do not share loaded mutable documents between tests. `Tests\Siniskalc.Homm3.Tests\Data\ReadOnlySaves` shares a loaded `Game` only for tests that read; check the code under test does not mutate before using it.
+- Do not share loaded mutable documents between tests. `Tests\Siniskalc.Homm3.Tests\Data\SavedGames` shares a loaded `Game` only for tests that read; check the code under test does not mutate before using it.
 - Commit trailer: `Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>`.
 - Branch `dimif-test-suite-review`, based on `feature/homm2-support`. On Windows PowerShell there is no `&&`; each call starts in the repo root.
 - Report honestly: say what was and was not run, what was not mutation-checked, and what is left.
@@ -44,7 +44,7 @@ Make the tests meaningful, honestly classified and cheap to run:
 | 10 | `3b61c12` | Literal-byte tests for `SafeHeroSerializer` and `SafeCastleSerializer` |
 | 11 | `cac7a10` | `ArmyWriter` and HoMM2 unknown-byte tests with specified bytes |
 | 12 | `67fbedc` | `CastleBuilder` rules as Unit tests on in-memory castles (`CastleModels`), message wording as MultiUnit, replays kept as Integration (`CastleBuilderReplayTests`, `CastleBuilderSavefileRulesTests`) |
-| 13 | `822e375` | `ReadOnlySaves`: obelisk and player-head every-save contracts load each save once (82 s to 46 s) |
+| 13 | `822e375` | `SavedGames`: obelisk and player-head every-save contracts load each save once (82 s to 46 s) |
 | 14 | `7f26565` | Same for hero-owner contracts and castle replays (replays 36 s to 9 s) |
 | 15 | `1fb6894` | `ISettingsStore` / `IRecentFilesStore` seams; `RecentFilesMenuViewModelTests` is Unit, `ShellViewModelTests` uses a mocked store |
 | 16 | `b9f2031` | Heroes.Wpf: `MineRowViewModelTests`, `DaysLeftCardViewModelTests`, `PrimarySkillsCardViewModelTests` reclassified Unit and moved to `ViewModels\` |
@@ -136,7 +136,7 @@ The session plan with the full per-slice acceptance text is `C:\Users\dimit\.cop
 The current list, with places and fixes, is "Findings" in `docs\TEST_REVIEW.md` (defects D1 to D9, questions about production behaviour and the intentional exceptions). The ones to start from:
 
 - No test enforces that a fixture has a category and sits in the matching folder (D3); a script was the only check.
-- The every-save loops and the Roe, Sod, OtherFactions, Rampart/Bulwark and Cove series share `ReadOnlySaves` (D2), and `CastleDeserializerTests` loads the saves eight at a time. The HoMM3 project takes about 3 to 7.5 minutes (a slow machine once made it 15 and 49); what is left is WPF windows and `CastleBuilderReplayTests`.
+- The every-save loops and the Roe, Sod, OtherFactions, Rampart/Bulwark and Cove series share `SavedGames` (D2), and `CastleDeserializerTests` loads the saves eight at a time. The HoMM3 project takes about 3 to 7.5 minutes (a slow machine once made it 15 and 49); what is left is WPF windows and `CastleBuilderReplayTests`.
 - `SavegameParser.StandingOn`, HoMM2 `PageViewModel` and the editor-session accessors are untested (D4, D5).
 - The Unit tests of the HoMM3 hero and hero-owner serializers on records made by hand are missing (D9).
 - Four questions about production behaviour are open (an obelisk record shorter than its count, `MovedToday` for every version, the "3 of 2" text of a visited place, a `null` `Effects`).

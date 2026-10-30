@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static readonly string[] RedCastles = ["1_Castle", "2_Rampart", "3_Tower", "4_Inferno", "5_necropolis", "6_Dung", "7_Strong", "8_Fort"];
 
         // The tests of this class only read what they load, so the save is parsed once per run.
-        private static Game Load(string save) => ReadOnlySaves.Load(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static CastleModel Castle(string save, string name)
         {
@@ -299,7 +299,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Roe"), "*.GM1"))
             {
-                foreach (var chunk in ReadOnlySaves.Load(path).History.Current.Castles())
+                foreach (var chunk in SavedGames.Get(path).History.Current.Castles())
                 {
                     Assert.That(TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{chunk.Name} in {path}");
                 }

@@ -113,7 +113,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(Path.Combine("TestData", "Hota", "VisitedPlaces"), "*.GM2"))
             {
-                var game = ReadOnlySaves.Load(file);
+                var game = SavedGames.Get(file);
                 var heroes = game.History.Current.Heroes();
                 foreach (var chunk in heroes)
                 {

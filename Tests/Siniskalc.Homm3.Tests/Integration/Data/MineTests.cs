@@ -111,7 +111,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(System.IO.Path.Combine("TestData", "Hota", "Mines"), "*.GM2"))
             {
-                var mines = ReadOnlySaves.Load(file).History.Current.Mines();
+                var mines = SavedGames.Get(file).History.Current.Mines();
                 foreach (var chunk in mines)
                 {
                     Assert.That(mines.Serializer.Serialize(chunk, mines.Deserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{file}: {chunk.Name}");

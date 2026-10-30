@@ -27,7 +27,7 @@ The cleanup was merged into `feature/homm2-support` (tip `ebf7b75`, 17 commits a
 
 ### Run time after the merge
 
-After the merge the HoMM3 tests were made cheaper in three steps, with the same 3,895 tests passing each time: the series classes `RoeCastleTests`, `RoeCastleBuildingsTests`, `SodSeriesTests`, `RampartAndBulwarkCastleTests` and `CoveCastleTests` read their saves through `ReadOnlySaves` (sum of test durations 317 s to 226 s), and `CastleDeserializerTests` loads the 448 saves eight at a time with `ReadOnlySaves.LoadAll` (26.5 s to 5 s). `Siniskalc.Homm3.Tests` now takes about 3 m 18 s with 198 s of test durations (5 m 16 s and 317 s before); the class table below was measured earlier. What is left is mostly WPF windows (`PageRenderingTests`, `ShellSmokeTests`, `CastleEditingViewModelTests`, the layout tests: about 70 s) and `CastleBuilderReplayTests` (10 s of reducer replays).
+After the merge the HoMM3 tests were made cheaper in three steps, with the same 3,895 tests passing each time: the series classes `RoeCastleTests`, `RoeCastleBuildingsTests`, `SodSeriesTests`, `RampartAndBulwarkCastleTests` and `CoveCastleTests` read their saves through `SavedGames` (sum of test durations 317 s to 226 s), and `CastleDeserializerTests` loads the 448 saves eight at a time with `SavedGames.LoadAll` (26.5 s to 5 s). `Siniskalc.Homm3.Tests` now takes about 3 m 18 s with 198 s of test durations (5 m 16 s and 317 s before); the class table below was measured earlier. What is left is mostly WPF windows (`PageRenderingTests`, `ShellSmokeTests`, `CastleEditingViewModelTests`, the layout tests: about 70 s) and `CastleBuilderReplayTests` (10 s of reducer replays).
 
 ### Since the first review
 
@@ -52,7 +52,7 @@ Production changes made along the way, all with their own tests (details in the 
 | # | Where | Problem | Fix |
 |---|---|---|---|
 | D1 | ~~`ObeliskVisitsTests`, HoMM2 `PlayerViewModelTests`, `ShellWindowTests`~~ | Fixed: they now assert the position of the second obelisk (34,58), the three castles of Blue, and the 5 toolbar and 9 menu icons that the window has | none |
-| D2 | ~~every-save tests~~ | Fixed: the read-only every-save tests (15 load sites in 11 classes) now use `ReadOnlySaves`, so a save is parsed once per run. `CastleDeserializerTests` pays the one pass (about 24 s); the sum of the HoMM3 test durations fell from 449 s to 317 s. The Roe and OtherFactions series classes share the cache too (the two Roe classes went from 67 s to 6 s alone and to about 0 s in a full run; the HoMM3 test durations from 317 s to 245 s, the project from 5 m 16 s to 4 m 5 s). Left: `CastleBuilderReplayTests` (10 s, already shared) and three smaller series classes | none |
+| D2 | ~~every-save tests~~ | Fixed: the read-only every-save tests (15 load sites in 11 classes) now use `SavedGames`, so a save is parsed once per run. `CastleDeserializerTests` pays the one pass (about 24 s); the sum of the HoMM3 test durations fell from 449 s to 317 s. The Roe and OtherFactions series classes share the cache too (the two Roe classes went from 67 s to 6 s alone and to about 0 s in a full run; the HoMM3 test durations from 317 s to 245 s, the project from 5 m 16 s to 4 m 5 s). Left: `CastleBuilderReplayTests` (10 s, already shared) and three smaller series classes | none |
 | D3 | all projects | Nothing fails when a fixture has no `[Category]` or sits in the wrong folder (a MultiUnit fixture of slice 28m was placed wrongly and found only by this review) | One check test per project over its own assembly: category present, `Integration` and `MultiUnit` fixtures in namespaces that contain those folder names |
 | D4 | HoMM3 `SavegameParser.StandingOn` | A hero standing on a place hides it on the map; its three conditions (type at +11, visitable at +15, number at +16) are untested | A parser test with a hero record that stands on a place |
 | D5 | HoMM2 `PageViewModel`, `CastleLinks`, `Homm2SaveDocuments`, `Homm2EditSessions`; HoMM3 `Homm3SaveDocuments`, `Homm3EditSessions`, `ByteEditTargetFactory`, `MapHeaderLocation`, `DwellingDeserializer` | No test names them; they are thin and used by every Integration test, so only a wrong wiring would fail | Direct tests where a rule is in them (`PageViewModel`: reset and refresh) |
@@ -76,7 +76,7 @@ These look like findings and are not; a reviewer should not report them again.
 |---|---|
 | `[Explicit]` tests with `[Category(TestKinds.Manual)]` that write edited saves to `TestData/*/out` (HoMM2 `EditedSavesTests`, `EditorSavesTests`, `ThreedomEditorSavesTests`; HoMM3 `GoldLimitSavesTests`) | They exist to be opened in the game; a filter `TestCategory!=Manual` never runs them |
 | MultiUnit view tests that open real WPF windows and take 100 to 400 ms (`PageStylesTests`, `DaysLeftCardTests`, `HeroCardsTests`) | A template that did not apply leaves a control empty and raises no binding error; only a rendered window shows it (`CLAUDE.md`) |
-| Integration tests over 2 s that walk every save or replay a reducer over a series (15 classes) | They are data contracts over 448 saves; the cost is in loading the saves, which `ReadOnlySaves` now does once per run (D2) |
+| Integration tests over 2 s that walk every save or replay a reducer over a series (15 classes) | They are data contracts over 448 saves; the cost is in loading the saves, which `SavedGames` now does once per run (D2) |
 | Scenario classes `Roe*`, `Sod*`, `Hota*`, the faction `*CastleTests`, `RampartAndBulwarkCastleTests`, `CastleGrailAndCapitolPillTests` | `CLAUDE.md` allows a class named after a scenario or a feature tested through every layer |
 | Savegame serializer tests (`...SerializerSavegameTests`) that use the reader to build or compare a model | They are the round-trip contract on a real save; the byte contract is in the Unit class of the same subject |
 | HoMM2 fixtures of slice 17e (`HeroDestination`, `MapObjects`, `MinesLists`, `HeroActiveSpells`) kept Integration | The saves are the contract |
@@ -570,7 +570,7 @@ Rules from `CLAUDE.md` and their coverage:
 
 1. `[Category(TestKinds.Unit|MultiUnit|Integration)]` on every fixture, one `TestKinds` class per project; `Integration/<Layer>/` and `MultiUnit/<Layer>/` folders, Unit tests in the layer folder (D3 asks for a check).
 2. Moq fakes for every dependency of a Unit test; `TestServices` only in MultiUnit and Integration tests; a seam is added to production code only when it keeps behaviour and the user agrees.
-3. Savefile tests only read; a save is loaded once per run where many tests need it (`ReadOnlySaves`).
+3. Savefile tests only read; a save is loaded once per run where many tests need it (`SavedGames`).
 4. No `Assert.Pass`, no silent `continue`, no conditional assert, no `Assume`; a serializer test asserts bytes.
 5. A test checks the notification, not only the value, when the getter reads the model anyway (a `Refresh` test that watches `PropertyChanged`); this found several weak tests in slices 27 and 28.
 6. A claim that a test covers a behaviour is checked by changing the production code and watching the test fail (mutation checks, kept in the slice log with their survivors).
@@ -579,7 +579,7 @@ Rules from `CLAUDE.md` and their coverage:
 ## Backlog (in order of value)
 
 1. D3: a check test per project for category and folder.
-2. The time that is left in the HoMM3 project is WPF windows (about 70 s) and the reducer replays of `CastleBuilderReplayTests` (10 s); other classes that load a save in `[SetUp]` could use `ReadOnlySaves` where they only read.
+2. The time that is left in the HoMM3 project is WPF windows (about 70 s) and the reducer replays of `CastleBuilderReplayTests` (10 s); other classes that load a save in `[SetUp]` could use `SavedGames` where they only read.
 3. D4 and D5: the parser's `StandingOn`, `PageViewModel` and the editor-session accessors.
 4. D1: strengthen the four weak assertions.
 5. D6, D7: the remaining untested view models and the split of `HeroAndCastleLookupTests`.
@@ -927,12 +927,12 @@ ArmyWriterTests: the refused-count test now asserts no byte was cut, plus two te
 
 ## Slice 13 - Shared loads in the every-savefile contracts
 
-- New `Data\ReadOnlySaves` loads each savefile once for tests that only read it. `ObeliskVisitsTests` and `PlayerHeadTests` use it for their every-savefile cases (511 saves); tests that edit, undo or serialize a changed document still load their own copy.
+- New `Data\SavedGames` loads each savefile once for tests that only read it. `ObeliskVisitsTests` and `PlayerHeadTests` use it for their every-savefile cases (511 saves); tests that edit, undo or serialize a changed document still load their own copy.
 - Same 925 tests, none removed. The two fixtures ran in 82 s before and 46 s after (one run each, so a rough figure). Hero-owner contracts are slice 14.
 
 ## Slice 14 - Shared loads in hero-owner contracts and castle replays
 
-- `HeroOwnersBytesLoaderTests` and `SafeHeroOwnersSerializerTests` (every-savefile cases) and `CastleBuilderReplayTests` now load saves through `ReadOnlySaves`. The owner serializer does not change the chunk it is given, and the replays only read the loaded castles and serialize through `TestServices`. Tests that edit keep a fresh history.
+- `HeroOwnersBytesLoaderTests` and `SafeHeroOwnersSerializerTests` (every-savefile cases) and `CastleBuilderReplayTests` now load saves through `SavedGames`. The owner serializer does not change the chunk it is given, and the replays only read the loaded castles and serialize through `TestServices`. Tests that edit keep a fresh history.
 - Same tests, none removed: the hero-owner pair (906 cases) ran in 34 s from a cold cache; the four replays went from 36 s to 9 s (one run each). Other castle-series fixtures still load their own saves.
 
 ## Slice 15 - Isolating the settings-dependent Wpf view models

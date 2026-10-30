@@ -24,7 +24,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(EverySavefile))]
         public void TheTableOfEverySavefileIsWrittenBackAsItWasRead(string path)
         {
-            var owners = ReadOnlySaves.Load(path).History.Current.HeroOwners();
+            var owners = SavedGames.Get(path).History.Current.HeroOwners();
 
             for (var i = 0; i < owners.Count; i++)
             {

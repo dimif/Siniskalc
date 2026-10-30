@@ -22,7 +22,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static string Path(string save) => System.IO.Path.Combine("TestData", "Sod", save + ".GM1");
 
         // The tests of this class only read what they load, so a save is parsed once per run.
-        private static Game Load(string save) => ReadOnlySaves.Load(Path(save));
+        private static Game Load(string save) => SavedGames.Get(Path(save));
 
         private static List<string> Saves() => SeriesSaves.Names("Sod", "conflux");
 
@@ -179,7 +179,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var unmoved = 0;
             foreach (var path in Directory.GetFiles("TestData", "*.GM1", SearchOption.AllDirectories).Where(p => p.Contains("Sod") || p.Contains("Roe")))
             {
-                var game = ReadOnlySaves.Load(path);
+                var game = SavedGames.Get(path);
                 var heroes = game.History.Current.Heroes();
                 var eligible = heroes.Where(chunk => chunk.GetByteAt(26) != 0xFF
                     && chunk.GetUInt32At(57) > 0 && chunk.GetUInt32At(57) <= 100_000).ToList();

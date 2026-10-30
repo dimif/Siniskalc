@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Castle(string save, string name)
         {
-            var game = ReadOnlySaves.Load(Path.Combine("TestData", "Hota", "Bulwark", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Bulwark", save + ".GM1"));
             var castles = game.History.Current.Castles();
             return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
         }

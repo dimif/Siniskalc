@@ -23,8 +23,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var saves = CastleSamples.Folder(folder).Where(s => !Path.GetFileName(s).Contains("milestone")).ToList();
             for (var i = 1; i < saves.Count; i++)
             {
-                var before = ReadOnlySaves.Load(saves[i - 1]).History.Current.Castles();
-                var after = ReadOnlySaves.Load(saves[i]).History.Current.Castles();
+                var before = SavedGames.Get(saves[i - 1]).History.Current.Castles();
+                var after = SavedGames.Get(saves[i]).History.Current.Castles();
                 foreach (var castle in after.Where(c => before.FindByName(c.Name) >= 0 && c.GetByteAt(CastleLayout.Owner) != Constants.ByteOff))
                 {
                     yield return (castle.Name, before[before.FindByName(castle.Name)], castle, Path.GetFileName(saves[i]));
@@ -106,7 +106,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 // which no rule seen elsewhere explains, so it is not used as proof.
                 && !p.EndsWith("cove_inland_all_cheat.GM1")))
             {
-                var castles = ReadOnlySaves.Load(path).History.Current.Castles()
+                var castles = SavedGames.Get(path).History.Current.Castles()
                     .Select(chunk => (Chunk: chunk, Model: TestServices.CastleDeserializer.Deserialize(chunk)))
                     .Where(c => VerifiedFactions.Contains(c.Model.Faction)).ToList();
                 Assert.That(castles, Is.Not.Empty, $"{path}: at least one castle has a verified faction");

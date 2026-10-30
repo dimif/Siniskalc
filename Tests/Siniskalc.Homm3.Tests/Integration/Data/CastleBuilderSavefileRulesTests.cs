@@ -21,7 +21,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var failures = new List<string>();
             foreach (var path in CastleSamples.All().Where(p => VerifiedFactions.Any(f => Path.GetDirectoryName(p)!.EndsWith(f.Name)) && !p.EndsWith("cove_inland_all_cheat.GM1")))
             {
-                var castles = ReadOnlySaves.Load(path).History.Current.Castles()
+                var castles = SavedGames.Get(path).History.Current.Castles()
                     .Select(chunk => (Chunk: chunk, Model: TestServices.CastleDeserializer.Deserialize(chunk)))
                     .Where(c => VerifiedFactions.Contains(c.Model.Faction)).ToList();
                 Assert.That(castles, Is.Not.Empty, $"{path}: at least one castle has a verified faction");
@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Castle(string folder, string save, string name)
         {
             var path = CastleSamples.Folder(folder).Single(p => Path.GetFileNameWithoutExtension(p) == save);
-            var castles = ReadOnlySaves.Load(path).History.Current.Castles();
+            var castles = SavedGames.Get(path).History.Current.Castles();
             return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
         }
 

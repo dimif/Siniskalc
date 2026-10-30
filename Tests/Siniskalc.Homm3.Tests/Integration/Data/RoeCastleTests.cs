@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         ];
 
         // The tests of this class only read what they load, so the save is parsed once per run.
-        private static Game Load(string save) => ReadOnlySaves.Load(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static CastleModel Castle(string save, string name)
         {

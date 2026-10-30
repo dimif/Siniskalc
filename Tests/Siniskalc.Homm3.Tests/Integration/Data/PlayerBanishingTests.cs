@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing")))
             {
-                var game = ReadOnlySaves.Load(path);
+                var game = SavedGames.Get(path);
                 foreach (var chunk in game.History.Current.Players().Where(c => c.Color != PlayerColor.Blue))
                 {
                     Assert.That(TestServices.PlayerDeserializer.Deserialize(chunk).DaysLeft, Is.Null, $"{Path.GetFileName(path)} {chunk.Color}");
@@ -83,7 +83,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var serializer = new SafePlayerSerializer();
             foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing")))
             {
-                foreach (var chunk in ReadOnlySaves.Load(path).History.Current.Players())
+                foreach (var chunk in SavedGames.Get(path).History.Current.Players())
                 {
                     Assert.That(serializer.Serialize(chunk, TestServices.PlayerDeserializer.Deserialize(chunk)).ToArray(), Is.EqualTo(chunk.ToArray()), $"{Path.GetFileName(path)} {chunk.Color}");
                 }

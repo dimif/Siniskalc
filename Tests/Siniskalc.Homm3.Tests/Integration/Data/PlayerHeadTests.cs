@@ -24,7 +24,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(EverySavefile))]
         public void TheHeroesOfEveryPlayerOfEverySavefileAreAListOfDistinctIdsThatTheCountMatches(string path)
         {
-            var game = ReadOnlySaves.Load(path);
+            var game = SavedGames.Get(path);
             var heroCount = game.History.Current.Heroes().Count;
 
             foreach (var chunk in game.History.Current.Players())

@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     internal sealed class PlayerBanishingTests
     {
         private static Game Load(string save) =>
-            TestServices.GameService.LoadGameFromFile(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
+            SavedGames.Get(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
 
         private static PlayerChunk BlueChunk(Game game) => game.History.Current.Players()[game.History.Current.Players().FindByColor(PlayerColor.Blue)];
 

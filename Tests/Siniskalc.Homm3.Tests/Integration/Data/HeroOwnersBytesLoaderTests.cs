@@ -76,7 +76,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("hero_owners_02_m4w2d1", 543492)]
         public void TheTableOfAHornOfTheAbyssSaveHasAByteForEach215HeroesInFrontOfTheDate(string save, int offset)
         {
-            var owners = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History.Current.HeroOwners();
+            var owners = SavedGames.Get(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History.Current.HeroOwners();
 
             Assert.That(owners[0].StartIndex, Is.EqualTo(offset));
             Assert.That(owners[0].Length, Is.EqualTo(215));

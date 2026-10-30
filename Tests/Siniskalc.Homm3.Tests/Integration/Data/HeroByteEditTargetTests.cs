@@ -2,6 +2,8 @@
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
@@ -18,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void SetUp()
         {
             var path = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
-            this.game = TestServices.GameService.LoadGameFromFile(path);
+            this.game = SavedGames.Get(path);
             this.heroIndex = this.game.History.Current.Heroes().FindByName("Christian");
             this.session = this.game.History.CreateHeroSession(this.heroIndex);
             this.target = new HeroByteEditTarget(this.session, TestServices.HeroRegions);

@@ -7,6 +7,8 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static ResourceSet PurpleAfter => new(27, 148, 31, 144, 65, 78, 220959);
 
-        private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        private static Game Load(string path) => SavedGames.Get(path);
 
         [Test]
         public void TheEightPlayersOfTheMapAreFoundInColourOrder()

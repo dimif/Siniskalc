@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static readonly string[] RedCastles = ["1_Castle", "2_Rampart", "3_Tower", "4_Inferno", "5_necropolis", "6_Dung", "7_Strong", "8_Fort"];
 
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         // Every save up to 47 follows the one before it. The capitols were built from save 47 each (the first of them was kept in save 49 and
         // the others were not), so they are compared with 47.

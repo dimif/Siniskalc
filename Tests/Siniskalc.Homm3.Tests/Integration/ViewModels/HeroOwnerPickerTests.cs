@@ -2,6 +2,8 @@ using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     /// <summary>
@@ -11,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     [Category(TestKinds.Integration)]
     internal sealed class HeroOwnerPickerTests
     {
-        private static SaveDocumentHistory Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History;
+        private static SaveDocumentHistory Load(string save) => SavedGames.Get(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History;
 
         [Test]
         public void PickingNeutralTakesTheHeroFromTheListOfItsPlayer()

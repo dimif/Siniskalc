@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -11,9 +13,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class MapObjectByteEditTargetTests
     {
-        private static Siniskalc.Homm3.Runtime.Game LoadMines() => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2"));
+        private static Siniskalc.Homm3.Runtime.Game LoadMines() => SavedGames.Get(Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2"));
 
-        private static Siniskalc.Homm3.Runtime.Game LoadDwellings() => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Dwellings", "dwellings_01_tazar_flags_guardhouse.GM2"));
+        private static Siniskalc.Homm3.Runtime.Game LoadDwellings() => SavedGames.Get(Path.Combine("TestData", "Hota", "Dwellings", "dwellings_01_tazar_flags_guardhouse.GM2"));
 
         [Test]
         public void TheBytesOfAMineAreNamedByTheirFieldsAndAnEditChangesTheMine()

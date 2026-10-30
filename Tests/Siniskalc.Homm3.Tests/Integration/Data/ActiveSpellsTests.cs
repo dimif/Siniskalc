@@ -2,6 +2,8 @@
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -12,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class ActiveSpellsTests
     {
-        private static Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Arts", name + ".GM1"));
+        private static Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "Arts", name + ".GM1"));
 
         private static HeroEditSession Session(Game game, string hero) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(hero));
 

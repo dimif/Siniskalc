@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -14,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class HotaFourCornersTests
     {
-        private static Game Load() => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "tan_not_parsing.GM1"));
+        private static Game Load() => SavedGames.Get(Path.Combine("TestData", "Hota", "tan_not_parsing.GM1"));
 
         [Test]
         public void ThePlayersAreTheFourCornersAndTheColourThatIsNotInTheGameIsNotListed()

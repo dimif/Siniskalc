@@ -2,6 +2,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Castle(string folder, string save, string name)
         {
-            Game game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", folder, save + ".GM1"));
+            Game game = SavedGames.Get(Path.Combine("TestData", folder, save + ".GM1"));
             var castles = game.History.Current.Castles();
             return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
         }
@@ -90,7 +92,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void EveryCastleOfEverySavefileOfTheTowerSeriesKeepsItsSpellsWhenSavedAgainUnchanged()
         {
-            var castles = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", "roe_46_mage_guild_5.GM1")).History.Current.Castles();
+            var castles = SavedGames.Get(Path.Combine("TestData", "Roe", "roe_46_mage_guild_5.GM1")).History.Current.Castles();
 
             foreach (var chunk in castles)
             {

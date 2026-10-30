@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -26,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             return heroes[heroes.FindByName("Sanya")];
         }
 
-        private static Game Load(int save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", Saves[save] + ".GM1"));
+        private static Game Load(int save) => SavedGames.Get(Path.Combine("TestData", "Roe", Saves[save] + ".GM1"));
 
         private static HeroEditSession Session(int save)
         {

@@ -6,6 +6,8 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Models
 {
     [TestFixture]
@@ -297,7 +299,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         /// </summary>
         internal static Game LoadPrepared()
         {
-            var game = TestServices.GameService.LoadGameFromFile(SavePath);
+            var game = SavedGames.Get(SavePath);
             game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")).Update(h => h with
             {
                 Army = new Army<Creature>(Constants.CreatureSlotCount)

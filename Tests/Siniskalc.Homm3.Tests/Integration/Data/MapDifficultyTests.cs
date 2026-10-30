@@ -1,6 +1,8 @@
 ﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -10,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class MapDifficultyTests
     {
-        private static Game Load(string folder, string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", folder, name + ".GM1"));
+        private static Game Load(string folder, string name) => SavedGames.Get(Path.Combine("TestData", folder, name + ".GM1"));
 
         // castles_01_blacksmith_garrison_tumlac_to_blue is a map made Impossible; map_difficulty_edited_to_expert is the same save with the map edited to Expert.
         [TestCase("Hota", "castles_01_blacksmith_garrison_tumlac_to_blue", GameDifficulty.King)]

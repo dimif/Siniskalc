@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class VisitedPlacesTests
     {
-        private static Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "VisitedPlaces", $"visited_places_{name}.GM2"));
+        private static Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "VisitedPlaces", $"visited_places_{name}.GM2"));
 
         private static uint Mask(Game game, string hero, VisitedPlaceKind kind)
         {

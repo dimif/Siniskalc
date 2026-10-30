@@ -1,12 +1,14 @@
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
     [Category(TestKinds.Integration)]
     internal sealed class MapHeaderTests
     {
-        private static Game Load(string folder, string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", folder, name + ".GM1"));
+        private static Game Load(string folder, string name) => SavedGames.Get(Path.Combine("TestData", folder, name + ".GM1"));
 
         [TestCase("Hota", "empire_of_the_world_01_m5w4d6", "The empire of the world")]
         [TestCase("Hota", "map_difficulty_edited_to_expert", "Adventures of Jared Haret")]

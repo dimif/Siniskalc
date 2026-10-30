@@ -5,6 +5,8 @@ using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Homm3.Tests.ViewModels;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     /// <summary>
@@ -14,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     [Category(TestKinds.Integration)]
     internal sealed class CastleHeroLinksTests
     {
-        private static Game Load(string folder, string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", folder, save + ".GM1"));
+        private static Game Load(string folder, string save) => SavedGames.Get(Path.Combine("TestData", folder, save + ".GM1"));
 
         private static PlayerViewModel Red(Game game, List<int> opened, List<int>? castlesOpened = null)
         {

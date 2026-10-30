@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -18,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             "hotseat_06_sir_mullich_stables", "hotseat_07_sir_mullich_fountain_of_fortune", "hotseat_08_sir_mullich_crypt_1", "hotseat_09_sir_mullich_crypt_2", "hotseat_10_sir_mullich_faerie_ring", "hotseat_11_sir_mullich_magic_well",
         ];
 
-        private static Game Load(int save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", Saves[save] + ".GM2"));
+        private static Game Load(int save) => SavedGames.Get(Path.Combine("TestData", "Sod", "Hotseat", Saves[save] + ".GM2"));
 
         private static HeroEditSession Session(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name));
 
@@ -53,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheIdolOfFortuneIsReadInTheRestorationOfErathiaSeries()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", "roe_63_tazar_idle_of_fortune.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Roe", "roe_63_tazar_idle_of_fortune.GM1"));
 
             // Tazar also visited the stables earlier in the week; their bit is gone in save 76, the first of the next week.
             Assert.That(Session(game, "Tazar").Current.VisitEffects, Is.EqualTo(VisitedBuildingEffects.Stables | VisitedBuildingEffects.IdolOfFortune));

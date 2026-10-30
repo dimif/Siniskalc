@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -154,7 +156,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         public void ChangingTheOwnerOfAMineChangesTheStructureKey()
         {
             var builder = new NavigationBuilder(new BanishingTextProvider());
-            var game = TestServices.GameService.LoadGameFromFile(SavePath);
+            var game = SavedGames.Get(SavePath);
             var before = builder.StructureKey(game);
 
             game.History.CreateMineSession(0).Update(m => m with { Owner = m.Owner == Siniskalc.Homm3.Entities.PlayerColor.Blue ? Siniskalc.Homm3.Entities.PlayerColor.Red : Siniskalc.Homm3.Entities.PlayerColor.Blue });

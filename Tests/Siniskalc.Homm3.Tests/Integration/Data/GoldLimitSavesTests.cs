@@ -1,6 +1,8 @@
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static readonly string Source = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
 
-        private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        private static Game Load(string path) => SavedGames.Get(path);
 
         private static byte[] Build()
         {

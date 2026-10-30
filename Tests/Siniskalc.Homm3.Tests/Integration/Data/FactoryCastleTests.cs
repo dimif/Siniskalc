@@ -2,6 +2,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -14,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Gantry(string save)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Factory", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Factory", save + ".GM1"));
             var castles = game.History.Current.Castles();
             return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("Fac Castle G")]);
         }

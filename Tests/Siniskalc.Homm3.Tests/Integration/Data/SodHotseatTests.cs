@@ -4,6 +4,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -28,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static HeroChunk Hero(int save, string name)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", Saves[save] + ".GM2"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Sod", "Hotseat", Saves[save] + ".GM2"));
             var heroes = game.History.Current.Heroes();
             return heroes[heroes.FindByName(name)];
         }
@@ -74,7 +76,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(Hero(9, "Sir Mullich").GetByteAt(EffectsB) & 0x04, Is.EqualTo(0x04));
         }
 
-        private static Game Hotseat(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
+        private static Game Hotseat(string save) => SavedGames.Get(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
 
         [Test]
         public void BothHumansAreFoundInTheSetupAndTheCurrentPlayerFollowsTheTurn()

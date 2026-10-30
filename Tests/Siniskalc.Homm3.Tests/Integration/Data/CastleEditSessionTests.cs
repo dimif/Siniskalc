@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -16,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private const string Rampart = "2_Rampart";
 
         private static Game Load(string save) =>
-            TestServices.GameService.LoadGameFromFile(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
+            SavedGames.Get(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
 
         private static int RampartIndex(Game game) => game.History.Current.Castles().FindByName(Rampart);
 

@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             "sleep_garrison_visiting_06_garrison_visit_swap1", "sleep_garrison_visiting_07_garrison_visit_swap2", "sleep_garrison_visiting_08_oidana_asleep",
         ];
 
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "SleepGarrisonVisiting", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Hota", "SleepGarrisonVisiting", save + ".GM1"));
 
         private static HeroChunk Chunk(Game game, string name) => game.History.Current.Heroes()[game.History.Current.Heroes().FindByName(name)];
 

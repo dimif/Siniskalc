@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class PlayerHeadTests
     {
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static IEnumerable<string> EverySavefile() => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal);
 
@@ -65,7 +65,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(HotseatTaverns))]
         public void TheTavernOfAPlayerOfAHotseatGameOffersTheHeroesTheGameShowed(string save, Siniskalc.Homm3.Entities.PlayerColor colour, string first, string second)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Sod", "Hotseat", save + ".GM2"));
             var players = game.History.Current.Players();
             var tavern = players.GetModel(players.FindByColor(colour)).Tavern;
             var heroes = game.History.Current.Heroes();

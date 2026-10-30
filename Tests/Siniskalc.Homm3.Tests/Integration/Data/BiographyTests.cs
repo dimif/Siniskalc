@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -18,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static readonly string StandardPath = Path.Combine("TestData", "Hota", "bios_standard.GM1");
         private static readonly string CustomPath = Path.Combine("TestData", "Hota", "bios_custom.GM1");
 
-        private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        private static Game Load(string path) => SavedGames.Get(path);
 
         private static HeroModel Hero(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name)).Current;
 

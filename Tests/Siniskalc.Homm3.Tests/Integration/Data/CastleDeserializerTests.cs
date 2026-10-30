@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static CastleModel Castle(string save, string name)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", save + ".GM1"));
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), $"{name} in {save}");
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("castles_02_cloud_temple")]
         public void BothCastlesAreFound(string save)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", save + ".GM1"));
 
             Assert.That(game.History.Current.Castles().Select(c => c.Name), Does.Contain("Castle Haret").And.Contain("Castle Tumlac"));
         }
@@ -118,7 +118,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheVisibleBuildingsLeaveOutWhatWasReplaced()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
             var haret = game.History.Current.Castles()[game.History.Current.Castles().FindByName("Castle Haret")];
 
             var current = TestServices.CastleDeserializer.DeserializeVisibleBuildings(haret);

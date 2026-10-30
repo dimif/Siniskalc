@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static Game Load(string name)
         {
             var path = Path.Combine("TestData", name.StartsWith("sod") ? "Sod" : "Hota", name + ".GM1");
-            return TestServices.GameService.LoadGameFromFile(path);
+            return SavedGames.Get(path);
         }
 
         [TestCase("empire_of_the_world_01_m5w4d6", 5, 4, 6)]
@@ -50,7 +50,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             // Without the marker in front of it the shape of a date also matches something that comes earlier in these savegames
             // (month 2 week 4 day 5, month 2 week 2 day 4, month 60 week 2 day 2).
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Sod", save + ".GM1"));
 
             Assert.That(game.Date, Is.EqualTo(new GameDate(month, week, day)));
         }
@@ -59,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheDateNeverGoesBackInTheShadowOfDeathSeries()
         {
             var dates = SeriesSaves.Names("Sod", "conflux")
-                .Select(n => (Name: n + ".GM1", Date: TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", n + ".GM1")).Date!.Value))
+                .Select(n => (Name: n + ".GM1", Date: SavedGames.Get(Path.Combine("TestData", "Sod", n + ".GM1")).Date!.Value))
                 .ToList();
 
             Assert.That(dates, Has.Count.EqualTo(35));

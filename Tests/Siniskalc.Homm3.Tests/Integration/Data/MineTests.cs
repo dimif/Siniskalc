@@ -23,7 +23,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static string Path(string name) => System.IO.Path.Combine("TestData", "Hota", "Mines", name + ".GM2");
 
-        private static Siniskalc.Homm3.Runtime.Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path(name));
+        private static Siniskalc.Homm3.Runtime.Game Load(string name) => SavedGames.Get(Path(name));
 
         private static IReadOnlyList<MineModel> Mines(string name) => Load(name).History.Current.Mines().GetModels();
 

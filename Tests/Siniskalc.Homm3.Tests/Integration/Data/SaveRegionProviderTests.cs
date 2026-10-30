@@ -4,6 +4,8 @@ using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
@@ -17,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"),
         ];
 
-        private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        private static Game Load(string path) => SavedGames.Get(path);
 
         private static IReadOnlyList<ByteRegion> RegionsOf(Game game) => TestServices.SaveRegions.GetRegions(game.History.Current, game.GetBytesToSave());
 

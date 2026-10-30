@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
@@ -15,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheDestinationIsTheTileTheMarkerIsOnOneEastAndOneNorthOfTheHero()
         {
-            var game = TestServices.GameService.LoadGameFromFile(MarkerSave);
+            var game = SavedGames.Get(MarkerSave);
             var heroes = game.History.Current.Heroes();
             var tazar = heroes.GetModel(heroes.FindByName("Tazar"));
 
@@ -26,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ChangingTheDestinationWritesTwoWholeNumbersAndTheLevelAndNothingElse()
         {
-            var game = TestServices.GameService.LoadGameFromFile(MarkerSave);
+            var game = SavedGames.Get(MarkerSave);
             var heroes = game.History.Current.Heroes();
             var index = heroes.FindByName("Tazar");
             var chunk = heroes[index];
@@ -44,7 +46,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void AHeroWithNoDestinationReadsAsMinusOneForEachNumber()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Mines", "mines_00_game_begin.GM2"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Mines", "mines_00_game_begin.GM2"));
             var heroes = game.History.Current.Heroes();
 
             Assert.That(heroes.GetModel(heroes.FindByName("Tazar")).Destination, Is.EqualTo(new MapPosition(-1, -1, -1)));

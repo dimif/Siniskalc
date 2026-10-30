@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -22,7 +24,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static ResourceSet BlueBefore => new(10, 4, 10, 4, 10, 4, 7500);
 
-        private static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        private static Game Load(string path) => SavedGames.Get(path);
 
         private static ResourceSet Resources(Game game, PlayerColor player) => game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(player)).Current.Resources;
 

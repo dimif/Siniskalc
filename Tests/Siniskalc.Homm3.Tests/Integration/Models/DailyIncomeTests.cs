@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Models
 {
     using Siniskalc.Heroes.Entities;
@@ -16,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         [Test]
         public void EachMineGivesItsYieldToItsOwnerAndTheOthersGetNothingFromIt()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Mines", "mines_08_red_abandoned_mine_sulfur.GM2"));
             var document = game.History.Current;
             var mines = document.Mines().GetModels();
 

@@ -4,6 +4,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     [TestFixture]
@@ -19,7 +21,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void SetUp()
         {
             var path = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
-            this.game = TestServices.GameService.LoadGameFromFile(path);
+            this.game = SavedGames.Get(path);
             this.chunk = this.game.History.Current.Heroes()[this.game.History.Current.Heroes().FindByName("Christian")];
         }
 

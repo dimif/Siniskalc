@@ -2,6 +2,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -11,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class SessionRevisionTests
     {
-        private static Game Load(params string[] path) => TestServices.GameService.LoadGameFromFile(Path.Combine(["TestData", "Hota", .. path]));
+        private static Game Load(params string[] path) => SavedGames.Get(Path.Combine(["TestData", "Hota", .. path]));
 
         [Test]
         public void ASessionKnowsWhetherItIsEditedAndItsRevisionChangesWithEveryEdit()

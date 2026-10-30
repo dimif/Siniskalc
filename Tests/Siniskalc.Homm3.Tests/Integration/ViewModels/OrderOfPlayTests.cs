@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     using Siniskalc.Homm3.ViewModels;
@@ -13,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         public void TheCardListsThePlayersWithTheTurnLitAndTheButtonOfAHumanWhoHasNotTheTurnIsDisabledWithTheReason()
         {
             var path = Path.Combine("TestData", "Sod", "Hotseat", "hotseat_00_baseline_200_diff.GM2");
-            var game = TestServices.GameService.LoadGameFromFile(path);
+            var game = SavedGames.Get(path);
             var overview = new OverviewViewModel(game, TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(overview.HasOrderOfPlay, Is.True);

@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     using Siniskalc.Homm3.Data;
@@ -13,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void TheMerchantsTabHasASlotPickerForEachOfTheSevenArtifactsOfEachMerchantAndClearingOneMarksItSold()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "VisitedPlaces", "visited_places_27_tazar_artifact_merchant.GM2"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "VisitedPlaces", "visited_places_27_tazar_artifact_merchant.GM2"));
             var page = new MapViewModel(game, TestServices.EffectLines);
 
             Assert.That(page.Merchants.Select(m => m.Name), Is.EqualTo(new[] { "Black market 1", "Black market 2" }));
@@ -34,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void AMapWithFourBlackMarketsShowsTheStockAndTheTileOfEachAndEditsOnlyTheOnePicked()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "multi_merchants.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "multi_merchants.GM1"));
             var page = new MapViewModel(game, TestServices.EffectLines);
 
             Assert.That(page.Merchants.Select(m => m.Name), Is.EqualTo(new[] { "Black market 1", "Black market 2", "Black market 3", "Black market 4" }));

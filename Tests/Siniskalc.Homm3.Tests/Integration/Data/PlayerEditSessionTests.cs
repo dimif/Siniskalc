@@ -4,6 +4,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -17,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private const int Clancy = 22;
 
         private static SaveDocumentHistory Load() =>
-            TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "HeroOwners", "hero_owners_00_baseline.GM2")).History;
+            SavedGames.Get(Path.Combine("TestData", "Hota", "HeroOwners", "hero_owners_00_baseline.GM2")).History;
 
         private static PlayerModel Player(SaveDocument document, PlayerColor color) => document.Players().GetModel(document.Players().FindByColor(color));
 

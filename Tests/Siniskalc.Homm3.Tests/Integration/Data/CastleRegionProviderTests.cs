@@ -4,6 +4,8 @@ using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -16,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void EveryCastleByteBeforeTheNameIsAccountedFor()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
             var castle = game.History.Current.Castles()[0];
             var regions = TestServices.CastleRegions.GetRegions(castle);
 

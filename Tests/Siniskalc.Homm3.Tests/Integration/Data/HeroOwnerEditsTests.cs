@@ -5,6 +5,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -24,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private const string SevenBlueHeroesDefeated = "hero_owners_05_seven_blue_heroes_defeated__blue_hires_seven";
         private const string SevenNewBlueHeroesDefeated = "hero_owners_06_seven_new_blue_heroes_defeated";
 
-        private static SaveDocumentHistory Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History;
+        private static SaveDocumentHistory Load(string save) => SavedGames.Get(Path.Combine("TestData", "Hota", "HeroOwners", save + ".GM2")).History;
 
         private static void Defeat(SaveDocumentHistory history, params int[] heroIds)
         {

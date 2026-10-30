@@ -2,6 +2,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Models
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
     [Category(TestKinds.Integration)]
     internal sealed class HeroPrimarySkillsTests
     {
-        private static Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Arts", name + ".GM1"));
+        private static Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "Arts", name + ".GM1"));
 
         private static HeroModel Hero(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name)).Current;
 

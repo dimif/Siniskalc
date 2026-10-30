@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Models;
@@ -15,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private Game game = null!;
 
         [SetUp]
-        public void LoadASaveInWhichBlueHasDaysLeft() => this.game = TestServices.GameService.LoadGameFromFile(
+        public void LoadASaveInWhichBlueHasDaysLeft() => this.game = SavedGames.Get(
             Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), "banishing_01_blue_7_days_left.GM?").Single());
 
         [Test]

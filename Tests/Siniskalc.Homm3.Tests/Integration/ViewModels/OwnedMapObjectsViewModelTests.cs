@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Entities;
@@ -12,9 +14,9 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     [Category(TestKinds.Integration)]
     internal sealed class OwnedMapObjectsViewModelTests
     {
-        private static Siniskalc.Homm3.Runtime.Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Mines", name + ".GM2"));
+        private static Siniskalc.Homm3.Runtime.Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "Mines", name + ".GM2"));
 
-        private static Siniskalc.Homm3.Runtime.Game LoadDwellings(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Dwellings", $"dwellings_{name}.GM2"));
+        private static Siniskalc.Homm3.Runtime.Game LoadDwellings(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "Dwellings", $"dwellings_{name}.GM2"));
 
         private static OwnedMapObjectsViewModel Of(Siniskalc.Homm3.Runtime.Game game, PlayerColor owner) => new(game.History, owner, TestServices.ByteEditTargets);
 

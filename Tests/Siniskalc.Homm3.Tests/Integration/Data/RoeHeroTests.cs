@@ -3,6 +3,8 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class RoeHeroTests
     {
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static HeroModel Hero(string save, string name)
         {
@@ -175,7 +177,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void ShadowOfDeathAndHornOfTheAbyssHaveTheAsleepFlag()
         {
             var sod = Load("roe_59_nymus_damacon_sleep");
-            var hota = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Arts", "arts_01_arts.GM1"));
+            var hota = SavedGames.Get(Path.Combine("TestData", "Hota", "Arts", "arts_01_arts.GM1"));
             var hero = sod.History.CreateHeroSession(sod.History.Current.Heroes().FindByName("Nymus"));
             using var view = TestServices.CreateHeroViewModel(hero);
             using var other = TestServices.CreateHeroViewModel(hota.History.CreateHeroSession(0));

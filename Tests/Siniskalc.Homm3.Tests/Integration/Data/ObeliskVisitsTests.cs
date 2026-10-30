@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class ObeliskVisitsTests
     {
-        private static Game Load(string save) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+        private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
         private static IEnumerable<string> EverySavefile() => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal);
 
@@ -56,7 +56,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ASavefileWithoutTheMarkerHasNoObelisksToShow()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"));
 
             Assert.That(game.History.Current.Obelisks().Any, Is.False);
             Assert.That(game.History.Current.Obelisks().GetModel(), Is.Null);
@@ -145,7 +145,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ThePageOfAPlayerOfASavefileWithoutObelisksHidesTheCard()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1"));
             using var player = new PlayerViewModel(game.History.CreatePlayerSession(0), TestServices.ByteEditTargets, TestServices.BanishingText);
 
             Assert.That(player.Obelisks.HasObelisks, Is.False);
@@ -157,7 +157,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheOverviewNamesTheNumberOfObelisksAfterTheDifficultyAndNothingWithoutThem()
         {
             var with = new OverviewViewModel(Load("roe_74_tazar_obelisk_4"), TestServices.BanishingText, _ => { }, _ => { });
-            var without = new OverviewViewModel(TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1")), TestServices.BanishingText, _ => { }, _ => { });
+            var without = new OverviewViewModel(SavedGames.Get(Path.Combine("TestData", "Sod", "sod_game_00_baseline.GM1")), TestServices.BanishingText, _ => { }, _ => { });
 
             Assert.That(with.Summary, Does.EndWith("· 5 obelisks"));
             Assert.That(without.Summary, Does.Not.Contain("obelisk"));

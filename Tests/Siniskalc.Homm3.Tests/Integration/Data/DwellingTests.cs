@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private const string AfterTheCastle = "05_tazar_flags_portal_of_glory";
         private const string AfterTheHires = "07_orrin_hires_all_castle_dwellings_but_guardhouse";
 
-        private static Siniskalc.Homm3.Runtime.Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "Dwellings", $"dwellings_{name}.GM2"));
+        private static Siniskalc.Homm3.Runtime.Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "Dwellings", $"dwellings_{name}.GM2"));
 
         private static DwellingModel At(string save, int x, int y) => Load(save).History.Current.Dwellings().GetModels().Single(d => d.Position.X == x && d.Position.Y == y);
 

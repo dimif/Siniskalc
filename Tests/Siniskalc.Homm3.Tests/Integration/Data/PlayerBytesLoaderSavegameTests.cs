@@ -2,6 +2,8 @@ using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -12,7 +14,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     internal sealed class PlayerBytesLoaderSavegameTests
     {
         private static Game Load(string save) =>
-            TestServices.GameService.LoadGameFromFile(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
+            SavedGames.Get(Directory.GetFiles(Path.Combine("TestData", "Hota", "Banishing"), save + ".GM?").Single());
 
         [TestCase("banishing_00_baseline")]
         [TestCase("banishing_14_ban_count_start")]

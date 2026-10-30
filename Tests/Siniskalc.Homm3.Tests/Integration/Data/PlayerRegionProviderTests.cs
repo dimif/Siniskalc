@@ -4,6 +4,8 @@ using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -37,7 +39,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ThePlayerHexTargetEditsThroughTheHistory()
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1"));
             using var target = new PlayerByteEditTarget(game.History.CreatePlayerSession(0), TestServices.PlayerRegions);
 
             Assert.That(target.Regions.Select(r => r.Name), Does.Contain("Resources"));

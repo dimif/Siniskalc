@@ -1,3 +1,5 @@
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -31,7 +33,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCaseSource(nameof(Saves))]
         public void TheMageGuildLevelFollowsTheMageGuildBuilt(string path, string[] castleNames, int level)
         {
-            var castles = TestServices.GameService.LoadGameFromFile(path).History.Current.Castles();
+            var castles = SavedGames.Get(path).History.Current.Castles();
 
             foreach (var name in castleNames)
             {

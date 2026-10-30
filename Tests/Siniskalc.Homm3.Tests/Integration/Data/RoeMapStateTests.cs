@@ -5,6 +5,8 @@ using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 
+using Siniskalc.Homm3.Tests.Data;
+
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
@@ -41,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static Raw Load(string save)
         {
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Roe", save + ".GM1"));
+            var game = SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
             return new Raw(game, game.Bytes);
         }
 

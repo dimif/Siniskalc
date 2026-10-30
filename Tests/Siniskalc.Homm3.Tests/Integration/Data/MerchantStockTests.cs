@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private const string Visited = "27_tazar_artifact_merchant";
         private const string Bought = "29_tazar_black_market_first_4__orrin_artifact_merchant_last_4";
 
-        private static Siniskalc.Homm3.Runtime.Game Load(string name) => TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "VisitedPlaces", $"visited_places_{name}.GM2"));
+        private static Siniskalc.Homm3.Runtime.Game Load(string name) => SavedGames.Get(Path.Combine("TestData", "Hota", "VisitedPlaces", $"visited_places_{name}.GM2"));
 
         private static string Names(MerchantStockModel stock) => string.Join(", ", stock.Slots.Select(a => a?.Name ?? "-"));
 

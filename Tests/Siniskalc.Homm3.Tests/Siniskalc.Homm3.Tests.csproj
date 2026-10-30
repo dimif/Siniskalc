@@ -18,10 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Siniskalc.Homm3\Siniskalc.Homm3.csproj" />
+    <ProjectReference Include="..\Siniskalc.Tests.Homm.Common\Siniskalc.Tests.Homm.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="Siniskalc.Tests.Homm.Common" />
   </ItemGroup>
 
   <ItemGroup>

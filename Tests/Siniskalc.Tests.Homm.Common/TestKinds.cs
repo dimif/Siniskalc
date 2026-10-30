@@ -1,6 +1,9 @@
-namespace Siniskalc.Homm3.Tests
+namespace Siniskalc.Tests.Homm.Common
 {
-    internal static class TestKinds
+    /// <summary>
+    /// The kinds of test a fixture can have, for <c>[Category(TestKinds.Unit)]</c> and the others.
+    /// </summary>
+    public static class TestKinds
     {
         public const string Unit = "Unit";
         public const string MultiUnit = "MultiUnit";

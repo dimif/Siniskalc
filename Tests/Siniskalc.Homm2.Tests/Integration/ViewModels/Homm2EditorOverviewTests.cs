@@ -59,6 +59,11 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             session.Update(player => player with { Resources = player.Resources.With(Resource.Gold, 7) });
             Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo("7"));
 
+            this.editor.Undo();
+            Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo(original));
+            this.editor.Redo();
+            Assert.That(this.editor.Overview.Players.Single(p => p.Name == "Blue").Gold, Is.EqualTo("7"));
+
             this.editor.ShowPlayer(PlayerColor.Blue);
             this.editor.Undo();
             this.editor.ShowOverview();

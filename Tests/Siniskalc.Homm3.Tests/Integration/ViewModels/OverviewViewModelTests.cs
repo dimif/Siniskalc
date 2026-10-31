@@ -1,4 +1,5 @@
 using Siniskalc.Heroes.Wpf.ViewModels;
+using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
@@ -87,6 +88,34 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             this.main.ShowOverview();
 
             Assert.That(this.main.LoadedOverview().Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
+        }
+
+        [Test]
+        public void TheOverviewRefreshesWhileShownAndAfterUndoAndRedoAwayFromIt()
+        {
+            var overview = this.main.LoadedOverview();
+            var purple = overview.Players.Single(p => p.Name == "Purple");
+            var original = purple.Gold;
+            var game = this.main.CurrentGame!;
+            var index = game.History.Current.Players().FindByColor(Siniskalc.Homm3.Entities.PlayerColor.Purple);
+            var session = game.History.CreatePlayerSession(index);
+            session.Update(player => player with { Resources = player.Resources.With(Siniskalc.Heroes.Entities.Resource.Gold, 7) });
+
+            Assert.That(overview.Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
+            this.main.Undo();
+            Assert.That(overview.Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo(original));
+            this.main.Redo();
+            Assert.That(overview.Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
+
+            overview.Players.Single(p => p.Name == "Purple").OpenCommand.Execute(null);
+            this.main.Undo();
+            this.main.ShowOverview();
+            Assert.That(overview.Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo(original));
+
+            overview.Players.Single(p => p.Name == "Purple").OpenCommand.Execute(null);
+            this.main.Redo();
+            this.main.ShowOverview();
+            Assert.That(overview.Players.Single(p => p.Name == "Purple").Gold, Is.EqualTo("7"));
         }
 
         [Test]

@@ -127,7 +127,7 @@ View models never use chunks directly (a test, `ViewModelLayeringTests`, scans `
 They ask the collections of the current `SaveDocument` (`History.Current`, or `History.Original` for the savefile as loaded):
 
 ```
-Heroes   (HeroChunkCollection)     FindById(heroId), FindByName(name), GetSummaries(), GetSummary(index)     HeroSummary carries Index, HeroId, Name, Owner, ...
+Heroes   (HeroChunkCollection)     IndexOfId(heroId), FindById(heroId), FindByName(name), GetSummaries(), GetSummary(index)     HeroSummary carries Index, HeroId, Name, Owner, ...
 Castles  (CastleChunkCollection)   GetModels() (read once per version of the collection), GetModel(i), GetName(i), FindByGarrisonedHero(heroId)
 Players  (PlayerChunkCollection)   GetModel(i), GetColor(i), GetColors(), FindByColor(color)
 Obelisks (ObeliskChunkCollection<TColor>, in Siniskalc.Heroes, with ObeliskVisits<TColor>, ObeliskChunk, ObeliskDiffer<TColor> and ObeliskEditSession<TColor>)  Any, GetModel() (the visited obelisks, or null when the savefile has none to show); edited with CreateObeliskSession()
@@ -136,7 +136,7 @@ EditSession.IsDirty                differs from the savefile as loaded or saved
 EditSession.Revision               an opaque token that changes when this struct is edited, so a view model can tell its own edits from others'
 ```
 
-A hero is identified by `HeroModel.HeroId` (its place in the savefile's table of heroes; castles hold it as `GarrisonedHeroId` and `VisitingHeroId`), a castle by its index, a player by its colour.
+A hero's stored id (`HeroModel.HeroId`, or `Id` in HoMM2) is distinct from its table index: `IHeroSummaries.IndexOfId` resolves the id to the index a page opens. HoMM2 scenario heroes can also have ids that differ from their indexes. A castle is identified by its index, a player by its colour.
 The hex editor is the one place that works on raw bytes, through the byte edit targets of a session.
 
 ## Errors

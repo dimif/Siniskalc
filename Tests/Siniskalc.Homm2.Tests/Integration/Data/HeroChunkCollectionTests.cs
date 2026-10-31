@@ -20,6 +20,32 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
+        public void EveryHeroIdResolvesToItsActualPageIndexInEverySave()
+        {
+            foreach (var path in Saves.All())
+            {
+                var heroes = TestServices.Load(path).History.Current.Heroes();
+                foreach (var (summary, index) in heroes.GetSummaries().Select((summary, index) => (summary, index)))
+                {
+                    Assert.That(summary.Index, Is.EqualTo(index), path);
+                    Assert.That(heroes.IndexOfId(summary.HeroId), Is.EqualTo(summary.Index), path);
+                    Assert.That(heroes.FindById(summary.HeroId), Is.EqualTo(summary), path);
+                }
+            }
+        }
+
+        [Test]
+        public void AScenarioHeroWhoseStoredIdIsNotItsIndexOpensItsOwnRecord()
+        {
+            var heroes = TestServices.Load(Saves.Path("MapDifficultySize", "map_difficulty_size_07_map_hard_extra_large")).History.Current.Heroes();
+            var hero = heroes.GetSummaries().First(summary => summary.HeroId != summary.Index);
+
+            Assert.That(hero.HeroId, Is.EqualTo(55));
+            Assert.That(hero.Index, Is.Not.EqualTo(hero.HeroId));
+            Assert.That(heroes.GetModel(heroes.IndexOfId(hero.HeroId)).Name, Is.EqualTo(hero.Name));
+        }
+
+        [Test]
         public void AHeroIsFoundByItsNumberAndAnUnknownNumberIsNull()
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes();

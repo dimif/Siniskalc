@@ -90,7 +90,8 @@ SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Origi
                                 (PlayerListsReconciler of each game keeps the players' lists of heroes, and castles in HoMM2, the HoMM3 table of hero owners and the days left in step with the owners), ApplyAsIs does not (hex edits, Revert all)
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
-      HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer; the obelisk one is shared, ObeliskEditSession<TColor>)
+      a session class only where it adds a member: HoMM3 HeroEditSession / CastleEditSession (IHeroSession, ICastleSession: what the pages ask of the savefile), PlayerEditSession of both games (IsDirty counts the model only),
+      ObeliskEditSession<TColor> (shared); HoMM2's heroes and castles use EditSession<TChunk,TModel> itself (Homm2EditSessions.CreateHeroSession / CreateCastleSession)
       the records of the map (mines, dwellings, merchants, shrines, sphinxes) have no session class: EditSession<TChunk,TModel>(history, kind, index) takes the (de)serializer of their RecordChunkCollection
 Models / Entities               immutable models and game vocabulary (HeroModel, SpellBook, Artifact, ...)
 ViewModels                      hold immutable models, apply edits through reducers, never touch chunks

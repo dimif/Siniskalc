@@ -100,7 +100,7 @@
         public DaysLeftCardViewModel DaysLeftCard { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
+        public IReadOnlyList<ResourceRowViewModel> Resources => this.resources.Rows;
 
         /// <inheritdoc/>
         public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
@@ -144,12 +144,6 @@
         /// Gets the two places of the tavern of the player, each with the heroes it can be given to.
         /// </summary>
         public IReadOnlyList<TavernPlaceViewModel> TavernPlaces { get; }
-
-        /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
-
-        /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
 
         /// <inheritdoc/>
         public bool HasHeroes => this.heroes.Count > 0;

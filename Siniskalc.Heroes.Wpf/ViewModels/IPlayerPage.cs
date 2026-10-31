@@ -1,7 +1,6 @@
 ﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
-    using Siniskalc.Heroes.ViewModels;
 
     /// <summary>
     /// The page of a player in any game: its resources, and the heroes and towns it owns. A game's page adds what only that game has
@@ -27,7 +26,7 @@
         /// <summary>
         /// Gets the heroes the player owns, each as a link that opens its page.
         /// </summary>
-        IReadOnlyList<ILink> Heroes { get; }
+        IReadOnlyList<HeroLinkViewModel> Heroes { get; }
 
         /// <summary>
         /// Gets whether the player owns a hero, which is when the list of heroes is shown.
@@ -37,7 +36,7 @@
         /// <summary>
         /// Gets the towns the player owns, each as a link that opens its page.
         /// </summary>
-        IReadOnlyList<ILink> Castles { get; }
+        IReadOnlyList<CastleLinkViewModel> Castles { get; }
 
         /// <summary>
         /// Gets whether the player owns a town, which is when the list of towns is shown.

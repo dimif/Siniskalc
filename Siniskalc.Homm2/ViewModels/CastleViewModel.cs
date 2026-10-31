@@ -183,8 +183,6 @@
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes => this.heroes;
 
-        IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
-
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
         /// <summary>

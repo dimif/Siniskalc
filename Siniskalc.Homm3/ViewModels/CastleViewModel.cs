@@ -145,8 +145,6 @@
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; private set; } = [];
 
-        IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
-
         public bool HasHeroes => this.Heroes.Count > 0;
 
         public IReadOnlyList<BuildingGroupViewModel> BuildingGroups { get; private set; } = [];

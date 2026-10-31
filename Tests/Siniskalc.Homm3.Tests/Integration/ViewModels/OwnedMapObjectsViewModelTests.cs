@@ -75,7 +75,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             Assert.That(guarded.Summary, Is.EqualTo("1 of 7 slots"));
             Assert.That(page.GuardEditor, Is.Not.Null);
-            Assert.That(page.GuardHeading, Does.Contain("Pos: 1, 14"));
+            Assert.That(page.GuardHeading, Is.EqualTo("Garrison of the " + guarded.Kind.ToLowerInvariant() + " at 1, 14, Surface"));
             Assert.That(page.GuardEditor!.CreatureSlots[0].HasCreature, Is.True);
 
             page.GuardEditor.CreatureSlots[0].ClearCommand.Execute(null);

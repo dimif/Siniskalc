@@ -5,6 +5,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
@@ -92,7 +93,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public ArmyViewModel? GuardEditor => this.Mines.SelectedMine == null ? null : this.guardEditor ??= this.CreateGuardEditor();
 
-        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Garrison of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Garrison";
+        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Garrison of the {mine.Kind.ToLowerInvariant()} at {MapLevelText.Place(mine.X, mine.Y, mine.Level)}" : "Garrison";
 
         /// <summary>
         /// Gets how many dwellings the owner has, such as "3 dwellings".

@@ -56,7 +56,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var human = PlayerColor.All.Single(c => c.Name == humanName);
             var game = Load(save);
 
-            Assert.That((game.PlayerControls ?? []).Count(c => c == PlayerType.Human), Is.EqualTo(1));
+            Assert.That(PlayerColor.All.Count(color => game.GetControl(color) == PlayerType.Human), Is.EqualTo(1));
             Assert.That(game.GetControl(human), Is.EqualTo(PlayerType.Human));
         }
 

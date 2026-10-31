@@ -1,5 +1,7 @@
 # What can move into Siniskalc.Heroes: review of `Entities` and `Models`
 
+**2026-10-31 (metadata adoption follow-up):** both games retain `HeroesSavegameBase<PlayerColor>` and shared metadata after integration with the latest feature branch. Both override `CurrentPlayer` from their editable turn records. HoMM3's test-only `PlayerControls` and `MapDifficulty` pass-throughs are gone; consumers use the shared `GetControl` and nullable `Map.Difficulty`. HoMM3 still owns its version, `IsHota` and map places.
+
 A review, component by component, of `Siniskalc.Homm2` and `Siniskalc.Homm3` (`Entities` and `Models`), for what could be one abstraction in `Siniskalc.Heroes` (or `Siniskalc.Core` when it knows no game at all).
 Each item has a verdict, what it would look like, and the reasons, so it can be accepted, changed or refused one at a time.
 The work was done in the order at the end; **"Status after the work"** below says what was done, what was not and why, and what the assessment looks like now. The sections further down are the review as it was written, kept for the reasoning.

@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm3.Runtime
 {
-    using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -41,17 +40,6 @@ namespace Siniskalc.Homm3.Runtime
         };
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
-
-        /// <summary>
-        /// Gets who plays each colour, indexed by <see cref="PlayerColor"/>, or <c>null</c> when it cannot be found in this version.
-        /// </summary>
-        public IReadOnlyList<PlayerType>? PlayerControls => this.Metadata.Setup?.PlayerControls;
-
-        /// <summary>
-        /// Gets the difficulty the map was made with, which is set when the map is created and is not the difficulty the game was
-        /// started at, or <c>null</c> when it cannot be found in this version.
-        /// </summary>
-        public GameDifficulty? MapDifficulty => this.Map?.Difficulty;
 
         /// <summary>
         /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when it cannot be found or names no human.

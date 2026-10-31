@@ -22,7 +22,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("Sod", "sod_day_01_m1w1d1", GameDifficulty.King)]
         public void TheMapDifficultyIsRead(string folder, string save, GameDifficulty expected)
         {
-            Assert.That(Load(folder, save).MapDifficulty, Is.EqualTo(expected));
+            Assert.That(Load(folder, save).Map?.Difficulty, Is.EqualTo(expected));
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = Load("Hota", "empire_of_the_world_01_m5w4d6");
 
             Assert.That(game.Difficulty, Is.EqualTo(GameDifficulty.Queen));
-            Assert.That(game.MapDifficulty, Is.Not.EqualTo(game.Difficulty));
+            Assert.That(game.Map?.Difficulty, Is.Not.EqualTo(game.Difficulty));
         }
     }
 }

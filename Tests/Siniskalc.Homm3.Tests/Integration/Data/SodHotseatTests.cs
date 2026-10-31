@@ -83,7 +83,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var begin = Hotseat("five_teams_00_game_begin");
 
-            Assert.That(begin.PlayerControls, Is.EqualTo(new[]
+            Assert.That(PlayerColor.All.Select(begin.GetControl), Is.EqualTo(new[]
             {
                 PlayerType.Human, PlayerType.Human, PlayerType.Computer, PlayerType.Computer, PlayerType.Computer, PlayerType.Computer, PlayerType.NotInGame, PlayerType.Computer,
             }));

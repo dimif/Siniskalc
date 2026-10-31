@@ -36,11 +36,11 @@ namespace Siniskalc.Homm2.ViewModels
         public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
 
         /// <inheritdoc/>
-        public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
-            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.game.History, mine.Index) : null;
+        protected override string ObjectsSummary => Count(this.Mines.Rows.Count, "mine", "mines");
 
         /// <inheritdoc/>
-        protected override string ObjectsSummary => Count(this.Mines.Rows.Count, "mine", "mines");
+        public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.game.History, mine.Index) : null;
 
         /// <inheritdoc/>
         protected override IReadOnlyList<ILink> LoadHeroes() => OwnedLinks.Heroes(this.game.History.Current.Heroes(), PlayerColor.Neutral, this.openHero);

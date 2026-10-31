@@ -97,6 +97,15 @@ namespace Siniskalc.Heroes.Wpf.Views
             set => this.SetValue(ItemTemplateProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the row that is picked.
+        /// </summary>
+        public object? SelectedItem
+        {
+            get => this.GetValue(SelectedItemProperty);
+            set => this.SetValue(SelectedItemProperty, value);
+        }
+
         /// <inheritdoc/>
         public override void OnApplyTemplate()
         {
@@ -112,15 +121,6 @@ namespace Siniskalc.Heroes.Wpf.Views
                     }
                 };
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the row that is picked.
-        /// </summary>
-        public object? SelectedItem
-        {
-            get => this.GetValue(SelectedItemProperty);
-            set => this.SetValue(SelectedItemProperty, value);
         }
     }
 }

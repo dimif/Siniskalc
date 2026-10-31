@@ -341,7 +341,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var full = history.Current;
             var revert = history.GetPendingChanges().Single(c => c.Change.Description == "Owner" && c.OwnerName == "Clancy");
 
-            Assert.That(() => revert.Revert(history), Throws.TypeOf<GameRuleException>().With.Message.EqualTo($"Blue has the most heroes a player can have on the map ({Constants.Player.HeroListSize})."));
+            Assert.That(() => revert.Revert(history), Throws.TypeOf<GameRuleException>().With.Message.EqualTo($"Blue has the most heroes a player can have ({Constants.Player.HeroListSize})."));
             Assert.That(history.Current, Is.SameAs(full));
         }
 

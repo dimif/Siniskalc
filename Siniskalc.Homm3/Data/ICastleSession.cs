@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
@@ -30,11 +30,6 @@ namespace Siniskalc.Homm3.Data
         /// Returns the hero with the given id, or null when no hero has it.
         /// </summary>
         HeroModel? FindHero(int heroId);
-
-        /// <summary>
-        /// Gives the castle to <paramref name="owner"/> and moves the towns of the players with it. The rules of the game may refuse.
-        /// </summary>
-        void ChangeOwner(PlayerColor owner);
 
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.

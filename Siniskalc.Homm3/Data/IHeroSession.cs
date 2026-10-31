@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
@@ -40,11 +40,6 @@ namespace Siniskalc.Homm3.Data
         /// Gets the name of the castle at <paramref name="castleIndex"/>.
         /// </summary>
         string CastleName(int castleIndex);
-
-        /// <summary>
-        /// Gives the hero to <paramref name="owner"/>, together with the lists of heroes of the players and the table of hero owners.
-        /// </summary>
-        void ChangeOwner(PlayerColor owner);
 
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the hero. The caller disposes it.

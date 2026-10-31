@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -129,12 +129,10 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void PickingAnOwnerGivesTheHeroToThePlayerThroughTheSession()
         {
             using var page = this.Page();
-            PlayerColor? given = null;
-            this.session.OnChangeOwner = owner => given = owner;
 
             page.SelectedOwner = "Red";
 
-            Assert.That(given, Is.EqualTo(PlayerColor.Red));
+            Assert.That(this.session.Current.Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(page.HasNotice, Is.False);
         }
 
@@ -143,7 +141,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             using var page = this.Page();
             var asked = false;
-            this.session.OnChangeOwner = _ => asked = true;
+            this.session.OnUpdate = _ => asked = true;
 
             page.SelectedOwner = "Blue";
 
@@ -154,7 +152,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void AnOwnerTheRulesRefuseIsNotPickedAndTheNoticeSaysWhy()
         {
             using var page = this.Page();
-            this.session.OnChangeOwner = _ => throw new GameRuleException("Only the tavern can hold a hero of no player.");
+            this.session.OnUpdate = _ => throw new GameRuleException("Only the tavern can hold a hero of no player.");
 
             page.SelectedOwner = "Red";
 
@@ -166,7 +164,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void AFaultOfTheSessionIsNotMadeToLookLikeARuleOfTheGame()
         {
             using var page = this.Page();
-            this.session.OnChangeOwner = _ => throw new InvalidOperationException("broken");
+            this.session.OnUpdate = _ => throw new InvalidOperationException("broken");
 
             Assert.That(() => page.SelectedOwner = "Red", Throws.InvalidOperationException.With.Message.EqualTo("broken"));
             Assert.That(page.HasNotice, Is.False);

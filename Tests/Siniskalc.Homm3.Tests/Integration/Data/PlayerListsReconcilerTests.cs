@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -11,12 +11,12 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
     /// Giving a hero to another owner, replayed on the saves of <c>TestData/Hota/HeroOwners</c>, in which the game defeated heroes and hired
-    /// others between one save and the next: the editor's change must leave the lists of heroes of the players and the table of hero owners
-    /// as the game left them.
+    /// others between one save and the next: after the edit of the hero, <see cref="PlayerListsReconciler"/> must leave the lists of heroes of
+    /// the players and the table of hero owners as the game left them.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class HeroOwnerEditsTests
+    internal sealed class PlayerListsReconcilerTests
     {
         private const string Baseline = "hero_owners_00_baseline";
         private const string ClancyAndUfretinDefeated = "hero_owners_01_clancy_and_ufretin_defeated";
@@ -32,11 +32,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var id in heroIds)
             {
-                history.CreateHeroSession(history.Current.Heroes().IndexOfId(id)).ChangeOwner(PlayerColor.Neutral);
+                GiveTo(history, id, PlayerColor.Neutral);
             }
         }
 
-        private static PlayerModel Player(SaveDocument document, PlayerColor color) => document.Players().GetModel(document.Players().FindByColor(color));
+        private static void GiveTo(SaveDocumentHistory history, int heroId, PlayerColor owner) =>
+            history.CreateHeroSession(history.Current.Heroes().IndexOfId(heroId)).Update(h => h.WithOwner(owner));
+
+        private static PlayerLists Player(SaveDocument document, PlayerColor color) => document.Players().GetLists(document.Players().FindByColor(color));
 
         private static byte[] Head(SaveDocument document, PlayerColor color) => document.Players()[document.Players().FindByColor(color)].ToArray().Take(PlayerLayout.TavernHeroes).ToArray();
 
@@ -81,7 +84,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             // The game then hired Vokial (65) into the first free place and drew Leena (160) for the tavern; that is not replayed.
             var red = Player(history.Current, PlayerColor.Red);
             Assert.That(red.HeroIds, Is.EqualTo(Numbers.Of(115, 36)));
-            Assert.That(Player(expected, PlayerColor.Red).WithoutHero(65).HeroIds, Is.EqualTo(red.HeroIds));
+            var expectedRed = Player(expected, PlayerColor.Red);
+            Assert.That(expectedRed.WithHero(65, false, expectedRed).HeroIds, Is.EqualTo(red.HeroIds));
             Assert.That(red.SelectedHero, Is.EqualTo(Player(expected, PlayerColor.Red).SelectedHero));
             var table = Table(history.Current);
             var hired = new[] { 65, 160 };
@@ -129,7 +133,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var hero = FreeHero(original);
             var tan = Player(original, PlayerColor.Tan);
 
-            history.CreateHeroSession(original.Heroes().IndexOfId(hero)).ChangeOwner(PlayerColor.Tan);
+            GiveTo(history, hero, PlayerColor.Tan);
 
             Assert.That(Player(history.Current, PlayerColor.Tan).HeroIds, Is.EqualTo(new Numbers(tan.HeroIds.Append(hero))));
             Assert.That(history.Current.HeroOwners().GetModel(0).Heroes[hero], Is.EqualTo(new HeroOwnership(PlayerColor.Tan, false)));
@@ -146,7 +150,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var history = Load(Baseline);
 
-            history.CreateHeroSession(history.Current.Heroes().IndexOfId(22)).ChangeOwner(PlayerColor.Tan);
+            GiveTo(history, 22, PlayerColor.Tan);
 
             Assert.That(Player(history.Current, PlayerColor.Blue).HeroIds, Is.EqualTo(Numbers.Of(0)));
             Assert.That(Player(history.Current, PlayerColor.Tan).HeroIds.Last(), Is.EqualTo(22));
@@ -158,7 +162,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var history = Load(Baseline);
             var original = history.Current;
-            history.CreateHeroSession(original.Heroes().IndexOfId(22)).ChangeOwner(PlayerColor.Tan);
+            GiveTo(history, 22, PlayerColor.Tan);
             var moved = history.Current;
 
             history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
@@ -180,7 +184,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var history = Load(Baseline);
             var players = history.Current.Players();
             var blue = players.FindByColor(PlayerColor.Blue);
-            history.Apply(history.Current.WithPlayer(blue, players.Serializer.Serialize(players[blue], players.GetModel(blue).WithoutHero(22))));
+            var lists = players.GetLists(blue);
+            history.ApplyAsIs(history.Current.WithPlayer(blue, players.ListsSerializer.Serialize(players[blue], lists.WithHero(22, false, lists))));
 
             Defeat(history, 22);
 
@@ -212,7 +217,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var history = Load(Week2Day1);
 
-            Assert.That(() => history.CreateHeroSession(history.Current.Heroes().IndexOfId(65)).ChangeOwner(PlayerColor.Red), Throws.TypeOf<GameRuleException>().With.Message.Contains("tavern"));
+            Assert.That(() => GiveTo(history, 65, PlayerColor.Red), Throws.TypeOf<GameRuleException>().With.Message.Contains("tavern"));
             Assert.That(history.CanUndo, Is.False);
         }
 
@@ -222,7 +227,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var history = Load(BlueHasEightHeroes);
             var hero = FreeHero(history.Current);
 
-            Assert.That(() => history.CreateHeroSession(history.Current.Heroes().IndexOfId(hero)).ChangeOwner(PlayerColor.Blue), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => GiveTo(history, hero, PlayerColor.Blue), Throws.TypeOf<GameRuleException>());
             Assert.That(history.CanUndo, Is.False);
         }
 
@@ -232,7 +237,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var history = Load(Baseline);
 
             // Hero 3 has the unexplained 41 in the table.
-            Assert.That(() => history.CreateHeroSession(history.Current.Heroes().IndexOfId(3)).ChangeOwner(PlayerColor.Red), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => GiveTo(history, 3, PlayerColor.Red), Throws.TypeOf<GameRuleException>());
             Assert.That(history.CanUndo, Is.False);
         }
 
@@ -242,7 +247,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             // Hero 29 is garrisoned in Blue's castle: the table gives it to Blue, but it is in no list.
             var history = Load(BlueHasEightHeroes);
 
-            Assert.That(() => history.CreateHeroSession(history.Current.Heroes().IndexOfId(29)).ChangeOwner(PlayerColor.Neutral), Throws.TypeOf<GameRuleException>().With.Message.Contains("garrisoned"));
+            Assert.That(() => GiveTo(history, 29, PlayerColor.Neutral), Throws.TypeOf<GameRuleException>().With.Message.Contains("garrisoned"));
             Assert.That(history.CanUndo, Is.False);
         }
 
@@ -251,13 +256,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var history = Load(Baseline);
 
-            history.CreateHeroSession(history.Current.Heroes().IndexOfId(22)).ChangeOwner(PlayerColor.Blue);
+            GiveTo(history, 22, PlayerColor.Blue);
 
             Assert.That(history.CanUndo, Is.False);
         }
 
         [Test]
-        public void TheOwnerChangeIsListedForTheHeroAndTheHeroesForThePlayer()
+        public void TheOwnerChangeIsListedForTheHeroAndNothingIsListedForThePlayers()
         {
             var history = Load(Baseline);
 
@@ -265,18 +270,17 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             var changes = history.GetPendingChanges();
             Assert.That(changes.Where(c => c.Change.Description == "Owner").Select(c => (c.OwnerName, c.Change.Before, c.Change.After)), Is.EqualTo(new[] { ("Clancy", "Blue", "Neutral") }));
-            Assert.That(changes.Single(c => c.Change.Description == "Heroes").OwnerName, Is.EqualTo("Blue"));
+            Assert.That(changes.Where(c => c.Kind == Homm3ChunkKinds.Player), Is.Empty);
         }
 
-        [TestCase("Owner")]
-        [TestCase("Heroes")]
-        public void RevertingTheOwnerChangeOrTheHeroesPutsTheListsAndTheTableBack(string what)
+        [Test]
+        public void RevertingTheOwnerChangePutsTheListsAndTheTableBack()
         {
             var history = Load(Baseline);
             var original = history.Current;
             Defeat(history, 22, 17);
 
-            history.GetPendingChanges().First(c => c.Change.Description == what && c.OwnerName is "Clancy" or "Blue").Revert(history);
+            history.GetPendingChanges().First(c => c.Change.Description == "Owner" && c.OwnerName == "Clancy").Revert(history);
 
             Assert.That(Head(history.Current, PlayerColor.Blue), Is.EqualTo(Head(original, PlayerColor.Blue)));
             Assert.That(Hero(history.Current, 22).Owner, Is.EqualTo(PlayerColor.Blue));
@@ -308,6 +312,67 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             Assert.That(history.GetPendingChanges(), Is.Empty);
             Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void AHeroGivenBackByHandTakesItsOldPlaceTheSelectedHeroAndItsEntryOfTheTable()
+        {
+            var history = Load(Baseline);
+            var original = history.Current;
+
+            GiveTo(history, 22, PlayerColor.Tan);
+            GiveTo(history, 22, PlayerColor.Blue);
+
+            Assert.That(Head(history.Current, PlayerColor.Blue), Is.EqualTo(Head(original, PlayerColor.Blue)));
+            Assert.That(Head(history.Current, PlayerColor.Tan), Is.EqualTo(Head(original, PlayerColor.Tan)));
+            Assert.That(Table(history.Current), Is.EqualTo(Table(original)));
+        }
+
+        [Test]
+        public void RevertingAnOwnerIntoAListThatBecameFullIsRefusedAndNothingIsWritten()
+        {
+            var history = Load(Baseline);
+            Defeat(history, 22);
+            while (Player(history.Current, PlayerColor.Blue).HeroIds.Count < Constants.Player.HeroListSize)
+            {
+                GiveTo(history, FreeHero(history.Current), PlayerColor.Blue);
+            }
+
+            var full = history.Current;
+            var revert = history.GetPendingChanges().Single(c => c.Change.Description == "Owner" && c.OwnerName == "Clancy");
+
+            Assert.That(() => revert.Revert(history), Throws.TypeOf<GameRuleException>().With.Message.EqualTo($"Blue has the most heroes a player can have on the map ({Constants.Player.HeroListSize})."));
+            Assert.That(history.Current, Is.SameAs(full));
+        }
+
+        [Test]
+        public void AnOwnerWrittenAsItIsLeavesTheListsAndTheTableAlone()
+        {
+            // An edit of the raw bytes goes into the history as it is (SaveDocumentHistory.ApplyAsIs), so the reconciler does not run.
+            var history = Load(Baseline);
+            var original = history.Current;
+            var heroes = original.Heroes();
+            var index = heroes.IndexOfId(22);
+
+            history.ApplyAsIs(original.WithHero(index, heroes.Serializer.Serialize(heroes[index], heroes.GetModel(index).WithOwner(PlayerColor.Neutral))));
+
+            Assert.That(Hero(history.Current, 22).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Head(history.Current, PlayerColor.Blue), Is.EqualTo(Head(original, PlayerColor.Blue)));
+            Assert.That(Table(history.Current), Is.EqualTo(Table(original)));
+        }
+
+        [Test]
+        public void UndoAndRedoOfAnOwnerChangeGiveBackTheDocumentsAsTheyWere()
+        {
+            var history = Load(Baseline);
+            var original = history.Current;
+            Defeat(history, 22);
+            var defeated = history.Current;
+
+            history.Undo();
+            Assert.That(history.Current, Is.SameAs(original));
+            history.Redo();
+            Assert.That(history.Current, Is.SameAs(defeated));
         }
     }
 }

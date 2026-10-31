@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -41,8 +41,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public Dictionary<int, string> CastleNames { get; } = [];
 
-        /// <summary>Gets or sets what happens when the page gives the hero to a player; it may throw the rule that forbids it.</summary>
-        public Action<PlayerColor> OnChangeOwner { get; set; } = _ => { };
+        /// <summary>Gets or sets what happens to an edit before it is applied, with the edited hero; it may throw the rule that forbids it.</summary>
+        public Action<HeroModel> OnUpdate { get; set; } = _ => { };
 
         public IByteEditTarget Target { get; } = new Mock<IByteEditTarget>().Object;
 
@@ -54,8 +54,6 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public string CastleName(int castleIndex) => this.CastleNames[castleIndex];
 
-        public void ChangeOwner(PlayerColor owner) => this.OnChangeOwner(owner);
-
         public IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory)
         {
             this.FactoryAsked = factory;
@@ -64,7 +62,9 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public void Update(Func<HeroModel, HeroModel> edit)
         {
-            this.Current = edit(this.Current);
+            var edited = edit(this.Current);
+            this.OnUpdate(edited);
+            this.Current = edited;
             this.Revision = new object();
             this.history.Raise();
         }

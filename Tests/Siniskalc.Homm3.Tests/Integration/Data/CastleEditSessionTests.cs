@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
@@ -9,7 +9,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
     /// <summary>
     /// Giving a castle to another owner through its <see cref="CastleEditSession"/>: the castle and the countdowns of the two players change
-    /// together, as the saves in TestData/Hota/Banishing show (Blue loses his only town, 2_Rampart, gets it back, and loses it again).
+    /// together (<see cref="PlayerListsReconciler"/>), as the saves in TestData/Hota/Banishing show (Blue loses his only town, 2_Rampart, gets
+    /// it back, and loses it again).
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
@@ -42,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(from, Is.Not.EqualTo(to), "the Rampart changes hands between the two saves");
             Assert.That(new[] { from, to }, Does.Contain(PlayerColor.Blue));
 
-            game.History.CreateCastleSession(RampartIndex(game)).ChangeOwner(to);
+            game.History.CreateCastleSession(RampartIndex(game)).Update(c => c with { Owner = to });
 
             Assert.That(RampartOwner(game), Is.EqualTo(to));
             foreach (var color in new[] { from, to }.Where(c => !c.IsNeutral))
@@ -57,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = Load("banishing_00_baseline");
             var original = game.History.Current;
 
-            game.History.CreateCastleSession(RampartIndex(game)).ChangeOwner(PlayerColor.Neutral);
+            game.History.CreateCastleSession(RampartIndex(game)).Update(c => c with { Owner = PlayerColor.Neutral });
 
             Assert.That(Player(game, PlayerColor.Blue)!.DaysLeft, Is.EqualTo(7), "Blue lost his only town");
             game.History.Undo();
@@ -70,7 +71,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = Load("banishing_00_baseline");
 
-            game.History.CreateCastleSession(RampartIndex(game)).ChangeOwner(PlayerColor.Blue);
+            game.History.CreateCastleSession(RampartIndex(game)).Update(c => c with { Owner = PlayerColor.Blue });
 
             Assert.That(game.History.CanUndo, Is.False);
         }
@@ -82,7 +83,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var owners = game.History.Current.Castles().GetOwners();
             var castle = Enumerable.Range(0, owners.Count).First(i => owners[i] != PlayerColor.Blue);
 
-            game.History.CreateCastleSession(castle).ChangeOwner(PlayerColor.Blue);
+            game.History.CreateCastleSession(castle).Update(c => c with { Owner = PlayerColor.Blue });
 
             Assert.That(Player(game, PlayerColor.Blue)!.DaysLeft, Is.Zero);
         }
@@ -92,9 +93,44 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = Load("banishing_00_baseline");
 
-            game.History.CreateCastleSession(RampartIndex(game)).ChangeOwner(PlayerColor.Neutral);
+            game.History.CreateCastleSession(RampartIndex(game)).Update(c => c with { Owner = PlayerColor.Neutral });
 
             Assert.That(game.History.GetPendingChanges().Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Owner", "Days left without a castle" }));
+        }
+
+        [TestCase("banishing_00_baseline")]
+        [TestCase("banishing_01_blue_7_days_left")]
+        public void PuttingTheCastleBackAsTheSavegameHadItPutsBackTheDaysLeftOfBothPlayers(string save)
+        {
+            var game = Load(save);
+            var original = game.History.Current;
+            var session = game.History.CreateCastleSession(RampartIndex(game));
+            var owner = RampartOwner(game);
+            var other = PlayerColor.All.First(c => c != owner && game.History.Current.Players().FindByColor(c) >= 0);
+            session.Update(c => c with { Owner = other });
+
+            session.Update(_ => session.Original);
+
+            Assert.That(RampartOwner(game), Is.EqualTo(owner));
+            foreach (var color in new[] { owner, other }.Where(c => !c.IsNeutral))
+            {
+                var index = original.Players().FindByColor(color);
+                Assert.That(game.History.Current.Players()[index].ToArray(), Is.EqualTo(original.Players()[index].ToArray()), color.ToString());
+            }
+
+            Assert.That(game.History.GetPendingChanges(), Is.Empty);
+        }
+
+        [Test]
+        public void RevertingTheOwnerOfTheCastlePutsBackTheDaysLeftOfThePlayer()
+        {
+            var game = Load("banishing_00_baseline");
+            game.History.CreateCastleSession(RampartIndex(game)).Update(c => c with { Owner = PlayerColor.Neutral });
+
+            game.History.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(game.History);
+
+            Assert.That(game.History.GetPendingChanges(), Is.Empty);
+            Assert.That(game.History.Current.ToBytes(), Is.EqualTo(game.History.Original.ToBytes()));
         }
     }
 }

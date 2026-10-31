@@ -148,7 +148,7 @@
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. The lists of heroes of the players and the table of hero owners
-        /// change with it (<see cref="IHeroSession.ChangeOwner"/>). A hero that is made neutral leaves the map: its position and destination
+        /// change with it (<see cref="PlayerListsReconciler"/>). A hero that is made neutral leaves the map: its position and destination
         /// become -1, -1, -1 and it faces east. A change the editor cannot make as the game would is not made; <see cref="Notice"/> says why.
         /// </summary>
         public string SelectedOwner
@@ -164,7 +164,7 @@
 
                 try
                 {
-                    this.session.ChangeOwner(owner);
+                    this.session.Update(h => h.WithOwner(owner));
                     this.Notice = string.Empty;
                 }
                 catch (GameRuleException ex)

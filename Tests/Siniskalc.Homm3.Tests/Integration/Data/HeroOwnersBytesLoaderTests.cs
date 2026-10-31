@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 using Moq;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -105,10 +105,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var listed = new HashSet<int>();
             for (var p = 0; p < players.Count; p++)
             {
-                var player = players.GetModel(p);
-                Assert.That(player.HeroIds.Select(id => table.Heroes[id].Owner), Has.All.EqualTo(player.Color), $"the heroes of {player.Color}");
-                Assert.That(player.Tavern.Ids.OfType<int>().Select(id => table.Heroes[id].IsReserved), Has.All.True, $"the tavern of {player.Color}");
-                listed.UnionWith(player.HeroIds);
+                var (color, lists) = (players.GetColor(p), players.GetLists(p));
+                Assert.That(lists.HeroIds.Select(id => table.Heroes[id].Owner), Has.All.EqualTo(color), $"the heroes of {color}");
+                Assert.That(players.GetModel(p).Tavern.Ids.OfType<int>().Select(id => table.Heroes[id].IsReserved), Has.All.True, $"the tavern of {color}");
+                listed.UnionWith(lists.HeroIds);
             }
 
             // A hero a player owns that is in no list is garrisoned in a castle.

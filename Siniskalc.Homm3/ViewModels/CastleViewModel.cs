@@ -80,7 +80,8 @@
         public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
-        /// Gets or sets the owner, as "Neutral" or the name of a player colour.
+        /// Gets or sets the owner, as "Neutral" or the name of a player colour. The days left of the players who lose and gain the castle change
+        /// with it (<see cref="PlayerListsReconciler"/>).
         /// </summary>
         public string SelectedOwner
         {
@@ -88,7 +89,7 @@
             set
             {
                 var owner = OwnerNames<PlayerColor>.Parse(value);
-                this.castleSession.ChangeOwner(owner);
+                this.Edit(castle => castle with { Owner = owner });
             }
         }
 

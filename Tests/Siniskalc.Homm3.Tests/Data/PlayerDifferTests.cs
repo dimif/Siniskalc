@@ -1,5 +1,4 @@
 using Siniskalc.Core.Data;
-using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -9,8 +8,7 @@ using Siniskalc.Homm3.Models;
 namespace Siniskalc.Homm3.Tests.Data
 {
     /// <summary>
-    /// What the differ of a player lists for two versions of the record: the resources, the tavern, the days left to own a town and the
-    /// heroes, on records made by hand.
+    /// What the differ of a player lists for two versions of the record: the resources, the tavern and the days left to own a town, on records made by hand.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Unit)]
@@ -21,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [SetUp]
         public void StartWithNoReverts() => this.fake = new();
 
-        private static PlayerModel Blue() => new(PlayerColor.Blue, ResourceSet.None.With(Resource.Gold, 5000), new TavernHeroes(12, 13), Numbers.Of(21, 22), 21, 7);
+        private static PlayerModel Blue() => new(PlayerColor.Blue, ResourceSet.None.With(Resource.Gold, 5000), new TavernHeroes(12, 13), 7);
 
         private IReadOnlyList<PendingChange> Diff(PlayerModel original, PlayerModel current) =>
             new PlayerDiffer(this.fake.Factory).Diff(0, original, current, id => $"Hero {id}");
@@ -69,30 +67,22 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void AChangeOfTheHeroesIsListedByNameWithTheSelectedOneAndIsMadeWithoutTheFactory()
+        public void ChangesOfTheResourcesAndOfTheDaysLeftAreListedInThatOrder()
         {
-            var current = Blue() with { HeroIds = Numbers.Of(21), SelectedHero = null };
+            var current = Blue().WithDaysLeft(3) with { Resources = Blue().Resources.With(Resource.Gold, 6000) };
+
+            Assert.That(this.Diff(Blue(), current).Select(c => c.Change.Description), Is.EqualTo(new[] { "Gold", "Days left without a castle" }));
+        }
+
+        [Test]
+        public void ChangingTheFirstTavernHeroIsListedByTheNameOfTheHeroAndPutBack()
+        {
+            var current = Blue() with { Tavern = new TavernHeroes(40, 13) };
 
             var change = this.Diff(Blue(), current).Single();
 
-            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Heroes", "Hero 21, Hero 22 (Hero 21 selected)", "Hero 21")));
-            Assert.That(this.fake.PlayerReverts, Is.Empty);
-        }
-
-        [Test]
-        public void AChangeOfTheSelectedHeroAloneIsAChangeOfTheHeroes()
-        {
-            var change = this.Diff(Blue(), Blue() with { SelectedHero = 22 }).Single();
-
-            Assert.That(change.Change.Description, Is.EqualTo("Heroes"));
-        }
-
-        [Test]
-        public void TheHeroesAreListedAfterTheOtherChanges()
-        {
-            var current = Blue().WithDaysLeft(3) with { HeroIds = Numbers.Of(21) };
-
-            Assert.That(this.Diff(Blue(), current).Select(c => c.Change.Description), Is.EqualTo(new[] { "Days left without a castle", "Heroes" }));
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Tavern hero 1", "Hero 12", "Hero 40")));
+            Assert.That(this.fake.PlayerReverts["Tavern hero 1"](current), Is.EqualTo(Blue()));
         }
     }
 }

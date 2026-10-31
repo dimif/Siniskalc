@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -24,6 +24,8 @@ namespace Siniskalc.Homm3.Tests.Data
                 [Player(PlayerColor.Red), Player(PlayerColor.Blue), Player(PlayerColor.Teal)],
                 deserializer.Object,
                 Mock.Of<ISerializer<PlayerChunk, PlayerModel>>(),
+                Mock.Of<IDeserializer<PlayerChunk, PlayerLists>>(),
+                Mock.Of<ISerializer<PlayerChunk, PlayerLists>>(),
                 differ ?? Mock.Of<IPlayerDiffer>(),
                 id => $"Hero {id}");
         }

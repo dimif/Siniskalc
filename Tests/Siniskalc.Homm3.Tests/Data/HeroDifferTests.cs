@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsMadeWithoutTheFactory()
+        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndPutBackInTheHeroAlone()
         {
             var original = HeroModels.Christian();
             var current = (original with { MovedToday = true }).WithOwner(PlayerColor.Red);
@@ -41,7 +41,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(changes.Select(c => c.Change.Description).First(), Is.EqualTo("Owner"));
             Assert.That((changes[0].Change.Before, changes[0].Change.After, changes[0].Kind, changes[0].Index, changes[0].OwnerName), Is.EqualTo(("Blue", "Red", Homm3ChunkKinds.Hero, 4, "Christian")));
-            Assert.That(this.fake.HeroReverts.Keys, Does.Not.Contain("Owner"));
+            Assert.That(this.fake.HeroReverts["Owner"](current), Is.EqualTo(current with { Owner = original.Owner }), "the lists follow through the reconciler");
         }
 
         [Test]

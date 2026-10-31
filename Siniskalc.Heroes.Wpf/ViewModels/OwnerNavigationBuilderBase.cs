@@ -75,6 +75,20 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 .ToList();
 
         /// <summary>
+        /// Returns the mines <paramref name="owner"/> owns in groups, one for each resource they give, in the order of the resources.
+        /// </summary>
+        /// <param name="mines">The mines of the map.</param>
+        /// <param name="owner">The colour whose mines are wanted.</param>
+        /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
+        protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner, bool hasLevels) =>
+            mines
+                .Where(m => m.Owner == owner)
+                .GroupBy(m => MineKinds.ResourceOf(m.Kind))
+                .OrderBy(g => g.Key)
+                .Select(g => new NavGroup(g.Key.ToString(), g.OrderBy(m => m.Position.Level).ThenBy(m => m.Position.X).ThenBy(m => m.Position.Y).Select(m => new NavEntry(m.Index, MapLevelText.At(m.Position, hasLevels), string.Empty)).ToList()))
+                .ToList();
+
+        /// <summary>
         /// Adds the nodes a game has besides its players, under the node of the game. None by default.
         /// </summary>
         protected virtual void AddExtraNodes(NavigationTree tree, TGame game, NavNodeViewModel overview)
@@ -105,20 +119,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets the owner of each dwelling of the map, in the order of the dwellings. None by default, for a game whose map has none.
         /// </summary>
         protected virtual IReadOnlyList<TColor> DwellingOwners(TGame game) => [];
-
-        /// <summary>
-        /// Returns the mines <paramref name="owner"/> owns in groups, one for each resource they give, in the order of the resources.
-        /// </summary>
-        /// <param name="mines">The mines of the map.</param>
-        /// <param name="owner">The colour whose mines are wanted.</param>
-        /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
-        protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner, bool hasLevels) =>
-            mines
-                .Where(m => m.Owner == owner)
-                .GroupBy(m => MineKinds.ResourceOf(m.Kind))
-                .OrderBy(g => g.Key)
-                .Select(g => new NavGroup(g.Key.ToString(), g.OrderBy(m => m.Position.Level).ThenBy(m => m.Position.X).ThenBy(m => m.Position.Y).Select(m => new NavEntry(m.Index, MapLevelText.At(m.Position, hasLevels), string.Empty)).ToList()))
-                .ToList();
 
         /// <summary>
         /// Gets the colours of the players the savefile has data for. A player listed here has a node, whether it owns anything or not.

@@ -61,11 +61,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Picks the mine with the given place among the mines of the savegame, if the list has it.
-        /// </summary>
-        public void PickMine(int mineIndex) => this.SelectedMine = this.Rows.FirstOrDefault(m => m.Index == mineIndex);
-
-        /// <summary>
         /// Gets a value indicating whether the map has any mine.
         /// </summary>
         public bool HasMines => this.Rows.Count > 0;
@@ -74,6 +69,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets how many mines there are and how many have an owner, such as "18 mines, 4 of them owned".
         /// </summary>
         public string Summary => $"{this.Rows.Count} mines, {this.Rows.Count(m => m.IsOwned)} of them owned";
+
+        /// <summary>
+        /// Picks the mine with the given place among the mines of the savegame, if the list has it.
+        /// </summary>
+        public void PickMine(int mineIndex) => this.SelectedMine = this.Rows.FirstOrDefault(m => m.Index == mineIndex);
 
         /// <summary>
         /// Shows the mines again, after the history changed. A mine that no longer passes the filter leaves the list, and when it was the

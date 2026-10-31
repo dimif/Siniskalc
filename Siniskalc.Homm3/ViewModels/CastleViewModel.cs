@@ -26,8 +26,9 @@
         private readonly ICastleSession castleSession;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
-        private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
+
+        private DwellingStockActions? dwellingActions;
 
         public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
             : base(session.Name, session)

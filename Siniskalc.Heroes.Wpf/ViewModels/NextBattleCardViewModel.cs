@@ -21,7 +21,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public NextBattleCardViewModel(string title, IReadOnlyList<IAmountRow> bonus, IReadOnlyList<IToggleRow> sources, string note, Action? clearAll = null)
         {
             this.HasClear = clearAll != null;
-            this.ClearCommand = new DelegateCommand(_ => clearAll?.Invoke(), _ => clearAll != null && (this.Bonus.Any(b => b.Value != 0) || this.Sources.Any(s => s.IsChecked)));
+            this.ClearCommand = new DelegateCommand(_ => clearAll?.Invoke(), _ => clearAll != null && (bonus.Any(b => b.Value != 0) || sources.Any(s => s.IsChecked)));
             this.Title = title;
             this.Bonus = bonus;
             this.Sources = sources;

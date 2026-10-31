@@ -4,8 +4,8 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
@@ -38,6 +38,15 @@ namespace Siniskalc.Homm3.ViewModels
         public int OwnerIndex => IndexOf(this.owner);
 
         /// <summary>
+        /// Gets the mines and dwellings nobody owns, for the Mines and Dwellings tabs.
+        /// </summary>
+        public OwnedMapObjectsViewModel MapObjects { get; }
+
+        /// <inheritdoc/>
+        protected override string ObjectsSummary =>
+            string.Join(" · ", new[] { Count(this.MapObjects.Mines.Rows.Count, "mine", "mines"), Count(this.MapObjects.Dwellings.Count, "dwelling", "dwellings") }.Where(s => s.Length > 0));
+
+        /// <summary>
         /// Gets the number a navigation node of <paramref name="owner"/> that has no player page carries (-1 for neutral).
         /// </summary>
         public static int IndexOf(PlayerColor owner) => owner.IsNeutral ? -1 : -2 - owner.Code;
@@ -46,15 +55,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the colour that <see cref="IndexOf"/> numbered <paramref name="index"/>.
         /// </summary>
         public static PlayerColor OwnerOf(int index) => index == -1 ? PlayerColor.Neutral : PlayerColor.FromByte((byte)(-2 - index));
-
-        /// <summary>
-        /// Gets the mines and dwellings nobody owns, for the Mines and Dwellings tabs.
-        /// </summary>
-        public OwnedMapObjectsViewModel MapObjects { get; }
-
-        /// <inheritdoc/>
-        protected override string ObjectsSummary =>
-            string.Join(" · ", new[] { Count(this.MapObjects.Mines.Rows.Count, "mine", "mines"), Count(this.MapObjects.Dwellings.Count, "dwelling", "dwellings") }.Where(s => s.Length > 0));
 
         /// <inheritdoc/>
         protected override IReadOnlyList<ILink> LoadHeroes() => OwnedLinks.Heroes(this.history.Current.Heroes(), this.owner, this.openHero);

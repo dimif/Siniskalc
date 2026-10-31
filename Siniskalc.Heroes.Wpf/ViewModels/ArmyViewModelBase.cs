@@ -30,7 +30,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the heading of the army card: "Army", or what the owner set with <see cref="SetTitle"/>, such as "Garrison of the sawmill at ...".
         /// </summary>
-        public string Title { get; private set; } = "Army";
+        public new string Title { get; private set; } = "Army";
 
         /// <summary>
         /// Gets the finder that looks up creatures and adds them to the army.

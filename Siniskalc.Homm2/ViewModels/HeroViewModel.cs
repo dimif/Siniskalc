@@ -137,8 +137,6 @@
             this.Refresh();
         }
 
-        private Game Game { get; }
-
         public int HeroId { get; }
 
         public ChoiceFieldViewModel OwnerField { get; }
@@ -261,6 +259,8 @@
         public ArtifactsViewModel ArtifactsEditor { get; }
 
         public bool HasSpellBook => this.hero.HasSpellBook;
+
+        private Game Game { get; }
 
         /// <summary>
         /// Creates the target the hex tab of the page works on: the raw bytes of the hero. The caller disposes it. <c>null</c> when the

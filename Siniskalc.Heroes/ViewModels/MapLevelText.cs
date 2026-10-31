@@ -52,6 +52,12 @@ namespace Siniskalc.Heroes.ViewModels
         /// </summary>
         public static string Place(int x, int y) => $"{x}, {y}";
 
+        /// <summary>
+        /// Returns the name of a level of the map, such as "Surface" or "Underground".
+        /// </summary>
+        /// <param name="level">The level.</param>
+        public static string Of(int level) => LevelName(level);
+
         private static string LevelName(int level) => level switch
         {
             MapPosition.Above => "Surface",
@@ -59,11 +65,5 @@ namespace Siniskalc.Heroes.ViewModels
             -1 => "None",
             _ => $"Level {level}",
         };
-
-        /// <summary>
-        /// Returns the name of a level of the map, such as "Surface" or "Underground".
-        /// </summary>
-        /// <param name="level">The level.</param>
-        public static string Of(int level) => LevelName(level);
     }
 }

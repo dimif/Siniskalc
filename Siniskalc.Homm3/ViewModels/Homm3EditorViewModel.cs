@@ -26,9 +26,10 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
-        private MapViewModel? map;
         private readonly Dictionary<PlayerColor, NeutralViewModel> neutrals = [];
         private OverviewViewModel? overview;
+
+        private MapViewModel? map;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)

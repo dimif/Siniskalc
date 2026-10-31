@@ -39,6 +39,9 @@
         }
 
         /// <inheritdoc/>
+        protected override bool SummaryHasValues => true;
+
+        /// <inheritdoc/>
         protected override IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts();
 
         /// <inheritdoc/>
@@ -47,8 +50,5 @@
             var creature = stack == null || stack.CreatureName.Length == 0 ? null : AbstractEnumeration.FromName<Creature>(stack.CreatureName);
             slot.SetInfo(creature?.GetInfo(this.gameVersion));
         }
-
-        /// <inheritdoc/>
-        protected override bool SummaryHasValues => true;
     }
 }

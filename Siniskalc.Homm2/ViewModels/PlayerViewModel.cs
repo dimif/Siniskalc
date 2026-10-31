@@ -74,8 +74,6 @@
             this.Refresh();
         }
 
-        private Game Game { get; }
-
         public PlayerColor Color { get; }
 
         /// <inheritdoc/>
@@ -150,6 +148,8 @@
 
         /// <inheritdoc/>
         public bool HasCastles => this.castles.Count > 0;
+
+        private Game Game { get; }
 
         /// <summary>
         /// Creates the target the hex tab of the page works on: the raw bytes of the player. The caller disposes it. <c>null</c> when the

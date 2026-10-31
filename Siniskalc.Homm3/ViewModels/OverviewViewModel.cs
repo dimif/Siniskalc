@@ -55,7 +55,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         protected override string GiveTurnToolTip => GiveTheTurnToolTip;
 
-
         /// <inheritdoc/>
         protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";
 

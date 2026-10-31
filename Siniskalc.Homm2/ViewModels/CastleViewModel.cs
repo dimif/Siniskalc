@@ -30,8 +30,8 @@
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
-        private DwellingStockActions? dwellingActions;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
+        private DwellingStockActions? dwellingActions;
         private CastleModel castle = null!;
         private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
         private string visitingHeroName = string.Empty;
@@ -129,8 +129,6 @@
             this.Refresh();
         }
 
-        private Game Game { get; }
-
         public int CastleIndex { get; }
 
         public string Name => this.castle.Name;
@@ -205,6 +203,8 @@
         public ChoiceFieldViewModel GuildLevelField { get; }
 
         public IReadOnlyList<GuildLevelViewModel> GuildLevels => this.guildLevels;
+
+        private Game Game { get; }
 
         /// <summary>
         /// Creates the target the hex tab of the page works on: the raw bytes of the castle. The caller disposes it. <c>null</c> when the

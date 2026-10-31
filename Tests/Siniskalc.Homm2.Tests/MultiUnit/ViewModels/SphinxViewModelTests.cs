@@ -98,10 +98,11 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
             var page = Page(session);
 
             Assert.That(page.Answers.Select(a => a.Text), Is.EqualTo(new[] { "Time", "Moon", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty }));
+            Assert.That(page.Answers, Has.Count.EqualTo(Constants.Sphinx.MaxAnswers));
 
             page.Answers[2].Text = "  Sun ";
             Assert.That(session.Object.Current.Answers, Is.EqualTo(new[] { "Time", "Moon", "Sun" }));
-            Assert.That(page.Answers.Select(a => a.MaxLength), Is.All.EqualTo(MapObjectLayout.SphinxAnswerSize - 1), "an answer has room for twelve characters");
+            Assert.That(page.Answers.Select(a => a.MaxLength), Is.All.EqualTo(Constants.Sphinx.MaxAnswerLength), "an answer has room for twelve characters");
 
             page.Answers[0].Text = string.Empty;
             Assert.That(session.Object.Current.Answers, Is.EqualTo(new[] { "Moon", "Sun" }), "an empty place drops out");

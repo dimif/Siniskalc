@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Models;
@@ -26,7 +25,7 @@
         private const string NotBuilt = "Not built";
 
         private readonly Action<int> openHero;
-        private readonly CastleEditSession session;
+        private readonly EditSession<CastleChunk, CastleModel> session;
         private readonly IByteEditTargetFactory? byteEditTargets;
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
@@ -42,10 +41,10 @@
         {
         }
 
-        private CastleViewModel(Game game, CastleEditSession session, Action<int> openHero, IByteEditTargetFactory? byteEditTargets)
+        private CastleViewModel(Game game, EditSession<CastleChunk, CastleModel> session, Action<int> openHero, IByteEditTargetFactory? byteEditTargets)
             : base("Castle", session)
         {
-            var castleIndex = session.CastleIndex;
+            var castleIndex = session.Index;
             this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.CastleIndex = castleIndex;

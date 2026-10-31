@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -21,7 +21,7 @@
     public sealed class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
         private readonly Action<int> openCastle;
-        private readonly HeroEditSession session;
+        private readonly EditSession<HeroChunk, HeroModel> session;
         private readonly IByteEditTargetFactory? byteEditTargets;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
@@ -35,10 +35,10 @@
         {
         }
 
-        private HeroViewModel(Game game, HeroEditSession session, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets)
+        private HeroViewModel(Game game, EditSession<HeroChunk, HeroModel> session, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets)
             : base("Hero", session)
         {
-            var heroId = session.HeroIndex;
+            var heroId = session.Index;
             this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.HeroId = heroId;

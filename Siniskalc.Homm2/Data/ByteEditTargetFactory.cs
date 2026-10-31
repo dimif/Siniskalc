@@ -9,13 +9,13 @@ namespace Siniskalc.Homm2.Data
     /// <inheritdoc/>
     public sealed class ByteEditTargetFactory : IByteEditTargetFactory
     {
-        public IByteEditTarget ForHero(HeroEditSession session) =>
+        public IByteEditTarget ForHero(EditSession<HeroChunk, HeroModel> session) =>
             new ChunkByteEditTarget<HeroChunk, HeroModel>(session, RecordRegions.Hero, () => session.Current.Name);
 
         public IByteEditTarget ForPlayer(PlayerEditSession session) =>
             new ChunkByteEditTarget<PlayerChunk, PlayerModel>(session, RecordRegions.Player, () => $"{session.Current.Color} player");
 
-        public IByteEditTarget ForCastle(CastleEditSession session) =>
+        public IByteEditTarget ForCastle(EditSession<CastleChunk, CastleModel> session) =>
             new ChunkByteEditTarget<CastleChunk, CastleModel>(session, RecordRegions.Castle, () => session.Current.Name);
 
         public IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex)

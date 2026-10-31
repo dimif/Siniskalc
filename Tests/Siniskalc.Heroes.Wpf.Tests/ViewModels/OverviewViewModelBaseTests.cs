@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Runtime;
     using Siniskalc.Heroes.Wpf.ViewModels;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the words the overview page of any game says about the savefile that is open.
@@ -129,7 +130,28 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That((blue.IsCurrent, blue.Command, blue.ToolTip), Is.EqualTo((false, (System.Windows.Input.ICommand?)null, "A computer")));
         }
 
-        private sealed class TestOverview(AbstractSavegame savegame, IGameInfo<TestColor> info) : OverviewViewModelBase<TestColor>(savegame, info)
+        [TestCase(null, "", false, false)]
+        [TestCase(0, "Banished", true, true)]
+        [TestCase(3, "No towns: 3 days left", false, true)]
+        public void CardsUseTheSharedPlayerStateAndKeepTheGamesOpenCommand(int? days, string note, bool banished, bool hasPlayer)
+        {
+            var info = new Mock<IGameInfo<TestColor>>();
+            info.Setup(i => i.GetControl(TestColor.Blue)).Returns(PlayerType.Human);
+            var page = new TestOverview(Savegame("a.GM1"), info.Object);
+            var open = new DelegateCommand(_ => { }, _ => hasPlayer);
+            var player = hasPlayer ? new TestPlayer(days) : null;
+
+            var card = page.PlayerCard(player, open);
+
+            Assert.That((card.Name, card.ControlText, card.BanishingText, card.IsBanished, card.HasResources),
+                Is.EqualTo(("Blue", "Human", note, banished, hasPlayer)));
+            Assert.That(card.OpenCommand, Is.SameAs(open));
+            Assert.That(card.OpenCommand.CanExecute(null), Is.EqualTo(hasPlayer));
+        }
+
+        private sealed record TestPlayer(int? Days) : PlayerModelBase<TestColor>(TestColor.Blue, ResourceSet.None, TavernHeroes.Empty, Days);
+
+        private sealed class TestOverview(AbstractSavegame savegame, IGameInfo<TestColor> info) : OverviewViewModelBase<TestColor>(savegame, info, new BanishingTextProvider())
         {
             public string MoreSize { get; init; } = string.Empty;
 
@@ -150,6 +172,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             }
 
             public OrderOfPlayItemViewModel ItemOf(TestColor color) => this.OrderItemOf(color);
+
+            public PlayerCardViewModel PlayerCard(PlayerModelBase<TestColor>? player, System.Windows.Input.ICommand open) => this.CardOf(TestColor.Blue, player, [], [], open);
 
             protected override string SizeOf(MapHeader map) => map.SizeText + this.MoreSize;
 

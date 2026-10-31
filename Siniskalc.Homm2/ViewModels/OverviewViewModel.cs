@@ -19,16 +19,14 @@
     public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
         private readonly Game game;
-        private readonly BanishingTextProvider banishingText;
         private readonly Action<PlayerColor> openPlayer;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
 
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<PlayerColor> openPlayer, Action<int> openHero, Action<int> openCastle)
-            : base(game, game)
+            : base(game, game, banishingText)
         {
             this.game = game;
-            this.banishingText = banishingText;
             this.openPlayer = openPlayer;
             this.openHero = openHero;
             this.openCastle = openCastle;
@@ -72,16 +70,7 @@
             var document = this.game.History.Current;
             var heroes = OwnedLinks.Heroes(document.Heroes(), color, this.openHero);
             var castles = CastleLinks.OwnedBy(document, color, this.openCastle, this.openHero);
-            return new PlayerCardViewModel(
-                color.ToString(),
-                PlayerPalette.Of(color),
-                player.Resources,
-                heroes,
-                new DelegateCommand(_ => this.openPlayer(color)),
-                this.ControlTextOf(color),
-                castles: castles,
-                banishingText: this.banishingText.Pill(player),
-                isBanished: player.IsBanished);
+            return this.CardOf(color, player, heroes, castles, new DelegateCommand(_ => this.openPlayer(color)));
         }
     }
 }

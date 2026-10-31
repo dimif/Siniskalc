@@ -23,16 +23,14 @@ namespace Siniskalc.Homm3.ViewModels
         public const string GiveTheTurnToolTip = "Give the turn to this player: the savegame then opens on this player's turn. Not tried in the game.";
 
         private readonly Game game;
-        private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
         private readonly Action<int> openPlayer;
         private readonly Action<int>? openCastle;
 
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
-            : base(game, game)
+            : base(game, game, banishingText)
         {
             this.game = game;
-            this.banishingText = banishingText;
             this.openHero = openHero;
             this.openPlayer = openPlayer;
             this.openCastle = openCastle;
@@ -77,12 +75,11 @@ namespace Siniskalc.Homm3.ViewModels
             foreach (var color in colors)
             {
                 var playerIndex = this.game.History.Current.Players().FindByColor(color);
-                var player = playerIndex < 0 ? null : this.game.History.CreatePlayerSession(playerIndex).Current;
-                var resources = player?.Resources;
+                var player = playerIndex < 0 ? null : this.game.History.Current.Players().GetModel(playerIndex);
                 var heroes = OwnedLinks.Heroes(this.game.History.Current.Heroes(), color, this.openHero);
                 var open = new DelegateCommand(_ => this.openPlayer(playerIndex), _ => playerIndex >= 0);
                 var ownCastles = CastleLinks.OwnedBy(this.game.History.Current, color, this.openCastle, this.openHero);
-                cards.Add(new PlayerCardViewModel(color.ToString(), PlayerPalette.Of(color), resources, heroes, open, this.ControlTextOf(color), ownCastles, player == null ? string.Empty : this.banishingText.Pill(player), player?.IsBanished ?? false));
+                cards.Add(this.CardOf(color, player, heroes, ownCastles, open));
             }
 
             this.Players = cards;

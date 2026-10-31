@@ -2,6 +2,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Input;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -22,11 +23,13 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
         private readonly AbstractSavegame savegame;
         private readonly IGameInfo<TColor> game;
+        private readonly BanishingTextProvider banishingText;
 
-        protected OverviewViewModelBase(AbstractSavegame savegame, IGameInfo<TColor> game)
+        protected OverviewViewModelBase(AbstractSavegame savegame, IGameInfo<TColor> game, BanishingTextProvider banishingText)
         {
             this.savegame = savegame;
             this.game = game;
+            this.banishingText = banishingText;
         }
 
         /// <inheritdoc/>
@@ -84,9 +87,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected IGameInfo<TColor> Game => this.game;
 
-        /// <inheritdoc/>
-        public abstract void Refresh();
-
         /// <summary>
         /// Gets the tooltip of the item of a human who has not the turn, which gives it the turn when pressed.
         /// </summary>
@@ -103,6 +103,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected abstract string ComputerTurnToolTip { get; }
 
+        /// <inheritdoc/>
+        public abstract void Refresh();
+
         /// <summary>
         /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,
         /// separated by dots.
@@ -117,6 +120,26 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="color">The colour.</param>
         protected string ControlTextOf(TColor color) => PlayerTypeText.Describe(this.game, color);
+
+        /// <summary>
+        /// Builds a player's overview card, including a colour whose player record is absent.
+        /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="player">The player record, or nothing when the savefile has none.</param>
+        /// <param name="heroes">The links to the player's heroes.</param>
+        /// <param name="castles">The links to the player's castles.</param>
+        /// <param name="open">The game's command to open the player page.</param>
+        protected PlayerCardViewModel CardOf(TColor color, PlayerModelBase<TColor>? player, IReadOnlyList<ILink> heroes, IReadOnlyList<CastleLinkViewModel> castles, ICommand open) =>
+            new(
+                color.ToString() ?? string.Empty,
+                PlayerPalette.Of(color),
+                player?.Resources,
+                heroes,
+                open,
+                this.ControlTextOf(color),
+                castles,
+                player == null ? string.Empty : this.banishingText.Pill(player),
+                player?.IsBanished ?? false);
 
         /// <summary>
         /// Returns the item of <paramref name="color"/> in the order of play: lit when it is that colour's turn, and with a command that gives it

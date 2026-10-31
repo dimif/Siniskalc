@@ -80,6 +80,13 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
    - The other bytes banishing changes are not decoded: the hero chunk of the player (owner `FF`, army emptied), a counter and an 8-byte record near the end of the save, and header bytes near 1313, 1356 and 12492.
      Until they are, a banished player (0) is read-only and no one can be banished or revived by the editor.
    - The list of the indices of a player's towns that starts at byte 25 is not read.
+11. **HoMM3 daily income, what it leaves out** (2026-11-01). `DailyIncome` counts only the mines and the best town hall of each town, so the amounts are "at least" values (the save does not store the income). To include the rest:
+   - **Equipped artifacts** (easy): Endless Purse/Bag/Sack of Gold (+500/+750/+1000 gold) and Cornucopia (+5 of each precious resource) are already in the `Artifact` table. `DailyIncome.Of` needs the player's heroes (through a hero collection class, not chunks) and must count equipped slots only, not the backpack.
+   - **Estates skill** (easy): gold per day by skill level, on the heroes of the player. Check the values in a save first.
+   - **Resource silo** (easy once a faction-to-resource table exists): `Building.ResourceSilo` is already known; the resource it gives depends on the faction.
+   - **Grail building** (unclear): its daily effect was never checked in a save (see the note in `CastleModel`), and most faction-specific effects are not income. Needs a before/after save pair before it is added.
+   - Verify each value with a pair of saves (before/after equipping or building) and add tests that name the save. Then change the wording from "at least" to "estimated".
+   - HoMM3 only: HoMM2 stores its income in the player record.
 
 ## Other sharing left apart (2026-10-31)
 

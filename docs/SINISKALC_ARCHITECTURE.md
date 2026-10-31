@@ -98,6 +98,8 @@ Views                           XAML
 
 Reading and writing a chunk are separate (`IDeserializer<TChunk, TEntity>`, and `ISerializer<TChunk, TModel>` implemented by the `Safe...Serializer` classes), and a value the editor does not know never stops a load or gets overwritten: see `CLAUDE.md`. Constructors, factories and tests take these generics (and `IDiffer<TModel>`) as they are; a game declares its own interface only when it adds members (HoMM3's `ICastleDeserializer`, `IHeroDeserializer`, `IPlayerDeserializer` and `ICastleDiffer`, HoMM2's `ICastleDeserializer` and `IHeroDeserializer` with `DeserializeOwner`, and both games' `IPlayerDiffer`, which is no `IDiffer`).
 
+Obelisk byte conversion is shared in `Siniskalc.Heroes.Data`: `ObeliskDeserializer<TColor>` and `SafeObeliskSerializer<TColor>` take `ObeliskFlagsLayout(FlagsOffset, CountOffset)`. Without a stored count, positions give the count; with one, the byte bounds reading and writing even when positions differ. Writing also stops at the model's flag count and preserves the remaining bytes.
+
 Data flow of an edit: view -> view model property -> `Update(h => h.Reducer(...))` -> `HeroEditSession.Update` -> serializer -> `SaveDocumentHistory.Apply` -> `Changed` -> `HeroViewModel.OnHistoryChanged` -> every child view model `Refresh()`.
 
 ## Artifacts, spells and skills

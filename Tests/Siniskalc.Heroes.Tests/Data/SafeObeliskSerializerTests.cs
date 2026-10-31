@@ -33,6 +33,17 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void AStoredZeroCountPreservesAllBytesEvenWhenTheModelHasFlags()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0x99, 0x00, 0x11], 0, [new MapPosition(1, 2)]);
+            var serializer = new SafeObeliskSerializer<TestColor>(new ObeliskFlagsLayout(2, 1));
+
+            var result = serializer.Serialize(chunk, new ObeliskVisits<TestColor>([0x44]));
+
+            Assert.That(result.ToArray(), Is.EqualTo(chunk.ToArray()));
+        }
+
+        [Test]
         public void AShorterModelLeavesTheOtherFlagBytesAlone()
         {
             var chunk = new ObeliskChunk("Obelisks", [0x99, 0x03, 0x11, 0x22, 0x33], 0);

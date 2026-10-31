@@ -22,6 +22,15 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void AStoredZeroCountIgnoresPositionsAndTrailingFlagBytes()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0x99, 0x00, 0x11], 0, [new MapPosition(1, 2)]);
+            var visits = new ObeliskDeserializer<TestColor>(new ObeliskFlagsLayout(2, 1)).Deserialize(chunk);
+
+            Assert.That(visits.Masks, Is.Empty);
+        }
+
+        [Test]
         public void TheStoredCountLimitsHowManyFlagsAreRead()
         {
             var chunk = new ObeliskChunk("Obelisks", [0x99, 0x02, 0x11, 0x22, 0x33], 0);

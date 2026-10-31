@@ -1,7 +1,5 @@
-using Siniskalc;
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
-using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Tests.Integration.Models;
 using Siniskalc.Homm3.ViewModels;
 

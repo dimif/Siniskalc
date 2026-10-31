@@ -1,7 +1,6 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core.Data;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Makes the targets the hex editor of a page works on: the raw bytes of one hero, player or castle, or of a record of the map (a mine, a

@@ -11,11 +11,13 @@ namespace Siniskalc.Core.Data
         /// <summary>
         /// Returns what has been edited since the savefile was loaded or last saved.
         /// </summary>
+        /// <returns>The pending changes, kind by kind.</returns>
         IReadOnlyList<PendingChange> GetPendingChanges();
 
         /// <summary>
         /// Puts the value of <paramref name="change"/> back, leaving every other edit alone.
         /// </summary>
+        /// <param name="change">A change taken from <see cref="GetPendingChanges"/>.</param>
         void Revert(PendingChange change);
     }
 }

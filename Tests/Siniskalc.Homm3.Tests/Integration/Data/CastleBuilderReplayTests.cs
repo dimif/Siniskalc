@@ -1,6 +1,5 @@
-using static Siniskalc.Homm3.Tests.Data.CastleMasks;
+﻿using static Siniskalc.Homm3.Tests.Data.CastleMasks;
 using Siniskalc.Homm3.Tests.Data;
-using Siniskalc;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;

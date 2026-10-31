@@ -12,7 +12,7 @@
         /// Deserializes the entity from the given chunk. The chunk is not modified.
         /// </summary>
         /// <param name="chunk">The chunk to deserialize the entity from.</param>
-        /// <returns>The deserialized entity.</returns>
+        /// <returns>The deserialized entity. A byte that is no known entity reads as the stand-in; it never stops the read.</returns>
         TDeserializedEntity Deserialize(TChunk chunk);
     }
 }

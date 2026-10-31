@@ -14,6 +14,7 @@ namespace Siniskalc.Core.Runtime
         /// <summary>
         /// Gets the text of the default settings file.
         /// </summary>
+        /// <exception cref="InvalidOperationException">The default settings are not part of the application.</exception>
         public static string Json
         {
             get

@@ -1,6 +1,5 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
-    using System;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;

@@ -41,11 +41,14 @@
         /// <summary>
         /// Returns whether the byte at <paramref name="offset"/> is inside this region.
         /// </summary>
+        /// <param name="offset">The offset of the byte, relative to the start of the chunk like <see cref="Start"/>.</param>
+        /// <returns><see langword="true"/> if <paramref name="offset"/> is at least <see cref="Start"/> and less than <see cref="End"/>; otherwise <see langword="false"/>.</returns>
         public bool Contains(int offset) => offset >= this.Start && offset < this.End;
 
         /// <summary>
         /// Returns the region itself, or the leaves of its elements when it has some.
         /// </summary>
+        /// <returns>The region alone if <see cref="Elements"/> is empty; otherwise the leaves of every element, in order, found by going down through the elements of the elements. Evaluated lazily.</returns>
         public IEnumerable<ByteRegion> Leaves() => this.Elements.Count == 0 ? [this] : this.Elements.SelectMany(e => e.Leaves());
 
         /// <summary>
@@ -53,6 +56,9 @@
         /// regions of a chunk at their position in the savefile. <paramref name="groupPrefix"/> is put in front of the group of
         /// every leaf (the leaf gets it as its group if it has none), so that the leaves of different chunks can be told apart.
         /// </summary>
+        /// <param name="offset">The number of bytes to add to <see cref="Start"/> of the region and of each of its elements; may be negative.</param>
+        /// <param name="groupPrefix">The text to put in front of the group, joined to it with " / ", or <see langword="null"/> to leave the groups as they are.</param>
+        /// <returns>A new region with the moved <see cref="Start"/>, the new <see cref="Group"/> and shifted copies of the elements; this region is not changed.</returns>
         public ByteRegion Shifted(int offset, string? groupPrefix = null)
         {
             var group = groupPrefix == null ? this.Group : this.Group == null ? groupPrefix : $"{groupPrefix} / {this.Group}";

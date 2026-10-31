@@ -12,6 +12,8 @@
     /// </summary>
     public sealed class UserSettings
     {
+        private static readonly ILogger<UserSettings> Logger = LogFactory.For<UserSettings>();
+
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
         /// <summary>
@@ -45,6 +47,7 @@
         /// <summary>
         /// Returns where the settings of the application called <paramref name="applicationName"/> are kept for the current user.
         /// </summary>
+        /// <param name="applicationName">The name of the application, used as the folder under the roaming application data folder.</param>
         /// <returns>
         /// The path.
         /// </returns>
@@ -56,17 +59,22 @@
         /// <summary>
         /// Reads the settings from <paramref name="path"/>. A missing file gives the defaults.
         /// </summary>
+        /// <param name="path">The path of the settings file.</param>
+        /// <returns>The settings in the file, or the defaults when there is no file or it holds nothing.</returns>
         /// <exception cref="SettingsException">The file exists but cannot be read or understood.</exception>
         public static UserSettings Load(string path)
         {
             if (!File.Exists(path))
             {
+                Logger.LogDebug("No settings file at {Path}, using the defaults", path);
                 return new UserSettings();
             }
 
             try
             {
-                return JsonSerializer.Deserialize<UserSettings>(File.ReadAllText(path)) ?? new UserSettings();
+                var loaded = JsonSerializer.Deserialize<UserSettings>(File.ReadAllText(path));
+                Logger.LogDebug("Read the settings from {Path}", path);
+                return loaded ?? new UserSettings();
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
             {
@@ -77,6 +85,7 @@
         /// <summary>
         /// Writes the settings to <paramref name="path"/>.
         /// </summary>
+        /// <param name="path">The path of the settings file.</param>
         /// <exception cref="SettingsException">The file cannot be written.</exception>
         public void Save(string path)
         {
@@ -84,6 +93,7 @@
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path) ?? string.Empty);
                 File.WriteAllText(path, JsonSerializer.Serialize(this, JsonOptions));
+                Logger.LogDebug("Wrote the settings to {Path}", path);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {

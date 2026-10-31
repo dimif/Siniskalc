@@ -26,6 +26,7 @@
         {
             this.Current = initial;
             this.Original = initial;
+            Logger.LogTrace("Created a history");
         }
 
         /// <summary>
@@ -34,6 +35,9 @@
         /// <inheritdoc/>
         public event EventHandler? Changed;
 
+        /// <summary>
+        /// Gets the document with every edit applied, undone ones excluded.
+        /// </summary>
         public SaveDocument Current { get; private set; }
 
         /// <summary>
@@ -41,8 +45,14 @@
         /// </summary>
         public SaveDocument Original { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether there is an edit to undo.
+        /// </summary>
         public bool CanUndo => this.undo.Count > 0;
 
+        /// <summary>
+        /// Gets a value indicating whether there is an undone edit to redo.
+        /// </summary>
         public bool CanRedo => this.redo.Count > 0;
 
         /// <summary>
@@ -65,11 +75,14 @@
         /// <summary>
         /// Returns what has been edited since the savefile was loaded or last saved.
         /// </summary>
+        /// <returns>The pending changes, kind by kind.</returns>
         public IReadOnlyList<PendingChange> GetPendingChanges() => this.Current.GetPendingChanges(this.Original);
 
         /// <summary>
         /// Puts the value of <paramref name="change"/> back through this history, leaving every other edit alone.
         /// </summary>
+        /// <param name="change">A change taken from <see cref="GetPendingChanges"/>.</param>
+        /// <exception cref="InvalidOperationException">The reconciler of the savefile refuses the reverted edit.</exception>
         public void Revert(PendingChange change)
         {
             Logger.LogDebug("Reverting the pending change {Change}", change.Path);
@@ -83,6 +96,7 @@
         /// edit, the history is left as it was.
         /// </summary>
         /// <param name="next">The edited document.</param>
+        /// <exception cref="InvalidOperationException">The reconciler of the savefile refuses the edit.</exception>
         public void Apply(SaveDocument next) => this.ApplyAsIs(next.Reconciled(this.Original, this.Current));
 
         /// <summary>
@@ -100,6 +114,9 @@
             this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Goes back to the document before the last edit, which can then be redone. Does nothing when there is no edit to undo.
+        /// </summary>
         public void Undo()
         {
             Logger.LogDebug("Undoing ({Undo} undo steps available)", this.undo.Count);
@@ -114,6 +131,9 @@
             this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Goes forward again to the edit that was undone last. Does nothing when there is no undone edit.
+        /// </summary>
         public void Redo()
         {
             Logger.LogDebug("Redoing ({Redo} redo steps available)", this.redo.Count);

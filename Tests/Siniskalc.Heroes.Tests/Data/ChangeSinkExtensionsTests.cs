@@ -1,11 +1,10 @@
-namespace Siniskalc.Heroes.Tests.Data
+﻿namespace Siniskalc.Heroes.Tests.Data
 {
     using System.Collections.Generic;
     using System.Linq;
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;

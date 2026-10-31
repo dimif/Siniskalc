@@ -1,6 +1,5 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.ViewModels
 {
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 

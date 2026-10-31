@@ -22,6 +22,9 @@ namespace Siniskalc.Core.Data
         /// Returns whether <paramref name="other"/> says the same about the same place. The revert action is not compared: it is made
         /// again each time the changes are worked out.
         /// </summary>
+        /// <param name="other">The pending change to compare with.</param>
+        /// <returns><see langword="true"/> if the kind, the index, the owner and the change are all equal.</returns>
+        /// <exception cref="NullReferenceException"><paramref name="other"/> is <see langword="null"/>.</exception>
         public bool IsSameChangeAs(PendingChange other) =>
             this.Kind == other.Kind && this.Index == other.Index && this.OwnerName == other.OwnerName && this.Change == other.Change;
     }

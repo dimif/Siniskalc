@@ -10,12 +10,28 @@
     {
         private static readonly ILogger<RawSavefileCodec> Logger = LogFactory.For<RawSavefileCodec>();
 
-        /// <inheritdoc/>
-        public byte[] Read(string filePath) => File.ReadAllBytes(filePath);
+        /// <summary>
+        /// Reads the file as it is.
+        /// </summary>
+        /// <param name="filePath">The path of the file to read.</param>
+        /// <returns>All the bytes of the file.</returns>
+        /// <exception cref="IOException">The file could not be read.</exception>
+        public byte[] Read(string filePath)
+        {
+            var bytes = File.ReadAllBytes(filePath);
+            Logger.LogDebug("Read {File} ({Length} bytes)", Path.GetFileName(filePath), bytes.Length);
+            return bytes;
+        }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Writes the bytes to a temporary file next to <paramref name="filePath"/> and moves it over the file, so a failed write leaves the old file as it was.
+        /// </summary>
+        /// <param name="filePath">The path of the file to write.</param>
+        /// <param name="bytes">The bytes to write.</param>
+        /// <exception cref="IOException">The file could not be written.</exception>
         public void Write(string filePath, byte[] bytes)
         {
+            Logger.LogDebug("Writing {File} ({Length} bytes)", Path.GetFileName(filePath), bytes.Length);
             var temporary = filePath + ".saving";
             try
             {

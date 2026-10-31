@@ -1,7 +1,6 @@
-namespace Siniskalc.Homm2.Tests.Models
+﻿namespace Siniskalc.Homm2.Tests.Models
 {
     using Siniskalc.Core.Models;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Models;
 
     /// <summary>

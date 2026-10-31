@@ -33,8 +33,13 @@
         byte[] GetBytesToSave();
 
         /// <summary>
-        /// Ties the game to the file it was just saved to, which is what reloading reads.
+        /// Ties the game to a save file.
         /// </summary>
+        /// <param name="filePath">The path of the file the game was just saved to.
+        /// </param>
+        /// <remarks>
+        /// For instance, the file the game was just saved to. It is used for reloading reads.
+        /// </remarks>
         void SavedTo(string filePath);
     }
 }

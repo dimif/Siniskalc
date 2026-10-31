@@ -1,6 +1,4 @@
-using Siniskalc.Heroes.Models;
-using Siniskalc.Heroes.Wpf.ViewModels;
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Tests.Models;
 using Siniskalc.Homm3.Tests.ViewModels;

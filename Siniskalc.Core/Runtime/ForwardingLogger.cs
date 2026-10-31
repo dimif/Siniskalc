@@ -13,6 +13,10 @@ namespace Siniskalc.Core.Runtime
         private readonly string category;
         private volatile Resolved? resolved;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForwardingLogger"/> class.
+        /// </summary>
+        /// <param name="category">The category the lines are logged under, usually the full name of a class.</param>
         public ForwardingLogger(string category)
         {
             this.category = category;
@@ -21,6 +25,8 @@ namespace Siniskalc.Core.Runtime
         /// <summary>
         /// Returns the name logs show for <paramref name="type"/>: its full name, without the arity of a generic type.
         /// </summary>
+        /// <param name="type">The class the lines are about.</param>
+        /// <returns>The full name of <paramref name="type"/>, such as <c>Siniskalc.Core.Data.ChunkCollection</c> for <c>ChunkCollection&lt;T&gt;</c>.</returns>
         public static string CategoryOf(Type type)
         {
             var name = type.FullName ?? type.Name;

@@ -15,7 +15,11 @@
 
         private static readonly ILogger<NumberedSavefileBackupService> Logger = LogFactory.For<NumberedSavefileBackupService>();
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Copies <paramref name="filePath"/> to the first <c>.bak</c> name that is free, one number above the highest copy there is.
+        /// </summary>
+        /// <param name="filePath">The path of the file to back up.</param>
+        /// <returns>The path of the copy.</returns>
         /// <exception cref="FileNotFoundException">The file does not exist.</exception>
         /// <exception cref="IOException">The copy could not be made.</exception>
         public string Backup(string filePath)
@@ -26,12 +30,14 @@
             }
 
             var next = HighestCopy(filePath) + 1;
+            Logger.LogTrace("Backing up {File} as copy number {Count}", Path.GetFileName(filePath), next);
             while (true)
             {
                 var target = PathOfCopy(filePath, next);
                 try
                 {
                     File.Copy(filePath, target, overwrite: false);
+                    Logger.LogDebug("Backed up {File} as {Backup}", Path.GetFileName(filePath), Path.GetFileName(target));
                     return target;
                 }
                 catch (IOException) when (File.Exists(target))
@@ -48,6 +54,8 @@
         /// <summary>
         /// Returns the number of the highest copy: 0 for <c>name.bak</c>, -1 when there is no copy.
         /// </summary>
+        /// <param name="filePath">The path of the file that is backed up.</param>
+        /// <returns>The highest number found among the copies in the folder of the file.</returns>
         private static int HighestCopy(string filePath)
         {
             var directory = Path.GetDirectoryName(Path.GetFullPath(filePath)) ?? string.Empty;

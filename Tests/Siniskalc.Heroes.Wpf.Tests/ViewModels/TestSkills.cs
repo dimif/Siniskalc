@@ -1,8 +1,7 @@
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>

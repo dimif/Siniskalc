@@ -12,6 +12,8 @@ namespace Siniskalc.Core.Runtime
         /// <summary>Gets or sets whether the tools for the raw bytes are shown. Setting it saves.</summary>
         bool AdvancedMode { get; set; }
 
+        /// <summary>Writes the settings to their file.</summary>
+        /// <exception cref="SettingsException">The file cannot be written.</exception>
         void Save();
     }
 }

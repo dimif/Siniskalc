@@ -13,6 +13,10 @@
 
         private readonly Action<string> start;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellUrlLauncher"/> class.
+        /// </summary>
+        /// <param name="start">Hands an address or a folder path to the operating system.</param>
         public ShellUrlLauncher(Action<string> start)
         {
             this.start = start;
@@ -24,12 +28,14 @@
             // Only web addresses: the shell would also run a file path or any other scheme it is given.
             if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
             {
+                Logger.LogDebug("Did not open {Url}: it is no http or https address", url);
                 return false;
             }
 
             try
             {
                 this.start(uri.AbsoluteUri);
+                Logger.LogDebug("Opened the address {Url}", uri.AbsoluteUri);
                 return true;
             }
             catch (Exception ex)
@@ -52,6 +58,7 @@
             try
             {
                 this.start(Path.GetFullPath(folder));
+                Logger.LogDebug("Opened the folder {Folder}", folder);
                 return true;
             }
             catch (Exception ex)

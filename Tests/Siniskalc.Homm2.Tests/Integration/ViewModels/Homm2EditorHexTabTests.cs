@@ -1,10 +1,7 @@
-namespace Siniskalc.Homm2.Tests.Integration.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
-    using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;
 
     /// <summary>

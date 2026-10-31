@@ -2,11 +2,9 @@
 {
     using System;
     using System.Linq;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The places of the permanent bonuses a hero visited, by kind, with the places of the map to forget one by one: the card of the Places tab

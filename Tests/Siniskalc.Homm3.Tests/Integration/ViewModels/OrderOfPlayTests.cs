@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     internal sealed class OrderOfPlayTests
     {
         [Test]
-        public void TheCardListsThePlayersWithTheTurnLitAndTheButtonOfAHumanWhoHasNotTheTurnIsDisabledWithTheReason()
+        public void TheCardListsThePlayersWithTheTurnLitAndPressingAHumanWhoHasNotTheTurnGivesItToHim()
         {
             var path = Path.Combine("TestData", "Sod", "Hotseat", "hotseat_00_baseline_200_diff.GM2");
             var game = SavedGames.Get(path);
@@ -23,11 +23,18 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var current = overview.OrderOfPlay.Where(i => i.IsCurrent).ToList();
             Assert.That(current.Select(i => i.Name), Is.EqualTo(new[] { "Red" }));
             Assert.That(current[0].Command, Is.Null, "the player who has the turn cannot be given it");
-            var others = overview.OrderOfPlay.Where(i => i.Command != null).ToList();
-            Assert.That(others, Is.Not.Empty, "a human who has not the turn has a button");
-            Assert.That(others.Select(i => i.Command!.CanExecute(null)), Has.All.False, "writing the turn is not built for HoMM3");
-            Assert.That(others.Select(i => i.ToolTip), Has.All.EqualTo(OverviewViewModel.GiveTheTurnNotBuilt));
-            Assert.That(game.History.GetPendingChanges(), Is.Empty);
+            var pressable = overview.OrderOfPlay.Where(i => i.Command != null).ToList();
+            Assert.That(pressable.Select(i => i.Name), Is.EqualTo(new[] { "Blue" }), "only a human who has not the turn can be given it");
+            Assert.That(pressable[0].Command!.CanExecute(null), Is.True);
+            Assert.That(pressable[0].ToolTip, Is.EqualTo(OverviewViewModel.GiveTheTurnToolTip));
+
+            pressable[0].Command!.Execute(null);
+            overview.Refresh();
+
+            Assert.That(game.CurrentPlayer, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(game.History.GetPendingChanges().Single().Change.After, Is.EqualTo("Blue"));
+            Assert.That(overview.OrderOfPlay.Single(i => i.IsCurrent).Name, Is.EqualTo("Blue"));
+            Assert.That(overview.TurnText, Is.EqualTo("Current turn: Blue"));
         }
     }
 }

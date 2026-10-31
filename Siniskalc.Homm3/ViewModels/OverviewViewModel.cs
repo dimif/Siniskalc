@@ -18,9 +18,9 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
         /// <summary>
-        /// The tooltip of the disabled button that would give the turn to a human player.
+        /// The tooltip of the button that gives the turn to a human player.
         /// </summary>
-        public const string GiveTheTurnNotBuilt = "Giving the turn to this player is switched off for now: the editor can write whose turn it is, but this has not been tried in the game yet";
+        public const string GiveTheTurnToolTip = "Give the turn to this player: the savegame then opens on this player's turn. Not tried in the game.";
 
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
@@ -53,14 +53,8 @@ namespace Siniskalc.Homm3.ViewModels
         public string UnownedNote { get; private set; } = string.Empty;
 
         /// <inheritdoc/>
-        protected override string GiveTurnToolTip => GiveTheTurnNotBuilt;
+        protected override string GiveTurnToolTip => GiveTheTurnToolTip;
 
-        /// <summary>
-        /// Gets a value indicating whether the button that gives the turn can be pressed. The editor can write whose turn it is (see
-        /// <see cref="GiveTurn"/>), but the button stays off until an edited savegame has been opened in the game and found to start the new
-        /// player's turn cleanly (the probe is in docs/FUTURE_IMPROVEMENTS.md).
-        /// </summary>
-        protected override bool CanGiveTurn => false;
 
         /// <inheritdoc/>
         protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";

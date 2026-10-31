@@ -15,7 +15,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var game = TestServices.LoadBrokenAlliance(24);
             var hero = game.History.Current.Heroes().GetModels().First(h => !h.Owner.IsNeutral);
-            var page = new HeroViewModel(game, hero.Id, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, hero.PortraitId, _ => { }, TestServices.SpellPoints);
             var card = page.NextBattle;
             var temple = card.Sources.Single(s => s.Name == "Temple");
             var fountain = card.Sources.Single(s => s.Name == "Fountain");

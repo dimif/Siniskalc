@@ -105,7 +105,7 @@ namespace Siniskalc.Homm2.Tests.Models
         public void GivingTheUltimateSwordToAnotherHeroMovesItsTwelveAttackPoints()
         {
             var maximus = (Maximus() with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(Artifact.UltimateSwordOfDominion);
-            var gallant = Maximus() with { Id = 1, Name = "Sir Gallant", PrimarySkills = new PrimarySkills(2, 2, 2, 2) };
+            var gallant = Maximus() with { PortraitId = 1, Name = "Sir Gallant", PrimarySkills = new PrimarySkills(2, 2, 2, 2) };
 
             var maximusAfter = maximus.WithoutArtifact(Artifact.UltimateSwordOfDominion);
             var gallantAfter = gallant.WithArtifact(Artifact.UltimateSwordOfDominion);

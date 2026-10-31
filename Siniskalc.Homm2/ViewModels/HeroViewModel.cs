@@ -351,7 +351,7 @@
 
             var document = this.Game.History.Current;
             var castles = document.Castles();
-            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            var others = document.Heroes().GetModels().Where((h, index) => index != this.HeroId && !h.Owner.IsNeutral).ToList();
             var mines = document.Mines();
             var castleDestinations = castles.UsedIndexes()
                 .Select(castles.GetModel)
@@ -359,7 +359,7 @@
                 .Select(c =>
                 {
                     var entrance = c.Position with { Y = c.Position.Y + 1 };
-                    var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
+                    var occupied = (c.VisitingHeroId is { } visiting && visiting != this.HeroId) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
                     return new MapDestination(c.Name, "Castle", entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
                 });
             var mineDestinations = Enumerable.Range(0, mines.Count)

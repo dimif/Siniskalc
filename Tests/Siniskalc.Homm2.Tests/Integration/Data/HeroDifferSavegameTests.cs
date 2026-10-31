@@ -76,7 +76,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
             history.CreateHeroSession(Maximus).Update(h => h.WithOwner(newOwner));
             Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
-            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.PortraitId));
 
             history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
 
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             history.Undo();
 
             Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
-            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.PortraitId));
         }
     }
 }

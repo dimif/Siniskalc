@@ -79,16 +79,16 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var game = this.editor.CurrentGame!;
             var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { });
-            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner.IsNeutral && !game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.Contains(h.Id));
+            var free = game.History.Current.Heroes().GetModels().First(h => h.Owner.IsNeutral && !game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.Contains(h.PortraitId));
 
             Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
-            Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.Id));
+            Assert.That(blue.TavernPlaces[0].Choices.Select(c => c.HeroId), Does.Contain(free.PortraitId));
 
-            blue.TavernPlaces[0].SelectedKey = free.Id;
+            blue.TavernPlaces[0].SelectedKey = free.PortraitId;
 
-            Assert.That(game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.First, Is.EqualTo(free.Id));
+            Assert.That(game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.First, Is.EqualTo(free.PortraitId));
             Assert.That(blue.TavernPlaces[0].Selected!.Name, Is.EqualTo(free.Name));
-            Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.Id), "a hero is offered in one place only");
+            Assert.That(blue.TavernPlaces[1].Choices.Select(c => c.HeroId), Does.Not.Contain(free.PortraitId), "a hero is offered in one place only");
         }
 
         [Test]

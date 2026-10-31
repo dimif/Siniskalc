@@ -214,6 +214,6 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(() => artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().First()), Throws.Nothing);
         }
 
-        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).Id;
+        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).PortraitId;
     }
 }

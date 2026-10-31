@@ -13,7 +13,7 @@
     /// A hero of Heroes of Might and Magic II as the savegame has it. There are 54 heroes, nine for each faction and all in the savegame
     /// whether the map uses them or not; a hero that no player has is in the pool of those a tavern offers.
     /// </summary>
-    /// <param name="Id">The stored hero/portrait byte (0 is Lord Kilburn); scenario portraits can differ from the reference id, which is the table index.</param>
+    /// <param name="PortraitId">The stored hero/portrait byte (0 is Lord Kilburn); scenario portraits can differ from the reference id, which is the table index.</param>
     /// <param name="Name">The name of the hero.</param>
     /// <param name="Owner">The player the hero serves, or the colour <c>Neutral</c> when it serves nobody.</param>
     /// <param name="Position">The tile the hero stands on (meaningless while it serves nobody).</param>
@@ -28,7 +28,7 @@
     /// <param name="Artifacts">The fourteen artifact slots.</param>
     /// <param name="Spells">The spells of the spell book.</param>
     public sealed record HeroModel(
-        int Id,
+        int PortraitId,
         string Name,
         PlayerColor Owner,
         HeroPosition Position,
@@ -61,7 +61,7 @@
         /// <summary>
         /// Gets the few things about the hero that lists show. The collection supplies the reference id and actual index when returning summaries.
         /// </summary>
-        public HeroSummary<PlayerColor> Summary => new(this.Id, this.Id, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
+        public HeroSummary<PlayerColor> Summary => new(this.PortraitId, this.PortraitId, this.Name, this.Owner, this.Faction.ToString(), this.HeroLevel.Level);
 
         /// <inheritdoc/>
         public IReadOnlyCollection<ISpell> LearnedSpells => [.. this.Spells];

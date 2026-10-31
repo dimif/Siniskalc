@@ -152,7 +152,7 @@
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;
-                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue).Id;
+                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue).PortraitId;
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == PlayerColor.Blue).Index;
                     var pages = new (Action Show, Func<TabbedPageViewModelBase> Page, int Tabs)[]
                     {

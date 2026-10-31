@@ -229,7 +229,7 @@
 
         bool ICreature.IsUpgrade => this.BaseCreatureCode != null;
 
-        IFaction? ICreature.Faction => this.Faction == Faction.Neutral ? null : this.Faction;
+        IFaction ICreature.Faction => this.Faction;
 
         /// <summary>
         /// Gets the building of its castle that recruits the creature: the dwelling of a creature, the upgraded dwelling of an upgraded

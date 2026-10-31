@@ -10,6 +10,7 @@ namespace Siniskalc.Core.Runtime
     public static class LogPaths
     {
         private const string LogsFolderName = "logs";
+        private const string SerilogConfigFileName = "serilog.json";
 
         /// <summary>
         /// Returns the folder logs go to when the user did not choose one for the application called <paramref name="applicationName"/>.
@@ -25,6 +26,13 @@ namespace Siniskalc.Core.Runtime
         /// </summary>
         public static string Label(string? file, string? name) =>
             file is not null ? Path.GetFileName(file) : name ?? "(unnamed)";
+
+        /// <summary>
+        /// Returns where the Serilog configuration of the user is kept: <c>serilog.json</c> in the folder of the settings file.
+        /// </summary>
+        public static string SerilogConfigPathFor(string settingsPath) => Path.Combine(
+            Path.GetDirectoryName(settingsPath) ?? string.Empty,
+            SerilogConfigFileName);
 
         /// <summary>
         /// Tells whether log files can be written to <paramref name="folder"/>, creating it when it is not there. The file sink opens its

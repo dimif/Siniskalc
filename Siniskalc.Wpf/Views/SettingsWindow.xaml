@@ -40,10 +40,10 @@
             <StackPanel DataContext="{Binding Logging}">
                 <TextBlock Text="Log level"/>
                 <ComboBox Margin="0,4,0,0" HorizontalAlignment="Left" Width="160"
-                          ItemsSource="{Binding Levels}" SelectedItem="{Binding Level, Mode=TwoWay}"
+                          ItemsSource="{Binding Levels}" SelectedItem="{Binding SelectedLevel, Mode=TwoWay}"
                           AutomationProperties.Name="Log level"/>
                 <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" FontSize="11" Opacity="0.7"
-                           Text="Information is the default. Trace and Debug write much more and help when reporting a problem."/>
+                           Text="Default uses the level in serilog.json (Information as shipped). Trace and Debug write much more and help when reporting a problem. The template, the rolling interval and the days kept are in serilog.json, beside settings.json."/>
 
                 <Grid Margin="0,12,0,0">
                     <Grid.ColumnDefinitions>

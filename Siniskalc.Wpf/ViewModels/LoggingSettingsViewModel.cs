@@ -2,6 +2,7 @@ namespace Siniskalc.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Windows.Input;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
@@ -15,7 +16,7 @@ namespace Siniskalc.Wpf.ViewModels
     {
         private readonly ISettingsStore store;
         private readonly IFileDialogs dialogs;
-        private LogLevel level;
+        private LogLevelChoice selectedLevel;
         private string folder;
         private string error = string.Empty;
 
@@ -27,33 +28,47 @@ namespace Siniskalc.Wpf.ViewModels
             this.store = store;
             this.DefaultFolder = defaultFolder;
             this.dialogs = dialogs;
-            this.level = store.Settings.LogLevel;
+            this.selectedLevel = this.Levels.Single(choice => choice.Level == store.Settings.LogLevel);
             this.folder = store.Settings.LogFolder ?? string.Empty;
             this.BrowseCommand = new DelegateCommand(_ => this.Browse());
             this.UseDefaultCommand = new DelegateCommand(_ => this.Folder = string.Empty);
         }
 
         /// <summary>
-        /// Gets the levels the user can choose, from the one that writes the most to the one that writes the least.
+        /// Gets the levels the user can choose: first "the level of serilog.json", then from the one that writes the most to the one that writes the least.
         /// </summary>
-        public IReadOnlyList<LogLevel> Levels { get; } =
+        public IReadOnlyList<LogLevelChoice> Levels { get; } =
         [
-            LogLevel.Trace,
-            LogLevel.Debug,
-            LogLevel.Information,
-            LogLevel.Warning,
-            LogLevel.Error,
-            LogLevel.Critical,
+            new(null, "Default (serilog.json)"),
+            new(LogLevel.Trace, "Trace"),
+            new(LogLevel.Debug, "Debug"),
+            new(LogLevel.Information, "Information"),
+            new(LogLevel.Warning, "Warning"),
+            new(LogLevel.Error, "Error"),
+            new(LogLevel.Critical, "Critical"),
         ];
 
-        public LogLevel Level
+        /// <summary>
+        /// Gets or sets the entry of the list that is chosen.
+        /// </summary>
+        public LogLevelChoice SelectedLevel
         {
-            get => this.level;
+            get => this.selectedLevel;
             set
             {
-                this.level = value;
+                this.selectedLevel = value;
+                this.RaisePropertyChanged(nameof(this.SelectedLevel));
                 this.RaisePropertyChanged(nameof(this.Level));
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the level that is chosen, or <c>null</c> for the minimum level of serilog.json.
+        /// </summary>
+        public LogLevel? Level
+        {
+            get => this.selectedLevel.Level;
+            set => this.SelectedLevel = this.Levels.Single(choice => choice.Level == value);
         }
 
         /// <summary>
@@ -118,7 +133,7 @@ namespace Siniskalc.Wpf.ViewModels
                 }
             }
 
-            this.store.Settings.LogLevel = this.level;
+            this.store.Settings.LogLevel = this.selectedLevel.Level;
             this.store.Settings.LogFolder = chosen.Length == 0 ? null : chosen;
             try
             {

@@ -49,8 +49,8 @@ namespace Siniskalc
         }
 
         /// <summary>
-        /// Builds the components, or tells the user why it cannot: a settings file that cannot be read, or a log folder that cannot be used.
-        /// A settings file can be reset (kept as <c>.bad</c> next to it), so a damaged file never locks the user out. Null when the editor must not start.
+        /// Builds the components, or tells the user why it cannot: a settings file or Serilog configuration that cannot be read, or a log folder that
+        /// cannot be used. A damaged file can be reset (kept as <c>.bad</c> next to it), so it never locks the user out. Null when the editor must not start.
         /// </summary>
         private AppServices? StartServices()
         {
@@ -62,23 +62,15 @@ namespace Siniskalc
                 }
                 catch (SettingsException ex)
                 {
-                    var answer = MessageBox.Show(
-                        $"{ex.Message}\n\nReset the settings? The file is kept as {Path.GetFileName(ex.Path)}.bad and the editor starts with the defaults.",
-                        "Settings error",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Error);
-                    if (answer != MessageBoxResult.Yes)
+                    if (!ResetFile(ex.Message, ex.Path, "Settings error", "settings"))
                     {
                         return null;
                     }
-
-                    try
+                }
+                catch (LoggingException ex) when (ex.Path is { } configPath)
+                {
+                    if (!ResetFile(ex.Message, configPath, "Logging error", "Serilog configuration"))
                     {
-                        File.Move(ex.Path, ex.Path + ".bad", overwrite: true);
-                    }
-                    catch (Exception moveFailure) when (moveFailure is IOException or UnauthorizedAccessException)
-                    {
-                        MessageBox.Show($"The settings file {ex.Path} could not be moved aside: {moveFailure.Message}", "Settings error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return null;
                     }
                 }
@@ -91,6 +83,34 @@ namespace Siniskalc
                         MessageBoxImage.Error);
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Offers to put a damaged file of the user aside as <c>.bad</c> so the editor can start with the default one (written again by the
+        /// next start). False when the user prefers to exit, or the file cannot be moved.
+        /// </summary>
+        private static bool ResetFile(string problem, string path, string title, string what)
+        {
+            var answer = MessageBox.Show(
+                $"{problem}\n\nReset the {what}? The file is kept as {Path.GetFileName(path)}.bad and the editor starts with the defaults.",
+                title,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Error);
+            if (answer != MessageBoxResult.Yes)
+            {
+                return false;
+            }
+
+            try
+            {
+                File.Move(path, path + ".bad", overwrite: true);
+                return true;
+            }
+            catch (Exception moveFailure) when (moveFailure is IOException or UnauthorizedAccessException)
+            {
+                MessageBox.Show($"The file {path} could not be moved aside: {moveFailure.Message}", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 

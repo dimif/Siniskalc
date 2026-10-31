@@ -44,7 +44,7 @@ Pages:
 
 ## Settings
 
-The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them.
+The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them. The first time the editor starts it writes `settings.json` with the defaults, and `serilog.json` (how and where the log is written: the template, the rolling interval and the days kept) beside it; both can be edited by hand.
 
 - **Settings... > Saving > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
   See below.

@@ -14,6 +14,25 @@ Failures that the user must see are in `ERROR_MODEL.md`; this file is about what
 | Which level? | Warning = surprising but handled. Error = the user saw an operation fail. See the table below. |
 | Where not to log? | Models and reducers, views, property setters, anything per byte or per item of a list. |
 
+## The configuration files
+
+Two JSON files, both shipped inside the application and copied to the folder of the settings (`%APPDATA%\Siniskalc` on Windows; `UserSettings.PathFor`)
+the first time the editor starts, so the user can read and edit them. The committed copies are the ones to change for a new default.
+
+| File | Shipped as | What it holds |
+|---|---|---|
+| `settings.json` | `Siniskalc.Core/Resources/settings.default.json` | The preferences of the user: recent files, `BackupOnSave`, `AdvancedMode`, and the two logging choices `LogFolder` and `LogLevel` (both `null` = "use `serilog.json`"). A test (`DefaultSettingsTests`) keeps it equal to the defaults of `UserSettings`. |
+| `serilog.json` | `Siniskalc/serilog.json` | The Serilog configuration in the standard `Serilog` section (Serilog.Settings.Configuration): `MinimumLevel`, `Enrich`, and `WriteTo` with the Debug, Console and File sinks, each with the `ExpressionTemplate` formatter (the template with the `Subject`), and for File the `path`, `rollingInterval` (Day), `retainedFileCountLimit` (7 days) and `shared`. |
+
+How they meet (`LoggingSetup`):
+
+- `{LogFolder}` in the `path` of `serilog.json` is replaced by the log folder: `LogFolder` of `settings.json`, else `<LocalApplicationData>/Siniskalc/logs`
+  (`LogPaths.Resolve`). Write the path with `/`, so the file holds on Linux and macOS too.
+- `LogLevel` of `settings.json`, when it is set, replaces `MinimumLevel.Default`. Everything else (sinks, template, rolling interval, days kept) comes
+  only from `serilog.json`; `MinimumLevel.Override` entries of the file still apply.
+- A `serilog.json` that cannot be parsed, or names a sink, formatter or argument Serilog cannot build, stops the start with a message that names the
+  file (`LoggingException`); the start-up dialog offers to put it aside as `serilog.json.bad`, and the shipped one is written again.
+
 ## Where to log
 
 Log at **boundaries and decisions**:
@@ -51,7 +70,8 @@ the record it is about in a *subject* (next section).
 | Error | An operation failed and the user was told. | file unreadable, corrupt or unsupported savegame, save failed |
 | Critical | An unhandled exception, or the app cannot start or continue. | `OnUnhandledException`, a settings or logging failure at start-up |
 
-The minimum level is Information (Debug while a debugger is attached) and can be changed with `LogLevel` in `settings.json`.
+The minimum level is Information as shipped (Debug while a debugger is attached). It is `MinimumLevel.Default` in `serilog.json`; `LogLevel` in
+`settings.json` (Settings... > Logging) replaces it, and left empty it leaves the level to `serilog.json`.
 
 ## How to write a message
 
@@ -65,7 +85,7 @@ The minimum level is Information (Debug while a debugger is attached) and can be
 - **Hex.** Offsets and raw byte values are formatted as hex, as the hex editor shows them: `{Offset:X}`, `{Code:X2}`.
 - **Exceptions** go in the exception argument, never as `ex.Message` inside the template:
   `Logger.LogError(ex, "Failed to save {File}", name)`.
-- **Layout** (timestamp, level, category) belongs to the sink in `LoggingSetup`. Code does not format any of it.
+- **Layout** (timestamp, level, category) belongs to the template in `serilog.json`. Code does not format any of it.
   Serilog writes the levels as `VRB` (Trace), `DBG`, `INF`, `WRN`, `ERR` and `FTL` (Critical).
 - **Subject.** A line about one record does not repeat its name in the message: the code that reads the record opens
   `using var subject = Logger.BeginSubject("Hero", chunk.Name);` (`LogScopeExtensions`, `Kind Name`: `Hero`, `Castle`, `Mine`) and every line

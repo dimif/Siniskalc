@@ -36,10 +36,11 @@
         public string? LogFolder { get; set; }
 
         /// <summary>
-        /// Gets or sets the least important level that is written to the log. Read at start-up.
+        /// Gets or sets the least important level that is written to the log, or <see langword="null"/> (the default) to leave it to the
+        /// minimum level of <c>serilog.json</c>. Read at start-up.
         /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public LogLevel LogLevel { get; set; } = LogLevel.Information;
+        public LogLevel? LogLevel { get; set; }
 
         /// <summary>
         /// Returns where the settings of the application called <paramref name="applicationName"/> are kept for the current user.

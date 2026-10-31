@@ -45,7 +45,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
             settings.AdvancedMode = true;
             settings.Logging!.Level = LogLevel.Debug;
 
-            Assert.That((this.shell.BackupOnSave, this.shell.IsAdvancedMode, this.store.Settings.LogLevel), Is.EqualTo((true, false, LogLevel.Information)), "cancelling keeps everything");
+            Assert.That((this.shell.BackupOnSave, this.shell.IsAdvancedMode, this.store.Settings.LogLevel), Is.EqualTo((true, false, (LogLevel?)null)), "cancelling keeps everything");
         }
 
         [Test]

@@ -19,6 +19,42 @@ namespace Siniskalc.Core.Tests.Integration.Runtime
         public void DeleteFolder() => Directory.Delete(this.folder, recursive: true);
 
         [Test]
+        public void TheFirstStartWritesTheDefaultSettingsFileAndLaterStartsLeaveItAlone()
+        {
+            var path = Path.Combine(this.folder, "settings.json");
+            var store = new SettingsStore(path);
+
+            store.EnsureCreated();
+
+            Assert.That(File.ReadAllText(path), Is.EqualTo(DefaultSettings.Json));
+            File.WriteAllText(path, "{ \"AdvancedMode\": true }");
+            new SettingsStore(path).EnsureCreated();
+            Assert.That(File.ReadAllText(path), Is.EqualTo("{ \"AdvancedMode\": true }"));
+        }
+
+        [Test]
+        public void TheSettingsOfAnEarlierVersionAreWrittenInsteadOfTheDefaultsTheFirstTime()
+        {
+            var path = Path.Combine(this.folder, "settings.json");
+            var legacy = Path.Combine(this.folder, "legacy.json");
+            File.WriteAllText(legacy, "{ \"AdvancedMode\": true }");
+
+            new SettingsStore(path, legacy).EnsureCreated();
+
+            Assert.That(new SettingsStore(path).AdvancedMode, Is.True);
+        }
+
+        [Test]
+        public void ASettingsFileThatCannotBeWrittenTheFirstTimeIsReported()
+        {
+            // A folder where the file should be.
+            var path = Path.Combine(this.folder, "settings.json");
+            Directory.CreateDirectory(path);
+
+            Assert.That(() => new SettingsStore(path).EnsureCreated(), Throws.TypeOf<SettingsException>());
+        }
+
+        [Test]
         public void BackupOnSaveIsOnAndAdvancedModeIsOffUntilTheUserChangesThem()
         {
             var store = new SettingsStore(Path.Combine(this.folder, "settings.json"));

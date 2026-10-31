@@ -43,11 +43,34 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void TheLevelsAreOfferedFromTheMostToTheLeastWritten()
+        public void TheLevelsAreOfferedStartingWithTheDefaultOfSerilogJsonThenFromTheMostToTheLeastWritten()
         {
             Assert.That(
-                this.CreatePage().Levels,
-                Is.EqualTo(new[] { LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical }));
+                this.CreatePage().Levels.Select(choice => choice.Level),
+                Is.EqualTo(new LogLevel?[] { null, LogLevel.Trace, LogLevel.Debug, LogLevel.Information, LogLevel.Warning, LogLevel.Error, LogLevel.Critical }));
+        }
+
+        [Test]
+        public void ASettingsFileWithNoLevelStartsOnTheDefaultAndKeepsItWhenSaved()
+        {
+            var page = this.CreatePage();
+
+            Assert.That(page.Level, Is.Null);
+            Assert.That(page.SelectedLevel.Text, Does.Contain("serilog.json"));
+            Assert.That(page.TrySave(), Is.True);
+            Assert.That(new SettingsStore(this.settingsPath).Settings.LogLevel, Is.Null);
+        }
+
+        [Test]
+        public void ChoosingTheDefaultAgainTakesTheLevelOutOfTheSettings()
+        {
+            this.store.Settings.LogLevel = LogLevel.Warning;
+            var page = this.CreatePage();
+
+            page.SelectedLevel = page.Levels[0];
+            Assert.That(page.TrySave(), Is.True);
+
+            Assert.That(new SettingsStore(this.settingsPath).Settings.LogLevel, Is.Null);
         }
 
         [Test]
@@ -92,7 +115,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
 
             Assert.That(page.HasError, Is.True);
             Assert.That(page.Error, Does.Contain(blocked));
-            Assert.That(new SettingsStore(this.settingsPath).Settings.LogLevel, Is.EqualTo(LogLevel.Information));
+            Assert.That(new SettingsStore(this.settingsPath).Settings.LogLevel, Is.Null);
         }
 
         [Test]

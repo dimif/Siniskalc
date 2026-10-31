@@ -33,14 +33,16 @@
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
         /// <param name="loggerFactory">Makes the loggers; the application leaves it out and gets the log file of the user, tests give a silent one.</param>
         /// <exception cref="SettingsException">The settings file exists but cannot be read.</exception>
-        /// <exception cref="LoggingException">The log folder the user chose cannot be used.</exception>
+        /// <exception cref="LoggingException">The log folder the user chose cannot be used, or the Serilog configuration cannot be read or built.</exception>
         public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null)
         {
             this.BytesPatcher = new SavefileBytesPatcher();
+            var settingsFile = settingsPath ?? UserSettings.PathFor(AppInfo.Name);
             this.Settings = settingsPath is null
-                ? new SettingsStore(UserSettings.PathFor("Siniskalc"), UserSettings.PathFor("Heroes3Editor"))
+                ? new SettingsStore(settingsFile, UserSettings.PathFor("Heroes3Editor"))
                 : new SettingsStore(settingsPath);
-            this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name);
+            this.Settings.EnsureCreated();
+            this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name, LogPaths.SerilogConfigPathFor(settingsFile));
             LogFactory.Install(this.LoggerFactory);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);

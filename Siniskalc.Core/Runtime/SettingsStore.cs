@@ -1,5 +1,6 @@
 namespace Siniskalc.Core.Runtime
 {
+    using System;
     using System.IO;
 
     /// <summary>
@@ -10,6 +11,7 @@ namespace Siniskalc.Core.Runtime
     {
         private readonly string path;
         private readonly UserSettings settings;
+        private readonly bool fromLegacy;
 
         /// <param name="path">Where the settings are kept.</param>
         /// <param name="legacyPath">
@@ -19,8 +21,8 @@ namespace Siniskalc.Core.Runtime
         public SettingsStore(string path, string? legacyPath = null)
         {
             this.path = path;
-            var loadFrom = !File.Exists(path) && legacyPath is not null && File.Exists(legacyPath) ? legacyPath : path;
-            this.settings = UserSettings.Load(loadFrom);
+            this.fromLegacy = !File.Exists(path) && legacyPath is not null && File.Exists(legacyPath);
+            this.settings = UserSettings.Load(this.fromLegacy ? legacyPath! : path);
         }
 
         /// <summary>
@@ -55,5 +57,34 @@ namespace Siniskalc.Core.Runtime
         }
 
         public void Save() => this.settings.Save(this.path);
+
+        /// <summary>
+        /// Makes sure the settings file is there: when the user has none yet, writes the default settings file the application ships (or the
+        /// settings an earlier version kept, when they were read from there), so the user can see and edit it.
+        /// </summary>
+        /// <exception cref="SettingsException">The file cannot be written.</exception>
+        public void EnsureCreated()
+        {
+            if (File.Exists(this.path))
+            {
+                return;
+            }
+
+            if (this.fromLegacy)
+            {
+                this.Save();
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(this.path) ?? string.Empty);
+                File.WriteAllText(this.path, DefaultSettings.Json);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                throw new SettingsException(this.path, $"Failed to save the settings to {this.path}: {ex.Message}", ex);
+            }
+        }
     }
 }

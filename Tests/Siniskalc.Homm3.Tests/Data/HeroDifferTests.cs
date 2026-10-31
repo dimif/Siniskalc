@@ -194,7 +194,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheSpellBookAndTheLearnedSpellsAreListedAndPutBack()
+        public void TheSpellBookAndEachLearnedSpellAreListedAndPutBack()
         {
             var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell>(), new HashSet<Spell>(), hasSpellBook: false) };
             var current = original with { SpellBook = original.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
@@ -204,9 +204,26 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(changes.Select(Words), Is.EqualTo(new[]
             {
                 ("Spell book", "no", "yes"),
-                ("Learned spells", "nothing forgotten", "learned: Bless"),
+                ("Bless", "not learned", "learned"),
             }));
-            Assert.That(this.fake.HeroReverts["Learned spells"](current).SpellBook.IsLearned(Spell.Bless), Is.False);
+            Assert.That(this.fake.HeroReverts["Bless"](current).SpellBook.IsLearned(Spell.Bless), Is.False);
+        }
+
+        [Test]
+        public void ASpellLearnedAndAnotherForgottenAreTwoChangesThatArePutBackOneByOne()
+        {
+            var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell> { Spell.Haste }, new HashSet<Spell>(), hasSpellBook: true) };
+            var current = original with { SpellBook = original.SpellBook.WithLearned(Spell.Haste, false).WithLearned(Spell.Bless, true) };
+
+            var changes = this.Diff(original, current);
+
+            Assert.That(changes.Select(Words), Is.EquivalentTo(new[]
+            {
+                ("Bless", "not learned", "learned"),
+                ("Haste", "learned", "not learned"),
+            }));
+            var hasteBack = this.fake.HeroReverts["Haste"](current).SpellBook;
+            Assert.That((hasteBack.IsLearned(Spell.Haste), hasteBack.IsLearned(Spell.Bless)), Is.EqualTo((true, true)));
         }
 
         [Test]

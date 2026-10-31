@@ -179,7 +179,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(toLearn, true) });
 
             var change = game.History.GetPendingChanges().Single(c => c.Change.Area == ChangeAreas.Spells);
-            Assert.That(change.Change.After, Does.Contain(toLearn.Name));
+            Assert.That((change.Change.Description, change.Change.After), Is.EqualTo((toLearn.Name, "learned")));
 
             change.Revert(game.History);
             Assert.That(session.Current.SpellBook.IsLearned(toLearn), Is.False);

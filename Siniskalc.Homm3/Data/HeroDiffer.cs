@@ -132,17 +132,8 @@
         private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
-        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
-        {
-            // Skills are slots in an order, so they are shown, and reverted, as one list.
-            var before = FormatSecondarySkills(original.SecondarySkills);
-            var after = FormatSecondarySkills(current.SecondarySkills);
-
-            if (before != after)
-            {
-                changes.Add(ChangeAreas.SecondarySkills, "Skills", before, after, h => h with { SecondarySkills = original.SecondarySkills });
-            }
-        }
+        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddSecondarySkills(SecondarySkill.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
 
         private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });
@@ -216,17 +207,7 @@
             }
 
             // Only learned spells are edited; the available ones come from artifacts.
-            var added = Spell.All.Where(s => current.SpellBook.IsLearned(s) && !original.SpellBook.IsLearned(s)).ToList();
-            var removed = Spell.All.Where(s => original.SpellBook.IsLearned(s) && !current.SpellBook.IsLearned(s)).ToList();
-
-            if (added.Count == 0 && removed.Count == 0)
-            {
-                return;
-            }
-
-            var before = removed.Count == 0 ? "nothing forgotten" : $"forgotten: {FormatList(removed.Select(s => s.Name))}";
-            var after = added.Count == 0 ? "nothing learned" : $"learned: {FormatList(added.Select(s => s.Name))}";
-            changes.Add(ChangeAreas.Spells, "Learned spells", before, after, h => h with { SpellBook = h.SpellBook.WithLearned(added, false).WithLearned(removed, true) });
+            changes.AddLearnedSpells(original.SpellBook.Learned, current.SpellBook.Learned, (h, spell, learned) => h with { SpellBook = h.SpellBook.WithLearned(spell, learned) });
         }
 
         private static EquippedArtifacts RestoreEquipped(EquippedArtifacts equipped, ArtifactSlots slot, Artifact? artifact, Spell? spell)
@@ -239,24 +220,6 @@
             return spell != null ? SpellScroll.NameOf(spell) : artifact?.Name ?? ChangeText.Empty;
         }
 
-        private static string FormatSecondarySkills(SecondarySkills skills)
-        {
-            var parts = Enumerable.Range(0, skills.SlotCount)
-                .Select(i => skills.GetSkillInSlot(i))
-                .OfType<SecondarySkill>()
-                .Select(skill => $"{skill.Name} ({(skills.GetSkillLevel(skill) == SkillLevel.None ? "no level" : skills.GetSkillLevel(skill).Name)})")
-                .ToList();
-
-            // Skills without a slot are applied by the game, but not shown on the hero screen.
-            var extras = skills.ExtraSkills.OrderBy(s => s.Code).Select(skill => $"{skill.Name} ({skills.GetSkillLevel(skill)})").ToList();
-            if (extras.Count > 0)
-            {
-                parts.Add($"not shown: {string.Join(", ", extras)}");
-            }
-
-            return FormatList(parts);
-        }
-
         private static string FormatList(IEnumerable<string> items)
         {
             var list = items.ToList();
@@ -266,9 +229,5 @@
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
 
         private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
-
-        /// <summary>
-        /// The pending changes of one hero as they are found.
-        /// </summary>
     }
 }

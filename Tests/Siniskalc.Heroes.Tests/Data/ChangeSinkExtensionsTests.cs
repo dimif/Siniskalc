@@ -2,7 +2,9 @@ namespace Siniskalc.Heroes.Tests.Data
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Moq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
@@ -28,11 +30,25 @@ namespace Siniskalc.Heroes.Tests.Data
             int SpellPoints,
             ResourceSet Resources,
             TavernHeroes Tavern,
-            int? DaysLeft);
+            int? DaysLeft,
+            ISkills SecondarySkills,
+            SpellSet<TestSpell> Spells);
 
         private static readonly ChunkKind Kind = new("Thing", 0);
 
         private static readonly ExperienceTable Table = new([0, 1000, 2000, 3200], 4);
+
+        private static readonly TestSpell Bless = new("Bless", 3);
+
+        private static readonly TestSpell Haste = new("Haste", 1);
+
+        public interface ISkill : ISecondarySkill
+        {
+        }
+
+        public interface ISkills : ISecondarySkills<ISkill, ISkills>
+        {
+        }
 
         private static Thing Blank() => new(
             TestColor.Red,
@@ -45,7 +61,36 @@ namespace Siniskalc.Heroes.Tests.Data
             20,
             ResourceSet.None,
             new TavernHeroes(null, null),
-            null);
+            null,
+            Mock.Of<ISkills>(),
+            SpellSet<TestSpell>.None);
+
+        private static ISkill Skill(string name, byte code) => Mock.Of<ISkill>(s => s.Name == name && s.Code == code);
+
+        /// <summary>
+        /// Makes the skills of a hero: <paramref name="slots"/> in their slots, and <paramref name="hidden"/> with a level but no slot.
+        /// </summary>
+        private static ISkills Skills((ISkill Skill, SkillLevel Level)[] slots, params (ISkill Skill, SkillLevel Level)[] hidden)
+        {
+            var skills = new Mock<ISkills>();
+            skills.SetupGet(s => s.SlotCount).Returns(slots.Length);
+            skills.Setup(s => s.GetSkillLevel(It.IsAny<ISkill>())).Returns(SkillLevel.None);
+            skills.Setup(s => s.GetSlotOf(It.IsAny<ISkill>())).Returns(-1);
+            for (var slot = 0; slot < slots.Length; slot++)
+            {
+                var (skill, level, index) = (slots[slot].Skill, slots[slot].Level, slot);
+                skills.Setup(s => s.GetSkillInSlot(index)).Returns(skill);
+                skills.Setup(s => s.GetSlotOf(skill)).Returns(index);
+                skills.Setup(s => s.GetSkillLevel(skill)).Returns(level);
+            }
+
+            foreach (var (skill, level) in hidden)
+            {
+                skills.Setup(s => s.GetSkillLevel(skill)).Returns(level);
+            }
+
+            return skills.Object;
+        }
 
         private static ChangeSink<Thing> NewSink(out List<Func<Thing, Thing>> reverts)
         {
@@ -284,5 +329,76 @@ namespace Siniskalc.Heroes.Tests.Data
             Assert.That(reverts[0](Blank() with { DaysLeft = 5 }).DaysLeft, Is.Null);
             Assert.That(reverts[1](Blank()).DaysLeft, Is.EqualTo(5));
         }
+
+        [Test]
+        public void TheSecondarySkillsAreOneChangeListingTheSlotsInOrderAndPuttingTheWholeSetBack()
+        {
+            var sink = NewSink(out var reverts);
+            var (archery, wisdom) = (Skill("Archery", 1), Skill("Wisdom", 7));
+            var before = Skills([(archery, SkillLevel.Beginner), (wisdom, SkillLevel.Expert)]);
+            var after = Skills([(wisdom, SkillLevel.Expert), (archery, SkillLevel.Beginner)]);
+
+            sink.AddSecondarySkills([archery, wisdom], before, after, (t, s) => t with { SecondarySkills = s });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("Secondary skills", "Skills", "Archery (Beginner), Wisdom (Expert)", "Wisdom (Expert), Archery (Beginner)") }));
+            Assert.That(reverts[0](Blank() with { SecondarySkills = after }).SecondarySkills, Is.SameAs(before));
+        }
+
+        [Test]
+        public void SecondarySkillsThatReadTheSameAreNoChange()
+        {
+            var sink = NewSink(out _);
+            var archery = Skill("Archery", 1);
+
+            sink.AddSecondarySkills([archery], Skills([(archery, SkillLevel.Expert)]), Skills([(archery, SkillLevel.Expert)]), (t, s) => t with { SecondarySkills = s });
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        [Test]
+        public void NoSecondarySkillIsWordedAsNoneAndASkillWithALevelButNoSlotAsNotShown()
+        {
+            var sink = NewSink(out _);
+            var (archery, luck, wisdom) = (Skill("Archery", 1), Skill("Luck", 9), Skill("Wisdom", 7));
+
+            sink.AddSecondarySkills(
+                [archery, luck, wisdom],
+                Skills([]),
+                Skills([(archery, SkillLevel.None)], (luck, SkillLevel.Expert), (wisdom, SkillLevel.Beginner)),
+                (t, s) => t with { SecondarySkills = s });
+
+            Assert.That(Texts(sink).Single().After, Is.EqualTo("Archery (no level), not shown: Wisdom (Beginner), Luck (Expert)"));
+            Assert.That(Texts(sink).Single().Before, Is.EqualTo("none"));
+        }
+
+        [Test]
+        public void EachSpellLearnedOrForgottenIsItsOwnChangeInTheOrderOfTheCodesAndRevertsOnlyThatSpell()
+        {
+            var sink = NewSink(out var reverts);
+            var before = new SpellSet<TestSpell>([Bless]);
+            var after = new SpellSet<TestSpell>([Haste]);
+
+            sink.AddLearnedSpells(before, after, (t, spell, learned) => t with { Spells = learned ? t.Spells.With(spell) : t.Spells.Without(spell) });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[]
+            {
+                ("Spells", "Haste", "not learned", "learned"),
+                ("Spells", "Bless", "learned", "not learned"),
+            }));
+            Assert.That(reverts[1](Blank() with { Spells = after }).Spells, Is.EqualTo(new SpellSet<TestSpell>([Bless, Haste])));
+            Assert.That(reverts[0](Blank() with { Spells = after }).Spells, Is.EqualTo(SpellSet<TestSpell>.None));
+        }
+
+        [Test]
+        public void TheSameLearnedSpellsAreNoChange()
+        {
+            var sink = NewSink(out _);
+
+            sink.AddLearnedSpells(new SpellSet<TestSpell>([Bless]), new SpellSet<TestSpell>([Bless]), (t, spell, learned) => t);
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        private sealed record TestSpell(string Name, byte Code) : IGameEntity;
     }
 }

@@ -106,7 +106,7 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void ALearnedSpellAndASecondarySkillAreListedByName()
+        public void ALearnedSpellIsListedByNameAndTheSecondarySkillsAsOneListThatArePutBackAsTheyWere()
         {
             var original = DifferSamples.Hero();
             var current = original with
@@ -119,11 +119,26 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EquivalentTo(new[]
             {
-                ("Fireball", "not known", "known"),
-                ("Archery", "none", "Expert"),
+                ("Fireball", "not learned", "learned"),
+                ("Skills", "none", "Archery (Expert)"),
             }));
             Assert.That(this.fake.HeroReverts["Fireball"](current).Spells.Contains(Spell.Fireball), Is.False);
-            Assert.That(this.fake.HeroReverts["Archery"](current).SecondarySkills.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.None));
+            Assert.That(this.fake.HeroReverts["Skills"](current).SecondarySkills, Is.EqualTo(original.SecondarySkills));
+        }
+
+        [Test]
+        public void SwappingTwoSecondarySkillsIsAChangeThatPutsTheOrderBack()
+        {
+            var original = DifferSamples.Hero() with
+            {
+                SecondarySkills = new SecondarySkills([new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner), new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert)]),
+            };
+            var current = original with { SecondarySkills = original.SecondarySkills.Swap(0, 1) };
+
+            var change = this.Diff(original, current).Single();
+
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Skills", "Archery (Beginner), Wisdom (Expert)", "Wisdom (Expert), Archery (Beginner)")));
+            Assert.That(this.fake.HeroReverts["Skills"](current), Is.EqualTo(original));
         }
 
         [Test]

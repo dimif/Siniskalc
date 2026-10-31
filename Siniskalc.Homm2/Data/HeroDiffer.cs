@@ -74,14 +74,7 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
-            foreach (var spell in Spell.All)
-            {
-                var (had, has) = (original.Spells.Contains(spell), current.Spells.Contains(spell));
-                if (had != has)
-                {
-                    changes.Add(ChangeAreas.Spells, spell.Name, had ? "known" : "not known", has ? "known" : "not known", h => h with { Spells = had ? h.Spells.With(spell) : h.Spells.Without(spell) });
-                }
-            }
+            changes.AddLearnedSpells(original.Spells, current.Spells, (h, spell, learned) => h with { Spells = learned ? h.Spells.With(spell) : h.Spells.Without(spell) });
 
             return changes.All;
         }
@@ -89,20 +82,7 @@ namespace Siniskalc.Homm2.Data
         private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
-        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
-        {
-            foreach (var skill in SecondarySkill.All)
-            {
-                var (before, after) = (original.SecondarySkills.GetSkillLevel(skill), current.SecondarySkills.GetSkillLevel(skill));
-                if (before != after)
-                {
-                    changes.Add(ChangeAreas.SecondarySkills, skill.Name, LevelText(before), LevelText(after), h => h with { SecondarySkills = h.SecondarySkills.WithSkill(skill, before) });
-                }
-            }
-        }
-
-        private static string LevelText(SkillLevel level) => level == SkillLevel.None ? "none" : level.ToString();
-
-        private static string SlotText(ArmySlot<Creature>? slot) => slot?.ToString() ?? ChangeText.Empty;
+        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddSecondarySkills(SecondarySkill.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
     }
 }

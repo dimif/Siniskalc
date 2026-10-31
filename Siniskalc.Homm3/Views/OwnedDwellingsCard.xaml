@@ -30,7 +30,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <heroes:ListCard Heading="Dwellings" CardWidth="860" ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"
+        <heroes:ListCard Heading="Dwellings" CardWidth="860" ListMaxHeight="340" ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingTemplate}"
                          SelectedItem="{Binding SelectedDwelling, Mode=TwoWay}">
             <Grid>
                 <Grid.ColumnDefinitions>

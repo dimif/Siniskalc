@@ -148,5 +148,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// Picks the mine with the given place among the mines of the savegame, if the owner has it.
         /// </summary>
         public void PickMine(int mineIndex) => this.Mines.PickMine(mineIndex);
+
+        /// <summary>
+        /// Picks the dwelling with the given place among the dwellings of the savegame, if the owner has it. The dwelling that is picked
+        /// stays when the owner has no such dwelling.
+        /// </summary>
+        public void PickDwelling(int dwellingIndex) => this.SelectedDwelling = this.Dwellings.FirstOrDefault(d => d.Index == dwellingIndex);
     }
 }

@@ -161,7 +161,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the tab of the dwellings of the owner of the dwelling at <paramref name="dwellingIndex"/>, or of Neutral.
+        /// Shows the dwelling at <paramref name="dwellingIndex"/> among the dwellings of the savegame: on the Dwellings tab of its owner, or of Neutral.
         /// </summary>
         public void ShowDwelling(int dwellingIndex)
         {
@@ -171,10 +171,12 @@ namespace Siniskalc.Homm3.ViewModels
             if (playerIndex < 0)
             {
                 this.ShowNeutral(NeutralTabs.Dwellings, owner);
+                this.neutrals[owner].MapObjects.PickDwelling(dwellingIndex);
                 return;
             }
 
             this.ShowPlayer(playerIndex, OwnerTabs.Dwellings);
+            this.players[playerIndex].MapObjects.PickDwelling(dwellingIndex);
         }
 
         /// <summary>

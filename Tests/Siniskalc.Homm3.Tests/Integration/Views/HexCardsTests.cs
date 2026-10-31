@@ -32,7 +32,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 var frame = window.HeroFrame();
                 foreach (var kind in new[] { NavNodeKind.Mine, NavNodeKind.Dwelling })
                 {
-                    var node = editor.NavigationNodes.Descendants().First(n => n.Kind == kind);
+                    // The dwellings of Neutral are many, so the list of dwellings must scroll inside its card.
+                    var node = editor.PlayerNodes().Single(p => p.Title == "Neutral").Descendants().First(n => n.Kind == kind);
                     node.IsSelected = true;
                     Pump();
                     window.UpdateLayout();
@@ -42,6 +43,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                     var editorControl = Find<Siniskalc.Wpf.Views.HexEditor>((Page)frame.Content).First(h => h.IsVisible);
                     var fields = Find<ScrollViewer>(editorControl).First(v => v.Content is ItemsControl);
                     Assert.That(fields.ViewportHeight, Is.GreaterThanOrEqualTo(fields.ExtentHeight), $"the known fields of the {kind} need scrolling");
+                    if (kind == NavNodeKind.Dwelling)
+                    {
+                        var rows = Find<ListBox>((Page)frame.Content).First(l => l.Name == "PART_List" && l.IsVisible);
+                        Assert.That(rows.Items.Count, Is.GreaterThan(10));
+                        Assert.That(rows.ActualHeight, Is.LessThanOrEqualTo(340), "the list of dwellings must scroll inside its card, so the bytes below stay in reach");
+                    }
+
                     Assert.That(grid.Items.Count, Is.GreaterThan(0));
                     Assert.That(scroll.ViewportHeight, Is.GreaterThanOrEqualTo(scroll.ExtentHeight), $"the grid of the {kind} cuts off rows");
                 }

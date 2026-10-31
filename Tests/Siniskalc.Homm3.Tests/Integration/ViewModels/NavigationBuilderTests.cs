@@ -64,6 +64,28 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
+        public void ADwellingNodeSaysWhereTheDwellingIsAndItsCreatureIsTheSubtitle()
+        {
+            var dwelling = this.main.PlayerNodes().Single(n => n.Title == "Neutral").Descendants().First(n => n.Kind == NavNodeKind.Dwelling);
+
+            Assert.That(dwelling.Title, Does.Match(@"^At \d+, \d+, (Surface|Underground)$"));
+            Assert.That(dwelling.Subtitle, Is.Not.Empty);
+        }
+
+        [Test]
+        public void PickingANeutralDwellingShowsTheDwellingsTabWithThatDwellingPicked()
+        {
+            var dwellings = this.main.PlayerNodes().Single(n => n.Title == "Neutral").Descendants().Where(n => n.Kind == NavNodeKind.Dwelling).ToList();
+            var second = dwellings.Last();
+
+            second.IsSelected = true;
+
+            var page = this.main.CurrentPageOf<NeutralViewModel>();
+            Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Dwellings));
+            Assert.That(page.MapObjects.SelectedDwelling?.Index, Is.EqualTo(second.Index));
+        }
+
+        [Test]
         public void PickingAMineSelectsOnlyThatMineAndNotTheMinesNodeOfItsOwner()
         {
             var red = this.main.PlayerNodes().Single(n => n.Title == "Red");

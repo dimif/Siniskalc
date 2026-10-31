@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
       xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+      xmlns:local="clr-namespace:Siniskalc.Homm2.Views"
       Title="Player">
 
     <Page.Resources>
@@ -75,7 +76,7 @@
 
                 <!-- Mines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
-                    <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine this player owns."/>
+                    <local:OwnedMinesCard Note="Who owns each mine this player owns."/>
                 </StackPanel>
 
                 <!-- Obelisks -->

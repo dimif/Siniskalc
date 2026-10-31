@@ -16,7 +16,7 @@
     /// <summary>
     /// The pages of a player: the resources and what they earn each day, the heroes and the tavern, and the towns.
     /// </summary>
-    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage
+    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage, IOwnedMines
     {
         private static readonly ResourceLimits Limits = new(
             Constants.Player.MinResource,
@@ -156,6 +156,10 @@
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
         public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForPlayer(this.session);
+
+        /// <inheritdoc/>
+        public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.session.History, mine.Index) : null;
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.

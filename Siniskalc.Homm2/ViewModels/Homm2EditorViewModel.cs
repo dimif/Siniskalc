@@ -65,7 +65,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public void ShowNeutral(int tab = NeutralTabs.Heroes)
         {
-            this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle);
+            this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle, this.byteEditTargets);
             this.neutral.SelectedTab = tab;
             this.SetCurrentPage(this.neutral);
         }

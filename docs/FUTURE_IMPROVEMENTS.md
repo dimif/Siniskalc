@@ -81,6 +81,12 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
      Until they are, a banished player (0) is read-only and no one can be banished or revived by the editor.
    - The list of the indices of a player's towns that starts at byte 25 is not read.
 
+## Other sharing left apart (2026-10-31)
+
+- **The turn model** (`TurnModel<TColor>`, `TurnDiffer<TColor>`, one `CurrentPlayer`): HoMM2's model holds the record number and the colour, which a view model works out (`Game.RecordOf`). Moving the record into the deserializer and serializer would reverse the 2026-10-24 decision, change what is written and read an unknown record as Neutral. Do it with a save that has an odd turn record, to check what `chunk.Tag` carries.
+- **Visited places models** (`VisitedPlaces` against `PlaceVisits`, and the two `MapPlaces`): the row builder and the change wording are shared; the models differ in shape (fixed fields against a number per kind) and sharing them would remove little. HoMM3 still guesses the HotA-only places from `HeroOffset > 1000` in three places (`HeroDeserializer`, `SafeHeroSerializer`, `VisitedPlacesViewModel`); a version tier on `VisitedPlaceKind` would replace it.
+- **The Mage Guild views** and the **pending-changes factory, player differ, player edit session and player page base**: see `docs/SHARING_REVIEW.md` (2026-10-31, streamlining pass).
+
 ## Secondary skills (M3): not shared, and why (2026-10-31)
 
 Both games already implement `ISecondarySkills<TSkill, TSkills>` and share `SecondarySkillsViewModelBase`; what is left is the model and the serializer, which differ in what they can hold.

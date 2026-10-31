@@ -1,13 +1,10 @@
 namespace Siniskalc.Homm3.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// ViewModel for the secondary skills page.

@@ -28,7 +28,7 @@ Players, map creators and tinkerers in general.
 >**Always keep a backup of your savegames.** This is a hobby tool that patches bytes of a file format nobody documented officially.
 > While it does take precautions to avoid damaging your saves (for example by only patching the bytes that have changed, and keeping a backup of the save before each save), it is likely still possible to break a save if you make invalid changes.
 > The original save file is not modified until you click **Save**; and the editor keeps a copy of the save file before it is replaced (same folder, `.bak` extension; later saves add a counter: `.bak1`, `.bak2`, ... and never overwrite an earlier copy). 
-> This can be turned off under **Settings > Back up on save**.
+> This can be turned off under **Settings... > Saving > Back up on save**.
 
 ### Download and run
 
@@ -65,7 +65,7 @@ The left-hand tree shows the **game**, then one node per **player**, each with a
 * Pending-changes list showing every byte-level change before saving, undo, and revert all.
 * Recent files menu.
 * Backup of the savegame before each save (on by default, numbered, see **Settings**).
-* Advanced mode (**Settings > Advanced mode**): a raw hex editor page for anything the editor does not model yet, and the Advanced menu to export the save bytes to a file and load them back, useful for diffing saves.
+* Advanced mode (**Settings... > Tools > Advanced mode**): a raw hex editor page for anything the editor does not model yet, and the Advanced menu to export the save bytes to a file and load them back, useful for diffing saves.
 
 New to the editor?
 Read the [user guide](docs/USER_GUIDE.md); it is also behind **Help > User guide** (F1).
@@ -98,7 +98,7 @@ Bug reports, savegames that break the editor and pull requests are welcome. Open
 * **Finding a new field in a savefile**: see "Finding a new field" in `docs/FUTURE_IMPROVEMENTS.md`, [`docs/LOCATING_HOMM3_ENTITIES.md`](docs/LOCATING_HOMM3_ENTITIES.md) for how things are located, and
   [`docs/KNOWLEDGE_BASE.md`](docs/KNOWLEDGE_BASE.md) for what is already known. Record new findings there.
 * **Test savegames**: name and place them by [`TestData/README.md`](TestData/README.md) and add a row to the README of their folder.
-* **Errors and logging**: see [`docs/ERROR_MODEL.md`](docs/ERROR_MODEL.md).
+* **Errors and logging**: see [`docs/ERROR_MODEL.md`](docs/ERROR_MODEL.md) and [`docs/LOGGING.md`](docs/LOGGING.md) (the logger, the levels, `serilog.json`).
 * **Before opening a PR**: run the whole suite (`dotnet test`); if the editor is running and locks the build output, add `--artifacts-path <another folder>`. Note user-visible changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Credits and acknowledgements

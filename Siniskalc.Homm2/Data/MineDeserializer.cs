@@ -1,8 +1,9 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -10,6 +11,12 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class MineDeserializer : IDeserializer<MapObjectChunk, MineModel>
     {
-        public MineModel Deserialize(MapObjectChunk chunk) => new(chunk.Index, (MineKind)chunk.GetByteAt(1), chunk.Position!, Bytes.ReadColor(chunk.GetByteAt(0)));
+        private static readonly ILogger<MineDeserializer> Logger = LogFactory.For<MineDeserializer>();
+
+        public MineModel Deserialize(MapObjectChunk chunk)
+        {
+            using var subject = Logger.BeginSubject("Mine", chunk.Index.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            return new(chunk.Index, (MineKind)chunk.GetByteAt(1), chunk.Position!, Bytes.ReadColor(chunk.GetByteAt(0)));
+        }
     }
 }

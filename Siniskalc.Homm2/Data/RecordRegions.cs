@@ -3,11 +3,11 @@ namespace Siniskalc.Homm2.Data
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Models;
 
     /// <summary>
-    /// Where each known field lives inside a record of Heroes of Might and Magic II: a hero, a player or a castle. The offsets are from
-    /// the start of the record, so the whole-savegame hex view shifts them to the record and the hex tab of a page uses them as they are.
+    /// Where each known field lives inside a record of Heroes of Might and Magic II: a hero, a player, a castle, and the records of the map
+    /// (a mine, a shrine, a sphinx, whose turn it is, the castles that built today and the obelisks). The offsets are from the start of the
+    /// record, so the whole-savegame hex view shifts them to the record and the hex tab of a page uses them as they are.
     /// </summary>
     public static class RecordRegions
     {
@@ -16,6 +16,73 @@ namespace Siniskalc.Homm2.Data
         public static IReadOnlyList<ByteRegion> Player { get; } = PlayerFields();
 
         public static IReadOnlyList<ByteRegion> Castle { get; } = CastleFields();
+
+        /// <summary>
+        /// Gets the fields of a record of the list of mines (<see cref="MapObjectLayout.MineTable"/>). The flag of the mine is drawn on a tile of
+        /// the map, apart from the record.
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> Mine { get; } =
+        [
+            Field("Owner", 0, 1, ByteRegionKind.Identity, "Colour of the player; FF for nobody"),
+            Field("Kind", 1, 1, ByteRegionKind.Identity, "0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gem, 6 gold mine"),
+            Field("Pos X", 4, 1, ByteRegionKind.Position),
+            Field("Pos Y", 5, 1, ByteRegionKind.Position),
+        ];
+
+        /// <summary>
+        /// Gets the fields of a shrine: the two bytes of its tile that hold the spell it teaches.
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> Shrine { get; } =
+        [
+            Field("Spell", 0, 2, ByteRegionKind.Spells, $"The number of the spell, shifted left by {MapObjectLayout.ShrineSpellShift} bits (the low bits belong to the tile)"),
+        ];
+
+        /// <summary>
+        /// Gets the fields of the record of whose turn it is.
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> Turn { get; } =
+        [
+            Field("Player record", 0, 1, ByteRegionKind.Game, "The record of the player whose turn it is, in the table of players (the humans come first)"),
+        ];
+
+        /// <summary>
+        /// Gets the fields of the set of the castles that built today (<see cref="MapObjectLayout.BuiltToday"/>).
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> BuiltToday { get; } =
+        [
+            Field("Castles", 0, MapObjectLayout.BuiltTodaySize, ByteRegionKind.Other, "A bit for each castle slot: castle 0 is the lowest bit of the first byte"),
+        ];
+
+        /// <summary>
+        /// Returns the fields of a sphinx whose block is <paramref name="length"/> bytes long (the riddle takes what is left).
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> Sphinx(int length) =>
+        [
+            Field("Active", MapObjectLayout.SphinxActive, 1, ByteRegionKind.Game, "1 while the riddle can be answered, 0 once it was"),
+            Named("Reward", MapObjectLayout.SphinxReward, ByteRegionKind.Resources, "What an answer gives, 32 bits each", ("Wood", 4), ("Mercury", 4), ("Ore", 4), ("Sulfur", 4), ("Crystal", 4), ("Gems", 4), ("Gold", 4)),
+            Field("Artifact", MapObjectLayout.SphinxArtifact, 2, ByteRegionKind.Artifacts, "The artifact an answer gives"),
+            Field("Answer count", MapObjectLayout.SphinxAnswerCount, 1, ByteRegionKind.Other),
+            Slots("Answers", MapObjectLayout.SphinxAnswers, Constants.Sphinx.MaxAnswers, MapObjectLayout.SphinxAnswerSize, ByteRegionKind.Other, "Answer", "Text, zero terminated"),
+            Field("Riddle", MapObjectLayout.SphinxRiddle, System.Math.Max(0, length - MapObjectLayout.SphinxRiddle), ByteRegionKind.Other, "Text, zero terminated"),
+        ];
+
+        /// <summary>
+        /// Returns the fields of the table of the obelisks (<see cref="ObeliskLayout.Capacity"/> bytes) of a map that has <paramref name="count"/>
+        /// of them: a byte each, in the order of the obelisks on the map, and room for the obelisks the map does not have.
+        /// </summary>
+        public static IReadOnlyList<ByteRegion> Obelisks(int count, int length)
+        {
+            var regions = new List<ByteRegion>
+            {
+                Slots("Obelisks", 0, count, 1, ByteRegionKind.Other, "Obelisk", "A bit for each colour that has visited it: 01 Blue, 02 Green, 04 Red, 08 Yellow, 10 Orange, 20 Purple"),
+            };
+            if (length > count)
+            {
+                regions.Add(Field("Room for more obelisks", count, length - count, ByteRegionKind.Other, "Not used by this map"));
+            }
+
+            return regions;
+        }
 
         private static ByteRegion Field(string name, int start, int length, ByteRegionKind kind, string? description = null)
         {

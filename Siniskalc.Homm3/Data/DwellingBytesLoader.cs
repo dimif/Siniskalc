@@ -3,7 +3,9 @@ namespace Siniskalc.Homm3.Data
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -12,12 +14,13 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class DwellingBytesLoader : IDwellingBytesLoader
     {
+        private static readonly ILogger<DwellingBytesLoader> Logger = LogFactory.For<DwellingBytesLoader>();
+
         /// <inheritdoc/>
         public IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others)
         {
             // The first record starts right after the last mine (the table of the mines ends with the last mine on the test map). Anywhere else
             // the same bytes can be a table by chance, and a chunk that overlaps another one stops the savegame from being written.
-            // TODO:LOG info: a map whose table of the mines ends with other records has no dwellings read until the start of the table is found.
             if (mines.Count == 0)
             {
                 return [];
@@ -33,6 +36,7 @@ namespace Siniskalc.Homm3.Data
                 length++;
             }
 
+            Logger.LogDebug("Read {Count} dwellings from offset {Offset:X} after the last mine", length < DwellingLayout.MinimumRun ? 0 : length, at);
             return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 
@@ -52,8 +56,8 @@ namespace Siniskalc.Homm3.Data
             return bytes[start + DwellingLayout.ObjectType] == DwellingLayout.CreatureGeneratorType
                 && (owner == DwellingLayout.NoOwner || owner < PlayerColor.All.Count)
                 && bytes[start + DwellingLayout.Level] <= 1
-                && bytes[start + DwellingLayout.X] < Constants.Map.MaxCoordinate
-                && bytes[start + DwellingLayout.Y] < Constants.Map.MaxCoordinate;
+                && bytes[start + DwellingLayout.X] <= Constants.Map.MaxCoordinate
+                && bytes[start + DwellingLayout.Y] <= Constants.Map.MaxCoordinate;
         }
     }
 }

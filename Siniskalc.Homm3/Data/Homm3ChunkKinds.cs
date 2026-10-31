@@ -20,5 +20,8 @@
         public static readonly ChunkKind Dwellings = new("Dwellings", 5);
 
         public static readonly ChunkKind Merchants = new("Merchants", 6);
+
+        public static readonly ChunkKind HeroOwners = new("HeroOwners", 7);
+        public static readonly ChunkKind Turn = new("Turn", 8);
     }
 }

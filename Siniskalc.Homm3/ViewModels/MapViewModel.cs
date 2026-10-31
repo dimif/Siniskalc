@@ -1,7 +1,8 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
 
@@ -15,12 +16,12 @@ namespace Siniskalc.Homm3.ViewModels
             : base("Map", game.History, Homm3ChunkKinds.Merchants)
         {
             var document = game.History.Current;
-            this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines)).ToList();
+            this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines, LocationOf(game, i))).ToList();
             this.Refresh();
         }
 
         /// <summary>
-        /// Gets what the merchants have in store: the artifact merchants and the black market.
+        /// Gets what the merchants have in store: each of the black markets of the map.
         /// </summary>
         public IReadOnlyList<MerchantViewModel> Merchants { get; }
 
@@ -39,5 +40,8 @@ namespace Siniskalc.Homm3.ViewModels
                 merchant.Refresh();
             }
         }
+
+        private static string LocationOf(Siniskalc.Homm3.Runtime.Game game, int merchant) =>
+            game.Places.Merchants.Where(m => m.Number == merchant).Select(m => $"At {MapLevelText.Place(m.Position.X, m.Position.Y)}").FirstOrDefault() ?? string.Empty;
     }
 }

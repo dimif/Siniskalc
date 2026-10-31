@@ -18,7 +18,7 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public Spell? Spell => this.SpellCode is >= 0 and <= byte.MaxValue ? Entities.Spell.FromByte((byte)this.SpellCode) : null;
 
-        public string Name => $"Shrine of the {this.Circle switch { 1 => "first", 2 => "second", _ => "third" }} circle at X: {this.Position.X}, Y: {this.Position.Y}";
+        public string Name => $"Shrine of the {this.Circle switch { 1 => "first", 2 => "second", _ => "third" }} circle at {this.Position.X}, {this.Position.Y}";
 
         /// <summary>
         /// Returns the shrine teaching another spell.

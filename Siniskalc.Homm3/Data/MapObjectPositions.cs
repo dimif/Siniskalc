@@ -3,7 +3,6 @@ namespace Siniskalc.Homm3.Data
     using System;
     using System.Collections.Generic;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Entities;
 
     /// <summary>
     /// Finds where the objects of the map are, in a savefile that has them: after the table of object definitions (a 16-bit length, the
@@ -39,7 +38,7 @@ namespace Siniskalc.Homm3.Data
             for (var at = end + CountLength; positions.Count < count && at + PositionEntryLength <= searchEnd; at += PositionEntryLength)
             {
                 var (x, y, z) = (bytes[at + 2], bytes[at + 3], bytes[at + 4]);
-                if (z > 1 || x >= Constants.Map.MaxCoordinate || y >= Constants.Map.MaxCoordinate)
+                if (z > 1 || x > Constants.Map.MaxCoordinate || y > Constants.Map.MaxCoordinate)
                 {
                     break;
                 }

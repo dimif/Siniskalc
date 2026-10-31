@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Runtime
 {
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.Data;
@@ -9,6 +10,8 @@ namespace Siniskalc.Homm2.Runtime
     /// </summary>
     public sealed class SavegameParser : ISavegameParser
     {
+        private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
+
         private readonly ISaveLayoutLocator locator;
         private readonly IBytesLoader loader;
         private readonly IHeaderReader headerReader;
@@ -32,18 +35,29 @@ namespace Siniskalc.Homm2.Runtime
             var layout = this.locator.Locate(bytes);
             if (layout is null)
             {
-                // TODO:LOG warning: {file or name} ({bytes.Length} bytes) was refused as unsupported; log its first bytes (the header) to help recognise the version.
+                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes II savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic II savegame, or it comes from a version of the game this editor does not know.");
             }
 
+            var heroes = this.loader.LoadHeroChunks(bytes, layout);
+            var players = this.loader.LoadPlayerChunks(bytes, layout);
+            var castles = this.loader.LoadCastleChunks(bytes, layout);
             var document = this.documentFactory.Create(
                 bytes,
-                this.loader.LoadHeroChunks(bytes, layout),
-                this.loader.LoadPlayerChunks(bytes, layout),
-                this.loader.LoadCastleChunks(bytes, layout),
+                heroes,
+                players,
+                castles,
                 this.loader.LoadObeliskChunks(bytes, layout),
                 this.objectsReader.Read(bytes, layout));
-            return new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
+            var game = new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
+            Logger.LogInformation(
+                "Opened {File} as Heroes II {Version}: {Heroes} heroes, {Castles} castles, {Players} players",
+                LogPaths.Label(file, name),
+                layout.Version,
+                heroes.Count,
+                castles.Count,
+                players.Count);
+            return game;
         }
     }
 }

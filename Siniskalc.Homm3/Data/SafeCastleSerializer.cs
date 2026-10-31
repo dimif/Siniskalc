@@ -3,11 +3,12 @@
     using System;
     using System.Buffers.Binary;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -21,6 +22,8 @@
     /// </remarks>
     public sealed class SafeCastleSerializer : ISerializer<CastleChunk, CastleModel>
     {
+        private static readonly ILogger<SafeCastleSerializer> Logger = LogFactory.For<SafeCastleSerializer>();
+
         /// <inheritdoc>
         public CastleChunk Serialize(CastleChunk chunk, CastleModel castle)
         {
@@ -70,7 +73,8 @@
                 var spells = castle.MageGuildSpells[level - 1];
                 if (spells.Count != slots.Count)
                 {
-                    // TODO:LOG warning: the spells of level {level} of the Mage Guild of {castle.Name} were not written: the model lists {spells.Count} of them and the savefile has {slots.Count} slots that hold a known spell.
+                    using var subject = Logger.BeginSubject("Castle", castle.Name);
+                    Logger.LogWarning("The spells of Mage Guild level {Level} were not written: the model lists {Count} of them and the savefile has {Slots} slots that hold a known spell", level, spells.Count, slots.Count);
                     continue;
                 }
 
@@ -150,7 +154,8 @@
             {
                 if (building.Code >= 64)
                 {
-                    // TODO:LOG warning: the building {building.Name} has a code that does not fit the 64-bit masks and was not written.
+                    using var subject = Logger.BeginSubject("Castle", castle.Name);
+                    Logger.LogWarning("The building {Building} has a code that does not fit the 64-bit masks and was not written", building.Name);
                     continue;
                 }
 

@@ -42,6 +42,22 @@ namespace Siniskalc.Heroes
         }
 
         /// <summary>
+        /// The most of each resource the editor gives a player; a savefile holds each amount in 32 bits.
+        /// </summary>
+        public static class Resources
+        {
+            /// <summary>
+            /// The most gold: the largest 32-bit signed number.
+            /// </summary>
+            public const long MaxGold = int.MaxValue;
+
+            /// <summary>
+            /// The most of any other resource: the largest 16-bit unsigned number.
+            /// </summary>
+            public const long MaxOther = ushort.MaxValue;
+        }
+
+        /// <summary>
         /// The map.
         /// </summary>
         public static class Map

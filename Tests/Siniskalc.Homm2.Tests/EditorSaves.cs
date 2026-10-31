@@ -5,10 +5,8 @@
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
     using Siniskalc.Homm2.ViewModels;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The second set of savegames for the write test with the game: unlike <see cref="EditedSaves"/>, which edits the models, these
@@ -43,7 +41,7 @@
                 Make("E22BOOK", "Sir Gallant buys a spell book and learns the spells without 'fire' in the name", GallantBook, game =>
                     $"Sir Gallant has a spell book with {game.History.Current.Heroes().GetModel(1).Spells.Count} spells: all but {string.Join(", ", Spell.All.Where(x => !game.History.Current.Heroes().GetModel(1).Spells.Contains(x)).Select(x => x.Name))}."),
                 Make("E23LIMIT", "Blue's resources at the limits of the editor", BlueAtTheLimits, game =>
-                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold and 999 of every other resource. Look at how the screens show them."),
+                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold and {Constants.Player.MaxOther:N0} of every other resource. Look at how the screens show them."),
                 Make("E24STACK", "Sir Gallant's army: a stack of 65,535, a neutral creature and a dragon", GallantArmy, game =>
                     $"Sir Gallant has {ArmyOf(game, 1)}. Look at how the 65,535 is shown."),
                 Make("E25STATS", "Sir Gallant: skills 20, level 20, experience 50,000, spell points 99, all his movement", GallantStats, game =>
@@ -68,6 +66,8 @@
                     "Whiteshield's sixth dwelling is the Black Dragon with 3 waiting (in E34DWUP2 it showed 0: the count of a dragon upgraded twice is in the sixth place of the list of upgraded dwellings)."),
                 Make("E38DRG5", "Whiteshield: the Black Dragon dwelling with 5 waiting, as the game keeps them", BlackDragonsFive, game =>
                     "Whiteshield's sixth dwelling is the Black Dragon with 5 waiting (E35 had only the count and showed none: the game wants a 3 in the fifth place of the upgraded list too)."),
+                Make("E39GOLDX", "Blue's gold at the limit of the editor, 2,147,483,647, the other resources untouched", BlueGoldAtTheLimit, game =>
+                    $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold. Look at how the screens show it, then end the turn: does the gold stay, or does the income make it negative?"),
                 Make("E26ALL", "All of the edits above that do not exclude each other", EverythingTogether, _ =>
                     "Everything of E14, E15, E16, E17, E18, E19, E21, E22, E23, E24 and E25 together: the towns changed hands, Xabran and Whiteshield are built as there, Maximus has the artifacts and the eight skills, Sir Gallant the book, the army and the stats, and Blue the resources at the limits."),
             ];
@@ -226,6 +226,12 @@
             }
         }
 
+        private static void BlueGoldAtTheLimit(Game game)
+        {
+            var gold = Player(game, PlayerColor.Blue).Resources.Single(r => r.Name == "Gold");
+            gold.Value = gold.Maximum;
+        }
+
         private static void GallantArmy(Game game)
         {
             var army = Hero(game, 1).ArmyEditor;
@@ -243,9 +249,10 @@
         private static void GallantStats(Game game)
         {
             var page = Hero(game, 1);
-            foreach (var row in page.PrimarySkills)
+            // The skills the savegame holds are 20: the base is what is left once the artifacts are taken off.
+            foreach (var row in page.PrimarySkills.Rows)
             {
-                row.Value = 20;
+                row.Base += 20 - row.Total;
             }
 
             page.LevelAndClass.Level = 20;

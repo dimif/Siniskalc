@@ -1,3 +1,4 @@
+using Siniskalc.Homm3.Tests.Models;
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -5,130 +6,121 @@ using Siniskalc.Homm3.Models;
 
 namespace Siniskalc.Homm3.Tests.Data
 {
+    /// <summary>
+    /// What the differ of a castle lists for two versions of the record and how it puts a building back, on towns made by hand.
+    /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CastleDifferTests
     {
-        private SaveDocumentHistory history = null!;
-        private CastleEditSession still = null!;
-        private byte[] original = null!;
+        private PendingChangesFake fake = null!;
 
         [SetUp]
-        public void Load()
-        {
-            var path = CastleSamples.Folder("Bulwark").Single(p => p.EndsWith("bulwark_13_mage_guild_4.GM1"));
-            this.history = CastleSamples.Load(path).History;
-            this.original = this.history.Current.ToBytes();
-            this.still = this.history.CreateCastleSession(this.history.Current.Castles().FindByName("Still Water"));
-        }
+        public void StartWithNoReverts() => this.fake = new();
+
+        private static CastleModel Rampart() => CastleModels.Village(Faction.Rampart);
+
+        private IReadOnlyList<PendingChange> Diff(CastleModel original, CastleModel current) => new CastleDiffer(this.fake.Factory).Diff(5, original, current);
 
         [Test]
-        public void NothingIsPendingBeforeAnEdit()
+        public void TwoEqualCastlesHaveNoChanges()
         {
-            Assert.That(this.history.GetPendingChanges(), Is.Empty);
+            Assert.That(this.Diff(Rampart(), Rampart()), Is.Empty);
         }
 
         [Test]
         public void EachBuildingBuiltIsOnePendingChangeNamedAfterTheCastle()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartDwarfCottage));
+            var current = CastleBuilder.Build(CastleBuilder.Build(Rampart(), Building.RampartCentaurStables), Building.RampartDwarfCottage);
 
-            var changes = this.history.GetPendingChanges();
+            var changes = this.Diff(Rampart(), current);
 
-            Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Centaur Stables", "Dwarf Cottage" }));
+            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Centaur Stables", "Dwarf Cottage" }));
             Assert.That(changes, Has.All.Property(nameof(PendingChange.Kind)).EqualTo(Homm3ChunkKinds.Castle));
-            Assert.That(changes[0].Path, Is.EqualTo("Still Water › Buildings"));
-            Assert.That(changes[0].Change.Before, Is.EqualTo("not built"));
-            Assert.That(changes[0].Change.After, Is.EqualTo("built"));
+            var stables = changes.Single(c => c.Change.Description == "Centaur Stables");
+            Assert.That((stables.Path, stables.Index, stables.Change.Before, stables.Change.After), Is.EqualTo(("Test Town › Buildings", 5, "not built", "built")));
         }
 
         [Test]
         public void AnAutomaticBuildingIsNotListed()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartDwarfCottage));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartMinersGuild));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgDwarfCottage));
+            var current = Rampart();
+            foreach (var building in new[] { Building.RampartCentaurStables, Building.RampartDwarfCottage, Building.RampartMinersGuild, Building.RampartUpgDwarfCottage })
+            {
+                current = CastleBuilder.Build(current, building);
+            }
 
-            Assert.That(this.still.Current.Buildings, Does.Contain(Building.RampartUpgMinersGuild));
-            Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Does.Not.Contain("Upg. Miners' Guild"));
+            Assert.That(current.Buildings, Does.Contain(Building.RampartUpgMinersGuild));
+            Assert.That(this.Diff(Rampart(), current).Select(c => c.Change.Description), Does.Not.Contain("Upg. Miners' Guild"));
         }
 
         [Test]
         public void ARemovedBuildingIsListedAsBuiltBefore()
         {
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
+            var original = CastleBuilder.Build(Rampart(), Building.RampartCentaurStables);
 
-            var change = this.history.GetPendingChanges().Single();
+            var change = this.Diff(original, CastleBuilder.Unbuild(original, Building.RampartCentaurStables)).Single();
 
-            Assert.That(change.Change.Description, Is.EqualTo("Mage Guild, level 4"));
-            Assert.That(change.Change.Before, Is.EqualTo("built"));
-            Assert.That(change.Change.After, Is.EqualTo("not built"));
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Centaur Stables", "built", "not built")));
         }
 
         [Test]
-        public void RevertingABuildingPutsTheBytesBack()
+        public void ForbiddingABuildingIsOnePendingChangeFromAllowedToNotAllowed()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
+            var building = AllowedButNotBuilt(Rampart());
 
-            this.history.GetPendingChanges().Single(c => c.Change.Description == "Centaur Stables").Revert(this.history);
+            var change = this.Diff(Rampart(), CastleBuilder.SetAllowed(Rampart(), building, false)).Single();
 
-            Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Mage Guild, level 4" }));
-            Assert.That(this.still.Current.CreaturesAvailable[0], Is.EqualTo(0));
-
-            this.history.GetPendingChanges().Single().Revert(this.history);
-
-            Assert.That(this.history.GetPendingChanges(), Is.Empty);
-            Assert.That(this.history.Current.ToBytes(), Is.EqualTo(this.original));
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo((building.Name, "allowed", "not allowed")));
         }
 
         [Test]
-        public void RevertingABuildingAlsoRevertsWhatWasBuiltOnTopOfIt()
+        public void AllowingABuildingIsOnePendingChangeAndItsRevertForbidsItAgain()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgCentaurStables));
+            var building = AllowedButNotBuilt(Rampart());
+            var forbidden = CastleBuilder.SetAllowed(Rampart(), building, false);
 
-            this.history.GetPendingChanges().Single(c => c.Change.Description == "Centaur Stables").Revert(this.history);
+            var change = this.Diff(forbidden, Rampart()).Single();
 
-            Assert.That(this.history.GetPendingChanges(), Is.Empty);
-            Assert.That(this.history.Current.ToBytes(), Is.EqualTo(this.original));
+            Assert.That((change.Change.Before, change.Change.After), Is.EqualTo(("not allowed", "allowed")));
+            Assert.That(this.fake.CastleReverts[building.Name](Rampart()).EnabledBuildings, Does.Not.Contain(building));
         }
 
         [Test]
-        public void RevertingARemovedBuildingBringsBackWhatItNeeded()
+        public void PuttingBackABuildingAlsoPutsBackWhatWasBuiltOnTopOfIt()
         {
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild3));
+            var original = Rampart();
+            var current = CastleBuilder.Build(CastleBuilder.Build(original, Building.RampartCentaurStables), Building.RampartUpgCentaurStables);
 
-            this.history.GetPendingChanges().Single(c => c.Change.Description == "Mage Guild, level 4").Revert(this.history);
+            var restored = new CastleDiffer(this.fake.Factory).RestoreBuilding(current, Building.RampartCentaurStables, original);
 
-            Assert.That(this.history.GetPendingChanges(), Is.Empty);
-            Assert.That(this.history.Current.ToBytes(), Is.EqualTo(this.original));
+            Assert.That(this.Diff(original, restored), Is.Empty);
         }
 
         [Test]
-        public void ARevertCanBeUndone()
+        public void PuttingBackARemovedBuildingBringsBackWhatItNeeded()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.history.GetPendingChanges().Single().Revert(this.history);
+            var original = CastleBuilder.Build(CastleBuilder.Build(Rampart(), Building.RampartCentaurStables), Building.RampartUpgCentaurStables);
+            var current = CastleBuilder.Unbuild(CastleBuilder.Unbuild(original, Building.RampartUpgCentaurStables), Building.RampartCentaurStables);
 
-            this.history.Undo();
+            var restored = new CastleDiffer(this.fake.Factory).RestoreBuilding(current, Building.RampartUpgCentaurStables, original);
 
-            Assert.That(this.history.GetPendingChanges().Single().Change.Description, Is.EqualTo("Centaur Stables"));
+            Assert.That(this.Diff(original, restored), Is.Empty);
         }
 
         [Test]
-        public void AnotherCastleIsNotAffected()
+        public void PuttingBackABuildingThatIsNotInTheOriginalTakesItDown()
         {
-            var jotunngard = this.history.CreateCastleSession(this.history.Current.Castles().FindByName("Jotunngard"));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            jotunngard.Update(c => CastleBuilder.Build(c, Building.BulwarkColliery));
+            var original = Rampart();
+            var current = CastleBuilder.Build(original, Building.RampartCentaurStables);
 
-            var changes = this.history.GetPendingChanges();
+            var restored = new CastleDiffer(this.fake.Factory).RestoreBuilding(current, Building.RampartCentaurStables, original);
 
-            Assert.That(changes.Select(c => (c.OwnerName, c.Change.Description)), Is.EquivalentTo(new[] { ("Still Water", "Centaur Stables"), ("Jotunngard", "Colliery") }));
-            Assert.That(changes.Select(c => c.Index).Distinct().Count(), Is.EqualTo(2));
+            Assert.That(restored.HasBuilt(Building.RampartCentaurStables), Is.False);
+            Assert.That(restored.CreaturesAvailable[0], Is.EqualTo(original.CreaturesAvailable[0]));
         }
+
+        private static Building AllowedButNotBuilt(CastleModel castle) =>
+            Building.ForFaction(castle.Faction).First(b => castle.EnabledBuildings.Contains(b) && CastleBuilder.GetSetAllowedFailureReason(castle, b) == CastleBuildFailureReason.None);
     }
 }

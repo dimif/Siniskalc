@@ -17,6 +17,6 @@ namespace Siniskalc.Homm3.Tests.Data
 
         public static IEnumerable<string> Folder(string name) => All().Where(f => Path.GetFileName(Path.GetDirectoryName(f)) == name);
 
-        public static Game Load(string path) => TestServices.GameService.LoadGameFromFile(path);
+        public static Game Load(string path) => SavedGames.Get(path);
     }
 }

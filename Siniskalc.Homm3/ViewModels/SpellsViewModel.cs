@@ -6,7 +6,6 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// ViewModel for the spells page: whether the hero has a spell book, and every spell of the game version with a box for

@@ -1,12 +1,12 @@
 namespace Siniskalc.Heroes.Tests
 {
-    using System.Reflection;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
     /// Tests that what the games of the series share knows no game, and no UI.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroesLayeringTests
     {
         [Test]

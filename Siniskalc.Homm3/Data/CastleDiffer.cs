@@ -138,6 +138,19 @@ namespace Siniskalc.Homm3.Data
             }
         }
 
+        private static void DiffAllowedBuildings(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
+        {
+            // The mask of the buildings the map allows is its own bit per building, apart from what is built.
+            foreach (var building in current.EnabledBuildings.Except(original.EnabledBuildings).Concat(original.EnabledBuildings.Except(current.EnabledBuildings))
+                .OrderBy(b => b.Code))
+            {
+                var allowed = original.EnabledBuildings.Contains(building);
+                changes.Add(ChangeAreas.Buildings, building.Name, AllowedText(allowed), AllowedText(!allowed), c => CastleBuilder.RestoreAllowed(c, building, allowed));
+            }
+        }
+
+        private static string AllowedText(bool allowed) => allowed ? "allowed" : "not allowed";
+
         private void DiffBuildings(CastleModel original, CastleModel current, ChangeSink<CastleModel> changes)
         {
             // The upgraded horde buildings are built by the game together with the building they belong to, so they are not listed.
@@ -148,6 +161,8 @@ namespace Siniskalc.Homm3.Data
                 var built = current.HasBuilt(building);
                 changes.Add(ChangeAreas.Buildings, building.Name, built ? "not built" : "built", built ? "built" : "not built", c => this.RestoreBuilding(c, building, original));
             }
+
+            DiffAllowedBuildings(original, current, changes);
         }
     }
 }

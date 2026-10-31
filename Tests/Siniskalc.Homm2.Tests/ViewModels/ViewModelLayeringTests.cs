@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// (heroes by id or name, castles, players by colour) for models.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ViewModelLayeringTests
     {
         private static readonly Regex Forbidden = new(

@@ -10,6 +10,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the words for who plays a colour.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PlayerTypeTextTests
     {
         private static IGameInfo<TestColor> Game(PlayerType? control, TestColor? current)

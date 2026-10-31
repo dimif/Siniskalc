@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.Models
     /// Tests the secondary skills of a hero, which hold at most eight skills in the order they were learned.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SecondarySkillsTests
     {
         private static SecondarySkills Full() => SecondarySkills.None
@@ -50,6 +51,22 @@ namespace Siniskalc.Homm2.Tests.Models
             var skills = SecondarySkills.None;
 
             Assert.That(skills.WithSkillLevel(SecondarySkill.Archery, SkillLevel.None), Is.SameAs(skills));
+        }
+
+        [Test]
+        public void SecondarySkillsCanBeSwappedReplacedAndRemovedBySlot()
+        {
+            var skills = new SecondarySkills(
+            [
+                new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner),
+                new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert),
+                new SkillEntry(SecondarySkill.Luck, SkillLevel.Intermediate),
+            ]);
+
+            Assert.That(skills.Swap(0, 2).Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Luck, SecondarySkill.Wisdom, SecondarySkill.Archery }));
+            Assert.That(skills.WithoutSlot(1).Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Archery, SecondarySkill.Luck }));
+            Assert.That(skills.WithSkillInSlot(1, SecondarySkill.Mysticism).Entries[1], Is.EqualTo(new SkillEntry(SecondarySkill.Mysticism, SkillLevel.Expert)));
+            Assert.That(skills.WithSkillInSlot(1, SecondarySkill.Luck), Is.EqualTo(skills), "a skill the hero has already is not put twice");
         }
     }
 }

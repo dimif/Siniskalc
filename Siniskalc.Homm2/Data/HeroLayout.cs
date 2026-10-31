@@ -1,7 +1,6 @@
 namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// Where the fields of a hero are in its record, from the start of the record (which is where its header is). The record is 236 bytes

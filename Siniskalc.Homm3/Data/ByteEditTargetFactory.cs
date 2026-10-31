@@ -1,8 +1,6 @@
 namespace Siniskalc.Homm3.Data
 {
-    using System;
     using Siniskalc.Core.Data;
-    using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// Creates the byte edit targets of heroes, players, castles, mines and dwellings with the region providers they describe their bytes with.
@@ -28,7 +26,7 @@ namespace Siniskalc.Homm3.Data
 
         public IByteEditTarget ForPlayer(PlayerEditSession session) => new PlayerByteEditTarget(session, this.playerRegions);
 
-        public IByteEditTarget ForCastle(SaveDocumentHistory history, int castleIndex) => new CastleByteEditTarget(history, castleIndex, this.castleRegions);
+        public IByteEditTarget ForCastle(CastleEditSession session) => new CastleByteEditTarget(session, this.castleRegions);
 
         public IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex) => new MineByteEditTarget(history, mineIndex, this.mineRegions);
 

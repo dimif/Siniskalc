@@ -1,6 +1,5 @@
-namespace Siniskalc.Homm2.Tests
+﻿namespace Siniskalc.Homm2.Tests
 {
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Runtime;
@@ -45,23 +44,23 @@ namespace Siniskalc.Homm2.Tests
         private static void ChangeMines(Game game)
         {
             var mines = MinesLists.Create(game).Rows;
-            mines.Single(m => m.PositionText == "X: 22, Y: 29").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "X: 65, Y: 31").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "X: 23, Y: 2").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "X: 44, Y: 6").OwnerField.Selected = "Red";
+            mines.Single(m => m.PositionText == "Pos: 22, 29").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "Pos: 65, 31").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "Pos: 23, 2").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "Pos: 44, 6").OwnerField.Selected = "Red";
         }
 
-        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "X: 22, Y: 29", "X: 65, Y: 31", "X: 23, Y: 2", "X: 44, Y: 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
+        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "Pos: 22, 29", "Pos: 65, 31", "Pos: 23, 2", "Pos: 44, 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
 
         private static void ChangeShrines(Game game)
         {
             var shrines = new MapViewModel(game).Shrines;
-            shrines.Single(s => s.PositionText == "X: 45, Y: 7").SpellField.Selected = "Fireball";
-            shrines.Single(s => s.PositionText == "X: 22, Y: 49").SpellField.Selected = "Mass Haste";
-            shrines.Single(s => s.PositionText == "X: 19, Y: 16").SpellField.Selected = "Mass Bless";
+            shrines.Single(s => s.PositionText == "Pos: 45, 7").SpellField.Selected = "Fireball";
+            shrines.Single(s => s.PositionText == "Pos: 22, 49").SpellField.Selected = "Mass Haste";
+            shrines.Single(s => s.PositionText == "Pos: 19, 16").SpellField.Selected = "Mass Bless";
         }
 
-        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "X: 45, Y: 7", "X: 22, Y: 49", "X: 19, Y: 16" }.Contains(s.PositionText)).Select(s => $"the shrine at {s.PositionText} teaches {s.SpellField.Selected}"));
+        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "Pos: 45, 7", "Pos: 22, 49", "Pos: 19, 16" }.Contains(s.PositionText)).Select(s => $"the shrine at {s.PositionText} teaches {s.SpellField.Selected}"));
 
         private static void ChangeSphinx(Game game)
         {
@@ -86,10 +85,10 @@ namespace Siniskalc.Homm2.Tests
         private static void SourcesAndForgetfulness(Game game)
         {
             var colar = Hero(game, ColarBlau);
-            colar.BattleBonus[0].Value = 0; // save 82 comes from T03BONUS: its numbers are not from any place
-            colar.BattleBonus[1].Value = 0;
-            colar.BattleSources.Single(r => r.Name == "Temple").IsChecked = true;
-            colar.BattleSources.Single(r => r.Name == "Fountain").IsChecked = true;
+            colar.NextBattle.Bonus[0].Value = 0; // save 82 comes from T03BONUS: its numbers are not from any place
+            colar.NextBattle.Bonus[1].Value = 0;
+            colar.NextBattle.Sources.Single(r => r.Name == "Temple").IsChecked = true;
+            colar.NextBattle.Sources.Single(r => r.Name == "Fountain").IsChecked = true;
             var charity = Hero(game, Charity);
             foreach (var row in charity.UsedOnce.Concat(charity.UsedWeekly))
             {
@@ -125,10 +124,10 @@ namespace Siniskalc.Homm2.Tests
 
         private static void BattleBonus(Game game)
         {
-            var colar = Hero(game, ColarBlau).BattleBonus;
+            var colar = Hero(game, ColarBlau).NextBattle.Bonus;
             colar[0].Value = 3;
             colar[1].Value = 3;
-            var charity = Hero(game, Charity).BattleBonus;
+            var charity = Hero(game, Charity).NextBattle.Bonus;
             charity[0].Value = -3;
             charity[1].Value = -3;
         }

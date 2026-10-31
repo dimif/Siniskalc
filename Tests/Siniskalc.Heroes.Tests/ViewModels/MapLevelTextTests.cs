@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the words for a place on the map.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MapLevelTextTests
     {
         [Test]
@@ -16,7 +17,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
 
             Assert.That(
                 (MapLevelText.Coordinates(below, hasLevels: true), MapLevelText.Coordinates(below, hasLevels: false)),
-                Is.EqualTo(("X: 59, Y: 9, Underground (1)", "X: 59, Y: 9")));
+                Is.EqualTo(("Pos: 59, 9, Underground", "Pos: 59, 9")));
         }
 
         [Test]

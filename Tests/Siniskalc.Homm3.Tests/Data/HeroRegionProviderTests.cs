@@ -1,168 +1,208 @@
-using Siniskalc;
+using Moq;
 using Siniskalc.Core.Data;
-using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
-using Siniskalc.Homm3.Runtime;
 
 namespace Siniskalc.Homm3.Tests.Data
 {
+    /// <summary>
+    /// Where the hex editor is told each field of a hero's record lives, for each game version, from the offsets alone (no savegame).
+    /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroRegionProviderTests
     {
-        private static readonly HeroOffsets HotaOffsets = new(GameVersion.HornOfTheAbyss);
+        private readonly HeroRegionProvider provider = new(new VersionSpecificEntitiesProviderFactory(_ => Mock.Of<IGrantedSpellsResolver>()));
 
-        private Game game;
-        private HeroChunk chunk;
+        private IReadOnlyList<ByteRegion> Regions(GameVersion version, int chunkLength = int.MaxValue) => this.provider.GetRegions(new HeroOffsets(version), chunkLength);
 
-        [SetUp]
-        public void SetUp()
+        private static (string Name, int Start, int Length) Of(ByteRegion r) => (r.Name, r.Start, r.Length);
+
+        [Test]
+        public void TheFixedFieldsOfAShadowOfDeathHeroSitAtTheirBytes()
         {
-            var path = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
-            this.game = TestServices.GameService.LoadGameFromFile(path);
-            this.chunk = this.game.History.Current.Heroes()[this.game.History.Current.Heroes().FindByName("Christian")];
+            var regions = this.Regions(GameVersion.ShadowOfDeath).Select(Of).ToList();
+
+            Assert.That(regions, Does.Contain(("Map X", 0, 2)));
+            Assert.That(regions, Does.Contain(("Map Y", 2, 2)));
+            Assert.That(regions, Does.Contain(("Map level", 4, 2)));
+            Assert.That(regions, Does.Contain(("Gender", 20, 1)));
+            Assert.That(regions, Does.Contain(("Owner", 26, 1)));
+            Assert.That(regions, Does.Contain(("Morale bonus", 28, 1)));
+            Assert.That(regions, Does.Contain(("Luck bonus", 29, 1)));
+            Assert.That(regions, Does.Contain(("Active adventure spells", 31, 5)));
+            Assert.That(regions, Does.Contain(("Hero id", 36, 1)));
+            Assert.That(regions, Does.Contain(("Class", 37, 1)));
+            Assert.That(regions, Does.Contain(("Portrait", 38, 1)));
+            Assert.That(regions, Does.Contain(("Facing", 41, 1)));
+            Assert.That(regions, Does.Contain(("Destination X", 45, 4)));
+            Assert.That(regions, Does.Contain(("Destination Y", 49, 4)));
+            Assert.That(regions, Does.Contain(("Destination level", 53, 2)));
+            Assert.That(regions, Does.Contain(("Movement points, maximum", 57, 4)));
+            Assert.That(regions, Does.Contain(("Movement points, left", 61, 4)));
+            Assert.That(regions, Does.Contain(("Experience", 65, 4)));
+            Assert.That(regions, Does.Contain(("Number of skills", 69, 1)));
+            Assert.That(regions, Does.Contain(("Spell points", 73, 2)));
+            Assert.That(regions, Does.Contain(("Level", 75, 1)));
+            Assert.That(regions, Does.Contain(("Visited building effects", 135, 4)));
+            Assert.That(regions, Does.Contain(("Creature types", 139, 28)));
+            Assert.That(regions, Does.Contain(("Creature counts", 167, 28)));
+            Assert.That(regions, Does.Contain(("Name", 195, 13)));
+            Assert.That(regions, Does.Contain(("Attack", 264, 1)));
+            Assert.That(regions, Does.Contain(("Defence", 265, 1)));
+            Assert.That(regions, Does.Contain(("Spell power", 266, 1)));
+            Assert.That(regions, Does.Contain(("Knowledge", 267, 1)));
         }
 
         [Test]
-        public void EveryOffsetNameHasARegionStartingAtItsOffset()
+        public void TheSkillsAndSpellsAreOneByteForEachCodeUpToTheHighestOfTheVersion()
         {
-            var regions = TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length);
+            var regions = this.Regions(GameVersion.ShadowOfDeath).Select(Of).ToList();
 
-            foreach (var name in Enum.GetValues<HeroOffsetName>())
+            Assert.That(regions, Does.Contain(("Skill levels", 208, 28)));
+            Assert.That(regions, Does.Contain(("Skill slots", 236, 28)));
+            Assert.That(regions, Does.Contain(("Spells in book", 268, 70)));
+            Assert.That(regions, Does.Contain(("Spells from artifacts", 338, 70)));
+        }
+
+        [Test]
+        public void TheSkillTablesNameEachSkillAtItsCode()
+        {
+            var levels = this.Regions(GameVersion.ShadowOfDeath).Single(r => r.Name == "Skill levels");
+
+            Assert.That(levels.Parts!, Has.Count.EqualTo(28));
+            Assert.That(levels.Parts!.Select(p => p.Start), Is.EqualTo(Enumerable.Range(208, 28)));
+            Assert.That(levels.Parts!.Select(p => p.Name), Is.EqualTo(SecondarySkill.All.Where(s => s.IsAvailableIn(GameVersion.ShadowOfDeath)).OrderBy(s => s.Code).Select(s => s.Name)));
+            Assert.That(levels.Parts!.Select(p => p.Group), Has.All.EqualTo("Skill levels"));
+        }
+
+        [Test]
+        public void TheEquipmentIsEightBytesForEachSlotAndTheBackpackSixtyFourSlotsOfEight()
+        {
+            var regions = this.Regions(GameVersion.ShadowOfDeath).Select(Of).ToList();
+
+            var slots = new[] { "Helmet", "Cape", "Necklace", "Weapon", "Shield", "Torso", "Left ring", "Right ring", "Feet", "Misc 1", "Misc 2", "Misc 3", "Misc 4" };
+            Assert.That(slots.Select(s => regions.Single(r => r.Name == s).Start), Is.EqualTo(new[] { 408, 416, 424, 432, 440, 448, 456, 464, 472, 480, 488, 496, 504 }));
+            Assert.That(regions, Does.Contain(("Ballista", 512, 8)));
+            Assert.That(regions, Does.Contain(("Ammo cart", 520, 8)));
+            Assert.That(regions, Does.Contain(("First aid tent", 528, 8)));
+            Assert.That(regions, Does.Contain(("Spell book", 544, 8)));
+            Assert.That(regions, Does.Contain(("Misc 5", 552, 8)));
+            Assert.That(regions, Does.Contain(("Backpack", 560, 512)));
+        }
+
+        [TestCase(GameVersion.RestorationOfErathia, 552)]
+        [TestCase(GameVersion.ArmageddonsBlade, 560)]
+        public void AVersionWithoutAFifthSideSlotHasNoRegionForItAndTheBackpackMovesWithTheVersion(GameVersion version, int backpack)
+        {
+            var regions = this.Regions(version);
+
+            Assert.That(regions.Select(r => r.Name), Does.Not.Contain("Misc 5"));
+            Assert.That(regions.Single(r => r.Name == "Backpack").Start, Is.EqualTo(backpack));
+        }
+
+        [Test]
+        public void TheCannonSharesTheBytesOfTheBallistaAndIsOnlyInHornOfTheAbyss()
+        {
+            var hota = this.Regions(GameVersion.HornOfTheAbyss).Select(Of).ToList();
+
+            Assert.That(hota, Does.Contain(("Ballista", 512, 8)));
+            Assert.That(hota, Does.Contain(("Cannon", 512, 8)));
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath).Select(r => r.Name), Does.Not.Contain("Cannon"));
+        }
+
+        [Test]
+        public void HornOfTheAbyssPutsTheSkillSlotsFarAfterTheOtherFieldsAndHasMoreSkillBytes()
+        {
+            var sod = this.Regions(GameVersion.ShadowOfDeath);
+            var hota = this.Regions(GameVersion.HornOfTheAbyss);
+
+            Assert.That(hota.Single(r => r.Name == "Skill slots").Start, Is.EqualTo(1118));
+            Assert.That(hota.Single(r => r.Name == "Skill levels").Length, Is.GreaterThan(sod.Single(r => r.Name == "Skill levels").Length));
+            Assert.That(hota.Single(r => r.Name == "Skill slots").Length, Is.EqualTo(hota.Single(r => r.Name == "Skill levels").Length));
+        }
+
+        [Test]
+        public void TheAsleepByteIsKnownForShadowOfDeathAndHornOfTheAbyssOnly()
+        {
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath).Select(Of), Does.Contain(("Asleep", 1087, 1)));
+            Assert.That(this.Regions(GameVersion.HornOfTheAbyss).Select(Of), Does.Contain(("Asleep", 1087, 1)));
+            Assert.That(this.Regions(GameVersion.RestorationOfErathia).Select(r => r.Name), Does.Not.Contain("Asleep"));
+            Assert.That(this.Regions(GameVersion.ArmageddonsBlade).Select(r => r.Name), Does.Not.Contain("Asleep"));
+        }
+
+        [Test]
+        public void TheReservedSlotCountersAreNineBytesInOneRegionInVersionsWithAFifthSideSlot()
+        {
+            var reserved = this.Regions(GameVersion.ShadowOfDeath).Single(r => r.Name == "Reserved slots");
+
+            Assert.That((reserved.Start, reserved.Length), Is.EqualTo((1073, 9)));
+            Assert.That(reserved.Parts!.Select(p => p.Start), Is.EqualTo(Enumerable.Range(1073, 9)));
+            Assert.That(this.Regions(GameVersion.ArmageddonsBlade).Select(r => r.Name), Does.Not.Contain("Reserved slots"));
+        }
+
+        [Test]
+        public void TheActiveSpellsAndTheVisitedBuildingsAreNamedByteByByte()
+        {
+            var regions = this.Regions(GameVersion.ShadowOfDeath);
+
+            var spells = regions.Single(r => r.Name == "Active adventure spells");
+            Assert.That(spells.Parts!.Select(p => (p.Name, p.Start)), Is.EqualTo(new[]
             {
-                Assert.That(regions.Any(r => r.Start == HotaOffsets[name]), Is.True, name.ToString());
-            }
-        }
-
-        [Test]
-        public void RegionsFitInTheChunk()
-        {
-            var regions = TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length);
-
-            Assert.That(regions, Has.All.Matches<ByteRegion>(r => r.Start >= 0 && r.Length > 0 && r.End <= this.chunk.Length));
-            Assert.That(regions.SelectMany(r => r.Elements), Has.All.Matches<ByteRegion>(
-                e => regions.Any(r => r.Start <= e.Start && e.End <= r.End)));
-        }
-
-        [Test]
-        public void OnlyTheBallistaAndCannonShareBytes()
-        {
-            var leaves = TestServices.HeroRegions.GetRegions(HotaOffsets).SelectMany(r => r.Leaves()).ToList();
-            var overlaps = new List<string>();
-
-            for (var i = 0; i < leaves.Count; i++)
-            {
-                for (var j = i + 1; j < leaves.Count; j++)
-                {
-                    if (leaves[i].Start < leaves[j].End && leaves[j].Start < leaves[i].End)
-                    {
-                        overlaps.Add($"{leaves[i].Name}/{leaves[j].Name}");
-                    }
-                }
-            }
-
-            Assert.That(overlaps, Is.EqualTo(new[] { "Ballista/Cannon" }));
-        }
-
-        [Test]
-        public void CannonOnlyExistsInHota()
-        {
-            var classic = TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.ShadowOfDeath));
-
-            Assert.That(classic.Select(r => r.Name), Does.Not.Contain("Cannon"));
-            Assert.That(TestServices.HeroRegions.GetRegions(HotaOffsets).Select(r => r.Name), Does.Contain("Cannon"));
-        }
-
-        [Test]
-        public void ArraysHaveTheirRealSizes()
-        {
-            var regions = TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length);
-
-            var creatures = regions.Single(r => r.Start == HotaOffsets[HeroOffsetName.Creatures]);
-            Assert.That(creatures.Length, Is.EqualTo(Constants.CreatureSlotCount * 4));
-            Assert.That(creatures.Elements, Has.Count.EqualTo(Constants.CreatureSlotCount));
-            Assert.That(creatures.Elements.Select(e => e.Length), Has.All.EqualTo(4));
-
-            var amounts = regions.Single(r => r.Start == HotaOffsets[HeroOffsetName.CreaturesAmounts]);
-            Assert.That(amounts.Length, Is.EqualTo(Constants.CreatureSlotCount * 4));
-
-            var backpack = regions.Single(r => r.Start == HotaOffsets[HeroOffsetName.Backpack]);
-            Assert.That(backpack.Length, Is.EqualTo(Constants.BackpackSlotCount * Constants.BackpackSlotSize));
-            Assert.That(backpack.Elements, Has.Count.EqualTo(Constants.BackpackSlotCount));
-
-            var skills = regions.Single(r => r.Start == HotaOffsets[HeroOffsetName.Skills]);
-            Assert.That(skills.Elements, Has.Count.EqualTo(TestServices.VersionEntities.For(GameVersion.HornOfTheAbyss).SecondarySkills.Count));
-
-            var name = regions.Single(r => r.Start == HotaOffsets[HeroOffsetName.Name]);
-            Assert.That(name.End, Is.EqualTo(HotaOffsets[HeroOffsetName.Skills]));
-        }
-
-        [Test]
-        public void SerializerOnlyWritesInsideKnownRegions()
-        {
-            var entities = TestServices.VersionEntities.For(GameVersion.HornOfTheAbyss);
-            var serializer = new SafeHeroSerializer(HotaOffsets, entities);
-            var model = new HeroDeserializer(HotaOffsets, entities).Deserialize(this.chunk);
-            var map = new ByteRegionMap(TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length), this.chunk.Length);
-
-            var edited = serializer.Serialize(this.chunk, model with
-            {
-                PrimarySkills = new PrimarySkills(11, 12, 13, 14),
-                HeroLevel = new HeroLevel { Level = 30, Experience = 123456 },
-                Army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10).WithSlot(6, Creature.Angel, 3),
-                SecondarySkills = model.SecondarySkills.WithoutSlot(0),
-                Backpack = model.Backpack.WithSlot(Constants.BackpackSlotCount - 1, Artifact.OrbOfInhibition),
-                EquippedArtifacts = model.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
-                SpellPoints = 77,
-            });
-
-            var changed = ByteEditTargetExtensions.FindDifferences(this.chunk.ToArray(), edited.ToArray());
-            Assert.That(changed, Is.Not.Empty);
-            Assert.That(changed.Where(i => map.FindLeaf(i) == null), Is.Empty);
-        }
-
-        [Test]
-        public void MapFindsRegionsAndAlternatesShades()
-        {
-            var map = new ByteRegionMap(TestServices.HeroRegions.GetRegions(HotaOffsets, this.chunk.Length), this.chunk.Length);
-            var start = HotaOffsets[HeroOffsetName.Creatures];
-
-            Assert.That(map.FindLeaf(start)?.FullName, Is.EqualTo("Creature types: Slot 1"));
-            Assert.That(map.FindLeaf(start + 4)?.FullName, Is.EqualTo("Creature types: Slot 2"));
-            Assert.That(map.GetShade(start), Is.Not.EqualTo(map.GetShade(start + 4)));
-            Assert.That(map.GetShade(start), Is.EqualTo(map.GetShade(start + 3)));
-            Assert.That(map.FindLeaf(HotaOffsets[HeroOffsetName.Ballista] + 1)?.Kind, Is.EqualTo(ByteRegionKind.WarMachines));
-            Assert.That(map.FindAll(HotaOffsets[HeroOffsetName.Ballista]), Has.Count.EqualTo(2));
-            Assert.That(map.FindLeaf(HotaOffsets[HeroOffsetName.PositionX] + 2)?.Name, Is.EqualTo("Map Y"));
-            Assert.That(map.FindLeaf(-1), Is.Null);
-            Assert.That(map.FindLeaf(this.chunk.Length), Is.Null);
-        }
-
-        [Test]
-        public void TheHeroHasItsReservedSlotCounters()
-        {
-            var offsets = new HeroOffsets(GameVersion.HornOfTheAbyss);
-            var regions = TestServices.HeroRegions.GetRegions(offsets);
-
-            var reserved = regions.Single(r => r.Name == "Reserved slots");
-            Assert.That(reserved.Elements.Select(e => e.Name), Is.EqualTo(new[] { "Helmet", "Cape", "Necklace", "Weapon", "Shield", "Torso", "Rings", "Feet", "Misc" }));
-            Assert.That(reserved.Elements.Select(e => e.Start), Is.EqualTo(offsets.ReservedSlotCounters.Select(c => c.Offset)));
-            Assert.That(TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.ShadowOfDeath)).Select(r => r.Name), Does.Contain("Reserved slots"));
-            Assert.That(TestServices.HeroRegions.GetRegions(new HeroOffsets(GameVersion.RestorationOfErathia)).Select(r => r.Name), Does.Not.Contain("Reserved slots"));
-        }
-
-        [Test]
-        public void TheHeroHeaderHasItsPositionGenderAndBiographyLength()
-        {
-            var offsets = new HeroOffsets(GameVersion.HornOfTheAbyss);
-            var header = TestServices.HeroRegions.GetHeaderRegions(offsets);
-
-            Assert.That(header.Select(r => (r.Name, r.Start)), Is.EqualTo(new[]
-            {
-                ("Map X", 0), ("Map Y", 2), ("Map level", 4), ("Gender", 20), ("Biography length", 22),
+                ("Disguise", 31), ("Fly", 32), ("Water Walk", 33), ("Unknown, always 0", 34), ("Visions", 35),
             }));
-            Assert.That(header.Max(r => r.End), Is.EqualTo(HeroChunk.HeaderLength));
+
+            var visits = regions.Single(r => r.Name == "Visited building effects");
+            Assert.That(visits.Parts!.Select(p => p.Start), Is.EqualTo(new[] { 135, 136, 137, 138 }));
+        }
+
+        [Test]
+        public void TheRegionsComeInTheOrderOfTheirBytes()
+        {
+            var starts = this.Regions(GameVersion.HornOfTheAbyss).Select(r => r.Start).ToList();
+
+            Assert.That(starts, Is.Ordered);
+        }
+
+        [Test]
+        public void AChunkCutShortLeavesOutTheFieldsThatWouldRunPastItsEnd()
+        {
+            var regions = this.Regions(GameVersion.ShadowOfDeath, 76);
+
+            Assert.That(regions.Max(r => r.End), Is.LessThanOrEqualTo(76));
+            Assert.That(regions.Select(r => r.Name), Does.Contain("Level"));
+            Assert.That(regions.Select(r => r.Name), Does.Not.Contain("Creature types"));
+        }
+
+        [Test]
+        public void ARegionEndingExactlyAtTheEndOfTheChunkIsKeptAndOneByteLessLeavesItOut()
+        {
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath, 76).Select(r => r.Name), Does.Contain("Level"));
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath, 75).Select(r => r.Name), Does.Not.Contain("Level"));
+        }
+
+        [Test]
+        public void TheAsleepByteAndTheReservedSlotsAreLeftOutOfAChunkThatEndsBeforeThem()
+        {
+            var cut = this.Regions(GameVersion.ShadowOfDeath, 1082);
+
+            Assert.That(cut.Select(r => r.Name), Does.Contain("Reserved slots"));
+            Assert.That(cut.Select(r => r.Name), Does.Not.Contain("Asleep"));
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath, 1081).Select(r => r.Name), Does.Not.Contain("Reserved slots"));
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath, 1087).Select(r => r.Name), Does.Not.Contain("Asleep"));
+            Assert.That(this.Regions(GameVersion.ShadowOfDeath, 1088).Select(r => r.Name), Does.Contain("Asleep"));
+        }
+
+        [Test]
+        public void TheHeaderInFrontOfAHeroWithABiographyHoldsItsPositionGenderAndTheLengthOfTheBiography()
+        {
+            var header = this.provider.GetHeaderRegions(new HeroOffsets(GameVersion.ShadowOfDeath));
+
+            Assert.That(header.Select(Of), Is.EqualTo(new[]
+            {
+                ("Map X", 0, 2), ("Map Y", 2, 2), ("Map level", 4, 2), ("Gender", 20, 1), ("Biography length", 22, 4),
+            }));
         }
     }
 }

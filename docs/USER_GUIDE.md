@@ -44,12 +44,35 @@ Pages:
 
 ## Settings
 
-The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them.
+The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them. The first time the editor starts it writes `settings.json` with the defaults, and `serilog.json` (how and where the log is written: the template, the rolling interval and the days kept) beside it; both can be edited by hand.
 
-- **Settings > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
+- **Settings... > Saving > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
   See below.
-- **Settings > Advanced mode** (off by default): shows the tools for working with the raw bytes.
+- **Settings... > Tools > Advanced mode** (off by default): shows the tools for working with the raw bytes.
   See below.
+- **Settings... > Logging > Log level and Log folder**: how much the editor writes to its log file and where the file goes.
+  See below.
+
+### The log
+
+The editor writes a plain text log of what it did and of anything unexpected it met (a value it does not know, a file it could not read, a save that failed).
+It is meant for bug reports, and nothing in it leaves your computer.
+
+- **Help > Show logs** opens the folder of the log files.
+  There is one file for each day, `siniskalc-<date>.log`, and the last 7 days are kept.
+  The default folder is `%LOCALAPPDATA%\Siniskalc\logs` (on Linux and macOS, `~/.local/share/Siniskalc/logs`).
+- **Settings... > Logging** sets the **Log level** and the **Log folder** (Browse... picks one, Use default empties the box).
+  The level says how much is written: *Information* (the usual) lists what you opened and saved and anything unexpected; *Debug* and *Trace* add detail (for example, each value in a
+  savegame that the editor did not know and read as a stand-in); *Warning*, *Error* and *Critical* write less. *Default* leaves the level to `serilog.json` (Information, as shipped).
+  A folder is checked when you press OK: it has to be a full path the editor can write to.
+  The choices apply **the next time the editor starts**.
+- Every line starts with the time and the level, then the part of the editor that wrote it, then what it is about when it is about one hero, castle or player
+  (`Siniskalc.Homm3.Data.HeroDeserializer (Hero Sandro): Class byte FE read as Knight and kept until the class is changed`).
+- **How and where the log is written** (the template of a line, the sinks, the rolling interval, how many days are kept) is in `serilog.json`, beside `settings.json`
+  in `%APPDATA%\Siniskalc`. The editor writes it with the defaults the first time it starts; edit it with a text editor, for example `"retainedFileCountLimit": 30` to keep a month, and restart.
+  The log folder is `{LogFolder}` in its `path`, so leave that as it is unless you want a fixed path.
+  If the file cannot be read, the editor says so when it starts and offers to put it aside (`serilog.json.bad`) and start with the default one.
+  The details are in [LOGGING.md](LOGGING.md).
 
 ### Backups
 
@@ -96,3 +119,5 @@ Nothing that was edited is lost.
 
 To report a problem use **Help > Report an issue**, or <https://github.com/dimif/Siniskalc/issues>.
 Say which game and version it is and what you did, and attach the savegame (or a dump from the Advanced menu) if you can.
+Attach the log of the day too (**Help > Show logs**); set the level to *Debug* first and repeat what you did if the problem is about a value the editor misread.
+The log names the savegame files but does not hold their contents; a full path appears only when the path itself is the problem (the settings file, the log folder).

@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
 
     /// <summary>
     /// Splices fixed-length chunks back into the bytes of a savefile.
@@ -9,15 +11,20 @@
     /// </summary>
     public sealed class SavefileBytesPatcher : ISavefileBytesPatcher
     {
+        private static readonly ILogger<SavefileBytesPatcher> Logger = LogFactory.For<SavefileBytesPatcher>();
+
         public byte[] Patch(byte[] originalSave, IEnumerable<BytesChunk> chunks)
         {
             var result = (byte[])originalSave.Clone();
 
+            var count = 0;
             foreach (var chunk in Validate(chunks, result.Length))
             {
                 chunk.CopyTo(result);
+                count++;
             }
 
+            Logger.LogDebug("Patched {Chunks} chunks into the {Length} bytes of the savefile", count, result.Length);
             return result;
         }
 
@@ -33,18 +40,23 @@
 
             var result = (byte[])target.Clone();
 
+            var count = 0;
+            var changed = 0;
             foreach (var chunk in Validate(chunks, result.Length))
             {
+                count++;
                 var bytes = chunk.ToArray();
                 for (var i = 0; i < bytes.Length; i++)
                 {
                     if (bytes[i] != originalSave[chunk.StartIndex + i])
                     {
                         result[chunk.StartIndex + i] = bytes[i];
+                        changed++;
                     }
                 }
             }
 
+            Logger.LogDebug("Wrote {Changed} changed bytes from {Chunks} chunks into the {Length} bytes of the savefile", changed, count, result.Length);
             return result;
         }
 

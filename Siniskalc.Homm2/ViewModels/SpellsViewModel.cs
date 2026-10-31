@@ -6,7 +6,6 @@ namespace Siniskalc.Homm2.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The spells page of a hero of Heroes of Might and Magic II: whether the hero has a spell book (the Magic Book is an artifact) and

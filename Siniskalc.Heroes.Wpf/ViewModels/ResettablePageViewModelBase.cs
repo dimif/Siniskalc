@@ -11,9 +11,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public abstract class ResettablePageViewModelBase : TabbedPageViewModelBase, IResettablePage, IDisposable
     {
-        private readonly SaveDocumentHistory history;
+        private readonly IHistoryEvents history;
 
-        protected ResettablePageViewModelBase(string title, SaveDocumentHistory history)
+        protected ResettablePageViewModelBase(string title, IHistoryEvents history)
             : base(title)
         {
             this.history = history;

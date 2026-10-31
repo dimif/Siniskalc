@@ -31,7 +31,7 @@
         public GameVersion GameVersion => this.Layout.Version;
 
         /// <inheritdoc/>
-        public override string VersionName => this.GameVersion.ToString();
+        public override string VersionName => this.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "The Succession Wars";
 
         /// <summary>
         /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when the savegame does not say.

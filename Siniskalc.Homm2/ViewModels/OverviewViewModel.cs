@@ -1,10 +1,8 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -37,7 +35,10 @@
         }
 
         /// <inheritdoc/>
-        public override string VersionName => this.game.GameVersion == GameVersion.PriceOfLoyalty ? "Price of Loyalty" : "Base game";
+        public override string VersionName => this.game.VersionName;
+
+        /// <inheritdoc/>
+        protected override string ComputerTurnToolTip => "A computer player: it plays after the humans, and cannot be given the turn";
 
         /// <summary>
         /// Reads the players again from the current document.
@@ -52,27 +53,14 @@
                 .Where(player => player.CastleIds.Count > 0 || player.HeroIds.Count > 0 || player.DaysLeft != null)
                 .ToList();
             this.Players = inGame.Select(player => this.CardOf(player)).ToList();
-            this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(this.OrderItemOf).ToList();
+            this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(player => this.OrderItemOf(player.Color)).ToList();
             var owned = heroes.Count(h => !h.Owner.IsNeutral);
             this.Summary = SummaryOf(this.Players.Count, owned, this.DifficultyText);
             this.RaiseAllPropertiesChanged();
         }
 
-        private OrderOfPlayItemViewModel OrderItemOf(PlayerModel player)
-        {
-            var color = player.Color;
-            var isHuman = this.game.GetControl(color) == PlayerType.Human;
-            var isCurrent = this.game.CurrentPlayer == color;
-            var command = isHuman && !isCurrent
-                ? new DelegateCommand(_ => this.game.History.CreateTurnSession().Update(turn => turn with { Record = this.game.RecordOf(color), Color = color }))
-                : null;
-            return new OrderOfPlayItemViewModel(
-                color.ToString(),
-                PlayerPalette.Of(color),
-                isCurrent,
-                command,
-                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player" : "A computer player: it plays after the humans, and cannot be given the turn");
-        }
+        /// <inheritdoc/>
+        protected override void GiveTurn(PlayerColor color) => this.game.History.CreateTurnSession().Update(turn => turn with { Record = this.game.RecordOf(color), Color = color });
 
         private PlayerCardViewModel CardOf(PlayerModel player)
         {

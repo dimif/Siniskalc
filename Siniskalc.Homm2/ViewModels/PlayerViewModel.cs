@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Windows.Input;
-    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -26,7 +25,9 @@ namespace Siniskalc.Homm2.ViewModels
             Constants.Player.GoldStep,
             Constants.Player.OtherStep,
             Constants.Player.AllResourcesIncrease,
-            Constants.Player.GoldIncrease);
+            Constants.Player.GoldIncrease,
+            Constants.Player.OtherPreset,
+            Constants.Player.GoldPreset);
 
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
@@ -38,15 +39,16 @@ namespace Siniskalc.Homm2.ViewModels
         private string banishing = string.Empty;
 
         public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
         {
+            this.Game = game;
             this.Color = color;
             this.banishingText = banishingText;
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = game.History.CreatePlayerSession(color.Code);
             this.Mines = MinesLists.Create(game, color);
-            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", at => MapLevelText.Coordinates(at.X, at.Y));
+            this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", hasLevels: false);
             this.resources = ResourcesEditorViewModel.ForPlayer(
                 Limits,
                 () => this.session.Current.Resources,
@@ -64,6 +66,8 @@ namespace Siniskalc.Homm2.ViewModels
                 () => this.session.Current.IsBanished);
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public PlayerColor Color { get; }
 
@@ -96,6 +100,22 @@ namespace Siniskalc.Homm2.ViewModels
 
         /// <inheritdoc/>
         public ICommand SetRichCommand => this.resources.SetRichCommand;
+
+        /// <summary>
+        /// Gets the command that sets every resource but gold to 0.
+        /// </summary>
+        public ICommand ClearAllResourcesCommand => this.resources.ClearAllCommand;
+
+        /// <summary>
+        /// Gets the command that sets gold to 0.
+        /// </summary>
+        public ICommand ClearRichCommand => this.resources.ClearRichCommand;
+
+        /// <inheritdoc/>
+        public string SetAllLabel => this.resources.SetAllLabel;
+
+        /// <inheritdoc/>
+        public string SetRichLabel => this.resources.SetRichLabel;
 
         /// <summary>
         /// Gets the mines of the map that the player owns, for the Mines tab.

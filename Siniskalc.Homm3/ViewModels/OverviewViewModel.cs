@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -18,6 +17,11 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class OverviewViewModel : OverviewViewModelBase<PlayerColor>
     {
+        /// <summary>
+        /// The tooltip of the button that gives the turn to a human player.
+        /// </summary>
+        public const string GiveTheTurnToolTip = "Give the turn to this player: the savegame then opens on this player's turn. Not tried in the game.";
+
         private readonly Game game;
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
@@ -36,15 +40,24 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <inheritdoc/>
-        public override string VersionName => this.game.GameVersion switch
-        {
-            GameVersion.RestorationOfErathia => "Restoration of Erathia",
-            GameVersion.ArmageddonsBlade => "Armageddon's Blade",
-            GameVersion.ShadowOfDeath => "Shadow of Death",
-            GameVersion.HeroesChronicles => "Heroes Chronicles",
-            GameVersion.HornOfTheAbyss => "Horn of the Abyss",
-            _ => "Unknown version",
-        };
+        public override string VersionName => this.game.VersionName;
+
+        /// <summary>
+        /// Gets whether the savefile tells about the map. The other map properties are empty when it does not.
+        /// </summary>
+        public bool HasMap => this.game.Map != null;
+
+        /// <summary>
+        /// Gets a note about the heroes that no player owns, or nothing when every hero has an owner.
+        /// </summary>
+        public string UnownedNote { get; private set; } = string.Empty;
+
+        /// <inheritdoc/>
+        protected override string GiveTurnToolTip => GiveTheTurnToolTip;
+
+
+        /// <inheritdoc/>
+        protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";
 
         /// <summary>
         /// Builds the cards again from the savefile as it is edited now.
@@ -81,6 +94,7 @@ namespace Siniskalc.Homm3.ViewModels
             var obelisks = this.game.History.Current.Obelisks().GetModel() is { Count: > 0 } found ? OverviewText.Count(found.Count, "obelisk", "obelisks") : string.Empty;
             this.Summary = SummaryOf(this.Players.Count, summaries.Count - unowned, this.DifficultyText, obelisks);
 
+            this.UnownedNote = unowned == 0 ? string.Empty : $"{unowned} more {(unowned == 1 ? "hero belongs" : "heroes belong")} to no player; they are listed under \"Neutral\" on the left.";
             this.RaiseAllPropertiesChanged();
         }
 
@@ -89,19 +103,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
 
-        // The button of a human who has not the turn can be pressed, but changes nothing yet: where the savefile keeps the turn is known
-        // (see PlayerControlLocator) and writing it is not built.
-        // TODO:LOG info: the turn was asked to be given to a player, and the editor does not write it for this game yet.
-        private OrderOfPlayItemViewModel OrderItemOf(PlayerColor color)
-        {
-            var isCurrent = this.game.CurrentPlayer == color;
-            var isHuman = this.game.GetControl(color) == PlayerType.Human;
-            return new OrderOfPlayItemViewModel(
-                color.ToString(),
-                PlayerPalette.Of(color),
-                isCurrent,
-                isHuman && !isCurrent ? new DelegateCommand(_ => { }) : null,
-                isCurrent ? "It is this player's turn" : isHuman ? "Give the turn to this player (not saved yet: the editor does not write it for this game)" : "A computer player cannot be given the turn");
-        }
+        /// <inheritdoc/>
+        protected override void GiveTurn(PlayerColor color) => this.game.History.CreateTurnSession().Update(turn => turn with { Color = color });
     }
 }

@@ -8,12 +8,17 @@
     <!-- The mines of one owner, with the guard of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
     <StackPanel>
         <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
-        <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-            <StackPanel>
-                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding GuardHeading}"/>
-                <local:ArmyEditor DataContext="{Binding GuardEditor}"/>
-            </StackPanel>
-        </Border>
+        <local:ArmyEditor DataContext="{Binding GuardEditor}">
+            <local:ArmyEditor.Style>
+                <Style TargetType="local:ArmyEditor">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </local:ArmyEditor.Style>
+        </local:ArmyEditor>
         <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
             <Grid>
                 <Grid.RowDefinitions>

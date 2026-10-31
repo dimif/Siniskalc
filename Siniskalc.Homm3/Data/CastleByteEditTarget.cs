@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm3.Data
 {
-    using System;
     using Siniskalc.Core.Data;
 
     /// <summary>
@@ -8,12 +7,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class CastleByteEditTarget : ChunkByteEditTarget<CastleChunk, Models.CastleModel>
     {
-        public CastleByteEditTarget(SaveDocumentHistory history, int castleIndex, ICastleRegionProvider regions)
-            : this(new CastleEditSession(history, castleIndex), regions)
-        {
-        }
-
-        private CastleByteEditTarget(CastleEditSession session, ICastleRegionProvider regions)
+        public CastleByteEditTarget(CastleEditSession session, ICastleRegionProvider regions)
             : base(session, regions.GetRegions(session.Chunk))
         {
         }

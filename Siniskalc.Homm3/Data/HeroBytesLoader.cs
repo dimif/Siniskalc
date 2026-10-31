@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -49,6 +51,8 @@
         /// </summary>
         private const int ShadowOfDeathTailLength = 12;
         private const byte MaxSkillLevel = 0x1C;
+
+        private static readonly ILogger<HeroBytesLoader> Logger = LogFactory.For<HeroBytesLoader>();
 
         private static readonly HeroShape RoeShape = new(18, false, false, false);
         private static readonly HeroShape AbNewShape = new(18, true, false, false);
@@ -338,7 +342,7 @@
             }
             catch (DecoderFallbackException)
             {
-                // TODO:LOG info: a hero biography at {start} is not text in the encoding of the savefile; the hero is read without one.
+                Logger.LogDebug("The biography at offset {Offset:X} is not text in the encoding of the savefile, the hero is read without one", start);
                 return null;
             }
         }
@@ -358,7 +362,7 @@
             }
             catch (DecoderFallbackException)
             {
-                // TODO:LOG debug: bytes at {index} look like a hero but their name is not text in the encoding of the savefile; the scan goes on.
+                Logger.LogTrace("Bytes at offset {Offset:X} look like a hero but the name is not text in the encoding of the savefile, the scan goes on", index);
                 return false;
             }
         }

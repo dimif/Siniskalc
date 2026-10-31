@@ -17,8 +17,8 @@ namespace Siniskalc.Homm3.Models
     public sealed record DwellingModel(int Index, int CreatureCode, Creature? Creature, PlayerColor Owner, MapPosition Position, long Stock)
     {
         /// <summary>
-        /// Gets the name of the dwelling with its place, such as "Pikeman dwelling at X: 31, Y: 56, Surface (0)", as the pending changes name it.
+        /// Gets the name of the dwelling with its place, such as "Pikeman dwelling at 31, 56, Surface", as the pending changes name it.
         /// </summary>
-        public string Name => $"{this.Creature?.Name ?? $"Creature {this.CreatureCode}"} dwelling at {MapLevelText.Coordinates(this.Position.X, this.Position.Y, this.Position.Level)}";
+        public string Name => $"{this.Creature?.Name ?? $"Creature {this.CreatureCode}"} dwelling at {MapLevelText.Place(this.Position.X, this.Position.Y, this.Position.Level)}";
     }
 }

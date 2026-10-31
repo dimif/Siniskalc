@@ -3,6 +3,7 @@
     using System;
     using System.Globalization;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Copies a file to <c>name.bak</c>, and when that exists to <c>name.bak1</c>, <c>name.bak2</c> and so on, one number higher than
@@ -11,6 +12,8 @@
     public sealed class NumberedSavefileBackupService : IFileBackupService
     {
         private const string Extension = ".bak";
+
+        private static readonly ILogger<NumberedSavefileBackupService> Logger = LogFactory.For<NumberedSavefileBackupService>();
 
         /// <inheritdoc/>
         /// <exception cref="FileNotFoundException">The file does not exist.</exception>
@@ -34,7 +37,7 @@
                 catch (IOException) when (File.Exists(target))
                 {
                     // Someone made that copy since we looked.
-                    // TODO:LOG debug: the backup {target} appeared while it was being made; the next number is tried.
+                    Logger.LogDebug("Backup {File} appeared while it was being made, trying the next number", Path.GetFileName(target));
                     next++;
                 }
             }

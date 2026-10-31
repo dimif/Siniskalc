@@ -15,7 +15,7 @@
     public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, PlayerColor Owner) : IMineModel<PlayerColor>
     {
         /// <summary>
-        /// Gets the name of the mine with its place, such as "Gold mine at X: 12, Y: 7" (the map of HoMM2 has one level).
+        /// Gets the name of the mine with its place, such as "Gold mine at 12, 7" (the map of HoMM2 has one level).
         /// </summary>
         public string Name => MineKinds.NameAt(this.Kind, this.Position, hasLevels: false);
     }

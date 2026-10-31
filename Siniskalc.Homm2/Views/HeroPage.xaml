@@ -79,28 +79,11 @@
             <Grid Margin="8,4,8,16">
                 <!-- General -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Primary skills"/>
-                            <ItemsControl ItemsSource="{Binding PrimarySkills}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
-                                       Text="The game keeps the skills with the bonuses of the artifacts in them, and moves them with the artifact."/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:PrimarySkillsCard DataContext="{Binding PrimarySkills}"/>
                     <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
                     <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
-                    <heroes:ActiveSpellsCard DataContext="{Binding ActiveSpells}"/>
                     <heroes:MapPointCard DataContext="{Binding Position}"/>
-                    <Border Style="{StaticResource CardStyle}" Width="330">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Next battle"/>
-                            <ItemsControl ItemsSource="{Binding BattleBonus}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
-                            <TextBlock Margin="0,8,0,2" Foreground="{StaticResource MutedBrush}" Text="Given by"/>
-                            <ItemsControl ItemsSource="{Binding BattleSources}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
-                                       Text="What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game."/>
-                        </StackPanel>
-                    </Border>
+                    <heroes:NextBattleCard DataContext="{Binding NextBattle}"/>
                     <!-- Last, so that it is not stretched to the height of the tall card beside it. -->
                     <heroes:MapPointCard DataContext="{Binding Destination}"/>
                 </WrapPanel>

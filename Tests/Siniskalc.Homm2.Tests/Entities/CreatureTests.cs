@@ -1,10 +1,10 @@
 namespace Siniskalc.Homm2.Tests.Entities
 {
     using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Entities;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CreatureTests
     {
         [Test]

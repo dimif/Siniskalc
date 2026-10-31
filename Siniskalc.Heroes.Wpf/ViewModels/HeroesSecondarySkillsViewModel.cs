@@ -5,7 +5,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     using System.Linq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The secondary skills editor of every game: the slots of a hero and the level in each skill the game has, over the

@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the Banishing card of a player page.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class DaysLeftCardViewModelTests
     {
         private readonly List<int> written = [];

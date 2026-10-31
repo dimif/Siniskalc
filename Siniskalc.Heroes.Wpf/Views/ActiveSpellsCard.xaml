@@ -13,7 +13,8 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding IsChecked}" ToolTip="{Binding ToolTip}">
+                        <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding IsChecked}" IsEnabled="{Binding CanToggle}"
+                                  ToolTip="{Binding ToolTip}" ToolTipService.ShowOnDisabled="True">
                             <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
                         </CheckBox>
                     </DataTemplate>

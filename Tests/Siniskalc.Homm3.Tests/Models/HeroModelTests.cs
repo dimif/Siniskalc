@@ -2,22 +2,20 @@ namespace Siniskalc.Homm3.Tests.Models
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Homm3.Tests.Data;
 
     /// <summary>
-    /// Tests what a hero of HoMM3 tells through the interfaces every game's hero has.
+    /// Tests the reducers of the model of a hero and what it tells through the interface every game's hero has, on a hero made by hand.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroModelTests
     {
         [Test]
         public void AHeroTellsItsArmyThroughTheSharedInterface()
         {
-            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
-            var hero = game.History.CreateHeroSession(0).Current;
+            var hero = HeroModels.Christian();
 
             IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = hero;
 
@@ -27,8 +25,7 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void AHeroThatServesNobodyLeavesTheMapAndFacesEast()
         {
-            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
-            var hero = game.History.CreateHeroSession(0).Current with { Destination = new MapPosition(3, 3) };
+            var hero = HeroModels.Christian() with { Destination = new MapPosition(3, 3) };
 
             var freed = hero.WithOwner(PlayerColor.Neutral);
 
@@ -38,20 +35,17 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void AHeroGivenToAPlayerKeepsItsPlace()
         {
-            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
-            var hero = game.History.CreateHeroSession(0).Current;
+            var hero = HeroModels.Christian() with { Destination = new MapPosition(3, 3) };
 
             var given = hero.WithOwner(PlayerColor.Pink);
 
             Assert.That((given.Owner, given.Position, given.Destination), Is.EqualTo((PlayerColor.Pink, hero.Position, hero.Destination)));
         }
 
-        private static HeroModel FirstHero() => CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.CreateHeroSession(0).Current;
-
         [Test]
         public void TheLevelAndTheExperienceOfAHeroAreSetTogetherFromTheTable()
         {
-            var hero = FirstHero();
+            var hero = HeroModels.Christian();
 
             Assert.That(hero.WithLevel(10).HeroLevel, Is.EqualTo(new HeroLevel(LevelCalculator.Table.ExperienceOf(10), 10)));
             Assert.That(hero.WithExperience(LevelCalculator.Table.ExperienceOf(20)).HeroLevel.Level, Is.EqualTo(20));
@@ -62,7 +56,7 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void TheMovementLeftAndTheSpellPointsAreSetWithoutTouchingTheRest()
         {
-            var hero = FirstHero();
+            var hero = HeroModels.Christian();
 
             var changed = hero.WithMovementLeft(123).WithSpellPoints(45);
 
@@ -72,7 +66,7 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void AHeroTellsWhetherItHasASpellBookAndWhatItHasLearnedThroughTheSharedInterface()
         {
-            var hero = FirstHero();
+            var hero = HeroModels.Christian();
             var withBook = hero with { SpellBook = hero.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
 
             IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = withBook;
@@ -84,8 +78,7 @@ namespace Siniskalc.Homm3.Tests.Models
         [Test]
         public void AHeroTellsWhoOwnsItWhereItStandsAndHowFarItHasComeThroughTheSharedInterface()
         {
-            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
-            var hero = game.History.CreateHeroSession(0).Current;
+            var hero = HeroModels.Christian();
 
             IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = hero;
 

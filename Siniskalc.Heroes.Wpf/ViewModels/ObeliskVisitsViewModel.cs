@@ -20,21 +20,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly SaveDocumentHistory history;
         private readonly ChunkKind kind;
         private readonly TColor color;
-        private readonly Func<MapPosition, string> placeText;
         private ObeliskEditSession<TColor>? session;
 
         /// <param name="history">The history of the savefile, where the edits go.</param>
         /// <param name="kind">The kind of chunk the game keeps its obelisks in.</param>
         /// <param name="color">The player whose visits are shown.</param>
         /// <param name="goal">What the puzzle of the obelisks leads to, in the words of the game, such as "Grail".</param>
-        /// <param name="placeText">Writes where an obelisk is, such as "X: 34, Y: 58" (with the level in a game that has two).</param>
-        public ObeliskVisitsViewModel(SaveDocumentHistory history, ChunkKind kind, TColor color, string goal, Func<MapPosition, string> placeText)
-            : base($"The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the {goal}.")
+        /// <param name="hasLevels">Whether the map of the game has two levels, so the places say which level they are on.</param>
+        public ObeliskVisitsViewModel(SaveDocumentHistory history, ChunkKind kind, TColor color, string goal, bool hasLevels)
+            : base($"The obelisks of the map this player has visited. Each one shows another piece of the puzzle that leads to the {goal}.", hasLevels)
         {
             this.history = history;
             this.kind = kind;
             this.color = color;
-            this.placeText = placeText;
             this.Refresh();
         }
 
@@ -50,7 +48,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         protected override void Prepare() => this.session = this.Visits == null ? null : this.session ?? new ObeliskEditSession<TColor>(this.history, this.kind, 0);
 
         /// <inheritdoc/>
-        protected override string CoordinatesOf(int index) => this.Visits!.PositionOf(index) is { } at ? this.placeText(at) : string.Empty;
+        protected override MapPosition? PositionOf(int index) => this.Visits!.PositionOf(index);
 
         /// <inheritdoc/>
         protected override bool IsVisited(int index) => this.Visits!.IsVisited(index, this.color);

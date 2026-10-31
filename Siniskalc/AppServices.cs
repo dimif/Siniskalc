@@ -2,7 +2,9 @@
 {
     using System.Diagnostics;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Text;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -22,17 +24,24 @@
     /// </summary>
     public sealed class AppServices
     {
+        private static readonly ILogger<AppServices> Logger = LogFactory.For<AppServices>();
+
         private readonly Homm3ModuleFactory homm3;
         private readonly H2Runtime.Homm2ModuleFactory homm2;
 
         /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
-        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null)
+        /// <param name="loggerFactory">Makes the loggers; the application leaves it out and gets the log file of the user, tests give a silent one.</param>
+        /// <exception cref="SettingsException">The settings file exists but cannot be read.</exception>
+        /// <exception cref="LoggingException">The log folder the user chose cannot be used, or the Serilog configuration cannot be read or built.</exception>
+        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null)
         {
             this.BytesPatcher = new SavefileBytesPatcher();
-            this.Settings = settingsPath is null
-                ? new SettingsStore(UserSettings.PathFor("Siniskalc"), UserSettings.PathFor("Heroes3Editor"))
-                : new SettingsStore(settingsPath);
+            var settingsFile = settingsPath ?? UserSettings.PathFor(AppInfo.Name);
+            this.Settings = new SettingsStore(settingsFile);
+            this.Settings.EnsureCreated();
+            this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name, LogPaths.SerilogConfigPathFor(settingsFile));
+            LogFactory.Install(this.LoggerFactory);
             this.RecentFiles = new RecentFilesStore(this.Settings);
             this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
             this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
@@ -42,11 +51,23 @@
             this.FileDialogs = new WpfFileDialogs();
             this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
             this.About = CreateAboutInfo();
-            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl);
+            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl, LogPaths.Resolve(this.Settings.Settings, AppInfo.Name));
 
             this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
             this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
+
+            Logger.LogInformation(
+                "Started {App} {Version} on {Os} with {Runtime}",
+                this.About.Name,
+                this.About.Version,
+                RuntimeInformation.OSDescription,
+                RuntimeInformation.FrameworkDescription);
         }
+
+        /// <summary>
+        /// Gets the factory of the loggers. The application disposes it when it exits, which flushes the log file.
+        /// </summary>
+        public ILoggerFactory LoggerFactory { get; }
 
         public SettingsStore Settings { get; }
 
@@ -127,6 +148,11 @@
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
         public Homm2EditorViewModel CreateHomm2Editor() => this.homm2.CreateEditor();
+
+        /// <summary>
+        /// Makes the page of the settings where the user chooses the log level and the folder of the logs.
+        /// </summary>
+        public LoggingSettingsViewModel CreateLoggingSettings() => new(this.Settings, LogPaths.DefaultFolderFor(AppInfo.Name), this.FileDialogs);
 
         /// <summary>
         /// Makes the shell of the application, with every game it can edit.

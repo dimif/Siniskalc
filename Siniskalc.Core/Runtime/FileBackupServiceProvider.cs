@@ -6,11 +6,11 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     public sealed class FileBackupServiceProvider : IFileBackupServiceProvider
     {
-        private readonly SettingsStore settings;
+        private readonly ISettingsStore settings;
         private readonly IFileBackupService enabled;
         private readonly IFileBackupService disabled;
 
-        public FileBackupServiceProvider(SettingsStore settings, IFileBackupService enabled, IFileBackupService disabled)
+        public FileBackupServiceProvider(ISettingsStore settings, IFileBackupService enabled, IFileBackupService disabled)
         {
             this.settings = settings;
             this.enabled = enabled;

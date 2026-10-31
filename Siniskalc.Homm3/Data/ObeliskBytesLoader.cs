@@ -4,7 +4,6 @@ namespace Siniskalc.Homm3.Data
     using System.Collections.Generic;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm3.Entities;
 
     /// <summary>
     /// Finds the obelisks the player has visited: see <see cref="ObeliskLayout"/> for where they are and how sure that is.

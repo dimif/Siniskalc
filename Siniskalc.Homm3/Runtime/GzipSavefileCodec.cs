@@ -4,6 +4,7 @@
     using System.IO;
     using ICSharpCode.SharpZipLib;
     using ICSharpCode.SharpZipLib.GZip;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     /// <summary>
@@ -25,6 +26,8 @@
         private const byte FirstMagicByte = 0x1F;
         private const byte SecondMagicByte = 0x8B;
 
+        private static readonly ILogger<GzipSavefileCodec> Logger = LogFactory.For<GzipSavefileCodec>();
+
         /// <summary>
         /// Tells whether the first bytes of a file are those of a GZip file.
         /// </summary>
@@ -44,7 +47,7 @@
             }
             catch (Exception ex) when (ex is SharpZipBaseException or InvalidDataException or EndOfStreamException)
             {
-                // TODO:LOG warning: {filePath} could not be decompressed; log the exception from the decompressor.
+                Logger.LogWarning(ex, "Could not decompress {File}", Path.GetFileName(filePath));
                 throw new CorruptSavefileException($"{Path.GetFileName(filePath)} is not a compressed savegame, or it is damaged: {ex.Message}", ex);
             }
         }
@@ -73,7 +76,8 @@
                 }
                 catch (IOException)
                 {
-                    // TODO:LOG warning: the temporary file {temporary} could not be removed after a failed save.
+                    Logger.LogWarning("Could not remove the temporary file {File} after a failed save", Path.GetFileName(temporary));
+
                     // The write failed already; the leftover is only a stray file.
                 }
 

@@ -27,6 +27,8 @@
                 <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" IsEnabled="{Binding IsBuilt}"
                              Value="{Binding Waiting.Value}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
                              ToolTip="How many creatures wait in the dwelling"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource PillButtonStyle}" Margin="12,0,0,0" VerticalAlignment="Center" Content="+1 wk" Command="{Binding AddWeekCommand}"
+                        ToolTip="Add a week of growth to the dwelling"/>
                 <TextBlock DockPanel.Dock="Right" Width="80" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding WeeklyGrowthText}"
                            ToolTip="What the dwelling gains each week, with the Well and the second well"/>
                 <TextBlock DockPanel.Dock="Left" Width="60" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Label}"/>
@@ -140,8 +142,11 @@
 
                 <!-- Available creatures -->
                 <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <heroes:HeadedCard Heading="Available creatures">
-                        <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource AvailableCreaturesTemplate}"/>
+                    <heroes:HeadedCard Heading="Available creatures" CardWidth="672">
+                        <StackPanel>
+                            <heroes:DwellingStockQuickRow DataContext="{Binding DwellingActions}"/>
+                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource AvailableCreaturesTemplate}"/>
+                        </StackPanel>
                     </heroes:HeadedCard>
                 </WrapPanel>
 

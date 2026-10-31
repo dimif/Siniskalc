@@ -7,7 +7,7 @@
     /// Looks up which regions cover each byte of a chunk. Where regions overlap, the first one listed wins
     /// for <see cref="FindLeaf"/>; <see cref="FindAll"/> returns every one.
     /// </summary>
-    public sealed class ByteRegionMap
+    public sealed class ByteRegionMap : IByteRegionLookup
     {
         private readonly ByteRegion[] leafAt;
         private readonly int[] shadeAt;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace Siniskalc.Wpf.Views
     using System.Windows.Threading;
     using Microsoft.Win32;
     using Siniskalc.Core.Data;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A hex and ASCII editor for any <see cref="IByteEditTarget"/>. It colours the bytes of known regions, marks
@@ -229,7 +228,7 @@ namespace Siniskalc.Wpf.Views
 
             var selected = new Trigger { Property = DataGridCell.IsSelectedProperty, Value = true };
             selected.Setters.Add(new Setter(Control.BackgroundProperty, HexPalette.SelectedBackground));
-            selected.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.Black));
+            selected.Setters.Add(new Setter(Control.ForegroundProperty, HexPalette.SelectedForeground));
             style.Triggers.Add(selected);
 
             return style;
@@ -437,6 +436,45 @@ namespace Siniskalc.Wpf.Views
 
             // Deselect again so that clicking the same field a second time selects its bytes once more.
             this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => item.IsSelected = false));
+        }
+
+        // A click on a field selects its bytes whatever was selected before. The Selected event alone is not enough: it comes only when the item
+        // was not selected, so a click on the field that was clicked last did nothing while its reset was still waiting.
+        private void RegionClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not TreeViewItem item || item.DataContext is not RegionNode node || node.Region == null)
+            {
+                return;
+            }
+
+            // The click bubbles up through the items above; only the item under the pointer acts, and the arrow that opens it does not select.
+            var source = e.OriginalSource as DependencyObject;
+            if (source != null && FindAncestor<System.Windows.Controls.Primitives.ToggleButton>(source) != null)
+            {
+                return;
+            }
+
+            if (!ReferenceEquals(FindAncestor<TreeViewItem>(source), item))
+            {
+                return;
+            }
+
+            e.Handled = true;
+            this.SelectRegion(node.Region);
+        }
+
+        private static T? FindAncestor<T>(DependencyObject? start)
+            where T : DependencyObject
+        {
+            for (var current = start; current != null; current = current is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(current) : LogicalTreeHelper.GetParent(current))
+            {
+                if (current is T match)
+                {
+                    return match;
+                }
+            }
+
+            return null;
         }
 
         private void SelectRegion(ByteRegion region)

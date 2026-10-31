@@ -11,6 +11,18 @@
         private readonly byte[] originalBytes;
         private readonly IReadOnlyDictionary<ChunkKind, IChunkCollection> collections;
         private readonly ISavefileBytesPatcher patcher;
+        private readonly IDocumentReconciler reconciler;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveDocument"/> class in which no record follows another.
+        /// </summary>
+        /// <param name="originalBytes">The original bytes of the savefile.</param>
+        /// <param name="collections">The current chunks of every <see cref="ChunkKind"/>.</param>
+        /// <param name="patcher">The patcher used to apply changes to the savefile.</param>
+        public SaveDocument(byte[] originalBytes, IReadOnlyDictionary<ChunkKind, IChunkCollection> collections, ISavefileBytesPatcher patcher)
+            : this(originalBytes, collections, patcher, NoDocumentReconciler.Instance)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveDocument"/> class.
@@ -18,11 +30,13 @@
         /// <param name="originalBytes">The original bytes of the savefile.</param>
         /// <param name="collections">The current chunks of every <see cref="ChunkKind"/>.</param>
         /// <param name="patcher">The patcher used to apply changes to the savefile.</param>
-        public SaveDocument(byte[] originalBytes, IReadOnlyDictionary<ChunkKind, IChunkCollection> collections, ISavefileBytesPatcher patcher)
+        /// <param name="reconciler">Puts the records that follow others in step after an edit; every document made from this one keeps it.</param>
+        public SaveDocument(byte[] originalBytes, IReadOnlyDictionary<ChunkKind, IChunkCollection> collections, ISavefileBytesPatcher patcher, IDocumentReconciler reconciler)
         {
             this.originalBytes = (byte[])originalBytes.Clone();
             this.collections = collections;
             this.patcher = patcher;
+            this.reconciler = reconciler;
         }
 
         private SaveDocument(SaveDocument source, IReadOnlyDictionary<ChunkKind, IChunkCollection> collections)
@@ -30,6 +44,7 @@
             this.originalBytes = source.originalBytes;
             this.collections = collections;
             this.patcher = source.patcher;
+            this.reconciler = source.reconciler;
         }
 
         private IEnumerable<BytesChunk> AllChunks => this.collections.OrderBy(pair => pair.Key).Select(pair => pair.Value).SelectMany(c => c.Chunks).SelectMany(chunk => chunk.PatchParts);
@@ -67,6 +82,14 @@
 
             return new SaveDocument(this, replaced);
         }
+
+        /// <summary>
+        /// Returns this document, the result of an edit of <paramref name="before"/>, with the records that follow the edited ones put in step
+        /// by the reconciler of the savefile (<see cref="IDocumentReconciler"/>).
+        /// </summary>
+        /// <param name="original">The document as it was loaded or last saved.</param>
+        /// <param name="before">The document before the edit.</param>
+        public SaveDocument Reconciled(SaveDocument original, SaveDocument before) => this.reconciler.Reconcile(original, before, this);
 
         /// <summary>
         /// Returns what has been edited in this document relative to <paramref name="original"/>,

@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -25,11 +26,14 @@
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
 
+        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
+
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
+        private DwellingStockActions? dwellingActions;
         private readonly IReadOnlyList<GuildLevelViewModel> guildLevels;
         private CastleModel castle = null!;
         private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
@@ -37,8 +41,9 @@
         private string notice = string.Empty;
 
         public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
         {
+            this.Game = game;
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
             this.session = game.History.CreateCastleSession(castleIndex);
@@ -54,6 +59,7 @@
                 game.GameVersion,
                 () => this.session.Current.Garrison,
                 edit => this.session.Update(c => c with { Garrison = edit(c.Garrison) }));
+            this.GarrisonEditor.SetTitle("Garrison");
             this.OpenHeroCommand = new DelegateCommand(_ => this.openHero(this.castle.VisitingHeroId!.Value), _ => this.castle?.VisitingHeroId != null);
 
             this.OwnerField = new ChoiceFieldViewModel(
@@ -99,18 +105,19 @@
                 name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
                 toolTip: "Builds the Mage Guild to this level, or takes it down. Each level shows 3, 3, 2, 2 and 1 spells (one more with the Library of a Wizard).");
 
-            var spellNames = new[] { NoSpell }.Concat(Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name)).ToList();
+            var spells = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).ToList();
+            var (original, current) = (this.session.Original, this.session.Current);
             this.guildLevels = Enumerable.Range(1, Constants.Castle.MageGuildLevels)
                 .Select(level => new GuildLevelViewModel(
                     level,
                     Enumerable.Range(0, Constants.Castle.MageGuildSlotsPerLevel)
                         .Select(slot => new ChoiceFieldViewModel(
                             $"Spell {slot + 1}",
-                            spellNames,
+                            GuildSpellChoices(spells, level, original.MageGuildSpell(level, slot), current.MageGuildSpell(level, slot)),
                             () => this.session.Current.MageGuildSpell(level, slot)?.Name ?? NoSpell,
                             name => this.session.Update(c => c.WithMageGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Spell>(name))),
                             () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.MageGuildSpellCounts[level - 1],
-                            "The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
+                            $"A guild of level {level} teaches spells of level {level}, as every guild of the test saves does; the spell levels are read from those saves and not all were checked in the game. A spell of another level that the savegame has here is kept. The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
                         .ToList()))
                 .ToList();
 
@@ -118,6 +125,8 @@
 
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public int CastleIndex { get; }
 
@@ -188,6 +197,11 @@
         public IReadOnlyList<DwellingRowViewModel> Dwellings => this.dwellings;
 
         /// <summary>
+        /// Gets the buttons that fill every dwelling (all +1 week, all +100, all empty).
+        /// </summary>
+        public DwellingStockActions DwellingActions => this.dwellingActions ??= new DwellingStockActions(() => this.dwellings);
+
+        /// <summary>
         /// Gets the army that defends the castle when no hero is in it: its slots and the finder of creatures.
         /// </summary>
         public ArmyViewModel GarrisonEditor { get; }
@@ -225,6 +239,19 @@
                 level.Refresh();
             }
         }
+
+        /// <summary>
+        /// Returns what a slot of the guild of <paramref name="level"/> can be given: no spell, and the spells of that level by name. A spell of
+        /// another level that the slot holds as loaded or now (a savegame may have one) is offered too, so it shows and stays.
+        /// </summary>
+        private static IReadOnlyList<string> GuildSpellChoices(IEnumerable<Spell> spells, int level, Spell? original, Spell? current) =>
+            new[] { NoSpell }
+                .Concat(spells.Where(s => s.Level == level)
+                    .Concat(new[] { original, current }.OfType<Spell>())
+                    .Distinct()
+                    .OrderBy(s => s.Name)
+                    .Select(s => s.Name))
+                .ToList();
 
         private ToggleRowViewModel Building(string name, TownBuildings building, string toolTip = "") => new(
             name,
@@ -265,8 +292,9 @@
             {
                 this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
-            catch (GameRuleException)
+            catch (GameRuleException ex)
             {
+                Logger.LogInformation("Refused the owner {Owner} of a castle: {Reason}", name, ex.Message);
                 this.notice = $"{name} has the most castles a player can have.";
             }
 

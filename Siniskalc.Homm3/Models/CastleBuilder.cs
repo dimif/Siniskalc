@@ -149,6 +149,20 @@ namespace Siniskalc.Homm3.Models
                 throw new GameRuleException($"{building.Name}: {reason}.");
             }
 
+            return RestoreAllowed(castle, building, allowed);
+        }
+
+        /// <summary>
+        /// Allows or forbids building <paramref name="building"/> without asking whether the permission applies to it. Used to
+        /// put a single change back (the building may have been built since); <see cref="SetAllowed"/> checks first.
+        /// </summary>
+        public static CastleModel RestoreAllowed(CastleModel castle, Building building, bool allowed)
+        {
+            if (castle.EnabledBuildings.Contains(building) == allowed)
+            {
+                return castle;
+            }
+
             var enabled = new HashSet<Building>(castle.EnabledBuildings);
             _ = allowed ? enabled.Add(building) : enabled.Remove(building);
             return castle with { EnabledBuildings = enabled };

@@ -7,23 +7,22 @@ namespace Siniskalc.Homm3.Data
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
-    /// Finds the lists of the merchants by what they look like (see <see cref="MerchantLayout"/>): fourteen 32 bit numbers in a row, each an
-    /// artifact the editor knows or 0xFFFFFFFF, behind a 32 bit 2, in the first bytes of the savefile.
+    /// Finds the lists of the merchants by what they look like (see <see cref="MerchantLayout"/>): a 32 bit number of merchants and, behind it, that
+    /// many lists of seven 32 bit numbers, each an artifact the editor knows or 0xFFFFFFFF, in the first bytes of the savefile.
     /// </summary>
     public sealed class MerchantBytesLoader : IMerchantBytesLoader
     {
-        private static readonly string[] Names = ["Artifact merchants", "Black market"];
-
         /// <inheritdoc/>
         public IReadOnlyList<RecordChunk> LoadMerchantChunks(byte[] bytes)
         {
-            var last = Math.Min(bytes.Length - (2 * MerchantLayout.ListSize), MerchantLayout.SearchLength);
+            var last = Math.Min(bytes.Length - MerchantLayout.ListSize, MerchantLayout.SearchLength);
             for (var at = sizeof(uint); at <= last; at++)
             {
-                if (BitConverter.ToUInt32(bytes, at - sizeof(uint)) == MerchantLayout.MarkerBefore && LooksLikeTheLists(bytes, at))
+                var count = BitConverter.ToUInt32(bytes, at - sizeof(uint));
+                if (count is >= 1 and <= MerchantLayout.MaxMerchants && at + (count * MerchantLayout.ListSize) <= bytes.Length && LooksLikeTheLists(bytes, at, (int)count))
                 {
-                    return Enumerable.Range(0, Names.Length)
-                        .Select(i => new RecordChunk(Names[i], bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
+                    return Enumerable.Range(0, (int)count)
+                        .Select(i => new RecordChunk(NameOf(i, (int)count), bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
                         .ToList();
                 }
             }
@@ -31,10 +30,13 @@ namespace Siniskalc.Homm3.Data
             return [];
         }
 
-        private static bool LooksLikeTheLists(byte[] bytes, int at)
+        // The game calls every merchant a black market.
+        private static string NameOf(int index, int count) => count == 1 ? "Black market" : $"Black market {index + 1}";
+
+        private static bool LooksLikeTheLists(byte[] bytes, int at, int count)
         {
             var stocked = 0;
-            for (var slot = 0; slot < 2 * MerchantLayout.SlotCount; slot++)
+            for (var slot = 0; slot < count * MerchantLayout.SlotCount; slot++)
             {
                 var code = BitConverter.ToUInt32(bytes, at + MerchantLayout.SlotAt(slot));
                 if (code == MerchantLayout.Empty)

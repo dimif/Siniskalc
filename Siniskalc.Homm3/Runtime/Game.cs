@@ -30,7 +30,15 @@ namespace Siniskalc.Homm3.Runtime
         public GameVersion GameVersion { get; }
 
         /// <inheritdoc/>
-        public override string VersionName => this.GameVersion.ToString();
+        public override string VersionName => this.GameVersion switch
+        {
+            GameVersion.RestorationOfErathia => "Restoration of Erathia",
+            GameVersion.ArmageddonsBlade => "Armageddon's Blade",
+            GameVersion.ShadowOfDeath => "Shadow of Death",
+            GameVersion.HeroesChronicles => "Heroes Chronicles",
+            GameVersion.HornOfTheAbyss => "Horn of the Abyss",
+            _ => "Unknown version",
+        };
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 
@@ -44,5 +52,10 @@ namespace Siniskalc.Homm3.Runtime
         /// started at, or <c>null</c> when it cannot be found in this version.
         /// </summary>
         public GameDifficulty? MapDifficulty => this.Map?.Difficulty;
+
+        /// <summary>
+        /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when it cannot be found or names no human.
+        /// </summary>
+        public override PlayerColor? CurrentPlayer => this.History.Current.Turn() is { Count: > 0 } turn && turn.GetModel(0).Color is var color && this.GetControl(color) == PlayerType.Human ? color : null;
     }
 }

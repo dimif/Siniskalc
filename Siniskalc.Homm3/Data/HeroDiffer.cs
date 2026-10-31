@@ -33,6 +33,11 @@ namespace Siniskalc.Homm3.Data
         {
             var changes = new ChangeSink<HeroModel>((change, revert) => this.pendingChanges.ForHero(current.Name, heroIndex, change, revert));
 
+            // The owner of a hero is also in the lists of heroes of the players and in the table of hero owners, so putting it back puts those
+            // back too, in one step (HeroEditSession.RestoreOwner), not the hero alone.
+            var owner = new ChangeSink<HeroModel>((change, _) => new PendingChange(current.Name, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).RestoreOwner()));
+            owner.AddOwner(original.Owner, current.Owner, (h, _) => h);
+
             DiffGeneral(original, current, changes);
             DiffPrimarySkills(original, current, changes);
             DiffSecondarySkills(original, current, changes);
@@ -43,7 +48,7 @@ namespace Siniskalc.Homm3.Data
             DiffSpells(original, current, changes);
             DiffPlaceVisits(original, current, changes);
 
-            return changes.All;
+            return owner.All.Concat(changes.All).ToList();
         }
 
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
@@ -91,6 +96,30 @@ namespace Siniskalc.Homm3.Data
                         ChangeText.YesNo(original.ActiveSpells.HasFlag(spell)),
                         ChangeText.YesNo(current.ActiveSpells.HasFlag(spell)),
                         h => h with { ActiveSpells = (h.ActiveSpells & ~spell) | (original.ActiveSpells & spell) });
+                }
+            }
+
+            // What visited buildings gave until the next battle: the bytes of morale and luck and the bit of each building, each put back on its own.
+            if (original.MoraleBonus != current.MoraleBonus)
+            {
+                changes.Add(ChangeAreas.General, "Morale, next battle", Signed(original.MoraleBonus), Signed(current.MoraleBonus), h => h with { MoraleBonus = original.MoraleBonus });
+            }
+
+            if (original.LuckBonus != current.LuckBonus)
+            {
+                changes.Add(ChangeAreas.General, "Luck, next battle", Signed(original.LuckBonus), Signed(current.LuckBonus), h => h with { LuckBonus = original.LuckBonus });
+            }
+
+            foreach (var effect in System.Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None))
+            {
+                if (original.VisitEffects.HasFlag(effect) != current.VisitEffects.HasFlag(effect))
+                {
+                    changes.Add(
+                        ChangeAreas.General,
+                        $"Visited building: {VisitedBuildingNames.Of(effect)}",
+                        ChangeText.YesNo(original.VisitEffects.HasFlag(effect)),
+                        ChangeText.YesNo(current.VisitEffects.HasFlag(effect)),
+                        h => h with { VisitEffects = (h.VisitEffects & ~effect) | (original.VisitEffects & effect) });
                 }
             }
 
@@ -237,6 +266,8 @@ namespace Siniskalc.Homm3.Data
         }
 
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
+
+        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
 
         /// <summary>
         /// The pending changes of one hero as they are found.

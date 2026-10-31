@@ -50,6 +50,9 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.Reload}"
                         Executed="ReloadCmdExecuted"
                         CanExecute="ReloadCmdCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.OpenFolder}"
+                        Executed="OpenFolderCmdExecuted"
+                        CanExecute="ReloadCmdCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.DumpToFile}"
                 Executed="DumpToFileCmdExecuted"
                 CanExecute="GameLoadedCanExecute"/>
@@ -61,6 +64,12 @@
                 CanExecute="AlwaysCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.OpenIssues}"
                 Executed="OpenIssuesCmdExecuted"
+                CanExecute="AlwaysCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.EditSettings}"
+                Executed="EditSettingsCmdExecuted"
+                CanExecute="AlwaysCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.ShowLogs}"
+                Executed="ShowLogsCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.About}"
                 Executed="AboutCmdExecuted"
@@ -96,6 +105,11 @@
                 <MenuItem Command="{x:Static cmd:EditorCommands.Reload}">
                     <MenuItem.Icon>
                         <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{x:Static cmd:EditorCommands.OpenFolder}">
+                    <MenuItem.Icon>
+                        <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem x:Name="recentMenuItem" Header="_Recent" ItemsSource="{Binding Items}">
@@ -143,12 +157,8 @@
             <MenuItem Header="_View">
                 <MenuItem Header="_Pending changes" IsCheckable="True" IsChecked="{Binding IsPendingChangesOpen, Mode=TwoWay}" IsEnabled="{Binding IsGameLoaded}"/>
             </MenuItem>
-            <MenuItem Header="_Settings">
-                <MenuItem Header="_Back up on save" IsCheckable="True" IsChecked="{Binding BackupOnSave, Mode=TwoWay}"
-                          ToolTip="Keep a copy of the savegame (save.GM1.bak, save.GM1.bak1, ...) before it is saved over"/>
-                <MenuItem Header="_Advanced mode" IsCheckable="True" IsChecked="{Binding IsAdvancedMode, Mode=TwoWay}"
-                          ToolTip="Show the Advanced menu and the hex tabs"/>
-            </MenuItem>
+            <MenuItem Header="_Settings..." Command="{x:Static cmd:EditorCommands.EditSettings}"
+                      ToolTip="Saving, the advanced tools and the logging"/>
             <MenuItem Header="_Advanced" Visibility="{Binding IsAdvancedMode, Converter={StaticResource BoolToVisibility}}">
                 <MenuItem Header="Export save bytes" Command="{x:Static cmd:EditorCommands.DumpToFile}">
                     <MenuItem.Icon>
@@ -165,6 +175,7 @@
             <MenuItem Header="_Help">
                 <MenuItem Header="_User guide" Command="{x:Static ApplicationCommands.Help}" InputGestureText="F1"/>
                 <MenuItem Header="Report an _issue" Command="{x:Static cmd:EditorCommands.OpenIssues}"/>
+                <MenuItem x:Name="showLogsMenuItem" Header="Show _logs" Command="{x:Static cmd:EditorCommands.ShowLogs}"/>
                 <Separator />
                 <MenuItem Header="_About Siniskalc" Command="{x:Static cmd:EditorCommands.About}"/>
             </MenuItem>
@@ -178,6 +189,9 @@
             </Button>
             <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.Reload}" AutomationProperties.Name="Reload" ToolTip="Reload">
                 <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png" Width="16" Height="16"/>
+            </Button>
+            <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.OpenFolder}" AutomationProperties.Name="Open folder" ToolTip="Open the folder of the savegame">
+                <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png" Width="16" Height="16"/>
             </Button>
             <Separator Style="{StaticResource AppToolBarSeparatorStyle}"/>
             <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static ApplicationCommands.Undo}" AutomationProperties.Name="Undo" ToolTip="Undo">

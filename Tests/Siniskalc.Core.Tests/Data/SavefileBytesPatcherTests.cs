@@ -3,12 +3,13 @@ namespace Siniskalc.Core.Tests.Data
     using Siniskalc.Core.Data;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SavefileBytesPatcherTests
     {
         private readonly SavefileBytesPatcher patcher = new();
 
         [Test]
-        public void PatchReplacesOnlyChunkRange()
+        public void ThePatcherReplacesOnlyTheBytesOfTheChunk()
         {
             var save = new byte[20];
             var chunk = new RawBytesChunk("c", [1, 2, 3], 5);
@@ -30,7 +31,7 @@ namespace Siniskalc.Core.Tests.Data
         }
 
         [Test]
-        public void PatchRejectsOverlappingChunks()
+        public void ThePatcherRefusesChunksThatOverlap()
         {
             var a = new RawBytesChunk("a", new byte[4], 0);
             var b = new RawBytesChunk("b", new byte[4], 2);

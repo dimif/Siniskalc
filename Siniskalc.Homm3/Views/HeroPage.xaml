@@ -39,7 +39,20 @@
                 </StackPanel>
             </StackPanel>
         </heroes:PageHeader>
-        <heroes:OwnerPicker Margin="0,8,0,0" PickerToolTip="Which player the hero belongs to. A neutral hero is taken off the map."/>
+        <heroes:OwnerPicker Margin="0,8,0,0"
+                            PickerToolTip="Which player the hero belongs to. The hero is taken from the list of heroes of its old owner and added to the list of its new one; a neutral hero is taken off the map."/>
+        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
         </StackPanel>
 
         <!-- The pages of a hero, as tabs. -->
@@ -73,7 +86,7 @@
             </Grid>
             <Grid Style="{StaticResource TabPanel4}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <WrapPanel Margin="-6,0,0,0">
+                    <WrapPanel>
                         <heroes:VisitedPlacesCard DataContext="{Binding PlacesViewModel.PlacesVisited}"/>
                     </WrapPanel>
                 </ScrollViewer>

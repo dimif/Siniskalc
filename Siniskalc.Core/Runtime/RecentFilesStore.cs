@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Core.Runtime
+namespace Siniskalc.Core.Runtime
 {
     using System;
     using System.Collections.Generic;
@@ -7,14 +7,14 @@
     /// <summary>
     /// Maintains the most-recently-used list of savegame paths inside the <see cref="UserSettings"/> of a <see cref="SettingsStore"/>.
     /// </summary>
-    public class RecentFilesStore
+    public class RecentFilesStore : IRecentFilesStore
     {
         public const int MaxEntries = 10;
 
-        private readonly SettingsStore store;
+        private readonly ISettingsStore store;
         private readonly UserSettings settings;
 
-        public RecentFilesStore(SettingsStore store)
+        public RecentFilesStore(ISettingsStore store)
         {
             this.store = store;
             this.settings = store.Settings;

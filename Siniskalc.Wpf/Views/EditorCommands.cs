@@ -9,6 +9,11 @@
             nameof(Reload),
             typeof(EditorCommands));
 
+        public static readonly RoutedUICommand OpenFolder = new RoutedUICommand(
+            "Open folder...",
+            nameof(OpenFolder),
+            typeof(EditorCommands));
+
         public static readonly RoutedUICommand DumpToFile = new RoutedUICommand(
             "Export save bytes",
             nameof(DumpToFile),
@@ -22,6 +27,16 @@
         public static readonly RoutedUICommand OpenIssues = new RoutedUICommand(
             "Report an issue",
             nameof(OpenIssues),
+            typeof(EditorCommands));
+
+        public static readonly RoutedUICommand ShowLogs = new RoutedUICommand(
+            "Show logs",
+            nameof(ShowLogs),
+            typeof(EditorCommands));
+
+        public static readonly RoutedUICommand EditSettings = new RoutedUICommand(
+            "Settings",
+            nameof(EditSettings),
             typeof(EditorCommands));
 
         public static readonly RoutedUICommand About = new RoutedUICommand(

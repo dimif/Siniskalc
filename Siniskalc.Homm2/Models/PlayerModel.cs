@@ -94,5 +94,73 @@
                 DaysLeft = this.DaysLeftOnLosingATown(castles.Count),
             };
         }
+
+        /// <summary>
+        /// Returns the player with the hero in its list of heroes, or not, as in <paramref name="original"/>: the hero goes back to its place,
+        /// and once the list is as the savegame had it the selected hero comes back too. The other heroes keep their places. It is how a change
+        /// of the owner of the hero is put back.
+        /// </summary>
+        /// <param name="heroId">The hero whose place is put back.</param>
+        /// <param name="original">The player as the savegame had it.</param>
+        /// <exception cref="GameRuleException">The hero goes back to a list that has become full.</exception>
+        public PlayerModel WithHeroAsIn(int heroId, PlayerModel original)
+        {
+            var ids = AsIn(this.HeroIds, heroId, original.HeroIds);
+            if (ids.Count > Constants.Player.HeroListSize)
+            {
+                throw new GameRuleException($"A player has at most {Constants.Player.HeroListSize} heroes.");
+            }
+
+            if (ids.Equals(original.HeroIds))
+            {
+                return this with { HeroIds = ids, SelectedHero = original.SelectedHero };
+            }
+
+            return this with { HeroIds = ids, SelectedHero = this.SelectedHero == heroId && !ids.Contains(heroId) ? null : this.SelectedHero };
+        }
+
+        /// <summary>
+        /// Returns the player with the castle in its list of castles, or not, as in <paramref name="original"/>: the castle goes back to its place,
+        /// and once the list is as the savegame had it the selected castle and the days left to own a castle come back too. Otherwise the days
+        /// left follow the castle as when it is gained or lost. It is how a change of the owner of the castle is put back.
+        /// </summary>
+        /// <param name="castleIndex">The castle whose place is put back.</param>
+        /// <param name="original">The player as the savegame had it.</param>
+        /// <exception cref="GameRuleException">The castle goes back to a list that has become full.</exception>
+        public PlayerModel WithCastleAsIn(int castleIndex, PlayerModel original)
+        {
+            var ids = AsIn(this.CastleIds, castleIndex, original.CastleIds);
+            if (ids.Count > Constants.Player.CastleListSize)
+            {
+                throw new GameRuleException($"A player has at most {Constants.Player.CastleListSize} castles.");
+            }
+
+            if (ids.Equals(original.CastleIds))
+            {
+                return this with { CastleIds = ids, SelectedCastle = original.SelectedCastle, DaysLeft = original.DaysLeft };
+            }
+
+            var has = ids.Contains(castleIndex);
+            if (has == this.CastleIds.Contains(castleIndex))
+            {
+                return this with { CastleIds = ids };
+            }
+
+            return this with
+            {
+                CastleIds = ids,
+                SelectedCastle = this.SelectedCastle == castleIndex && !has ? null : this.SelectedCastle,
+                DaysLeft = has ? this.DaysLeftOnGainingATown() : this.DaysLeftOnLosingATown(ids.Count),
+            };
+        }
+
+        // The list with the item where the original list has it (or without it, if the original has not), the other items of the list keeping
+        // their order, those the original has first.
+        private static Numbers AsIn(Numbers list, int item, Numbers original)
+        {
+            var others = list.Where(id => id != item).ToList();
+            var had = original.Contains(item);
+            return new Numbers(original.Where(id => (id == item && had) || others.Contains(id)).Concat(others.Where(id => !original.Contains(id))));
+        }
     }
 }

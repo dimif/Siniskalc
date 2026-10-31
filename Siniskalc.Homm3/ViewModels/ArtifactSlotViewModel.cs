@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using Siniskalc.Heroes.Wpf.ViewModels;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One place an artifact can go, such as the helm or a backpack slot: it shows the artifact in it, and a popup with a finder

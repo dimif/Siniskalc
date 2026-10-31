@@ -1,12 +1,13 @@
 namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System;
+    using System.Windows.Input;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// One resource of a player: its amount, editable, and how far it is from what the savefile had.
+    /// One resource of a player: its amount, editable, a button that adds a fixed amount to it, and how far it is from what the savefile had.
     /// </summary>
     public sealed class ResourceRowViewModel : AmountRowViewModel
     {
@@ -35,10 +36,29 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 note == null ? null : () => note(resource))
         {
             this.Resource = resource;
+            var preset = resource == Resource.Gold ? limits.GoldPreset : limits.OtherPreset;
+            var maximum = this.Maximum;
+            this.AddPresetLabel = AmountText.Plus(preset);
+            this.AddPresetToolTip = $"Add {preset:N0} {resource.ToString().ToLowerInvariant()}";
+            this.AddPresetCommand = new DelegateCommand(
+                _ => update(resources => resources.With(resource, Math.Min(resources[resource] + preset, maximum))),
+                _ => current()[resource] < maximum);
         }
 
         public Resource Resource { get; }
 
         public bool IsGold => this.Resource == Resource.Gold;
+
+        /// <summary>
+        /// Gets the text of the button that adds a fixed amount to the resource, such as "+10" or "+10k" for gold.
+        /// </summary>
+        public string AddPresetLabel { get; }
+
+        public string AddPresetToolTip { get; }
+
+        /// <summary>
+        /// Gets the command that adds the fixed amount, up to the limit of the resource.
+        /// </summary>
+        public ICommand AddPresetCommand { get; }
     }
 }

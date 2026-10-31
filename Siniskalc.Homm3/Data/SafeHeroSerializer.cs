@@ -47,6 +47,8 @@
             chunk = this.SerializeGender(chunk, hero.Gender);
             chunk = this.SerializeMovedToday(chunk, hero.MovedToday);
             chunk = this.SerializeActiveSpells(chunk, hero.ActiveSpells);
+            chunk = this.SerializeVisitBonus(chunk, hero.MoraleBonus, hero.LuckBonus);
+            chunk = this.SerializeVisitEffects(chunk, hero.VisitEffects);
             chunk = this.SerializeIsAsleep(chunk, hero.IsAsleep);
             chunk = this.SerializeHasSpellBook(chunk, hero.SpellBook.HasSpellBook);
             chunk = this.SerializeCreatures(chunk, hero.Army);
@@ -353,6 +355,45 @@
                     if (isActive != active.HasFlag(spell))
                     {
                         buffer[offset] = active.HasFlag(spell) ? (byte)0 : (byte)Constants.ByteOff;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Writes the morale and the luck that visited buildings gave the hero until its next battle, each a signed byte. A byte is only
+        /// written when it reads as something else.
+        /// </summary>
+        public HeroChunk SerializeVisitBonus(HeroChunk chunk, int morale, int luck)
+        {
+            RangeGuard.ThrowIfOutOfRange(morale, sbyte.MinValue, sbyte.MaxValue, nameof(morale));
+            RangeGuard.ThrowIfOutOfRange(luck, sbyte.MinValue, sbyte.MaxValue, nameof(luck));
+            return Edit(chunk, buffer =>
+            {
+                foreach (var (offset, value) in new[] { (this.heroOffsets[HeroOffsetName.MoraleBonus], morale), (this.heroOffsets[HeroOffsetName.LuckBonus], luck) })
+                {
+                    if ((sbyte)buffer[offset] != value)
+                    {
+                        buffer[offset] = unchecked((byte)(sbyte)value);
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Sets or clears the bit of each visited building the editor knows (<see cref="HeroOffsets.VisitEffectBits"/>). The other bits of
+        /// those bytes are not known and are left as they are.
+        /// </summary>
+        public HeroChunk SerializeVisitEffects(HeroChunk chunk, VisitedBuildingEffects effects)
+        {
+            return Edit(chunk, buffer =>
+            {
+                foreach (var (effect, offset, mask) in this.heroOffsets.VisitEffectBits)
+                {
+                    var wanted = effects.HasFlag(effect);
+                    if (((buffer[offset] & mask) != 0) != wanted)
+                    {
+                        buffer[offset] = (byte)(wanted ? buffer[offset] | mask : buffer[offset] & ~mask);
                     }
                 }
             });

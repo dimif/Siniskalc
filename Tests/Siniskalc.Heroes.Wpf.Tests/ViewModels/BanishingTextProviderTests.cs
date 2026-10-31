@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the words the pages and the navigation tree use for a player who owns no town.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class BanishingTextProviderTests
     {
         private readonly BanishingTextProvider provider = new();

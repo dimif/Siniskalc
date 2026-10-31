@@ -24,7 +24,7 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   The exceptions are the wrappers of generic Core types (`Homm3Enumeration`, `Homm2EditSessions`, `Homm2PendingChangesFactory`, `Homm2SaveDocuments`, `Homm2ChunkKinds`) and the entry points the exe and the shell name side by side (`Homm2Module`/`Homm3Module`, `Homm2EditorViewModel`/`Homm3EditorViewModel`, `Homm2EditorView`/`Homm3EditorView`).
   Code that sees both games (`AppServices`) uses namespace aliases.
 - Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`, and `Siniskalc.Tests` for the exe); a test goes with the project of the class it tests.
-  **A game's test project references only that game's project** (never the other game or the exe `Siniskalc`; the `...LayeringTests` of each game check it) and builds what it needs from the game's module factory (`Homm3ModuleFactory`, `Homm2ModuleFactory`) and the shared components. A test that needs the whole application (both games, `AppServices`) goes in `Siniskalc.Tests`.
+  **A game's test project references only that game's project** and the test library `Siniskalc.Tests.Homm.Common` (never the other game or the exe `Siniskalc`; the `...LayeringTests` of each game check it). That library has no test and no game: it holds what the test projects of both games would otherwise copy (`TestKinds`, `ByteDiff`, the fake of the pending changes, the WPF test application, the cache of loaded savegames) and builds what it needs from the game's module factory (`Homm3ModuleFactory`, `Homm2ModuleFactory`) and the shared components. A test that needs the whole application (both games, `AppServices`) goes in `Siniskalc.Tests`.
 - **A control that is styled by a resource dictionary is tested by what it shows**, not only by its bindings: a template that did not apply leaves the control empty and raises no binding error (`PageRenderingTests`, `PageContractTests`).
 - A view model is called `...ViewModel` (also when it is a node of a tree: `NavNodeViewModel`).
 
@@ -56,6 +56,8 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   What depends on the game version of a savefile (`VersionSpecificEntitiesProvider`, the hero reader and writer and the hero chunk collection) is made per savefile: the provider by `IVersionSpecificEntitiesProviderFactory`, the rest by `SaveDocumentFactory`, which is the one place besides `AppServices` that builds such objects.
 - Static classes are for helpers, fixed data and pure functions of immutable models (`RangeGuard`, `Constants`, layouts, extension methods, `CastleBuilder` and `LevelCalculator`, which are reducers and tables).
   Behaviour that has collaborators, state or may be swapped (loaders, locators, providers, serializers, differs) is an injected instance, not a static class.
+- **The one exception is logging**: a class gets its logger from the static `LogFactory`, in a `private static readonly ILogger<T> Logger = LogFactory.For<T>();` field (`For(typeof(T))` in a static class), and does not take it through its constructor.
+  `AppServices` installs the real factory once; until then, and in the tests, loggers write nowhere.
 
 ## Values and limits
 
@@ -79,10 +81,15 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - The WPF exe is often running and locks the build output.
   Build or test with `--artifacts-path <another folder>` (or `-p:OutDir=<another folder>`).
 - Several people and tools edit this tree at once.
-  Re-read a file before editing it and run the whole suite, not only the tests of the area you touched.
+  Re-read a file before editing it.
+- **Run the tests in proportion to the step.** Between the steps of a piece of work, build and test only the projects that can be affected: the project you changed, its test project, and the test projects of the projects that reference it (`dotnet test Tests/<Project>.Tests --artifacts-path <folder>`, with `--filter` while you iterate).
+  Run the whole suite (`dotnet test Siniskalc.sln --artifacts-path <folder>`) **once per batch** of related changes, before the last commit of the batch or before you hand the work over, and say so in your report.
+  A full run takes minutes and prints a lot: do not repeat it after every step, and do not paste its whole output.
+- **Use the cheapest agent or model that can do a step.** A mechanical step (renames, moving a type, updating usings and docs, adding a test that follows a pattern, applying a decided fix) goes to a cheaper model; keep the stronger one for design, for reading an unknown savefile layout and for anything that decides what is written to a savefile.
+  An agent that thinks a step needs a stronger model says so in its report instead of guessing.
 - Do not push unless asked.
-- Where the editor skips, keeps or falls back on something it did not expect, leave `// TODO:LOG <level>: what to log` (see `docs/ERROR_MODEL.md`).
-  There is no logger yet.
+- Log through `LogFactory.For<T>()`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
+  Where the editor skips, keeps or falls back on something it did not expect, log it there; a `// TODO:LOG <level>: what to log` marker is for a class that has no logger yet and is replaced by the call (see `docs/ERROR_MODEL.md`).
 
 ## Tests
 
@@ -92,7 +99,19 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - **A test method is a PascalCase sentence that states the behaviour being checked**, such as `TheDateOfEachSavegameIsRead`, `RemovingABuildingGivesTheMasksOfNeverHavingBuiltIt` or `ACreatureIsRangedExactlyWhenItHasShots`.
   No `Method_State_Result` underscores, no `Test` or `Should` prefix, and not just the name of a hero or type.
   Name the thing under test the way the code does (`GrantedSpellsResolver`, not an older name).
+  Write full sentences with articles, subject first and the observable result after it (`ANeutralCastleIsWrittenAsTheByteFF`, not `NeutralCastleWrittenAsFF`).
+  Start with a member name only when that member is the public API under test (`ToBytesAppliesChunkEdits`).
+  A save, hero or castle is named only together with what it shows (`TazarStartsWithEquestriansGlovesAndNoSpellBook`, not `TazarIsDeserialized`), and a name never just repeats the subject (`DeserializingHeroDeserializes`).
 - Tests that rely on what a savefile contains say which save, and test data lives in `TestData/`.
   **How savefiles are named and organised (`<series>_<NN>_<what changed>.GM1`, folders, numbering, what to update when adding one) is in `TestData/README.md`: read it before adding, renaming or looking for a save.** `TestDataNamesTests` enforces it; each `TestData` folder's own `README.md` says what its saves hold.
 - A class that tests one scenario, save or game version across several subjects (`RoeCastleTests`, `HotaSaveTests`, `SodSaveTests`) is allowed to be named after that scenario instead of one subject.
+  An integration test of one savefile feature through every layer (reader, writer, history, view model) may be named after that feature (`GenderTests`, `ObeliskVisitsTests`).
   Its methods are still sentences about the behaviour.
+  Unit and multi-unit test classes are always named after one production type.
+- **Say what kind of test a class is** (target convention, being adopted; see `docs/TEST_REVIEW.md`).
+  A unit test checks one class, with Moq fakes for its collaborators and no savefiles; it is `[Category("Unit")]` and lives in the layer folder.
+  A test of several real classes without savefiles is `[Category("MultiUnit")]` under `MultiUnit/<Layer>/`.
+  A test that reads `TestData`, writes to disk or builds the whole graph (`TestServices`) is `[Category("Integration")]` under `Integration/<Layer>/`.
+  Only integration tests and tests on binary data (deserializers, serializers) may be slow.
+- A test never ends in `Assert.Pass` or skips its assertions with `continue`; a serializer test asserts the bytes, not what the deserializer reads back.
+- The `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`) repeats the review and updates `docs/TEST_REVIEW.md`.

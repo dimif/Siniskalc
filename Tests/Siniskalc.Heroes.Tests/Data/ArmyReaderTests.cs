@@ -9,6 +9,7 @@ namespace Siniskalc.Heroes.Tests.Data
     /// Tests how the army of a record is read, in the width each game keeps its tables.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ArmyReaderTests
     {
         [Test]

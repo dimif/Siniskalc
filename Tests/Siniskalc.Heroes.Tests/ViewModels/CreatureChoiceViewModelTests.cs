@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the row of the creature finder, which both games show.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class CreatureChoiceViewModelTests
     {
         private static readonly CreatureAbility Shooting = new("Ranged", true);

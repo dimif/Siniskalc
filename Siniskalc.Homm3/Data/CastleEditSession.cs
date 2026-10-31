@@ -2,21 +2,46 @@ namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
     /// A view onto a single castle in a <see cref="SaveDocumentHistory"/>.
     /// </summary>
-    public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>
+    public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>, ICastleSession
     {
+        private static readonly ILogger<CastleEditSession> Logger = LogFactory.For<CastleEditSession>();
+
         public CastleEditSession(SaveDocumentHistory history, int castleIndex)
             : base(history, Homm3ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer)
         {
         }
 
         public int CastleIndex => this.Index;
+
+        /// <inheritdoc/>
+        public string Name => this.History.Current.Castles().GetName(this.CastleIndex);
+
+        /// <inheritdoc/>
+        public GameVersion GameVersion => this.History.Current.GameVersion();
+
+        /// <inheritdoc/>
+        public IHeroSummaries<PlayerColor> Heroes => this.History.Current.Heroes();
+
+        /// <inheritdoc/>
+        public HeroModel? FindHero(int heroId)
+        {
+            var heroes = this.History.Current.Heroes();
+            var index = heroes.IndexOfId(heroId);
+            return index < 0 ? null : heroes.GetModel(index);
+        }
+
+        /// <inheritdoc/>
+        public IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForCastle(this);
 
         /// <summary>
         /// Gives the castle to a player, or to nobody, in one step of the history. The castle and the countdowns of the player that had it and of
@@ -35,6 +60,9 @@ namespace Siniskalc.Homm3.Data
             {
                 return;
             }
+
+            using var subject = Logger.BeginSubject("Castle", castle.Name);
+            Logger.LogDebug("Changing the owner from {From} to {To}", castle.Owner, owner);
 
             // The towns of the player that had the castle, counted from the castles, without this one.
             var townsLeft = castles.GetOwners().Count(o => o == castle.Owner) - 1;

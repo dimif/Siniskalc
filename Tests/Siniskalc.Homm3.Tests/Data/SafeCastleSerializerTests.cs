@@ -1,231 +1,362 @@
-using Siniskalc.Core.Data;
-using Siniskalc;
+using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
-using Siniskalc.Homm3.Runtime;
+using Siniskalc.Homm3.Tests.Models;
 
 namespace Siniskalc.Homm3.Tests.Data
 {
+    /// <summary>
+    /// Tests, on a castle record of zeros, which bytes the writer of a castle changes for each field of the model: the heroes, the
+    /// Mage Guild (level, counts, spells), the creatures that wait in the dwellings and the three masks of buildings. The savefile
+    /// based checks of the same writer are in <c>SafeCastleSerializerSavegameTests</c>.
+    /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SafeCastleSerializerTests
     {
-        [Test]
-        public void EveryCastleOfEverySampleSaveSerializesToTheBytesItWasReadFrom()
-        {
-            var castles = 0;
-            foreach (var path in CastleSamples.All())
-            {
-                foreach (var chunk in CastleSamples.Load(path).History.Current.Castles())
-                {
-                    var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk));
+        private const int NameLength = 4;
+        private const int NameEnd = CastleLayout.Name + NameLength;
 
-                    Assert.That(written.HasSameBytes(chunk), Is.True, $"{chunk.Name} in {path}");
-                    castles++;
-                }
+        private readonly SafeCastleSerializer serializer = new();
+
+        /// <summary>A record of zeros with a name of four bytes, whose slots of Mage Guild spells hold -1 (no spell).</summary>
+        private static CastleChunk Blank()
+        {
+            var bytes = new byte[NameEnd + CastleLayout.ChunkEndFromNameEnd];
+            BitConverter.GetBytes((ushort)NameLength).CopyTo(bytes, CastleLayout.NameLength);
+            Array.Fill(bytes, (byte)0xFF, NameEnd + CastleLayout.SpellListsFromNameEnd, CastleLayout.SpellListsLength);
+            return new CastleChunk("Test", bytes, 0);
+        }
+
+        private static CastleModel Rampart() => CastleModels.Village(Faction.Rampart);
+
+        private static ulong Mask(CastleChunk chunk, int fromNameEnd) => BitConverter.ToUInt64(chunk.ToArray(), NameEnd + fromNameEnd);
+
+        private static ulong Bits(IEnumerable<Building> buildings) => buildings.Aggregate(0UL, (mask, b) => mask | (1UL << b.Code));
+
+        private CastleChunk Write(CastleChunk chunk, CastleModel castle) => this.serializer.Serialize(chunk, castle);
+
+        private int[] ChangedOffsets(CastleModel before, CastleModel after)
+        {
+            var blank = Blank();
+            return ByteDiff.Of(this.Write(blank, before).ToArray(), this.Write(blank, after).ToArray()).Select(d => d.Offset).ToArray();
+        }
+
+        [Test]
+        public void TheHeroesAreWrittenAsOneByteEachAndNoHeroIsFF()
+        {
+            var written = this.Write(Blank(), Rampart() with { GarrisonedHeroId = 7, VisitingHeroId = 254 });
+            var none = this.Write(Blank(), Rampart() with { GarrisonedHeroId = null, VisitingHeroId = null });
+
+            Assert.That((written.GetByteAt(CastleLayout.GarrisonedHero), written.GetByteAt(CastleLayout.VisitingHero)), Is.EqualTo(((byte)7, (byte)254)));
+            Assert.That((none.GetByteAt(CastleLayout.GarrisonedHero), none.GetByteAt(CastleLayout.VisitingHero)), Is.EqualTo(((byte)0xFF, (byte)0xFF)));
+        }
+
+        [Test]
+        public void ChangingTheHeroesChangesOnlyTheirTwoBytes()
+        {
+            var changed = this.ChangedOffsets(Rampart(), Rampart() with { GarrisonedHeroId = 1, VisitingHeroId = 2 });
+
+            Assert.That(changed, Is.EquivalentTo(new[] { CastleLayout.GarrisonedHero, CastleLayout.VisitingHero }));
+        }
+
+        [TestCase(-1)]
+        [TestCase(255)]
+        public void AHeroThatDoesNotFitAByteBelowFFIsRefused(int heroId)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.Write(Blank(), Rampart() with { GarrisonedHeroId = heroId }));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.Write(Blank(), Rampart() with { VisitingHeroId = heroId }));
+        }
+
+        [Test]
+        public void TheMageGuildLevelIsTheHighestGuildBuilt()
+        {
+            var none = this.Write(Blank(), Rampart());
+            var three = this.Write(Blank(), CastleModels.With(Rampart(), Building.MagesGuild1, Building.MagesGuild2, Building.MagesGuild3));
+
+            Assert.That((none.GetByteAt(CastleLayout.MageGuildLevel), three.GetByteAt(CastleLayout.MageGuildLevel)), Is.EqualTo(((byte)0, (byte)3)));
+        }
+
+        [Test]
+        public void TheSpellCountsOfTheFiveLevelsAreWrittenInOrder()
+        {
+            var written = this.Write(Blank(), Rampart() with { MageGuildSpellCounts = Numbers.Of(1, 2, 3, 4, 5) });
+
+            Assert.That(written.GetBytesAt(NameEnd + CastleLayout.SpellCountsFromNameEnd, 5), Is.EqualTo(new byte[] { 1, 2, 3, 4, 5 }));
+        }
+
+        [Test]
+        public void AListOfFewerCountsThanLevelsLeavesTheOtherLevelsAlone()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            bytes[NameEnd + CastleLayout.SpellCountsFromNameEnd + 4] = 9;
+
+            var written = this.Write(chunk.WithBytes(bytes), Rampart() with { MageGuildSpellCounts = Numbers.Of(7, 8) });
+
+            Assert.That(written.GetBytesAt(NameEnd + CastleLayout.SpellCountsFromNameEnd, 5), Is.EqualTo(new byte[] { 7, 8, 0, 0, 9 }));
+        }
+
+        [Test]
+        public void ASpellCountAboveAByteIsRefused()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.Write(Blank(), Rampart() with { MageGuildSpellCounts = Numbers.Of(0, 0, 256, 0, 0) }));
+            Assert.DoesNotThrow(() => this.Write(Blank(), Rampart() with { MageGuildSpellCounts = Numbers.Of(0, 0, 255, 0, 0) }));
+        }
+
+        [Test]
+        public void TheSpellsOfAGuildAreWrittenAsLittleEndianCodesIntoTheSlotsOfTheirLevel()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            foreach (var (level, slot) in new[] { (1, 0), (1, 1), (2, 0) })
+            {
+                BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, level, slot));
             }
 
-            Assert.That(castles, Is.GreaterThan(100));
+            var spells = Rampart().MageGuildSpells.ToList();
+            spells[0] = [Spell.Haste, Spell.MagicArrow];
+            spells[1] = [Spell.Bless];
+
+            var written = this.Write(chunk.WithBytes(bytes), Rampart() with { MageGuildSpells = spells });
+
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(Spell.Haste.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.MagicArrow.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 2, 0)), Is.EqualTo(Spell.Bless.Code));
+            Assert.That(written.GetBytesAt(MageGuildSpellSlots.Offset(written, 1, 0), 4), Is.EqualTo(new byte[] { 53, 0, 0, 0 }));
         }
 
         [Test]
-        public void SerializingEveryCastleKeepsTheWholeSavefileIdentical()
+        public void ASlotThatHoldsNoKnownSpellIsNotWrittenAndTheSpellsFillOnlyTheKnownSlots()
         {
-            foreach (var path in CastleSamples.All().Where(p => p.Contains("Bulwark") || p.Contains("castles_2")))
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
+            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 3));
+            var spells = Rampart().MageGuildSpells.ToList();
+            spells[0] = [Spell.Haste, Spell.MagicArrow];
+
+            var written = this.Write(chunk.WithBytes(bytes), Rampart() with { MageGuildSpells = spells });
+
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(-1));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.Haste.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 2)), Is.EqualTo(-1));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 3)), Is.EqualTo(Spell.MagicArrow.Code));
+        }
+
+        [Test]
+        public void ALevelWhoseListIsNotAsLongAsTheKnownSlotsIsLeftAsItIs()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 0));
+            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
+            var odd = chunk.WithBytes(bytes);
+            var spells = Rampart().MageGuildSpells.ToList();
+            spells[0] = [Spell.Haste];
+
+            var written = this.Write(odd, Rampart() with { MageGuildSpells = spells });
+
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(Spell.Bless.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.Bless.Code));
+        }
+
+        [Test]
+        public void TheCreaturesWaitingAreWrittenAsLittleEndianShortsInTheSlotOfTheDwellingOfTheirLevel()
+        {
+            var written = this.Write(Blank(), Rampart() with { CreaturesAvailable = Numbers.Of(0, 0, 0, 1500, 0, 0, 65535) });
+
+            Assert.That(written.GetBytesAt(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd + 6, 2), Is.EqualTo(new byte[] { 0xDC, 0x05 }));
+            Assert.That(written.GetBytesAt(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd + 12, 2), Is.EqualTo(new byte[] { 0xFF, 0xFF }));
+            Assert.That(written.GetBytesAt(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd + 6, 2), Is.EqualTo(new byte[] { 0, 0 }));
+        }
+
+        [Test]
+        public void WithTheUpgradeBuiltTheCreaturesAreWrittenInTheSlotOfTheUpgrade()
+        {
+            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+
+            var written = this.Write(Blank(), castle with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
+
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(12));
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ACountThatWasInTheSlotOfTheDwellingMovesToTheUpgradeWhenTheUpgradeIsBuilt()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes((ushort)12).CopyTo(bytes, NameEnd + CastleLayout.CreaturesAvailableFromNameEnd);
+            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+
+            var written = this.Write(chunk.WithBytes(bytes), castle with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
+
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(12));
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ACountThatWasInTheSlotOfTheUpgradeMovesBackWhenTheUpgradeIsTakenDown()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes((ushort)12).CopyTo(bytes, NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd);
+
+            var written = this.Write(chunk.WithBytes(bytes), CastleModels.With(Rampart(), Building.RampartCentaurStables) with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
+
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(12));
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ASlotTheCountWasNotInIsLeftAsItIsWhenTheCountInTheActiveSlotChanges()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes((ushort)5).CopyTo(bytes, NameEnd + CastleLayout.CreaturesAvailableFromNameEnd);
+            BitConverter.GetBytes((ushort)9).CopyTo(bytes, NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd);
+            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+
+            var written = this.Write(chunk.WithBytes(bytes), castle with { CreaturesAvailable = Numbers.Of(20, 0, 0, 0, 0, 0, 0) });
+
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(20));
+            Assert.That(written.GetUInt16At(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(5));
+        }
+
+        [Test]
+        public void ACountAboveAShortOrBelowZeroIsRefused()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.Write(Blank(), Rampart() with { CreaturesAvailable = Numbers.Of(65536, 0, 0, 0, 0, 0, 0) }));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.Write(Blank(), Rampart() with { CreaturesAvailable = Numbers.Of(0, -1, 0, 0, 0, 0, 0) }));
+        }
+
+        [Test]
+        public void EachBuildingSetsItsBitInTheMaskOfBuiltBuildingsOfThoseVisibleAndOfThoseEnabled()
+        {
+            var castle = Rampart() with
             {
-                var game = CastleSamples.Load(path);
-                var document = game.History.Current;
-                for (var i = 0; i < document.Castles().Count; i++)
-                {
-                    document = document.WithCastle(i, TestServices.SerializeCastle(document.Castles()[i], TestServices.CastleDeserializer.Deserialize(document.Castles()[i])));
-                }
+                Buildings = new HashSet<Building> { Building.VillageHall, Building.RampartCentaurStables },
+                VisibleBuildings = new HashSet<Building> { Building.VillageHall },
+                EnabledBuildings = new HashSet<Building> { Building.RampartCentaurStables, Building.MagesGuild1 },
+            };
 
-                Assert.That(document.ToBytes(), Is.EqualTo(TestServices.SavefileCodec.Read(path)), path);
-            }
+            var written = this.Write(Blank(), castle);
+
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall, Building.RampartCentaurStables])));
+            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall])));
+            Assert.That(Mask(written, CastleLayout.EnabledBuildingsFromNameEnd), Is.EqualTo(Bits([Building.RampartCentaurStables, Building.MagesGuild1])));
         }
 
         [Test]
-        public void OwnerAndBuiltThisTurnAreWrittenAndNothingElseChanges()
+        public void ABitOfABuildingThatTheModelNoLongerHasIsCleared()
         {
-            var chunk = CastleSamples.Load(Path.Combine(CastleSamples.Folder("Bulwark").First())).History.Current.Castles().First(c => c.Name == "Still Water");
-            var castle = TestServices.CastleDeserializer.Deserialize(chunk);
-
-            var written = TestServices.SerializeCastle(chunk, castle with { Owner = PlayerColor.Teal, BuiltThisTurn = true });
-            var changed = Enumerable.Range(0, chunk.Length).Where(i => chunk.GetByteAt(i) != written.GetByteAt(i)).ToList();
-
-            Assert.That(changed, Is.EquivalentTo(new[] { CastleLayout.Owner, CastleLayout.BuiltThisTurn }));
-            Assert.That(TestServices.CastleDeserializer.Deserialize(written), Is.EqualTo(castle with { Owner = PlayerColor.Teal, BuiltThisTurn = true }).Using<CastleModel>(SameCastle));
-        }
-
-        [Test]
-        public void ANeutralCastleIsWrittenAsTheByteFF()
-        {
-            var chunk = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
-
-            var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk) with { Owner = PlayerColor.Neutral });
-
-            Assert.That(written.GetByteAt(CastleLayout.Owner), Is.EqualTo(Constants.ByteOff));
-            Assert.That(TestServices.CastleDeserializer.DeserializeOwner(written), Is.SameAs(PlayerColor.Neutral));
-        }
-
-        [Test]
-        public void TheGarrisonIsWrittenAndEmptiedSlotsGoBackToMinusOne()
-        {
-            var chunk = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
-            var castle = TestServices.CastleDeserializer.Deserialize(chunk);
-
-            var filled = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3) });
-            var garrison = TestServices.CastleDeserializer.DeserializeGarrison(filled);
-            Assert.That(garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Centaur, 1234)));
-            Assert.That(garrison.Slots[6], Is.EqualTo(new ArmySlot<Creature>(Creature.GoldDragon, 3)));
-            Assert.That(garrison.Filled.Count(), Is.EqualTo(2));
-
-            var emptied = TestServices.SerializeCastle(filled, TestServices.CastleDeserializer.Deserialize(filled) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
-            Assert.That(emptied.HasSameBytes(chunk), Is.True);
-        }
-
-        [Test]
-        public void AnOwnerByteThatIsNoColourIsKeptWhileTheCastleStaysNeutral()
-        {
-            var chunk = StillWater();
-            var odd = chunk.WithBytes(WithByte(chunk, CastleLayout.Owner, 0x09));
-
-            var written = TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd));
-
-            Assert.That(written.GetByteAt(CastleLayout.Owner), Is.EqualTo(0x09));
-            Assert.That(TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd) with { Owner = PlayerColor.Red }).GetByteAt(CastleLayout.Owner), Is.EqualTo(PlayerColor.Red.Code));
-        }
-
-        [Test]
-        public void ABuiltThisTurnByteThatIsNotOneIsKeptWhileTheCastleStaysBuilt()
-        {
-            var chunk = StillWater();
-            var odd = chunk.WithBytes(WithByte(chunk, CastleLayout.BuiltThisTurn, 2));
-
-            var written = TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd));
-
-            Assert.That(written.GetByteAt(CastleLayout.BuiltThisTurn), Is.EqualTo(2));
-            Assert.That(TestServices.SerializeCastle(odd, TestServices.CastleDeserializer.Deserialize(odd) with { BuiltThisTurn = false }).GetByteAt(CastleLayout.BuiltThisTurn), Is.EqualTo(0));
-        }
-
-        [Test]
-        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowReadsAsTheFirstCreatureAndKeepsItsNumberUntilTheModelChanges()
-        {
-            var unknown = WithUnknownCreature(StillWater());
-            var model = TestServices.CastleDeserializer.Deserialize(unknown);
-
-            var written = TestServices.SerializeCastle(unknown, model);
-
-            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(Creature.All[0]));
-            Assert.That(written.ToArray(), Is.EqualTo(unknown.ToArray()));
-            Assert.That(TestServices.SerializeCastle(unknown, model with { Garrison = model.Garrison.WithSlot(3, Creature.Angel, 2) }).GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(Creature.Angel.Code));
-        }
-
-        [Test]
-        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowIsEmptiedWhenTheModelEmptiesIt()
-        {
-            var unknown = WithUnknownCreature(StillWater());
-
-            var written = TestServices.SerializeCastle(unknown, TestServices.CastleDeserializer.Deserialize(unknown) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
-
-            Assert.That(written.GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(-1));
-        }
-
-        private static CastleChunk WithUnknownCreature(CastleChunk chunk)
-        {
+            var chunk = Blank();
             var bytes = chunk.ToArray();
-            System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(CastleLayout.GarrisonTypes + (3 * 4)), 250);
-            return chunk.WithBytes(bytes);
+            BitConverter.GetBytes(Bits([Building.VillageHall, Building.RampartCentaurStables])).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
+            BitConverter.GetBytes(Bits([Building.RampartCentaurStables])).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
+
+            var written = this.Write(chunk.WithBytes(bytes), Rampart() with { VisibleBuildings = new HashSet<Building>() });
+
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall])));
+            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(0));
         }
 
         [Test]
-        public void UpgradingADwellingMovesItsCreaturesToTheSlotOfTheUpgradeInTheBytes()
+        public void ABitOfNoBuildingOfTheFactionIsKept()
         {
-            var (_, upgraded) = WithBuiltAndUpgradedStables();
-            var waiting = TestServices.CastleDeserializer.Deserialize(upgraded).CreaturesAvailable[0];
-
-            Assert.That(waiting, Is.GreaterThan(0));
-            Assert.That(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(waiting));
-            Assert.That(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(0));
-        }
-
-        [Test]
-        public void ACountLeftInTheSlotOfTheDwellingBesideItsUpgradeIsReadFromTheUpgradeAndKept()
-        {
-            var (_, upgraded) = WithBuiltAndUpgradedStables();
-            var bytes = upgraded.ToArray();
-            ByteBufferHelper.WriteUInt16(bytes, upgraded.NameEnd + CastleLayout.CreaturesAvailableFromNameEnd, 5);
-            var both = upgraded.WithBytes(bytes);
-            var model = TestServices.CastleDeserializer.Deserialize(both);
-
-            Assert.That(model.CreaturesAvailable[0], Is.EqualTo(upgraded.GetUInt16At(upgraded.NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd)));
-            Assert.That(TestServices.SerializeCastle(both, model).ToArray(), Is.EqualTo(both.ToArray()));
-        }
-
-        // Still Water with the Centaur Stables built and then upgraded, each written into the bytes.
-        private static (CastleChunk Built, CastleChunk Upgraded) WithBuiltAndUpgradedStables()
-        {
-            var chunk = StillWater();
-            var built = CastleBuilder.Build(TestServices.CastleDeserializer.Deserialize(chunk), Building.RampartCentaurStables);
-            var builtChunk = TestServices.SerializeCastle(chunk, built);
-            var upgradedChunk = TestServices.SerializeCastle(builtChunk, CastleBuilder.Build(built, Building.RampartUpgCentaurStables));
-            return (builtChunk, upgradedChunk);
-        }
-
-        private static CastleChunk StillWater() =>
-            CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
-
-        private static byte[] WithByte(CastleChunk chunk, int offset, byte value)
-        {
+            var chunk = Blank();
             var bytes = chunk.ToArray();
-            bytes[offset] = value;
-            return bytes;
+            var foreign = 1UL << 63;
+            BitConverter.GetBytes(foreign).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
+            BitConverter.GetBytes(foreign).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
+            BitConverter.GetBytes(foreign).CopyTo(bytes, NameEnd + CastleLayout.EnabledBuildingsFromNameEnd);
+
+            var written = this.Write(chunk.WithBytes(bytes), Rampart());
+
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd) & foreign, Is.EqualTo(foreign));
+            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd) & foreign, Is.EqualTo(foreign));
+            Assert.That(Mask(written, CastleLayout.EnabledBuildingsFromNameEnd) & foreign, Is.EqualTo(foreign));
         }
 
         [Test]
-        public void ASessionWritesThroughTheHistoryAndUndoRestores()
+        public void BuildingTheTownHallOfARampartAlsoSetsItsCompanionBitInTheBuiltAndVisibleMasksOnly()
         {
-            var game = CastleSamples.Load(CastleSamples.Folder("Bulwark").First());
-            var history = game.History;
-            var index = history.Current.Castles().FindByName("Jotunngard");
-            var session = history.CreateCastleSession(index);
-            var before = session.Current.Owner;
+            var plain = this.Write(Blank(), Rampart());
+            var hall = this.Write(Blank(), CastleModels.With(Rampart(), Building.TownHall));
 
-            session.Update(c => c with { Owner = PlayerColor.Pink });
-            Assert.That(session.Current.Owner, Is.EqualTo(PlayerColor.Pink));
-            Assert.That(TestServices.CastleDeserializer.DeserializeOwner(history.Current.Castles()[index]), Is.EqualTo(PlayerColor.Pink));
-
-            history.Undo();
-            Assert.That(session.Current.Owner, Is.EqualTo(before));
+            var companion = 1UL << 27;
+            Assert.That(Mask(hall, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(companion));
+            Assert.That(Mask(hall, CastleLayout.VisibleBuildingsFromNameEnd) & companion, Is.EqualTo(companion));
+            Assert.That(Mask(hall, CastleLayout.EnabledBuildingsFromNameEnd) & companion, Is.EqualTo(Mask(plain, CastleLayout.EnabledBuildingsFromNameEnd) & companion));
         }
 
         [Test]
-        public void ASessionIgnoresAnEditThatChangesNothing()
+        public void TakingTheCityHallDownClearsItsCompanionBit()
         {
-            var history = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History;
-            var session = history.CreateCastleSession(0);
+            var chunk = Blank();
+            var withCity = this.Write(chunk, CastleModels.With(Rampart(), Building.TownHall, Building.CityHall));
+            var companion = 1UL << 28;
+            Assert.That(Mask(withCity, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(companion), "built");
 
-            session.Update(c => c with { });
+            var without = this.Write(withCity, CastleModels.With(Rampart(), Building.TownHall));
 
-            Assert.That(history.CanUndo, Is.False);
+            Assert.That(Mask(without, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(0));
+            Assert.That(Mask(without, CastleLayout.VisibleBuildingsFromNameEnd) & companion, Is.EqualTo(0));
         }
 
         [Test]
-        public void ASessionRejectsACastleThatDoesNotExist()
+        public void ACompanionBitIsLeftAloneWhileTheBuildingItFollowsIsNotChanged()
         {
-            var history = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History;
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes(Bits([Building.VillageHall]) | (1UL << 29)).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => history.CreateCastleSession(history.Current.Castles().Count));
+            var written = this.Write(chunk.WithBytes(bytes), Rampart());
+
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 29), Is.EqualTo(1UL << 29));
         }
 
-        /// <summary>The model holds sets and lists, which a record does not compare by value.</summary>
-        internal static bool SameCastle(CastleModel a, CastleModel b) =>
-            a.Name == b.Name && a.Faction == b.Faction && a.Owner == b.Owner && a.Position == b.Position && a.BuiltThisTurn == b.BuiltThisTurn
-            && a.MageGuildLevel == b.MageGuildLevel && a.Buildings.SetEquals(b.Buildings) && a.VisibleBuildings.SetEquals(b.VisibleBuildings)
-            && a.EnabledBuildings.SetEquals(b.EnabledBuildings) && a.CreaturesAvailable.SequenceEqual(b.CreaturesAvailable)
-            && a.MageGuildSpellCounts.SequenceEqual(b.MageGuildSpellCounts)
-            && a.Garrison.Equals(b.Garrison)
-            && a.GarrisonedHeroId == b.GarrisonedHeroId && a.VisitingHeroId == b.VisitingHeroId;
+        [Test]
+        public void TheFortOfAConfluxHasItsCompanionBitAtTwentyTwoAndTheOthersAtTheirOwn()
+        {
+            var conflux = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Conflux), Building.Fort));
+            var bulwark = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Bulwark), Building.Fort));
+            var castle = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Castle), Building.Fort));
+
+            Assert.That(Mask(conflux, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 22), Is.EqualTo(1UL << 22));
+            Assert.That(Mask(bulwark, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 27), Is.EqualTo(1UL << 27));
+            Assert.That(Mask(castle, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 27), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ACastleOfNoFactionLeavesTheThreeMasksAsTheyAre()
+        {
+            var chunk = Blank();
+            var bytes = chunk.ToArray();
+            BitConverter.GetBytes(0x1234UL).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
+            BitConverter.GetBytes(0x5678UL).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
+            BitConverter.GetBytes(0x9ABCUL).CopyTo(bytes, NameEnd + CastleLayout.EnabledBuildingsFromNameEnd);
+
+            var written = this.Write(chunk.WithBytes(bytes), CastleModels.Village(Faction.Neutral));
+
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(0x1234UL));
+            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(0x5678UL));
+            Assert.That(Mask(written, CastleLayout.EnabledBuildingsFromNameEnd), Is.EqualTo(0x9ABCUL));
+        }
+
+        [Test]
+        public void TheSourceChunkIsNotChangedAndTheSizeIsKept()
+        {
+            var chunk = Blank();
+            var before = chunk.ToArray();
+
+            var written = this.Write(chunk, Rampart() with { GarrisonedHeroId = 3, MageGuildSpellCounts = Numbers.Of(1, 1, 1, 1, 1) });
+
+            Assert.That(chunk.ToArray(), Is.EqualTo(before));
+            Assert.That(written.Length, Is.EqualTo(chunk.Length));
+        }
     }
 }

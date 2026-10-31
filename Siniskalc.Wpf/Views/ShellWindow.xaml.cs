@@ -2,6 +2,7 @@ namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Windows;
     using System.Windows.Input;
     using Siniskalc.Core.Runtime;
@@ -18,9 +19,11 @@ namespace Siniskalc.Wpf.Views
         private readonly HelpLinks help;
         private readonly IMessageService messages;
         private readonly SavegameFileCommands files;
+        private readonly Func<LoggingSettingsViewModel>? loggingSettings;
 
-        public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files)
+        public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files, Func<LoggingSettingsViewModel>? loggingSettings = null)
         {
+            this.loggingSettings = loggingSettings;
             this.messages = messages;
             this.files = files;
             this.urlLauncher = urlLauncher;
@@ -28,6 +31,7 @@ namespace Siniskalc.Wpf.Views
             this.help = help;
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
+            this.showLogsMenuItem.Visibility = help.LogFolder is null ? Visibility.Collapsed : Visibility.Visible;
             recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
@@ -108,6 +112,14 @@ namespace Siniskalc.Wpf.Views
             this.WithViewModel(this.files.Reload);
         }
 
+        private void OpenFolderCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.ViewModel?.File is { } file && Path.GetDirectoryName(Path.GetFullPath(file)) is { Length: > 0 } folder && !this.urlLauncher.TryOpenFolder(folder))
+            {
+                this.messages.ShowInformation("Open folder", $"Could not open the folder of the savegame. It is at:\n{folder}");
+            }
+        }
+
         private async void DumpToFileCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.ViewModel is { } viewModel)
@@ -135,6 +147,22 @@ namespace Siniskalc.Wpf.Views
         private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.UserGuideUrl);
 
         private void OpenIssuesCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.IssuesUrl);
+
+        private void EditSettingsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.ViewModel is { } shell && new SettingsWindow(new SettingsViewModel(shell, this.loggingSettings?.Invoke())) { Owner = this }.ShowDialog() == true)
+            {
+                this.ShowStatus(this.loggingSettings is null ? "Settings saved." : "Settings saved. The logging choices apply the next time the editor starts.");
+            }
+        }
+
+        private void ShowLogsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.help.LogFolder is { } folder && !this.urlLauncher.TryOpenFolder(folder))
+            {
+                this.messages.ShowInformation("Help", $"Could not open the folder of the logs. It is at:\n{folder}");
+            }
+        }
 
         private void AboutCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {

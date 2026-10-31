@@ -100,6 +100,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
             var savegame = new Mock<ISavegame>();
             savegame.SetupGet(g => g.FileName).Returns(this.file);
             savegame.SetupGet(g => g.Name).Returns(this.name ?? "Savefile");
+            savegame.SetupGet(g => g.VersionName).Returns("v1");
             this.savegame = savegame.Object;
             this.Raise(nameof(this.Savegame));
         }

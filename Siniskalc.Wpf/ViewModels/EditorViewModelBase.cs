@@ -152,7 +152,7 @@ namespace Siniskalc.Wpf.ViewModels
         {
             if (this.currentGame != null && this.HasPendingChanges)
             {
-                this.currentGame.History.Apply(this.currentGame.History.Original);
+                this.currentGame.History.ApplyAsIs(this.currentGame.History.Original);
             }
         }
 

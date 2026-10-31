@@ -40,7 +40,9 @@ This project therefore includes the GZip part of SharpZipLib 1.2.0 with the line
 - **Human flags**: eight 32-bit values in colour order (1 = human), followed by the colour whose turn it is, then a marker: `FF 10` eight bytes later in HotA, `FF 00 00 00` right after in SoD and RoE (+36 from the flags; offsets 1130, 1228, 1262 and 1286 seen, so locate by shape).
   The header's one-byte-per-colour list (`FF` not in game, `0A` computer, other = human) only names the first human of a hotseat game.
   Found by comparing `players_human_red`, `players_human_tan` and `players_human_red_and_tan`; only red and tan were seen human, so the stride for the other colours is assumed.
-  Current turn checked on four saves.
+  The current player is a 32-bit colour index (0 Red to 7 Pink) at the flags +32, and it is always a human.
+  Across 21 pairs of consecutive saves only this value changed in the setup window when the turn passed; among them `Hota/Mines` 00-01 and 18-19, `Hota/Banishing` 00-01, 02-03, 03-04, 12-13, 13-14 and 15-16, `Hota/Dwellings` 04-05 and 05-06, `Hota/VisitedPlaces` 00-01, `Sod/Hotseat` five_teams_01-02, hotseat_11-12 and hotseat_12-13, and `Hota/players_human_red_and_tan` to `players_human_tan`. The new-day block does not depend on it.
+  The editor writes it (`SafeTurnSerializer`, the Order of play card). Not known: whether the game starts the new player's turn cleanly from an edited save, and whether anything else goes with the turn (`hotseat_12_blue_turn` also changes the selected hero of both players).
 - **Teams** (SoD and RoE; not found in HotA saves; not read by the editor): in the header, just before two lists `00 01 02 03 04 05 06 07`, a byte with the number of teams, and when it is not 0, eight bytes with the team of each colour (Red, Blue, Tan, Green, Orange, Purple, Teal, Pink).
   The hotseat map has `03 | 00 00 01 01 01 02 00 02`; Teal, which nobody plays, keeps the default 0.
   With no teams the byte is 0 and there are no team bytes.
@@ -52,6 +54,7 @@ The head is the same for every colour and in SoD and HotA (`PlayerHeadTests`).
 From the start of the chunk:
 
 - 0: number of heroes of the player. 1: the selected hero (`FF` for none). 2 to 9: the eight places for hero ids, `FF` for an empty one; a garrisoned hero is not in the list.
+  Read and written as `PlayerModel.HeroIds` and `SelectedHero` (the list and the count are written together, and only when the places do not hold the model's ids; see "The table of hero owners" below for how an owner edit changes them).
 - 10 and 11: the two heroes of the tavern, by hero id (`PlayerModel.Tavern`).
   The computer's taverns change both heroes at the start of a week and, within a week, only the place of a hero the computer hired (`SodSeriesTests`).
 - 19: changed from 03 to A7 when a hero dug; unexplained.
@@ -74,9 +77,34 @@ A colour is listed when it has resources, heroes or a town, and the setup does n
 `tan_not_parsing`: Tan is not in the game but has 10000 gold in the table, like a computer player never given a start; the colour that plays is Teal (confirmed in the game).
 A human with two heroes and no resources, as in `SleepGarrisonVisiting` saves 1 to 3 and Blue in the hotseat saves, counts through its heroes.
 A slot with the marker but no valid colour byte (an unused last slot) is named after the colour that follows the previous one.
+The byte in front of the marker (`PlayerLayout.FlagOffset`, 44 bytes after the resources) is **1 in most players and 0 in some**: Red's is 1 and Blue's 0 in `banishing_14` to `16`, while every player has 1 in `banishing_00`. What makes it 0 is not known, so the loader does not look at it (it once did, and found only the four players after Blue: Red and Blue had no page).
 
 **Not checked in the game**: editing the tavern.
-A table of `00`, `40` and `FF` bytes 230 to 290 bytes before the date also changes when a hero flees or is defeated, so a tavern hero set by the editor may be treated differently from one the game chose.
+The table of hero owners (below) marks the heroes the taverns offer with `40`, and the tavern page does not write it, so a tavern hero set by the editor is not marked as one the game chose.
+
+### The table of hero owners (found in `TestData/Hota/HeroOwners`, 2026-10-24)
+
+A byte per hero id, in the order of the ids (`HeroOwnersLayout`, `HeroOwnersModel`): the colour of the player who has the hero (0 Red to 7 Pink), `FF` for nobody, and `40` for a hero the game keeps from being drawn for a tavern (the two heroes of every tavern, and the campaign heroes 145 to 155). Hero 3 has `41` in every HotA save while nobody has it and no tavern offers it: unexplained, read as "kept out of play", left alone.
+It is 156 bytes in SoD (the `Roe` saves are SoD saves) and 215 in HotA; a second table of as many bytes, all `FF` in every save, follows, then `00 08`, two 16-bit numbers that vary, a zero byte and the 7F marker of the date. So `HeroOwnersBytesLoader` finds it from the date (`date - 11 - 2 * length`) and checks it (every byte `FF` or a colour with or without `40`, the second table all `FF`, the tail `00 08`); it is never searched for. It was found and checked in all 447 HoMM3 saves of `TestData` (`HeroOwnersBytesLoaderTests`): the table says the owner byte of every hero chunk, every hero of a player's list has the player's colour, every tavern hero has `40`, and an owned hero in no list is garrisoned in a castle (Blue's hero 29 in `hero_owners_04`, hired when Blue's list was full).
+In the decompressed `hero_owners_00` and `01` it starts at 543453, from `02` on at 543492; its HotA length of 215 is the one for which the second table is all `FF` and is followed by `00 08` (heroes 205 and 210 have bytes in it; 210 is `40`). Every table of `TestData` is written back byte for byte as it was read (`SafeHeroOwnersSerializerTests`).
+The table and the lists are two records, and the editor never assumes they agree: a hero the table gives to a player but no list of it has is still taken from the player (the table becomes `FF`, the lists are left), and a savefile with no table has the hero and the lists changed alone (`HeroOwnerEditsTests`).
+RoE, AB and Chronicles saves were not seen: no table is read for them and an owner edit there changes the hero and the lists only.
+
+What the game changes (`hero_owners_00` to `05`, hotseat saves of `Island of HOTA tests 6p`):
+
+- **A defeat** (`00` to `01`: Clancy of Blue and Ufretin of Red; `02` to `03`: four heroes of Red; `04` to `05` and `05` to `06`: seven heroes of Blue at once, Fiona (205) among them, past the 200th byte of the table): the hero's owner byte becomes `FF` and it leaves the map; in the player's record the count drops, the id goes and the later ids move up a place, the freed places become `FF`; if it was the selected hero, the first hero left is selected (Blue: 22 selected, `[0, 22]` became 0 selected, `[0]`); the table's byte becomes `FF`. The tavern bytes do not change. A defeated hero goes back to the pool: Sir Mullich (144), Red's until `03`, was hired by Blue in `05`.
+- **A hire** (`02` to `03`, Red hires Vokial, 65, from the first place of its tavern; `04` and `05`, Blue hires seven): the id goes to the first free place after the others (after the compaction of the heroes lost in the same turn), the count goes up, the selected hero does not change; the table's `40` becomes the player's colour; the tavern place is refilled by a hero the game draws (Leena, 160), which gets `40` in the table. Blue's eighth hire in `04` (29) went into the garrison: the table says Blue, the list (full at 8) does not have it.
+- **A player knocked out** (Pink in `04`): its tavern bytes become `FF FF` and its two tavern heroes' `40` becomes `FF`.
+- Unexplained: in `05` Red's first tavern place changed (160 to 2, with the table following) while Red hired nobody.
+
+What the editor does (`HeroEditSession.ChangeOwner`, `HeroOwnerEdits`), in one step of the history:
+
+- **To nobody** (a defeat): the hero (`HeroModel.WithOwner`: off the map), the old owner's list (`PlayerModel.WithoutHero`) and the table (`FF`), as above. Replayed on `00` to `01` (bytes 0 to 9 of every player and the whole table equal the game's), `02` to `03`, `04` to `05` and `05` to `06` (the whole table and Blue's record but its selected hero, which the game set to Orrin in `06` though no selected hero was lost; the editor leaves a selection alone unless the selected hero goes) (`HeroOwnerEditsTests`).
+- **To a player** (a hire of a hero that is in no tavern): the id at the end of the new owner's list, the table says the colour; from another player, the old owner loses it as in a defeat.
+- **Refused** (`GameRuleException`, nothing written): a hero a tavern offers (the game refills the tavern place with a hero it draws, which the editor cannot do); a hero the table keeps out of play (`40` with no tavern, the campaign heroes and hero 3); a player whose list has 8 heroes; a hero garrisoned in a castle (the castle holds its id and how a defeat or a change of owner of a garrisoned hero is kept was not seen: hero 29 was defeated between `04` and `05`, with the castle, which was not looked at).
+- Reverting the owner change (or the player's "Heroes" change, which is listed with it) puts the hero's owner, the place of the hero in every list, the selected hero and the table back together.
+
+**Open:** whether the game accepts a hero given to a player that it did not hire (a hire from the pool goes through a tavern in every save seen, and nothing shows how the game would treat a hero that skips it; not checked in the game); how a garrisoned hero's owner change and defeat are stored (the castle's garrison byte); what the second table is; the `41` of hero 3; the refill of Red's tavern in `05`.
 The tavern page offers only heroes no player owns, and never the same hero twice.
 
 ## Castles
@@ -113,6 +141,7 @@ RoE, AB and Chronicles saves were not seen.
   A chronological series can show that one is too strict, but not that it is right.
   `dung_necro` was built in the map editor, which ignores prerequisites, so it proves bit positions only.
 - **Dwelling growth** (Conflux, SoD): 20, 6, 6, 5, 4, 2, 2 a week and 60, 18, 18, 5, 4, 2, 2 (110, 30, 30, 15, 12, 6, 6 upgraded) once the buildings have stood for a week.
+  The first numbers are the growth of the creatures (`Creature.Info.Growth`), which is what a dwelling holds when it is built (`CastleBuilder`), and the castle page shows them as "+N a week" (`CastleModel.BaseWeeklyGrowth`). What the castle, the horde buildings and the Grail add was not worked out from a save, so it is not shown.
   Building the upgraded Magic Lantern gives the upgraded Garden of Life by itself (bits 19 and 37).
   The Conflux dwellings are the Magic Lantern, the Altars of Air, Water, Fire, Earth and Thought, and the Pyre.
 - **Garrisoned and visiting hero**: the castle holds both ids (`CastleLayout.VisitingHero`, bytes 65 and 66 in HotA).
@@ -162,7 +191,7 @@ HotA has twelve bytes there too, laid out differently (`D0 07` in the second and
   Other versions were not seen.
 - **Bonus effects** (until the next battle, or the next week for some).
   Read: take the byte, mask the bit, non-zero means on.
-  `HeroModel.MoraleBonus`, `LuckBonus` (read only) and `VisitEffects` (editable) are shown on the General page.
+  `HeroModel.MoraleBonus`, `LuckBonus` and `VisitEffects` are edited on the General page ("Visited buildings", the shared next-battle card) and written by `SafeHeroSerializer` (the two signed bytes, and only the known bit of each building; the other bits of those bytes are left as they are). The watering hole (+1 morale), the swan pond (+2 luck) and the crypt (-1 morale) set their bit and the byte together, as HoMM2 must (`docs/HOMM2_SAVE_FORMAT.md`, T03BONUS); the stables have only a bit. The faerie ring, the fountain of fortune (a luck the game draws) and the idol of fortune are shown but not edited, as the saves do not pin down what they give. **Not tried in the game.**
   - +28: morale bonus, +29 luck bonus, signed bytes (watering hole +1, crypt -1; swan pond +2, fountain of fortune +1).
   - +135: `0x02` stables (lasts the week), `0x08` swan pond, `0x40` watering hole. +136: `0x04` crypt, `0x20` Faerie Ring. +138: `0x08` Fountain of Fortune, `0x02` Idol of Fortune.
   - A battle clears luck, the fountain bit, and the Faerie Ring and Idol bits; a new day clears the stables bit.
@@ -240,6 +269,17 @@ From the saves of `TestData/Hota/VisitedPlaces`: Tazar and Orrin visit, a turn a
 - **A dragon utopia (once per map)** is marked visited for the heroes of the player that won it and not for the others: Orrin (Blue) saw no change in the save after Tazar's win. Where that mark is kept is not found (the saves after it are 99 and 8,749 bytes longer).
 - Tree of knowledge: other bytes change too (+231 and +1141 for Tazar, +224 and +1134 for Orrin) and the level (+75) goes up by one: the payment each tree asks (gold, gems...) is not stored in the hero.
 
+### Objects of the map: what the list of positions and the cells say (2026-10-24)
+
+- **In the list of objects (a definition number and x, y, z for each) the position of an entry belongs to the object whose definition is in the next entry.** A hero standing on school of magic 0 in `visited_places_05` is at the position of entry 791 and the definition of entry 792 is the school; the cells of the map that give a place number point at the entry with the position. `MapObjectPositions` therefore gives the position of the object a cell names, and the type of that object is the type of the *next* definition.
+- **Definitions have a type and a subtype**: of the 33 bytes after the file name of a definition, the type of the object is at +26 and its subtype at +28. The Horn of the Abyss objects that are not in the older games share the type 144 and tell themselves apart by the subtype: `AVXgazeb` (gazebo) is 6, `AVXmspr0` (mineral spring) is 4, `AVSmgarn` 2, `avwtplce` 3, `AVShrmit` 5, `avmoilpm` 8, `avxtrmtw` 9, `avtprosp` 10, `avstrblz` 11, `AVStmplt` 0. Which of them is the colossus of the magi is not settled: the cells of the AVStmplt objects are the only ones with the type 144 in them and a number of FFFFFFFF, and a hero standing on a colossus reads 144 and the number 0 or 1, but no position of a hero ever agreed with a definition of the type 144.
+- **The cell of a tree of knowledge** (`66 00 00 00`, place, number, `20 05 00`) holds more than the number: the byte of the number is 0 or 1 before a visit and 0x60 or 0x61 after it, the three bytes after it are the payment (`20 05 00` is 2,000 gold at first, `2C 05 00` after a visit), and a hero standing on a tree reads 0x20 or 0x21 for its number. The number of the place is the low five bits (`VisitedPlaceKind.NumberMask`). Both trees of the test map are found this way: 0 at 2, 20 and 1 at 2, 23, and the bits Tazar sets are those (`visited_places_23` and `24`).
+- **A cell is written for every tile of an object**, and the cells of one object do not always agree on the number (a merchant of `multi_merchants` has 2 on its first tile and 1 on another): the first cell of a place with a valid number is the one to take.
+
+### The merchants (found in `TestData/Hota/multi_merchants`, 2026-10-24)
+
+The 32 bit number in front of the first list of seven artifacts is **the number of merchants**, not a marker: 2 in the first map of the test series, 4 in `multi_merchants`, where two black markets were added with the map editor, and that many lists follow, one for each merchant of the map. The game calls every one of them a black market. Their number is the number among the objects of the type 7 (`07 00 00 00`, place, number), in the order of the object list: (28, 34), (28, 37), (31, 34) and (31, 37) in that map. The first two are the ones Tazar visits as number 0 and 1 in `visited_places_27` to `29`. Which merchant a list belongs to was not confirmed in the game for more than two.
+
 ## Dwellings (Horn of the Abyss, found 2026-10-22)
 
 From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature generators, Orrin flags them to Blue a turn later).
@@ -251,7 +291,7 @@ From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature g
 
 ## The Places tab of a hero (HoMM3)
 
-The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The trees of knowledge, the colossi and the gazebos are listed without their places: the cells of the trees were not found, and the colossi and gazebos share an object type.
+The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The colossi and the gazebos are listed without their places: they share the object type 144 with the other objects of the Horn of the Abyss and their cells carry no number (see "Objects of the map"). The trees of knowledge are listed with theirs since 2026-10-24. A kind with no places can still be opened, and it shows nothing.
 
 ## Hex views
 

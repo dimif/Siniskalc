@@ -1,12 +1,13 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -17,27 +18,28 @@ namespace Siniskalc.Homm3.ViewModels
 
     /// <summary>
     /// ViewModel of the page of a castle (a town): its owner, position, garrison and buildings. It reads from a
-    /// <see cref="CastleEditSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
+    /// <see cref="ICastleSession"/>, writes every edit back through it, and refreshes when the history changes, so edits show up in
     /// the pending changes and follow undo and redo.
     /// </summary>
     public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
+        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
+
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
-        private readonly SaveDocumentHistory history;
+        private readonly ICastleSession castleSession;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
-        private readonly int castleIndex;
+        private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
         private string notice = string.Empty;
 
-        public CastleViewModel(SaveDocumentHistory history, int castleIndex, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
-            : base(history.Current.Castles().GetName(castleIndex), history.CreateCastleSession(castleIndex))
+        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
+            : base(session.Name, session)
         {
-            this.history = history;
+            this.castleSession = session;
             this.byteEditTargets = byteEditTargets;
             this.buildMessages = buildMessages;
-            this.castleIndex = castleIndex;
             this.openHero = openHero;
             this.Castle = this.Session.Current;
             this.Refresh();
@@ -45,13 +47,14 @@ namespace Siniskalc.Homm3.ViewModels
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
             // the place of the castle's: the editor shows that army and cannot change anything.
             this.GarrisonEditor = new ArmyViewModel(
-                history.Current.GameVersion(),
+                session.GameVersion,
                 () => this.GarrisonedHeroModel?.Army ?? this.Castle.Garrison,
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
+            this.GarrisonEditor.SetTitle("Garrison");
         }
 
-        public int CastleIndex => this.castleIndex;
+        public int CastleIndex => this.castleSession.Index;
 
         public string Name => this.Castle.Name;
 
@@ -85,7 +88,7 @@ namespace Siniskalc.Homm3.ViewModels
             set
             {
                 var owner = OwnerNames<PlayerColor>.Parse(value);
-                this.history.CreateCastleSession(this.castleIndex).ChangeOwner(owner);
+                this.castleSession.ChangeOwner(owner);
             }
         }
 
@@ -111,7 +114,7 @@ namespace Siniskalc.Homm3.ViewModels
         public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
-        /// Gets where the town is on the map, such as "X: 33, Y: 23, Surface (0)".
+        /// Gets where the town is on the map, such as "Pos: 33, 23, Surface".
         /// </summary>
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 
@@ -155,6 +158,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets the seven creature levels with the dwelling that serves each and the creatures waiting in it.
         /// </summary>
         public IReadOnlyList<DwellingRowViewModel> Dwellings { get; private set; } = [];
+
+        /// <summary>
+        /// Gets the buttons that fill every dwelling (all +1 week, all +100, all empty).
+        /// </summary>
+        public DwellingStockActions DwellingActions => this.dwellingActions ??= new DwellingStockActions(() => this.Dwellings);
 
         /// <summary>
         /// Gets a line such as "123 Total".
@@ -224,9 +232,7 @@ namespace Siniskalc.Homm3.ViewModels
                     return null;
                 }
 
-                var heroes = this.history.Current.Heroes();
-                var index = heroes.IndexOfId(id);
-                return index < 0 ? null : heroes.GetModel(index);
+                return this.castleSession.FindHero(id);
             }
         }
 
@@ -236,7 +242,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.
         /// </summary>
-        public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForCastle(this.history, this.castleIndex);
+        public IByteEditTarget CreateByteEditTarget() => this.castleSession.CreateByteEditTarget(this.byteEditTargets);
 
         /// <summary>
         /// Shows the castle again from the current document.
@@ -250,7 +256,7 @@ namespace Siniskalc.Homm3.ViewModels
                 .Select(slot => new GarrisonSlotRowViewModel(slot, this.Castle.Garrison.Slots[slot - 1]))
                 .ToList();
 
-            this.Heroes = CastleHeroRows.For(this.Castle, this.history.Current.Heroes(), this.openHero);
+            this.Heroes = CastleHeroRows.For(this.Castle, this.castleSession.Heroes, this.openHero);
 
             // The upgraded horde buildings (bits 19 and 25) are no buildings of the game: it sets the bits by itself when a growth building and the
             // upgrade of its dwelling both exist, and the growth building works on both dwellings. They are not listed or counted.
@@ -319,6 +325,7 @@ namespace Siniskalc.Homm3.ViewModels
             catch (GameRuleException ex)
             {
                 // Only the rules of the game are told to the user; a fault (a bad index, say) is not made to look like one.
+                Logger.LogInformation("Refused an edit of the castle: {Reason}", ex.Message);
                 this.Notice = ex.Message;
                 this.Refresh();
             }
@@ -395,12 +402,12 @@ namespace Siniskalc.Homm3.ViewModels
                 if (upgraded != null && this.Castle.HasBuilt(upgraded))
                 {
                     var count = this.Castle.CreaturesAvailable[level];
-                    rows.Add(new DwellingRowViewModel(level + 1, upgraded.Name, "Upgraded", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: true)));
+                    rows.Add(new DwellingRowViewModel(level + 1, upgraded.Name, "Upgraded", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: true), this.Castle.BaseWeeklyGrowth(level)));
                 }
                 else if (this.Castle.HasBuilt(dwelling))
                 {
                     var count = this.Castle.CreaturesAvailable[level];
-                    rows.Add(new DwellingRowViewModel(level + 1, dwelling.Name, "Built", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: false)));
+                    rows.Add(new DwellingRowViewModel(level + 1, dwelling.Name, "Built", count.ToString(CultureInfo.CurrentCulture), true, count, n => this.SetCreaturesWaiting(index, n), DwellingCreatures.NamesOf(this.Castle.Faction!, level, hasUpgrade: false), this.Castle.BaseWeeklyGrowth(level)));
                 }
                 else
                 {

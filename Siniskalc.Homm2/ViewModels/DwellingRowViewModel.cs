@@ -1,11 +1,13 @@
 namespace Siniskalc.Homm2.ViewModels
 {
+    using System.Windows.Input;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// One of the six dwellings of a castle: how far it is built (not built, built, upgraded) and how many creatures wait in it.
     /// </summary>
-    public sealed class DwellingRowViewModel : AbstractViewModelBase
+    public sealed class DwellingRowViewModel : AbstractViewModelBase, IStockedDwelling
     {
         private readonly System.Func<bool> isBuilt;
         private readonly System.Func<int> weeklyGrowth;
@@ -16,6 +18,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.Built = built;
             this.Waiting = waiting;
             this.isBuilt = isBuilt;
+            this.AddWeekCommand = DwellingStockActions.AddWeekCommandOf(this);
         }
 
         public ChoiceFieldViewModel Built { get; }
@@ -28,9 +31,27 @@ namespace Siniskalc.Homm2.ViewModels
         public bool IsBuilt => this.isBuilt();
 
         /// <summary>
+        /// Gets the command that adds a week of growth to the dwelling.
+        /// </summary>
+        public ICommand AddWeekCommand { get; }
+
+        /// <inheritdoc/>
+        bool IStockedDwelling.CanStock => this.IsBuilt;
+
+        /// <inheritdoc/>
+        long IStockedDwelling.Stock
+        {
+            get => this.Waiting.Value;
+            set => this.Waiting.Value = value;
+        }
+
+        /// <inheritdoc/>
+        int IStockedDwelling.WeeklyGrowthAmount => this.weeklyGrowth();
+
+        /// <summary>
         /// Gets what the dwelling gains each week, with the Well and the second well: such as "+20 a week", nothing for a dwelling that is not built.
         /// </summary>
-        public string WeeklyGrowthText => this.weeklyGrowth() is var growth && growth > 0 ? $"+{growth} a week" : string.Empty;
+        public string WeeklyGrowthText => Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(this.weeklyGrowth());
 
         public void Refresh()
         {

@@ -54,7 +54,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public int Level => this.position().Level;
 
         /// <summary>
-        /// Gets the level of the map the mine is on, such as "Underground (1)", or nothing in a game whose map has one level.
+        /// Gets the level of the map the mine is on, such as "Underground", or nothing in a game whose map has one level.
         /// </summary>
         public string LevelText => this.HasLevel ? MapLevelText.Of(this.Level) : string.Empty;
 
@@ -64,7 +64,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public (int X, int Y) Place => (this.X, this.Y);
 
         /// <summary>
-        /// Gets where the mine is, such as "X: 12, Y: 7", with the level in a game whose map has two ("X: 12, Y: 7, Underground (1)").
+        /// Gets where the mine is, such as "Pos: 12, 7", with the level in a game whose map has two ("Pos: 12, 7, Underground").
         /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.position(), this.HasLevel);
 

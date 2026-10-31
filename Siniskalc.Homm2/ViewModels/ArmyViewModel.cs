@@ -2,14 +2,9 @@
 {
     using System;
     using System.Linq;
-    using Siniskalc.Core;
-    using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The army of a hero or the garrison of a castle in Heroes of Might and Magic II: five slots and a finder to add creatures. The slots,
@@ -35,10 +30,9 @@
         }
 
         /// <inheritdoc/>
-        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => Facts(creature);
-
-        private static System.Collections.Generic.IReadOnlyList<StackFact> Facts(Creature creature) =>
+        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) =>
         [
+            .. new StackTotals(creature.Info, amount).ToHealthAndDamageFacts(),
             new("Town", creature.Faction?.ToString() ?? "Neutral"),
             new("Level", creature.Tier.ToString()),
             new("Growth", $"{creature.Info.Growth} a week"),

@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:Siniskalc.Heroes.ViewModels;assembly=Siniskalc.Heroes"
     xmlns:wvm="clr-namespace:Siniskalc.Heroes.Wpf.ViewModels"
+    xmlns:local="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
     xmlns:views="clr-namespace:Siniskalc.Heroes.Wpf.Views">
 
     <ResourceDictionary.MergedDictionaries>
@@ -183,32 +184,55 @@
         </Setter>
     </Style>
 
-    <!-- The resources of a player: a card for each, the quick add buttons, what a game adds (its content) and the note on the limits. -->
+    <!-- One resource of a player as a line of the resources card: its colour, its name, a stepper, the button that adds a fixed amount, and what is told
+         about it (how far it is from the savegame, its income). -->
+    <DataTemplate x:Key="ResourceLineTemplate" DataType="{x:Type wvm:ResourceRowViewModel}">
+        <Grid Margin="0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="22"/>
+                <ColumnDefinition Width="84"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Ellipse Width="10" Height="10" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="{Binding ColorHex}"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Name}"/>
+            <local:Stepper Grid.Column="2" Width="170" Value="{Binding Value}" Minimum="{Binding Minimum}" Maximum="{Binding Maximum}" Step="{Binding Step}"/>
+            <Button Grid.Column="3" Margin="8,0,0,0" MinWidth="48" VerticalAlignment="Center" Style="{StaticResource PillButtonStyle}"
+                    Command="{Binding AddPresetCommand}" Content="{Binding AddPresetLabel}" ToolTip="{Binding AddPresetToolTip}"/>
+            <StackPanel Grid.Column="4" Margin="12,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,10,0" Foreground="{StaticResource AccentBrush}" Text="{Binding DeltaText}"/>
+                <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0" Text="{Binding Note}"/>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <!-- The resources of a player: what a game adds first (its content, such as the countdown to banishing), then a card of double width with a line for
+         each resource in the order of the game and the quick add buttons, and the note on the limits. -->
     <Style TargetType="{x:Type views:ResourcesPanel}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type views:ResourcesPanel}">
                     <StackPanel>
-                        <ItemsControl Margin="-6,12,0,0" ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource AmountCardTemplate}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                        <ContentPresenter/>
 
-                        <Border Margin="0,12,0,0" HorizontalAlignment="Left" Padding="6" CornerRadius="16" Background="{StaticResource PanelBrush}"
-                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Margin="10,0,10,0" Text="Quick add"/>
-                                <Button Style="{StaticResource PillButtonStyle}" Command="{Binding SetAllResourcesCommand}" Content="All +99"
-                                        ToolTip="Add 99 of wood, mercury, ore, sulfur, crystal and gems; gold is left alone"/>
-                                <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Command="{Binding SetRichCommand}" Content="Gold +100k"
-                                        ToolTip="Add 100,000 gold"/>
+                        <Border Style="{StaticResource CardStyle}" Margin="0,6,0,0" HorizontalAlignment="Left" Width="672">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Resources"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,8">
+                                    <TextBlock Style="{StaticResource FieldLabelStyle}" Foreground="{StaticResource MutedBrush}" Margin="0,0,10,0" Text="Quick"/>
+                                    <Button Style="{StaticResource PillButtonStyle}" Command="{Binding SetAllResourcesCommand}" Content="{Binding SetAllLabel}"
+                                            ToolTip="Add the same to wood, mercury, ore, sulfur, crystal and gems; gold is left alone"/>
+                                    <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Command="{Binding SetRichCommand}" Content="{Binding SetRichLabel}"
+                                            ToolTip="Add to gold"/>
+                                    <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Command="{Binding ClearAllResourcesCommand}" Content="Res 0"
+                                            ToolTip="Set wood, mercury, ore, sulfur, crystal and gems to 0; gold is left alone"/>
+                                    <Button Style="{StaticResource PillButtonStyle}" Margin="6,0,0,0" Command="{Binding ClearRichCommand}" Content="Gold 0"
+                                            ToolTip="Set gold to 0"/>
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding Resources}" ItemTemplate="{StaticResource ResourceLineTemplate}"/>
                             </StackPanel>
                         </Border>
-
-                        <ContentPresenter/>
 
                         <TextBlock Margin="0,16,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Text="{TemplateBinding Note}"/>
                     </StackPanel>
@@ -289,6 +313,66 @@
                                 <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="{TemplateBinding Heading}"/>
                             </DockPanel>
                             <ContentPresenter/>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- The rows of a list card: no padding, and a mark on the left of the row that is picked, which is also the row that has the focus. The
+         mark takes 6 pixels, the same as the inset of the headings of the columns above the rows; the list itself keeps a pixel around its rows,
+         which the -1 margin of the list takes back. -->
+    <Style x:Key="ListCardRowStyle" TargetType="ListBoxItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="mark" BorderThickness="2,0,0,0" BorderBrush="Transparent" Padding="4,0,0,0" Background="Transparent">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="mark" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="IsSelected" Value="True"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- A card that lists the places of the map (mines, dwellings, obelisks): a heading, a note, buttons that act on every row, the headings of the
+         columns (the content) and a row for each item. -->
+    <Style TargetType="{x:Type views:ListCard}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type views:ListCard}">
+                    <Border Style="{StaticResource CardStyle}" HorizontalAlignment="Left" Width="{TemplateBinding CardWidth}">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Right" Style="{StaticResource FieldNoteStyle}" Text="{TemplateBinding Summary}"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Margin="0" Text="{TemplateBinding Heading}"/>
+                            </DockPanel>
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Text="{TemplateBinding Note}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
+                                        <Style.Triggers>
+                                            <Trigger Property="Text" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <ContentPresenter Content="{TemplateBinding Toolbar}"/>
+                            <ContentPresenter Margin="6,0,0,2"/>
+                            <ListBox ItemsSource="{TemplateBinding ItemsSource}" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{StaticResource ListCardRowStyle}"
+                                     SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                     BorderThickness="0" Padding="0" Margin="-1,0,0,0" Background="Transparent" HorizontalContentAlignment="Stretch"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                         </StackPanel>
                     </Border>
                 </ControlTemplate>
@@ -427,6 +511,10 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
                 </Trigger>
+                <!-- A turn the editor cannot give yet: the button stays, greyed out, with its tooltip saying why. -->
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="tile" Property="Opacity" Value="0.55"/>
+                </Trigger>
                 <DataTrigger Binding="{Binding IsCurrent}" Value="True">
                     <Setter TargetName="tile" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
                     <Setter TargetName="tile" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
@@ -436,7 +524,7 @@
         </ControlTemplate>
         <DataTemplate x:Key="OrderOfPlayItemTemplate" DataType="{x:Type wvm:OrderOfPlayItemViewModel}">
             <Button Template="{StaticResource OrderOfPlayButtonTemplate}" Margin="0,0,8,0" Cursor="Hand" Command="{Binding Command}" ToolTip="{Binding ToolTip}"
-                    AutomationProperties.Name="{Binding Name}"/>
+                    ToolTipService.ShowOnDisabled="True" AutomationProperties.Name="{Binding Name}"/>
         </DataTemplate>
 
         <DataTemplate x:Key="PlayerCardTemplate" DataType="{x:Type wvm:PlayerCardViewModel}">

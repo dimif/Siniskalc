@@ -1,8 +1,10 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
-    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -12,6 +14,8 @@
     /// </summary>
     public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>
     {
+        private static readonly ILogger<CastleEditSession> Logger = LogFactory.For<CastleEditSession>();
+
         public CastleEditSession(SaveDocumentHistory history, int castleIndex)
             : base(history, Homm2ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer)
         {
@@ -35,6 +39,9 @@
                 return;
             }
 
+            using var subject = Logger.BeginSubject("Castle", castle.Name);
+            Logger.LogDebug("Changing the owner from {From} to {To}", castle.Owner, owner);
+
             // The new list is made before anything is written, so a full list leaves the savegame as it was.
             var edits = new List<(int Player, PlayerModel Model)>();
             if (!castle.Owner.IsNeutral)
@@ -54,6 +61,61 @@
             }
 
             this.History.Apply(updated);
+        }
+
+        /// <summary>
+        /// Puts the owner of the castle back to what the savegame had, in one step of the history, with the lists of castles of the players and
+        /// their days left to own a castle (<see cref="PlayerModel.WithCastleAsIn"/>). It is how the change of the owner is reverted.
+        /// </summary>
+        /// <exception cref="GameRuleException">The castle goes back to a list of castles that has become full.</exception>
+        public void RestoreOwner()
+        {
+            using var subject = Logger.BeginSubject("Castle", this.Current.Name);
+            Logger.LogDebug("Restoring the owner the savegame had");
+            var updated = WithOwnerAsIn(this.History.Current, this.History.Original, this.CastleIndex);
+            if (!ReferenceEquals(updated, this.History.Current))
+            {
+                this.History.Apply(updated);
+            }
+        }
+
+        /// <summary>
+        /// Returns the document with the owner of the castle as it is in <paramref name="original"/>, in the castle and in the lists of castles
+        /// of the players, with their days left. The new records are all made before any is written, so a refused change leaves the document as it was.
+        /// </summary>
+        /// <exception cref="GameRuleException">The castle goes back to a list of castles that has become full.</exception>
+        internal static SaveDocument WithOwnerAsIn(SaveDocument document, SaveDocument original, int castleIndex)
+        {
+            var castles = document.Castles();
+            var castle = castles.GetModel(castleIndex);
+            var originalCastle = original.Castles().GetModel(castleIndex);
+
+            var players = document.Players();
+            var originalPlayers = original.Players();
+            var edits = new List<(int Player, PlayerModel Model)>();
+            for (var index = 0; index < players.Count && index < originalPlayers.Count; index++)
+            {
+                var player = players.GetModel(index);
+                var originalPlayer = originalPlayers.GetModel(index);
+                if (player.CastleIds.Contains(castleIndex) || originalPlayer.CastleIds.Contains(castleIndex))
+                {
+                    var restored = player.WithCastleAsIn(castleIndex, originalPlayer);
+                    if (restored != player)
+                    {
+                        edits.Add((index, restored));
+                    }
+                }
+            }
+
+            var updated = castle.Owner == originalCastle.Owner
+                ? document
+                : document.WithChunk(Homm2ChunkKinds.Castle, castleIndex, castles.Serializer.Serialize(castles[castleIndex], castle with { Owner = originalCastle.Owner }));
+            foreach (var (player, model) in edits)
+            {
+                updated = updated.WithChunk(Homm2ChunkKinds.Player, player, players.Serializer.Serialize(players[player], model));
+            }
+
+            return updated;
         }
     }
 }

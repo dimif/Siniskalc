@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the words for whose turn it is.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class TurnTextTests
     {
         [Test]

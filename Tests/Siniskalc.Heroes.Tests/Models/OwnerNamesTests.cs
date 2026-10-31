@@ -4,6 +4,7 @@ namespace Siniskalc.Heroes.Tests.Models
     using Siniskalc.Heroes.Models;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class OwnerNamesTests
     {
         [Test]

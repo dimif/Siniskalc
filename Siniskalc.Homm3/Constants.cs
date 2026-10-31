@@ -119,10 +119,10 @@ namespace Siniskalc.Homm3
             public const long Min = 0;
 
             /// <summary>
-            /// The most gold a player can be given here. The game itself shows large amounts, but not beyond this.
+            /// The most gold a player can be given here (the same in every game of the series).
             /// </summary>
-            public const long MaxGold = 999_999_999;
-            public const long MaxOther = 999_999;
+            public const long MaxGold = Heroes.Constants.Resources.MaxGold;
+            public const long MaxOther = Heroes.Constants.Resources.MaxOther;
             public const long GoldStep = 1000;
             public const long OtherStep = 1;
 
@@ -133,10 +133,16 @@ namespace Siniskalc.Homm3
             public const int RichGoldPreset = 1_000_000;
 
             /// <summary>
-            /// What the "All +99" and "Gold +100k" buttons add.
+            /// What the "Res +100" and "Gold +100k" buttons add.
             /// </summary>
-            public const int AllResourcesIncrease = 99;
+            public const int AllResourcesIncrease = 100;
             public const int GoldIncrease = 100_000;
+
+            /// <summary>
+            /// What the "+10" button of a resource and the "+10k" button of gold add.
+            /// </summary>
+            public const int OtherPreset = 10;
+            public const int GoldPreset = 10_000;
         }
 
         /// <summary>
@@ -165,6 +171,11 @@ namespace Siniskalc.Homm3
             /// </summary>
             public const int MinHeroId = 0;
             public const int MaxHeroId = 254;
+
+            /// <summary>
+            /// The most heroes a player has on the map: the places of the list of heroes of a player (a garrisoned hero is not in it).
+            /// </summary>
+            public const int HeroListSize = 8;
 
             /// <summary>
             /// The days a player with no town has left before being banished: 7 the day the last town is lost, 0 once banished.

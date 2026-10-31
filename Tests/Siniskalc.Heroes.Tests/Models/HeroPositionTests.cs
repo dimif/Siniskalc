@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests where a hero stands and which way it faces, which both games keep in the same way.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class HeroPositionTests
     {
         [Test]

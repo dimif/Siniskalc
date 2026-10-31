@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the two heroes a tavern offers.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class TavernHeroesTests
     {
         [Test]

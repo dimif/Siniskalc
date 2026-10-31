@@ -2,10 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -34,14 +34,18 @@
             changes.AddDaysLeft(original.DaysLeft, current.DaysLeft, (p, days) => p with { DaysLeft = days });
             changes.AddTavern(original.Tavern, current.Tavern, heroName, p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
 
+            // The lists change with the owners of heroes and castles, so putting one back gives those heroes or castles their owners back
+            // (PlayerEditSession.RestoreHeroes, RestoreCastles), in one step.
+            var head = changes.All.Count;
+            var lists = new List<PendingChange>();
             if (!original.HeroIds.Equals(current.HeroIds))
             {
-                changes.Add(ChangeAreas.Heroes, "Heroes", List(original.HeroIds), List(current.HeroIds), p => p with { HeroIds = original.HeroIds });
+                lists.Add(new PendingChange(name, new Change(ChangeAreas.Heroes, "Heroes", List(original.HeroIds), List(current.HeroIds)), Homm2ChunkKinds.Player, playerIndex, history => history.CreatePlayerSession(playerIndex).RestoreHeroes()));
             }
 
             if (!original.CastleIds.Equals(current.CastleIds))
             {
-                changes.Add(ChangeAreas.Castles, "Castles", List(original.CastleIds), List(current.CastleIds), p => p with { CastleIds = original.CastleIds });
+                lists.Add(new PendingChange(name, new Change(ChangeAreas.Castles, "Castles", List(original.CastleIds), List(current.CastleIds)), Homm2ChunkKinds.Player, playerIndex, history => history.CreatePlayerSession(playerIndex).RestoreCastles()));
             }
 
             if (original.SelectedHero != current.SelectedHero)
@@ -54,7 +58,7 @@
                 changes.Add(ChangeAreas.General, "Selected castle", ChangeText.Number(original.SelectedCastle), ChangeText.Number(current.SelectedCastle), p => p with { SelectedCastle = original.SelectedCastle });
             }
 
-            return changes.All;
+            return changes.All.Take(head).Concat(lists).Concat(changes.All.Skip(head)).ToList();
         }
 
         private static string List(Numbers ids) => ids.Count == 0 ? "none" : string.Join(", ", ids);

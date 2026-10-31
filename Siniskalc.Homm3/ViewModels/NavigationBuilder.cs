@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -102,7 +101,14 @@ namespace Siniskalc.Homm3.ViewModels
                 .ToList();
 
             // A player with data in the savefile is a page of its own (the resources); the others only hold their heroes and towns.
+            // A colour the savefile has no player data for gets a page like Neutral's, numbered below -1 so the tree can tell them apart.
             var playerIndex = owner.IsNeutral ? -1 : game.History.Current.Players().FindByColor(owner);
+            var hasPlayerPage = playerIndex >= 0;
+            if (!hasPlayerPage)
+            {
+                playerIndex = NeutralViewModel.IndexOf(owner);
+            }
+
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
             var node = OwnerNavGroup.Create(
                 tree,
@@ -116,8 +122,8 @@ namespace Siniskalc.Homm3.ViewModels
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]),
                 MineGroupsOf(game.History.Current.Mines().GetModels(), owner, hasLevels: true),
                 DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner),
-                neutralPage: owner.IsNeutral);
-            if (playerIndex >= 0)
+                neutralPage: !hasPlayerPage);
+            if (hasPlayerPage)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));
             }
@@ -141,7 +147,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         private static IReadOnlyList<NavEntry> EntriesOf(IEnumerable<DwellingModel> dwellings) =>
-            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, $"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} at {MapLevelText.At(d.Position, hasLevels: true)[3..]}", string.Empty)).ToList();
+            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, $"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} at {MapLevelText.Place(d.Position, hasLevels: true)}", string.Empty)).ToList();
 
         private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
 

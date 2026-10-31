@@ -7,7 +7,6 @@
     using System.Windows.Input;
     using Siniskalc.Core;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -33,7 +32,7 @@
         private readonly Func<bool> canSleep;
         private bool isRefreshing;
 
-        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null)
+        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<MapDestination>>? destinationsToSendTo = null)
             : base("General Info")
         {
             this.getHero = getHero;
@@ -43,6 +42,10 @@
             this.hasUnderground = hasUnderground;
             this.canSleep = canSleep ?? (() => false);
 
+            this.PrimarySkills = new PrimarySkillsCardViewModel(
+                () => this.Hero.PrimarySkills,
+                edit => this.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
+                new NumberRange(Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill));
             this.MovementAndSpellPoints = new MovementAndSpellPointsCardViewModel(
                 () => this.Hero.MovementPoints.Current,
                 value => this.Update(h => h.WithMovementLeft(value)),
@@ -81,13 +84,15 @@
                 coordinates,
                 this.LevelChoices,
                 () => this.Hero.Position.FacingDirection,
-                facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
+                facing => this.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
+                destinationsToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.Hero.Destination,
                 destination => this.Update(h => h with { Destination = destination }),
                 coordinates,
                 this.LevelChoices);
             this.SelectAllWarMachinesCommand = new DelegateCommand(_ => this.SelectAllWarMachines());
+            this.NextBattle = this.CreateNextBattle();
 
             this.WarMachinesChecked = new ObservableCollection<bool>(new bool[WarMachineCheckBoxCount]);
 
@@ -126,52 +131,10 @@
         /// </summary>
         public ICommand SelectAllWarMachinesCommand { get; }
 
-        public byte Attack
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseAttack);
-            set => this.SetPrimarySkills(this.Attack, ClampSkill(value), s => s.WithBaseAttack(ClampSkill(value)));
-        }
-
-        public byte Defense
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseDefense);
-            set => this.SetPrimarySkills(this.Defense, ClampSkill(value), s => s.WithBaseDefense(ClampSkill(value)));
-        }
-
-        public byte SpellPower
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseSpellPower);
-            set => this.SetPrimarySkills(this.SpellPower, ClampSkill(value), s => s.WithBaseSpellPower(ClampSkill(value)));
-        }
-
-        public byte Knowledge
-        {
-            get => ClampSkill(this.Hero.PrimarySkills.BaseKnowledge);
-            set => this.SetPrimarySkills(this.Knowledge, ClampSkill(value), s => s.WithBaseKnowledge(ClampSkill(value)));
-        }
-
         /// <summary>
-        /// Gets the attack skill with what the hero's artifacts add, which is what counts in the game and what the savefile holds.
-        /// <see cref="Attack"/> is what is left without the artifacts.
+        /// Gets the card of the primary skills: the base the hero learned, the total with its artifacts and what they add.
         /// </summary>
-        public int AttackTotal => this.Hero.PrimarySkills.Attack;
-
-        public int DefenseTotal => this.Hero.PrimarySkills.Defense;
-
-        public int SpellPowerTotal => this.Hero.PrimarySkills.SpellPower;
-
-        public int KnowledgeTotal => this.Hero.PrimarySkills.Knowledge;
-
-        /// <summary>
-        /// Gets what the hero's artifacts add to the attack skill, such as "+2 from artifacts". Empty when they add nothing.
-        /// </summary>
-        public string AttackArtifactNote => SkillNote(this.ArtifactEffects.Atk);
-
-        public string DefenseArtifactNote => SkillNote(this.ArtifactEffects.Def);
-
-        public string SpellPowerArtifactNote => SkillNote(this.ArtifactEffects.Pow);
-
-        public string KnowledgeArtifactNote => SkillNote(this.ArtifactEffects.Kno);
+        public PrimarySkillsCardViewModel PrimarySkills { get; }
 
         public string? Biography => this.Hero.Biography;
 
@@ -205,19 +168,10 @@
             set => this.Update(h => h with { IsAsleep = value });
         }
 
-        public bool StablesVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.Stables);
-
-        public bool SwanPondVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.SwanPond);
-
-        public bool WateringHoleVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.WateringHole);
-
-        public bool CryptVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.Crypt);
-
-        public bool FaerieRingVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.FaerieRing);
-
-        public bool FountainOfFortuneVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.FountainOfFortune);
-
-        public bool IdolOfFortuneVisited => this.Hero.VisitEffects.HasFlag(VisitedBuildingEffects.IdolOfFortune);
+        /// <summary>
+        /// Gets the card of what visited buildings gave the hero until its next battle: the morale and the luck, and a box for each building.
+        /// </summary>
+        public NextBattleCardViewModel NextBattle { get; }
 
         /// <summary>
         /// Gets the hero's morale such as "+2": what Leadership, the artifacts and the visited buildings add, between -3 and +3. The game
@@ -264,11 +218,13 @@
             try
             {
                 this.RefreshWarMachines();
+                this.PrimarySkills.Refresh();
                 this.MovementAndSpellPoints.Refresh();
                 this.LevelAndClass.Refresh();
                 this.Position.Refresh();
                 this.Destination.Refresh();
                 this.ActiveSpells.Refresh();
+                this.NextBattle.Refresh();
 
                 this.RaiseAllPropertiesChanged();
             }
@@ -304,12 +260,6 @@
 
             this.Update(h => h with { WarMachines = updated });
         }
-
-        private static byte ClampSkill(int value) => (byte)RangeGuard.Clamp<long>(value, Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill);
-
-        private static string SkillNote(short fromArtifacts) => fromArtifacts == 0
-            ? string.Empty
-            : $"{fromArtifacts:+0;-0} from artifacts";
 
         private static WarMachine? GetWarMachine(string name) => name switch
         {
@@ -389,13 +339,58 @@
             () => this.Hero.ActiveSpells.HasFlag(spell),
             active => this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell }));
 
-        private void SetPrimarySkills(byte current, byte value, Func<PrimarySkills, PrimarySkills> edit)
+        // The buildings whose morale or luck is known from the saves (TestData/Sod/Hotseat) set their bit and the byte together, as HoMM2 has to
+        // (docs/HOMM2_SAVE_FORMAT.md); the stables only have a bit. The faerie ring, the fountain and the idol of fortune give a bonus the
+        // saves do not pin down, so their boxes cannot be changed.
+        private NextBattleCardViewModel CreateNextBattle()
         {
-            if (current != value)
-            {
-                this.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) });
-            }
+            var range = new NumberRange(-Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck);
+            return new NextBattleCardViewModel(
+                "Visited buildings",
+                [
+                    this.BonusRow("Morale", range, h => h.MoraleBonus, (h, value) => h with { MoraleBonus = value }),
+                    this.BonusRow("Luck", range, h => h.LuckBonus, (h, value) => h with { LuckBonus = value }),
+                ],
+                [
+                    this.Source(VisitedBuildingEffects.WateringHole, 1, 0, range, "+1 morale until the next battle"),
+                    this.Source(VisitedBuildingEffects.SwanPond, 0, 2, range, "+2 luck until the next battle"),
+                    this.Source(VisitedBuildingEffects.Crypt, -1, 0, range, "-1 morale until the next battle"),
+                    this.Source(VisitedBuildingEffects.Stables, 0, 0, range, "More movement points until the end of the week"),
+                    this.Shown(VisitedBuildingEffects.FaerieRing, "+1 luck until the next battle"),
+                    this.Shown(VisitedBuildingEffects.FountainOfFortune, "A luck that the game draws, until the next battle"),
+                    this.Shown(VisitedBuildingEffects.IdolOfFortune, "+1 morale or +1 luck, depending on the day"),
+                ],
+                "What the buildings the hero visited gave. A battle takes most of it away; the stables last until the end of the week. Not tried in the game.");
         }
+
+        private AmountRowViewModel BonusRow(string name, NumberRange range, Func<HeroModel, int> get, Func<HeroModel, int, HeroModel> set) => new(
+            name,
+            PlayerPalette.Of(this.Hero.Owner),
+            range.Minimum,
+            range.Maximum,
+            range.Step,
+            () => get(this.Hero),
+            () => get(this.Hero),
+            value => this.Update(h => set(h, (int)value)),
+            () => "next battle only");
+
+        private ToggleRowViewModel Source(VisitedBuildingEffects effect, int morale, int luck, NumberRange range, string toolTip) => new(
+            VisitedBuildingNames.Of(effect),
+            () => this.Hero.VisitEffects.HasFlag(effect),
+            on => this.Update(h => h with
+            {
+                VisitEffects = on ? h.VisitEffects | effect : h.VisitEffects & ~effect,
+                MoraleBonus = (int)Math.Clamp(h.MoraleBonus + (on ? morale : -morale), range.Minimum, range.Maximum),
+                LuckBonus = (int)Math.Clamp(h.LuckBonus + (on ? luck : -luck), range.Minimum, range.Maximum),
+            }),
+            toolTip: toolTip + (morale == 0 && luck == 0 ? ". Sets what the game remembers." : ". Sets what the game remembers and its morale or luck together.") + " Not tried in the game.");
+
+        private ToggleRowViewModel Shown(VisitedBuildingEffects effect, string toolTip) => new(
+            VisitedBuildingNames.Of(effect),
+            () => this.Hero.VisitEffects.HasFlag(effect),
+            _ => { },
+            canToggle: () => false,
+            toolTip: toolTip + ". Shown only: how much the saves keep for it is not known for sure, so it is not edited.");
 
         private void RefreshWarMachines()
         {

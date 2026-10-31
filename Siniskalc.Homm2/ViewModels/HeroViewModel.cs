@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -19,45 +21,43 @@
     /// </summary>
     public sealed class HeroViewModel : PageViewModel, IHeroPage
     {
+        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
+
         private readonly Action<int> openCastle;
         private readonly HeroEditSession session;
-        private readonly IReadOnlyList<AmountRowViewModel> primarySkills;
-        private readonly IReadOnlyList<AmountRowViewModel> battleBonus;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
-        private readonly IReadOnlyList<ToggleRowViewModel> battleSources;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
         private HeroModel hero = null!;
-        private bool visionsActive;
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
         public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
+            : base(game.History, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
         {
+            this.Game = game;
             this.HeroId = heroId;
             this.openCastle = openCastle;
             this.session = game.History.CreateHeroSession(heroId);
-            this.primarySkills =
-            [
-                this.Row("Attack", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Attack, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Attack = (int)v } }),
-                this.Row("Defense", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Defense, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Defense = (int)v } }),
-                this.Row("Spell power", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.SpellPower, (h, v) => h with { PrimarySkills = h.PrimarySkills with { SpellPower = (int)v } }),
-                this.Row("Knowledge", Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill, 1, h => h.PrimarySkills.Knowledge, (h, v) => h with { PrimarySkills = h.PrimarySkills with { Knowledge = (int)v } }),
-            ];
-            this.battleBonus =
-            [
-                this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
-                this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
-            ];
-            this.battleSources =
-            [
-                this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
-                this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
-                this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
-                this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
-                this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
-            ];
+            this.PrimarySkills = new PrimarySkillsCardViewModel(
+                () => this.session.Current.PrimarySkills,
+                edit => this.session.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
+                new NumberRange(Constants.Hero.MinPrimarySkill, Constants.Hero.MaxPrimarySkill));
+            this.NextBattle = new NextBattleCardViewModel(
+                "Next battle",
+                [
+                    this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
+                    this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
+                ],
+                [
+                    this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
+                    this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
+                    this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
+                    this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
+                    this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
+                ],
+                "What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game.",
+                () => this.session.Update(h => h with { NextBattle = default, Effects = h.Effects & ~(HeroEffects.Temple | HeroEffects.Fountain | HeroEffects.Oasis | HeroEffects.FaerieRing | HeroEffects.Graveyard) }));
             this.usedOnce =
             [
                 this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),
@@ -92,15 +92,6 @@
                 () => this.session.Current,
                 edit => this.session.Update(edit));
 
-            // TODO:LOG warning: the active spell is kept in the view model only, as the savegames do not say where the game keeps it
-            this.ActiveSpells = new ActiveSpellsCardViewModel(
-            [
-                new ToggleRowViewModel(
-                    "Visions",
-                    () => this.visionsActive,
-                    active => this.visionsActive = active,
-                    toolTip: "The editor does not know yet where the game keeps this: the box is not read from the savegame and not saved."),
-            ]);
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
                 OwnerNames<PlayerColor>.Choices,
@@ -131,7 +122,8 @@
                 position => this.session.Update(h => h with { Position = (HeroPosition)position }),
                 new NumberRange(Constants.Hero.MinCoordinate, Constants.Hero.MaxCoordinate),
                 getFacing: () => this.session.Current.Position.FacingDirection,
-                setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }));
+                setFacing: facing => this.session.Update(h => h with { Position = h.Position with { FacingDirection = facing } }),
+                destinations: this.DestinationsToSendTo);
             this.Destination = MapPointCardViewModel.ForDestination(
                 () => this.session.Current.Destination,
                 destination => this.session.Update(h => h with { Destination = destination }),
@@ -139,6 +131,8 @@
             this.OpenCastleCommand = new DelegateCommand(_ => this.openCastle(this.castleIndex), _ => this.castleIndex >= 0);
             this.Refresh();
         }
+
+        private Game Game { get; }
 
         public int HeroId { get; }
 
@@ -181,7 +175,7 @@
         public string PositionText => this.hero.Owner.IsNeutral ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4".
+        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 
@@ -213,27 +207,20 @@
         public MapPointCardViewModel Destination { get; }
 
         /// <summary>
-        /// Gets the card of the adventure spells that are active on the hero this turn.
+        /// Gets the card of the primary skills: the base the hero learned, the total with its artifacts (what the savegame holds) and what they add.
         /// </summary>
-        public ActiveSpellsCardViewModel ActiveSpells { get; }
-
-        public IReadOnlyList<AmountRowViewModel> PrimarySkills => this.primarySkills;
+        public PrimarySkillsCardViewModel PrimarySkills { get; }
 
         /// <summary>
-        /// Gets the morale and the luck the hero has for its next battle only (a temple, a fountain, a faerie ring).
+        /// Gets the card of the morale and the luck the hero has for its next battle only, and of the places that gave them (a temple, a
+        /// fountain, a faerie ring): ticking one gives the hero the bonus, clearing it takes it away.
         /// </summary>
-        public IReadOnlyList<AmountRowViewModel> BattleBonus => this.battleBonus;
+        public NextBattleCardViewModel NextBattle { get; }
 
         /// <summary>
         /// Gets the kinds of places the hero has visited and cannot get anything from a second time.
         /// </summary>
         public IReadOnlyList<VisitedPlaceRowViewModel> VisitedPlaces => this.visitedPlaces;
-
-        /// <summary>
-        /// Gets the places that gave the hero luck or morale for the next battle, with the bonus each gave: ticking one gives the hero the bonus,
-        /// clearing it takes it away.
-        /// </summary>
-        public IReadOnlyList<ToggleRowViewModel> BattleSources => this.battleSources;
 
         /// <summary>
         /// Gets the places that give something once to a hero (the arena).
@@ -285,17 +272,15 @@
             var hero = document.Heroes().GetModel(this.HeroId);
             this.hero = hero;
 
-            foreach (var row in this.primarySkills.Concat(this.battleBonus))
-            {
-                row.Refresh();
-            }
+            this.PrimarySkills.Refresh();
+            this.NextBattle.Refresh();
 
             foreach (var row in this.visitedPlaces)
             {
                 row.Refresh();
             }
 
-            foreach (var row in this.battleSources.Concat(this.usedOnce).Concat(this.usedWeekly))
+            foreach (var row in this.usedOnce.Concat(this.usedWeekly))
             {
                 row.Refresh();
             }
@@ -304,7 +289,6 @@
             this.LevelAndClass?.Refresh();
             this.Position?.Refresh();
             this.Destination?.Refresh();
-            this.ActiveSpells?.Refresh();
             this.OwnerField?.Refresh();
             this.ArmyEditor?.Refresh();
             this.SkillsEditor?.Refresh();
@@ -338,14 +322,54 @@
             {
                 this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
-            catch (GameRuleException)
+            catch (GameRuleException ex)
             {
+                Logger.LogInformation("Refused the owner {Owner} of a hero: {Reason}", name, ex.Message);
                 this.Notice = $"{name} has the most heroes a player can have.";
             }
 
             this.RaisePropertyChanged(nameof(this.Notice));
             this.RaisePropertyChanged(nameof(this.HasNotice));
             this.OwnerField.Refresh();
+        }
+
+        /// <summary>
+        /// Gives the castles and the mines of the player of the hero. A castle is entered from the tile under its own tile and is taken when
+        /// another hero stands there or is in the castle; a mine is sent to by the tile of its record, which is only near its entrance. Nothing
+        /// for a hero that serves nobody.
+        /// </summary>
+        private IReadOnlyList<MapDestination> DestinationsToSendTo()
+        {
+            var hero = this.session.Current;
+            if (hero.Owner.IsNeutral)
+            {
+                return [];
+            }
+
+            var document = this.Game.History.Current;
+            var castles = document.Castles();
+            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            var mines = document.Mines();
+            var castleDestinations = castles.UsedIndexes()
+                .Select(castles.GetModel)
+                .Where(c => c.Owner == hero.Owner)
+                .Select(c =>
+                {
+                    var entrance = c.Position with { Y = c.Position.Y + 1 };
+                    var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
+                    return new MapDestination(c.Name, "Castle", entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
+                });
+            var mineDestinations = Enumerable.Range(0, mines.Count)
+                .Select(mines.GetModel)
+                .Where(m => m.Owner == hero.Owner)
+                .Select(m => new MapDestination(
+                    MineKinds.NameOf(m.Kind),
+                    "Mine",
+                    m.Position,
+                    MapLevelText.Place(m.Position.X, m.Position.Y),
+                    others.Any(h => h.Position.X == m.Position.X && h.Position.Y == m.Position.Y),
+                    IsApproximate: true));
+            return castleDestinations.Concat(mineDestinations).ToList();
         }
 
         private ToggleRowViewModel Source(string name, HeroEffects effect, int morale, int luck, string toolTip) => new(
@@ -371,7 +395,7 @@
             // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
             var places = game.Places.Of(kind)
                 .Select((position, index) => new ToggleRowViewModel(
-                    $"At {MapLevelText.Coordinates(position.X, position.Y)}",
+                    $"At {MapLevelText.Place(position.X, position.Y)}",
                     () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
                     visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
                     toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))

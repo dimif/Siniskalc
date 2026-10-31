@@ -3,6 +3,7 @@ namespace Siniskalc.Wpf.ViewModels
     using System;
     using System.IO;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.Views;
 
@@ -16,11 +17,13 @@ namespace Siniskalc.Wpf.ViewModels
     {
         private const string BytesFilter = "Binary dump|*.bin|All files|*.*";
 
-        private readonly RecentFilesStore recentFiles;
+        private static readonly ILogger<SavegameFileCommands> Logger = LogFactory.For<SavegameFileCommands>();
+
+        private readonly IRecentFilesStore recentFiles;
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
 
-        public SavegameFileCommands(RecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
+        public SavegameFileCommands(IRecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;
             this.dialogs = dialogs;
@@ -69,9 +72,31 @@ namespace Siniskalc.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Reads the game again from its file, discarding the edits.
+        /// Reads the game again from its file, discarding the edits. When there are unsaved edits the user is asked first: save them, throw
+        /// them away, or cancel. False when the game was not reloaded.
         /// </summary>
-        public bool Reload(ShellViewModel shell) => this.Run(shell.ReloadGame, "Reload Game Error", "reload game");
+        public bool Reload(ShellViewModel shell)
+        {
+            if (shell.HasPendingChanges)
+            {
+                switch (this.messages.AskYesNoCancel("Reload save", "Reloading throws away your unsaved changes. Save them first?"))
+                {
+                    case MessageAnswer.Yes:
+                        if (this.Save(shell) == null)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case MessageAnswer.No:
+                        break;
+                    default:
+                        return false;
+                }
+            }
+
+            return this.Run(shell.ReloadGame, "Reload Game Error", "reload game");
+        }
 
         /// <summary>
         /// Saves over the file the game has (it is backed up first), or asks for one when the game has none.
@@ -184,7 +209,7 @@ namespace Siniskalc.Wpf.ViewModels
         private void ReportError(string title, string what, Exception ex)
         {
             // The message of a savefile exception is already written for the user.
-            // TODO:LOG error: {title}: {what} failed; log the whole exception (type, message, inner exception, stack trace) and the path involved.
+            Logger.LogError(ex, "{Title}: failed to {What}", title, what);
             var message = ex is SavefileException ? ex.Message : $"Failed to {what}: {ex.Message}";
             this.messages.ShowError(title, message);
         }

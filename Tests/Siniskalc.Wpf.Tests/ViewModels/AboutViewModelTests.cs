@@ -5,6 +5,7 @@ using Siniskalc.Wpf.ViewModels;
 namespace Siniskalc.Wpf.Tests.ViewModels
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class AboutViewModelTests
     {
         private static readonly AboutInfo Info = new(

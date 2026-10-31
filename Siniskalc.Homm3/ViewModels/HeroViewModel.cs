@@ -1,10 +1,12 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -16,29 +18,34 @@ namespace Siniskalc.Homm3.ViewModels
 
     /// <summary>
     /// ViewModel that wraps a hero for UI binding.
-    /// Reads the hero from a <see cref="HeroEditSession"/> and writes every change back through it, so edits land in
+    /// Reads the hero from a <see cref="IHeroSession"/> and writes every change back through it, so edits land in
     /// the savefile's undo/redo history. Refreshes itself whenever that history changes.
     /// </summary>
     public class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
-        private readonly HeroEditSession session;
+        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
+
+        private readonly IHeroSession session;
+        private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
         private object shownRevision;
+        private string notice = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
-        public HeroViewModel(HeroEditSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
+        public HeroViewModel(IHeroSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
             : base(session.Current.Name, session)
         {
             this.session = session;
+            this.hasUnderground = hasUnderground;
             this.byteEditTargets = byteEditTargets;
             this.OpenGarrisonCastleCommand = new DelegateCommand(
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
-            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.History.Current.GameVersion(), hasUnderground, () => this.CanSleep);
-            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.History.Current.GameVersion());
+            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
+            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,
                 () => this.HeroModel.SecondarySkills,
@@ -105,7 +112,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the edit session for this hero.
         /// </summary>
-        public new HeroEditSession Session => this.session;
+        public new IHeroSession Session => this.session;
 
         /// <summary>
         /// Gets the hero as it is in the current document.
@@ -117,14 +124,14 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
 
         /// <summary>
-        /// Gets where the hero is on the map, such as "X: 5, Y: 28, Surface (0)", or nothing for a hero that is not on the map.
+        /// Gets where the hero is on the map, such as "Pos: 5, 28, Surface", or nothing for a hero that is not on the map.
         /// </summary>
         public string PositionText => this.HeroModel.Position.X < 0 || this.HeroModel.Position.Y < 0
             ? string.Empty
             : MapLevelText.Coordinates(this.HeroModel.Position.X, this.HeroModel.Position.Y, this.HeroModel.Position.Level);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · X: 3, Y: 4, Surface (0)".
+        /// Gets the line under the name of the hero: its class, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4, Surface".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.HeroModel.HeroClass.Name, $"Level {this.LevelNumber}", this.PositionText }.Where(t => t.Length > 0));
 
@@ -140,8 +147,9 @@ namespace Siniskalc.Homm3.ViewModels
         public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
-        /// Gets or sets the owner, as "Neutral" or the name of a player colour. A hero that is made neutral leaves the map:
-        /// its position and destination become -1, -1, -1 and it faces east.
+        /// Gets or sets the owner, as "Neutral" or the name of a player colour. The lists of heroes of the players and the table of hero owners
+        /// change with it (<see cref="IHeroSession.ChangeOwner"/>). A hero that is made neutral leaves the map: its position and destination
+        /// become -1, -1, -1 and it faces east. A change the editor cannot make as the game would is not made; <see cref="Notice"/> says why.
         /// </summary>
         public string SelectedOwner
         {
@@ -154,9 +162,42 @@ namespace Siniskalc.Homm3.ViewModels
                     return;
                 }
 
-                this.Update(h => h.WithOwner(owner));
+                try
+                {
+                    this.session.ChangeOwner(owner);
+                    this.Notice = string.Empty;
+                }
+                catch (GameRuleException ex)
+                {
+                    // Only the rules of the game are told to the user; a fault is not made to look like one.
+                    Logger.LogInformation("Refused the owner {Owner} of the hero: {Reason}", owner, ex.Message);
+                    this.Notice = ex.Message;
+                    this.RaisePropertyChanged(nameof(this.SelectedOwner));
+                }
             }
         }
+
+        /// <summary>
+        /// Gets why the last change of the owner was not made, or an empty text.
+        /// </summary>
+        public string Notice
+        {
+            get => this.notice;
+            private set
+            {
+                if (this.notice != value)
+                {
+                    this.notice = value;
+                    this.RaisePropertyChanged(nameof(this.Notice));
+                    this.RaisePropertyChanged(nameof(this.HasNotice));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether there is a <see cref="Notice"/> to show.
+        /// </summary>
+        public bool HasNotice => this.notice.Length > 0;
 
         /// <summary>
         /// Gets the name of the castle that holds this hero inside it, otherwise an empty text.
@@ -166,7 +207,7 @@ namespace Siniskalc.Homm3.ViewModels
             get
             {
                 var index = this.GarrisonCastleIndex;
-                return index < 0 ? string.Empty : this.session.History.Current.Castles().GetName(index);
+                return index < 0 ? string.Empty : this.session.CastleName(index);
             }
         }
 
@@ -264,14 +305,14 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the game version that wrote the savefile the hero is in.
         /// </summary>
-        public GameVersion GameVersion => this.session.History.Current.GameVersion();
+        public GameVersion GameVersion => this.session.GameVersion;
 
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 
         /// <summary>
         /// Gets whether the savefile's game version stores that a hero was put to sleep. The checkbox is only shown when it does.
         /// </summary>
-        public bool CanSleep => this.session.History.Current.Heroes().SupportsAsleep;
+        public bool CanSleep => this.session.SupportsAsleep;
 
         /// <summary>
         /// Gets or sets whether the hero is asleep. A hero that moves wakes up, so this is mostly for waking one that would not move.
@@ -287,14 +328,14 @@ namespace Siniskalc.Homm3.ViewModels
             get
             {
                 // Castles hold the id of the hero, which is not its place among the heroes.
-                return this.session.History.Current.Castles().FindByGarrisonedHero(this.HeroModel.Id);
+                return this.session.GarrisonCastleIndex;
             }
         }
 
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the hero. The caller disposes it.
         /// </summary>
-        public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForHero(this.session);
+        public IByteEditTarget CreateByteEditTarget() => this.session.CreateByteEditTarget(this.byteEditTargets);
 
         /// <inheritdoc/>
         protected override void OnHistoryChanged()
@@ -324,6 +365,39 @@ namespace Siniskalc.Homm3.ViewModels
             this.SpellsViewModel.Refresh();
 
             this.RaiseAllPropertiesChanged();
+        }
+
+        /// <summary>
+        /// Gives the castles, the mines and the dwellings of the player of the hero. The hero at the gate of a castle stands on the castle's own
+        /// tile, so that is the entrance, and a castle is taken when another hero is at its gate. A dwelling is sent to by the tile a hero stands
+        /// on to flag it, and a mine by the tile of its record, which is only near its entrance. A place is taken when another hero stands on its
+        /// tile. Nothing for a hero that serves nobody.
+        /// </summary>
+        private IReadOnlyList<MapDestination> DestinationsToSendTo()
+        {
+            var hero = this.HeroModel;
+            if (hero.Owner.IsNeutral)
+            {
+                return [];
+            }
+
+            var document = this.session.History.Current;
+            var hasLevels = this.hasUnderground;
+            var castles = document.Castles();
+            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            bool HeroStandsOn(MapPosition tile) => others.Any(h => h.Position.X == tile.X && h.Position.Y == tile.Y && h.Position.Level == tile.Level);
+
+            var castleDestinations = Enumerable.Range(0, castles.Count)
+                .Select(castles.GetModel)
+                .Where(c => c.IsUsed && c.Owner == hero.Owner)
+                .Select(c => new MapDestination(c.Name, "Castle", c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id, c.Faction?.Name ?? string.Empty));
+            var mineDestinations = document.Mines().GetModels()
+                .Where(m => m.Owner == hero.Owner)
+                .Select(m => new MapDestination(MineKinds.NameOf(m.Kind), "Mine", m.Position, MapLevelText.Place(m.Position, hasLevels), HeroStandsOn(m.Position), IsApproximate: true));
+            var dwellingDestinations = document.Dwellings().GetModels()
+                .Where(d => d.Owner == hero.Owner)
+                .Select(d => new MapDestination($"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} dwelling", "Dwelling", d.Position, MapLevelText.Place(d.Position, hasLevels), HeroStandsOn(d.Position)));
+            return castleDestinations.Concat(mineDestinations).Concat(dwellingDestinations).ToList();
         }
 
         private void Update(Func<HeroModel, HeroModel> edit)

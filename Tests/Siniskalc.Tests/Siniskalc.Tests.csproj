@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="../Siniskalc.Tests.Homm.Common/TestFixtureConventions.cs" Link="TestFixtureConventions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Siniskalc\Siniskalc.csproj" />
     <ProjectReference Include="..\..\Siniskalc.Homm2\Siniskalc.Homm2.csproj" />
     <ProjectReference Include="..\..\Siniskalc.Homm3\Siniskalc.Homm3.csproj" />

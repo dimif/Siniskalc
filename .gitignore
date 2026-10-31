@@ -341,3 +341,8 @@ ASALocalRun/
 healthchecksdb
 # Saves made by the write test with Heroes of Might and Magic II (docs/HOMM2_PLAN.md, Phase 4)
 TestData/Homm2/out/
+TestData/Homm3/out/
+
+# Claude Code: isolated checkouts and personal settings
+.claude/worktrees/
+.claude/settings.local.json

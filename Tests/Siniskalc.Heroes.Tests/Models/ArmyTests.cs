@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the army both games share: a fixed number of slots, each a stack or empty.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ArmyTests
     {
         private static readonly Unit Pikeman = new("Pikeman", 1);

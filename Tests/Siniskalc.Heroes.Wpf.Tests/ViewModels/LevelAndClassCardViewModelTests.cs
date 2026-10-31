@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the card of the level, the experience and the class of a hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class LevelAndClassCardViewModelTests
     {
         private int level;

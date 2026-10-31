@@ -1,8 +1,10 @@
 namespace Siniskalc.Heroes.Wpf.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -11,21 +13,21 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public abstract class ObeliskVisitsViewModelBase : AbstractViewModelBase
     {
-        private readonly ObeliskActionViewModel visitAll;
-        private readonly ObeliskActionViewModel clearAll;
+        private readonly bool hasLevels;
         private IReadOnlyList<ObeliskRowViewModel> obelisks = [];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ObeliskVisitsViewModelBase"/> class.
         /// </summary>
         /// <param name="puzzleToolTip">What the heading says the obelisks lead to, in the words of the game.</param>
-        protected ObeliskVisitsViewModelBase(string puzzleToolTip)
+        /// <param name="hasLevels">Whether the map of the game has two levels, so the list has a column for the level.</param>
+        protected ObeliskVisitsViewModelBase(string puzzleToolTip, bool hasLevels = false)
         {
             this.PuzzleToolTip = puzzleToolTip;
+            this.hasLevels = hasLevels;
+            this.List = NewList([]);
             this.VisitAllCommand = new DelegateCommand(_ => this.SetAll(true), _ => this.Count > 0 && this.VisitedCount < this.Count);
             this.ClearAllCommand = new DelegateCommand(_ => this.SetAll(false), _ => this.VisitedCount > 0);
-            this.visitAll = new ObeliskActionViewModel("Visit all", "This player has visited every obelisk", this.VisitAllCommand);
-            this.clearAll = new ObeliskActionViewModel("None", "This player has visited no obelisk", this.ClearAllCommand);
         }
 
         /// <summary>
@@ -36,9 +38,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public IReadOnlyList<ObeliskRowViewModel> Obelisks => this.obelisks;
 
         /// <summary>
-        /// Gets what the page shows as tiles: "Visit all" and "None" first, then the obelisks.
+        /// Gets the obelisks with the headings that sort them by name, either coordinate (then the level) or whether they were visited.
         /// </summary>
-        public IReadOnlyList<object> Tiles => [this.visitAll, this.clearAll, .. this.obelisks];
+        public SortableListViewModel<ObeliskRowViewModel> List { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the map has two levels, so the list shows the level of each obelisk.
+        /// </summary>
+        public bool ShowLevel => this.hasLevels;
 
         /// <summary>
         /// Gets how many obelisks the player visited, such as "2 of 7 visited", or nothing when there are none.
@@ -73,8 +80,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             if (this.obelisks.Count != this.Count)
             {
                 this.obelisks = Enumerable.Range(0, this.Count)
-                    .Select(i => new ObeliskRowViewModel(i + 1, this.CoordinatesOf(i), () => this.IsVisited(i), visited => this.SetVisited(i, visited)))
+                    .Select(i => new ObeliskRowViewModel(i + 1, this.PositionOf(i), this.hasLevels, () => this.IsVisited(i), visited => this.SetVisited(i, visited)))
                     .ToList();
+                this.List = NewList(this.obelisks);
+                this.RaisePropertyChanged(nameof(this.List));
             }
 
             foreach (var row in this.obelisks)
@@ -92,9 +101,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         protected abstract void Prepare();
 
         /// <summary>
-        /// Returns where obelisk <paramref name="index"/> is, such as "X: 34, Y: 58", or nothing when the savegame does not tell.
+        /// Returns where obelisk <paramref name="index"/> is, or null when the savegame does not tell.
         /// </summary>
-        protected abstract string CoordinatesOf(int index);
+        protected abstract MapPosition? PositionOf(int index);
 
         protected abstract bool IsVisited(int index);
 
@@ -104,5 +113,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Marks every obelisk as visited by the player, or none of them.
         /// </summary>
         protected abstract void SetAll(bool visited);
+
+        private static SortableListViewModel<ObeliskRowViewModel> NewList(IReadOnlyList<ObeliskRowViewModel> rows) => new(
+            rows,
+            new Dictionary<string, Func<ObeliskRowViewModel, IComparable>>
+            {
+                ["Obelisk"] = o => o.Number,
+                ["X"] = o => (o.X ?? -1, o.Y ?? -1, o.Position?.Level ?? -1),
+                ["Y"] = o => (o.Y ?? -1, o.X ?? -1, o.Position?.Level ?? -1),
+                ["Level"] = o => (o.Position?.Level ?? -1, o.X ?? -1, o.Y ?? -1),
+                ["Visited"] = o => o.IsVisited,
+            });
     }
 }

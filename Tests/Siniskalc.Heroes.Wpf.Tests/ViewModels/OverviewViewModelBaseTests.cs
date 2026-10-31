@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the words the overview page of any game says about the savefile that is open.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class OverviewViewModelBaseTests
     {
         private static AbstractSavegame Savegame(string? name)
@@ -84,11 +85,63 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That(TestOverview.Summarize(1, 3, string.Empty, "Difficulty: King (200%)"), Is.EqualTo("1 player · 3 heroes · Difficulty: King (200%)"));
         }
 
+        [Test]
+        public void AHumanWhoHasNotTheTurnCanBeGivenItAndThePlayerWhoHasItCannot()
+        {
+            var info = new Mock<IGameInfo<TestColor>>();
+            info.Setup(i => i.CurrentPlayer).Returns(TestColor.Red);
+            info.Setup(i => i.GetControl(It.IsAny<TestColor>())).Returns(PlayerType.Human);
+            var page = new TestOverview(Savegame("a.GM1"), info.Object);
+
+            var red = page.ItemOf(TestColor.Red);
+            var blue = page.ItemOf(TestColor.Blue);
+            blue.Command!.Execute(null);
+
+            Assert.That((red.Name, red.IsCurrent, red.Command, red.ToolTip), Is.EqualTo(("Red", true, (System.Windows.Input.ICommand?)null, "It is this player's turn")));
+            Assert.That((blue.Name, blue.IsCurrent, blue.ToolTip), Is.EqualTo(("Blue", false, "Give the turn to this player")));
+            Assert.That(page.GivenTo, Is.EqualTo(new[] { TestColor.Blue }));
+        }
+
+        [Test]
+        public void AGameCanSwitchTheButtonOffAndPressingItThenChangesNothing()
+        {
+            var info = new Mock<IGameInfo<TestColor>>();
+            info.Setup(i => i.CurrentPlayer).Returns(TestColor.Red);
+            info.Setup(i => i.GetControl(It.IsAny<TestColor>())).Returns(PlayerType.Human);
+            var page = new TestOverview(Savegame("a.GM1"), info.Object) { GivingTheTurnIsOn = false };
+
+            var blue = page.ItemOf(TestColor.Blue);
+
+            Assert.That(blue.Command!.CanExecute(null), Is.False);
+            Assert.That(page.GivenTo, Is.Empty);
+        }
+
+        [Test]
+        public void AComputerPlayerCannotBeGivenTheTurnAndHasTheTooltipTheGameGivesIt()
+        {
+            var info = new Mock<IGameInfo<TestColor>>();
+            info.Setup(i => i.CurrentPlayer).Returns(TestColor.Red);
+            info.Setup(i => i.GetControl(TestColor.Red)).Returns(PlayerType.Human);
+            info.Setup(i => i.GetControl(TestColor.Blue)).Returns(PlayerType.Computer);
+
+            var blue = new TestOverview(Savegame("a.GM1"), info.Object).ItemOf(TestColor.Blue);
+
+            Assert.That((blue.IsCurrent, blue.Command, blue.ToolTip), Is.EqualTo((false, (System.Windows.Input.ICommand?)null, "A computer")));
+        }
+
         private sealed class TestOverview(AbstractSavegame savegame, IGameInfo<TestColor> info) : OverviewViewModelBase<TestColor>(savegame, info)
         {
             public string MoreSize { get; init; } = string.Empty;
 
             public override string VersionName => "Test";
+
+            public List<TestColor> GivenTo { get; } = [];
+
+            public bool GivingTheTurnIsOn { get; init; } = true;
+
+            protected override bool CanGiveTurn => this.GivingTheTurnIsOn;
+
+            protected override string ComputerTurnToolTip => "A computer";
 
             public static string Summarize(int players, int heroes, params string[] more) => SummaryOf(players, heroes, more);
 
@@ -96,7 +149,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             {
             }
 
+            public OrderOfPlayItemViewModel ItemOf(TestColor color) => this.OrderItemOf(color);
+
             protected override string SizeOf(MapHeader map) => map.SizeText + this.MoreSize;
+
+            protected override void GiveTurn(TestColor color) => this.GivenTo.Add(color);
         }
     }
 }

@@ -1,13 +1,9 @@
 namespace Siniskalc.Homm2.ViewModels
 {
-    using System;
     using System.Linq;
-    using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Runtime;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A page of the editor about one hero, player or castle: its tab, whether the savegame holds edits of it, and Reset. The page reads
@@ -18,18 +14,17 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly ChunkKind kind;
         private readonly int index;
 
+        private readonly IPendingChangeHistory history;
         private readonly IByteEditTargetFactory? byteEditTargets;
 
-        protected PageViewModel(Game game, ChunkKind kind, int index, IByteEditTargetFactory? byteEditTargets = null)
-            : base(kind.ToString(), game.History)
+        protected PageViewModel(IPendingChangeHistory history, ChunkKind kind, int index, IByteEditTargetFactory? byteEditTargets = null)
+            : base(kind.ToString(), history)
         {
+            this.history = history;
             this.byteEditTargets = byteEditTargets;
-            this.Game = game;
             this.kind = kind;
             this.index = index;
         }
-
-        protected Game Game { get; }
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
@@ -59,11 +54,11 @@ namespace Siniskalc.Homm2.ViewModels
         {
             foreach (var change in this.PendingChangesOfPage().ToList())
             {
-                change.Revert(this.Game.History);
+                this.history.Revert(change);
             }
         }
 
         private System.Collections.Generic.IEnumerable<PendingChange> PendingChangesOfPage() =>
-            this.Game.History.GetPendingChanges().Where(c => c.Kind == this.kind && c.Index == this.index);
+            this.history.GetPendingChanges().Where(c => c.Kind == this.kind && c.Index == this.index);
     }
 }

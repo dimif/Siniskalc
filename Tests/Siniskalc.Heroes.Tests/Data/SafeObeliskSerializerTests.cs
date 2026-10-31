@@ -5,6 +5,7 @@ namespace Siniskalc.Heroes.Tests.Data
     using Siniskalc.Heroes.Tests.Entities;
 
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class SafeObeliskSerializerTests
     {
         [Test]

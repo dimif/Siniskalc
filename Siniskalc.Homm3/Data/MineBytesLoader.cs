@@ -72,8 +72,8 @@ namespace Siniskalc.Homm3.Data
         private static bool LooksLikeARecord(byte[] bytes, int start)
         {
             var owner = bytes[start + MineLayout.Owner];
-            if (bytes[start + MineLayout.X] >= Constants.Map.MaxCoordinate
-                || bytes[start + MineLayout.Y] >= Constants.Map.MaxCoordinate
+            if (bytes[start + MineLayout.X] > Constants.Map.MaxCoordinate
+                || bytes[start + MineLayout.Y] > Constants.Map.MaxCoordinate
                 || bytes[start + MineLayout.Level] > 1
                 || (owner != MineLayout.NoOwner && owner >= PlayerColor.All.Count)
                 || bytes[start + MineLayout.Abandoned] > 1)

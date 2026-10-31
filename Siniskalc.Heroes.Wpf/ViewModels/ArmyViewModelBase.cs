@@ -28,6 +28,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
+        /// Gets the heading of the army card: "Army", or what the owner set with <see cref="SetTitle"/>, such as "Garrison of the sawmill at ...".
+        /// </summary>
+        public string Title { get; private set; } = "Army";
+
+        /// <summary>
         /// Gets the finder that looks up creatures and adds them to the army.
         /// </summary>
         public abstract AbstractFinderViewModel Finder { get; }
@@ -56,6 +61,18 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets whether the army has an empty slot for a creature from the finder.
         /// </summary>
         public bool HasFreeSlot => this.FirstFreeSlot() >= 0;
+
+        /// <summary>
+        /// Changes the heading of the army card.
+        /// </summary>
+        public void SetTitle(string title)
+        {
+            if (this.Title != title)
+            {
+                this.Title = title;
+                this.RaisePropertyChanged(nameof(this.Title));
+            }
+        }
 
         /// <summary>
         /// Shows the current army again. Call after the army changed.
@@ -121,9 +138,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         {
             foreach (var i in Enumerable.Range(0, count))
             {
-                this.CreatureSlots.Add(create(i, this.OnSlotChanged, this.MoveSlot, this.ClearSlot));
+                var slot = create(i, this.OnSlotChanged, this.MoveSlot, this.ClearSlot);
+                slot.AttachPicker(this.CreatePickerFinder);
+                this.CreatureSlots.Add(slot);
             }
         }
+
+        /// <summary>
+        /// Makes the finder in the popup of a slot, which calls <paramref name="onPicked"/> with the name of the creature the user picks.
+        /// </summary>
+        protected abstract AbstractFinderViewModel CreatePickerFinder(Action<string> onPicked);
 
         /// <summary>
         /// Reads what is in a slot (from 0) of the model, or <c>null</c> when it is empty.

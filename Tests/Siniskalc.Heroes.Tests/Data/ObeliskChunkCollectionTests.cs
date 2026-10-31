@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Tests.Data
     /// Tests the visited obelisks of a savefile, which any game reads and writes through its own deserializer, serializer and differ.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class ObeliskChunkCollectionTests
     {
         private Mock<IDeserializer<ObeliskChunk, ObeliskVisits<TestColor>>> deserializer = new();

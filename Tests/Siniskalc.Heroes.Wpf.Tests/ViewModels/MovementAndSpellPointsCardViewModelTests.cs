@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     /// Tests the card of the movement points and the spell points of a hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MovementAndSpellPointsCardViewModelTests
     {
         private long movement;

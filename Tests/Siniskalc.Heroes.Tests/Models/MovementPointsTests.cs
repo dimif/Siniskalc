@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the movement points of a hero.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MovementPointsTests
     {
         [Test]

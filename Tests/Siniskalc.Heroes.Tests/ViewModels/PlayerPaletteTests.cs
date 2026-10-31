@@ -7,6 +7,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
     /// Tests the colours the editor gives the players.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class PlayerPaletteTests
     {
         private sealed record Color(string Name, byte Code) : IPlayerColor

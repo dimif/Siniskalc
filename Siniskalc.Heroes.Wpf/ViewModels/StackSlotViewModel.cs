@@ -19,9 +19,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private Func<int, IReadOnlyList<StackFact>>? factsOf;
         private string? selectedCreature;
         private int creatureAmount;
-        private bool canMoveLeft;
-        private bool canMoveRight;
+        private bool canMoveUp;
+        private bool canMoveDown;
         private IReadOnlyList<string> upgrades = NoUpgrades;
+        private Lazy<AbstractFinderViewModel>? pickerFinder;
+        private ICommand? openPickerCommand;
+        private bool isPickerOpen;
 
         /// <param name="slotNumber">The slot, from 0.</param>
         /// <param name="onSelectionChanged">Called with the slot, creature name and amount when the user changes the slot.</param>
@@ -35,8 +38,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         {
             this.SlotNumber = slotNumber;
             this.onSelectionChanged = onSelectionChanged;
-            this.MoveLeftCommand = new DelegateCommand(_ => onMove(slotNumber, -1), _ => this.canMoveLeft);
-            this.MoveRightCommand = new DelegateCommand(_ => onMove(slotNumber, 1), _ => this.canMoveRight);
+            this.MoveUpCommand = new DelegateCommand(_ => onMove(slotNumber, -1), _ => this.canMoveUp);
+            this.MoveDownCommand = new DelegateCommand(_ => onMove(slotNumber, 1), _ => this.canMoveDown);
             this.ClearCommand = new DelegateCommand(_ => onClear(slotNumber), _ => this.HasCreature);
             this.UpgradeCommand = new DelegateCommand(this.Upgrade, _ => this.HasUpgrade);
         }
@@ -44,13 +47,58 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public int SlotNumber { get; }
 
         /// <summary>
+        /// Gets the command that opens or closes the popup with the finder of creatures to put in the slot.
+        /// </summary>
+        public ICommand OpenPickerCommand => this.openPickerCommand ??= new DelegateCommand(_ => this.IsPickerOpen = !this.IsPickerOpen);
+
+        /// <summary>
+        /// Gets or sets whether the popup with the creature finder is open.
+        /// </summary>
+        public bool IsPickerOpen
+        {
+            get => this.isPickerOpen;
+            set
+            {
+                if (this.isPickerOpen != value)
+                {
+                    this.isPickerOpen = value;
+                    this.RaisePropertyChanged(nameof(this.IsPickerOpen));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the finder in the popup, which puts the creature the user picks in the slot. It is built when first needed, so an army with
+        /// many slots opens quickly. <c>null</c> until <see cref="AttachPicker"/> was called.
+        /// </summary>
+        public AbstractFinderViewModel? PickerFinder => this.pickerFinder?.Value;
+
+        /// <summary>
+        /// Text of the creature button: the creature, or a hint that the slot is empty.
+        /// </summary>
+        public string CreatureButtonText => this.HasCreature ? this.selectedCreature! : "(empty)";
+
+        /// <summary>
+        /// Lets the slot offer a finder of creatures in a popup.
+        /// </summary>
+        /// <param name="createFinder">Makes the finder, given what to do with the name of the creature when the user picks a row.</param>
+        public void AttachPicker(Func<Action<string>, AbstractFinderViewModel> createFinder)
+        {
+            this.pickerFinder = new Lazy<AbstractFinderViewModel>(() => createFinder(name =>
+            {
+                this.IsPickerOpen = false;
+                this.SelectedCreature = name;
+            }));
+        }
+
+        /// <summary>
         /// Gets the slot as the player sees it, from 1.
         /// </summary>
         public int DisplayNumber => this.SlotNumber + 1;
 
-        public ICommand MoveLeftCommand { get; }
+        public ICommand MoveUpCommand { get; }
 
-        public ICommand MoveRightCommand { get; }
+        public ICommand MoveDownCommand { get; }
 
         public ICommand ClearCommand { get; }
 
@@ -93,6 +141,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
                 this.selectedCreature = value;
                 this.RaisePropertyChanged(nameof(this.SelectedCreature));
+                this.RaisePropertyChanged(nameof(this.CreatureButtonText));
                 this.onSelectionChanged(this.SlotNumber, value, this.creatureAmount);
             }
         }
@@ -124,20 +173,21 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="creatureName">The creature, or nothing for an empty slot.</param>
         /// <param name="amount">The size of the stack.</param>
-        /// <param name="canMoveLeft">Whether there is a slot on the left to swap with.</param>
-        /// <param name="canMoveRight">Whether there is a slot on the right to swap with.</param>
+        /// <param name="canMoveUp">Whether there is a slot above to swap with.</param>
+        /// <param name="canMoveDown">Whether there is a slot below to swap with.</param>
         /// <param name="factsOf">Gives the facts of a stack of a size, or <c>null</c> when the game has none.</param>
         /// <param name="upgrades">The creatures the slot's creature can be upgraded to; none when omitted.</param>
-        public void InitializeSlot(string? creatureName, int amount, bool canMoveLeft, bool canMoveRight, Func<int, IReadOnlyList<StackFact>>? factsOf = null, IReadOnlyList<string>? upgrades = null)
+        public void InitializeSlot(string? creatureName, int amount, bool canMoveUp, bool canMoveDown, Func<int, IReadOnlyList<StackFact>>? factsOf = null, IReadOnlyList<string>? upgrades = null)
         {
             this.selectedCreature = creatureName;
             this.creatureAmount = amount;
-            this.canMoveLeft = canMoveLeft;
-            this.canMoveRight = canMoveRight;
+            this.canMoveUp = canMoveUp;
+            this.canMoveDown = canMoveDown;
             this.factsOf = factsOf;
             this.upgrades = upgrades ?? NoUpgrades;
 
             this.RaisePropertyChanged(nameof(this.SelectedCreature));
+            this.RaisePropertyChanged(nameof(this.CreatureButtonText));
             this.RaisePropertyChanged(nameof(this.CreatureAmount));
             this.RaisePropertyChanged(nameof(this.HasCreature));
             this.RaiseFactsChanged();
@@ -147,8 +197,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.RaisePropertyChanged(nameof(this.UpgradeText));
             this.RaisePropertyChanged(nameof(this.UpgradeToolTip));
             ((DelegateCommand)this.UpgradeCommand).RaiseCanExecuteChanged();
-            ((DelegateCommand)this.MoveLeftCommand).RaiseCanExecuteChanged();
-            ((DelegateCommand)this.MoveRightCommand).RaiseCanExecuteChanged();
+            ((DelegateCommand)this.MoveUpCommand).RaiseCanExecuteChanged();
+            ((DelegateCommand)this.MoveDownCommand).RaiseCanExecuteChanged();
             ((DelegateCommand)this.ClearCommand).RaiseCanExecuteChanged();
         }
 

@@ -7,6 +7,7 @@ namespace Siniskalc.Wpf.ViewModels
     using System.IO;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
 
@@ -25,10 +26,12 @@ namespace Siniskalc.Wpf.ViewModels
             nameof(IGameEditor.HasPendingChanges),
         ];
 
-        private const string NoGameTitle = "Save game editor";
+        private const string NoGameSubtitle = "Save game editor";
+
+        private static readonly ILogger<ShellViewModel> Logger = LogFactory.For<ShellViewModel>();
 
         private readonly IReadOnlyList<IGameModule<IObservableGameEditor>> modules;
-        private readonly SettingsStore settings;
+        private readonly ISettingsStore settings;
         private readonly string applicationName;
         private readonly Dictionary<IGameModule<IObservableGameEditor>, IObservableGameEditor> editors = new();
         private IGameModule<IObservableGameEditor> currentModule;
@@ -38,7 +41,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
-        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, SettingsStore settings, string applicationName)
+        public ShellViewModel(IReadOnlyList<IGameModule<IObservableGameEditor>> modules, ISettingsStore settings, string applicationName)
         {
             if (modules.Count == 0)
             {
@@ -71,9 +74,12 @@ namespace Siniskalc.Wpf.ViewModels
         public IObservableGameEditor Editor => this.editor;
 
         /// <summary>
-        /// Gets the title of the window: "Save game editor" until a savegame is open, then the name of the application and of the game it is from.
+        /// Gets the title of the window: the name of the application and "Save game editor" until a savegame is open, then the name of the application
+        /// and the game and version of the savegame, such as "Siniskalc - Heroes of Might and Magic III (Shadow of Death)".
         /// </summary>
-        public string Title => this.IsGameLoaded ? $"{this.applicationName} - {this.currentModule.Name}" : NoGameTitle;
+        public string Title => this.editor.Savegame is { } savegame
+            ? $"{this.applicationName} - {this.currentModule.Name}{(savegame.VersionName.Length > 0 ? $" ({savegame.VersionName})" : string.Empty)}"
+            : $"{this.applicationName} - {NoGameSubtitle}";
 
         /// <summary>
         /// Gets or sets whether a copy of a savefile is kept before it is saved over. Kept in the settings of the user.
@@ -183,14 +189,10 @@ namespace Siniskalc.Wpf.ViewModels
                 var read = stream.Read(head, 0, head.Length);
                 return this.modules.FirstOrDefault(m => m.IsOwnSavefile(filePath, head.AsSpan(0, Math.Min(read, m.HeadLength))));
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                // TODO:LOG warn: the file {filePath} could not be read to find its game; the editor that is shown tells the user why.
-                return null;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // TODO:LOG warn: the file {filePath} could not be read to find its game; the editor that is shown tells the user why.
+                // The editor that is shown tells the user why the file cannot be opened.
+                Logger.LogWarning(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
                 return null;
             }
         }

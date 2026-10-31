@@ -1,12 +1,13 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using Siniskalc.Core;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -16,10 +17,13 @@
     /// How the bytes of a savegame read as the values of a model, which the deserializers and the serializers share. Reading a byte that
     /// is no known value gives the first known one (or <c>null</c> where the value can be absent) and never throws; writing leaves a byte
     /// alone while the model holds what the byte reads as, so a savegame with values the editor does not know is not changed by saving it.
+    /// The readers that fall back log it at Trace, whoever calls them (the serializers read to compare, so they log it too).
     /// </summary>
     public static class Bytes
     {
         public const byte Empty = Constants.Empty;
+
+        private static readonly ILogger Logger = LogFactory.For(typeof(Bytes));
 
         /// <summary>
         /// Gets how many spells a Mage Guild lists in all (four for each of its five levels).
@@ -40,13 +44,27 @@
             return Encoding.Latin1.GetString(bytes, offset, length);
         }
 
-        // TODO:LOG warning: a colour byte that is no player colour was read as nobody.
-        public static PlayerColor ReadColor(byte code) => PlayerColor.FromByte(code);
+        public static PlayerColor ReadColor(byte code)
+        {
+            if (AbstractEnumeration.FromCode<PlayerColor>(code) is null)
+            {
+                Logger.LogTrace("Colour byte {Code:X2} is no player colour, read as neutral", code);
+            }
+
+            return PlayerColor.FromByte(code);
+        }
 
         public static byte ColorByte(PlayerColor color, byte existing) => ByteEnumerations.WriteKeeping(color, existing, PlayerColor.Neutral);
 
-        // TODO:LOG warning: a faction byte that is no faction was read as none.
-        public static Faction ReadFaction(byte code) => Faction.FromByte(code);
+        public static Faction ReadFaction(byte code)
+        {
+            if (AbstractEnumeration.FromCode<Faction>(code) is null)
+            {
+                Logger.LogTrace("Faction byte {Code:X2} is no faction, read as neutral", code);
+            }
+
+            return Faction.FromByte(code);
+        }
 
         public static byte FactionByte(Faction faction, byte existing) => ByteEnumerations.WriteKeeping(faction, existing, Faction.Neutral);
 
@@ -57,14 +75,33 @@
 
         public static byte IdByte(int? id, byte existing) => Id(existing) == id ? existing : id is null ? Empty : (byte)id.Value;
 
-        // TODO:LOG warning: a creature code the editor has no name for was read as a Peasant.
-        // TODO:LOG warning: an artifact code the editor has no name for was read as the Ultimate Book of Knowledge.
-        public static Artifact? ReadArtifact(byte code) => code == Empty ? null : Artifact.FromByte(code) ?? Artifact.UltimateBookOfKnowledge;
+        public static Artifact? ReadArtifact(byte code)
+        {
+            if (code == Empty)
+            {
+                return null;
+            }
+
+            var artifact = Artifact.FromByte(code);
+            if (artifact is null)
+            {
+                Logger.LogTrace("Artifact code {Code:X2} is unknown, read as the Ultimate Book of Knowledge", code);
+            }
+
+            return artifact ?? Artifact.UltimateBookOfKnowledge;
+        }
 
         public static byte ArtifactByte(Artifact? artifact, byte existing) => ReadArtifact(existing) == artifact ? existing : artifact?.Code ?? Empty;
 
-        // TODO:LOG warning: a skill level above Expert was read as Expert.
-        public static SkillLevel ReadSkillLevel(byte code) => SkillLevel.Of(Math.Min(code, SkillLevel.Expert.Code));
+        public static SkillLevel ReadSkillLevel(byte code)
+        {
+            if (code > SkillLevel.Expert.Code)
+            {
+                Logger.LogTrace("Skill level byte {Code:X2} is above Expert, read as Expert", code);
+            }
+
+            return SkillLevel.Of(Math.Min(code, SkillLevel.Expert.Code));
+        }
 
         /// <summary>
         /// Reads the secondary skills from the table of levels and the table of the order they were learned in: the skills with a level,
@@ -92,8 +129,15 @@
         /// <summary>
         /// Reads a spell of a Mage Guild, which the savegame lists by its number minus one (0 when the byte is no spell).
         /// </summary>
-        // TODO:LOG warning: a Mage Guild spell byte that is no spell was read as none.
-        public static int GuildSpellNumber(byte stored) => stored < Constants.Hero.SpellCount ? stored + 1 : 0;
+        public static int GuildSpellNumber(byte stored)
+        {
+            if (stored >= Constants.Hero.SpellCount && stored != Empty)
+            {
+                Logger.LogTrace("Mage Guild spell byte {Code:X2} is no spell, read as none", stored);
+            }
+
+            return stored < Constants.Hero.SpellCount ? stored + 1 : 0;
+        }
 
         public static byte GuildSpellByte(int number, byte existing) => GuildSpellNumber(existing) == number ? existing : number is >= 1 and <= Constants.Hero.SpellCount ? (byte)(number - 1) : Empty;
 

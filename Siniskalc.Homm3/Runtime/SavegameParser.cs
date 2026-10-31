@@ -1,8 +1,8 @@
 ﻿namespace Siniskalc.Homm3.Runtime
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
@@ -14,6 +14,8 @@
     /// </summary>
     public sealed class SavegameParser : ISavegameParser
     {
+        private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
+
         private readonly ISavegameVersionDetector versionDetector;
         private readonly IHeroBytesLoader heroLoader;
         private readonly ICastleBytesLoader castleLoader;
@@ -22,6 +24,8 @@
         private readonly IMineBytesLoader mineLoader;
         private readonly IDwellingBytesLoader dwellingLoader;
         private readonly IMerchantBytesLoader merchantLoader;
+        private readonly IHeroOwnersBytesLoader heroOwnersLoader;
+        private readonly ITurnBytesLoader turnLoader;
         private readonly IMapPlacesLoader placesLoader;
         private readonly IGameDateLocator dateLocator;
         private readonly IPlayerControlLocator setupLocator;
@@ -37,6 +41,8 @@
             IMineBytesLoader mineLoader,
             IDwellingBytesLoader dwellingLoader,
             IMerchantBytesLoader merchantLoader,
+            IHeroOwnersBytesLoader heroOwnersLoader,
+            ITurnBytesLoader turnLoader,
             IMapPlacesLoader placesLoader,
             IGameDateLocator dateLocator,
             IPlayerControlLocator setupLocator,
@@ -51,6 +57,8 @@
             this.mineLoader = mineLoader;
             this.dwellingLoader = dwellingLoader;
             this.merchantLoader = merchantLoader;
+            this.heroOwnersLoader = heroOwnersLoader;
+            this.turnLoader = turnLoader;
             this.placesLoader = placesLoader;
             this.dateLocator = dateLocator;
             this.setupLocator = setupLocator;
@@ -63,7 +71,7 @@
             var gameVersion = this.versionDetector.Detect(bytes);
             if (gameVersion == GameVersion.Unknown)
             {
-                // TODO:LOG warning: {file or name} ({bytes.Length} bytes) was refused as unsupported; log its first bytes (the header) to help recognise the version.
+                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes III savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic III savegame, or it comes from a version of the game this editor does not know.");
             }
 
@@ -79,14 +87,25 @@
             var mineChunks = this.mineLoader.LoadMineChunks(bytes);
             var dwellingChunks = this.dwellingLoader.LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
 
+            var afterPlayers = playerChunks.Count == 0 ? 0 : playerChunks[^1].End;
             var metadata = new SaveMetadata<PlayerColor>(
-                Date: this.dateLocator.Find(bytes, gameVersion, playerChunks.Count == 0 ? 0 : playerChunks[^1].End),
+                Date: this.dateLocator.Find(bytes, gameVersion, afterPlayers),
                 Map: this.mapHeaderLocator.Find(bytes, gameVersion),
                 Setup: setup);
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes));
-            return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion));
+            var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
+            Logger.LogInformation(
+                "Opened {File} as Heroes III {Version}: {Heroes} heroes, {Castles} castles, {Players} players, {Mines} mines, {Dwellings} dwellings",
+                LogPaths.Label(file, name),
+                gameVersion,
+                heroChunks.Count,
+                castleChunks.Count,
+                playerChunks.Count,
+                mineChunks.Count,
+                dwellingChunks.Count);
+            return game;
         }
 
         // A hero that stands on a place of a kind hides it on the map; its own record has the type of the place (+11), whether it can be visited
@@ -99,7 +118,7 @@
                 var kind = VisitedPlaceKind.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
                 if (kind != null && heroes[i].GetByteAt(15) == 1 && heroes.GetModel(i).Position is { X: >= 0 } position)
                 {
-                    yield return (kind, heroes[i].GetByteAt(16), position);
+                    yield return (kind, heroes[i].GetByteAt(16) & kind.NumberMask, position);
                 }
             }
         }

@@ -6,6 +6,7 @@ namespace Siniskalc.Heroes.Tests.Models
     /// Tests the tile of a map both games use.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class MapPositionTests
     {
         [Test]

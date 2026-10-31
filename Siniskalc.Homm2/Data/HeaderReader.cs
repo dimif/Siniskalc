@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -13,6 +15,8 @@
     /// </summary>
     public sealed class HeaderReader : IHeaderReader
     {
+        private static readonly ILogger<HeaderReader> Logger = LogFactory.For<HeaderReader>();
+
         // The levels in the order of the game's own numbers: easy, normal, hard, expert, impossible (a map has only the first four).
         private static readonly GameDifficulty[] Difficulties = [GameDifficulty.Pawn, GameDifficulty.Knight, GameDifficulty.Rook, GameDifficulty.Queen, GameDifficulty.King];
 
@@ -26,14 +30,14 @@
             var map = new MapHeader(
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
-                ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
+                this.ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
                 layout.Width);
-            var setup = new GameSetup<PlayerColor>(ReadControls(bytes, layout), ReadDifficulty(bytes[layout.DifficultyStart]));
+            var setup = new GameSetup<PlayerColor>(this.ReadControls(bytes, layout), this.ReadDifficulty(bytes[layout.DifficultyStart]));
             return new SaveMetadata<PlayerColor>(date, map, setup);
         }
 
         // The game plays the humans the mask marks, in the order of the records. Whose turn it is is the turn record (Game.CurrentPlayer).
-        private static List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
+        private List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
         {
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             var controls = Enumerable.Repeat(PlayerType.NotInGame, Constants.Table.PlayerCount).ToList();
@@ -48,7 +52,14 @@
             return controls;
         }
 
-        // TODO:LOG warning: a difficulty that is no level was read as the first one.
-        private static GameDifficulty ReadDifficulty(int code) => code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
+        private GameDifficulty ReadDifficulty(int code)
+        {
+            if (code >= Difficulties.Length)
+            {
+                Logger.LogTrace("Difficulty {Code} is no level, read as the first one", code);
+            }
+
+            return code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
+        }
     }
 }

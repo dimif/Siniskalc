@@ -2,7 +2,8 @@
 {
     using System;
     using System.Linq;
-    using Siniskalc.Core.Data;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -14,12 +15,19 @@
     /// </summary>
     public sealed class HeroDeserializer : IHeroDeserializer
     {
+        private static readonly ILogger<HeroDeserializer> Logger = LogFactory.For<HeroDeserializer>();
+
         /// <inheritdoc/>
-        public PlayerColor DeserializeOwner(HeroChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
+        public PlayerColor DeserializeOwner(HeroChunk chunk)
+        {
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
+            return Bytes.ReadColor(chunk.GetByteAt(HeroLayout.Owner));
+        }
 
         /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
         {
+            using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var bytes = chunk.ToArray();
             var id = chunk.GetByteAt(HeroLayout.Id);
             var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));

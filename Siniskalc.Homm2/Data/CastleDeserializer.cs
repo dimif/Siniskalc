@@ -1,8 +1,9 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
     using System.Linq;
-    using Siniskalc.Core.Data;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Models;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
@@ -13,12 +14,19 @@
     /// </summary>
     public sealed class CastleDeserializer : ICastleDeserializer
     {
+        private static readonly ILogger<CastleDeserializer> Logger = LogFactory.For<CastleDeserializer>();
+
         /// <inheritdoc/>
-        public PlayerColor DeserializeOwner(CastleChunk chunk) => Bytes.ReadColor(chunk.GetByteAt(CastleLayout.Owner));
+        public PlayerColor DeserializeOwner(CastleChunk chunk)
+        {
+            using var subject = Logger.BeginSubject("Castle", chunk.Name);
+            return Bytes.ReadColor(chunk.GetByteAt(CastleLayout.Owner));
+        }
 
         /// <inheritdoc/>
         public CastleModel Deserialize(CastleChunk chunk)
         {
+            using var subject = Logger.BeginSubject("Castle", chunk.Name);
             var bytes = chunk.ToArray();
             var boatX = chunk.GetByteAt(CastleLayout.Boat);
             var dwellings = (Dwellings)chunk.GetUInt32At(CastleLayout.Dwellings);

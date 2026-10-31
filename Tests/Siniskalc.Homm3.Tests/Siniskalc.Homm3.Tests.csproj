@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -18,10 +18,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Siniskalc.Homm3\Siniskalc.Homm3.csproj" />
+    <ProjectReference Include="..\Siniskalc.Tests.Homm.Common\Siniskalc.Tests.Homm.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+    <Using Include="Siniskalc.Tests.Homm.Common" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +43,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\TestData\Hota\tan_not_parsing.GM1" Link="TestData\Hota\tan_not_parsing.GM1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\multi_merchants.GM1" Link="TestData\Hota\multi_merchants.GM1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\TestData\Hota\cannot_edit_town_spells.GM1" Link="TestData\Hota\cannot_edit_town_spells.GM1">
@@ -149,6 +154,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\TestData\Hota\Banishing\*.GM?" Link="TestData\Hota\Banishing\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\HeroOwners\*.GM?" Link="TestData\Hota\HeroOwners\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\TestData\Sod\*.GM1" Link="TestData\Sod\%(Filename)%(Extension)">

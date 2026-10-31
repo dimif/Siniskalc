@@ -2,7 +2,6 @@ namespace Siniskalc.Homm3.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -40,6 +39,11 @@ namespace Siniskalc.Homm3.Data
         /// Creates a view onto the mine at <paramref name="index"/>; its edits are pushed onto this history.
         /// </summary>
         public static EditSession<RecordChunk, MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Mines, index);
+
+        /// <summary>
+        /// Creates a view onto whose turn it is (the savefile's only turn chunk); its edits are pushed onto this history.
+        /// </summary>
+        public static EditSession<RecordChunk, TurnModel> CreateTurnSession(this SaveDocumentHistory history) => new(history, Homm3ChunkKinds.Turn, 0);
 
         /// <summary>
         /// Creates a view onto the visited obelisks of the savefile (its only obelisk chunk, so index 0); its edits are pushed onto this history.

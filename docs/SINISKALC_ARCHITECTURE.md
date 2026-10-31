@@ -138,7 +138,7 @@ EditSession.IsDirty                differs from the savefile as loaded or saved
 EditSession.Revision               an opaque token that changes when this struct is edited, so a view model can tell its own edits from others'
 ```
 
-A hero's stored id (`HeroModel.HeroId`, or `Id` in HoMM2) is distinct from its table index: `IHeroSummaries.IndexOfId` resolves the id to the index a page opens. HoMM2 scenario heroes can also have ids that differ from their indexes. A castle is identified by its index, a player by its colour.
+A hero's reference id is translated to its page index by `IHeroSummaries.IndexOfId`. HoMM3 resolves `HeroModel.HeroId` in its records; HoMM2 references table indexes. HoMM2's scenario portrait byte (still exposed as `HeroModel.Id`) can differ from the reference id, so its collection supplies `HeroSummary.HeroId` and `Index` from the table index. A castle is identified by its index, a player by its colour.
 The hex editor is the one place that works on raw bytes, through the byte edit targets of a session.
 
 Both games derive `Game` from `HeroesSavegameBase<PlayerColor>` and use `SaveMetadata<PlayerColor>` for read-only header facts; their current-player overrides read the editable turn records. Both overviews use `OverviewViewModelBase` for player-card construction and `PlayersInGame.Of` for the same inclusion rule as navigation. Refresh is owned by `EditorViewModelBase` through `IRefreshableViewModel`, on a history change while the overview is shown and before returning to it. Player resource rows are built through `ResourcesEditorViewModel.ForPlayer`, with each game's limits and optional income notes.

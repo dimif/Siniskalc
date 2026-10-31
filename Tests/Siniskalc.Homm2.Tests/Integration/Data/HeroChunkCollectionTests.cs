@@ -28,6 +28,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
                 foreach (var (summary, index) in heroes.GetSummaries().Select((summary, index) => (summary, index)))
                 {
                     Assert.That(summary.Index, Is.EqualTo(index), path);
+                    Assert.That(summary.HeroId, Is.EqualTo(index), path);
                     Assert.That(heroes.IndexOfId(summary.HeroId), Is.EqualTo(summary.Index), path);
                     Assert.That(heroes.FindById(summary.HeroId), Is.EqualTo(summary), path);
                 }
@@ -35,14 +36,25 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
-        public void AScenarioHeroWhoseStoredIdIsNotItsIndexOpensItsOwnRecord()
+        public void ScenarioPortraitBytesDoNotChangeTheHeroIdsUsedByPlayersAndPages()
         {
-            var heroes = TestServices.Load(Saves.Path("MapDifficultySize", "map_difficulty_size_07_map_hard_extra_large")).History.Current.Heroes();
-            var hero = heroes.GetSummaries().First(summary => summary.HeroId != summary.Index);
+            var document = TestServices.Load(Saves.Path("MapDifficultySize", "map_difficulty_size_07_map_hard_extra_large")).History.Current;
+            var heroes = document.Heroes();
+            var index = heroes.GetModels().Select((hero, index) => (hero, index)).First(entry => entry.hero.Id != entry.index).index;
+            var hero = heroes.GetSummaries()[index];
 
-            Assert.That(hero.HeroId, Is.EqualTo(55));
-            Assert.That(hero.Index, Is.Not.EqualTo(hero.HeroId));
+            Assert.That(heroes.GetModel(index).Id, Is.EqualTo(55));
+            Assert.That(index, Is.EqualTo(8));
+            Assert.That(hero.HeroId, Is.EqualTo(index));
+            Assert.That(hero.Index, Is.EqualTo(index));
             Assert.That(heroes.GetModel(heroes.IndexOfId(hero.HeroId)).Name, Is.EqualTo(hero.Name));
+            foreach (var player in document.Players().GetModels())
+            {
+                foreach (var heroId in player.HeroIds)
+                {
+                    Assert.That(heroes.FindById(heroId)?.Owner, Is.EqualTo(player.Color), $"Hero {heroId} listed by {player.Color}");
+                }
+            }
         }
 
         [Test]

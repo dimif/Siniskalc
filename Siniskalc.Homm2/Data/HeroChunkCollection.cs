@@ -9,7 +9,7 @@
     using Siniskalc.Homm2.Models;
 
     /// <summary>
-    /// The 54 heroes of a savegame, addressed by table index or by the id stored in their record.
+    /// The 54 heroes of a savegame. References to heroes use their table indexes, not the scenario portrait byte.
     /// </summary>
     public sealed class HeroChunkCollection : ModelChunkCollection<HeroChunk, HeroModel, IHeroDeserializer, ISerializer<HeroChunk, HeroModel>>, IHeroSummaries<PlayerColor>
     {
@@ -32,16 +32,16 @@
         /// <summary>
         /// Returns a short summary of every hero, by hero number.
         /// </summary>
-        public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => this.GetModels().Select((hero, index) => hero.Summary with { Index = index }).ToList();
+        public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => this.GetModels().Select((hero, index) => hero.Summary with { Index = index, HeroId = index }).ToList();
 
         /// <inheritdoc/>
-        public int IndexOfId(int heroId) => this.GetSummaries().FirstOrDefault(hero => hero.HeroId == heroId)?.Index ?? -1;
+        public int IndexOfId(int heroId) => heroId >= 0 && heroId < this.Count ? heroId : -1;
 
         /// <inheritdoc/>
         public HeroSummary<PlayerColor>? FindById(int heroId)
         {
             var index = this.IndexOfId(heroId);
-            return index < 0 ? null : this.GetModel(index).Summary with { Index = index };
+            return index < 0 ? null : this.GetModel(index).Summary with { Index = index, HeroId = index };
         }
     }
 }

@@ -222,7 +222,7 @@ Saves E01 to E13 were made by editing the models, E14 to E26 with the editor its
 
 ## Maps with heroes of their own
 
-In `MapDifficultySize` save 07 (a scenario with heroes such as Famine, War and Pestilence) four heroes hold another number than their index in the byte that is the hero ID elsewhere (`HeroLayout.Id`), probably the portrait the map gave them. The locator therefore accepts a table when most heroes hold their index (and every castle holds its own). How the editor treats those heroes (it finds them by that byte) is not checked yet.
+In `MapDifficultySize` save 07 (a scenario with heroes such as Famine, War and Pestilence) four heroes hold another number than their index in the byte that is the hero ID elsewhere (`HeroLayout.Id`), probably the portrait the map gave them. The locator therefore accepts a table when most heroes hold their index (and every castle holds its own). The player lists still reference table indexes: resolving them by the changed bytes leaves some references unfound. `HeroChunkCollectionTests` checks those player references and the case of table index 8 holding byte 55. The collection gives links and taverns the table index as both the reference id and the page index; the model and serializer keep the original byte untouched. Loading an edited scenario in the game remains unverified.
 
 ## What the saves of Threedom showed (2026-10-17)
 

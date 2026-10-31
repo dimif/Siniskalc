@@ -132,6 +132,11 @@ namespace Siniskalc.Homm3.ViewModels
         public IByteEditTarget? CreateDwellingByteEditTarget() =>
             this.SelectedDwelling is { } dwelling ? this.byteEditTargets.ForDwelling(this.history, dwelling.Index) : null;
 
+        /// <summary>
+        /// Picks the mine with the given place among the mines of the savegame, if the owner has it.
+        /// </summary>
+        public void PickMine(int mineIndex) => this.Mines.PickMine(mineIndex);
+
         // One editor serves whichever mine is picked: swapping the editor of the page for another view model rebuilds the whole editor (its
         // seven creature lists and the finder of every creature), which takes most of a second, while refreshing one only updates its values.
         private ArmyViewModel CreateGuardEditor()
@@ -143,10 +148,5 @@ namespace Siniskalc.Homm3.ViewModels
             editor.SetTitle(this.GuardHeading);
             return editor;
         }
-
-        /// <summary>
-        /// Picks the mine with the given place among the mines of the savegame, if the owner has it.
-        /// </summary>
-        public void PickMine(int mineIndex) => this.Mines.PickMine(mineIndex);
     }
 }

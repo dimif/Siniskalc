@@ -4,7 +4,7 @@ namespace Siniskalc.Heroes.Entities
     using Siniskalc.Heroes.ViewModels;
 
     /// <summary>
-    /// What each kind of mine gives and how the savegame draws its flag.
+    /// What each kind of mine is called and which resource it gives.
     /// </summary>
     public static class MineKinds
     {
@@ -44,10 +44,5 @@ namespace Siniskalc.Heroes.Entities
             MineKind.GemMine => Resource.Gems,
             _ => Resource.Gold,
         };
-
-        /// <summary>
-        /// Returns the picture of the flag of the first colour (Blue): the picture of the flag of a player is this plus its colour. The
-        /// flags of the mines, the alchemist's lab and the sawmill are three series of seven pictures.
-        /// </summary>
     }
 }

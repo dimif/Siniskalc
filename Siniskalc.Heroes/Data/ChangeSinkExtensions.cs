@@ -255,6 +255,38 @@
         }
 
         /// <summary>
+        /// Adds a change for each kind of place whose visits differ, worded with how many places the hero visited, each put back on its own.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <typeparam name="TKind">The kind of place.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="kinds">The kinds of place of the game.</param>
+        /// <param name="nameOf">Gets the name of a kind.</param>
+        /// <param name="before">Gets the number of a kind (a bit for each place visited) as loaded.</param>
+        /// <param name="after">Gets the number of a kind now.</param>
+        /// <param name="withVisits">Returns the model with another number for a kind.</param>
+        public static void AddPlaceVisits<TModel, TKind>(
+            this ChangeSink<TModel> sink,
+            IEnumerable<TKind> kinds,
+            Func<TKind, string> nameOf,
+            Func<TKind, uint> before,
+            Func<TKind, uint> after,
+            Func<TModel, TKind, uint, TModel> withVisits)
+            where TModel : class
+        {
+            foreach (var kind in kinds.Where(k => before(k) != after(k)))
+            {
+                var original = before(kind);
+                sink.Add(
+                    ChangeAreas.General,
+                    $"Visited: {nameOf(kind).ToLowerInvariant()}",
+                    System.Numerics.BitOperations.PopCount(original).ToString(),
+                    System.Numerics.BitOperations.PopCount(after(kind)).ToString(),
+                    model => withVisits(model, kind, original));
+            }
+        }
+
+        /// <summary>
         /// Adds a change for the morale and for the luck the hero carries into the next battle when each differs, each put back on its own.
         /// </summary>
         /// <typeparam name="TModel">The model of the hero.</typeparam>

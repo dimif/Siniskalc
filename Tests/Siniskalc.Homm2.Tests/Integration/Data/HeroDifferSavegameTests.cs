@@ -67,6 +67,20 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
+        public void VisitedPlacesAreListedOneKindAtATimeLikeInHomm3()
+        {
+            var history = this.game.History;
+            var original = history.Current.Heroes().GetModel(Maximus).Visited;
+
+            history.CreateHeroSession(Maximus).Update(h => h with { Visited = h.Visited.With(PlaceKind.Fort, original.Of(PlaceKind.Fort) ^ 0b10) });
+
+            var change = history.GetPendingChanges().Single();
+            Assert.That(change.Change.Description, Is.EqualTo("Visited: forts"));
+            change.Revert(history);
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+        }
+
+        [Test]
         public void RevertingTheOwnerOfAHeroPutsTheHeroAndTheListsOfThePlayersBackInOneStep()
         {
             var history = this.game.History;

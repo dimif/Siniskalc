@@ -73,12 +73,12 @@
             ];
             this.visitedPlaces =
             [
-                this.Visited(game, PlaceKind.Gazebo, "Gazebos", "A thousand experience points, once per hero"),
-                this.Visited(game, PlaceKind.Fort, "Forts", "A point of defense, once per hero"),
-                this.Visited(game, PlaceKind.WitchDoctorHut, "Witch doctor's huts", "A point of knowledge or a skill, once per hero"),
-                this.Visited(game, PlaceKind.MercenaryCamp, "Mercenary camps", "A point of attack, once per hero"),
-                this.Visited(game, PlaceKind.StandingStones, "Standing stones", "A point of spell power, once per hero"),
-                this.Visited(game, PlaceKind.Xanadu, "Xanadu", "A point of every primary skill, once per hero"),
+                this.Visited(game, PlaceKind.Gazebo, "A thousand experience points, once per hero"),
+                this.Visited(game, PlaceKind.Fort, "A point of defense, once per hero"),
+                this.Visited(game, PlaceKind.WitchDoctorHut, "A point of knowledge or a skill, once per hero"),
+                this.Visited(game, PlaceKind.MercenaryCamp, "A point of attack, once per hero"),
+                this.Visited(game, PlaceKind.StandingStones, "A point of spell power, once per hero"),
+                this.Visited(game, PlaceKind.Xanadu, "A point of every primary skill, once per hero"),
             ];
             this.ArmyEditor = new ArmyViewModel(
                 game.GameVersion,
@@ -393,25 +393,14 @@
             on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
             toolTip: toolTip + ". Not tried in the game.");
 
-        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip)
-        {
+        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string toolTip) =>
             // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
-            var places = game.Places.Of(kind)
-                .Select((position, index) => new ToggleRowViewModel(
-                    $"At {MapLevelText.Place(position.X, position.Y)}",
-                    () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
-                    visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
-                    toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))
-                .ToList();
-            var allOnMap = places.Aggregate(0u, (mask, _) => (mask << 1) | 1u) << 1;
-            return new(
-                name,
-                () => System.Numerics.BitOperations.PopCount(this.session.Current.Visited.Of(kind)),
-                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, 0) }),
-                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, h.Visited.Of(kind) | allOnMap) }),
+            VisitedPlaceRows.Create(
+                PlaceKindNames.Of(kind),
                 toolTip,
-                places);
-        }
+                game.Places.Of(kind).Select((position, index) => (index + 1, position)),
+                () => this.session.Current.Visited.Of(kind),
+                edit => this.session.Update(h => h with { Visited = h.Visited.With(kind, edit(h.Visited.Of(kind))) }));
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,

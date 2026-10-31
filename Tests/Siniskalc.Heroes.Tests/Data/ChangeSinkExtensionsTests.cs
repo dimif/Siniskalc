@@ -156,6 +156,30 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void PlaceVisitsAreOneChangeForEachKindThatDiffersWithTheNumberOfPlacesAndRevertEachOnItsOwn()
+        {
+            var sink = NewSink(out var reverts);
+            var putBack = new List<(string Kind, uint Mask)>();
+            var before = new Dictionary<string, uint> { ["Forts"] = 0b110, ["Gazebos"] = 0b1, ["Xanadu"] = 0 };
+            var after = new Dictionary<string, uint> { ["Forts"] = 0b110, ["Gazebos"] = 0b1011, ["Xanadu"] = 0b10 };
+
+            sink.AddPlaceVisits(
+                before.Keys,
+                kind => kind,
+                kind => before[kind],
+                kind => after[kind],
+                (t, kind, mask) =>
+                {
+                    putBack.Add((kind, mask));
+                    return t;
+                });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Visited: gazebos", "1", "3"), ("General", "Visited: xanadu", "0", "1") }));
+            reverts[1](Blank());
+            Assert.That(putBack, Is.EqualTo(new[] { ("Xanadu", 0u) }));
+        }
+
+        [Test]
         public void AnArmyChangeIsOneChangeForEachSlotThatDiffersAndEmptySlotsSayEmpty()
         {
             var sink = NewSink(out var reverts);

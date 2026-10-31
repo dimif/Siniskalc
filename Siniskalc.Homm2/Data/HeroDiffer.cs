@@ -53,10 +53,12 @@ namespace Siniskalc.Homm2.Data
                 changes.Add(ChangeAreas.General, "Remembered effects", original.Effects.ToString(), current.Effects.ToString(), h => h with { Effects = original.Effects });
             }
 
-            if (original.Visited != current.Visited)
-            {
-                changes.Add(ChangeAreas.General, "Places visited", original.Visited.Count.ToString(), current.Visited.Count.ToString(), h => h with { Visited = original.Visited });
-            }
+            changes.AddPlaceVisits(
+                System.Enum.GetValues<PlaceKind>(),
+                PlaceKindNames.Of,
+                kind => original.Visited.Of(kind),
+                kind => current.Visited.Of(kind),
+                (h, kind, mask) => h with { Visited = h.Visited.With(kind, mask) });
 
             DiffPrimarySkills(original, current, changes);
             DiffSecondarySkills(original, current, changes);

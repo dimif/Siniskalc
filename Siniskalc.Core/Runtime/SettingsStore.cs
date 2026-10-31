@@ -11,18 +11,12 @@ namespace Siniskalc.Core.Runtime
     {
         private readonly string path;
         private readonly UserSettings settings;
-        private readonly bool fromLegacy;
 
         /// <param name="path">Where the settings are kept.</param>
-        /// <param name="legacyPath">
-        /// Where an earlier version kept them. Read once when there is no file at <paramref name="path"/> yet, so a rename of
-        /// the editor does not lose the settings.
-        /// </param>
-        public SettingsStore(string path, string? legacyPath = null)
+        public SettingsStore(string path)
         {
             this.path = path;
-            this.fromLegacy = !File.Exists(path) && legacyPath is not null && File.Exists(legacyPath);
-            this.settings = UserSettings.Load(this.fromLegacy ? legacyPath! : path);
+            this.settings = UserSettings.Load(path);
         }
 
         /// <summary>
@@ -59,20 +53,14 @@ namespace Siniskalc.Core.Runtime
         public void Save() => this.settings.Save(this.path);
 
         /// <summary>
-        /// Makes sure the settings file is there: when the user has none yet, writes the default settings file the application ships (or the
-        /// settings an earlier version kept, when they were read from there), so the user can see and edit it.
+        /// Makes sure the settings file is there: when the user has none yet, writes the default settings file the application ships, so the
+        /// user can see and edit it.
         /// </summary>
         /// <exception cref="SettingsException">The file cannot be written.</exception>
         public void EnsureCreated()
         {
             if (File.Exists(this.path))
             {
-                return;
-            }
-
-            if (this.fromLegacy)
-            {
-                this.Save();
                 return;
             }
 

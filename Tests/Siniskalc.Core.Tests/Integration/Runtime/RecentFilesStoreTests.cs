@@ -34,42 +34,9 @@
         }
 
         [Test]
-        public void ReadsTheListOfAnEarlierVersionWhenThereIsNoSettingsFileYet()
+        public void StartsEmptyWhenThereIsNoSettingsFileYet()
         {
-            var legacy = this.WriteSettings("legacy.json", @"C:\saves\old.GM1");
-
-            var store = new RecentFilesStore(new SettingsStore(Path.Combine(this.folder, "settings.json"), legacy));
-
-            Assert.That(store.Entries, Is.EqualTo(new[] { @"C:\saves\old.GM1" }));
-        }
-
-        [Test]
-        public void WritesTheMigratedListToTheNewLocationAndLeavesTheOldFileAlone()
-        {
-            var legacy = this.WriteSettings("legacy.json", @"C:\saves\old.GM1");
-            var current = Path.Combine(this.folder, "settings.json");
-
-            new RecentFilesStore(new SettingsStore(current, legacy)).Add(@"C:\saves\new.GM1");
-
-            Assert.That(new RecentFilesStore(new SettingsStore(current, legacy)).Entries, Is.EqualTo(new[] { @"C:\saves\new.GM1", @"C:\saves\old.GM1" }));
-            Assert.That(File.ReadAllText(legacy), Does.Contain("old.GM1").And.Not.Contain("new.GM1"));
-        }
-
-        [Test]
-        public void PrefersTheSettingsFileOverTheOneOfAnEarlierVersion()
-        {
-            var legacy = this.WriteSettings("legacy.json", @"C:\saves\old.GM1");
-            var current = this.WriteSettings("settings.json", @"C:\saves\current.GM1");
-
-            var store = new RecentFilesStore(new SettingsStore(current, legacy));
-
-            Assert.That(store.Entries, Is.EqualTo(new[] { @"C:\saves\current.GM1" }));
-        }
-
-        [Test]
-        public void StartsEmptyWhenNeitherFileExists()
-        {
-            var store = new RecentFilesStore(new SettingsStore(Path.Combine(this.folder, "settings.json"), Path.Combine(this.folder, "legacy.json")));
+            var store = new RecentFilesStore(new SettingsStore(Path.Combine(this.folder, "settings.json")));
 
             Assert.That(store.Entries, Is.Empty);
         }

@@ -38,9 +38,7 @@
         {
             this.BytesPatcher = new SavefileBytesPatcher();
             var settingsFile = settingsPath ?? UserSettings.PathFor(AppInfo.Name);
-            this.Settings = settingsPath is null
-                ? new SettingsStore(settingsFile, UserSettings.PathFor("Heroes3Editor"))
-                : new SettingsStore(settingsPath);
+            this.Settings = new SettingsStore(settingsFile);
             this.Settings.EnsureCreated();
             this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name, LogPaths.SerilogConfigPathFor(settingsFile));
             LogFactory.Install(this.LoggerFactory);

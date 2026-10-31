@@ -33,18 +33,6 @@ namespace Siniskalc.Core.Tests.Integration.Runtime
         }
 
         [Test]
-        public void TheSettingsOfAnEarlierVersionAreWrittenInsteadOfTheDefaultsTheFirstTime()
-        {
-            var path = Path.Combine(this.folder, "settings.json");
-            var legacy = Path.Combine(this.folder, "legacy.json");
-            File.WriteAllText(legacy, "{ \"AdvancedMode\": true }");
-
-            new SettingsStore(path, legacy).EnsureCreated();
-
-            Assert.That(new SettingsStore(path).AdvancedMode, Is.True);
-        }
-
-        [Test]
         public void ASettingsFileThatCannotBeWrittenTheFirstTimeIsReported()
         {
             // A folder where the file should be.

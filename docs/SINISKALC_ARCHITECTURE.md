@@ -186,7 +186,7 @@ The Hex cards below a mine or a dwelling (`OwnedMinesCards`, `OwnedDwellingsCard
 ## Settings and backups
 
 `SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on), `AdvancedMode` (default off) and the two logging choices never overwrite each other.
-`EnsureCreated` writes the file the first time, from `Siniskalc.Core/Resources/settings.default.json` (or from the settings of an earlier version).
+`EnsureCreated` writes the file the first time, from `Siniskalc.Core/Resources/settings.default.json`.
 A setting missing from the file keeps its default.
 `AppServices` builds one store and hands it to `RecentFilesStore`, `FileBackupServiceProvider` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
 

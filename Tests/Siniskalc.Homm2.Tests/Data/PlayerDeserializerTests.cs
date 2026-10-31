@@ -52,33 +52,18 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void TheListsHoldTheIdsThatAreNotTheEmptyMarkWhereverTheyStand()
-        {
-            var player = this.deserializer.Deserialize(BlankRecords.Player("Blue", b =>
-            {
-                new byte[] { 7, 0xFF, 9, 0xFF, 0xFF }.CopyTo(b, PlayerLayout.Heroes);
-                new byte[] { 3, 4, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }.CopyTo(b, PlayerLayout.Castles);
-            }));
-
-            Assert.That(player.HeroIds, Is.EqualTo(new[] { 7, 9 }));
-            Assert.That(player.CastleIds, Is.EqualTo(new[] { 3, 4 }));
-        }
-
-        [Test]
-        public void TheSelectionsTheDaysLeftAndTheTavernAreIdsOrNoneForTheEmptyMark()
+        public void TheDaysLeftAndTheTavernAreIdsOrNoneForTheEmptyMark()
         {
             var empty = this.deserializer.Deserialize(BlankRecords.Player("Blue"));
             var set = this.deserializer.Deserialize(BlankRecords.Player("Blue", b =>
             {
-                b[PlayerLayout.SelectedHero] = 7;
-                b[PlayerLayout.SelectedCastle] = 3;
                 b[PlayerLayout.DaysLeft] = 5;
                 b[PlayerLayout.Tavern] = 12;
                 b[PlayerLayout.Tavern + 1] = 13;
             }));
 
-            Assert.That((empty.SelectedHero, empty.SelectedCastle, empty.DaysLeft, empty.Tavern), Is.EqualTo(((int?)null, (int?)null, (int?)null, new TavernHeroes(null, null))));
-            Assert.That((set.SelectedHero, set.SelectedCastle, set.DaysLeft, set.Tavern), Is.EqualTo(((int?)7, (int?)3, (int?)5, new TavernHeroes(12, 13))));
+            Assert.That((empty.DaysLeft, empty.Tavern), Is.EqualTo(((int?)null, new TavernHeroes(null, null))));
+            Assert.That((set.DaysLeft, set.Tavern), Is.EqualTo(((int?)5, new TavernHeroes(12, 13))));
         }
     }
 }

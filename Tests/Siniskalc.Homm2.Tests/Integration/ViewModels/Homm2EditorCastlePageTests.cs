@@ -102,35 +102,57 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var page = this.harness.OpenCastleOf(PlayerColor.Red);
             var document = () => this.editor.CurrentGame!.History.Current;
             var red = () => document().Players().GetModel(PlayerColor.Red.Code);
-            var blue = () => document().Players().GetModel(PlayerColor.Blue.Code);
-            var blueBefore = blue().CastleIds.Count;
-            Assert.That(red().CastleIds, Does.Contain(page.CastleIndex));
+            var redCastles = () => document().Players().GetLists(PlayerColor.Red.Code).CastleIds;
+            var blueCastles = () => document().Players().GetLists(PlayerColor.Blue.Code).CastleIds;
+            var blueBefore = blueCastles().Count;
+            Assert.That(redCastles(), Does.Contain(page.CastleIndex));
 
             page.OwnerField.Selected = "Blue";
 
             Assert.That(document().Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(blue().CastleIds, Does.Contain(page.CastleIndex));
-            Assert.That(blue().CastleIds.Count, Is.EqualTo(blueBefore + 1));
-            Assert.That(red().CastleIds, Does.Not.Contain(page.CastleIndex));
+            Assert.That(blueCastles(), Does.Contain(page.CastleIndex));
+            Assert.That(blueCastles().Count, Is.EqualTo(blueBefore + 1));
+            Assert.That(redCastles(), Does.Not.Contain(page.CastleIndex));
             Assert.That(red().DaysLeft, Is.EqualTo(PlayerModel.DaysToOwnACastle), "a player that lost its last castle starts counting");
 
             this.editor.Undo();
             Assert.That(document().Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(red().CastleIds, Does.Contain(page.CastleIndex));
-            Assert.That(blue().CastleIds.Count, Is.EqualTo(blueBefore));
+            Assert.That(redCastles(), Does.Contain(page.CastleIndex));
+            Assert.That(blueCastles().Count, Is.EqualTo(blueBefore));
             Assert.That(red().DaysLeft, Is.Null);
+        }
+
+        [Test]
+        public void ResettingTheCastlePageGivesTheCastleBackToItsOwnerWithItsPlaceAndTheDaysLeft()
+        {
+            var page = this.harness.OpenCastleOf(PlayerColor.Red);
+            var history = this.editor.CurrentGame!.History;
+            var original = history.Current.ToBytes();
+            page.OwnerField.Selected = "Blue";
+            Assert.That(page.HasPendingChanges, Is.True);
+
+            page.ResetCommand.Execute(null);
+
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+            Assert.That(page.HasPendingChanges, Is.False);
         }
 
         [Test]
         public void ACastleCannotGoToAPlayerWhoseListOfCastlesIsFull()
         {
             var page = this.harness.OpenCastleOf(PlayerColor.Red);
-            this.editor.CurrentGame!.History.CreatePlayerSession(PlayerColor.Blue.Code).Update(p => p with { CastleIds = new Numbers(Enumerable.Range(40, Constants.Player.CastleListSize)) });
+            var history = this.editor.CurrentGame!.History;
+            var players = history.Current.Players();
+            var blue = PlayerColor.Blue.Code;
+            var full = players.GetLists(blue) with { CastleIds = new Numbers(Enumerable.Range(40, Constants.Player.CastleListSize)) };
+            history.ApplyAsIs(history.Current.WithChunk(Homm2ChunkKinds.Player, blue, players.ListsSerializer.Serialize(players[blue], full)));
+            var before = history.Current;
 
             page.OwnerField.Selected = "Blue";
 
             Assert.That(page.HasNotice, Is.True);
-            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(page.CastleIndex).Owner, Is.EqualTo(PlayerColor.Red));
+            Assert.That(page.Notice, Is.EqualTo("Blue has the most castles a player can have."));
+            Assert.That(history.Current, Is.SameAs(before), "a refused owner leaves the savegame as it was");
         }
 
         [Test]

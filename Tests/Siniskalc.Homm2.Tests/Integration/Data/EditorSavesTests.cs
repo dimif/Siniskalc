@@ -63,11 +63,11 @@
             var give = Open("E14GIVE");
             var corackston = give.Document.Castles().FindByName("Corackston");
             Assert.That(give.Document.Castles().GetModel(corackston).Owner, Is.EqualTo(PlayerColor.Orange));
-            Assert.That(give.Document.Players().GetModel(PlayerColor.Orange.Code).CastleIds, Does.Contain(corackston));
-            Assert.That(give.Document.Players().GetModel(PlayerColor.Blue.Code).CastleIds, Does.Not.Contain(corackston));
+            Assert.That(give.Document.Players().GetLists(PlayerColor.Orange.Code).CastleIds, Does.Contain(corackston));
+            Assert.That(give.Document.Players().GetLists(PlayerColor.Blue.Code).CastleIds, Does.Not.Contain(corackston));
 
             var last = Open("E15LAST").Document;
-            Assert.That(last.Players().GetModel(PlayerColor.Red.Code).CastleIds, Is.Empty);
+            Assert.That(last.Players().GetLists(PlayerColor.Red.Code).CastleIds, Is.Empty);
             Assert.That(last.Players().GetModel(PlayerColor.Red.Code).DaysLeft, Is.EqualTo(7));
         }
 

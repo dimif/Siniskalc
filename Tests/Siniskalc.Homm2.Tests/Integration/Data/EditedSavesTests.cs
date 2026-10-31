@@ -101,7 +101,7 @@
 
             var owned = TestServices.Parser.Parse(Named("E11OWNR").Bytes, null).History.Current;
             Assert.That(owned.Castles().GetModel(2).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(owned.Players().GetModel(0).CastleIds, Is.EqualTo(Numbers.Of(3, 2)));
+            Assert.That(owned.Players().GetLists(0).CastleIds, Is.EqualTo(Numbers.Of(3, 2)));
         }
 
         /// <summary>

@@ -17,6 +17,8 @@ namespace Siniskalc.Homm2.Data
         private readonly IDiffer<HeroModel> heroDiffer;
         private readonly IDeserializer<PlayerChunk, PlayerModel> playerDeserializer;
         private readonly ISerializer<PlayerChunk, PlayerModel> playerSerializer;
+        private readonly IDeserializer<PlayerChunk, PlayerLists> playerListsDeserializer;
+        private readonly ISerializer<PlayerChunk, PlayerLists> playerListsSerializer;
         private readonly IPlayerDiffer playerDiffer;
         private readonly ICastleDeserializer castleDeserializer;
         private readonly ISerializer<CastleChunk, CastleModel> castleSerializer;
@@ -29,6 +31,7 @@ namespace Siniskalc.Homm2.Data
         private readonly RecordKit<MapObjectChunk, SphinxModel> sphinxes;
         private readonly RecordKit<MapObjectChunk, TurnModel> turn;
         private readonly RecordKit<MapObjectChunk, BuiltTodayModel> builtToday;
+        private readonly IDocumentReconciler reconciler;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -37,6 +40,8 @@ namespace Siniskalc.Homm2.Data
             IDiffer<HeroModel> heroDiffer,
             IDeserializer<PlayerChunk, PlayerModel> playerDeserializer,
             ISerializer<PlayerChunk, PlayerModel> playerSerializer,
+            IDeserializer<PlayerChunk, PlayerLists> playerListsDeserializer,
+            ISerializer<PlayerChunk, PlayerLists> playerListsSerializer,
             IPlayerDiffer playerDiffer,
             ICastleDeserializer castleDeserializer,
             ISerializer<CastleChunk, CastleModel> castleSerializer,
@@ -49,6 +54,7 @@ namespace Siniskalc.Homm2.Data
             RecordKit<MapObjectChunk, SphinxModel> sphinxes,
             RecordKit<MapObjectChunk, TurnModel> turn,
             RecordKit<MapObjectChunk, BuiltTodayModel> builtToday,
+            IDocumentReconciler reconciler,
             ISavefileBytesPatcher patcher)
         {
             this.heroDeserializer = heroDeserializer;
@@ -56,6 +62,8 @@ namespace Siniskalc.Homm2.Data
             this.heroDiffer = heroDiffer;
             this.playerDeserializer = playerDeserializer;
             this.playerSerializer = playerSerializer;
+            this.playerListsDeserializer = playerListsDeserializer;
+            this.playerListsSerializer = playerListsSerializer;
             this.playerDiffer = playerDiffer;
             this.castleDeserializer = castleDeserializer;
             this.castleSerializer = castleSerializer;
@@ -68,6 +76,7 @@ namespace Siniskalc.Homm2.Data
             this.sphinxes = sphinxes;
             this.turn = turn;
             this.builtToday = builtToday;
+            this.reconciler = reconciler;
             this.patcher = patcher;
         }
 
@@ -78,7 +87,7 @@ namespace Siniskalc.Homm2.Data
             return Homm2SaveDocuments.Create(
                 bytes,
                 heroes,
-                new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerDiffer, heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}"),
+                new PlayerChunkCollection(playerChunks, this.playerDeserializer, this.playerSerializer, this.playerListsDeserializer, this.playerListsSerializer, this.playerDiffer, heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}"),
                 new CastleChunkCollection(castleChunks, this.castleDeserializer, this.castleSerializer, this.castleDiffer),
                 new ObeliskChunkCollection<PlayerColor>(obeliskChunks, this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer),
                 new RecordChunkCollection<MapObjectChunk, MineModel>(objects.Mines, this.mines),
@@ -86,6 +95,7 @@ namespace Siniskalc.Homm2.Data
                 new RecordChunkCollection<MapObjectChunk, SphinxModel>(objects.Sphinxes, this.sphinxes),
                 new RecordChunkCollection<MapObjectChunk, TurnModel>(objects.Turn, this.turn),
                 new RecordChunkCollection<MapObjectChunk, BuiltTodayModel>(objects.BuiltToday, this.builtToday),
+                this.reconciler,
                 this.patcher);
         }
     }

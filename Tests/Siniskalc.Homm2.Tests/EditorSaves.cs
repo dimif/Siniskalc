@@ -292,7 +292,7 @@
         private static string Towns(Game game, PlayerColor color)
         {
             var document = game.History.Current;
-            var names = document.Players().GetModel(color.Code).CastleIds.Select(i => document.Castles().GetModel(i).Name).ToList();
+            var names = document.Players().GetLists(color.Code).CastleIds.Select(i => document.Castles().GetModel(i).Name).ToList();
             return $"{names.Count} ({string.Join(", ", names)})";
         }
 

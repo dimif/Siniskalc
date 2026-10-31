@@ -21,7 +21,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.Data
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
-                [Homm2ChunkKinds.Player] = new PlayerChunkCollection(players, Mock.Of<IDeserializer<PlayerChunk, PlayerModel>>(), Mock.Of<ISerializer<PlayerChunk, PlayerModel>>(), Mock.Of<IPlayerDiffer>(), id => $"Hero {id}"),
+                [Homm2ChunkKinds.Player] = new PlayerChunkCollection(players, Mock.Of<IDeserializer<PlayerChunk, PlayerModel>>(), Mock.Of<ISerializer<PlayerChunk, PlayerModel>>(), Mock.Of<IDeserializer<PlayerChunk, PlayerLists>>(), Mock.Of<ISerializer<PlayerChunk, PlayerLists>>(), Mock.Of<IPlayerDiffer>(), id => $"Hero {id}"),
                 [Homm2ChunkKinds.Hero] = new HeroChunkCollection(heroes, Mock.Of<IHeroDeserializer>(), Mock.Of<ISerializer<HeroChunk, HeroModel>>(), Mock.Of<IDiffer<HeroModel>>()),
                 [Homm2ChunkKinds.Castle] = new CastleChunkCollection(castles, Mock.Of<ICastleDeserializer>(), Mock.Of<ISerializer<CastleChunk, CastleModel>>(), Mock.Of<IDiffer<CastleModel>>()),
             };

@@ -35,23 +35,43 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             this.editor.ShowHero(7);
             var hero = (HeroViewModel)this.editor.CurrentPage!;
             var document = () => this.editor.CurrentGame!.History.Current;
-            Assert.That(document().Players().GetModel(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetLists(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.True);
 
             hero.SelectedOwner = "Neutral";
 
             Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(document().Heroes().GetModel(7).Destination, Is.EqualTo(MapPosition.None));
-            Assert.That(document().Players().GetModel(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.False);
+            Assert.That(document().Players().GetLists(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.False);
 
             hero.SelectedOwner = "Green";
 
             Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(PlayerColor.Green));
-            Assert.That(document().Players().GetModel(PlayerColor.Green.Code).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetLists(PlayerColor.Green.Code).HeroIds.Contains(7), Is.True);
 
             this.editor.CurrentGame!.History.Undo();
             this.editor.CurrentGame!.History.Undo();
             Assert.That(document().Heroes().GetModel(7).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(document().Players().GetModel(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.True);
+            Assert.That(document().Players().GetLists(PlayerColor.Blue.Code).HeroIds.Contains(7), Is.True);
+        }
+
+        [Test]
+        public void AHeroGivenToAnotherPlayerLeavesBothPlayerPagesWithoutPendingChangesAndResettingTheHeroPutsTheListsBack()
+        {
+            this.editor.ShowHero(7);
+            var hero = (HeroViewModel)this.editor.CurrentPage!;
+            var history = this.editor.CurrentGame!.History;
+            var original = history.Current.ToBytes();
+            hero.SelectedOwner = "Green";
+
+            this.editor.ShowPlayer(PlayerColor.Blue);
+            var blue = (PlayerViewModel)this.editor.CurrentPage!;
+            this.editor.ShowPlayer(PlayerColor.Green);
+            var green = (PlayerViewModel)this.editor.CurrentPage!;
+            Assert.That((blue.HasPendingChanges, green.HasPendingChanges, hero.HasPendingChanges), Is.EqualTo((false, false, true)));
+
+            hero.ResetCommand.Execute(null);
+
+            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
         }
 
         [Test]

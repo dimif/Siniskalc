@@ -133,7 +133,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         protected override void CloseGame()
         {
-            foreach (var page in this.players.Values.Cast<PageViewModel>().Concat(this.heroes.Values).Concat(this.castles.Values))
+            foreach (var page in this.players.Values.Cast<ResettablePageViewModelBase>().Concat(this.heroes.Values).Concat(this.castles.Values))
             {
                 page.Dispose();
             }

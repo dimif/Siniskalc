@@ -25,11 +25,9 @@
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
-            // The owner of a castle is also in the lists of castles of the players (with their days left), so putting it back puts those back
-            // too, in one step (CastleEditSession.RestoreOwner), not the castle alone.
+            // The owner of a castle is also in the lists of castles of the players: putting it back puts those back too (PlayerListsReconciler).
             var changes = new ChangeSink<CastleModel>((change, revert) => this.pendingChanges.ForCastle(current.Name, castleIndex, change, revert));
-            var owner = new ChangeSink<CastleModel>((change, _) => new PendingChange(current.Name, change, Homm2ChunkKinds.Castle, castleIndex, history => history.CreateCastleSession(castleIndex).RestoreOwner()));
-            owner.AddOwner(original.Owner, current.Owner, (c, _) => c);
+            changes.AddOwner(original.Owner, current.Owner, (c, owner) => c with { Owner = owner });
 
             changes.AddArmy(ChangeAreas.Garrison, original.Garrison, current.Garrison, c => c.Garrison, (c, army) => c with { Garrison = army });
 
@@ -69,7 +67,7 @@
                 }
             }
 
-            return owner.All.Concat(changes.All).ToList();
+            return changes.All;
         }
 
         private static string DwellingText(CastleModel castle, int dwelling) =>

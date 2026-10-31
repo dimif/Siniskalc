@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<MapObjectChunk, MineModel> mines, RecordChunkCollection<MapObjectChunk, ShrineModel> shrines, RecordChunkCollection<MapObjectChunk, SphinxModel> sphinxes, RecordChunkCollection<MapObjectChunk, TurnModel> turn, RecordChunkCollection<MapObjectChunk, BuiltTodayModel> builtToday, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<MapObjectChunk, MineModel> mines, RecordChunkCollection<MapObjectChunk, ShrineModel> shrines, RecordChunkCollection<MapObjectChunk, SphinxModel> sphinxes, RecordChunkCollection<MapObjectChunk, TurnModel> turn, RecordChunkCollection<MapObjectChunk, BuiltTodayModel> builtToday, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Data
                 [Homm2ChunkKinds.BuiltToday] = builtToday,
             };
 
-            return new SaveDocument(originalBytes, collections, patcher);
+            return new SaveDocument(originalBytes, collections, patcher, reconciler);
         }
 
         public static HeroChunkCollection Heroes(this SaveDocument document) => (HeroChunkCollection)document.GetCollection(Homm2ChunkKinds.Hero);

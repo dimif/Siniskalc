@@ -18,19 +18,17 @@
         public void LoadTheStart() => this.game = TestServices.LoadBrokenAlliance(1);
 
         [Test]
-        public void TheSelectedHeroAndCastleAndTheTavernAreListedAndPutBack()
+        public void TheTavernIsListedAndPutBack()
         {
             var original = this.game.History.Current.Players().GetModel(0);
 
             this.game.History.CreatePlayerSession(0).Update(p => p with
             {
-                SelectedHero = p.SelectedHero == 5 ? 6 : 5,
-                SelectedCastle = p.SelectedCastle == 5 ? 6 : 5,
                 Tavern = new TavernHeroes((p.Tavern.First ?? 0) + 1, (p.Tavern.Second ?? 0) + 1),
             });
 
             var changes = this.game.History.GetPendingChanges();
-            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Selected hero", "Selected castle", "Tavern hero 1", "Tavern hero 2" }));
+            Assert.That(changes.Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Tavern hero 1", "Tavern hero 2" }));
 
             foreach (var change in changes)
             {
@@ -42,44 +40,44 @@
         }
 
         [Test]
-        public void LosingTheSelectedCastleToAnotherOwnerShowsAsAChangeOfThePlayer()
+        public void LosingTheSelectedCastleClearsTheSelectionWithoutAChangeOfThePlayer()
         {
-            var blue = this.game.History.Current.Players().GetModel(0);
+            var history = this.game.History;
+            var players = history.Current.Players();
+            var blue = players.GetLists(0);
             var selected = blue.SelectedCastle ?? blue.CastleIds[0];
-            this.game.History.CreatePlayerSession(0).Update(p => p with { SelectedCastle = selected });
-            this.game.History.MarkSaved();
+            history.ApplyAsIs(history.Current.WithChunk(Homm2ChunkKinds.Player, 0, players.ListsSerializer.Serialize(players[0], blue with { SelectedCastle = selected })));
+            history.MarkSaved();
 
-            this.game.History.CreateCastleSession(selected).ChangeOwner(PlayerColor.Neutral);
+            history.CreateCastleSession(selected).Update(c => c with { Owner = PlayerColor.Neutral });
 
-            Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Selected castle"));
+            Assert.That(history.Current.Players().GetLists(0).SelectedCastle, Is.Null);
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Not.Contain("Selected castle"));
         }
 
         [Test]
-        public void RevertingTheHeroesOfAPlayerGivesTheHeroesTheirOwnersBack()
+        public void TheOwnerOfTheHeroIsTheOnlyChangeOfAHeroGivenToAnotherPlayer()
         {
             var history = this.game.History;
-            var original = history.Current.ToBytes();
-            var hero = history.Current.Players().GetModel(0).HeroIds[0];
+            var hero = history.Current.Players().GetLists(0).HeroIds[0];
 
-            history.CreateHeroSession(hero).ChangeOwner(PlayerColor.Green);
-            history.GetPendingChanges().Single(c => c.OwnerName == PlayerColor.Blue.ToString() && c.Change.Description == "Heroes").Revert(history);
+            history.CreateHeroSession(hero).Update(h => h.WithOwner(PlayerColor.Green));
 
-            Assert.That(history.Current.Heroes().GetModel(hero).Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(history.GetPendingChanges(), Is.Empty);
-            Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Owner" }));
+            Assert.That(history.Current.Players().GetLists(PlayerColor.Green.Code).HeroIds, Does.Contain(hero));
+            Assert.That(history.CreatePlayerSession(0).IsDirty, Is.False, "the lists follow the owner and are not the player's own change");
         }
 
         [Test]
-        public void RevertingTheCastlesOfAPlayerGivesTheCastlesTheirOwnersBack()
+        public void ACastleGivenBackToItsOwnerByHandGoesBackToItsPlaceAndTheSavegameIsAsItWas()
         {
             var history = this.game.History;
             var original = history.Current.ToBytes();
-            var castle = history.Current.Players().GetModel(0).CastleIds[0];
+            var castle = history.Current.Players().GetLists(0).CastleIds[0];
 
-            history.CreateCastleSession(castle).ChangeOwner(PlayerColor.Neutral);
-            history.GetPendingChanges().Single(c => c.Change.Description == "Castles").Revert(history);
+            history.CreateCastleSession(castle).Update(c => c with { Owner = PlayerColor.Neutral });
+            history.CreateCastleSession(castle).Update(c => c with { Owner = PlayerColor.Blue });
 
-            Assert.That(history.Current.Castles().GetModel(castle).Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(history.GetPendingChanges(), Is.Empty);
             Assert.That(history.Current.ToBytes(), Is.EqualTo(original));
         }

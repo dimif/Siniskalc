@@ -30,23 +30,6 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void TheSelectedHeroAndCastleAreListedWithTheirNumbersAndPutBack()
-        {
-            var original = DifferSamples.Player();
-            var current = original with { SelectedHero = 9, SelectedCastle = null };
-
-            var changes = this.Diff(original, current);
-
-            Assert.That(changes.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[]
-            {
-                ("Selected hero", ChangeText.Number(7), ChangeText.Number(9)),
-                ("Selected castle", ChangeText.Number(3), ChangeText.Number(null)),
-            }));
-            Assert.That(this.fake.PlayerReverts["Selected hero"](current).SelectedHero, Is.EqualTo(7));
-            Assert.That(this.fake.PlayerReverts["Selected castle"](current).SelectedCastle, Is.EqualTo(3));
-        }
-
-        [Test]
         public void TheTavernHeroesAreWordedWithTheNamesTheCallerGives()
         {
             var original = DifferSamples.Player();
@@ -59,22 +42,20 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void TheListsOfHeroesAndCastlesAreListedAfterTheStockAndBeforeWhatIsSelected()
+        public void TheStockIsListedBeforeTheDaysLeftAndTheTavernAndEveryChangeIsOfThePlayer()
         {
             var original = DifferSamples.Player();
             var current = original with
             {
                 Resources = original.Resources.With(Resource.Gold, 1),
-                HeroIds = Numbers.Of(7),
-                CastleIds = new Numbers([]),
-                SelectedHero = null,
+                DaysLeft = 3,
+                Tavern = new TavernHeroes(12, 20),
             };
 
             var changes = this.Diff(original, current);
 
-            Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Gold", "Heroes", "Castles", "Selected hero" }));
-            Assert.That((changes[1].Change.Before, changes[1].Change.After), Is.EqualTo(("7, 9", "7")));
-            Assert.That((changes[2].Change.Before, changes[2].Change.After), Is.EqualTo(("3", "none")));
+            Assert.That(changes.Select(c => c.Change.Description).First(), Is.EqualTo("Gold"));
+            Assert.That(changes.Count, Is.EqualTo(3));
             Assert.That(changes.Select(c => c.OwnerName).Distinct(), Is.EqualTo(new[] { "Blue" }));
         }
 

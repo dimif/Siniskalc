@@ -65,7 +65,7 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsMadeWithoutTheFactory()
+        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsPutBackLikeAnyOtherChange()
         {
             var original = DifferSamples.Hero();
             var current = (original with { Owner = PlayerColor.Green }).WithLevel(4);
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Owner", "Experience" }));
             Assert.That((changes[0].Change.Before, changes[0].Change.After, changes[0].Kind, changes[0].Index), Is.EqualTo(("Blue", "Green", Homm2ChunkKinds.Hero, 7)));
-            Assert.That(this.fake.HeroReverts.Keys, Is.EqualTo(new[] { "Experience" }));
+            Assert.That(this.fake.HeroReverts["Owner"](current).Owner, Is.EqualTo(PlayerColor.Blue));
         }
 
         [Test]

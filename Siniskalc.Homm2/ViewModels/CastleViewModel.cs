@@ -21,7 +21,7 @@
     /// The pages of a castle: what it is and who owns it (general), the buildings and the dwellings with the creatures that wait in them,
     /// the army that defends it and the Mage Guild.
     /// </summary>
-    public sealed class CastleViewModel : PageViewModel, ICastlePage
+    public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
@@ -30,6 +30,7 @@
 
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
+        private readonly IByteEditTargetFactory? byteEditTargets;
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
@@ -41,12 +42,19 @@
         private string notice = string.Empty;
 
         public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game.History, Homm2ChunkKinds.Castle, castleIndex, byteEditTargets)
+            : this(game, game.History.CreateCastleSession(castleIndex), openHero, byteEditTargets)
         {
+        }
+
+        private CastleViewModel(Game game, CastleEditSession session, Action<int> openHero, IByteEditTargetFactory? byteEditTargets)
+            : base("Castle", session)
+        {
+            var castleIndex = session.CastleIndex;
+            this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.CastleIndex = castleIndex;
             this.openHero = openHero;
-            this.session = game.History.CreateCastleSession(castleIndex);
+            this.session = session;
             this.castle = this.session.Current;
             this.builtToday = game.History.CreateBuiltTodaySession();
             this.CanBuildThisTurn = new ToggleRowViewModel(
@@ -210,9 +218,39 @@
 
         public IReadOnlyList<GuildLevelViewModel> GuildLevels => this.guildLevels;
 
-        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForCastle(this.session);
+        /// <summary>
+        /// Creates the target the hex tab of the page works on: the raw bytes of the castle. The caller disposes it. <c>null</c> when the
+        /// editor was built without the means to make one, and the page has no hex tab.
+        /// </summary>
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForCastle(this.session);
 
-        protected override void Read()
+        /// <summary>
+        /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
+        /// </summary>
+        public void Refresh()
+        {
+            this.Read();
+            this.UpdateIsDirty();
+            this.RaiseAllPropertiesChanged();
+        }
+
+        /// <inheritdoc/>
+        protected override void OnHistoryChanged() => this.Refresh();
+
+        /// <summary>
+        /// Returns what a slot of the guild of <paramref name="level"/> can be given: no spell, and the spells of that level by name. A spell of
+        /// another level that the slot holds as loaded or now (a savegame may have one) is offered too, so it shows and stays.
+        /// </summary>
+        private static IReadOnlyList<string> GuildSpellChoices(IEnumerable<Spell> spells, int level, Spell? original, Spell? current) =>
+            new[] { NoSpell }
+                .Concat(spells.Where(s => s.Level == level)
+                    .Concat(new[] { original, current }.OfType<Spell>())
+                    .Distinct()
+                    .OrderBy(s => s.Name)
+                    .Select(s => s.Name))
+                .ToList();
+
+        private void Read()
         {
             var document = this.Game.History.Current;
             var castle = this.session.Current;
@@ -239,19 +277,6 @@
                 level.Refresh();
             }
         }
-
-        /// <summary>
-        /// Returns what a slot of the guild of <paramref name="level"/> can be given: no spell, and the spells of that level by name. A spell of
-        /// another level that the slot holds as loaded or now (a savegame may have one) is offered too, so it shows and stays.
-        /// </summary>
-        private static IReadOnlyList<string> GuildSpellChoices(IEnumerable<Spell> spells, int level, Spell? original, Spell? current) =>
-            new[] { NoSpell }
-                .Concat(spells.Where(s => s.Level == level)
-                    .Concat(new[] { original, current }.OfType<Spell>())
-                    .Distinct()
-                    .OrderBy(s => s.Name)
-                    .Select(s => s.Name))
-                .ToList();
 
         private ToggleRowViewModel Building(string name, TownBuildings building, string toolTip = "") => new(
             name,
@@ -290,7 +315,7 @@
             this.notice = string.Empty;
             try
             {
-                this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
+                this.session.Update(c => c with { Owner = OwnerNames<PlayerColor>.Parse(name) });
             }
             catch (GameRuleException ex)
             {

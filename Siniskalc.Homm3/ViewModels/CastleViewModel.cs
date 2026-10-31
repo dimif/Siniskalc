@@ -110,7 +110,7 @@
         public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
-        /// Gets where the town is on the map, such as "Pos: 33, 23, Surface".
+        /// Gets where the town is on the map, such as "at 33, 23, Surface".
         /// </summary>
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 

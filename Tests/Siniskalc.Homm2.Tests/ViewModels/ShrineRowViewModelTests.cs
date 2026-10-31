@@ -35,7 +35,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             var row = new ShrineRowViewModel(Session(Shrine()).Object, SpellNames);
 
             Assert.That((row.Index, row.CircleNumber, row.Circle, row.SpellName, row.X, row.Y), Is.EqualTo((3, 2, "Second circle", "Cure", 12, 34)));
-            Assert.That(row.PositionText, Is.EqualTo("Pos: 12, 34"));
+            Assert.That(row.PositionText, Is.EqualTo("at 12, 34"));
             Assert.That(row.HasNote, Is.False);
         }
 

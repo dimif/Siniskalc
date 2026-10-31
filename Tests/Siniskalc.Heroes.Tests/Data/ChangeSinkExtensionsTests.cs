@@ -191,8 +191,8 @@ namespace Siniskalc.Heroes.Tests.Data
             withoutLevels.AddPosition(before, after, false, (t, p) => t with { Position = p });
             withoutLevels.AddPosition(before, before, false, (t, p) => t with { Position = p });
 
-            Assert.That(Texts(withLevels), Is.EqualTo(new[] { ("General", "Position", "Pos: 5, 6, Surface, facing North", "Pos: 9, 10, Underground, facing South") }));
-            Assert.That(Texts(withoutLevels), Is.EqualTo(new[] { ("General", "Position", "Pos: 5, 6, facing North", "Pos: 9, 10, facing South") }));
+            Assert.That(Texts(withLevels), Is.EqualTo(new[] { ("General", "Position", "at 5, 6, Surface, facing North", "at 9, 10, Underground, facing South") }));
+            Assert.That(Texts(withoutLevels), Is.EqualTo(new[] { ("General", "Position", "at 5, 6, facing North", "at 9, 10, facing South") }));
             Assert.That(reverts[0](Blank() with { Position = after }).Position, Is.EqualTo(before));
         }
 
@@ -204,7 +204,7 @@ namespace Siniskalc.Heroes.Tests.Data
             sink.AddDestination(MapPosition.None, new MapPosition(3, 4, 0), true, (t, d) => t with { Destination = d });
             sink.AddDestination(MapPosition.None, MapPosition.None, true, (t, d) => t with { Destination = d });
 
-            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Destination", "none", "Pos: 3, 4, Surface") }));
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Destination", "none", "at 3, 4, Surface") }));
             Assert.That(reverts[0](Blank()).Destination, Is.EqualTo(MapPosition.None));
         }
 

@@ -64,7 +64,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public (int X, int Y) Place => (this.X, this.Y);
 
         /// <summary>
-        /// Gets where the mine is, such as "Pos: 12, 7", with the level in a game whose map has two ("Pos: 12, 7, Underground").
+        /// Gets where the mine is, such as "at 12, 7", with the level in a game whose map has two ("at 12, 7, Underground").
         /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.position(), this.HasLevel);
 

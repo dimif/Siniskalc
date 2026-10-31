@@ -46,7 +46,7 @@
         public string LevelText => MapLevelText.Of(this.Level);
 
         /// <summary>
-        /// Gets the tile the savegame gives for the dwelling, as the other lists show it, such as "Pos: 31, 56, Surface". A hero stood on it
+        /// Gets the tile the savegame gives for the dwelling, as the other lists show it, such as "at 31, 56, Surface". A hero stood on it
         /// to flag the dwellings of the Castle and the Rampart of the test map, and 3 tiles lower to visit the neutral ones in the row above, so
         /// it is only where the dwelling is, give or take its entrance.
         /// </summary>

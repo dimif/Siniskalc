@@ -173,7 +173,7 @@
         public string PositionText => this.hero.Owner.IsNeutral ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4".
+        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · at 3, 4".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 

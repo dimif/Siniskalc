@@ -49,7 +49,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var change = this.Diff(original, current).Single();
 
-            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Position", "Pos: 10, 12, facing North", "Pos: 10, 12, facing South")));
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Position", "at 10, 12, facing North", "at 10, 12, facing South")));
             Assert.That(this.fake.HeroReverts["Position"](current), Is.EqualTo(original));
         }
 

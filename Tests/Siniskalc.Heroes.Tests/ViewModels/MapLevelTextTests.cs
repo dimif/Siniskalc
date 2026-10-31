@@ -17,7 +17,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
 
             Assert.That(
                 (MapLevelText.Coordinates(below, hasLevels: true), MapLevelText.Coordinates(below, hasLevels: false)),
-                Is.EqualTo(("Pos: 59, 9, Underground", "Pos: 59, 9")));
+                Is.EqualTo(("at 59, 9, Underground", "at 59, 9")));
         }
 
         [Test]

@@ -123,7 +123,7 @@
 
         /// <summary>
         /// Adds the change of where a hero stands, if its tile, its level or the way it faces differs: "Position", with the place and the facing
-        /// before and after ("Pos: 12, 5, Surface, facing North"; without the level in a game whose map has one). The whole position is put back.
+        /// before and after ("at 12, 5, Surface, facing North"; without the level in a game whose map has one). The whole position is put back.
         /// </summary>
         /// <typeparam name="TModel">The model of the hero.</typeparam>
         /// <param name="sink">Collects the change.</param>

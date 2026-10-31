@@ -68,12 +68,12 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var game = TestServices.LoadThreedom(78);
             var page = new MapViewModel(game);
 
-            var shield = page.Shrines.Single(s => s.PositionText == "Pos: 45, 7");
+            var shield = page.Shrines.Single(s => s.PositionText == "at 45, 7");
             Assert.That(shield.SpellField.Selected, Is.EqualTo("Shield"));
             shield.SpellField.Selected = "Fireball";
             Assert.That(game.History.Current.Shrines().GetModels().Single(s => s.Position == new MapPosition(45, 7)).Spell, Is.EqualTo(Spell.Fireball));
 
-            var hidden = page.Shrines.Single(s => s.PositionText == "Pos: 29, 42");
+            var hidden = page.Shrines.Single(s => s.PositionText == "at 29, 42");
             Assert.That(hidden.SpellField.IsEnabled, Is.False);
             Assert.That(hidden.HasNote, Is.True);
         }

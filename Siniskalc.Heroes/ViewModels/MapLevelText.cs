@@ -3,23 +3,23 @@ namespace Siniskalc.Heroes.ViewModels
     using Siniskalc.Heroes.Models;
 
     /// <summary>
-    /// The words for a place on the map: "Pos: 59, 9, Surface" in a game that has two levels, "Pos: 59, 9" in one that has one.
+    /// The words for a place on the map: "at 59, 9, Surface" in a game that has two levels, "at 59, 9" in one that has one.
     /// </summary>
     public static class MapLevelText
     {
         /// <summary>
-        /// Returns a place on the map such as "Pos: 59, 9, Surface".
+        /// Returns a place on the map such as "at 59, 9, Surface".
         /// </summary>
         public static string Coordinates(int x, int y, int level) => $"{Coordinates(x, y)}, {Of(level)}";
 
         /// <summary>
-        /// Returns a place on a map that has no levels, such as "Pos: 59, 9".
+        /// Returns a place on a map that has no levels, such as "at 59, 9".
         /// </summary>
-        public static string Coordinates(int x, int y) => $"Pos: {x}, {y}";
+        public static string Coordinates(int x, int y) => $"at {x}, {y}";
 
         /// <summary>
-        /// Returns a place on the map with its level in a game whose map has two ("Pos: 59, 9, Surface"), and without it in a game whose
-        /// map has one ("Pos: 59, 9").
+        /// Returns a place on the map with its level in a game whose map has two ("at 59, 9, Surface"), and without it in a game whose
+        /// map has one ("at 59, 9").
         /// </summary>
         /// <param name="position">The place.</param>
         /// <param name="hasLevels">Whether the map of the game has two levels.</param>

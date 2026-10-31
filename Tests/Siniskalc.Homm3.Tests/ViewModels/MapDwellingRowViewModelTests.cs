@@ -34,7 +34,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var row = new MapDwellingRowViewModel(Session(Dwelling(Creature.Centaur)).Object);
 
             Assert.That((row.Index, row.CreatureName, row.X, row.Y, row.Level, row.Stock), Is.EqualTo((4, "Centaur", 9, 8, MapPosition.Underground, 7L)));
-            Assert.That(row.PositionText, Does.Contain("Pos: 9, 8").And.Contain("Underground"));
+            Assert.That(row.PositionText, Does.Contain("at 9, 8").And.Contain("Underground"));
             Assert.That(row.LevelText, Does.Contain("Underground"));
         }
 

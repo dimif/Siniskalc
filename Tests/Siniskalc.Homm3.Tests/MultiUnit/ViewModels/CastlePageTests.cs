@@ -49,7 +49,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             Assert.That(page.FactionText, Is.EqualTo("Rampart"));
             Assert.That(page.StatusText, Is.EqualTo("No Mage Guild · nothing built this turn"));
             Assert.That(page.OwnerText, Is.EqualTo("Red"));
-            Assert.That(page.PositionText, Is.EqualTo("Pos: 1, 1, Surface"));
+            Assert.That(page.PositionText, Is.EqualTo("at 1, 1, Surface"));
             Assert.That(page.ShipyardText, Is.EqualTo("Not on the coast, so no boats"));
             Assert.That(page.Garrisoned, Is.EqualTo("No garrison"));
         }

@@ -42,8 +42,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             using var page = this.Page();
 
             Assert.That(page.Title, Is.EqualTo("Christian"));
-            Assert.That(page.PositionText, Is.EqualTo("Pos: 12, 7, Surface"));
-            Assert.That(page.SubtitleText, Is.EqualTo("Knight · Level 5 · Pos: 12, 7, Surface"));
+            Assert.That(page.PositionText, Is.EqualTo("at 12, 7, Surface"));
+            Assert.That(page.SubtitleText, Is.EqualTo("Knight · Level 5 · at 12, 7, Surface"));
             Assert.That(page.ResetCommand.CanExecute(null), Is.False);
         }
 

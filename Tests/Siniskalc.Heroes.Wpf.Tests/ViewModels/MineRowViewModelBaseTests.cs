@@ -18,7 +18,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             var surface = Row(new MapPosition(12, 7, MapPosition.Above), hasLevels: true);
             var underground = Row(new MapPosition(12, 7, MapPosition.Underground), hasLevels: true);
 
-            Assert.That((surface.PositionText, underground.PositionText), Is.EqualTo(("Pos: 12, 7, Surface", "Pos: 12, 7, Underground")));
+            Assert.That((surface.PositionText, underground.PositionText), Is.EqualTo(("at 12, 7, Surface", "at 12, 7, Underground")));
             Assert.That((surface.LevelText, underground.LevelText), Is.EqualTo(("Surface", "Underground")));
             Assert.That(underground.Level, Is.EqualTo(MapPosition.Underground));
         }
@@ -28,7 +28,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var row = Row(new MapPosition(12, 7), hasLevels: false);
 
-            Assert.That((row.PositionText, row.LevelText, row.HasLevel), Is.EqualTo(("Pos: 12, 7", string.Empty, false)));
+            Assert.That((row.PositionText, row.LevelText, row.HasLevel), Is.EqualTo(("at 12, 7", string.Empty, false)));
         }
 
         [Test]

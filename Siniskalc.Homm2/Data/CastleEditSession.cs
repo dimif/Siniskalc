@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -12,6 +14,8 @@
     /// </summary>
     public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>
     {
+        private static readonly ILogger<CastleEditSession> Logger = LogFactory.For<CastleEditSession>();
+
         public CastleEditSession(SaveDocumentHistory history, int castleIndex)
             : base(history, Homm2ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer)
         {
@@ -34,6 +38,9 @@
             {
                 return;
             }
+
+            using var subject = Logger.BeginSubject("Castle", castle.Name);
+            Logger.LogDebug("Changing the owner from {From} to {To}", castle.Owner, owner);
 
             // The new list is made before anything is written, so a full list leaves the savegame as it was.
             var edits = new List<(int Player, PlayerModel Model)>();
@@ -63,6 +70,8 @@
         /// <exception cref="GameRuleException">The castle goes back to a list of castles that has become full.</exception>
         public void RestoreOwner()
         {
+            using var subject = Logger.BeginSubject("Castle", this.Current.Name);
+            Logger.LogDebug("Restoring the owner the savegame had");
             var updated = WithOwnerAsIn(this.History.Current, this.History.Original, this.CastleIndex);
             if (!ReferenceEquals(updated, this.History.Current))
             {

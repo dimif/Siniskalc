@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -12,6 +14,8 @@
     /// </summary>
     public sealed class HeroEditSession : EditSession<HeroChunk, HeroModel>
     {
+        private static readonly ILogger<HeroEditSession> Logger = LogFactory.For<HeroEditSession>();
+
         public HeroEditSession(SaveDocumentHistory history, int heroIndex)
             : base(history, Homm2ChunkKinds.Hero, heroIndex, history.Current.Heroes().Deserializer, history.Current.Heroes().Serializer)
         {
@@ -35,6 +39,9 @@
             {
                 return;
             }
+
+            using var subject = Logger.BeginSubject("Hero", hero.Name);
+            Logger.LogDebug("Changing the owner from {From} to {To}", hero.Owner, owner);
 
             // The new lists are made before anything is written, so a full list leaves the savegame as it was.
             var edits = new List<(int Player, PlayerModel Model)>();
@@ -66,6 +73,8 @@
         /// <exception cref="GameRuleException">The hero goes back to a list of heroes that has become full.</exception>
         public void RestoreOwner()
         {
+            using var subject = Logger.BeginSubject("Hero", this.Current.Name);
+            Logger.LogDebug("Restoring the owner the savegame had");
             var updated = WithOwnerAsIn(this.History.Current, this.History.Original, this.HeroIndex);
             if (!ReferenceEquals(updated, this.History.Current))
             {

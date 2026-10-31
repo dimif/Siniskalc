@@ -92,7 +92,17 @@
 
             var offsets = new HeroOffsets(gameVersion);
             var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers));
-            return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
+            var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
+            Logger.LogInformation(
+                "Opened {File} as Heroes III {Version}: {Heroes} heroes, {Castles} castles, {Players} players, {Mines} mines, {Dwellings} dwellings",
+                LogPaths.Label(file, name),
+                gameVersion,
+                heroChunks.Count,
+                castleChunks.Count,
+                playerChunks.Count,
+                mineChunks.Count,
+                dwellingChunks.Count);
+            return game;
         }
 
         // A hero that stands on a place of a kind hides it on the map; its own record has the type of the place (+11), whether it can be visited

@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -23,6 +25,8 @@
     {
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
+
+        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
 
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
@@ -274,8 +278,9 @@
             {
                 this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
-            catch (GameRuleException)
+            catch (GameRuleException ex)
             {
+                Logger.LogInformation("Refused the owner {Owner} of a castle: {Reason}", name, ex.Message);
                 this.notice = $"{name} has the most castles a player can have.";
             }
 

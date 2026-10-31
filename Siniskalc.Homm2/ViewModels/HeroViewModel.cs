@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -19,6 +21,8 @@
     /// </summary>
     public sealed class HeroViewModel : PageViewModel, IHeroPage
     {
+        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
+
         private readonly Action<int> openCastle;
         private readonly HeroEditSession session;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
@@ -318,8 +322,9 @@
             {
                 this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
             }
-            catch (GameRuleException)
+            catch (GameRuleException ex)
             {
+                Logger.LogInformation("Refused the owner {Owner} of a hero: {Reason}", name, ex.Message);
                 this.Notice = $"{name} has the most heroes a player can have.";
             }
 

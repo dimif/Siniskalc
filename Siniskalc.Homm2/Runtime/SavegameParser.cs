@@ -39,14 +39,25 @@ namespace Siniskalc.Homm2.Runtime
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic II savegame, or it comes from a version of the game this editor does not know.");
             }
 
+            var heroes = this.loader.LoadHeroChunks(bytes, layout);
+            var players = this.loader.LoadPlayerChunks(bytes, layout);
+            var castles = this.loader.LoadCastleChunks(bytes, layout);
             var document = this.documentFactory.Create(
                 bytes,
-                this.loader.LoadHeroChunks(bytes, layout),
-                this.loader.LoadPlayerChunks(bytes, layout),
-                this.loader.LoadCastleChunks(bytes, layout),
+                heroes,
+                players,
+                castles,
                 this.loader.LoadObeliskChunks(bytes, layout),
                 this.objectsReader.Read(bytes, layout));
-            return new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
+            var game = new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
+            Logger.LogInformation(
+                "Opened {File} as Heroes II {Version}: {Heroes} heroes, {Castles} castles, {Players} players",
+                LogPaths.Label(file, name),
+                layout.Version,
+                heroes.Count,
+                castles.Count,
+                players.Count);
+            return game;
         }
     }
 }

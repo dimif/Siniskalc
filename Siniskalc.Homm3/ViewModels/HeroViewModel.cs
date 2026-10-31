@@ -4,7 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -21,6 +23,8 @@
     /// </summary>
     public class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
+        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
+
         private readonly IHeroSession session;
         private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
@@ -166,6 +170,7 @@
                 catch (GameRuleException ex)
                 {
                     // Only the rules of the game are told to the user; a fault is not made to look like one.
+                    Logger.LogInformation("Refused the owner {Owner} of the hero: {Reason}", owner, ex.Message);
                     this.Notice = ex.Message;
                     this.RaisePropertyChanged(nameof(this.SelectedOwner));
                 }

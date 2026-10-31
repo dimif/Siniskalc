@@ -2,7 +2,9 @@ namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -12,6 +14,8 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>, ICastleSession
     {
+        private static readonly ILogger<CastleEditSession> Logger = LogFactory.For<CastleEditSession>();
+
         public CastleEditSession(SaveDocumentHistory history, int castleIndex)
             : base(history, Homm3ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer)
         {
@@ -56,6 +60,9 @@ namespace Siniskalc.Homm3.Data
             {
                 return;
             }
+
+            using var subject = Logger.BeginSubject("Castle", castle.Name);
+            Logger.LogDebug("Changing the owner from {From} to {To}", castle.Owner, owner);
 
             // The towns of the player that had the castle, counted from the castles, without this one.
             var townsLeft = castles.GetOwners().Count(o => o == castle.Owner) - 1;

@@ -1,7 +1,9 @@
 namespace Siniskalc.Homm3.Data
 {
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Models;
 
@@ -10,6 +12,8 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class PlayerEditSession : EditSession<PlayerChunk, PlayerModel>
     {
+        private static readonly ILogger<PlayerEditSession> Logger = LogFactory.For<PlayerEditSession>();
+
         public PlayerEditSession(SaveDocumentHistory history, int playerIndex)
             : base(history, Homm3ChunkKinds.Player, playerIndex, history.Current.Players().Deserializer, history.Current.Players().Serializer)
         {
@@ -26,6 +30,8 @@ namespace Siniskalc.Homm3.Data
         /// <exception cref="GameRuleException">A hero goes back to a list of heroes that has become full.</exception>
         public void RestoreHeroes()
         {
+            using var subject = Logger.BeginSubject("Player", this.Chunk.Name);
+            Logger.LogDebug("Restoring the list of heroes the savegame had");
             var document = this.History.Current;
             var original = this.History.Original;
             var current = this.Current;

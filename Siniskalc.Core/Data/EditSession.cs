@@ -1,7 +1,9 @@
 namespace Siniskalc.Core.Data
 {
     using System;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
+    using Siniskalc.Core.Runtime;
 
     /// <summary>
     /// A view onto a single struct (a hero, a player, a castle) in a <see cref="SaveDocumentHistory"/>. Edits made through it
@@ -14,6 +16,8 @@ namespace Siniskalc.Core.Data
         where TChunk : BytesChunk
         where TModel : class
     {
+        private static readonly ILogger Logger = LogFactory.For(typeof(EditSession<,>));
+
         private readonly IDeserializer<TChunk, TModel> deserializer;
         private readonly ISerializer<TChunk, TModel> serializer;
         private Cache? cache;
@@ -101,7 +105,7 @@ namespace Siniskalc.Core.Data
         {
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
-            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)));
+            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)), "Edited");
         }
 
         /// <summary>
@@ -113,20 +117,21 @@ namespace Siniskalc.Core.Data
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
 
-            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())));
+            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())), "Replaced the bytes of");
         }
 
         private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
             history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
             ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
 
-        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk)
+        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk, string what)
         {
             if (newChunk.HasSameBytes(chunk))
             {
                 return;
             }
 
+            Logger.LogDebug("{What} {Kind} {Index} ({Name})", what, this.Kind, this.Index, chunk.Name);
             this.History.Apply(document.WithChunk(this.Kind, this.Index, newChunk));
         }
 

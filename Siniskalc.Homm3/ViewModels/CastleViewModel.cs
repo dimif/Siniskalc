@@ -5,7 +5,9 @@
     using System.Globalization;
     using System.Linq;
     using System.Windows.Input;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -21,6 +23,8 @@
     /// </summary>
     public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
+        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
+
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
         private readonly ICastleSession castleSession;
@@ -321,6 +325,7 @@
             catch (GameRuleException ex)
             {
                 // Only the rules of the game are told to the user; a fault (a bad index, say) is not made to look like one.
+                Logger.LogInformation("Refused an edit of the castle: {Reason}", ex.Message);
                 this.Notice = ex.Message;
                 this.Refresh();
             }

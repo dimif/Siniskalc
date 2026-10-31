@@ -60,9 +60,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public abstract void RefreshMarks(NavigationTree tree, TGame game);
 
         /// <summary>
-        /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
-        /// </summary>
-        /// <summary>
         /// Returns the entry of each hero <paramref name="owner"/> owns, ordered by name.
         /// </summary>
         /// <param name="heroes">The heroes of the savefile.</param>
@@ -125,6 +122,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected abstract IEnumerable<TColor> PlayersInGame(TGame game);
 
+        /// <summary>
+        /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
+        /// </summary>
         protected abstract NavNodeViewModel CreateGroup(NavigationTree tree, TGame game, TColor owner);
 
         // A player is listed when the savefile has data for it or it owns a hero or a castle; what nobody owns comes last, as neutral has the highest code.

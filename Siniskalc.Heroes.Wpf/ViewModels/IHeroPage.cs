@@ -4,7 +4,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
     /// <summary>
     /// The page of a hero in any game: its name and colour, a line under the name, the tab shown, its owner, and Reset. A game's page adds
-    /// what only that game has (HoMM3: the backpack, the war machines and the class; HoMM2: the places visited and the next battle).
+    /// what only that game has (HoMM3: the backpack, the war machines and the class). Visited places and next-battle effects use shared cards.
     /// </summary>
     public interface IHeroPage : IResettablePage, IOwnerChoice
     {

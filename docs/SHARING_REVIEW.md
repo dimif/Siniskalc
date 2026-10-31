@@ -28,7 +28,7 @@ What that work moved into `Heroes` is listed under "Already shared" and is not p
 **Verdicts**
 
 - **SHARE**: one type in `Heroes` (or Core) that both games use.
-- **GENERIC**: one generic type or helper that each game instantiates with its own types (as `PlayerColors<TColor>` and `OwnerNames<TColor>` already do).
+- **GENERIC**: one generic type or helper that each game instantiates with its own types (as `HeroSummary<TColor>` and `OwnerNames<TColor>` already do).
 - **INTERFACE**: the games keep their types, and implement an interface a shared consumer needs.
 - **KEEP**: stays in the game, with the reason.
 
@@ -37,7 +37,7 @@ What that work moved into `Heroes` is listed under "Already shared" and is not p
 
 ## Already shared (not proposed again)
 
-`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`, `ChangeText`, `OwnerNames<TColor>`, `PlayerColors<TColor>`, `PlayerColorInfo`, `SkillLevelInfo`, `GameDifficulty`, `SpellType`, `CreatureInfo`, `ICreature`, `ICreatureAbility`, `IPlayerColor`, `IFaction`, `ISecondarySkill`, `ISkillLevel`, `ILink`, `IOwnerChoice`, `PlayerPalette`.
+`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`, `ChangeText`, `OwnerNames<TColor>`, `SkillLevelInfo`, `GameDifficulty`, `SpellType`, `CreatureInfo`, `ICreature`, `ICreatureAbility`, `IPlayerColor`, `IFaction`, `ISecondarySkill`, `ISkillLevel`, `ILink`, `IOwnerChoice`, `PlayerPalette`. The older proposals below retain their original type names; the dated updates above supersede them.
 
 ## Status after the work (2026-10-17)
 

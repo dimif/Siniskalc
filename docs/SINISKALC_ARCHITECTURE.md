@@ -22,7 +22,7 @@ A colour has a `Neutral` member (code 255, which is the byte of a savefile for w
 A level a hero has not learned is `null`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
-The creature, spell and artifact tables, positions and map headers are not shared: they differ in codes, sets or shape.
+The creature, spell and artifact tables remain game-specific: they differ in codes, sets or meaning. `MapPosition`, `HeroPosition` and `MapHeader` are shared values.
 
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either.
 `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
@@ -140,6 +140,8 @@ EditSession.Revision               an opaque token that changes when this struct
 
 A hero's stored id (`HeroModel.HeroId`, or `Id` in HoMM2) is distinct from its table index: `IHeroSummaries.IndexOfId` resolves the id to the index a page opens. HoMM2 scenario heroes can also have ids that differ from their indexes. A castle is identified by its index, a player by its colour.
 The hex editor is the one place that works on raw bytes, through the byte edit targets of a session.
+
+Both games derive `Game` from `HeroesSavegameBase<PlayerColor>` and use `SaveMetadata<PlayerColor>` for read-only header facts; their current-player overrides read the editable turn records. Both overviews use `OverviewViewModelBase` for player-card construction and `PlayersInGame.Of` for the same inclusion rule as navigation. Refresh is owned by `EditorViewModelBase` through `IRefreshableViewModel`, on a history change while the overview is shown and before returning to it. Player resource rows are built through `ResourcesEditorViewModel.ForPlayer`, with each game's limits and optional income notes.
 
 ## Errors
 

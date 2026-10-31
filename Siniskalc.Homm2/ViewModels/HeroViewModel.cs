@@ -233,7 +233,7 @@
         public IReadOnlyList<ToggleRowViewModel> UsedWeekly => this.usedWeekly;
 
         /// <summary>
-        /// Gets the card of the places that give something once to a hero, which HoMM3 could show too once its savefiles say which ones a hero visited.
+        /// Gets the shared card of the places that give something once to a hero.
         /// </summary>
         public VisitedPlacesCardViewModel PlacesVisited => new("Visited once per hero", this.visitedPlaces, this.usedOnce);
 

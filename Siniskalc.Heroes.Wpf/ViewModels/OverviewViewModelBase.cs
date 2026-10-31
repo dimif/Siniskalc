@@ -12,7 +12,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
 
     /// <summary>
     /// What the overview page of any game says about the open savefile: its name, the map, the date, the difficulty and whose turn it is, as
-    /// the words <c>OverviewView</c> shows. A game says where the facts are (<see cref="Map"/>, <see cref="Date"/> and the others, null when
+    /// the words <c>OverviewView</c> shows. A game says where the facts are (<see cref="IGameInfo{TColor}.Map"/>, <see cref="IGameInfo{TColor}.Date"/> and the others, null when
     /// its savefile does not tell), builds the cards of the players and sets <see cref="Players"/>, <see cref="OrderOfPlay"/> (of the items
     /// <see cref="OrderItemOf"/> makes) and <see cref="Summary"/>, and says how the turn is given to a human (<see cref="GiveTurn"/>).
     /// </summary>
@@ -35,14 +35,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public string FileName => string.IsNullOrEmpty(this.savegame.Name) ? UnnamedFile : System.IO.Path.GetFileName(this.savegame.Name);
 
-        /// <summary>
-        /// Gets the map's name, or nothing when it is not known.
-        /// </summary>
+        /// <inheritdoc/>
         public string MapName => this.game.Map?.Name.Trim() ?? string.Empty;
 
-        /// <summary>
-        /// Gets the map's description, or nothing when it is not known or the map has none.
-        /// </summary>
+        /// <inheritdoc/>
         public string MapDescription => this.game.Map?.Description.Trim() ?? string.Empty;
 
         /// <inheritdoc/>
@@ -57,9 +53,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public abstract string VersionName { get; }
 
-        /// <summary>
-        /// Gets the date in the game, e.g. "Month 5, Week 4, Day 6", or nothing when the savefile's date is not known.
-        /// </summary>
+        /// <inheritdoc/>
         public string DateText => this.game.Date?.ToString() ?? string.Empty;
 
         /// <summary>

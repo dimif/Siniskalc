@@ -72,7 +72,11 @@ Verdicts are the same: SHARE, GENERIC, INTERFACE, KEEP. **Done** marks what was 
 
 ## Open
 
-Status (2026-10-22): V4, V5, V6, V7 and V9 below are done (see the summary table): `ResettablePageViewModelBase` is the page base, with `SessionPageViewModelBase<TModel>` (HoMM3's hero, castle and player pages) and `RecordsPageViewModelBase` (both Map pages) over it and HoMM2's `PageViewModel` beside them; `OwnerNavigationBuilderBase` is the navigation builder; the tavern, obelisks and days-left cards and the overview cards are shared; both hero pages implement `IHeroPage`. `HeroLinkViewModel` and `SkillLevelNames` are in `Siniskalc.Heroes.Wpf`. What is still open is V8 (waits for M12) and V10. The items below are kept as they were written.
+Status (2026-10-31): only V8 remains open in this numbered UI review, waiting for M12. V4, V5, V6, V7, V9 and V10 are done (see the summary table and dated updates). Both hero pages implement `IHeroPage`; primary-skill artifact bonus text is shared.
+
+## Historical proposals (2026-10-17)
+
+The original proposals below are retained for their reasoning, not as the current backlog.
 
 - **V4 page base.** HoMM2 has one `PageViewModel` for hero, castle and player (tab, `HasPendingChanges`, `ResetCommand`, dispose, hex target). HoMM3 repeats the same four members in `HeroViewModel`, `CastleViewModel`, `PlayerViewModel`. A base in `Heroes.Wpf` that takes "the pending changes of this page" and "revert them" as delegates would serve both without knowing `Game` or `PlayerEditSession`. Medium work, no behaviour change; the best next step.
 - **V5 navigation builder.** The skeleton is the same: the overview node, the list of owners (players with data, plus owners of heroes and castles, plus "nobody"), `StructureKey`, the group per owner through `OwnerNavGroup`. What differs is real: HoMM3's badges (capital, grail, garrison) and the countdown notes, HoMM2's visitor name. A generic `OwnerNavigationBuilderBase<TGame, TColor>` with the owners, entries and marks supplied by the game would remove about 60 lines each; it needs a small interface for "the game's history" (both `Game`s have one, of different types).

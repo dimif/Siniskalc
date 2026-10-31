@@ -87,7 +87,7 @@ What a second savefile format of the same game (fheroes2 for HoMM2, VCMI for HoM
 
 ```
 SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Original, Undo/Redo, Changed event; Apply runs the document's IDocumentReconciler
-                                (HoMM2: PlayerListsReconciler keeps the players' lists of heroes and castles in step with the owners), ApplyAsIs does not (hex edits, Revert all)
+                                (PlayerListsReconciler of each game keeps the players' lists of heroes, and castles in HoMM2, the HoMM3 table of hero owners and the days left in step with the owners), ApplyAsIs does not (hex edits, Revert all)
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
       HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer; the obelisk one is shared, ObeliskEditSession<TColor>)

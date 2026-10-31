@@ -52,6 +52,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public string Summary => string.Join(" · ", new[] { Count(this.Heroes.Count, "hero", "heroes"), Count(this.Castles.Count, "town", "towns"), this.ObjectsSummary }.Where(s => s.Length > 0));
 
+        /// <summary>
+        /// Gets what a game adds to the summary, such as "31 mines · 58 dwellings", or nothing.
+        /// </summary>
+        protected virtual string ObjectsSummary => string.Empty;
+
         public void Dispose() => this.history.Changed -= this.OnHistoryChanged;
 
         /// <summary>
@@ -86,11 +91,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         protected virtual void RefreshObjects()
         {
         }
-
-        /// <summary>
-        /// Gets what a game adds to the summary, such as "31 mines · 58 dwellings", or nothing.
-        /// </summary>
-        protected virtual string ObjectsSummary => string.Empty;
 
         private void OnHistoryChanged(object? sender, EventArgs e) => this.Refresh();
     }

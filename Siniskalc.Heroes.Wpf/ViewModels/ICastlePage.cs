@@ -17,7 +17,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the heroes in the castle, each with its role (garrisoned, visiting) as the detail.
         /// </summary>
-        IReadOnlyList<ILink> Heroes { get; }
+        IReadOnlyList<CastleHeroRowViewModel> Heroes { get; }
 
         /// <summary>
         /// Gets why an edit of the owner was refused, or nothing.

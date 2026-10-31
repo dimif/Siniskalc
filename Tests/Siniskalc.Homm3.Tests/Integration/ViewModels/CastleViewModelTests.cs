@@ -50,7 +50,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(castle.Name, Is.EqualTo("Castle Haret"));
             Assert.That(castle.FactionText, Is.EqualTo("Castle"));
             Assert.That(castle.OwnerText, Is.EqualTo("Tan"));
-            Assert.That(castle.PositionText, Is.EqualTo("Pos: 33, 23, Surface"));
+            Assert.That(castle.PositionText, Is.EqualTo("at 33, 23, Surface"));
         }
 
         [Test]

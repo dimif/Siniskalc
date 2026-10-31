@@ -147,7 +147,7 @@
         }
 
         private static IReadOnlyList<NavEntry> EntriesOf(IEnumerable<DwellingModel> dwellings) =>
-            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, $"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} at {MapLevelText.Place(d.Position, hasLevels: true)}", string.Empty)).ToList();
+            dwellings.OrderBy(d => d.Position.Level).ThenBy(d => d.Position.X).ThenBy(d => d.Position.Y).Select(d => new NavEntry(d.Index, MapLevelText.At(d.Position, hasLevels: true), d.Creature?.Name ?? $"Creature {d.CreatureCode}")).ToList();
 
         private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];
 

@@ -50,7 +50,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Assert.That(heroes.GetModel(heroes.IndexOfId(hero.HeroId)).Name, Is.EqualTo(hero.Name));
             foreach (var player in document.Players().GetModels())
             {
-                foreach (var heroId in player.HeroIds)
+                foreach (var heroId in document.Players().GetLists(player.Color.Code).HeroIds)
                 {
                     Assert.That(heroes.FindById(heroId)?.Owner, Is.EqualTo(player.Color), $"Hero {heroId} listed by {player.Color}");
                 }

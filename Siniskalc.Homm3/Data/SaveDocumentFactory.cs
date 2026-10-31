@@ -21,6 +21,8 @@
         private readonly ICastleDiffer castleDiffer;
         private readonly IPlayerDeserializer playerDeserializer;
         private readonly ISerializer<PlayerChunk, PlayerModel> playerSerializer;
+        private readonly IDeserializer<PlayerChunk, PlayerLists> playerListsDeserializer;
+        private readonly ISerializer<PlayerChunk, PlayerLists> playerListsSerializer;
         private readonly IPlayerDiffer playerDiffer;
         private readonly IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer;
         private readonly ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer;
@@ -30,6 +32,7 @@
         private readonly RecordKit<RecordChunk, MerchantStockModel> merchants;
         private readonly RecordKit<RecordChunk, HeroOwnersModel> heroOwners;
         private readonly RecordKit<RecordChunk, TurnModel> turn;
+        private readonly IDocumentReconciler reconciler;
         private readonly ISavefileBytesPatcher patcher;
 
         public SaveDocumentFactory(
@@ -40,6 +43,8 @@
             ICastleDiffer castleDiffer,
             IPlayerDeserializer playerDeserializer,
             ISerializer<PlayerChunk, PlayerModel> playerSerializer,
+            IDeserializer<PlayerChunk, PlayerLists> playerListsDeserializer,
+            ISerializer<PlayerChunk, PlayerLists> playerListsSerializer,
             IPlayerDiffer playerDiffer,
             IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskDeserializer,
             ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>> obeliskSerializer,
@@ -49,6 +54,7 @@
             RecordKit<RecordChunk, MerchantStockModel> merchants,
             RecordKit<RecordChunk, HeroOwnersModel> heroOwners,
             RecordKit<RecordChunk, TurnModel> turn,
+            IDocumentReconciler reconciler,
             ISavefileBytesPatcher patcher)
         {
             this.versionEntities = versionEntities;
@@ -58,6 +64,8 @@
             this.castleDiffer = castleDiffer;
             this.playerDeserializer = playerDeserializer;
             this.playerSerializer = playerSerializer;
+            this.playerListsDeserializer = playerListsDeserializer;
+            this.playerListsSerializer = playerListsSerializer;
             this.playerDiffer = playerDiffer;
             this.obeliskDeserializer = obeliskDeserializer;
             this.obeliskSerializer = obeliskSerializer;
@@ -67,6 +75,7 @@
             this.merchants = merchants;
             this.heroOwners = heroOwners;
             this.turn = turn;
+            this.reconciler = reconciler;
             this.patcher = patcher;
         }
 
@@ -90,6 +99,8 @@
                 playerChunks ?? Enumerable.Empty<PlayerChunk>(),
                 this.playerDeserializer,
                 this.playerSerializer,
+                this.playerListsDeserializer,
+                this.playerListsSerializer,
                 this.playerDiffer,
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
@@ -99,7 +110,7 @@
             var dwellings = new RecordChunkCollection<RecordChunk, DwellingModel>(dwellingChunks ?? Enumerable.Empty<RecordChunk>(), this.dwellings);
             var heroOwners = new RecordChunkCollection<RecordChunk, HeroOwnersModel>(heroOwnerChunks ?? Enumerable.Empty<RecordChunk>(), this.heroOwners);
             var turn = new RecordChunkCollection<RecordChunk, TurnModel>(turnChunks ?? Enumerable.Empty<RecordChunk>(), this.turn);
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.patcher);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.reconciler, this.patcher);
         }
     }
 }

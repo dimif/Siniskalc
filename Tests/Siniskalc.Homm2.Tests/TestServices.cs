@@ -28,6 +28,10 @@ namespace Siniskalc.Homm2.Tests
 
         public static ISerializer<PlayerChunk, PlayerModel> PlayerSerializer { get; } = new SafePlayerSerializer();
 
+        public static IDeserializer<PlayerChunk, PlayerLists> PlayerListsDeserializer { get; } = new PlayerListsDeserializer();
+
+        public static ISerializer<PlayerChunk, PlayerLists> PlayerListsSerializer { get; } = new SafePlayerListsSerializer();
+
         public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer();
 
         public static ISerializer<CastleChunk, CastleModel> CastleSerializer { get; } = new SafeCastleSerializer();
@@ -50,6 +54,8 @@ namespace Siniskalc.Homm2.Tests
                 new HeroDiffer(PendingChanges),
                 PlayerDeserializer,
                 PlayerSerializer,
+                PlayerListsDeserializer,
+                PlayerListsSerializer,
                 new PlayerDiffer(PendingChanges),
                 CastleDeserializer,
                 CastleSerializer,
@@ -62,6 +68,7 @@ namespace Siniskalc.Homm2.Tests
                 new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
                 new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
+                new PlayerListsReconciler(),
                 new SavefileBytesPatcher()),
             new MapPlacesReader(),
             new MapObjectsReader());

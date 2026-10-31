@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
     using System;
     using System.Text;
@@ -54,6 +54,8 @@ namespace Siniskalc.Homm3.Runtime
                 new CastleDiffer(pendingChanges),
                 this.PlayerDeserializer,
                 new SafePlayerSerializer(),
+                new PlayerListsDeserializer(),
+                new SafePlayerListsSerializer(),
                 new PlayerDiffer(pendingChanges),
                 new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags),
                 new SafeObeliskSerializer<PlayerColor>(ObeliskLayout.Flags),
@@ -63,6 +65,7 @@ namespace Siniskalc.Homm3.Runtime
                 new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(new HeroOwnersDeserializer(), new SafeHeroOwnersSerializer(), new HeroOwnersDiffer()),
                 new RecordKit<RecordChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
+                new PlayerListsReconciler(),
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();

@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Makes the targets the hex editor of a page works on: the raw bytes of one hero, player or castle, or of a record of the map (a mine, a
@@ -8,11 +9,11 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public interface IByteEditTargetFactory
     {
-        IByteEditTarget ForHero(HeroEditSession session);
+        IByteEditTarget ForHero(SaveDocumentHistory history, int heroIndex);
 
         IByteEditTarget ForPlayer(PlayerEditSession session);
 
-        IByteEditTarget ForCastle(CastleEditSession session);
+        IByteEditTarget ForCastle(SaveDocumentHistory history, int castleIndex);
 
         IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex);
 

@@ -41,7 +41,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
         {
             var visits = Visits(History([0b01, 0b10], new MapPosition(3, 4, 1), null), TestColor.Blue);
 
-            Assert.That(visits.Obelisks.Select(o => (o.Number, o.Coordinates, o.IsVisited)), Is.EqualTo(new[] { (1, "Pos: 3, 4, Underground", false), (2, string.Empty, true) }));
+            Assert.That(visits.Obelisks.Select(o => (o.Number, o.Coordinates, o.IsVisited)), Is.EqualTo(new[] { (1, "at 3, 4, Underground", false), (2, string.Empty, true) }));
             Assert.That(visits.Summary, Is.EqualTo("1 of 2 visited"));
         }
 

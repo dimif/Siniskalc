@@ -136,6 +136,20 @@
 
         private static string GetTipColumnKey(int offset) => $"T{offset:X2}";
 
+        private static T? FindAncestor<T>(DependencyObject? start)
+            where T : DependencyObject
+        {
+            for (var current = start; current != null; current = current is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(current) : LogicalTreeHelper.GetParent(current))
+            {
+                if (current is T match)
+                {
+                    return match;
+                }
+            }
+
+            return null;
+        }
+
         private void SubscribeToTarget()
         {
             if (this.target != null)
@@ -461,20 +475,6 @@
 
             e.Handled = true;
             this.SelectRegion(node.Region);
-        }
-
-        private static T? FindAncestor<T>(DependencyObject? start)
-            where T : DependencyObject
-        {
-            for (var current = start; current != null; current = current is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(current) : LogicalTreeHelper.GetParent(current))
-            {
-                if (current is T match)
-                {
-                    return match;
-                }
-            }
-
-            return null;
         }
 
         private void SelectRegion(ByteRegion region)

@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
@@ -49,7 +49,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             Assert.That(page.FactionText, Is.EqualTo("Rampart"));
             Assert.That(page.StatusText, Is.EqualTo("No Mage Guild · nothing built this turn"));
             Assert.That(page.OwnerText, Is.EqualTo("Red"));
-            Assert.That(page.PositionText, Is.EqualTo("Pos: 1, 1, Surface"));
+            Assert.That(page.PositionText, Is.EqualTo("at 1, 1, Surface"));
             Assert.That(page.ShipyardText, Is.EqualTo("Not on the coast, so no boats"));
             Assert.That(page.Garrisoned, Is.EqualTo("No garrison"));
         }
@@ -162,14 +162,12 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void TheOwnersToPickFromAreNeutralAndTheEightColoursAndPickingOneGivesTheCastleToThePlayer()
         {
             using var page = this.Page();
-            PlayerColor? given = null;
-            this.session.OnChangeOwner = owner => given = owner;
             Assert.That(page.OwnerChoices, Is.EqualTo(new[] { "Neutral", "Red", "Blue", "Tan", "Green", "Orange", "Purple", "Teal", "Pink" }));
             Assert.That(page.SelectedOwner, Is.EqualTo("Red"));
 
             page.SelectedOwner = "Blue";
 
-            Assert.That(given, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(this.session.Current.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(page.OwnerText, Is.EqualTo("Blue"));
             Assert.That(page.ColorHex, Is.EqualTo(PlayerPalette.Of(PlayerColor.Blue)));
         }

@@ -31,10 +31,6 @@ namespace Siniskalc.Homm2.Tests.Data
             PlayerColor.Blue,
             new ResourceSet(10, 20, 30, 40, 50, 60, 7000),
             ResourceSet.None,
-            Numbers.Of(7, 9),
-            7,
-            Numbers.Of(3),
-            3,
             null,
             new TavernHeroes(12, 13));
 

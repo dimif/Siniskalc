@@ -33,7 +33,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var row = this.Row();
 
-            Assert.That((row.Number, row.Label, row.Coordinates, row.HasCoordinates), Is.EqualTo((3, "Obelisk 3", "Pos: 5, 6", true)));
+            Assert.That((row.Number, row.Label, row.Coordinates, row.HasCoordinates), Is.EqualTo((3, "Obelisk 3", "at 5, 6", true)));
         }
 
         [Test]

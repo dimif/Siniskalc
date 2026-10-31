@@ -19,6 +19,8 @@ namespace Siniskalc.Heroes.Wpf.Views
 
         public static readonly DependencyProperty CardWidthProperty = DependencyProperty.Register(nameof(CardWidth), typeof(double), typeof(ListCard), new PropertyMetadata(672.0));
 
+        public static readonly DependencyProperty ListMaxHeightProperty = DependencyProperty.Register(nameof(ListMaxHeight), typeof(double), typeof(ListCard), new PropertyMetadata(double.PositiveInfinity));
+
         public static readonly DependencyProperty ToolbarProperty = DependencyProperty.Register(nameof(Toolbar), typeof(object), typeof(ListCard));
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IEnumerable), typeof(ListCard));
@@ -65,6 +67,16 @@ namespace Siniskalc.Heroes.Wpf.Views
         }
 
         /// <summary>
+        /// Gets or sets the most height the rows can take before they scroll inside the card. A list of many rows (the dwellings of a map) sets it,
+        /// so what is below the card stays in reach; by default the card grows with its rows.
+        /// </summary>
+        public double ListMaxHeight
+        {
+            get => (double)this.GetValue(ListMaxHeightProperty);
+            set => this.SetValue(ListMaxHeightProperty, value);
+        }
+
+        /// <summary>
         /// Gets or sets what is shown between the note and the headings of the columns, such as buttons that act on every row.
         /// </summary>
         public object? Toolbar
@@ -92,6 +104,23 @@ namespace Siniskalc.Heroes.Wpf.Views
         {
             get => this.GetValue(SelectedItemProperty);
             set => this.SetValue(SelectedItemProperty, value);
+        }
+
+        /// <inheritdoc/>
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            if (this.GetTemplateChild("PART_List") is ListBox list)
+            {
+                // A row picked from elsewhere (in the tree, say) is brought into view when the rows scroll.
+                list.SelectionChanged += (_, _) =>
+                {
+                    if (list.SelectedItem != null)
+                    {
+                        list.ScrollIntoView(list.SelectedItem);
+                    }
+                };
+            }
         }
     }
 }

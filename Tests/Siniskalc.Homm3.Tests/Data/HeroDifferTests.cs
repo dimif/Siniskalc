@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsMadeWithoutTheFactory()
+        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndPutBackInTheHeroAlone()
         {
             var original = HeroModels.Christian();
             var current = (original with { MovedToday = true }).WithOwner(PlayerColor.Red);
@@ -41,7 +41,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(changes.Select(c => c.Change.Description).First(), Is.EqualTo("Owner"));
             Assert.That((changes[0].Change.Before, changes[0].Change.After, changes[0].Kind, changes[0].Index, changes[0].OwnerName), Is.EqualTo(("Blue", "Red", Homm3ChunkKinds.Hero, 4, "Christian")));
-            Assert.That(this.fake.HeroReverts.Keys, Does.Not.Contain("Owner"));
+            Assert.That(this.fake.HeroReverts["Owner"](current), Is.EqualTo(current with { Owner = original.Owner }), "the lists follow through the reconciler");
         }
 
         [Test]
@@ -194,7 +194,7 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void TheSpellBookAndTheLearnedSpellsAreListedAndPutBack()
+        public void TheSpellBookAndEachLearnedSpellAreListedAndPutBack()
         {
             var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell>(), new HashSet<Spell>(), hasSpellBook: false) };
             var current = original with { SpellBook = original.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
@@ -204,9 +204,26 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(changes.Select(Words), Is.EqualTo(new[]
             {
                 ("Spell book", "no", "yes"),
-                ("Learned spells", "nothing forgotten", "learned: Bless"),
+                ("Bless", "not learned", "learned"),
             }));
-            Assert.That(this.fake.HeroReverts["Learned spells"](current).SpellBook.IsLearned(Spell.Bless), Is.False);
+            Assert.That(this.fake.HeroReverts["Bless"](current).SpellBook.IsLearned(Spell.Bless), Is.False);
+        }
+
+        [Test]
+        public void ASpellLearnedAndAnotherForgottenAreTwoChangesThatArePutBackOneByOne()
+        {
+            var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell> { Spell.Haste }, new HashSet<Spell>(), hasSpellBook: true) };
+            var current = original with { SpellBook = original.SpellBook.WithLearned(Spell.Haste, false).WithLearned(Spell.Bless, true) };
+
+            var changes = this.Diff(original, current);
+
+            Assert.That(changes.Select(Words), Is.EquivalentTo(new[]
+            {
+                ("Bless", "not learned", "learned"),
+                ("Haste", "learned", "not learned"),
+            }));
+            var hasteBack = this.fake.HeroReverts["Haste"](current).SpellBook;
+            Assert.That((hasteBack.IsLearned(Spell.Haste), hasteBack.IsLearned(Spell.Bless)), Is.EqualTo((true, true)));
         }
 
         [Test]

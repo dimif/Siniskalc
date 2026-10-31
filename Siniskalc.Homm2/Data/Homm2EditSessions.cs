@@ -10,11 +10,21 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class Homm2EditSessions
     {
-        public static HeroEditSession CreateHeroSession(this SaveDocumentHistory history, int heroIndex) => new(history, heroIndex);
+        /// <summary>
+        /// Opens the session of the hero at <paramref name="heroIndex"/>. A change of its owner is an edit like any other: the lists of heroes
+        /// of the players follow it (<see cref="PlayerListsReconciler"/>).
+        /// </summary>
+        public static EditSession<HeroChunk, HeroModel> CreateHeroSession(this SaveDocumentHistory history, int heroIndex) =>
+            new(history, Homm2ChunkKinds.Hero, heroIndex, history.Current.Heroes().Deserializer, history.Current.Heroes().Serializer);
 
         public static PlayerEditSession CreatePlayerSession(this SaveDocumentHistory history, int playerIndex) => new(history, playerIndex);
 
-        public static CastleEditSession CreateCastleSession(this SaveDocumentHistory history, int castleIndex) => new(history, castleIndex);
+        /// <summary>
+        /// Opens the session of the castle at <paramref name="castleIndex"/>. A change of its owner is an edit like any other: the lists of
+        /// castles of the players and their days left follow it (<see cref="PlayerListsReconciler"/>).
+        /// </summary>
+        public static EditSession<CastleChunk, CastleModel> CreateCastleSession(this SaveDocumentHistory history, int castleIndex) =>
+            new(history, Homm2ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer);
 
         public static EditSession<MapObjectChunk, MineModel> CreateMineSession(this SaveDocumentHistory history, int index) => new(history, Homm2ChunkKinds.Mines, index);
 

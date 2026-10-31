@@ -18,6 +18,8 @@ namespace Siniskalc.Wpf.ViewModels
     /// </summary>
     public sealed class ShellViewModel : AbstractViewModelBase
     {
+        private const string NoGameSubtitle = "Save game editor";
+
         // What the shell mirrors from the editor it shows, so its bindings read the same names.
         private static readonly string[] Mirrored =
         [
@@ -25,8 +27,6 @@ namespace Siniskalc.Wpf.ViewModels
             nameof(IGameEditor.CanRedo),
             nameof(IGameEditor.HasPendingChanges),
         ];
-
-        private const string NoGameSubtitle = "Save game editor";
 
         private static readonly ILogger<ShellViewModel> Logger = LogFactory.For<ShellViewModel>();
 

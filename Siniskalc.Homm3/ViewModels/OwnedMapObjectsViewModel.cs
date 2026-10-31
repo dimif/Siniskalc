@@ -5,6 +5,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
@@ -92,7 +93,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public ArmyViewModel? GuardEditor => this.Mines.SelectedMine == null ? null : this.guardEditor ??= this.CreateGuardEditor();
 
-        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Garrison of the {mine.Kind.ToLowerInvariant()} at {mine.PositionText}" : "Garrison";
+        public string GuardHeading => this.Mines.SelectedMine is { } mine ? $"Garrison of the {mine.Kind.ToLowerInvariant()} at {MapLevelText.Place(mine.X, mine.Y, mine.Level)}" : "Garrison";
 
         /// <summary>
         /// Gets how many dwellings the owner has, such as "3 dwellings".
@@ -136,6 +137,12 @@ namespace Siniskalc.Homm3.ViewModels
         /// Picks the mine with the given place among the mines of the savegame, if the owner has it.
         /// </summary>
         public void PickMine(int mineIndex) => this.Mines.PickMine(mineIndex);
+
+        /// <summary>
+        /// Picks the dwelling with the given place among the dwellings of the savegame, if the owner has it. The dwelling that is picked
+        /// stays when the owner has no such dwelling.
+        /// </summary>
+        public void PickDwelling(int dwellingIndex) => this.SelectedDwelling = this.Dwellings.FirstOrDefault(d => d.Index == dwellingIndex);
 
         // One editor serves whichever mine is picked: swapping the editor of the page for another view model rebuilds the whole editor (its
         // seven creature lists and the finder of every creature), which takes most of a second, while refreshing one only updates its values.

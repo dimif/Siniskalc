@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Models
+﻿namespace Siniskalc.Homm3.Models
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace Siniskalc.Homm3.Models
     /// <summary>
     /// The table of the savefile that says, for each hero id, who owns the hero (see <see cref="Data.HeroOwnersLayout"/>). The game keeps it
     /// in step with the owner of each hero and the lists of heroes of the players; the editor changes it with the owner of a hero
-    /// (<see cref="Data.HeroEditSession.ChangeOwner"/>).
+    /// (<see cref="Data.PlayerListsReconciler"/>).
     /// </summary>
     /// <param name="Heroes">An entry per hero id, in the order of the ids.</param>
     public sealed record HeroOwnersModel(IReadOnlyList<HeroOwnership> Heroes)

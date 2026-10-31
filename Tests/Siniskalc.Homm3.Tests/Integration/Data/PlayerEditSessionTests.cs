@@ -1,4 +1,5 @@
 using Siniskalc.Core.Data;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -9,8 +10,8 @@ using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     /// <summary>
-    /// The session of a player: putting back the list of its heroes as the savefile had it, which also gives its heroes their owners back.
-    /// Replayed on the baseline save of <c>TestData/Hota/HeroOwners</c>.
+    /// The session of a player: only its model counts as its changes, so the list of heroes it keeps, which follows the owners of the heroes,
+    /// neither makes it dirty nor is put back with it. Replayed on the baseline save of <c>TestData/Hota/HeroOwners</c>.
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
@@ -21,12 +22,15 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static SaveDocumentHistory Load() =>
             SavedGames.Get(Path.Combine("TestData", "Hota", "HeroOwners", "hero_owners_00_baseline.GM2")).History;
 
-        private static PlayerModel Player(SaveDocument document, PlayerColor color) => document.Players().GetModel(document.Players().FindByColor(color));
+        private static PlayerLists Lists(SaveDocument document, PlayerColor color) => document.Players().GetLists(document.Players().FindByColor(color));
 
         private static HeroModel Hero(SaveDocument document, int heroId) => document.Heroes().GetModel(document.Heroes().IndexOfId(heroId));
 
         private static PlayerEditSession SessionOf(SaveDocumentHistory history, PlayerColor color) =>
             history.CreatePlayerSession(history.Current.Players().FindByColor(color));
+
+        private static void GiveClancyTo(SaveDocumentHistory history, PlayerColor owner) =>
+            history.CreateHeroSession(history.Current.Heroes().IndexOfId(Clancy)).Update(h => h.WithOwner(owner));
 
         [Test]
         public void ThePlayerSessionIsOfThePlayerItWasOpenedOn()
@@ -41,91 +45,44 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void RestoringAPlayerWhoseHeroesWereNotTouchedChangesNothing()
-        {
-            var history = Load();
-            var before = history.Current;
-
-            SessionOf(history, Player(before, Hero(before, Clancy).Owner).Color).RestoreHeroes();
-
-            Assert.That(history.Current, Is.SameAs(before));
-        }
-
-        [Test]
-        public void RestoringThePlayerWhoLostAHeroGivesTheHeroItsOwnerAndItsPlaceInTheListBack()
-        {
-            var history = Load();
-            var original = history.Current;
-            var owner = Hero(original, Clancy).Owner;
-            history.CreateHeroSession(original.Heroes().IndexOfId(Clancy)).ChangeOwner(PlayerColor.Neutral);
-            Assert.That(Player(history.Current, owner).HeroIds, Is.Not.EqualTo(Player(original, owner).HeroIds), "the hero left the list");
-
-            SessionOf(history, owner).RestoreHeroes();
-
-            Assert.That(Hero(history.Current, Clancy).Owner, Is.EqualTo(owner));
-            Assert.That(Player(history.Current, owner).HeroIds, Is.EqualTo(Player(original, owner).HeroIds));
-            Assert.That(Player(history.Current, owner).SelectedHero, Is.EqualTo(Player(original, owner).SelectedHero));
-            Assert.That(history.Current.HeroOwners()[0].ToArray(), Is.EqualTo(original.HeroOwners()[0].ToArray()));
-        }
-
-        [Test]
-        public void RestoringIsOneStepOfTheHistoryThatCanBeUndone()
+        public void GivingAHeroAwayLeavesThePlayersWhoseListsChangedWithoutChangesOfTheirOwn()
         {
             var history = Load();
             var owner = Hero(history.Current, Clancy).Owner;
-            history.CreateHeroSession(history.Current.Heroes().IndexOfId(Clancy)).ChangeOwner(PlayerColor.Neutral);
-            var defeated = history.Current;
 
-            SessionOf(history, owner).RestoreHeroes();
-            history.Undo();
+            GiveClancyTo(history, PlayerColor.Tan);
 
-            Assert.That(history.Current, Is.SameAs(defeated));
+            Assert.That(Lists(history.Current, owner).HeroIds, Does.Not.Contain(Clancy), "the list changed");
+            Assert.That(SessionOf(history, owner).IsDirty, Is.False);
+            Assert.That(SessionOf(history, PlayerColor.Tan).IsDirty, Is.False);
         }
 
         [Test]
-        public void RestoringAPlayerWhoGainedTheHeroTakesItBackToItsFirstOwner()
+        public void AnEditOfThePlayerMakesItDirty()
         {
             var history = Load();
-            var original = history.Current;
-            var first = Hero(original, Clancy).Owner;
-            var other = PlayerColor.All.First(c => c != first && original.Players().FindByColor(c) >= 0);
-            history.CreateHeroSession(original.Heroes().IndexOfId(Clancy)).ChangeOwner(other);
-            Assert.That(Player(history.Current, other).HeroIds, Does.Contain(Clancy));
+            var session = SessionOf(history, PlayerColor.Blue);
 
-            SessionOf(history, other).RestoreHeroes();
+            session.Update(p => p with { Resources = p.Resources.With(Resource.Gold, p.Resources[Resource.Gold] + 1) });
 
-            Assert.That(Hero(history.Current, Clancy).Owner, Is.EqualTo(first));
-            Assert.That(Player(history.Current, other).HeroIds, Is.EqualTo(Player(original, other).HeroIds));
-            Assert.That(Player(history.Current, first).HeroIds, Is.EqualTo(Player(original, first).HeroIds));
+            Assert.That(session.IsDirty, Is.True);
         }
 
         [Test]
-        public void RestoringAPlayerBringsBackTheHeroThatWasSelectedOnTheMap()
+        public void PuttingThePlayerBackLeavesTheHeroesItLostOrGainedWithTheirOwners()
         {
             var history = Load();
-            var original = history.Current;
-            var owner = Hero(original, Clancy).Owner;
-            var selected = Player(original, owner).SelectedHero;
-            history.CreatePlayerSession(original.Players().FindByColor(owner)).Update(p => p with { SelectedHero = null });
-            Assert.That(Player(history.Current, owner).SelectedHero, Is.Null);
+            var owner = Hero(history.Current, Clancy).Owner;
+            var session = SessionOf(history, owner);
+            session.Update(p => p with { Resources = p.Resources.With(Resource.Gold, 1) });
+            GiveClancyTo(history, PlayerColor.Neutral);
+            var lists = Lists(history.Current, owner);
 
-            SessionOf(history, owner).RestoreHeroes();
+            session.Update(_ => session.Original);
 
-            Assert.That(Player(history.Current, owner).SelectedHero, Is.EqualTo(selected));
-        }
-
-        [Test]
-        public void RestoringAPlayerBringsBackAListThatWasEditedWithoutTouchingTheOwnersOfItsHeroes()
-        {
-            var history = Load();
-            var original = history.Current;
-            var owner = Hero(original, Clancy).Owner;
-            history.CreatePlayerSession(original.Players().FindByColor(owner)).Update(p => p.WithoutHero(Clancy));
-            Assert.That(Player(history.Current, owner).HeroIds, Is.Not.EqualTo(Player(original, owner).HeroIds));
-
-            SessionOf(history, owner).RestoreHeroes();
-
-            Assert.That(Player(history.Current, owner).HeroIds, Is.EqualTo(Player(original, owner).HeroIds));
+            Assert.That(session.IsDirty, Is.False);
+            Assert.That(Hero(history.Current, Clancy).Owner, Is.EqualTo(PlayerColor.Neutral));
+            Assert.That(Lists(history.Current, owner), Is.EqualTo(lists), "the list still follows the owner of Clancy");
         }
     }
 }

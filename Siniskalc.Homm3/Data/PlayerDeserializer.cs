@@ -1,14 +1,13 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
-    using System.Linq;
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// Reads a <see cref="PlayerModel"/> from a <see cref="PlayerChunk"/>. The counterpart of <see cref="SafePlayerSerializer"/>.
+    /// Reads a <see cref="PlayerModel"/> from a <see cref="PlayerChunk"/>. The counterpart of <see cref="SafePlayerSerializer"/>; the list of heroes is read by
+    /// <see cref="PlayerListsDeserializer"/>.
     /// </summary>
     public sealed class PlayerDeserializer : IPlayerDeserializer
     {
@@ -18,24 +17,7 @@
                 this.DeserializeColor(chunk),
                 this.DeserializeResources(chunk),
                 this.DeserializeTavern(chunk),
-                this.DeserializeHeroIds(chunk),
-                this.DeserializeSelectedHero(chunk),
                 this.DeserializeDaysLeft(chunk));
-        }
-
-        /// <summary>
-        /// Reads the ids of the heroes of the player: the places of its list that are not FF, in their order.
-        /// </summary>
-        public Numbers DeserializeHeroIds(PlayerChunk chunk) => new(
-            Enumerable.Range(PlayerLayout.HeroIds, PlayerLayout.HeroIdPlaces).Select(chunk.GetByteAt).Where(id => id != Constants.ByteOff).Select(id => (int)id));
-
-        /// <summary>
-        /// Reads the id of the selected hero; FF reads as none.
-        /// </summary>
-        public int? DeserializeSelectedHero(PlayerChunk chunk)
-        {
-            var id = chunk.GetByteAt(PlayerLayout.SelectedHero);
-            return id == Constants.ByteOff ? null : id;
         }
 
         /// <summary>

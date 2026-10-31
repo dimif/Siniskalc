@@ -79,19 +79,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string CreatureButtonText => this.HasCreature ? this.selectedCreature! : "(empty)";
 
         /// <summary>
-        /// Lets the slot offer a finder of creatures in a popup.
-        /// </summary>
-        /// <param name="createFinder">Makes the finder, given what to do with the name of the creature when the user picks a row.</param>
-        public void AttachPicker(Func<Action<string>, AbstractFinderViewModel> createFinder)
-        {
-            this.pickerFinder = new Lazy<AbstractFinderViewModel>(() => createFinder(name =>
-            {
-                this.IsPickerOpen = false;
-                this.SelectedCreature = name;
-            }));
-        }
-
-        /// <summary>
         /// Gets the slot as the player sees it, from 1.
         /// </summary>
         public int DisplayNumber => this.SlotNumber + 1;
@@ -167,6 +154,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Gets what the whole stack is worth, line by line; none for an empty slot.
         /// </summary>
         public IReadOnlyList<StackFact> Facts => this.HasCreature && this.factsOf != null ? this.factsOf(this.creatureAmount) : NoFacts;
+
+        /// <summary>
+        /// Lets the slot offer a finder of creatures in a popup.
+        /// </summary>
+        /// <param name="createFinder">Makes the finder, given what to do with the name of the creature when the user picks a row.</param>
+        public void AttachPicker(Func<Action<string>, AbstractFinderViewModel> createFinder)
+        {
+            this.pickerFinder = new Lazy<AbstractFinderViewModel>(() => createFinder(name =>
+            {
+                this.IsPickerOpen = false;
+                this.SelectedCreature = name;
+            }));
+        }
 
         /// <summary>
         /// Shows the slot's creature and amount without reporting a change.

@@ -59,6 +59,11 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public IEnumerable<KeyValuePair<int, NavNodeViewModel>> CastleNodes => this.castleNodes;
 
+        /// <summary>
+        /// Gets the node of what nobody owns, or <c>null</c> when the game has none.
+        /// </summary>
+        public NavNodeViewModel? NeutralNode => this.neutralNodes.GetValueOrDefault(-1);
+
         public NavNodeViewModel? HeroNode(int heroIndex) => this.heroNodes.GetValueOrDefault(heroIndex);
 
         public NavNodeViewModel? PlayerNode(int playerIndex) => this.playerNodes.GetValueOrDefault(playerIndex);
@@ -69,11 +74,6 @@ namespace Siniskalc.Wpf.ViewModels
         public NavNodeViewModel? PlayerTabNode(int playerIndex, int tab) => this.playerTabNodes.GetValueOrDefault((playerIndex, tab)) ?? this.PlayerNode(playerIndex);
 
         public NavNodeViewModel? CastleNode(int castleIndex) => this.castleNodes.GetValueOrDefault(castleIndex);
-
-        /// <summary>
-        /// Gets the node of what nobody owns, or <c>null</c> when the game has none.
-        /// </summary>
-        public NavNodeViewModel? NeutralNode => this.neutralNodes.GetValueOrDefault(-1);
 
         /// <summary>
         /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group. A colour

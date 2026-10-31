@@ -93,15 +93,6 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
             Assert.That(WpfTestApplication.Descendants<TextBlock>(grid).Select(t => t.Text), Does.Contain("Ariel"));
         }
 
-        private sealed class FakeLink(string name, string detail) : ILink
-        {
-            public string Name { get; } = name;
-
-            public string Detail { get; } = detail;
-
-            public ICommand OpenCommand { get; } = new NoCommand();
-        }
-
         private sealed class NoCommand : ICommand
         {
             public event EventHandler? CanExecuteChanged
@@ -129,7 +120,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 
             public ICommand ResetCommand { get; } = new NoCommand();
 
-            public IReadOnlyList<AmountRowViewModel> Resources { get; } =
+            public IReadOnlyList<ResourceRowViewModel> Resources { get; } =
                 [new ResourceRowViewModel(Resource.Gold, new ResourceLimits(0, 999, 999, 1, 1, 100, 100_000, 10, 10_000), () => ResourceSet.None, () => ResourceSet.None, _ => { })];
 
             public ICommand SetAllResourcesCommand { get; } = new NoCommand();
@@ -150,11 +141,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 
             public int SelectedTab { get; set; }
 
-            public IReadOnlyList<ILink> Heroes { get; } = [new FakeLink("Ariel", "Knight, level 3")];
+            public IReadOnlyList<HeroLinkViewModel> Heroes { get; } = [new HeroLinkViewModel(0, "Ariel", "Knight, level 3", new NoCommand())];
 
             public bool HasHeroes => true;
 
-            public IReadOnlyList<ILink> Castles { get; } = [];
+            public IReadOnlyList<CastleLinkViewModel> Castles { get; } = [];
 
             public bool HasCastles => false;
         }
@@ -181,7 +172,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 
             public int SelectedTab { get; set; }
 
-            public IReadOnlyList<ILink> Heroes { get; } = [];
+            public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; } = [];
 
             public string Notice => string.Empty;
 

@@ -23,13 +23,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string Label => string.Join("  ·  ", new[] { this.Name, this.Kind, this.PlaceText, this.Detail }.Where(t => t.Length > 0));
 
         /// <summary>
-        /// Returns whether the name, the kind, the place or the faction of the place contains <paramref name="text"/>, in any case. Any place
-        /// matches an empty text.
-        /// </summary>
-        public bool Matches(string text) =>
-            text.Length == 0 || new[] { this.Name, this.Kind, this.PlaceText, this.Detail }.Any(t => t.Contains(text, StringComparison.CurrentCultureIgnoreCase));
-
-        /// <summary>
         /// Gets what the list says about the place when the pointer rests on it.
         /// </summary>
         public string ToolTip => this.IsOccupied
@@ -37,5 +30,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             : this.IsApproximate
                 ? "Move the hero to the tile of this place. The savegame does not say where it is entered, so the tile can be a few steps off."
                 : "Move the hero to the entrance of this place";
+
+        /// <summary>
+        /// Returns whether the name, the kind, the place or the faction of the place contains <paramref name="text"/>, in any case. Any place
+        /// matches an empty text.
+        /// </summary>
+        public bool Matches(string text) =>
+            text.Length == 0 || new[] { this.Name, this.Kind, this.PlaceText, this.Detail }.Any(t => t.Contains(text, StringComparison.CurrentCultureIgnoreCase));
     }
 }

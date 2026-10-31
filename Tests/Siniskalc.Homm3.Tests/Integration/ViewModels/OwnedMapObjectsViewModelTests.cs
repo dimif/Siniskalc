@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var red = Of(game, PlayerColor.Red);
             var neutral = Of(game, PlayerColor.Neutral);
 
-            Assert.That(red.Mines.Rows.Single(m => m.PositionText == "Pos: 51, 33, Surface").OwnerField.Selected, Is.EqualTo("Red"));
+            Assert.That(red.Mines.Rows.Single(m => m.PositionText == "at 51, 33, Surface").OwnerField.Selected, Is.EqualTo("Red"));
             Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(10));
             Assert.That(neutral.Mines.Summary, Is.EqualTo("10 mines, 0 of them owned"));
             Assert.That(Colors().Sum(c => Of(game, c).Mines.Rows.Count), Is.EqualTo(18), "every mine is in the list of exactly one owner");
@@ -44,13 +44,13 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var green = Of(game, PlayerColor.Green);
             Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(18));
 
-            neutral.Mines.Rows.Single(m => m.PositionText == "Pos: 26, 17, Surface").OwnerField.Selected = "Green";
+            neutral.Mines.Rows.Single(m => m.PositionText == "at 26, 17, Surface").OwnerField.Selected = "Green";
             neutral.Refresh();
             green.Refresh();
 
             Assert.That(game.History.Current.Mines().GetModels().Count(m => m.Owner == PlayerColor.Green), Is.EqualTo(1));
             Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(17));
-            Assert.That(green.Mines.Rows.Select(m => m.PositionText), Is.EqualTo(new[] { "Pos: 26, 17, Surface" }));
+            Assert.That(green.Mines.Rows.Select(m => m.PositionText), Is.EqualTo(new[] { "at 26, 17, Surface" }));
             Assert.That(game.History.GetPendingChanges(), Has.Count.EqualTo(1));
 
             foreach (var change in game.History.GetPendingChanges().ToList())
@@ -69,13 +69,13 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var game = Load("mines_00_game_begin");
             var page = Of(game, PlayerColor.Neutral);
-            var guarded = page.Mines.Rows.Single(m => m.PositionText == "Pos: 1, 14, Surface");
+            var guarded = page.Mines.Rows.Single(m => m.PositionText == "at 1, 14, Surface");
 
             page.Mines.SelectedMine = guarded;
 
             Assert.That(guarded.Summary, Is.EqualTo("1 of 7 slots"));
             Assert.That(page.GuardEditor, Is.Not.Null);
-            Assert.That(page.GuardHeading, Does.Contain("Pos: 1, 14"));
+            Assert.That(page.GuardHeading, Is.EqualTo("Garrison of the " + guarded.Kind.ToLowerInvariant() + " at 1, 14, Surface"));
             Assert.That(page.GuardEditor!.CreatureSlots[0].HasCreature, Is.True);
 
             page.GuardEditor.CreatureSlots[0].ClearCommand.Execute(null);
@@ -99,8 +99,8 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var above = page.Mines.Rows.Single(m => m.Index == 0);
             var below = page.Mines.Rows.Single(m => m.Index == 1);
 
-            Assert.That(above.PositionText, Is.EqualTo($"Pos: {surface.X}, {surface.Y}, Surface"));
-            Assert.That(below.PositionText, Is.EqualTo($"Pos: {surface.X}, {surface.Y}, Underground"));
+            Assert.That(above.PositionText, Is.EqualTo($"at {surface.X}, {surface.Y}, Surface"));
+            Assert.That(below.PositionText, Is.EqualTo($"at {surface.X}, {surface.Y}, Underground"));
             Assert.That((above.LevelText, below.LevelText), Is.EqualTo(("Surface", "Underground")));
 
             page.Mines.SelectedMine = above;
@@ -112,7 +112,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             below.OwnerField.Selected = "Green";
             Assert.That(
                 game.History.GetPendingChanges().Select(c => c.OwnerName),
-                Is.EquivalentTo(new[] { $"{above.Kind} at {above.PositionText.Replace("Pos: ", string.Empty)}", $"{below.Kind} at {below.PositionText.Replace("Pos: ", string.Empty)}" }));
+                Is.EquivalentTo(new[] { $"{above.Kind} {above.PositionText}", $"{below.Kind} {below.PositionText}" }));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var blue = Of(game, PlayerColor.Blue);
             var neutral = Of(game, PlayerColor.Neutral);
 
-            var guardhouse = blue.Dwellings.Single(d => d.PositionText == "Pos: 31, 56, Surface");
+            var guardhouse = blue.Dwellings.Single(d => d.PositionText == "at 31, 56, Surface");
             Assert.That(guardhouse.CreatureName, Is.EqualTo("Pikeman"));
             Assert.That(guardhouse.OwnerField.Selected, Is.EqualTo("Blue"));
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));
@@ -148,15 +148,15 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var above = rows.Single(d => d.Index == 0);
             var below = rows.Single(d => d.Index == 1);
 
-            Assert.That(above.PositionText, Is.EqualTo($"Pos: {surface.X}, {surface.Y}, Surface"));
-            Assert.That(below.PositionText, Is.EqualTo($"Pos: {surface.X}, {surface.Y}, Underground"));
+            Assert.That(above.PositionText, Is.EqualTo($"at {surface.X}, {surface.Y}, Surface"));
+            Assert.That(below.PositionText, Is.EqualTo($"at {surface.X}, {surface.Y}, Underground"));
             Assert.That((above.LevelText, below.LevelText), Is.EqualTo(("Surface", "Underground")));
 
             above.StockText = "12345";
             below.StockText = "12345";
             Assert.That(
                 game.History.GetPendingChanges().Select(c => c.OwnerName),
-                Is.EquivalentTo(new[] { $"{above.CreatureName} dwelling at {above.PositionText.Replace("Pos: ", string.Empty)}", $"{below.CreatureName} dwelling at {below.PositionText.Replace("Pos: ", string.Empty)}" }));
+                Is.EquivalentTo(new[] { $"{above.CreatureName} dwelling {above.PositionText}", $"{below.CreatureName} dwelling {below.PositionText}" }));
         }
 
         [Test]
@@ -164,7 +164,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
             var blue = Of(game, PlayerColor.Blue);
-            var guardhouse = blue.Dwellings.Single(d => d.PositionText == "Pos: 31, 56, Surface");
+            var guardhouse = blue.Dwellings.Single(d => d.PositionText == "at 31, 56, Surface");
 
             guardhouse.StockText = "3";
             guardhouse.OwnerField.Selected = "Green";
@@ -187,7 +187,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         public void AStockThatIsNotANumberLeavesTheDwellingAloneAndOneThatIsTooBigIsTakenAsTheMost()
         {
             var game = LoadDwellings("05_tazar_flags_portal_of_glory");
-            var guardhouse = Of(game, PlayerColor.Blue).Dwellings.Single(d => d.PositionText == "Pos: 31, 56, Surface");
+            var guardhouse = Of(game, PlayerColor.Blue).Dwellings.Single(d => d.PositionText == "at 31, 56, Surface");
 
             guardhouse.StockText = "many";
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));

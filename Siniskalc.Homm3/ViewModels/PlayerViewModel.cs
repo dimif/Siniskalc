@@ -94,15 +94,6 @@ namespace Siniskalc.Homm3.ViewModels
         public IReadOnlyList<HeroLinkViewModel> Heroes { get; private set; } = [];
 
         /// <inheritdoc/>
-        IReadOnlyList<AmountRowViewModel> IResourcesPage.Resources => this.Resources;
-
-        /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
-
-        /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
-
-        /// <inheritdoc/>
         public bool HasHeroes => this.Heroes.Count > 0;
 
         /// <summary>

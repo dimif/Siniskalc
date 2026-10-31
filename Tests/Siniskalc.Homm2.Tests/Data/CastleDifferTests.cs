@@ -87,7 +87,7 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void AnotherOwnerIsListedFirstAndMadeWithoutTheFactory()
+        public void AnotherOwnerIsListedFirstAndIsPutBackLikeAnyOtherChange()
         {
             var original = DifferSamples.Castle();
             var current = (original with { Owner = PlayerColor.Green }).WithMageGuildLevel(1);
@@ -96,7 +96,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Owner", "Mage Guild" }));
             Assert.That((changes[0].Change.Before, changes[0].Change.After, changes[0].Kind, changes[0].Index), Is.EqualTo(("Blue", "Green", Homm2ChunkKinds.Castle, 3)));
-            Assert.That(this.fake.CastleReverts.Keys, Is.EqualTo(new[] { "Mage Guild" }));
+            Assert.That(this.fake.CastleReverts["Owner"](current).Owner, Is.EqualTo(PlayerColor.Blue));
         }
 
         [Test]

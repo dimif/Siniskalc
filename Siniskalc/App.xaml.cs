@@ -49,6 +49,34 @@ namespace Siniskalc
         }
 
         /// <summary>
+        /// Offers to put a damaged file of the user aside as <c>.bad</c> so the editor can start with the default one (written again by the
+        /// next start). False when the user prefers to exit, or the file cannot be moved.
+        /// </summary>
+        private static bool ResetFile(string problem, string path, string title, string what)
+        {
+            var answer = MessageBox.Show(
+                $"{problem}\n\nReset the {what}? The file is kept as {Path.GetFileName(path)}.bad and the editor starts with the defaults.",
+                title,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Error);
+            if (answer != MessageBoxResult.Yes)
+            {
+                return false;
+            }
+
+            try
+            {
+                File.Move(path, path + ".bad", overwrite: true);
+                return true;
+            }
+            catch (Exception moveFailure) when (moveFailure is IOException or UnauthorizedAccessException)
+            {
+                MessageBox.Show($"The file {path} could not be moved aside: {moveFailure.Message}", title, MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Builds the components, or tells the user why it cannot: a settings file or Serilog configuration that cannot be read, or a log folder that
         /// cannot be used. A damaged file can be reset (kept as <c>.bad</c> next to it), so it never locks the user out. Null when the editor must not start.
         /// </summary>
@@ -83,34 +111,6 @@ namespace Siniskalc
                         MessageBoxImage.Error);
                     return null;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Offers to put a damaged file of the user aside as <c>.bad</c> so the editor can start with the default one (written again by the
-        /// next start). False when the user prefers to exit, or the file cannot be moved.
-        /// </summary>
-        private static bool ResetFile(string problem, string path, string title, string what)
-        {
-            var answer = MessageBox.Show(
-                $"{problem}\n\nReset the {what}? The file is kept as {Path.GetFileName(path)}.bad and the editor starts with the defaults.",
-                title,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Error);
-            if (answer != MessageBoxResult.Yes)
-            {
-                return false;
-            }
-
-            try
-            {
-                File.Move(path, path + ".bad", overwrite: true);
-                return true;
-            }
-            catch (Exception moveFailure) when (moveFailure is IOException or UnauthorizedAccessException)
-            {
-                MessageBox.Show($"The file {path} could not be moved aside: {moveFailure.Message}", title, MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
             }
         }
 

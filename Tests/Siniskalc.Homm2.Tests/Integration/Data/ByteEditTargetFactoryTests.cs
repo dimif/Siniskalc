@@ -17,6 +17,34 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         [SetUp]
         public void Load() => this.history = TestServices.LoadThreedom(71).History;
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AHeroOrCastleByteTargetEditsTheSameRecordAsItsModelSession(bool hero)
+        {
+            var before = hero
+                ? this.history.Current.Heroes().GetModel(0).Name
+                : this.history.Current.Castles().GetModel(0).Name;
+            using (var target = hero ? this.factory.ForHero(this.history, 0) : this.factory.ForCastle(this.history, 0))
+            {
+                var bytes = hero
+                    ? this.history.Current.Heroes()[0].ToArray()
+                    : this.history.Current.Castles()[0].ToArray();
+                Assert.That(target.GetBytes(), Is.EqualTo(bytes));
+                var at = target.Regions.Single(r => r.Name == "Name").Start;
+                var firstLetter = before[0] == 'A' ? 'B' : 'A';
+                Assert.That(target.Update(value => { value[at] = (byte)firstLetter; return value; }), Is.True);
+                var name = hero
+                    ? this.history.Current.Heroes().GetModel(0).Name
+                    : this.history.Current.Castles().GetModel(0).Name;
+                Assert.That(name, Is.EqualTo(firstLetter + before[1..]));
+            }
+
+            this.history.Undo();
+            Assert.That(
+                hero ? this.history.Current.Heroes().GetModel(0).Name : this.history.Current.Castles().GetModel(0).Name,
+                Is.EqualTo(before));
+        }
+
         [Test]
         public void EveryKnownFieldOfARecordOfTheMapLiesWithinItsBytes()
         {

@@ -71,15 +71,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public override CreatureFinderViewModel Finder { get; }
 
-        /// <inheritdoc/>
-        protected override AbstractFinderViewModel CreatePickerFinder(Action<string> onPicked) => new CreatureFinderViewModel(
-            this.creatures.Select(c => ((ICreature)c, this.infoOf(c))),
-            this.CreatureSlots.Count,
-            this.minStack,
-            this.maxStack,
-            () => true,
-            (creature, _) => onPicked(creature.Name),
-            actionLabel: "Choose");
+        /// <summary>
+        /// Gets a value indicating whether the summary of the army tells the cost and the values of the computer player too. False for a game
+        /// that does not know them.
+        /// </summary>
+        protected virtual bool SummaryHasValues => false;
 
         /// <summary>
         /// Puts <paramref name="count"/> creatures in the first free slot, or does nothing when every slot is taken.
@@ -114,18 +110,22 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.update(army => army.WithSlot(slot - 1, creature, size));
         }
 
+        /// <inheritdoc/>
+        protected override AbstractFinderViewModel CreatePickerFinder(Action<string> onPicked) => new CreatureFinderViewModel(
+            this.creatures.Select(c => ((ICreature)c, this.infoOf(c))),
+            this.CreatureSlots.Count,
+            this.minStack,
+            this.maxStack,
+            () => true,
+            (creature, _) => onPicked(creature.Name),
+            actionLabel: "Choose");
+
         /// <summary>
         /// Gives the facts to show for a stack.
         /// </summary>
         /// <param name="creature">The creature of the stack.</param>
         /// <param name="amount">How many creatures it holds.</param>
         protected abstract IReadOnlyList<StackFact> FactsOf(TCreature creature, int amount);
-
-        /// <summary>
-        /// Gets a value indicating whether the summary of the army tells the cost and the values of the computer player too. False for a game
-        /// that does not know them.
-        /// </summary>
-        protected virtual bool SummaryHasValues => false;
 
         /// <inheritdoc/>
         protected override string Summarize()

@@ -49,7 +49,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var change = this.Diff(original, current).Single();
 
-            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Position", "Pos: 10, 12, facing North", "Pos: 10, 12, facing South")));
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Position", "at 10, 12, facing North", "at 10, 12, facing South")));
             Assert.That(this.fake.HeroReverts["Position"](current), Is.EqualTo(original));
         }
 
@@ -65,7 +65,7 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsMadeWithoutTheFactory()
+        public void AnotherOwnerIsListedBeforeEveryOtherChangeAndIsPutBackLikeAnyOtherChange()
         {
             var original = DifferSamples.Hero();
             var current = (original with { Owner = PlayerColor.Green }).WithLevel(4);
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => c.Change.Description), Is.EqualTo(new[] { "Owner", "Experience" }));
             Assert.That((changes[0].Change.Before, changes[0].Change.After, changes[0].Kind, changes[0].Index), Is.EqualTo(("Blue", "Green", Homm2ChunkKinds.Hero, 7)));
-            Assert.That(this.fake.HeroReverts.Keys, Is.EqualTo(new[] { "Experience" }));
+            Assert.That(this.fake.HeroReverts["Owner"](current).Owner, Is.EqualTo(PlayerColor.Blue));
         }
 
         [Test]
@@ -106,7 +106,7 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void ALearnedSpellAndASecondarySkillAreListedByName()
+        public void ALearnedSpellIsListedByNameAndTheSecondarySkillsAsOneListThatArePutBackAsTheyWere()
         {
             var original = DifferSamples.Hero();
             var current = original with
@@ -119,11 +119,26 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(changes.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EquivalentTo(new[]
             {
-                ("Fireball", "not known", "known"),
-                ("Archery", "none", "Expert"),
+                ("Fireball", "not learned", "learned"),
+                ("Skills", "none", "Archery (Expert)"),
             }));
             Assert.That(this.fake.HeroReverts["Fireball"](current).Spells.Contains(Spell.Fireball), Is.False);
-            Assert.That(this.fake.HeroReverts["Archery"](current).SecondarySkills.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.None));
+            Assert.That(this.fake.HeroReverts["Skills"](current).SecondarySkills, Is.EqualTo(original.SecondarySkills));
+        }
+
+        [Test]
+        public void SwappingTwoSecondarySkillsIsAChangeThatPutsTheOrderBack()
+        {
+            var original = DifferSamples.Hero() with
+            {
+                SecondarySkills = new SecondarySkills([new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner), new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert)]),
+            };
+            var current = original with { SecondarySkills = original.SecondarySkills.Swap(0, 1) };
+
+            var change = this.Diff(original, current).Single();
+
+            Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Skills", "Archery (Beginner), Wisdom (Expert)", "Wisdom (Expert), Archery (Beginner)")));
+            Assert.That(this.fake.HeroReverts["Skills"](current), Is.EqualTo(original));
         }
 
         [Test]

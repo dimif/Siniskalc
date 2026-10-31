@@ -4,8 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Microsoft.Extensions.Logging;
-    using Siniskalc.Core.Runtime;
+    using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -19,12 +18,11 @@
     /// <summary>
     /// The pages of a hero: what the hero is and has (general), the secondary skills, the army, the spell book and the artifacts.
     /// </summary>
-    public sealed class HeroViewModel : PageViewModel, IHeroPage
+    public sealed class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
-        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
-
         private readonly Action<int> openCastle;
-        private readonly HeroEditSession session;
+        private readonly IEditSession<HeroModel> session;
+        private readonly IByteEditTargetFactory? byteEditTargets;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
@@ -33,12 +31,19 @@
         private int castleIndex = -1;
 
         public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game.History, Homm2ChunkKinds.Hero, heroId, byteEditTargets)
+            : this(game, game.History.CreateHeroSession(heroId), openCastle, spellPoints, byteEditTargets)
         {
+        }
+
+        private HeroViewModel(Game game, IEditSession<HeroModel> session, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets)
+            : base("Hero", session)
+        {
+            var heroId = session.Index;
+            this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.HeroId = heroId;
             this.openCastle = openCastle;
-            this.session = game.History.CreateHeroSession(heroId);
+            this.session = session;
             this.PrimarySkills = new PrimarySkillsCardViewModel(
                 () => this.session.Current.PrimarySkills,
                 edit => this.session.Update(h => h with { PrimarySkills = edit(h.PrimarySkills) }),
@@ -132,8 +137,6 @@
             this.Refresh();
         }
 
-        private Game Game { get; }
-
         public int HeroId { get; }
 
         public ChoiceFieldViewModel OwnerField { get; }
@@ -149,13 +152,6 @@
             get => this.OwnerField.Selected;
             set => this.OwnerField.Selected = value;
         }
-
-        /// <summary>
-        /// Gets a sentence saying why the owner could not be changed, or nothing.
-        /// </summary>
-        public string Notice { get; private set; } = string.Empty;
-
-        public bool HasNotice => this.Notice.Length > 0;
 
         /// <inheritdoc/>
         public string Name => this.hero.Name;
@@ -175,7 +171,7 @@
         public string PositionText => this.hero.Owner.IsNeutral ? string.Empty : MapLevelText.Coordinates(this.hero.Position.X, this.hero.Position.Y);
 
         /// <summary>
-        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · Pos: 3, 4".
+        /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · at 3, 4".
         /// </summary>
         public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
 
@@ -264,9 +260,28 @@
 
         public bool HasSpellBook => this.hero.HasSpellBook;
 
-        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForHero(this.session);
+        private Game Game { get; }
 
-        protected override void Read()
+        /// <summary>
+        /// Creates the target the hex tab of the page works on: the raw bytes of the hero. The caller disposes it. <c>null</c> when the
+        /// editor was built without the means to make one, and the page has no hex tab.
+        /// </summary>
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForHero(this.Game.History, this.HeroId);
+
+        /// <summary>
+        /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
+        /// </summary>
+        public void Refresh()
+        {
+            this.Read();
+            this.UpdateIsDirty();
+            this.RaiseAllPropertiesChanged();
+        }
+
+        /// <inheritdoc/>
+        protected override void OnHistoryChanged() => this.Refresh();
+
+        private void Read()
         {
             var document = this.Game.History.Current;
             var hero = document.Heroes().GetModel(this.HeroId);
@@ -317,19 +332,7 @@
 
         private void ChangeOwner(string name)
         {
-            this.Notice = string.Empty;
-            try
-            {
-                this.session.ChangeOwner(OwnerNames<PlayerColor>.Parse(name));
-            }
-            catch (GameRuleException ex)
-            {
-                Logger.LogInformation("Refused the owner {Owner} of a hero: {Reason}", name, ex.Message);
-                this.Notice = $"{name} has the most heroes a player can have.";
-            }
-
-            this.RaisePropertyChanged(nameof(this.Notice));
-            this.RaisePropertyChanged(nameof(this.HasNotice));
+            this.TryUpdate(h => h.WithOwner(OwnerNames<PlayerColor>.Parse(name)));
             this.OwnerField.Refresh();
         }
 

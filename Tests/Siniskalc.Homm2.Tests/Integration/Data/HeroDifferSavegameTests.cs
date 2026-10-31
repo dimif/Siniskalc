@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             this.game.History.CreateHeroSession(Maximus).Update(h => h with { Position = h.Position with { FacingDirection = turned } });
 
             var change = this.game.History.GetPendingChanges().Single();
-            var tile = $"Pos: {original.Position.X}, {original.Position.Y}";
+            var tile = $"at {original.Position.X}, {original.Position.Y}";
             Assert.That(
                 (change.Change.Description, change.Change.Before, change.Change.After),
                 Is.EqualTo(("Position", $"{tile}, facing {original.Position.FacingDirection}", $"{tile}, facing {turned}")));
@@ -74,8 +74,9 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             var hero = history.Current.Heroes().GetModel(Maximus);
             var newOwner = hero.Owner == PlayerColor.Blue ? PlayerColor.Green : PlayerColor.Blue;
 
-            history.CreateHeroSession(Maximus).ChangeOwner(newOwner);
-            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Heroes"));
+            history.CreateHeroSession(Maximus).Update(h => h.WithOwner(newOwner));
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
 
             history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
 
@@ -84,7 +85,8 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
             history.Undo();
 
-            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner").And.Contain("Heroes"));
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
         }
     }
 }

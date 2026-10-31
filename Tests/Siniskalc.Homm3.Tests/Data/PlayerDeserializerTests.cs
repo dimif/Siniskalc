@@ -52,34 +52,25 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [TestCaseSource(nameof(Layouts))]
-        public void TheHeroesAreTheIdsThatAreNotTheEmptyMarkAndTheSelectedHeroAndTheTavernHeroesAreNoneForTheEmptyMark(PlayerLayout layout)
+        public void TheTavernHeroesAreTheIdsThatAreNotTheEmptyMarkAndNoneForTheEmptyMark(PlayerLayout layout)
         {
             var empty = this.deserializer.Deserialize(PlayerRecords.Blank(layout, PlayerColor.Red, 1));
             var set = this.deserializer.Deserialize(PlayerRecords.Blank(layout, PlayerColor.Red, 1, b =>
             {
-                new byte[] { 21, 0xFF, 22, 0xFF, 0xFF, 0xFF, 0xFF, 40 }.CopyTo(b, PlayerLayout.HeroIds);
-                b[PlayerLayout.SelectedHero] = 22;
                 b[PlayerLayout.TavernHeroes] = 5;
                 b[PlayerLayout.TavernHeroes + 1] = 6;
             }));
 
-            Assert.That((empty.HeroIds, empty.SelectedHero, empty.Tavern), Is.EqualTo((new Siniskalc.Core.Models.Numbers([]), (int?)null, new TavernHeroes(null, null))));
-            Assert.That(set.HeroIds, Is.EqualTo(new[] { 21, 22, 40 }));
-            Assert.That((set.SelectedHero, set.Tavern), Is.EqualTo(((int?)22, new TavernHeroes(5, 6))));
+            Assert.That(empty.Tavern, Is.EqualTo(new TavernHeroes(null, null)));
+            Assert.That(set.Tavern, Is.EqualTo(new TavernHeroes(5, 6)));
         }
 
         [TestCaseSource(nameof(Layouts))]
-        public void TheHeroWithIdZeroIsAHeroInEveryListAndNotNone(PlayerLayout layout)
+        public void TheTavernHeroWithIdZeroIsAHeroAndNotNone(PlayerLayout layout)
         {
-            var player = this.deserializer.Deserialize(PlayerRecords.Blank(layout, PlayerColor.Red, 1, b =>
-            {
-                b[PlayerLayout.HeroIds] = 0;
-                b[PlayerLayout.SelectedHero] = 0;
-                b[PlayerLayout.TavernHeroes] = 0;
-            }));
+            var player = this.deserializer.Deserialize(PlayerRecords.Blank(layout, PlayerColor.Red, 1, b => b[PlayerLayout.TavernHeroes] = 0));
 
-            Assert.That(player.HeroIds, Is.EqualTo(new[] { 0 }));
-            Assert.That((player.SelectedHero, player.Tavern), Is.EqualTo(((int?)0, new TavernHeroes(0, null))));
+            Assert.That(player.Tavern, Is.EqualTo(new TavernHeroes(0, null)));
         }
 
         [TestCaseSource(nameof(Layouts))]

@@ -2,6 +2,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
 
     /// <summary>
@@ -21,6 +22,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             public int HistoryChanges { get; private set; }
 
             public void CheckDirty() => this.UpdateIsDirty();
+
+            public bool Edit(Func<string, string> edit) => this.TryUpdate(edit);
 
             protected override void OnHistoryChanged() => this.HistoryChanges++;
         }
@@ -59,6 +62,45 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             page.ResetCommand.Execute(null);
 
             Assert.That(result, Is.EqualTo("as loaded"));
+        }
+
+        [Test]
+        public void AResetTheRulesOfTheGameRefuseIsNotMadeAndTheNoticeSaysWhy()
+        {
+            this.session.Setup(s => s.Update(It.IsAny<Func<string, string>>())).Throws(new GameRuleException("Blue has the most heroes a player can have (8)."));
+            var page = new Page(this.session.Object);
+            page.CheckDirty();
+            var raised = new List<string?>();
+            page.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
+
+            Assert.That(() => page.ResetCommand.Execute(null), Throws.Nothing);
+
+            Assert.That((page.HasNotice, page.Notice), Is.EqualTo((true, "Blue has the most heroes a player can have (8).")));
+            Assert.That(raised, Is.SupersetOf(new[] { nameof(page.Notice), nameof(page.HasNotice) }));
+        }
+
+        [Test]
+        public void AnEditThatIsMadeClearsTheNoticeOfAnEditThatWasRefused()
+        {
+            var page = new Page(this.session.Object);
+            this.session.Setup(s => s.Update(It.IsAny<Func<string, string>>())).Throws(new GameRuleException("Refused."));
+            Assert.That(page.Edit(s => s), Is.False);
+
+            this.session.Reset();
+            this.session.Setup(s => s.Events).Returns(this.events.Object);
+
+            Assert.That(page.Edit(s => s), Is.True);
+            Assert.That((page.HasNotice, page.Notice), Is.EqualTo((false, string.Empty)));
+        }
+
+        [Test]
+        public void AFaultOfTheSessionIsNotMadeToLookLikeARuleOfTheGame()
+        {
+            this.session.Setup(s => s.Update(It.IsAny<Func<string, string>>())).Throws(new InvalidOperationException("broken"));
+            var page = new Page(this.session.Object);
+
+            Assert.That(() => page.Edit(s => s), Throws.InvalidOperationException.With.Message.EqualTo("broken"));
+            Assert.That(page.HasNotice, Is.False);
         }
 
         [Test]

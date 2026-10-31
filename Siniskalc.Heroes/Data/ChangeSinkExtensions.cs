@@ -1,6 +1,8 @@
 ﻿namespace Siniskalc.Heroes.Data
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Core.Models;
@@ -9,7 +11,7 @@
     using Siniskalc.Heroes.ViewModels;
 
     /// <summary>
-    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the skills, the experience, the place, the movement and the spell points of a hero, and the resources, the tavern and the countdown of a player.
+    /// The changes that every game's differs report in the same way: who owns a record, what is in the slots of an army, the primary and secondary skills, the experience, the place, the movement, the spell points and the learned spells of a hero, and the resources, the tavern and the countdown of a player.
     /// </summary>
     public static class ChangeSinkExtensions
     {
@@ -123,7 +125,7 @@
 
         /// <summary>
         /// Adds the change of where a hero stands, if its tile, its level or the way it faces differs: "Position", with the place and the facing
-        /// before and after ("Pos: 12, 5, Surface, facing North"; without the level in a game whose map has one). The whole position is put back.
+        /// before and after ("at 12, 5, Surface, facing North"; without the level in a game whose map has one). The whole position is put back.
         /// </summary>
         /// <typeparam name="TModel">The model of the hero.</typeparam>
         /// <param name="sink">Collects the change.</param>
@@ -195,6 +197,61 @@
             }
 
             sink.Add(ChangeAreas.General, "Spell points", before.ToString("N0"), after.ToString("N0"), model => withSpellPoints(model, before));
+        }
+
+        /// <summary>
+        /// Adds the change of the secondary skills of a hero, if the skills, their levels or their slots differ: "Skills", with the skills
+        /// in the order of their slots and their levels before and after ("Archery (Beginner), Wisdom (Expert)"), followed by the skills
+        /// that have a level but no slot ("not shown: Luck (Expert)"), or "none". The skills are slots in an order, so they are one change
+        /// that puts the whole set back: a skill put back on its own would land in another slot.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <typeparam name="TSkill">The secondary skill of the game.</typeparam>
+        /// <typeparam name="TSkills">The secondary skills of a hero of the game.</typeparam>
+        /// <param name="sink">Collects the change.</param>
+        /// <param name="skills">Every secondary skill of the game, to find the skills that have a level but no slot.</param>
+        /// <param name="before">The skills as loaded.</param>
+        /// <param name="after">The skills now.</param>
+        /// <param name="withSkills">Returns the model with the given skills.</param>
+        public static void AddSecondarySkills<TModel, TSkill, TSkills>(
+            this ChangeSink<TModel> sink,
+            IReadOnlyCollection<TSkill> skills,
+            TSkills before,
+            TSkills after,
+            Func<TModel, TSkills, TModel> withSkills)
+            where TSkill : ISecondarySkill
+            where TSkills : ISecondarySkills<TSkill, TSkills>
+        {
+            var (was, now) = (SkillsText(skills, before), SkillsText(skills, after));
+            if (was == now)
+            {
+                return;
+            }
+
+            sink.Add(ChangeAreas.SecondarySkills, "Skills", was, now, model => withSkills(model, before));
+        }
+
+        /// <summary>
+        /// Adds a change for each spell that was learned or forgotten: the name of the spell, with "learned" or "not learned" before and
+        /// after, in the order of the codes of the spells. Each is put back on its own.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <typeparam name="TSpell">The spell of the game.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="before">The learned spells as loaded.</param>
+        /// <param name="after">The learned spells now.</param>
+        /// <param name="withLearned">Returns the model with the given spell learned (<c>true</c>) or not learned (<c>false</c>).</param>
+        public static void AddLearnedSpells<TModel, TSpell>(this ChangeSink<TModel> sink, SpellSet<TSpell> before, SpellSet<TSpell> after, Func<TModel, TSpell, bool, TModel> withLearned)
+            where TSpell : class, IGameEntity
+        {
+            foreach (var spell in before.Concat(after).DistinctBy(s => s.Code).OrderBy(s => s.Code))
+            {
+                var (had, has) = (before.Contains(spell), after.Contains(spell));
+                if (had != has)
+                {
+                    sink.Add(ChangeAreas.Spells, spell.Name, LearnedText(had), LearnedText(has), model => withLearned(model, spell, had));
+                }
+            }
         }
 
         /// <summary>
@@ -278,7 +335,35 @@
 
         private static string LevelText(HeroLevel level) => $"{level.Experience:N0} (level {level.Level})";
 
+        private static string LearnedText(bool learned) => learned ? "learned" : "not learned";
+
         private static string MovementText(MovementPoints points) => $"{points.Current:N0} / {points.Max:N0}";
+
+        private static string SkillsText<TSkill, TSkills>(IReadOnlyCollection<TSkill> all, TSkills skills)
+            where TSkill : ISecondarySkill
+            where TSkills : ISecondarySkills<TSkill, TSkills>
+        {
+            var parts = Enumerable.Range(0, skills.SlotCount)
+                .Select(skills.GetSkillInSlot)
+                .Where(skill => skill is not null)
+                .Select(skill => SkillText(skill, skills.GetSkillLevel(skill)))
+                .ToList();
+
+            // Skills without a slot are applied by the game, but not shown on the hero screen.
+            var hidden = all
+                .Where(skill => skills.GetSlotOf(skill) < 0 && skills.GetSkillLevel(skill) != SkillLevel.None)
+                .OrderBy(skill => skill.Code)
+                .Select(skill => SkillText(skill, skills.GetSkillLevel(skill)))
+                .ToList();
+            if (hidden.Count > 0)
+            {
+                parts.Add($"not shown: {string.Join(", ", hidden)}");
+            }
+
+            return parts.Count == 0 ? ChangeText.None : string.Join(", ", parts);
+        }
+
+        private static string SkillText(ISecondarySkill skill, SkillLevel level) => $"{skill.Name} ({(level == SkillLevel.None ? "no level" : level.Name)})";
 
         private static string PlaceText(MapPosition place, bool hasLevels) =>
             place == MapPosition.None ? ChangeText.None : MapLevelText.Coordinates(place, hasLevels);

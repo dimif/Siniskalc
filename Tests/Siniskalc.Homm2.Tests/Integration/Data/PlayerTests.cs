@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
+    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -17,6 +18,8 @@
 
         private static PlayerModel Player(int save, int player) => TestServices.LoadBrokenAlliance(save).History.Current.Players().GetModel(player);
 
+        private static PlayerLists Lists(int save, int player) => TestServices.LoadBrokenAlliance(save).History.Current.Players().GetLists(player);
+
         [Test]
         public void BlueStartsWithTheResourcesOfTheMapAndTwoHeroesToHire()
         {
@@ -24,9 +27,7 @@
 
             Assert.That(blue.Color, Is.EqualTo(PlayerColor.Blue));
             Assert.That(blue.Resources, Is.EqualTo(new ResourceSet(20, 5, 20, 5, 5, 5, 7500)));
-            Assert.That(blue.HeroIds, Is.EqualTo(new[] { 7 }));
-            Assert.That(blue.SelectedHero, Is.EqualTo(7));
-            Assert.That(blue.CastleIds, Is.EqualTo(new[] { 3 }));
+            Assert.That(Lists(1, Blue), Is.EqualTo(new PlayerLists(Numbers.Of(7), 7, Numbers.Of(3), Lists(1, Blue).SelectedCastle)));
             Assert.That(blue.DaysLeft, Is.Null);
             Assert.That(blue.Tavern, Is.EqualTo(new TavernHeroes(1, 51)));
         }
@@ -62,7 +63,7 @@
             var before = Player(7, Blue);
             var after = Player(8, Blue);
 
-            Assert.That(after.HeroIds, Is.EqualTo(new[] { 7, 1 }));
+            Assert.That(Lists(8, Blue).HeroIds, Is.EqualTo(new[] { 7, 1 }));
             Assert.That(after.Resources.Gold, Is.EqualTo(before.Resources.Gold - 2500));
             Assert.That(after.Tavern.First, Is.Not.EqualTo(before.Tavern.First));
             Assert.That(after.Tavern.Second, Is.EqualTo(before.Tavern.Second));
@@ -71,10 +72,10 @@
         [Test]
         public void CapturingACastleAddsItToTheList()
         {
-            Assert.That(Player(13, Blue).CastleIds, Is.EqualTo(new[] { 3 }));
-            Assert.That(Player(14, Blue).CastleIds, Is.EqualTo(new[] { 3, 2 }));
-            Assert.That(Player(18, Blue).CastleIds, Is.EqualTo(new[] { 3 }));
-            Assert.That(Player(19, Blue).CastleIds, Is.EqualTo(new[] { 3, 1 }));
+            Assert.That(Lists(13, Blue).CastleIds, Is.EqualTo(new[] { 3 }));
+            Assert.That(Lists(14, Blue).CastleIds, Is.EqualTo(new[] { 3, 2 }));
+            Assert.That(Lists(18, Blue).CastleIds, Is.EqualTo(new[] { 3 }));
+            Assert.That(Lists(19, Blue).CastleIds, Is.EqualTo(new[] { 3, 1 }));
         }
 
         [Test]
@@ -85,11 +86,11 @@
             Assert.That(Player(22, Blue).DaysLeft, Is.EqualTo(4));
             Assert.That(Player(23, Blue).DaysLeft, Is.EqualTo(3));
             Assert.That(Player(24, Blue).DaysLeft, Is.Null);
-            Assert.That(Player(24, Blue).CastleIds, Is.EqualTo(new[] { 2, 3, 1 }));
+            Assert.That(Lists(24, Blue).CastleIds, Is.EqualTo(new[] { 2, 3, 1 }));
 
             var green = Player(22, Green);
             Assert.That(green.DaysLeft, Is.Zero);
-            Assert.That((green.IsBanished, green.CastleIds.Count, green.HeroIds.Count), Is.EqualTo((true, 0, 0)), "a banished player has no castle and no hero left");
+            Assert.That((green.IsBanished, Lists(22, Green).OwnsAnything), Is.EqualTo((true, false)), "a banished player has no castle and no hero left");
             Assert.That(Player(21, Green).IsBanished, Is.False);
         }
 

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Data
                 [Homm3ChunkKinds.Turn] = turn,
             };
 
-            return new SaveDocument(originalBytes, collections, patcher);
+            return new SaveDocument(originalBytes, collections, patcher, reconciler);
         }
 
         public static HeroChunkCollection Heroes(this SaveDocument document) => (HeroChunkCollection)document.GetCollection(Homm3ChunkKinds.Hero);

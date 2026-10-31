@@ -26,9 +26,10 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
         private readonly Dictionary<int, CastleViewModel> castles = [];
-        private MapViewModel? map;
         private readonly Dictionary<PlayerColor, NeutralViewModel> neutrals = [];
         private OverviewViewModel? overview;
+
+        private MapViewModel? map;
 
         public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)
@@ -161,7 +162,7 @@ namespace Siniskalc.Homm3.ViewModels
         }
 
         /// <summary>
-        /// Shows the tab of the dwellings of the owner of the dwelling at <paramref name="dwellingIndex"/>, or of Neutral.
+        /// Shows the dwelling at <paramref name="dwellingIndex"/> among the dwellings of the savegame: on the Dwellings tab of its owner, or of Neutral.
         /// </summary>
         public void ShowDwelling(int dwellingIndex)
         {
@@ -171,10 +172,12 @@ namespace Siniskalc.Homm3.ViewModels
             if (playerIndex < 0)
             {
                 this.ShowNeutral(NeutralTabs.Dwellings, owner);
+                this.neutrals[owner].MapObjects.PickDwelling(dwellingIndex);
                 return;
             }
 
             this.ShowPlayer(playerIndex, OwnerTabs.Dwellings);
+            this.players[playerIndex].MapObjects.PickDwelling(dwellingIndex);
         }
 
         /// <summary>

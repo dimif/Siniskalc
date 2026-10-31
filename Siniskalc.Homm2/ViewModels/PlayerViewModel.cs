@@ -16,7 +16,7 @@
     /// <summary>
     /// The pages of a player: the resources and what they earn each day, the heroes and the tavern, and the towns.
     /// </summary>
-    public sealed class PlayerViewModel : PageViewModel, IPlayerPage
+    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage, IOwnedMines
     {
         private static readonly ResourceLimits Limits = new(
             Constants.Player.MinResource,
@@ -34,19 +34,26 @@
         private readonly Action<int> openCastle;
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
+        private readonly IByteEditTargetFactory? byteEditTargets;
         private IReadOnlyList<HeroLinkViewModel> heroes = [];
         private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string banishing = string.Empty;
 
         public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
-            : base(game.History, Homm2ChunkKinds.Player, color.Code, byteEditTargets)
+            : this(game, color, game.History.CreatePlayerSession(color.Code), banishingText, openHero, openCastle, byteEditTargets)
         {
+        }
+
+        private PlayerViewModel(Game game, PlayerColor color, PlayerEditSession session, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets)
+            : base("Player", session)
+        {
+            this.byteEditTargets = byteEditTargets;
             this.Game = game;
             this.Color = color;
             this.banishingText = banishingText;
             this.openHero = openHero;
             this.openCastle = openCastle;
-            this.session = game.History.CreatePlayerSession(color.Code);
+            this.session = session;
             this.Mines = MinesLists.Create(game, color);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", hasLevels: false);
             this.resources = ResourcesEditorViewModel.ForPlayer(
@@ -66,8 +73,6 @@
                 () => this.session.Current.IsBanished);
             this.Refresh();
         }
-
-        private Game Game { get; }
 
         public PlayerColor Color { get; }
 
@@ -93,7 +98,7 @@
         public DaysLeftCardViewModel DaysLeftCard { get; }
 
         /// <inheritdoc/>
-        public IReadOnlyList<AmountRowViewModel> Resources => this.resources.Rows;
+        public IReadOnlyList<ResourceRowViewModel> Resources => this.resources.Rows;
 
         /// <inheritdoc/>
         public ICommand SetAllResourcesCommand => this.resources.SetAllCommand;
@@ -139,20 +144,37 @@
         public IReadOnlyList<TavernPlaceViewModel> TavernPlaces { get; }
 
         /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Heroes => this.Heroes;
-
-        /// <inheritdoc/>
-        IReadOnlyList<ILink> IPlayerPage.Castles => this.Castles;
-
-        /// <inheritdoc/>
         public bool HasHeroes => this.heroes.Count > 0;
 
         /// <inheritdoc/>
         public bool HasCastles => this.castles.Count > 0;
 
-        protected override Siniskalc.Core.Data.IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory) => factory.ForPlayer(this.session);
+        private Game Game { get; }
 
-        protected override void Read()
+        /// <summary>
+        /// Creates the target the hex tab of the page works on: the raw bytes of the player. The caller disposes it. <c>null</c> when the
+        /// editor was built without the means to make one, and the page has no hex tab.
+        /// </summary>
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForPlayer(this.session);
+
+        /// <inheritdoc/>
+        public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.session.History, mine.Index) : null;
+
+        /// <summary>
+        /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
+        /// </summary>
+        public void Refresh()
+        {
+            this.Read();
+            this.UpdateIsDirty();
+            this.RaiseAllPropertiesChanged();
+        }
+
+        /// <inheritdoc/>
+        protected override void OnHistoryChanged() => this.Refresh();
+
+        private void Read()
         {
             var document = this.Game.History.Current;
             var player = document.Players().GetModel(this.Color.Code);

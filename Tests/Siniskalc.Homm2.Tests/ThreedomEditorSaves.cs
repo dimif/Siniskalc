@@ -44,23 +44,23 @@
         private static void ChangeMines(Game game)
         {
             var mines = MinesLists.Create(game).Rows;
-            mines.Single(m => m.PositionText == "Pos: 22, 29").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "Pos: 65, 31").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "Pos: 23, 2").OwnerField.Selected = "Blue";
-            mines.Single(m => m.PositionText == "Pos: 44, 6").OwnerField.Selected = "Red";
+            mines.Single(m => m.PositionText == "at 22, 29").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "at 65, 31").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "at 23, 2").OwnerField.Selected = "Blue";
+            mines.Single(m => m.PositionText == "at 44, 6").OwnerField.Selected = "Red";
         }
 
-        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "Pos: 22, 29", "Pos: 65, 31", "Pos: 23, 2", "Pos: 44, 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} at {m.PositionText}: {m.OwnerField.Selected}"));
+        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "at 22, 29", "at 65, 31", "at 23, 2", "at 44, 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} {m.PositionText}: {m.OwnerField.Selected}"));
 
         private static void ChangeShrines(Game game)
         {
             var shrines = new MapViewModel(game).Shrines;
-            shrines.Single(s => s.PositionText == "Pos: 45, 7").SpellField.Selected = "Fireball";
-            shrines.Single(s => s.PositionText == "Pos: 22, 49").SpellField.Selected = "Mass Haste";
-            shrines.Single(s => s.PositionText == "Pos: 19, 16").SpellField.Selected = "Mass Bless";
+            shrines.Single(s => s.PositionText == "at 45, 7").SpellField.Selected = "Fireball";
+            shrines.Single(s => s.PositionText == "at 22, 49").SpellField.Selected = "Mass Haste";
+            shrines.Single(s => s.PositionText == "at 19, 16").SpellField.Selected = "Mass Bless";
         }
 
-        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "Pos: 45, 7", "Pos: 22, 49", "Pos: 19, 16" }.Contains(s.PositionText)).Select(s => $"the shrine at {s.PositionText} teaches {s.SpellField.Selected}"));
+        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "at 45, 7", "at 22, 49", "at 19, 16" }.Contains(s.PositionText)).Select(s => $"the shrine {s.PositionText} teaches {s.SpellField.Selected}"));
 
         private static void ChangeSphinx(Game game)
         {

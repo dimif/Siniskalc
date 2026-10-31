@@ -1,6 +1,5 @@
 namespace Siniskalc.Homm2.Tests.Data
 {
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
@@ -22,6 +21,17 @@ namespace Siniskalc.Homm2.Tests.Data
         private byte[] Written(PlayerChunk chunk, PlayerModel model) => this.serializer.Serialize(chunk, model).ToArray();
 
         private PlayerModel ModelOf(PlayerChunk chunk) => this.reader.Deserialize(chunk);
+
+        [Test]
+        public void TheListsOfHeroesAndCastlesAreNotWrittenByThePlayer()
+        {
+            var chunk = Record(b => new byte[] { 1, 2, 3, 0xFF, 0xFF }.CopyTo(b, PlayerLayout.Heroes));
+            var model = this.ModelOf(chunk);
+
+            var written = this.Written(Record(), model with { Tavern = new TavernHeroes(12, null) });
+
+            Assert.That(written.AsSpan(PlayerLayout.Heroes, 5).ToArray(), Is.EqualTo(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }));
+        }
 
         [Test]
         public void TheModelThatWasReadFromARecordLeavesEveryByteOfItAlone()
@@ -82,54 +92,18 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void TheListOfHeroesAndItsCountAreWrittenTogetherAndEmptyPlacesGetTheEmptyMark()
+        public void DaysLeftTakenAwayLeaveTheEmptyMarkAndTheTavernHeroesAreWrittenOneByOne()
         {
             var chunk = Record(b =>
             {
-                new byte[] { 1, 2, 3, 0xFF, 0xFF }.CopyTo(b, PlayerLayout.Heroes);
-                b[PlayerLayout.HeroCount] = 3;
-            });
-
-            var written = this.Written(chunk, this.ModelOf(chunk) with { HeroIds = Numbers.Of(7, 9) });
-
-            Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[]
-            {
-                (PlayerLayout.HeroCount, (byte)3, (byte)2),
-                (PlayerLayout.Heroes, (byte)1, (byte)7),
-                (PlayerLayout.Heroes + 1, (byte)2, (byte)9),
-                (PlayerLayout.Heroes + 2, (byte)3, (byte)0xFF),
-            }));
-        }
-
-        [Test]
-        public void AListThatReadsAsTheModelSaysIsLeftWithItsCountEvenWhenTheRecordHasGapsInIt()
-        {
-            var chunk = Record(b =>
-            {
-                new byte[] { 3, 0xFF, 4, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }.CopyTo(b, PlayerLayout.Castles);
-                b[PlayerLayout.CastleCount] = 9;
-            });
-
-            var written = this.Written(chunk, this.ModelOf(chunk) with { SelectedCastle = 4 });
-
-            Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[] { (PlayerLayout.SelectedCastle, (byte)0xFF, (byte)4) }));
-        }
-
-        [Test]
-        public void AnIdTakenOutOfASelectionLeavesTheEmptyMarkAndTheTavernHeroesAreWrittenOneByOne()
-        {
-            var chunk = Record(b =>
-            {
-                b[PlayerLayout.SelectedHero] = 7;
                 b[PlayerLayout.DaysLeft] = 5;
                 b[PlayerLayout.Tavern] = 12;
             });
 
-            var written = this.Written(chunk, this.ModelOf(chunk) with { SelectedHero = null, DaysLeft = null, Tavern = new TavernHeroes(12, 20) });
+            var written = this.Written(chunk, this.ModelOf(chunk) with { DaysLeft = null, Tavern = new TavernHeroes(12, 20) });
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[]
             {
-                (PlayerLayout.SelectedHero, (byte)7, (byte)0xFF),
                 (PlayerLayout.Tavern + 1, (byte)0xFF, (byte)20),
                 (PlayerLayout.DaysLeft, (byte)5, (byte)0xFF),
             }));

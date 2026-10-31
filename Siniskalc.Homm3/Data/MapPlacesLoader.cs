@@ -51,6 +51,7 @@ namespace Siniskalc.Homm3.Data
 
                 var place = BitConverter.ToUInt16(bytes, i + 4);
                 var number = bytes[i + 6] & numberMask;
+
                 // Every tile of an object has a cell, and the first of them is the one that has the number: the others of a merchant can hold another.
                 if (place > 0 && place < objects.Count && number < MaxNumber && placesSeen.Add(place))
                 {

@@ -77,7 +77,6 @@
                 Make("E11OWNR", 13, "Corackston given to Blue", "Blue owns Corackston (a town without a castle) as well as Xabran; it is in the list of Blue's castles. Its garrison is the neutral one.", game =>
                 {
                     Castle(game, 2, c => c with { Owner = PlayerColor.Blue });
-                    Player(game, 0, p => p with { CastleIds = Numbers.Of(3, 2) });
                 }),
                 Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills (15 each, the sword included), secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
                 {

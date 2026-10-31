@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Data;
@@ -57,6 +57,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Mock.Of<ICastleDiffer>(),
                 Mock.Of<IPlayerDeserializer>(),
                 Mock.Of<ISerializer<PlayerChunk, PlayerModel>>(),
+                Mock.Of<IDeserializer<PlayerChunk, PlayerLists>>(),
+                Mock.Of<ISerializer<PlayerChunk, PlayerLists>>(),
                 Mock.Of<IPlayerDiffer>(),
                 Mock.Of<IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
@@ -66,6 +68,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Kit<MerchantStockModel>(),
                 Kit<HeroOwnersModel>(),
                 Kit<TurnModel>(),
+                Mock.Of<IDocumentReconciler>(),
                 Mock.Of<ISavefileBytesPatcher>());
             var chunks = this.castles.Keys.Select((name, i) => new CastleChunk(name, new byte[10], 1000 + (i * 100))).ToList();
 

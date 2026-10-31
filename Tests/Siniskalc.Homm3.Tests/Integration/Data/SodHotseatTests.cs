@@ -160,7 +160,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = Hotseat("five_teams_00_game_begin");
             using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText);
 
-            Assert.That(red.Obelisks.Obelisks[0].Coordinates, Is.EqualTo("Pos: 47, 8, Surface"));
+            Assert.That(red.Obelisks.Obelisks[0].Coordinates, Is.EqualTo("at 47, 8, Surface"));
         }
     }
 }

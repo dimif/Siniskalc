@@ -51,7 +51,7 @@
 
             var blue = document.Players().GetModel(0);
             Assert.That(blue.Resources, Is.EqualTo(ResourceSet.None));
-            Assert.That(blue.HeroIds, Is.EqualTo(new[] { 16 }));
+            Assert.That(document.Players().GetLists(0).HeroIds, Is.EqualTo(new[] { 16 }));
             Assert.That(document.Players().GetModel(1).Resources, Is.EqualTo(new ResourceSet(30, 10, 30, 10, 10, 10, 10000)));
 
             var xabran = document.Castles().GetModel(2);

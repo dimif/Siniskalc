@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
     using Siniskalc.Core.Data;
@@ -6,7 +6,7 @@ namespace Siniskalc.Homm3.Data
 
     /// <summary>
     /// Lists nothing: the table of hero owners only changes with the owner of a hero, which <see cref="HeroDiffer"/> lists and whose revert
-    /// puts the table back too (<see cref="HeroOwnerEdits.WithOwnerAsIn"/>).
+    /// puts the table back too (<see cref="PlayerListsReconciler"/>).
     /// </summary>
     public sealed class HeroOwnersDiffer : IDiffer<HeroOwnersModel>
     {

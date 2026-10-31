@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Data;
 using Siniskalc.Heroes.Models;
@@ -39,9 +39,6 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public IHeroSummaries<PlayerColor> Heroes => this;
 
-        /// <summary>Gets or sets what happens when the page gives the castle to a player; it may throw the rule that forbids it.</summary>
-        public Action<PlayerColor> OnChangeOwner { get; set; } = _ => { };
-
         public IByteEditTarget Target { get; } = new Mock<IByteEditTarget>().Object;
 
         public IByteEditTargetFactory? FactoryAsked { get; private set; }
@@ -51,12 +48,6 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public SaveDocumentHistory History => throw new NotSupportedException("The fake has no savefile.");
 
         public HeroModel? FindHero(int heroId) => this.HeroModels.GetValueOrDefault(heroId);
-
-        public void ChangeOwner(PlayerColor owner)
-        {
-            this.OnChangeOwner(owner);
-            this.Update(c => c with { Owner = owner });
-        }
 
         public IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory)
         {

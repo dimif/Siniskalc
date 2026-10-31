@@ -59,7 +59,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public string LevelText => this.hasLevels && this.Position is { } at ? MapLevelText.Of(at.Level) : string.Empty;
 
         /// <summary>
-        /// Gets where the obelisk is on the map, such as "Pos: 34, 58", or nothing when the savefile does not tell.
+        /// Gets where the obelisk is on the map, such as "at 34, 58", or nothing when the savefile does not tell.
         /// </summary>
         public string Coordinates => this.Position is { } at ? MapLevelText.Coordinates(at, this.hasLevels) : string.Empty;
 

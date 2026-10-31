@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -31,12 +31,10 @@ namespace Siniskalc.Homm3.Data
         /// <inheritdoc/>
         public IReadOnlyList<PendingChange> Diff(int heroIndex, HeroModel original, HeroModel current)
         {
+            // The owner of a hero is also in the lists of heroes of the players and in the table of hero owners: putting it back puts those back
+            // too (PlayerListsReconciler).
             var changes = new ChangeSink<HeroModel>((change, revert) => this.pendingChanges.ForHero(current.Name, heroIndex, change, revert));
-
-            // The owner of a hero is also in the lists of heroes of the players and in the table of hero owners, so putting it back puts those
-            // back too, in one step (HeroEditSession.RestoreOwner), not the hero alone.
-            var owner = new ChangeSink<HeroModel>((change, _) => new PendingChange(current.Name, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).RestoreOwner()));
-            owner.AddOwner(original.Owner, current.Owner, (h, _) => h);
+            changes.AddOwner(original.Owner, current.Owner, (h, owner) => h with { Owner = owner });
 
             DiffGeneral(original, current, changes);
             DiffPrimarySkills(original, current, changes);
@@ -48,7 +46,7 @@ namespace Siniskalc.Homm3.Data
             DiffSpells(original, current, changes);
             DiffPlaceVisits(original, current, changes);
 
-            return owner.All.Concat(changes.All).ToList();
+            return changes.All;
         }
 
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
@@ -134,17 +132,8 @@ namespace Siniskalc.Homm3.Data
         private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
-        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
-        {
-            // Skills are slots in an order, so they are shown, and reverted, as one list.
-            var before = FormatSecondarySkills(original.SecondarySkills);
-            var after = FormatSecondarySkills(current.SecondarySkills);
-
-            if (before != after)
-            {
-                changes.Add(ChangeAreas.SecondarySkills, "Skills", before, after, h => h with { SecondarySkills = original.SecondarySkills });
-            }
-        }
+        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddSecondarySkills(SecondarySkill.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
 
         private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });
@@ -218,17 +207,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             // Only learned spells are edited; the available ones come from artifacts.
-            var added = Spell.All.Where(s => current.SpellBook.IsLearned(s) && !original.SpellBook.IsLearned(s)).ToList();
-            var removed = Spell.All.Where(s => original.SpellBook.IsLearned(s) && !current.SpellBook.IsLearned(s)).ToList();
-
-            if (added.Count == 0 && removed.Count == 0)
-            {
-                return;
-            }
-
-            var before = removed.Count == 0 ? "nothing forgotten" : $"forgotten: {FormatList(removed.Select(s => s.Name))}";
-            var after = added.Count == 0 ? "nothing learned" : $"learned: {FormatList(added.Select(s => s.Name))}";
-            changes.Add(ChangeAreas.Spells, "Learned spells", before, after, h => h with { SpellBook = h.SpellBook.WithLearned(added, false).WithLearned(removed, true) });
+            changes.AddLearnedSpells(original.SpellBook.Learned, current.SpellBook.Learned, (h, spell, learned) => h with { SpellBook = h.SpellBook.WithLearned(spell, learned) });
         }
 
         private static EquippedArtifacts RestoreEquipped(EquippedArtifacts equipped, ArtifactSlots slot, Artifact? artifact, Spell? spell)
@@ -241,24 +220,6 @@ namespace Siniskalc.Homm3.Data
             return spell != null ? SpellScroll.NameOf(spell) : artifact?.Name ?? ChangeText.Empty;
         }
 
-        private static string FormatSecondarySkills(SecondarySkills skills)
-        {
-            var parts = Enumerable.Range(0, skills.SlotCount)
-                .Select(i => skills.GetSkillInSlot(i))
-                .OfType<SecondarySkill>()
-                .Select(skill => $"{skill.Name} ({(skills.GetSkillLevel(skill) == SkillLevel.None ? "no level" : skills.GetSkillLevel(skill).Name)})")
-                .ToList();
-
-            // Skills without a slot are applied by the game, but not shown on the hero screen.
-            var extras = skills.ExtraSkills.OrderBy(s => s.Code).Select(skill => $"{skill.Name} ({skills.GetSkillLevel(skill)})").ToList();
-            if (extras.Count > 0)
-            {
-                parts.Add($"not shown: {string.Join(", ", extras)}");
-            }
-
-            return FormatList(parts);
-        }
-
         private static string FormatList(IEnumerable<string> items)
         {
             var list = items.ToList();
@@ -268,9 +229,5 @@ namespace Siniskalc.Homm3.Data
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
 
         private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
-
-        /// <summary>
-        /// The pending changes of one hero as they are found.
-        /// </summary>
     }
 }

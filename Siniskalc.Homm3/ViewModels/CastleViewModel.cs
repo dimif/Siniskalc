@@ -5,9 +5,7 @@
     using System.Globalization;
     using System.Linq;
     using System.Windows.Input;
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -23,16 +21,14 @@
     /// </summary>
     public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
-        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
-
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
         private readonly ICastleSession castleSession;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
-        private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
-        private string notice = string.Empty;
+
+        private DwellingStockActions? dwellingActions;
 
         public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
             : base(session.Name, session)
@@ -80,7 +76,8 @@
         public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
 
         /// <summary>
-        /// Gets or sets the owner, as "Neutral" or the name of a player colour.
+        /// Gets or sets the owner, as "Neutral" or the name of a player colour. The days left of the players who lose and gain the castle change
+        /// with it (<see cref="PlayerListsReconciler"/>).
         /// </summary>
         public string SelectedOwner
         {
@@ -88,7 +85,7 @@
             set
             {
                 var owner = OwnerNames<PlayerColor>.Parse(value);
-                this.castleSession.ChangeOwner(owner);
+                this.Edit(castle => castle with { Owner = owner });
             }
         }
 
@@ -114,7 +111,7 @@
         public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
-        /// Gets where the town is on the map, such as "Pos: 33, 23, Surface".
+        /// Gets where the town is on the map, such as "at 33, 23, Surface".
         /// </summary>
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 
@@ -147,8 +144,6 @@
         /// Gets the heroes in the castle: the garrisoned one and the one at the gate, if there are any.
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; private set; } = [];
-
-        IReadOnlyList<ILink> ICastlePage.Heroes => this.Heroes;
 
         public bool HasHeroes => this.Heroes.Count > 0;
 
@@ -199,22 +194,6 @@
         /// Gets a line about the buildings, such as "9 of 40 buildings built".
         /// </summary>
         public string BuildingsSummary { get; private set; } = string.Empty;
-
-        /// <summary>
-        /// Gets why the last edit was refused, such as "Fort: Needed by Citadel.", or nothing. Cleared by the next edit that works.
-        /// </summary>
-        public string Notice
-        {
-            get => this.notice;
-            private set
-            {
-                this.notice = value;
-                this.RaisePropertyChanged(nameof(this.Notice));
-                this.RaisePropertyChanged(nameof(this.HasNotice));
-            }
-        }
-
-        public bool HasNotice => this.notice.Length > 0;
 
         /// <summary>
         /// Gets the command that puts the whole castle back to what the savegame had.
@@ -317,16 +296,8 @@
         /// </summary>
         private void Edit(Func<CastleModel, CastleModel> edit)
         {
-            try
+            if (!this.TryUpdate(edit))
             {
-                this.Session.Update(edit);
-                this.Notice = string.Empty;
-            }
-            catch (GameRuleException ex)
-            {
-                // Only the rules of the game are told to the user; a fault (a bad index, say) is not made to look like one.
-                Logger.LogInformation("Refused an edit of the castle: {Reason}", ex.Message);
-                this.Notice = ex.Message;
                 this.Refresh();
             }
         }

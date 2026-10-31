@@ -1,6 +1,5 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
-using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Data;
 using Siniskalc.Heroes.Models;
@@ -32,7 +31,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
             this.playerDeserializer = new Mock<IPlayerDeserializer>();
             this.playerDeserializer
                 .Setup(d => d.Deserialize(It.IsAny<PlayerChunk>()))
-                .Returns(new PlayerModel(PlayerColor.Red, ResourceSet.None, new TavernHeroes(0, 1), Numbers.Of(), 0, 0));
+                .Returns(new PlayerModel(PlayerColor.Red, ResourceSet.None, new TavernHeroes(0, 1), 0));
 
             this.factory = new SaveDocumentFactory(
                 new VersionSpecificEntitiesProviderFactory(version => new GrantedSpellsResolver(version)),
@@ -42,6 +41,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 Mock.Of<ICastleDiffer>(),
                 this.playerDeserializer.Object,
                 Mock.Of<ISerializer<PlayerChunk, PlayerModel>>(),
+                Mock.Of<IDeserializer<PlayerChunk, PlayerLists>>(),
+                Mock.Of<ISerializer<PlayerChunk, PlayerLists>>(),
                 this.playerDiffer.Object,
                 Mock.Of<IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
@@ -51,6 +52,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(Mock.Of<IDeserializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<ISerializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<IDiffer<HeroOwnersModel>>()),
                 new RecordKit<RecordChunk, TurnModel>(Mock.Of<IDeserializer<RecordChunk, TurnModel>>(), Mock.Of<ISerializer<RecordChunk, TurnModel>>(), Mock.Of<IDiffer<TurnModel>>()),
+                Mock.Of<IDocumentReconciler>(),
                 Mock.Of<ISavefileBytesPatcher>());
         }
 

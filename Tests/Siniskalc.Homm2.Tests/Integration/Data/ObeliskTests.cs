@@ -60,7 +60,7 @@
             Assert.That(obelisks.HasObelisks, Is.True);
             Assert.That(obelisks.Summary, Is.EqualTo("5 of 9 visited"));
             Assert.That(obelisks.Obelisks[3].Label, Is.EqualTo("Obelisk 4"));
-            Assert.That(obelisks.Obelisks[3].Coordinates, Is.EqualTo("Pos: 63, 27"));
+            Assert.That(obelisks.Obelisks[3].Coordinates, Is.EqualTo("at 63, 27"));
 
             obelisks.Obelisks[3].IsVisited = true;
             Assert.That(game.History.Current.Obelisks().GetModel()!.Masks[3], Is.EqualTo((byte)3));

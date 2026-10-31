@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Runtime;
 
     /// <summary>
     /// Undo/redo history over immutable <see cref="SaveDocument"/> snapshots.
@@ -9,9 +11,17 @@
     /// </summary>
     public sealed class SaveDocumentHistory : IPendingChangeHistory
     {
+        private static readonly ILogger<SaveDocumentHistory> Logger = LogFactory.For<SaveDocumentHistory>();
+
         private readonly Stack<SaveDocument> undo = new();
         private readonly Stack<SaveDocument> redo = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveDocumentHistory"/> class.
+        /// </summary>
+        /// <param name="initial">
+        /// The initial history of the document.
+        /// </param>
         public SaveDocumentHistory(SaveDocument initial)
         {
             this.Current = initial;
@@ -41,6 +51,8 @@
         /// </summary>
         public void MarkSaved()
         {
+            Logger.LogDebug("Marking the document as saved ({Undo} undo and {Redo} redo steps kept)", this.undo.Count, this.redo.Count);
+
             if (ReferenceEquals(this.Original, this.Current))
             {
                 return;
@@ -58,10 +70,17 @@
         /// <summary>
         /// Puts the value of <paramref name="change"/> back through this history, leaving every other edit alone.
         /// </summary>
-        public void Revert(PendingChange change) => change.Revert(this);
+        public void Revert(PendingChange change)
+        {
+            Logger.LogDebug("Reverting the pending change {Change}", change.Path);
+
+            change.Revert(this);
+        }
 
         public void Apply(SaveDocument next)
         {
+            Logger.LogDebug("Applying an edit on top of {Undo} undo steps", this.undo.Count);
+
             this.undo.Push(this.Current);
             this.Current = next;
             this.redo.Clear();
@@ -70,6 +89,8 @@
 
         public void Undo()
         {
+            Logger.LogDebug("Undoing ({Undo} undo steps available)", this.undo.Count);
+
             if (!this.CanUndo)
             {
                 return;
@@ -82,6 +103,8 @@
 
         public void Redo()
         {
+            Logger.LogDebug("Redoing ({Redo} redo steps available)", this.redo.Count);
+
             if (!this.CanRedo)
             {
                 return;

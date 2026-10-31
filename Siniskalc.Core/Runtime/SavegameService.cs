@@ -18,6 +18,18 @@
         private readonly ISavefileCodec codec;
         private readonly IFileBackupServiceProvider backups;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SavegameService{TGame}"/> class.
+        /// </summary>
+        /// <param name="parser">
+        /// The savegame parser.
+        /// </param>
+        /// <param name="codec">
+        /// The save file codec.
+        /// </param>
+        /// <param name="backups">
+        /// The save file backups provider.
+        /// </param>
         protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
         {
             this.parser = parser;
@@ -30,6 +42,8 @@
         /// <exception cref="SavefileException">The file is not a savegame this editor can edit.</exception>
         public TGame LoadGameFromFile(string filePath)
         {
+            Logger.LogDebug("Loading game from file {File}", filePath);
+
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
@@ -39,12 +53,19 @@
         }
 
         /// <inheritdoc/>
-        public TGame LoadGameFromBytes(byte[] bytes, string? sourceName = null) => this.parser.Parse(bytes, null, sourceName);
+        public TGame LoadGameFromBytes(byte[] bytes, string? sourceName = null)
+        {
+            Logger.LogDebug("Loading game from bytes {Source} ({Length} bytes)", LogPaths.Label(null, sourceName), bytes.Length);
+
+            return this.parser.Parse(bytes, null, sourceName);
+        }
 
         /// <inheritdoc/>
         /// <exception cref="InvalidOperationException">The game has no file to read again.</exception>
         public TGame ReloadGame(TGame game)
         {
+            Logger.LogDebug("Reloading game {File}", LogPaths.Label(string.IsNullOrWhiteSpace(game.FileName) ? null : game.FileName, null));
+
             if (string.IsNullOrWhiteSpace(game.FileName))
             {
                 throw new InvalidOperationException("Cannot reload game without an associated file");
@@ -56,6 +77,8 @@
         /// <inheritdoc/>
         public void SaveGame(TGame game, string filePath)
         {
+            Logger.LogDebug("Saving game to {File}", Path.GetFileName(filePath));
+
             // Worked out before the file is touched: nothing is replaced if the edits cannot be applied.
             var bytes = game.GetBytesToSave();
 

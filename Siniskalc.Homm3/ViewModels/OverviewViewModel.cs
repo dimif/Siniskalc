@@ -44,7 +44,7 @@ namespace Siniskalc.Homm3.ViewModels
         protected override string GiveTurnToolTip => GiveTheTurnToolTip;
 
         /// <inheritdoc/>
-        protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";
+        protected override string ComputerTurnToolTip => "Computer player: cannot be given the turn";
 
         /// <summary>
         /// Builds the cards again from the savefile as it is edited now.

@@ -37,7 +37,7 @@
         public override string VersionName => this.game.VersionName;
 
         /// <inheritdoc/>
-        protected override string ComputerTurnToolTip => "A computer player: it plays after the humans, and cannot be given the turn";
+        protected override string ComputerTurnToolTip => "Computer player: cannot be given the turn";
 
         /// <summary>
         /// Reads the players again from the current document.

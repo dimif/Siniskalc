@@ -41,6 +41,11 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **Editable store for game entities** Entities (heroes, castles, creatures) are hardcoded in the editor.
   A store of entities that can be edited and saved would let the editor support mods and future games.
 - **Log viewer** A log viewer in the UI for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
+- **Async file I/O (2026-11-01).** Only the two "export bytes" paths are async (`SavegameFileCommands.ExportBytesAsync`, `HexEditor.ExportBytesAsync`, both `File.WriteAllBytesAsync`); everything else is sync (settings, `RawSavefileCodec`, `GzipSavefileCodec`, `NumberedSavefileBackupService`, `SavegameService`), and the whole stack below the UI (loaders, (de)serializers, models, view models) is sync.
+  - **Keep sync:** `UserSettings` and `SettingsStore` (a few hundred bytes, read once during composition in `AppServices`, written rarely; `*Async` is no faster on small files and would force async factories or a blocking `GetAwaiter().GetResult()` at startup).
+  - **Worth doing if it is measured to matter:** opening, reloading and saving a savefile from the UI (`SavegameFileCommands.Open`, `OpenRecent`, `Save`, `SaveAs`, which go through `Run(...)`) read, decompress, parse, back up and write on the UI thread, so a big save or a slow or network drive freezes the window. Time a load and a save on the biggest `TestData` saves first; if they take milliseconds, leave it.
+  - **How:** do not make `ISerializer`, `IDeserializer`, the codecs or the loaders async (it would spread through every interface and test, and the parsing is CPU work that async does not help). Run the whole open or save step with `Task.Run` from the commands in `SavegameFileCommands`, show a busy state, and apply the result to the shell view model on the UI thread. Disable the commands while one runs, so a second save cannot start over the first.
+  - **Consistency:** until then, export being async while open and save are not is only a difference in the commands, not a rule; do not read it as a decision to make I/O async.
 
 ## User features
 

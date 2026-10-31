@@ -139,7 +139,7 @@ namespace Siniskalc.Homm3.Data
 
                 if (lists.HeroIds.Count > Constants.Player.HeroListSize)
                 {
-                    throw new GameRuleException($"{color} has the most heroes a player can have on the map ({Constants.Player.HeroListSize}).");
+                    throw new GameRuleException(FullListNotice.For(color.Name, "heroes", Constants.Player.HeroListSize));
                 }
 
                 var player = players.GetModel(index);

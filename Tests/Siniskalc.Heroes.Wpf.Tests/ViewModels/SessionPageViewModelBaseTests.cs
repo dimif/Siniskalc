@@ -67,7 +67,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void AResetTheRulesOfTheGameRefuseIsNotMadeAndTheNoticeSaysWhy()
         {
-            this.session.Setup(s => s.Update(It.IsAny<Func<string, string>>())).Throws(new GameRuleException("Blue has the most heroes a player can have."));
+            this.session.Setup(s => s.Update(It.IsAny<Func<string, string>>())).Throws(new GameRuleException("Blue has the most heroes a player can have (8)."));
             var page = new Page(this.session.Object);
             page.CheckDirty();
             var raised = new List<string?>();
@@ -75,7 +75,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             Assert.That(() => page.ResetCommand.Execute(null), Throws.Nothing);
 
-            Assert.That((page.HasNotice, page.Notice), Is.EqualTo((true, "Blue has the most heroes a player can have.")));
+            Assert.That((page.HasNotice, page.Notice), Is.EqualTo((true, "Blue has the most heroes a player can have (8).")));
             Assert.That(raised, Is.SupersetOf(new[] { nameof(page.Notice), nameof(page.HasNotice) }));
         }
 

@@ -151,7 +151,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             page.OwnerField.Selected = "Blue";
 
             Assert.That(page.HasNotice, Is.True);
-            Assert.That(page.Notice, Is.EqualTo("Blue has the most castles a player can have."));
+            Assert.That(page.Notice, Is.EqualTo("Blue has the most castles a player can have (8)."));
             Assert.That(history.Current, Is.SameAs(before), "a refused owner leaves the savegame as it was");
         }
 

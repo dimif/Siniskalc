@@ -66,12 +66,12 @@ namespace Siniskalc.Homm2.Data
                 var color = players.GetColor(index);
                 if (next.HeroIds.Count > Constants.Player.HeroListSize)
                 {
-                    throw new GameRuleException($"{color.Name} has the most heroes a player can have.");
+                    throw new GameRuleException(FullListNotice.For(color.Name, "heroes", Constants.Player.HeroListSize));
                 }
 
                 if (next.CastleIds.Count > Constants.Player.CastleListSize)
                 {
-                    throw new GameRuleException($"{color.Name} has the most castles a player can have.");
+                    throw new GameRuleException(FullListNotice.For(color.Name, "castles", Constants.Player.CastleListSize));
                 }
 
                 if (next != current)

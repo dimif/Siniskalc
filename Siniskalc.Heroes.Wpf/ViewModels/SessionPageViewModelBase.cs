@@ -31,7 +31,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         }
 
         /// <summary>
-        /// Gets why the last edit of the page was not made, such as "Blue has the most heroes a player can have.", or an empty text. The next
+        /// Gets why the last edit of the page was not made, such as "Blue has the most heroes a player can have (8).", or an empty text. The next
         /// edit that is made clears it.
         /// </summary>
         public string Notice

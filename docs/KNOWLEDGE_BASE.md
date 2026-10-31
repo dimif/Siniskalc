@@ -28,7 +28,7 @@ This project therefore includes the GZip part of SharpZipLib 1.2.0 with the line
 ## Header: map, setup and teams
 
 - **Map name and description** are each a 16-bit length and ASCII text.
-  The name starts at byte 95 in HotA saves and byte 58 in SoD saves.
+  The name starts at byte 95 in HotA saves and byte 58 in SoD and RoE saves (the 16-bit length is at that byte, the text two bytes later).
   Some names keep a leading space (`" The empire of the world"`).
   Non-ASCII names would break `MapHeaderLocator`.
 - **Map difficulty** is the byte after the description, 0 Pawn to 4 King (3 = Queen checked against the game, 0 to 2 only against samples; `map_difficulty_edited_to_expert`).

@@ -12,7 +12,7 @@
     /// <remarks>
     /// The savefile starts with the map's header: the name and the description, each a 16-bit length and then the text, and then
     /// a byte with the map's difficulty, from 0 for Pawn to 4 for King. The header's start differs between versions (the name is at
-    /// byte 95 in HotA and 58 in Shadow of Death), so the name is found by its shape. It was checked by changing a map's difficulty
+    /// byte 95 in HotA and 58 in Shadow of Death and Restoration of Erathia), so the name is found by its shape. It was checked by changing a map's difficulty
     /// in the map editor from Impossible (4) to Expert (3): cas_mod and map_diff_difficulty differ in this byte only (and in the
     /// file name, which changes the length of the rest).
     /// The width of the map is the 32-bit integer 5 bytes before the name (36, 72, 108, ... for Small, Medium, Large, ...), and the byte

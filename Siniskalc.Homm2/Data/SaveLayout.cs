@@ -62,12 +62,12 @@ namespace Siniskalc.Homm2.Data
         public int CurrentHumanStart => this.DateStart - (HeaderLayout.Date - HeaderLayout.CurrentHuman);
 
         /// <summary>
-        /// Gets where the name of the map begins: a 16-bit length, then the text.
+        /// Gets where the name of the map begins: zero terminated text of at most 16 bytes, with no length in front.
         /// </summary>
         public int MapNameStart => HeaderLayout.MapName + this.MarkerLength;
 
         /// <summary>
-        /// Gets where the description of the map begins.
+        /// Gets where the description of the map begins: zero terminated text, with no length in front.
         /// </summary>
         public int MapDescriptionStart => HeaderLayout.MapDescription + this.MarkerLength;
 

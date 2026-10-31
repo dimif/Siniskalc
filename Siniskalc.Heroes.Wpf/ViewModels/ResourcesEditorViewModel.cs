@@ -85,17 +85,6 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         public ICommand ClearRichCommand { get; }
 
         /// <summary>
-        /// Shows the amounts again, after the resources changed.
-        /// </summary>
-        public void Refresh()
-        {
-            foreach (var row in this.Rows)
-            {
-                row.Refresh();
-            }
-        }
-
-        /// <summary>
         /// Builds the resources of a player in the order both games show them: gold first, then the savefile-table order.
         /// </summary>
         /// <param name="limits">What the player may hold, and what the buttons add.</param>
@@ -111,6 +100,17 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             Func<Resource, string>? note = null)
         {
             return new ResourcesEditorViewModel(ResourceSet.All.OrderBy(resource => resource != Resource.Gold), limits, current, original, update, note);
+        }
+
+        /// <summary>
+        /// Shows the amounts again, after the resources changed.
+        /// </summary>
+        public void Refresh()
+        {
+            foreach (var row in this.Rows)
+            {
+                row.Refresh();
+            }
         }
 
         private void Clear(IEnumerable<ResourceRowViewModel> rows)

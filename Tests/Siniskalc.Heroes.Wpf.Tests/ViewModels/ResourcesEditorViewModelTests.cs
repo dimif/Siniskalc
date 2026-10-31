@@ -84,6 +84,30 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
+        public void ThePlayerFactoryKeepsGameLimitsIncomeNotesAndClearCommands()
+        {
+            var editor = ResourcesEditorViewModel.ForPlayer(
+                Limits,
+                () => this.state,
+                () => ResourceSet.None,
+                edit => this.state = edit(this.state),
+                resource => resource == Resource.Gold ? "+1,000 a day" : string.Empty);
+            var gold = editor.Rows[0];
+            var wood = editor.Rows[1];
+
+            Assert.That((gold.Maximum, wood.Maximum, gold.Note, wood.Note), Is.EqualTo((1000L, 100L, "+1,000 a day", string.Empty)));
+            gold.Value = 900;
+            wood.Value = 95;
+            gold.AddPresetCommand.Execute(null);
+            wood.AddPresetCommand.Execute(null);
+            Assert.That((this.state.Gold, this.state[Resource.Wood]), Is.EqualTo((1000L, 100L)));
+            editor.ClearAllCommand.Execute(null);
+            Assert.That((this.state.Gold, this.state[Resource.Wood]), Is.EqualTo((1000L, 0L)));
+            editor.ClearRichCommand.Execute(null);
+            Assert.That(this.state, Is.EqualTo(ResourceSet.None));
+        }
+
+        [Test]
         public void GoldHasLimitsOfItsOwn()
         {
             var rows = this.Editor().Rows;

@@ -5,7 +5,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Windows.Input;
-    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;

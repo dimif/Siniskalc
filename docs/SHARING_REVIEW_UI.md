@@ -1,5 +1,7 @@
 # What can move into Siniskalc.Heroes(.Wpf): review of `ViewModels` and `Views`
 
+**2026-10-31 (unused overview state):** HoMM3's `HasMap` and `UnownedNote` are removed. Neither had a production binding; the shared template uses `HasMapDescription`. The remaining test assertion of `UnownedNote` was removed without deleting its broader player-card test. This is dead-state cleanup, not new UI behavior.
+
 **2026-10-31 (hero identity validation):** the corpus disproves HoMM2's identity-index assumption: `MapDifficultySize/map_difficulty_size_07_map_hard_extra_large.GX1` has scenario heroes whose stored ids differ from their table indexes (including id 55). `HeroChunkCollection.GetSummaries` supplies the actual table index, and `IndexOfId`/`FindById` resolve the stored id rather than treating it as an index. Shared tavern navigation uses that mapping. No bytes or models are rewritten by this lookup correction.
 
 **2026-10-31 (overview cards):** `OverviewViewModelBase.CardOf` builds both games' player cards from a shared `PlayerModelBase`, links and the game's open command. The injected `BanishingTextProvider` supplies the pill. A missing player record still gives a card without resources or banishing state and keeps the game's disabled command; lookup, links and turn editing stay game-specific. HoMM3 reads the player model directly rather than creating an edit session to read it.

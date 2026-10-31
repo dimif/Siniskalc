@@ -77,7 +77,20 @@
             change.Revert(this);
         }
 
-        public void Apply(SaveDocument next)
+        /// <summary>
+        /// Records an edit: <paramref name="next"/>, with the records that follow the edited ones put in step by the reconciler of the savefile
+        /// (<see cref="SaveDocument.Reconciled"/>), becomes the current document in one step of the history. When the reconciler refuses the
+        /// edit, the history is left as it was.
+        /// </summary>
+        /// <param name="next">The edited document.</param>
+        public void Apply(SaveDocument next) => this.ApplyAsIs(next.Reconciled(this.Original, this.Current));
+
+        /// <summary>
+        /// Records <paramref name="next"/> as it is, in one step of the history, without putting other records in step: an edit of the raw
+        /// bytes, or a document that is already whole (such as the original).
+        /// </summary>
+        /// <param name="next">The document to make current.</param>
+        public void ApplyAsIs(SaveDocument next)
         {
             Logger.LogDebug("Applying an edit on top of {Undo} undo steps", this.undo.Count);
 

@@ -1,6 +1,7 @@
 namespace Siniskalc.Core.Tests.MultiUnit.Data
 {
     using System.Collections.Generic;
+    using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
     using Siniskalc.Core.Tests.Data;
@@ -55,6 +56,25 @@ namespace Siniskalc.Core.Tests.MultiUnit.Data
             var history = new SaveDocumentHistory(new SaveDocument(new byte[2], collections, new SavefileBytesPatcher()));
 
             Assert.That(() => new EditSession<RawBytesChunk, TestModel>(history, TestChunkKinds.Unit, 0), Throws.ArgumentException);
+        }
+
+        [Test]
+        public void AnEditOfTheModelGoesThroughTheReconcilerAndAnEditOfTheBytesDoesNot()
+        {
+            var collections = new Dictionary<ChunkKind, IChunkCollection>
+            {
+                [TestChunkKinds.Unit] = new TestModelCollection([new RawBytesChunk("u", [5, 0], 0)]),
+            };
+            var reconciler = new Mock<IDocumentReconciler>();
+            reconciler.Setup(r => r.Reconcile(It.IsAny<SaveDocument>(), It.IsAny<SaveDocument>(), It.IsAny<SaveDocument>())).Returns((SaveDocument _, SaveDocument _, SaveDocument after) => after);
+            var history = new SaveDocumentHistory(new SaveDocument(new byte[2], collections, new SavefileBytesPatcher(), reconciler.Object));
+            var session = new EditSession<RawBytesChunk, TestModel>(history, TestChunkKinds.Unit, 0);
+
+            session.Update(m => m with { Value = 9 });
+            session.UpdateBytes(_ => [7, 0]);
+
+            reconciler.Verify(r => r.Reconcile(It.IsAny<SaveDocument>(), It.IsAny<SaveDocument>(), It.IsAny<SaveDocument>()), Times.Once);
+            Assert.That(session.Current.Value, Is.EqualTo(7));
         }
     }
 }

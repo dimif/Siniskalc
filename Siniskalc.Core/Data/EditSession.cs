@@ -70,7 +70,7 @@ namespace Siniskalc.Core.Data
         /// <summary>
         /// Gets whether the struct differs from the savefile as it was loaded or last saved.
         /// </summary>
-        public bool IsDirty => !this.Chunk.HasSameBytes(this.OriginalChunk);
+        public virtual bool IsDirty => !this.Chunk.HasSameBytes(this.OriginalChunk);
 
         /// <summary>
         /// Gets a token that changes whenever this struct is edited, and stays the same while other structs are. Compare it with
@@ -105,11 +105,12 @@ namespace Siniskalc.Core.Data
         {
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
-            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)), "Edited");
+            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)), "Edited", asIs: false);
         }
 
         /// <summary>
-        /// Replaces the raw bytes of the struct and records the result in the history. Used by the hex editor.
+        /// Replaces the raw bytes of the struct and records the result in the history as it is, without the reconciler of the savefile
+        /// (<see cref="SaveDocumentHistory.ApplyAsIs"/>). Used by the hex editor.
         /// A replacement that leaves the bytes unchanged is not recorded.
         /// </summary>
         public void UpdateBytes(Func<byte[], byte[]> edit)
@@ -117,14 +118,15 @@ namespace Siniskalc.Core.Data
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
 
-            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())), "Replaced the bytes of");
+            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())), "Replaced the bytes of", asIs: true);
         }
 
         private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
             history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
             ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
 
-        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk, string what)
+        // An edit of the model goes through the reconciler of the savefile; an edit of the raw bytes is recorded as it is.
+        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk, string what, bool asIs)
         {
             if (newChunk.HasSameBytes(chunk))
             {
@@ -132,7 +134,15 @@ namespace Siniskalc.Core.Data
             }
 
             Logger.LogDebug("{What} {Kind} {Index} ({Name})", what, this.Kind, this.Index, chunk.Name);
-            this.History.Apply(document.WithChunk(this.Kind, this.Index, newChunk));
+            var next = document.WithChunk(this.Kind, this.Index, newChunk);
+            if (asIs)
+            {
+                this.History.ApplyAsIs(next);
+            }
+            else
+            {
+                this.History.Apply(next);
+            }
         }
 
         private sealed record Cache(SaveDocument Document, TModel Model);

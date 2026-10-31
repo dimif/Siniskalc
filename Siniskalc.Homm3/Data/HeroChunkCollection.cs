@@ -37,6 +37,11 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public bool SupportsAsleep => this.Offsets.AsleepOffset != null;
 
+        /// <summary>
+        /// Gets whether the savefile's game version has the "moved today" flag of a hero found (Horn of the Abyss).
+        /// </summary>
+        public bool SupportsMovedToday => this.Offsets.AreDayFlagsVerified;
+
         /// <inheritdoc/>
         public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.Deserializer, this.Serializer, this.differ);
 

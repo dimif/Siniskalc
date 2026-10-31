@@ -44,7 +44,7 @@
                 (TownBuildings)chunk.GetUInt16At(CastleLayout.TownBuildings),
                 dwellings,
                 new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpellCounts, Constants.Castle.MageGuildLevels).Select(b => (int)b)),
-                new Numbers(chunk.GetBytesAt(CastleLayout.GuildSpells, Bytes.GuildSpellSlots).Select(Bytes.GuildSpellNumber)));
+                new MageGuildSlots(chunk.GetBytesAt(CastleLayout.GuildSpells, Bytes.GuildSpellSlots).Select(stored => Spell.FromByte((byte)Bytes.GuildSpellNumber(stored)))));
         }
     }
 }

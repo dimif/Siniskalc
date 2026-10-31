@@ -39,6 +39,27 @@ namespace Siniskalc.Homm2.Tests.Data
             ByteDiff.Of(before, after).Where(d => d.Offset is >= CastleLayout.Creatures and < CastleLayout.GuildSpells);
 
         [Test]
+        public void ABytePastTheLastSpellInTheMageGuildIsLeftAloneWhileTheModelStillHoldsNone()
+        {
+            var chunk = this.Baseline(prepare: bytes => bytes[CastleLayout.GuildSpells] = 0xC8);
+            var model = new CastleDeserializer().Deserialize(chunk);
+
+            Assert.That(model.MageGuildSpell(1, 0), Is.Null);
+            Assert.That(this.Written(chunk, model)[CastleLayout.GuildSpells], Is.EqualTo(0xC8));
+            Assert.That(this.Written(chunk, model.WithMageGuildSpell(1, 0, Spell.Fireball))[CastleLayout.GuildSpells], Is.EqualTo(Spell.Fireball.Code - 1));
+        }
+
+        [Test]
+        public void ASpellTakenOutOfTheMageGuildIsWrittenAsTheEmptyMark()
+        {
+            var chunk = this.Baseline(prepare: bytes => bytes[CastleLayout.GuildSpells + 1] = (byte)(Spell.Fireball.Code - 1));
+            var model = new CastleDeserializer().Deserialize(chunk);
+
+            Assert.That(model.MageGuildSpell(1, 1), Is.SameAs(Spell.Fireball));
+            Assert.That(this.Written(chunk, model.WithMageGuildSpell(1, 1, null))[CastleLayout.GuildSpells + 1], Is.EqualTo(0xFF));
+        }
+
+        [Test]
         public void TheTileIsWrittenAsTwoBytes()
         {
             var chunk = this.Baseline();

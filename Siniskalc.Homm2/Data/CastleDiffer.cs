@@ -77,6 +77,6 @@
         private static string MageGuildText(CastleModel castle) =>
             castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.MageGuildSpellCounts)}";
 
-        private static string SpellText(int number) => number == 0 ? "none" : Spell.NameOf((byte)number);
+        private static string SpellText(Spell? spell) => spell?.Name ?? "none";
     }
 }

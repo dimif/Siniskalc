@@ -32,6 +32,11 @@
         bool SupportsAsleep { get; }
 
         /// <summary>
+        /// Gets whether the game version of the savefile stores that a hero moved today.
+        /// </summary>
+        bool SupportsMovedToday { get; }
+
+        /// <summary>
         /// Gets the place of the castle that holds the hero inside it, or -1.
         /// </summary>
         int GarrisonCastleIndex { get; }

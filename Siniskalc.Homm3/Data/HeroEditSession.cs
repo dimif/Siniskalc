@@ -30,6 +30,9 @@
         public bool SupportsAsleep => this.History.Current.Heroes().SupportsAsleep;
 
         /// <inheritdoc/>
+        public bool SupportsMovedToday => this.History.Current.Heroes().SupportsMovedToday;
+
+        /// <inheritdoc/>
         public int GarrisonCastleIndex => this.History.Current.Castles().FindByGarrisonedHero(this.Current.Id);
 
         /// <inheritdoc/>

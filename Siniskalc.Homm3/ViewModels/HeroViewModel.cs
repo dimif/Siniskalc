@@ -39,7 +39,7 @@
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
-            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
+            this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo, () => this.session.SupportsMovedToday);
             this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.GameVersion,

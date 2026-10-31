@@ -33,7 +33,7 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **Names behind a provider.** Names of creatures, spells and artifacts are string literals in the entity tables.
   Before a third game, one injected name provider (like `EffectLineProvider`) so a creature is named once and the UI can be localized.
 - **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`, `IHeroPage`), but each game's view model is its own.
-  The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills page waits for the entity sharing described in `docs/SHARING_REVIEW.md`.
+  The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills model is not shared, see "Secondary skills (M3)" below.
 - **View models free of WPF.** The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite for Avalonia.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
@@ -80,3 +80,20 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
    - The other bytes banishing changes are not decoded: the hero chunk of the player (owner `FF`, army emptied), a counter and an 8-byte record near the end of the save, and header bytes near 1313, 1356 and 12492.
      Until they are, a banished player (0) is read-only and no one can be banished or revived by the editor.
    - The list of the indices of a player's towns that starts at byte 25 is not read.
+
+## Secondary skills (M3): not shared, and why (2026-10-31)
+
+Both games already implement `ISecondarySkills<TSkill, TSkills>` and share `SecondarySkillsViewModelBase`; what is left is the model and the serializer, which differ in what they can hold.
+
+- **HoMM3** (`Siniskalc.Homm3/Models/SecondarySkills.cs`): a level for every skill plus the skill slots in order. A skill with a level and no slot is an "extra", which the game still applies; the editor keeps it and can show or hide it.
+- **HoMM2** (`Siniskalc.Homm2/Models/SecondarySkills.cs`, read by `Bytes.SecondarySkills`): the savefile has a table of levels and a table of the order the skills were learned in. The model lists the skills that have a level, those with an order first (in that order), then those with none by skill number, **at most eight** (`Constants.Hero.MaxSecondarySkills`). There are no extras.
+- `SafeHeroSerializer.WriteSecondarySkills` leaves both tables alone while the model equals what they read as. When the model differs it **clears both tables and writes the model's entries again**, with the order 1 to n and the skill count.
+
+What a shared model would change, and what to decide first:
+
+1. **A ninth skill in a HoMM2 savefile.** The reader cuts the list at eight, so a hero whose level table holds more would lose the rest as soon as its skills are edited (the writer clears the tables). No save seen has more than eight; it is not known whether the game can produce one. A model with extras would keep them.
+2. **A skill with a level and no order byte** is read as learned after the ordered ones and gets an order number when the skills are written. A shared model with extras would show it as an extra, and the writer would not give it an order number unless it was moved into a slot.
+3. **The UI of HoMM2 would gain** the show and hide of extra skills.
+4. Both serializers change, so each needs a round trip of every save of that game (unchanged model: identical bytes) and a test with a level byte but no order byte.
+
+Do it when one of the points above matters (a save with more than eight skills, or a second game with extras); until then the two models stay apart.

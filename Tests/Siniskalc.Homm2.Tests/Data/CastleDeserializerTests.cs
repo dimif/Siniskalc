@@ -100,7 +100,7 @@ namespace Siniskalc.Homm2.Tests.Data
             }));
 
             Assert.That(castle.MageGuildSpellCounts, Is.EqualTo(new[] { 3, 3, 2, 0, 0 }));
-            Assert.That(castle.MageGuildSpells.Take(5), Is.EqualTo(new[] { 1, 65, 0, 0, 0 }), "the number is the byte plus one; an empty mark, a byte past the last spell and a byte that is no spell read as none");
+            Assert.That(castle.MageGuildSpells.Take(5), Is.EqualTo(new[] { Spell.FromByte(1), Spell.FromByte(65), null, null, null }), "the number is the byte plus one; an empty mark, a byte past the last spell and a byte that is no spell read as none");
         }
 
         [Test]

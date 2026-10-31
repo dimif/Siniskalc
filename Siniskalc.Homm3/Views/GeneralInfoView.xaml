@@ -24,7 +24,7 @@
                     <CheckBox Content="Moved today"
                               DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:GeneralInfoView}}"
                               IsChecked="{Binding MovedToday}"
-                              Visibility="{Binding IsHota, Converter={StaticResource BoolToVisibility}}"
+                              Visibility="{Binding CanMoveToday, Converter={StaticResource BoolToVisibility}}"
                               ToolTip="Set when the hero moves and cleared on a new day. Probably what the game checks before the hero may dig for the grail. Only Horn of the Abyss savefiles have this flag."/>
                 </heroes:MovementAndSpellPointsCard.ExtraContent>
             </heroes:MovementAndSpellPointsCard>

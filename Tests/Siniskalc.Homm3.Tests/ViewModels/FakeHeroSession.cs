@@ -37,6 +37,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public bool SupportsAsleep { get; init; } = true;
 
+        public bool SupportsMovedToday { get; init; } = true;
+
         public int GarrisonCastleIndex { get; set; } = -1;
 
         public Dictionary<int, string> CastleNames { get; } = [];

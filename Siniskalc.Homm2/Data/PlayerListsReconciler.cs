@@ -117,7 +117,7 @@ namespace Siniskalc.Homm2.Data
                 var (was, now) = (before.GetModel(index), after.GetModel(index));
                 if (was.Owner != now.Owner)
                 {
-                    moves.Add((now.PortraitId, now.Owner));
+                    moves.Add((index, now.Owner));
                 }
             }
 

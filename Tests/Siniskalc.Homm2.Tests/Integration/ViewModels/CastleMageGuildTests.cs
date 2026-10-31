@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.ViewModels
+namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -8,6 +8,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     /// Tests the spells the castle page offers for each slot of the Mage Guild, on Xabran of Broken Alliance (save 24).
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class CastleMageGuildTests
     {
         [Test]

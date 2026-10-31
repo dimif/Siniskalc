@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Tests.Data
+namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Moq;
     using Siniskalc.Core.Data;
@@ -14,6 +14,7 @@ namespace Siniskalc.Homm3.Tests.Data
     /// saves of <c>TestData/Hota/Mines</c> and the Shadow of Death hotseat saves of <c>TestData/Sod/Hotseat</c> have Red and Blue human.
     /// </summary>
     [TestFixture]
+    [Category(TestKinds.Integration)]
     internal sealed class TurnTests
     {
         private static string Mines(string name) => Path.Combine("TestData", "Hota", "Mines", name + ".GM2");

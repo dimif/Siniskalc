@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         private static ArtifactFinderViewModel NewFinder(List<Artifact> chosen, Func<Artifact, bool>? canChoose = null) =>
             new(GameVersion.HornOfTheAbyss, new EffectLineProvider(), "Find", "Pick", chosen.Add, canChoose);
 
-        private static EquippedArtifactsViewModel NewEquipment() => new(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        private static EquippedArtifactsViewModel NewEquipment() => new(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss);
 
         [Test]
         public void OneSearchBoxMatchesNameSlotTypeAndEffectTogether()

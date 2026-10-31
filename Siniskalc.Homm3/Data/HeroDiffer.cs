@@ -98,15 +98,13 @@
             }
 
             // What visited buildings gave until the next battle: the bytes of morale and luck and the bit of each building, each put back on its own.
-            if (original.MoraleBonus != current.MoraleBonus)
-            {
-                changes.Add(ChangeAreas.General, "Morale, next battle", Signed(original.MoraleBonus), Signed(current.MoraleBonus), h => h with { MoraleBonus = original.MoraleBonus });
-            }
-
-            if (original.LuckBonus != current.LuckBonus)
-            {
-                changes.Add(ChangeAreas.General, "Luck, next battle", Signed(original.LuckBonus), Signed(current.LuckBonus), h => h with { LuckBonus = original.LuckBonus });
-            }
+            changes.AddNextBattleBonuses(
+                original.MoraleBonus,
+                current.MoraleBonus,
+                original.LuckBonus,
+                current.LuckBonus,
+                (h, morale) => h with { MoraleBonus = morale },
+                (h, luck) => h with { LuckBonus = luck });
 
             foreach (var effect in System.Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None))
             {
@@ -227,7 +225,5 @@
         }
 
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
-
-        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

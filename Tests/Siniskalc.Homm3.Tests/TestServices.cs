@@ -29,7 +29,7 @@ namespace Siniskalc.Homm3.Tests
 
         private static readonly BanishingTextProvider Banishing = new();
 
-        private static IGameService plainGameService = null!;
+        private static ISavegameService<Game> plainGameService = null!;
 
         private static readonly Homm3ModuleFactory Services = new(
             Encoding.Latin1,
@@ -50,7 +50,7 @@ namespace Siniskalc.Homm3.Tests
         /// Gets the service that parses the file or the bytes it is given each time. The editors of <see cref="CreateHomm3Editor"/> load through
         /// <see cref="CachingGameService"/> instead, which serves the files of <c>TestData</c> from <see cref="SavedGames"/>.
         /// </summary>
-        public static IGameService GameService => plainGameService;
+        public static ISavegameService<Game> GameService => plainGameService;
 
         public static ISavefileCodec SavefileCodec => Services.SavefileCodec;
 

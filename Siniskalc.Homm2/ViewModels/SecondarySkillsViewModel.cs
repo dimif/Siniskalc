@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -17,7 +18,7 @@
             GameVersion gameVersion,
             Func<SecondarySkills> getSkills,
             Action<Func<SecondarySkills, SecondarySkills>> update)
-            : base(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.Hero.MaxSecondarySkills, getSkills, update)
+            : base(SecondarySkill.All.AvailableIn(gameVersion).ToList(), Constants.Hero.MaxSecondarySkills, getSkills, update)
         {
         }
 

@@ -24,7 +24,7 @@
             Action<Func<IArmy<Creature>, IArmy<Creature>>> update,
             Func<bool>? isReadOnly = null)
             : base(
-                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
+                Creature.All.AvailableIn(gameVersion).ToList(),
                 c => c.GetInfo(gameVersion),
                 Constants.CreatureSlotCount,
                 Constants.Army.MinStackSize,

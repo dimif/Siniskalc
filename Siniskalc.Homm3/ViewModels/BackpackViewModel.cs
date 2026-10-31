@@ -18,7 +18,7 @@
         /// <param name="model">The backpack to show.</param>
         /// <param name="onChanged">Called with the new backpack whenever the user changes a slot.</param>
         /// <param name="gameVersion">The game version; the finder leaves out artifacts from later versions.</param>
-        public BackpackViewModel(EffectLineProvider effectLines, Backpack model, Action<Backpack>? onChanged = null, GameVersion gameVersion = GameVersion.HornOfTheAbyss)
+        public BackpackViewModel(EffectLineProvider effectLines, Backpack model, GameVersion gameVersion, Action<Backpack>? onChanged = null)
             : base("Backpack", effectLines)
         {
             this.model = model;

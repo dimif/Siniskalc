@@ -13,7 +13,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void PickingInASlotFinderEquipsAndClosesThePopup()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss);
         var slot = vm.SlotFor(ArtifactSlots.Helmet);
         slot.IsOpen = true;
 
@@ -28,7 +28,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingCombinationArtifactMirrorsBlockedSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, GameVersion.HornOfTheAbyss);
         var admiral = Artifact.AdmiralsHat;
 
         vm.SelectedHelm = admiral.Name;
@@ -44,7 +44,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void ClearingCombinationArtifactClearsAllMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, GameVersion.HornOfTheAbyss);
         var admiral = Artifact.AdmiralsHat;
 
         vm.SelectedHelm = admiral.Name;
@@ -59,7 +59,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SwappingCombinationArtifactToAnotherArtifactUpdatesMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, GameVersion.HornOfTheAbyss);
         var admiral = Artifact.AdmiralsHat;
         var necklace = Artifact.Necklaces.First(a => !a.IsCombination);
 
@@ -76,7 +76,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingMiscArtifactsKeepsTheOtherMiscSlots()
     {
         EquippedArtifacts? changed = null;
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), m => changed = m);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss, m => changed = m);
 
         vm.SelectedItem1 = Artifact.CharmOfSpellPoints.Name;
         vm.SelectedItem2 = Artifact.MysticOrbOfSpellPoints.Name;
@@ -91,7 +91,7 @@ public sealed class EquippedArtifactsViewModelTests
     public void RefreshShowsTheModelWithoutReportingAChange()
     {
         var changes = 0;
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), _ => changes++);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss, _ => changes++);
 
         vm.Refresh(new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Helmet, Artifact.AdmiralsHat));
 
@@ -103,7 +103,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void EffectLinesListOnlyEffectsThatAreNotZero()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss);
         Assert.That(vm.TotalEffectLines, Is.Empty);
         Assert.That(vm.HasNoEffects, Is.True);
 
@@ -116,7 +116,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void ClearSlotCommandTakesTheArtifactOffAndMirroredSlotsGoToo()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss);
         vm.SelectedHelm = Artifact.AdmiralsHat.Name;
 
         Assert.That(vm.ClearSlotCommand.CanExecute(ArtifactSlots.Necklace), Is.True);
@@ -131,7 +131,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void HoveredArtifactInfoComesAndGoes()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), GameVersion.HornOfTheAbyss);
         Assert.That(vm.HasSelectedInfo, Is.False);
 
         vm.ShowArtifactInfoByName(Artifact.PendantOfCourage.Name);

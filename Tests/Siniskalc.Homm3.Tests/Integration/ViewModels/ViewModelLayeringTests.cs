@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using Siniskalc.Tests.Homm.Common;
 
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
@@ -29,24 +30,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void ViewModelsDoNotUseChunksOrTheByteLayout()
         {
-            var offenders = new List<string>();
-            foreach (var file in Directory.GetFiles(ViewModelsFolder(), "*.cs"))
-            {
-                if (Allowed.Contains(Path.GetFileName(file)))
-                {
-                    continue;
-                }
-
-                var lines = File.ReadAllLines(file);
-                for (var i = 0; i < lines.Length; i++)
-                {
-                    var code = lines[i].TrimStart();
-                    if (!code.StartsWith("//") && Forbidden.IsMatch(code))
-                    {
-                        offenders.Add($"{Path.GetFileName(file)}:{i + 1}: {code}");
-                    }
-                }
-            }
+            var offenders = ViewModelLayering.Offenders(ViewModelsFolder(), Forbidden, Allowed);
 
             Assert.That(offenders, Is.Empty, string.Join(Environment.NewLine, offenders));
         }

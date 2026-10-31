@@ -3,6 +3,7 @@ namespace Siniskalc.Homm3.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -63,7 +64,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// Lists spells by school, and inside a school by level.
         /// </summary>
         private static IReadOnlyList<SpellRowViewModel> CreateRows(GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => Spell.All
-            .Where(s => s.IsAvailableIn(gameVersion))
+            .AvailableIn(gameVersion)
             .Select(s => new SpellRowViewModel(s, learned))
             .OrderBy(r => r.Spell.School).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
             .ToList();

@@ -8,7 +8,7 @@ The work was done in the order at the end; **"Status after the work"** below say
 
 **Later (2026-10-19):** `PlayerColors<TColor>`, `Factions<TFaction>`, `PlayerColorInfo` and `FactionInfo` are gone. HoMM2's `Color` and `Faction` and HoMM3's `PlayerColor` are `AbstractEnumeration` classes that implement `IPlayerColor` / `IFaction` (so E2 below went the way of its "Option"), colours have a `Neutral` member instead of a `null` owner, and `ICastleModel<TColor, TCreature, TFaction>` is the shared view of a castle.
 
-**2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `ObeliskEditSession<TColor>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`.
+**2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `EditSession<ObeliskChunk, ObeliskVisits<TColor>>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`.
 
 **2026-10-23:** the obelisk byte conversion is shared too: `ObeliskDeserializer<TColor>` and `SafeObeliskSerializer<TColor>` take an `ObeliskFlagsLayout`. HoMM2 supplies flags at zero and gets the count from the map positions; HoMM3 supplies its stored count and flags offsets. Reading and writing remain independent, and the serializer changes only the flags covered by the chunk's count and the model.
 

@@ -64,7 +64,7 @@
                 experience => this.Update(h => h.WithExperience(experience)),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
-                Entities.HeroClass.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(),
+                Entities.HeroClass.All.AvailableIn(gameVersion).Select(c => c.Name).ToList(),
                 () => this.Hero.HeroClass.Name,
                 this.SetHeroClass,
                 Enum.GetNames<Entities.HeroGender>(),

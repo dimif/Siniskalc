@@ -19,7 +19,7 @@ What is written to the log file, and when, is in `LOGGING.md`. Every place that 
 - **A value the editor does not know never stops a load.** Deserializers read it as a stand-in (or as nothing) and the serializer keeps the original byte (see `CLAUDE.md`).
   Each is logged at Trace with the record as its subject (see `LOGGING.md`).
 - **Parsing only slices bytes; the models are read when a page needs them.** `Homm3EditorViewModel.SetGame` builds what reads the new game (the overview, the owners) before it lets go of the open game, so a game that cannot be shown leaves the open one as it was.
-- **A save is all or nothing.** `GameService.SaveGame` works out the bytes, makes the backup, then `GzipSavefileCodec.Write` writes a `.saving` file and moves it over the savefile.
+- **A save is all or nothing.** `SavegameService<Game>.SaveGame` works out the bytes, makes the backup, then `GzipSavefileCodec.Write` writes a `.saving` file and moves it over the savefile.
   Only after that is the game tied to the file (`Game.SavedTo`) and marked saved.
   If any step throws, the savefile, `Game.File` and the pending changes are as they were.
   A backup that fails stops the save.

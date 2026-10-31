@@ -108,7 +108,7 @@
                 name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
                 toolTip: "Builds the Mage Guild to this level, or takes it down. Each level shows 3, 3, 2, 2 and 1 spells (one more with the Library of a Wizard).");
 
-            var spells = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).ToList();
+            var spells = Spell.All.AvailableIn(game.GameVersion).ToList();
             var (original, current) = (this.session.Original, this.session.Current);
             this.guildLevels = Enumerable.Range(1, Constants.Castle.MageGuildLevels)
                 .Select(level => new GuildLevelViewModel(

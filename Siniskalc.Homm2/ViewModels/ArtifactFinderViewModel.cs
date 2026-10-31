@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Wpf.ViewModels;
 
@@ -41,7 +42,7 @@ namespace Siniskalc.Homm2.ViewModels
         protected override bool Matches(ArtifactChoiceViewModel row) => this.TextMatches(row.Name, row.Bonuses);
 
         private static List<ArtifactChoiceViewModel> CreateRows(GameVersion gameVersion) => Artifact.All
-            .Where(a => a.IsAvailableIn(gameVersion))
+            .AvailableIn(gameVersion)
             .OrderBy(a => a.Name)
             .Select(a => new ArtifactChoiceViewModel(a))
             .ToList();

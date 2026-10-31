@@ -72,8 +72,8 @@
         public EquippedArtifactsViewModel(
             EffectLineProvider effectLines,
             EquippedArtifacts model,
+            GameVersion gameVersion,
             Action<EquippedArtifacts>? onChanged = null,
-            GameVersion gameVersion = GameVersion.HornOfTheAbyss,
             Action<Artifact>? sendToBackpack = null,
             Func<bool>? canSendToBackpack = null)
             : base("Artifacts", effectLines)

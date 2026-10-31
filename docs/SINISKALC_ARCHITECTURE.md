@@ -75,7 +75,7 @@ A game's tests reference only that game's project, so they build the game from i
 
 A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:
 
-1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `IGameService : ISavegameService<Game>` (a `GameService : SavegameService<Game>`, whose parser is an `ISavegameParser<Game>`) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core), and a list of records of one kind (mines, dwellings, shrines) is a `RecordChunkCollection<TChunk, TModel>` (Core) of `RecordChunk`s (or a chunk derived from it) built from a `RecordKit` (its deserializer, serializer and differ) and edited with `new EditSession<TChunk, TModel>(history, kind, index)`; the module (`IGameModule`) that recognises the file.
+1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `ISavegameService<Game>` (the shared `SavegameService<Game>`, whose parser is an `ISavegameParser<Game>` of the game) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core), and a list of records of one kind (mines, dwellings, shrines) is a `RecordChunkCollection<TChunk, TModel>` (Core) of `RecordChunk`s (or a chunk derived from it) built from a `RecordKit` (its deserializer, serializer and differ) and edited with `new EditSession<TChunk, TModel>(history, kind, index)`; the module (`IGameModule`) that recognises the file.
 2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
 3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
 4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.
@@ -91,7 +91,7 @@ SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Origi
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
       a session class only where it adds a member: HoMM3 HeroEditSession / CastleEditSession (IHeroSession, ICastleSession: what the pages ask of the savefile), PlayerEditSession of both games (IsDirty counts the model only),
-      ObeliskEditSession<TColor> (shared); HoMM2's heroes and castles use EditSession<TChunk,TModel> itself (Homm2EditSessions.CreateHeroSession / CreateCastleSession)
+      EditSession<ObeliskChunk, ObeliskVisits<TColor>> (shared Core type); HoMM2's heroes and castles use EditSession<TChunk,TModel> itself (Homm2EditSessions.CreateHeroSession / CreateCastleSession)
       the records of the map (mines, dwellings, merchants, shrines, sphinxes) have no session class: EditSession<TChunk,TModel>(history, kind, index) takes the (de)serializer of their RecordChunkCollection
 Models / Entities               immutable models and game vocabulary (HeroModel, SpellBook, Artifact, ...)
 ViewModels                      hold immutable models, apply edits through reducers, never touch chunks
@@ -134,7 +134,7 @@ They ask the collections of the current `SaveDocument` (`History.Current`, or `H
 Heroes   (HeroChunkCollection)     IndexOfId(heroId), FindById(heroId), FindByName(name), GetSummaries(), GetSummary(index)     HeroSummary carries Index, HeroId, Name, Owner, ...
 Castles  (CastleChunkCollection)   GetModels() (read once per version of the collection), GetModel(i), GetName(i), FindByGarrisonedHero(heroId)
 Players  (PlayerChunkCollection)   GetModel(i), GetColor(i), GetColors(), FindByColor(color)
-Obelisks (ObeliskChunkCollection<TColor>, in Siniskalc.Heroes, with ObeliskVisits<TColor>, ObeliskChunk, ObeliskDiffer<TColor> and ObeliskEditSession<TColor>)  Any, GetModel() (the visited obelisks, or null when the savefile has none to show); edited with CreateObeliskSession()
+Obelisks (ObeliskChunkCollection<TColor>, in Siniskalc.Heroes, with ObeliskVisits<TColor>, ObeliskChunk and ObeliskDiffer<TColor>)  Any, GetModel() (the visited obelisks, or null when the savefile has none to show); edited with CreateObeliskSession()
 SaveDocument.GameVersion
 EditSession.IsDirty                differs from the savefile as loaded or saved
 EditSession.Revision               an opaque token that changes when this struct is edited, so a view model can tell its own edits from others'

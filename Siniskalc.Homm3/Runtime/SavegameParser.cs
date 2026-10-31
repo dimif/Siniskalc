@@ -12,7 +12,7 @@
     /// <summary>
     /// Builds a <see cref="Game"/> from the (decompressed) bytes of a savefile: finds the structs in it and what it says about the game.
     /// </summary>
-    public sealed class SavegameParser : ISavegameParser
+    public sealed class SavegameParser : ISavegameParser<Game>
     {
         private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
 

@@ -128,6 +128,34 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void TheNextBattleBonusesListOnlyWhatChangedWithASignAndRevertEachOnItsOwn()
+        {
+            var sink = NewSink(out var reverts);
+            var luckPutBack = new List<int>();
+
+            sink.AddNextBattleBonuses(1, -2, 0, 3, (t, morale) => t with { SpellPoints = morale }, (t, luck) =>
+            {
+                luckPutBack.Add(luck);
+                return t;
+            });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Morale, next battle", "+1", "-2"), ("General", "Luck, next battle", "0", "+3") }));
+            Assert.That(reverts[0](Blank() with { SpellPoints = -2 }).SpellPoints, Is.EqualTo(1));
+            reverts[1](Blank());
+            Assert.That(luckPutBack, Is.EqualTo(new[] { 0 }));
+        }
+
+        [Test]
+        public void UnchangedNextBattleBonusesListNothing()
+        {
+            var sink = NewSink(out _);
+
+            sink.AddNextBattleBonuses(1, 1, -1, -1, (t, _) => t, (t, _) => t);
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        [Test]
         public void AnArmyChangeIsOneChangeForEachSlotThatDiffersAndEmptySlotsSayEmpty()
         {
             var sink = NewSink(out var reverts);

@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -53,7 +54,7 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         private static IReadOnlyList<SpellRowViewModel> CreateRows(GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => Spell.All
-            .Where(s => s.IsAvailableIn(gameVersion))
+            .AvailableIn(gameVersion)
             .OrderBy(s => s.Name)
             .Select(s => new SpellRowViewModel(s, learned))
             .ToList();

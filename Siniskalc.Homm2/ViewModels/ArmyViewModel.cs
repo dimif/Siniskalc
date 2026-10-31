@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Entities;
@@ -17,7 +18,7 @@
 
         public ArmyViewModel(GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
             : base(
-                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
+                Creature.All.AvailableIn(gameVersion).ToList(),
                 c => c.Info,
                 Constants.ArmySlotCount,
                 MinStackSize,

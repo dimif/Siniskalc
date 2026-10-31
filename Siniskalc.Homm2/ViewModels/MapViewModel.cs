@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -25,7 +26,7 @@ namespace Siniskalc.Homm2.ViewModels
             : base("Map", game.History, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
             var document = game.History.Current;
-            var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
+            var spellNames = Spell.All.AvailableIn(game.GameVersion).OrderBy(s => s.Name).Select(s => s.Name).ToList();
             var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
             this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
                 shrines,

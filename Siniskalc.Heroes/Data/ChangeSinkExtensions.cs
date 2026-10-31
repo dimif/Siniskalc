@@ -255,6 +255,40 @@
         }
 
         /// <summary>
+        /// Adds a change for the morale and for the luck the hero carries into the next battle when each differs, each put back on its own.
+        /// </summary>
+        /// <typeparam name="TModel">The model of the hero.</typeparam>
+        /// <param name="sink">Collects the changes.</param>
+        /// <param name="moraleBefore">The morale bonus as loaded.</param>
+        /// <param name="moraleAfter">The morale bonus now.</param>
+        /// <param name="luckBefore">The luck bonus as loaded.</param>
+        /// <param name="luckAfter">The luck bonus now.</param>
+        /// <param name="withMorale">Returns the model with the given morale bonus.</param>
+        /// <param name="withLuck">Returns the model with the given luck bonus.</param>
+        public static void AddNextBattleBonuses<TModel>(
+            this ChangeSink<TModel> sink,
+            int moraleBefore,
+            int moraleAfter,
+            int luckBefore,
+            int luckAfter,
+            Func<TModel, int, TModel> withMorale,
+            Func<TModel, int, TModel> withLuck)
+            where TModel : class
+        {
+            if (moraleBefore != moraleAfter)
+            {
+                sink.Add(ChangeAreas.General, "Morale, next battle", Signed(moraleBefore), Signed(moraleAfter), model => withMorale(model, moraleBefore));
+            }
+
+            if (luckBefore != luckAfter)
+            {
+                sink.Add(ChangeAreas.General, "Luck, next battle", Signed(luckBefore), Signed(luckAfter), model => withLuck(model, luckBefore));
+            }
+        }
+
+        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
+
+        /// <summary>
         /// Adds a change for each resource whose amount differs, each put back on its own.
         /// </summary>
         /// <typeparam name="TModel">The model of the record that holds the resources.</typeparam>

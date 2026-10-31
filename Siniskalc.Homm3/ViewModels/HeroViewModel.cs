@@ -56,13 +56,13 @@
             this.BackpackViewModel = new BackpackViewModel(
                 effectLines,
                 this.HeroModel.Backpack,
-                backpack => this.Update(h => h with { Backpack = backpack }),
-                this.GameVersion);
+                this.GameVersion,
+                backpack => this.Update(h => h with { Backpack = backpack }));
             this.ArtifactsViewModel = new EquippedArtifactsViewModel(
                 effectLines,
                 this.HeroModel.EquippedArtifacts,
-                artifacts => this.Update(h => h.WithEquippedArtifacts(artifacts)),
                 this.GameVersion,
+                artifacts => this.Update(h => h.WithEquippedArtifacts(artifacts)),
                 artifact => this.BackpackViewModel.Add(artifact),
                 () => this.BackpackViewModel.HasFreeSlot);
 

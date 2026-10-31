@@ -2,6 +2,7 @@ namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Linq;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -19,7 +20,7 @@ namespace Siniskalc.Homm3.ViewModels
             GameVersion gameVersion,
             Func<SecondarySkills> getSkills,
             Action<Func<SecondarySkills, SecondarySkills>> update)
-            : base(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.SkillSlots.Max, getSkills, update)
+            : base(SecondarySkill.All.AvailableIn(gameVersion).ToList(), Constants.SkillSlots.Max, getSkills, update)
         {
         }
 

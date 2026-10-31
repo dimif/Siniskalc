@@ -26,7 +26,7 @@
 
             var locator = new SaveLayoutLocator();
             var pendingChanges = new Homm2PendingChangesFactory();
-            this.GameService = new GameService(
+            this.GameService = new SavegameService<Game>(
                 new SavegameParser(
                     locator,
                     new BytesLoader(),
@@ -68,7 +68,7 @@
         /// </summary>
         public IGameModule<Homm2EditorViewModel> Module { get; }
 
-        public IGameService GameService { get; }
+        public ISavegameService<Game> GameService { get; }
 
         public ISaveRegionProvider SaveRegionProvider { get; }
 

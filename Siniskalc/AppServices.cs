@@ -103,7 +103,7 @@
         /// </summary>
         public IGameModule<Homm2EditorViewModel> Homm2 => this.homm2.Module;
 
-        public IGameService GameService => this.homm3.GameService;
+        public ISavegameService<Game> GameService => this.homm3.GameService;
 
         public ISavefileCodec SavefileCodec => this.homm3.SavefileCodec;
 
@@ -133,7 +133,7 @@
 
         public ISpellPointsCalculatorFactory SpellPoints => this.homm3.SpellPoints;
 
-        public H2Runtime.IGameService Homm2GameService => this.homm2.GameService;
+        public ISavegameService<H2Runtime.Game> Homm2GameService => this.homm2.GameService;
 
         public ISaveRegionProvider Homm2SaveRegionProvider => this.homm2.SaveRegionProvider;
 

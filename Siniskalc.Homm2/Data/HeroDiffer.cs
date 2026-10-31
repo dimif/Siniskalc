@@ -40,15 +40,13 @@ namespace Siniskalc.Homm2.Data
             changes.AddMovement(original.MovementPoints, current.MovementPoints, (h, movement) => h with { MovementPoints = movement });
             changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
-            if (original.NextBattle.Morale != current.NextBattle.Morale)
-            {
-                changes.Add(ChangeAreas.General, "Morale, next battle", original.NextBattle.Morale.ToString("+0;-0;0"), current.NextBattle.Morale.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Morale = original.NextBattle.Morale } });
-            }
-
-            if (original.NextBattle.Luck != current.NextBattle.Luck)
-            {
-                changes.Add(ChangeAreas.General, "Luck, next battle", original.NextBattle.Luck.ToString("+0;-0;0"), current.NextBattle.Luck.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Luck = original.NextBattle.Luck } });
-            }
+            changes.AddNextBattleBonuses(
+                original.NextBattle.Morale,
+                current.NextBattle.Morale,
+                original.NextBattle.Luck,
+                current.NextBattle.Luck,
+                (h, morale) => h with { NextBattle = h.NextBattle with { Morale = morale } },
+                (h, luck) => h with { NextBattle = h.NextBattle with { Luck = luck } });
 
             if (original.Effects != current.Effects)
             {

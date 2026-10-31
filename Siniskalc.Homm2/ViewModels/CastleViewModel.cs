@@ -7,7 +7,6 @@
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -26,8 +25,6 @@
         private const string NoSpell = "(none)";
         private const string NotBuilt = "Not built";
 
-        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
-
         private readonly Action<int> openHero;
         private readonly CastleEditSession session;
         private readonly IByteEditTargetFactory? byteEditTargets;
@@ -39,7 +36,6 @@
         private CastleModel castle = null!;
         private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
         private string visitingHeroName = string.Empty;
-        private string notice = string.Empty;
 
         public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
             : this(game, game.History.CreateCastleSession(castleIndex), openHero, byteEditTargets)
@@ -153,11 +149,6 @@
         /// Gets the name of the hero that is in the castle, or nothing.
         /// </summary>
         public string VisitingHeroName => this.visitingHeroName;
-
-        /// <inheritdoc/>
-        public string Notice => this.notice;
-
-        public bool HasNotice => this.notice.Length > 0;
 
         public ICommand OpenHeroCommand { get; }
 
@@ -312,19 +303,7 @@
 
         private void ChangeOwner(string name)
         {
-            this.notice = string.Empty;
-            try
-            {
-                this.session.Update(c => c with { Owner = OwnerNames<PlayerColor>.Parse(name) });
-            }
-            catch (GameRuleException ex)
-            {
-                Logger.LogInformation("Refused the owner {Owner} of a castle: {Reason}", name, ex.Message);
-                this.notice = $"{name} has the most castles a player can have.";
-            }
-
-            this.RaisePropertyChanged(nameof(this.Notice));
-            this.RaisePropertyChanged(nameof(this.HasNotice));
+            this.TryUpdate(c => c with { Owner = OwnerNames<PlayerColor>.Parse(name) });
             this.OwnerField.Refresh();
         }
     }

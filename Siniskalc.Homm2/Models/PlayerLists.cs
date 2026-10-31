@@ -2,7 +2,6 @@ namespace Siniskalc.Homm2.Models
 {
     using System.Linq;
     using Siniskalc.Core.Models;
-    using Siniskalc.Heroes.Models;
 
     /// <summary>
     /// The lists of heroes and castles that the record of a player keeps, with the hero and the castle that are selected on the map. The
@@ -23,12 +22,12 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the lists with the hero in the list of heroes or out of it. A hero that joins goes back to its place when
         /// <paramref name="original"/> has it, and after the others when it does not; a hero that leaves takes the selection with it. Once
-        /// the list is as in <paramref name="original"/>, its selected hero comes back too. Lists that already say so are returned as they are.
+        /// the list is as in <paramref name="original"/>, its selected hero comes back too. Lists that already say so are returned as they are. A
+        /// list may come out longer than the game allows; whoever makes the change refuses it (<see cref="Data.PlayerListsReconciler"/>).
         /// </summary>
         /// <param name="heroId">The number of the hero.</param>
         /// <param name="owns">Whether the player has the hero now.</param>
         /// <param name="original">The lists as the savegame had them.</param>
-        /// <exception cref="GameRuleException">The hero joins a list that is full.</exception>
         public PlayerLists WithHero(int heroId, bool owns, PlayerLists original)
         {
             if (owns == this.HeroIds.Contains(heroId))
@@ -37,11 +36,6 @@ namespace Siniskalc.Homm2.Models
             }
 
             var ids = Place(this.HeroIds, heroId, owns, original.HeroIds);
-            if (ids.Count > Constants.Player.HeroListSize)
-            {
-                throw new GameRuleException($"A player has at most {Constants.Player.HeroListSize} heroes.");
-            }
-
             var selected = ids.Equals(original.HeroIds) ? original.SelectedHero : !owns && this.SelectedHero == heroId ? null : this.SelectedHero;
             return this with { HeroIds = ids, SelectedHero = selected };
         }
@@ -52,7 +46,6 @@ namespace Siniskalc.Homm2.Models
         /// <param name="castleIndex">The number of the castle.</param>
         /// <param name="owns">Whether the player has the castle now.</param>
         /// <param name="original">The lists as the savegame had them.</param>
-        /// <exception cref="GameRuleException">The castle joins a list that is full.</exception>
         public PlayerLists WithCastle(int castleIndex, bool owns, PlayerLists original)
         {
             if (owns == this.CastleIds.Contains(castleIndex))
@@ -61,11 +54,6 @@ namespace Siniskalc.Homm2.Models
             }
 
             var ids = Place(this.CastleIds, castleIndex, owns, original.CastleIds);
-            if (ids.Count > Constants.Player.CastleListSize)
-            {
-                throw new GameRuleException($"A player has at most {Constants.Player.CastleListSize} castles.");
-            }
-
             var selected = ids.Equals(original.CastleIds) ? original.SelectedCastle : !owns && this.SelectedCastle == castleIndex ? null : this.SelectedCastle;
             return this with { CastleIds = ids, SelectedCastle = selected };
         }

@@ -7,7 +7,6 @@
     using System.Windows.Input;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -23,8 +22,6 @@
     /// </summary>
     public sealed class CastleViewModel : SessionPageViewModelBase<CastleModel>, ICastlePage
     {
-        private static readonly ILogger<CastleViewModel> Logger = LogFactory.For<CastleViewModel>();
-
         private static readonly DelegateCommand NoCommand = new(_ => { }, _ => false);
 
         private readonly ICastleSession castleSession;
@@ -32,7 +29,6 @@
         private readonly CastleBuildMessageProvider buildMessages;
         private DwellingStockActions? dwellingActions;
         private readonly Action<int>? openHero;
-        private string notice = string.Empty;
 
         public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
             : base(session.Name, session)
@@ -202,22 +198,6 @@
         public string BuildingsSummary { get; private set; } = string.Empty;
 
         /// <summary>
-        /// Gets why the last edit was refused, such as "Fort: Needed by Citadel.", or nothing. Cleared by the next edit that works.
-        /// </summary>
-        public string Notice
-        {
-            get => this.notice;
-            private set
-            {
-                this.notice = value;
-                this.RaisePropertyChanged(nameof(this.Notice));
-                this.RaisePropertyChanged(nameof(this.HasNotice));
-            }
-        }
-
-        public bool HasNotice => this.notice.Length > 0;
-
-        /// <summary>
         /// Gets the command that puts the whole castle back to what the savegame had.
         /// </summary>
         private CastleModel Castle { get; set; }
@@ -318,16 +298,8 @@
         /// </summary>
         private void Edit(Func<CastleModel, CastleModel> edit)
         {
-            try
+            if (!this.TryUpdate(edit))
             {
-                this.Session.Update(edit);
-                this.Notice = string.Empty;
-            }
-            catch (GameRuleException ex)
-            {
-                // Only the rules of the game are told to the user; a fault (a bad index, say) is not made to look like one.
-                Logger.LogInformation("Refused an edit of the castle: {Reason}", ex.Message);
-                this.Notice = ex.Message;
                 this.Refresh();
             }
         }

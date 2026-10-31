@@ -45,11 +45,11 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
-        public void AHeroCannotJoinAFullListOfHeroes()
+        public void AHeroJoiningAFullListOfHeroesMakesItLongerForTheCallerToRefuse()
         {
             var full = Loaded with { HeroIds = new Numbers(Enumerable.Range(20, Siniskalc.Homm2.Constants.Player.HeroListSize)) };
 
-            Assert.That(() => full.WithHero(9, owns: true, Loaded), Throws.TypeOf<GameRuleException>().With.Message.EqualTo($"A player has at most {Siniskalc.Homm2.Constants.Player.HeroListSize} heroes."));
+            Assert.That(full.WithHero(9, owns: true, Loaded).HeroIds.Count, Is.EqualTo(Siniskalc.Homm2.Constants.Player.HeroListSize + 1));
         }
 
         [Test]
@@ -62,11 +62,11 @@ namespace Siniskalc.Homm2.Tests.Models
         }
 
         [Test]
-        public void ACastleCannotJoinAFullListOfCastles()
+        public void ACastleJoiningAFullListOfCastlesMakesItLongerForTheCallerToRefuse()
         {
             var full = Loaded with { CastleIds = new Numbers(Enumerable.Range(40, Siniskalc.Homm2.Constants.Player.CastleListSize)) };
 
-            Assert.That(() => full.WithCastle(5, owns: true, Loaded), Throws.TypeOf<GameRuleException>().With.Message.EqualTo($"A player has at most {Siniskalc.Homm2.Constants.Player.CastleListSize} castles."));
+            Assert.That(full.WithCastle(5, owns: true, Loaded).CastleIds.Count, Is.EqualTo(Siniskalc.Homm2.Constants.Player.CastleListSize + 1));
         }
     }
 }

@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Windows.Input;
     using Microsoft.Extensions.Logging;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -21,8 +20,6 @@
     /// </summary>
     public sealed class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
-        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
-
         private readonly Action<int> openCastle;
         private readonly HeroEditSession session;
         private readonly IByteEditTargetFactory? byteEditTargets;
@@ -157,13 +154,6 @@
             get => this.OwnerField.Selected;
             set => this.OwnerField.Selected = value;
         }
-
-        /// <summary>
-        /// Gets a sentence saying why the owner could not be changed, or nothing.
-        /// </summary>
-        public string Notice { get; private set; } = string.Empty;
-
-        public bool HasNotice => this.Notice.Length > 0;
 
         /// <inheritdoc/>
         public string Name => this.hero.Name;
@@ -342,19 +332,7 @@
 
         private void ChangeOwner(string name)
         {
-            this.Notice = string.Empty;
-            try
-            {
-                this.session.Update(h => h.WithOwner(OwnerNames<PlayerColor>.Parse(name)));
-            }
-            catch (GameRuleException ex)
-            {
-                Logger.LogInformation("Refused the owner {Owner} of a hero: {Reason}", name, ex.Message);
-                this.Notice = $"{name} has the most heroes a player can have.";
-            }
-
-            this.RaisePropertyChanged(nameof(this.Notice));
-            this.RaisePropertyChanged(nameof(this.HasNotice));
+            this.TryUpdate(h => h.WithOwner(OwnerNames<PlayerColor>.Parse(name)));
             this.OwnerField.Refresh();
         }
 

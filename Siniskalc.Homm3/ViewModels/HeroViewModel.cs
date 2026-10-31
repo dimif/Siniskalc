@@ -6,7 +6,6 @@
     using System.Windows.Input;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
-    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -23,13 +22,10 @@
     /// </summary>
     public class HeroViewModel : SessionPageViewModelBase<HeroModel>, IHeroPage
     {
-        private static readonly ILogger<HeroViewModel> Logger = LogFactory.For<HeroViewModel>();
-
         private readonly IHeroSession session;
         private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
         private object shownRevision;
-        private string notice = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
@@ -162,42 +158,12 @@
                     return;
                 }
 
-                try
+                if (!this.TryUpdate(h => h.WithOwner(owner)))
                 {
-                    this.session.Update(h => h.WithOwner(owner));
-                    this.Notice = string.Empty;
-                }
-                catch (GameRuleException ex)
-                {
-                    // Only the rules of the game are told to the user; a fault is not made to look like one.
-                    Logger.LogInformation("Refused the owner {Owner} of the hero: {Reason}", owner, ex.Message);
-                    this.Notice = ex.Message;
                     this.RaisePropertyChanged(nameof(this.SelectedOwner));
                 }
             }
         }
-
-        /// <summary>
-        /// Gets why the last change of the owner was not made, or an empty text.
-        /// </summary>
-        public string Notice
-        {
-            get => this.notice;
-            private set
-            {
-                if (this.notice != value)
-                {
-                    this.notice = value;
-                    this.RaisePropertyChanged(nameof(this.Notice));
-                    this.RaisePropertyChanged(nameof(this.HasNotice));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether there is a <see cref="Notice"/> to show.
-        /// </summary>
-        public bool HasNotice => this.notice.Length > 0;
 
         /// <summary>
         /// Gets the name of the castle that holds this hero inside it, otherwise an empty text.

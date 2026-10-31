@@ -42,7 +42,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             history.ApplyAsIs(history.Current.WithChunk(Homm2ChunkKinds.Player, green, players.ListsSerializer.Serialize(players[green], full)));
             var before = history.Current;
 
-            Assert.That(() => history.CreateHeroSession(Maximus).Update(h => h.WithOwner(PlayerColor.Green)), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => history.CreateHeroSession(Maximus).Update(h => h.WithOwner(PlayerColor.Green)), Throws.TypeOf<GameRuleException>().With.Message.EqualTo("Green has the most heroes a player can have."));
 
             Assert.That(history.Current, Is.SameAs(before));
         }

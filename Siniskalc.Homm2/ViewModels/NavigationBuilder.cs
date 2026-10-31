@@ -89,11 +89,8 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         protected override IReadOnlyList<PlayerColor> MineOwners(Game game) => game.History.Current.Mines().GetModels().Select(m => m.Owner).ToList();
 
-        // A player is listed when it has a castle, a hero, or days left to get a castle.
         /// <inheritdoc/>
-        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetModels()
-            .Where(p => p.CastleIds.Count > 0 || p.HeroIds.Count > 0 || p.DaysLeft != null)
-            .Select(p => p.Color);
+        protected override IEnumerable<PlayerColor> PlayersInGame(Game game) => game.History.Current.Players().GetColors();
 
         /// <inheritdoc/>
         protected override NavNodeViewModel CreateGroup(NavigationTree tree, Game game, PlayerColor owner)

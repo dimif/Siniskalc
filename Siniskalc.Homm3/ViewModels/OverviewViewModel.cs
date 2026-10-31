@@ -65,16 +65,12 @@ namespace Siniskalc.Homm3.ViewModels
         public override void Refresh()
         {
             var summaries = this.game.History.Current.Heroes().GetSummaries();
-            var colors = this.game.History.Current.Players().GetColors()
-                .Concat(summaries.Select(s => s.Owner).Where(o => !o.IsNeutral))
-                .Distinct()
-                .OrderBy(c => c)
+            var colors = PlayersInGame.Of(
+                this.game.History.Current.Players().GetColors(),
+                summaries.Select(summary => summary.Owner),
+                this.game.History.Current.Castles().GetModels().Where(castle => castle.IsUsed).Select(castle => castle.Owner))
+                .Where(color => !color.IsNeutral)
                 .ToList();
-
-            var castles = this.game.History.Current.Castles().GetModels()
-                .Select((model, index) => (Index: index, Model: model))
-                .ToList();
-            colors = colors.Concat(castles.Select(c => c.Model.Owner).Where(o => !o.IsNeutral)).Distinct().OrderBy(c => c).ToList();
 
             this.OrderOfPlay = colors.Select(this.OrderItemOf).ToList();
             var cards = new List<PlayerCardViewModel>();

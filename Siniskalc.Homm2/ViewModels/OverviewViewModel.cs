@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -48,9 +49,12 @@
             var document = this.game.History.Current;
             var heroes = document.Heroes().GetModels();
 
-            // A colour is in the game when it owns a castle or a hero, or the days of a player that was put out are counted.
-            var inGame = document.Players().GetModels()
-                .Where(player => player.CastleIds.Count > 0 || player.HeroIds.Count > 0 || player.DaysLeft != null)
+            var inGame = PlayersInGame.Of(
+                document.Players().GetColors(),
+                heroes.Select(hero => hero.Owner),
+                document.Castles().GetModels().Where(castle => castle.IsUsed).Select(castle => castle.Owner))
+                .Where(color => !color.IsNeutral)
+                .Select(color => document.Players().GetModel(color.Code))
                 .ToList();
             this.Players = inGame.Select(player => this.CardOf(player)).ToList();
             this.OrderOfPlay = inGame.OrderBy(player => player.Color).Select(player => this.OrderItemOf(player.Color)).ToList();

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -25,6 +26,14 @@
         public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ, this.heroName);
 
         public PlayerColor GetColor(int index) => PlayerColor.All[index];
+
+        /// <summary>
+        /// Returns the colours with a hero list, a castle list or a banishing countdown.
+        /// </summary>
+        public IReadOnlyList<PlayerColor> GetColors() => this.GetModels()
+            .Where(player => player.CastleIds.Count > 0 || player.HeroIds.Count > 0 || player.DaysLeft != null)
+            .Select(player => player.Color)
+            .ToList();
 
         public int FindByColor(PlayerColor color) => color.Code;
     }

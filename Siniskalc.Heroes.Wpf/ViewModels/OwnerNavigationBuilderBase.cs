@@ -130,16 +130,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         // A player is listed when the savefile has data for it or it owns a hero or a castle; what nobody owns comes last, as neutral has the highest code.
         private IReadOnlyList<TColor> Owners(TGame game)
         {
-            var heroOwners = this.HeroOwners(game);
-            var castleOwners = this.CastleOwnersInUse(game);
-            var owners = this.PlayersInGame(game)
-                .Concat(heroOwners)
-                .Concat(castleOwners)
-                .Distinct()
-                .OrderBy(c => c)
-                .ToList();
-
-            return owners;
+            return Siniskalc.Heroes.Models.PlayersInGame.Of(this.PlayersInGame(game), this.HeroOwners(game), this.CastleOwnersInUse(game));
         }
     }
 }

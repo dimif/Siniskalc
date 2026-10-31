@@ -39,6 +39,14 @@ namespace Siniskalc.Homm2.Tests.Entities
         }
 
         [Test]
+        public void TheElementalAndHasteSpellsAreOnTheLevelsOfTheGame()
+        {
+            Assert.That(
+                new[] { Spell.Fireball, Spell.LightningBolt, Spell.ChainLightning, Spell.MassHaste }.Select(s => s.Level),
+                Is.EqualTo(new[] { 3, 2, 4, 3 }));
+        }
+
+        [Test]
         public void EverySpellIsOnALevelFromOneToFive()
         {
             Assert.That(Spell.All.Select(s => s.Level), Has.All.InRange(1, 5));
@@ -48,7 +56,10 @@ namespace Siniskalc.Homm2.Tests.Entities
         public void EveryMageGuildLevelAndShrineCircleOfTheTestSavesHoldsSpellsOfItsLevel()
         {
             var wrong = new HashSet<string>();
-            foreach (var path in Saves.All())
+            // The saves of TestData/Homm2/out were written by the editor to try its edits in the game (E18GUILD put Fireball, Lightning Bolt
+            // and Chain Lightning in the guild of Xabran, T08SHRIN gave first circle shrines Fireball and Mass Haste), so they hold any spell
+            // anywhere. Only the saves the game wrote say which level a spell is on.
+            foreach (var path in Saves.All().Where(p => !p.Replace('\\', '/').Contains("/Homm2/out/", StringComparison.OrdinalIgnoreCase)))
             {
                 var document = TestServices.Load(path).History.Current;
                 foreach (var castle in document.Castles().GetModels().Where(c => c.IsUsed))

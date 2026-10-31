@@ -98,7 +98,7 @@ Bug reports, savegames that break the editor and pull requests are welcome. Open
 * **Finding a new field in a savefile**: see "Finding a new field" in `docs/FUTURE_IMPROVEMENTS.md`, [`docs/LOCATING_HOMM3_ENTITIES.md`](docs/LOCATING_HOMM3_ENTITIES.md) for how things are located, and
   [`docs/KNOWLEDGE_BASE.md`](docs/KNOWLEDGE_BASE.md) for what is already known. Record new findings there.
 * **Test savegames**: name and place them by [`TestData/README.md`](TestData/README.md) and add a row to the README of their folder.
-* **Errors and logging**: see [`docs/ERROR_MODEL.md`](docs/ERROR_MODEL.md).
+* **Errors and logging**: see [`docs/ERROR_MODEL.md`](docs/ERROR_MODEL.md) and [`docs/LOGGING.md`](docs/LOGGING.md) (the logger, the levels, `serilog.json`).
 * **Before opening a PR**: run the whole suite (`dotnet test`); if the editor is running and locks the build output, add `--artifacts-path <another folder>`. Note user-visible changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Credits and acknowledgements

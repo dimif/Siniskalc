@@ -143,6 +143,15 @@ The hex editor is the one place that works on raw bytes, through the byte edit t
 
 What is thrown, who catches it and what the user is told: see [ERROR_MODEL.md](ERROR_MODEL.md).
 
+## Logging
+
+A class gets its logger from the static `LogFactory` in `Siniskalc.Core` (`private static readonly ILogger<T> Logger = LogFactory.For<T>();`); the loggers write nowhere until `AppServices` calls `LogFactory.Install`, and
+the forwarding logger looks the installed factory up on each use, so a logger created early is never stuck on the silent one.
+Only the exe names Serilog: `LoggingSetup` reads `serilog.json` (sinks, template, path, rolling interval, days kept), replaces `{LogFolder}` in the path and the minimum level with what the user set in `settings.json`
+(`LogFolder`, `LogLevel`, both optional), and returns the `ILoggerFactory`; `App.OnExit` disposes it to flush the file.
+A settings file or a Serilog configuration that cannot be read stops the start with a Reset/Exit dialog (`App.StartServices`).
+Where to log, the levels, how to write a message and what never to log are in [LOGGING.md](LOGGING.md).
+
 ## Locating
 
 How heroes, castles, players, the date and the map header are found in a savefile: see [LOCATING_HOMM3_ENTITIES.md](LOCATING_HOMM3_ENTITIES.md).
@@ -176,7 +185,8 @@ The Hex cards below a mine or a dwelling (`OwnedMinesCards`, `OwnedDwellingsCard
 
 ## Settings and backups
 
-`SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on) and `AdvancedMode` (default off) never overwrite each other.
+`SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on), `AdvancedMode` (default off) and the two logging choices never overwrite each other.
+`EnsureCreated` writes the file the first time, from `Siniskalc.Core/Resources/settings.default.json` (or from the settings of an earlier version).
 A setting missing from the file keeps its default.
 `AppServices` builds one store and hands it to `RecentFilesStore`, `FileBackupServiceProvider` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
 

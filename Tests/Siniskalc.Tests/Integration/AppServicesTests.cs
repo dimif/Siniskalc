@@ -39,9 +39,11 @@ namespace Siniskalc.Tests.Integration
         [Test]
         public void OpeningAHeroes2SavegameSwitchesTheTitleAndTheEditorToThoseOfTheGame()
         {
-            this.shell.LoadGame(Saves.Homm2());
+            var save = Saves.Homm2();
 
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (The Succession Wars)"));
+            this.shell.LoadGame(save);
+
+            Assert.That(this.shell.Title, Is.EqualTo($"Siniskalc - Heroes of Might and Magic II (The Succession Wars) - {Path.GetFullPath(save)}"));
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Homm2));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
         }

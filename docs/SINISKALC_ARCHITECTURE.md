@@ -10,7 +10,7 @@ It defines what the application shell needs from a game: `IGameModule<out TEdito
 
 **`Siniskalc.Wpf`** (net8.0-windows) is the reusable user interface, and it knows no game either.
 It holds the base view models and commands that every page builds on, the dialogs and message boxes behind interfaces, and the controls any editor of this kind needs: steppers, a search box, the finder, the hex editor and viewer. The army, skill, spell and artifact editors are not here but in `Siniskalc.Heroes.Wpf`: they name no game, but they are the vocabulary of the series.
-It also holds the colours and styles every page shares, and the shell of the application: `ShellWindow` (menus, toolbar, status bar, the panel of pending changes and the menu icons), `ShellViewModel` and `SavegameFileCommands`.
+It also holds the colours and styles every page shares, and the shell of the application: `ShellWindow` (menus, toolbar, the panel of pending changes and the menu icons), `ShellViewModel` and `SavegameFileCommands`.
 The shell picks the game of the file the user opens, and shows the game's editor through the data template of the editor's type.
 The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, undo, pending changes, the page that is shown), the generic `NavigationTree` and `NavNodeViewModel` (a game adds badges and notes to a node and fills the tree through its `INavigationBuilder<TGame>`) and `NavigationEditorView` (search box, tree and page frame; the game gives it a page factory).
 A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `ListBox` bound to `SelectedTab`, and the panels of the tabs sit in one grid, each with the style of its number.

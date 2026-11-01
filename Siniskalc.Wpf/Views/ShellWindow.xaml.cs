@@ -9,7 +9,7 @@ namespace Siniskalc.Wpf.Views
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// The window of the application: the menus, the toolbar, the status bar and the panel of pending changes around the editor of the
+    /// The window of the application: the menus, the toolbar and the panel of pending changes around the editor of the
     /// game that is open. It knows no game; the editor is shown through the data template of its type.
     /// </summary>
     public partial class ShellWindow : Window
@@ -32,7 +32,11 @@ namespace Siniskalc.Wpf.Views
             this.InitializeComponent();
             this.recentMenuItem.DataContext = recentMenu;
             this.showLogsMenuItem.Visibility = help.LogFolder is null ? Visibility.Collapsed : Visibility.Visible;
-            recentMenu.OpenRequested += path => this.ShowStatus(this.WithViewModel(shell => this.files.OpenRecent(shell, path)));
+            recentMenu.OpenRequested += path =>
+            {
+                this.WithViewModel(shell => this.files.OpenRecent(shell, path));
+                this.RequeryCommands();
+            };
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
@@ -69,17 +73,20 @@ namespace Siniskalc.Wpf.Views
 
         private void OpenCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.ShowStatus(this.WithViewModel(this.files.Open));
+            this.WithViewModel(this.files.Open);
+            this.RequeryCommands();
         }
 
         private void SaveCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.ShowStatus(this.WithViewModel(this.files.Save));
+            this.WithViewModel(this.files.Save);
+            this.RequeryCommands();
         }
 
         private void SaveAsCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.ShowStatus(this.WithViewModel(this.files.SaveAs));
+            this.WithViewModel(this.files.SaveAs);
+            this.RequeryCommands();
         }
 
         private void UndoCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -124,7 +131,8 @@ namespace Siniskalc.Wpf.Views
         {
             if (this.ViewModel is { } viewModel)
             {
-                this.ShowStatus(await this.files.ExportBytesAsync(viewModel));
+                await this.files.ExportBytesAsync(viewModel);
+                this.RequeryCommands();
             }
         }
 
@@ -141,7 +149,8 @@ namespace Siniskalc.Wpf.Views
 
         private void LoadFromDumpCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.ShowStatus(this.WithViewModel(this.files.LoadBytes));
+            this.WithViewModel(this.files.LoadBytes);
+            this.RequeryCommands();
         }
 
         private void HelpCmdExecuted(object sender, ExecutedRoutedEventArgs e) => this.OpenInBrowser(this.help.UserGuideUrl);
@@ -152,7 +161,8 @@ namespace Siniskalc.Wpf.Views
         {
             if (this.ViewModel is { } shell && new SettingsWindow(new SettingsViewModel(shell, this.loggingSettings?.Invoke())) { Owner = this }.ShowDialog() == true)
             {
-                this.ShowStatus(this.loggingSettings is null ? "Settings saved." : "Settings saved. The logging choices apply the next time the editor starts.");
+                this.messages.ShowInformation("Settings", this.loggingSettings is null ? "Settings saved." : "Settings saved. The logging choices apply the next time the editor starts.");
+                this.RequeryCommands();
             }
         }
 
@@ -174,13 +184,8 @@ namespace Siniskalc.Wpf.Views
             return this.ViewModel is { } viewModel ? action(viewModel) : default;
         }
 
-        private void ShowStatus(string? text)
+        private void RequeryCommands()
         {
-            if (text != null)
-            {
-                this.status.Text = text;
-            }
-
             CommandManager.InvalidateRequerySuggested();
         }
 

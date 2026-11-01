@@ -59,7 +59,7 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
             Assert.That(this.shell.Editor, Is.SameAs(this.second.Editor));
             Assert.That(this.second.Editor.Loaded, Is.EqualTo(new[] { path }));
             Assert.That(this.first.Editor.Loaded, Is.Empty);
-            Assert.That(this.shell.Title, Is.EqualTo("Editor - Second Game (v1)"));
+            Assert.That(this.shell.Title, Is.EqualTo($"Editor - Second Game (v1) - {path}"));
             Assert.That(this.shell.IsGameLoaded, Is.True);
             Assert.That(this.shell.File, Is.EqualTo(path));
         }
@@ -101,14 +101,15 @@ namespace Siniskalc.Wpf.Tests.Integration.ViewModels
         [Test]
         public void ALoadThatFailsLeavesTheEditorThatWasShown()
         {
-            this.shell.LoadGame(this.WriteFile("first.F1", 0x11));
+            var first = this.WriteFile("first.F1", 0x11);
+            this.shell.LoadGame(first);
             this.second.Editor.FailToLoad = true;
 
             Assert.That(() => this.shell.LoadGame(this.WriteFile("broken.S1", 0x22)), Throws.InstanceOf<InvalidDataException>());
 
             Assert.That(this.shell.Editor, Is.SameAs(this.first.Editor));
             Assert.That(this.shell.IsGameLoaded, Is.True);
-            Assert.That(this.shell.Title, Is.EqualTo("Editor - First Game (v1)"));
+            Assert.That(this.shell.Title, Is.EqualTo($"Editor - First Game (v1) - {first}"));
         }
 
         [Test]

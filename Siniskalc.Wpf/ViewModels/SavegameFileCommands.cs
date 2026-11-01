@@ -208,8 +208,16 @@ namespace Siniskalc.Wpf.ViewModels
 
         private void ReportError(string title, string what, Exception ex)
         {
-            // The message of a savefile exception is already written for the user.
-            Logger.LogError(ex, "{Title}: failed to {What}", title, what);
+            // The message of a savefile exception is already written for the user, and a refused savegame is not a failure of the editor.
+            if (ex is SavefileException)
+            {
+                Logger.LogWarning(ex, "{Title}: refused to {What}", title, what);
+            }
+            else
+            {
+                Logger.LogError(ex, "{Title}: failed to {What}", title, what);
+            }
+
             var message = ex is SavefileException ? ex.Message : $"Failed to {what}: {ex.Message}";
             this.messages.ShowError(title, message);
         }

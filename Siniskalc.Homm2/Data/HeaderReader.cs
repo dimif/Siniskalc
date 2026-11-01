@@ -30,7 +30,7 @@
                 bytes[layout.DateStart]);
             Logger.LogTrace("Read the date {Date}", date);
 
-            Logger.LogTrace("Reading the map name at {Offset:X} and its description at {Description:X}", layout.MapNameStart, layout.MapDescriptionStart);
+            Logger.LogTrace("Reading the map name at {Offset:X} and its description at {DescriptionOffset:X}", layout.MapNameStart, layout.MapDescriptionStart);
             var map = new MapHeader(
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
@@ -46,7 +46,7 @@
         // The game plays the humans the mask marks, in the order of the records. Whose turn it is is the turn record (Game.CurrentPlayer).
         private static List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
         {
-            Logger.LogTrace("Reading who controls each colour, the in-game flags at {Flags:X} and the human mask at {Mask:X}", layout.ColorsInGameStart, layout.HumanMaskStart);
+            Logger.LogTrace("Reading who controls each colour, the in-game flags at {FlagsOffset:X} and the human mask at {MaskOffset:X}", layout.ColorsInGameStart, layout.HumanMaskStart);
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             var controls = Enumerable.Repeat(PlayerType.NotInGame, Constants.Table.PlayerCount).ToList();
             for (var record = 0; record < Constants.Table.PlayerCount; record++)
@@ -66,11 +66,11 @@
         {
             if (code >= Difficulties.Length)
             {
-                Logger.LogTrace("Difficulty {Code} is no level, read as the first one", code);
+                Logger.LogTrace("Difficulty {Code:X2} is no level, read as the first one", code);
             }
 
             var difficulty = code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
-            Logger.LogTrace("Difficulty code {Code} read as {Difficulty}", code, difficulty);
+            Logger.LogTrace("Difficulty code {Code:X2} read as {Difficulty}", code, difficulty);
             return difficulty;
         }
     }

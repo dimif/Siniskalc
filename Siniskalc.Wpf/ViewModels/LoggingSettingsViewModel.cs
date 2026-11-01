@@ -14,6 +14,8 @@ namespace Siniskalc.Wpf.ViewModels
     /// </summary>
     public sealed class LoggingSettingsViewModel : AbstractViewModelBase
     {
+        private static readonly ILogger<LoggingSettingsViewModel> Logger = LogFactory.For<LoggingSettingsViewModel>();
+
         private readonly ISettingsStore store;
         private readonly IFileDialogs dialogs;
         private LogLevelChoice selectedLevel;
@@ -141,6 +143,7 @@ namespace Siniskalc.Wpf.ViewModels
             }
             catch (SettingsException ex)
             {
+                Logger.LogError(ex, "Failed to save the logging settings to {Path}", ex.Path);
                 this.Error = ex.Message;
                 return false;
             }

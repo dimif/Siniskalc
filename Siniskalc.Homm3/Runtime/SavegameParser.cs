@@ -71,7 +71,6 @@
             var gameVersion = this.versionDetector.Detect(bytes);
             if (gameVersion == GameVersion.Unknown)
             {
-                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes III savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic III savegame, or it comes from a version of the game this editor does not know.");
             }
 

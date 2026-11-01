@@ -42,7 +42,7 @@
         /// <exception cref="SavefileException">The file is not a savegame this editor can edit.</exception>
         public TGame LoadGameFromFile(string filePath)
         {
-            Logger.LogDebug("Loading game from file {File}", filePath);
+            Logger.LogDebug("Loading game from file {File}", Path.GetFileName(filePath));
 
             if (string.IsNullOrWhiteSpace(filePath))
             {

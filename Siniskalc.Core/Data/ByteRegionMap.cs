@@ -40,7 +40,7 @@
                 var leaf = leaves[i];
                 if (leaf.Start < 0 || leaf.End > length)
                 {
-                    Logger.LogTrace("Leaf {Name} at {Offset:X} for {Length:X} bytes is partly outside the chunk of {Count:X} bytes", leaf.FullName, leaf.Start, leaf.Length, length);
+                    Logger.LogTrace("Leaf {Name} at {Offset:X} for {Length:X} bytes is partly outside the chunk of {ChunkLength:X} bytes", leaf.FullName, leaf.Start, leaf.Length, length);
                 }
 
                 for (var offset = leaf.Start; offset < leaf.End && offset < length; offset++)
@@ -69,7 +69,7 @@
                 }
             }
 
-            Logger.LogTrace("Mapped {Count} leaves, with {Length} bytes covered by more than one", leaves.Count, this.overlapsAt.Count);
+            Logger.LogTrace("Mapped {Count} leaves, with {Overlaps} offsets covered by more than one", leaves.Count, this.overlapsAt.Count);
         }
 
         /// <summary>

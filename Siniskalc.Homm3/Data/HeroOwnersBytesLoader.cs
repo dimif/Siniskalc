@@ -45,11 +45,11 @@ namespace Siniskalc.Homm3.Data
 
             if (!IsTable(bytes, start, length))
             {
-                Logger.LogDebug("No table of hero owners at {Offset}: the bytes in front of the date at {Date} are not one", start, date);
+                Logger.LogDebug("No table of hero owners at {Offset:X}: the bytes in front of the date at {DateOffset:X} are not one", start, date);
                 return [];
             }
 
-            Logger.LogDebug("Table of {Count} hero owners at {Offset}", length, start);
+            Logger.LogDebug("Table of {Count} hero owners at {Offset:X}", length, start);
             return [new RecordChunk(Name, bytes.AsSpan(start, length).ToArray(), start, 0)];
         }
 

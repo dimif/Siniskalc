@@ -47,7 +47,6 @@
             }
             catch (Exception ex) when (ex is SharpZipBaseException or InvalidDataException or EndOfStreamException)
             {
-                Logger.LogWarning(ex, "Could not decompress {File}", Path.GetFileName(filePath));
                 throw new CorruptSavefileException($"{Path.GetFileName(filePath)} is not a compressed savegame, or it is damaged: {ex.Message}", ex);
             }
         }

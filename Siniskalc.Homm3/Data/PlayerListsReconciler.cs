@@ -157,6 +157,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             var updated = after;
+            var changed = 0;
             foreach (var (index, lists, model) in edits)
             {
                 var chunk = players[index];
@@ -164,10 +165,12 @@ namespace Siniskalc.Homm3.Data
                 written = model != null ? players.Serializer.Serialize(written, model) : written;
                 if (!ReferenceEquals(written, chunk))
                 {
-                    Logger.LogDebug("Putting the heroes and the days left of {Player} in step with the owners", players.GetName(index));
+                    changed++;
                     updated = updated.WithPlayer(index, written);
                 }
             }
+
+            Logger.LogDebug("Put the heroes and the days left of {Players} players in step with the owners", changed);
 
             return updated;
         }

@@ -135,7 +135,7 @@
                     }
                     else if (code != -1)
                     {
-                        Logger.LogTrace("Spell code {Code} in Mage Guild level {Level} slot {Slot} is unknown, the slot is left out and its bytes are kept", code, level, slot);
+                        Logger.LogTrace("Spell code {Code:X2} in Mage Guild level {Level} slot {Slot} is unknown, the slot is left out and its bytes are kept", code, level, slot);
                     }
                 }
 

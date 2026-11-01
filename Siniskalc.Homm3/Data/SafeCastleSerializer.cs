@@ -150,18 +150,24 @@
             var enabled = ByteBufferHelper.ReadUInt64(bytes, enabledOffset);
             var hadBuilt = built;
 
+            var skipped = 0;
             foreach (var building in Building.ForFaction(castle.Faction))
             {
                 if (building.Code >= 64)
                 {
-                    using var subject = Logger.BeginSubject("Castle", castle.Name);
-                    Logger.LogWarning("The building {Building} has a code that does not fit the 64-bit masks and was not written", building.Name);
+                    skipped++;
                     continue;
                 }
 
                 built = WithBit(built, building.Code, castle.Buildings.Contains(building));
                 current = WithBit(current, building.Code, castle.VisibleBuildings.Contains(building));
                 enabled = WithBit(enabled, building.Code, castle.EnabledBuildings.Contains(building));
+            }
+
+            if (skipped > 0)
+            {
+                using var subject = Logger.BeginSubject("Castle", castle.Name);
+                Logger.LogWarning("{Count} buildings have a code that does not fit the 64-bit masks and were not written", skipped);
             }
 
             foreach (var (trigger, bit) in CastleLayout.CompanionBits(castle.Faction))

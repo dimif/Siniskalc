@@ -106,7 +106,7 @@
             var node = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Title == "Green");
 
             Assert.That(green.BanishingText, Is.EqualTo("Banished"));
-            Assert.That(node.Subtitle, Does.StartWith("banished"));
+            Assert.That(node.Notes, Is.EqualTo(new[] { "banished" }));
         }
 
         [Test]

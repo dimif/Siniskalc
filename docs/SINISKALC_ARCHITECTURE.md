@@ -206,7 +206,9 @@ How heroes, castles, players, the date and the map header are found in a savefil
 
 What nobody owns is the node `Neutral` (kind `Neutral`, its sections `NeutralTab`), with a page of its own (`NeutralPageViewModelBase` in Heroes.Wpf, `NeutralViewModel` and `NeutralPage` in each game) whose tabs are numbered from the heroes (`NeutralTabs`). Mines and dwellings of one owner are `MinesListViewModel` and, in HoMM3, `OwnedMapObjectsViewModel`, which show the rows whose owner is that owner: the list is filtered again on every history change, so a record given to another owner leaves one page and joins the other. `StructureKey` includes the owners of the mines and dwellings, so the editor rebuilds the tree when one of them changes hands.
 
-The Map page keeps the records no player owns: merchants (HoMM3), shrines and sphinxes (HoMM2).
+Player countdowns are navigation notes, refreshed from the current document after edits, undo and redo in both games; they are not part of the fixed subtitle.
+
+The Map page keeps the records no player owns: merchants (HoMM3), shrines and sphinxes (HoMM2). HoMM2 always includes its Map node, even without shrines or sphinxes, so the Bytes tab can still reach mines, the current turn, castles built this turn and obelisks.
 
 ## Hex views
 

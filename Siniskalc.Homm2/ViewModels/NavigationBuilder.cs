@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.ViewModels
         }
 
         /// <summary>
-        /// Shows the castle badge and the visitor of the castles as they are in <paramref name="game"/> now, after an edit or an undo.
+        /// Shows the castle badges, visitors and player countdowns as they are in <paramref name="game"/> now, after an edit, undo or redo.
         /// </summary>
         public override void RefreshMarks(NavigationTree tree, Game game)
         {
@@ -60,18 +60,17 @@ namespace Siniskalc.Homm2.ViewModels
                     MarkCastle(node, heroes, castles[index]);
                 }
             }
+
+            foreach (var (index, node) in tree.PlayerNodes)
+            {
+                node.Notes = NotesOf(this.banishingText.Nav(document.Players().GetModel(index)));
+            }
         }
 
         /// <inheritdoc/>
         protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
         {
             var document = game.History.Current;
-            var count = document.Shrines().Count + document.Sphinxes().Count;
-            if (count == 0)
-            {
-                return;
-            }
-
             var node = new NavNodeViewModel("Map", $"{document.Shrines().Count} shrines, {document.Sphinxes().Count} sphinxes", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
@@ -101,18 +100,24 @@ namespace Siniskalc.Homm2.ViewModels
             var castles = document.Castles().GetModels().Where(c => c.IsUsed && c.Owner == owner).OrderBy(c => c.Name).ToList();
             var castleModels = castles.ToDictionary(c => c.Index);
             var player = owner.IsNeutral ? null : document.Players().GetModel(owner.Code);
-            return OwnerNavGroup.Create(
+            var node = OwnerNavGroup.Create(
                 tree,
                 OwnerNames<PlayerColor>.Of(owner),
                 PlayerPalette.Of(owner),
                 owner.IsNeutral ? -1 : owner.Code,
                 !owner.IsNeutral,
-                player == null ? string.Empty : this.banishingText.Nav(player),
+                string.Empty,
                 HeroEntriesOf(document.Heroes(), owner),
                 castles.Select(c => new NavEntry(c.Index, c.Name, c.Faction.ToString())).ToList(),
-                (node, index) => MarkCastle(node, allHeroes, castleModels[index]),
+                (castleNode, index) => MarkCastle(castleNode, allHeroes, castleModels[index]),
                 MineGroupsOf(document.Mines().GetModels(), owner, hasLevels: false),
                 neutralPage: owner.IsNeutral);
+            if (player != null)
+            {
+                node.Notes = NotesOf(this.banishingText.Nav(player));
+            }
+
+            return node;
         }
 
         private static IReadOnlyList<string> NotesOf(string text) => text.Length > 0 ? [text] : [];

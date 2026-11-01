@@ -55,6 +55,59 @@
         }
 
         [Test]
+        public void ThePlayerCountdownNoteFollowsEditsUndoAndRedoInBrokenAllianceWithoutACastle()
+        {
+            this.editor.LoadGame(Saves.Path(Saves.BrokenAlliance, "broken_alliance_21_blue_has_no_castle"));
+            var blue = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Index == PlayerColor.Blue.Code);
+            Assert.That(blue.Subtitle, Is.EqualTo("2 heroes · 7 mines"));
+            Assert.That(blue.Notes, Is.EqualTo(new[] { "7 days left" }));
+            blue.IsSelected = true;
+            var page = (PlayerViewModel)this.editor.CurrentPage!;
+
+            page.DaysLeftCard.DayChoices.Single(c => c.Days == 3).SelectCommand.Execute(null);
+
+            Assert.That(blue.Notes, Is.EqualTo(new[] { "3 days left" }));
+
+            this.editor.CurrentGame!.History.Undo();
+
+            Assert.That(blue.Notes, Is.EqualTo(new[] { "7 days left" }));
+
+            this.editor.CurrentGame.History.Redo();
+
+            Assert.That(blue.Notes, Is.EqualTo(new[] { "3 days left" }));
+            Assert.That(this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Index == PlayerColor.Blue.Code), Is.SameAs(blue));
+        }
+
+        [Test]
+        public void TheMapNodeOpensTheBytesOfTheEasySmallMapWithoutShrinesOrSphinxes()
+        {
+            this.editor.LoadGame(Saves.Path(Saves.MapDifficultySize, "map_difficulty_size_06_map_easy_small"));
+            var document = this.editor.CurrentGame!.History.Current;
+            Assert.That(document.Shrines().Count, Is.Zero);
+            Assert.That(document.Sphinxes().Count, Is.Zero);
+            var map = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Map);
+
+            map.IsSelected = true;
+
+            var page = (MapViewModel)this.editor.CurrentPage!;
+            Assert.That(page.Shrines, Is.Empty);
+            Assert.That(page.Sphinxes, Is.Empty);
+            Assert.That(map.IsSelected, Is.True);
+            page.SelectedTab = 2;
+            Assert.That(page.SelectedTab, Is.EqualTo(2));
+            Assert.That(page.Records, Has.Count.EqualTo(document.Mines().Count + 3));
+            Assert.That(page.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
+
+            foreach (var record in page.Records)
+            {
+                page.SelectedRecord = record;
+                using var target = page.CreateByteEditTarget();
+                Assert.That(target, Is.Not.Null, record.Name);
+                Assert.That(target!.Title, Is.EqualTo(record.Name));
+            }
+        }
+
+        [Test]
         public void PickingAHeroNodeShowsThePageOfThatHero()
         {
             var hero = Descendants(this.editor.NavigationNodes[0]).First(n => n.Kind == NavNodeKind.Hero);

@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var tazar = Hero("roe_00_baseline", "Tazar");
 
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Ring2), Is.EqualTo(Artifact.EquestriansGloves));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Ring2), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("EquestriansGloves")));
             Assert.That(tazar.SpellBook.HasSpellBook, Is.False);
             Assert.That(tazar.Owner, Is.EqualTo(PlayerColor.Red));
         }
@@ -40,8 +40,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var tazar = Hero("roe_32_tazar_boots_of_levitation", "Tazar");
 
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(Artifact.BootsOfLevitation));
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Ring2), Is.EqualTo(Artifact.EquestriansGloves));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("BootsOfLevitation")));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Ring2), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("EquestriansGloves")));
         }
 
         [Test]
@@ -58,14 +58,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var tazar = Hero("roe_34_tazar_all_spell_tomes", "Tazar");
 
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc1), Is.EqualTo(Artifact.TomeOfEarthMagic));
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc2), Is.EqualTo(Artifact.TomeOfWaterMagic));
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc3), Is.EqualTo(Artifact.TomeOfAirMagic));
-            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc4), Is.EqualTo(Artifact.TomeOfFireMagic));
-            Assert.That(tazar.SpellBook.IsLearned(Spell.Fly), Is.False);
-            Assert.That(tazar.SpellBook.IsAvailable(Spell.Fly), Is.True);
-            Assert.That(tazar.SpellBook.Source(Spell.Fly), Is.EqualTo("Tome of Wind Magic"));
-            Assert.That(tazar.SpellBook.Source(Spell.MagicArrow), Does.Contain("Tome of Earth Magic").And.Contain("Tome of Fire Magic"));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc1), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfEarthMagic")));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc2), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfWaterMagic")));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc3), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfAirMagic")));
+            Assert.That(tazar.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc4), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfFireMagic")));
+            Assert.That(tazar.SpellBook.IsLearned(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Fly")), Is.False);
+            Assert.That(tazar.SpellBook.IsAvailable(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Fly")), Is.True);
+            Assert.That(tazar.SpellBook.Source(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Fly")), Is.EqualTo("Tome of Wind Magic"));
+            Assert.That(tazar.SpellBook.Source(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("MagicArrow")), Does.Contain("Tome of Earth Magic").And.Contain("Tome of Fire Magic"));
         }
 
         [Test]
@@ -82,9 +82,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var tazar = Hero("roe_41_tazar_adventure_spells", "Tazar");
 
-            Assert.That(tazar.SpellBook.IsLearned(Spell.FireWall), Is.True);
-            Assert.That(tazar.SpellBook.IsLearned(Spell.LightningBolt), Is.True);
-            Assert.That(tazar.SpellBook.IsLearned(Spell.MagicArrow), Is.True);
+            Assert.That(tazar.SpellBook.IsLearned(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("FireWall")), Is.True);
+            Assert.That(tazar.SpellBook.IsLearned(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("LightningBolt")), Is.True);
+            Assert.That(tazar.SpellBook.IsLearned(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("MagicArrow")), Is.True);
         }
 
         [TestCase("roe_36_crag_scroll_town_portal_meteor_shower", 2, new[] { "Meteor Shower", "Town Portal" })]
@@ -93,7 +93,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var crag = Hero(save, "Crag Hack");
 
-            Assert.That(crag.EquippedArtifacts.GetEquippedArtifacts().Count(a => a.Item2 == Artifact.SpellScroll), Is.EqualTo(scrolls));
+            Assert.That(crag.EquippedArtifacts.GetEquippedArtifacts().Count(a => a.Item2 == TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SpellScroll")), Is.EqualTo(scrolls));
             Assert.That(crag.SpellBook.HasSpellBook, Is.False);
             Assert.That(Spells(crag), Is.EqualTo(spells));
         }
@@ -104,18 +104,18 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var crag = Hero("roe_37_crag_scroll_mirth", "Crag Hack");
 
             var spells = crag.EquippedArtifacts.GetEquippedArtifacts()
-                .Where(a => a.Item2 == Artifact.SpellScroll)
+                .Where(a => a.Item2 == TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SpellScroll"))
                 .Select(a => crag.EquippedArtifacts.GetScrollSpell(a.Item1)?.Name)
                 .OrderBy(n => n);
 
             Assert.That(spells, Is.EqualTo(new[] { "Meteor Shower", "Mirth", "Town Portal" }));
-            Assert.That(crag.SpellBook.Source(Spell.Mirth), Is.EqualTo("Spell Scroll"));
+            Assert.That(crag.SpellBook.Source(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Mirth")), Is.EqualTo("Spell Scroll"));
         }
 
         [Test]
         public void DamaconWearsAngelWingsAsACape()
         {
-            Assert.That(Hero("roe_38_damacon_angel_wings", "Damacon").EquippedArtifacts.GetArtifact(ArtifactSlots.Cape), Is.EqualTo(Artifact.AngelWings));
+            Assert.That(Hero("roe_38_damacon_angel_wings", "Damacon").EquippedArtifacts.GetArtifact(ArtifactSlots.Cape), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("AngelWings")));
         }
 
         [TestCase("roe_41_tazar_adventure_spells", null, 115)]
@@ -124,7 +124,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = Load(save);
             var castles = game.History.Current.Castles();
-            var dungeon = TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("6_Dung")]);
+            var dungeon = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName("6_Dung")]);
 
             Assert.That(Hero(save, "Tazar").Id, Is.EqualTo(115));
             Assert.That(dungeon.GarrisonedHeroId, Is.EqualTo(garrisoned));

@@ -53,6 +53,9 @@
             return this.allSkillsToLevels.TryGetValue(skill, out var level) ? level : SkillLevel.None;
         }
 
+        public SkillLevel GetSkillLevel(Data.SkillRole role) => this.allSkillsToLevels
+            .Where(pair => pair.Key.Role == role).Select(pair => pair.Value).OrderByDescending(level => level.Code).FirstOrDefault() ?? SkillLevel.None;
+
         /// <inheritdoc/>
         public SecondarySkill GetSkillInSlot(int slotIndex)
         {

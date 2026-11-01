@@ -88,6 +88,16 @@ namespace Siniskalc
                 {
                     return new AppServices();
                 }
+                catch (GameDefinitionException ex)
+                {
+                    Logger.LogCritical(ex, "Standard game definitions could not be loaded from {File}", ex.Path);
+                    MessageBox.Show(
+                        $"{ex.Message}\n\nCorrect or restore the standard JSON definitions and restart the editor.",
+                        "Game definitions error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return null;
+                }
                 catch (SettingsException ex)
                 {
                     if (!ResetFile(ex.Message, ex.Path, "Settings error", "settings"))

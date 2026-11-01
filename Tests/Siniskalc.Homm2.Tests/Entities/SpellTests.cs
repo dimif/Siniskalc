@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void TheFirstFortyEightSpellsAreCombatSpellsAndTheRestAreAdventureSpells()
         {
-            foreach (var spell in Spell.All)
+            foreach (var spell in TestCatalog.Standard.Spells)
             {
                 var expected = spell.Code <= 48 ? SpellType.Combat : SpellType.Adventure;
 
@@ -26,30 +26,30 @@ namespace Siniskalc.Homm2.Tests.Entities
         [TestCase("Set Water Guardian", SpellType.Adventure)]
         public void ASpellKnownFromTheGameIsCastWhereTheGameSaysItIs(string name, SpellType type)
         {
-            Assert.That(Spell.All.Single(s => s.Name == name).Type, Is.EqualTo(type));
+            Assert.That(TestCatalog.Standard.Spells.Single(s => s.Name == name).Type, Is.EqualTo(type));
         }
 
         [Test]
         public void TheMindSpellsAndTheElementalSpellsAreTheOnesTheRulesNameAndNoOthers()
         {
-            Assert.That(Spell.All.Where(s => s.Group == SpellGroup.Mind), Is.EquivalentTo(new[] { Spell.Blind, Spell.Paralyze, Spell.Berserker, Spell.Hypnotize }));
+            Assert.That(TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.Groups["Mind"]), Is.EquivalentTo(new[] { TestCatalog.Standard.Spells["Blind"], TestCatalog.Standard.Spells["Paralyze"], TestCatalog.Standard.Spells["Berserker"], TestCatalog.Standard.Spells["Hypnotize"] }));
             Assert.That(
-                Spell.All.Where(s => s.Group == SpellGroup.Elemental),
-                Is.EquivalentTo(new[] { Spell.LightningBolt, Spell.ChainLightning, Spell.ColdRay, Spell.ColdRing, Spell.Fireball, Spell.Fireblast, Spell.ElementalStorm }));
+                TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.Groups["Elemental"]),
+                Is.EquivalentTo(new[] { TestCatalog.Standard.Spells["LightningBolt"], TestCatalog.Standard.Spells["ChainLightning"], TestCatalog.Standard.Spells["ColdRay"], TestCatalog.Standard.Spells["ColdRing"], TestCatalog.Standard.Spells["Fireball"], TestCatalog.Standard.Spells["Fireblast"], TestCatalog.Standard.Spells["ElementalStorm"] }));
         }
 
         [Test]
         public void TheElementalAndHasteSpellsAreOnTheLevelsOfTheGame()
         {
             Assert.That(
-                new[] { Spell.Fireball, Spell.LightningBolt, Spell.ChainLightning, Spell.MassHaste }.Select(s => s.Level),
+                new[] { TestCatalog.Standard.Spells["Fireball"], TestCatalog.Standard.Spells["LightningBolt"], TestCatalog.Standard.Spells["ChainLightning"], TestCatalog.Standard.Spells["MassHaste"] }.Select(s => s.Level),
                 Is.EqualTo(new[] { 3, 2, 4, 3 }));
         }
 
         [Test]
         public void EverySpellIsOnALevelFromOneToFive()
         {
-            Assert.That(Spell.All.Select(s => s.Level), Has.All.InRange(1, 5));
+            Assert.That(TestCatalog.Standard.Spells.Select(s => s.Level), Has.All.InRange(1, 5));
         }
 
         [Test]

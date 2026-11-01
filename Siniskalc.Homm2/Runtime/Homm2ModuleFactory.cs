@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Homm2.Runtime
 {
+    using System;
+    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
@@ -20,48 +22,57 @@
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText)
+        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, IGameDefinitionReader? definitions = null)
         {
             this.banishingText = banishingText;
+            this.Catalogs = new GameCatalogs(definitions ?? new JsonGameDefinitionReader());
 
             var locator = new SaveLayoutLocator();
             var pendingChanges = new Homm2PendingChangesFactory();
+            var factories = Enum.GetValues<GameVersion>().ToDictionary(version => version, version => CreateDocumentFactory(this.Catalogs.For(version)));
             this.GameService = new GameService(
                 new SavegameParser(
                     locator,
                     new BytesLoader(),
                     new HeaderReader(),
-                    new SaveDocumentFactory(
-                        new HeroDeserializer(),
-                        new SafeHeroSerializer(),
-                        new HeroDiffer(pendingChanges),
-                        new PlayerDeserializer(),
-                        new SafePlayerSerializer(),
-                        new PlayerListsDeserializer(),
-                        new SafePlayerListsSerializer(),
-                        new PlayerDiffer(pendingChanges),
-                        new CastleDeserializer(),
-                        new SafeCastleSerializer(),
-                        new CastleDiffer(pendingChanges),
-                        new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags),
-                        new SafeObeliskSerializer<PlayerColor>(ObeliskLayout.Flags),
-                        new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
-                        new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
-                        new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
-                        new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
-                        new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
-                        new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
-                        new PlayerListsReconciler(),
-                        bytesPatcher),
-                    new MapPlacesReader(),
-                    new MapObjectsReader()),
+                    factories[GameVersion.BaseGame],
+                    new MapPlacesReader(this.Catalogs),
+                    new MapObjectsReader(this.Catalogs),
+                    this.Catalogs,
+                    version => factories[version]),
                 new RawSavefileCodec(),
                 backup);
             this.SaveRegionProvider = new SaveRegionProvider(locator);
             this.ByteEditTargets = new ByteEditTargetFactory();
             this.MaxSpellPointsCalculator = new MaxSpellPointsCalculator();
             this.Module = new Homm2Module(locator, this.CreateEditor);
+
+            ISaveDocumentFactory CreateDocumentFactory(GameCatalog catalog) =>
+                new SaveDocumentFactory(
+                        new HeroDeserializer(catalog, new CreatureCodes(catalog)),
+                        new SafeHeroSerializer(catalog),
+                        new HeroDiffer(pendingChanges, catalog),
+                        new PlayerDeserializer(),
+                        new SafePlayerSerializer(),
+                        new PlayerListsDeserializer(),
+                        new SafePlayerListsSerializer(),
+                        new PlayerDiffer(pendingChanges),
+                        new CastleDeserializer(catalog),
+                        new SafeCastleSerializer(catalog),
+                        new CastleDiffer(pendingChanges, catalog),
+                        new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags),
+                        new SafeObeliskSerializer<PlayerColor>(ObeliskLayout.Flags),
+                        new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
+                        new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(catalog), new SafeMineSerializer(), new MineDiffer()),
+                        new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(catalog), new SafeShrineSerializer(), new ShrineDiffer()),
+                        new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(catalog), new SafeSphinxSerializer(), new SphinxDiffer()),
+                        new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
+                        new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
+                        new PlayerListsReconciler(),
+                        bytesPatcher);
         }
+
+        public GameCatalogs Catalogs { get; }
 
         /// <summary>
         /// Gets the game module of Heroes of Might and Magic II.

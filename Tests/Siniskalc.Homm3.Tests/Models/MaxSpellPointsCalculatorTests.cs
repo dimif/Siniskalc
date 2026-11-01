@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Models
         {
             var hero = HeroModels.Christian();
             var primary = hero.PrimarySkills.WithBaseKnowledge((byte)Math.Max(0, knowledge));
-            var secondary = hero.SecondarySkills.WithSkillLevel(SecondarySkill.Intelligence, intelligence);
+            var secondary = hero.SecondarySkills.WithSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Intelligence"), intelligence);
             return new MaxSpellPointsCalculator(version).GetMaximum(primary, secondary);
         }
 

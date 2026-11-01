@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;
 
@@ -13,7 +13,7 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void PickingInASlotFinderEquipsAndClosesThePopup()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss));
         var slot = vm.SlotFor(ArtifactSlots.Helmet);
         slot.IsOpen = true;
 
@@ -28,8 +28,8 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingCombinationArtifactMirrorsBlockedSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
-        var admiral = Artifact.AdmiralsHat;
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, TestCatalog.For(GameVersion.HornOfTheAbyss));
+        var admiral = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat");
 
         vm.SelectedHelm = admiral.Name;
 
@@ -44,8 +44,8 @@ public sealed class EquippedArtifactsViewModelTests
     public void ClearingCombinationArtifactClearsAllMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
-        var admiral = Artifact.AdmiralsHat;
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, TestCatalog.For(GameVersion.HornOfTheAbyss));
+        var admiral = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat");
 
         vm.SelectedHelm = admiral.Name;
         vm.SelectedNeck = null;
@@ -59,9 +59,9 @@ public sealed class EquippedArtifactsViewModelTests
     public void SwappingCombinationArtifactToAnotherArtifactUpdatesMirroredSlots()
     {
         var model = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model);
-        var admiral = Artifact.AdmiralsHat;
-        var necklace = Artifact.Necklaces.First(a => !a.IsCombination);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), model, TestCatalog.For(GameVersion.HornOfTheAbyss));
+        var admiral = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat");
+        var necklace = TestCatalog.For(GameVersion.HornOfTheAbyss).WearableArtifacts.Where(a => a.Slot.HasFlag(ArtifactSlots.Necklace)).ToList().First(a => !a.IsCombination);
 
         vm.SelectedHelm = admiral.Name;
         vm.SelectedNeck = necklace.Name;
@@ -76,38 +76,38 @@ public sealed class EquippedArtifactsViewModelTests
     public void SelectingMiscArtifactsKeepsTheOtherMiscSlots()
     {
         EquippedArtifacts? changed = null;
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), m => changed = m);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss), m => changed = m);
 
-        vm.SelectedItem1 = Artifact.CharmOfSpellPoints.Name;
-        vm.SelectedItem2 = Artifact.MysticOrbOfSpellPoints.Name;
+        vm.SelectedItem1 = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints").Name;
+        vm.SelectedItem2 = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("MysticOrbOfSpellPoints").Name;
 
-        Assert.That(vm.SelectedItem1, Is.EqualTo(Artifact.CharmOfSpellPoints.Name));
-        Assert.That(vm.SelectedItem2, Is.EqualTo(Artifact.MysticOrbOfSpellPoints.Name));
-        Assert.That(changed!.GetArtifact(ArtifactSlots.Misc1), Is.EqualTo(Artifact.CharmOfSpellPoints));
-        Assert.That(changed.GetArtifact(ArtifactSlots.Misc2), Is.EqualTo(Artifact.MysticOrbOfSpellPoints));
+        Assert.That(vm.SelectedItem1, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints").Name));
+        Assert.That(vm.SelectedItem2, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("MysticOrbOfSpellPoints").Name));
+        Assert.That(changed!.GetArtifact(ArtifactSlots.Misc1), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints")));
+        Assert.That(changed.GetArtifact(ArtifactSlots.Misc2), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("MysticOrbOfSpellPoints")));
     }
 
     [Test]
     public void RefreshShowsTheModelWithoutReportingAChange()
     {
         var changes = 0;
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), _ => changes++);
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss), _ => changes++);
 
-        vm.Refresh(new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Helmet, Artifact.AdmiralsHat));
+        vm.Refresh(new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Helmet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat")));
 
-        Assert.That(vm.SelectedHelm, Is.EqualTo(Artifact.AdmiralsHat.Name));
-        Assert.That(vm.SelectedNeck, Is.EqualTo(Artifact.AdmiralsHat.Name));
+        Assert.That(vm.SelectedHelm, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat").Name));
+        Assert.That(vm.SelectedNeck, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat").Name));
         Assert.That(changes, Is.EqualTo(0));
     }
 
     [Test]
     public void EffectLinesListOnlyEffectsThatAreNotZero()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss));
         Assert.That(vm.TotalEffectLines, Is.Empty);
         Assert.That(vm.HasNoEffects, Is.True);
 
-        vm.SelectedHelm = Artifact.ThunderHelmet.Name;
+        vm.SelectedHelm = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ThunderHelmet").Name;
 
         Assert.That(vm.HasNoEffects, Is.False);
         Assert.That(vm.TotalEffectLines, Is.EqualTo(new[] { new EffectLine("Spell power", "-2"), new EffectLine("Knowledge", "+10") }));
@@ -116,8 +116,8 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void ClearSlotCommandTakesTheArtifactOffAndMirroredSlotsGoToo()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
-        vm.SelectedHelm = Artifact.AdmiralsHat.Name;
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss));
+        vm.SelectedHelm = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat").Name;
 
         Assert.That(vm.ClearSlotCommand.CanExecute(ArtifactSlots.Necklace), Is.True);
         Assert.That(vm.ClearSlotCommand.CanExecute(ArtifactSlots.Feet), Is.False);
@@ -131,10 +131,10 @@ public sealed class EquippedArtifactsViewModelTests
     [Test]
     public void HoveredArtifactInfoComesAndGoes()
     {
-        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()));
+        var vm = new EquippedArtifactsViewModel(new EffectLineProvider(), new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()), TestCatalog.For(GameVersion.HornOfTheAbyss));
         Assert.That(vm.HasSelectedInfo, Is.False);
 
-        vm.ShowArtifactInfoByName(Artifact.PendantOfCourage.Name);
+        vm.ShowArtifactInfoByName(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfCourage").Name);
         Assert.That(vm.HasSelectedInfo, Is.True);
         Assert.That(vm.SelectedEffectLines, Is.EqualTo(new[] { new EffectLine("Morale", "+3"), new EffectLine("Luck", "+3") }));
 

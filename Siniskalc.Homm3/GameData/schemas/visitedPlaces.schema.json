@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 visitedPlaces",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "objectType": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "toolTip": {
+        "type": "string"
+      },
+      "numberMask": {
+        "type": "integer"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "slot": {
+        "type": "string"
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "objectType",
+      "toolTip",
+      "numberMask",
+      "code",
+      "slot",
+      "availableFrom"
+    ],
+    "additionalProperties": false
+  }
+}

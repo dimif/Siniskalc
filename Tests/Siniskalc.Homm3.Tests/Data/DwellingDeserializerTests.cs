@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class DwellingDeserializerTests
     {
-        private readonly DwellingDeserializer deserializer = new();
+        private readonly DwellingDeserializer deserializer = new(TestCatalog.For(GameVersion.HornOfTheAbyss));
 
         private static RecordChunk Record(int index = 0, params (int Offset, byte Value)[] bytes)
         {
@@ -34,16 +34,16 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheCreatureIsReadFromItsCodeAndTheCodeIsKept()
         {
-            var model = this.deserializer.Deserialize(Record(0, (DwellingLayout.Creature, Creature.Centaur.Code)));
+            var model = this.deserializer.Deserialize(Record(0, (DwellingLayout.Creature, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur").Code)));
 
-            Assert.That(model.CreatureCode, Is.EqualTo((int)Creature.Centaur.Code));
-            Assert.That(model.Creature, Is.SameAs(Creature.Centaur));
+            Assert.That(model.CreatureCode, Is.EqualTo((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur").Code));
+            Assert.That(model.Creature, Is.SameAs(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur")));
         }
 
         [Test]
         public void ACodeThatIsNoCreatureGivesNoCreatureButKeepsTheCode()
         {
-            var unknown = (byte)Enumerable.Range(0, 256).First(c => Creature.FromByte((byte)c) is null);
+            var unknown = (byte)Enumerable.Range(0, 256).First(c => TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.Find((byte)c) is null);
 
             var model = this.deserializer.Deserialize(Record(0, (DwellingLayout.Creature, unknown)));
 

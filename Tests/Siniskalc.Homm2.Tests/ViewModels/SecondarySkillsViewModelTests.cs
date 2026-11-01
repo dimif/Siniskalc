@@ -23,7 +23,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
 
         private SecondarySkillsViewModel Page(GameVersion version = GameVersion.BaseGame)
         {
-            var page = new SecondarySkillsViewModel(version, () => this.skills, edit => this.skills = edit(this.skills));
+            var page = new SecondarySkillsViewModel(TestCatalog.Standard, version, () => this.skills, edit => this.skills = edit(this.skills));
             page.Refresh();
             return page;
         }
@@ -33,7 +33,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         {
             var page = this.Page();
 
-            Assert.That(page.AllSkills.Select(r => r.Name), Is.EqualTo(SecondarySkill.All.Where(s => s.IsAvailableIn(GameVersion.BaseGame)).Select(s => s.Name)));
+            Assert.That(page.AllSkills.Select(r => r.Name), Is.EqualTo(TestCatalog.Standard.Skills.Where(s => s.IsAvailableIn(GameVersion.BaseGame)).Select(s => s.Name)));
             Assert.That(page.AllSkillsNote, Is.EqualTo("A hero can learn eight of the fourteen skills. They are shown in the order they were learned."));
         }
 
@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void ASkillOfTheHeroIsShownInItsSlotWithItsLevel()
         {
-            this.skills = SecondarySkills.None.WithSkill(SecondarySkill.Archery, SkillLevel.Expert);
+            this.skills = SecondarySkills.None.WithSkill(TestCatalog.Standard.Skills["Archery"], SkillLevel.Expert);
 
             var page = this.Page();
 

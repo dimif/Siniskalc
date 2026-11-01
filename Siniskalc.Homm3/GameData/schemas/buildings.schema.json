@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 buildings",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "blacksmith",
+          "capitol",
+          "castle",
+          "citadel",
+          "cityHall",
+          "dwelling1",
+          "dwelling2",
+          "dwelling3",
+          "dwelling4",
+          "dwelling5",
+          "dwelling6",
+          "dwelling7",
+          "fort",
+          "grail",
+          "horde1",
+          "horde2",
+          "mageGuild1",
+          "mageGuild2",
+          "mageGuild3",
+          "mageGuild4",
+          "mageGuild5",
+          "manaGenerator",
+          "marketplace",
+          "resourceSilo",
+          "shipyard",
+          "special1",
+          "special2",
+          "special3",
+          "special4",
+          "tavern",
+          "townHall",
+          "upgradedDwelling1",
+          "upgradedDwelling2",
+          "upgradedDwelling3",
+          "upgradedDwelling4",
+          "upgradedDwelling5",
+          "upgradedDwelling6",
+          "upgradedDwelling7",
+          "upgradedHorde1",
+          "upgradedHorde2",
+          "villageHall"
+        ]
+      },
+      "faction": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "upgrades": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "requires": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "except": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "automatic": {
+        "type": "boolean"
+      },
+      "goldIncome": {
+        "type": "integer"
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "code",
+      "availableFrom",
+      "type",
+      "faction",
+      "upgrades",
+      "requires",
+      "except",
+      "automatic",
+      "goldIncome"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -16,10 +16,10 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class SecondarySkillsViewModel : HeroesSecondarySkillsViewModel<SecondarySkill, SecondarySkills>
     {
         public SecondarySkillsViewModel(
-            GameVersion gameVersion,
+            EntityCatalog catalog,
             Func<SecondarySkills> getSkills,
             Action<Func<SecondarySkills, SecondarySkills>> update)
-            : base(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.SkillSlots.Max, getSkills, update)
+            : base(catalog.SecondarySkills.All, Constants.SkillSlots.Max, getSkills, update)
         {
         }
 

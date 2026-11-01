@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -54,9 +54,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             foreach (var name in RedCastles)
             {
                 var chunk = from[from.FindByName(name)];
-                var model = TestServices.CastleDeserializer.Deserialize(chunk);
+                var model = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(chunk);
                 var actual = to[to.FindByName(name)];
-                var added = TestServices.CastleDeserializer.Deserialize(actual).Buildings.Except(model.Buildings).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
+                var added = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(actual).Buildings.Except(model.Buildings).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
                 Assert.That(added, Has.Count.LessThanOrEqualTo(1), $"{after} {name}: at most one manual building is added");
                 if (added.Count == 0)
                 {
@@ -79,8 +79,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var to = Load("roe_15_dwelling_2").History.Current.Castles();
 
             var checkedCastles = RedCastles.Count(name =>
-                TestServices.CastleDeserializer.Deserialize(to[to.FindByName(name)]).Buildings
-                    .Except(TestServices.CastleDeserializer.Deserialize(from[from.FindByName(name)]).Buildings)
+                new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(to[to.FindByName(name)]).Buildings
+                    .Except(new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(from[from.FindByName(name)]).Buildings)
                     .Count(b => !CastleBuilder.IsAutomatic(b)) == 1);
 
             Assert.That(checkedCastles, Is.EqualTo(8));
@@ -98,10 +98,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             foreach (var name in RedCastles)
             {
-                var model = TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+                var model = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName(name)]);
 
-                Assert.That(model.Buildings.Contains(Building.Capitol), Is.EqualTo(name == with), name);
-                Assert.That(model.VisibleBuildings.Contains(Building.CityHall), Is.EqualTo(name != with), name);
+                Assert.That(model.Buildings.Contains(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol")), Is.EqualTo(name == with), name);
+                Assert.That(model.VisibleBuildings.Contains(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("CityHall")), Is.EqualTo(name != with), name);
             }
         }
     }

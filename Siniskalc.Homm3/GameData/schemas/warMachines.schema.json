@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 warMachines",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "slot": {
+        "type": "string"
+      },
+      "encoding": {
+        "type": "string",
+        "enum": [
+          "ammoCart",
+          "ballista",
+          "cannon",
+          "firstAidTent"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "code",
+      "availableFrom",
+      "slot",
+      "encoding"
+    ],
+    "additionalProperties": false
+  }
+}

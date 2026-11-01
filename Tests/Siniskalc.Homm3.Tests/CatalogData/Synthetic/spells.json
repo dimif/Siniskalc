@@ -1,0 +1,14 @@
+[
+  {
+    "id": "Haste",
+    "order": 53,
+    "name": "Haste",
+    "code": 53,
+    "availableFrom": "restorationOfErathia",
+    "school": "fixtureSky",
+    "level": 1,
+    "type": "combat",
+    "heroOnly": false,
+    "replaces": true
+  }
+]

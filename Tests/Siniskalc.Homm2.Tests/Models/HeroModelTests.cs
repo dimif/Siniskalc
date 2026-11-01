@@ -81,12 +81,12 @@ namespace Siniskalc.Homm2.Tests.Models
         [Test]
         public void AHeroTellsWhetherItHasASpellBookAndWhatItHasLearnedThroughTheSharedInterface()
         {
-            var maximus = Maximus().WithSpellBook() with { Spells = SpellSet<Spell>.None.With(Spell.Bless) };
+            var maximus = Maximus().WithSpellBook() with { Spells = SpellSet<Spell>.None.With(TestCatalog.Standard.Spells["Bless"]) };
 
             IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> hero = maximus;
 
             Assert.That(hero.HasSpellBook, Is.True);
-            Assert.That(hero.LearnedSpells, Is.EqualTo(new[] { Spell.Bless }));
+            Assert.That(hero.LearnedSpells, Is.EqualTo(new[] { TestCatalog.Standard.Spells["Bless"] }));
         }
 
         [Test]
@@ -94,21 +94,21 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var maximus = Maximus();
 
-            var armed = maximus.WithArtifact(Artifact.UltimateSwordOfDominion);
+            var armed = maximus.WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
 
             Assert.That(armed.PrimarySkills, Is.EqualTo(maximus.PrimarySkills with { Attack = maximus.PrimarySkills.Attack + 12 }));
-            Assert.That(armed.Artifacts.Slots, Has.Member(Artifact.UltimateSwordOfDominion));
-            Assert.That(armed.WithoutArtifact(Artifact.UltimateSwordOfDominion), Is.EqualTo(maximus));
+            Assert.That(armed.Artifacts.Slots, Has.Member(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]));
+            Assert.That(armed.WithoutArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]), Is.EqualTo(maximus));
         }
 
         [Test]
         public void GivingTheUltimateSwordToAnotherHeroMovesItsTwelveAttackPoints()
         {
-            var maximus = (Maximus() with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(Artifact.UltimateSwordOfDominion);
+            var maximus = (Maximus() with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
             var gallant = Maximus() with { Id = 1, Name = "Sir Gallant", PrimarySkills = new PrimarySkills(2, 2, 2, 2) };
 
-            var maximusAfter = maximus.WithoutArtifact(Artifact.UltimateSwordOfDominion);
-            var gallantAfter = gallant.WithArtifact(Artifact.UltimateSwordOfDominion);
+            var maximusAfter = maximus.WithoutArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
+            var gallantAfter = gallant.WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
 
             Assert.That((maximusAfter.PrimarySkills.Attack, gallantAfter.PrimarySkills.Attack), Is.EqualTo((15, 14)));
         }
@@ -116,10 +116,10 @@ namespace Siniskalc.Homm2.Tests.Models
         [Test]
         public void ReplacingAnArtifactSwapsItsBonusForTheNewOne()
         {
-            var maximus = Maximus().WithArtifact(Artifact.UltimateSwordOfDominion);
-            var slot = maximus.Artifacts.Slots.ToList().IndexOf(Artifact.UltimateSwordOfDominion);
+            var maximus = Maximus().WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
+            var slot = maximus.Artifacts.Slots.ToList().IndexOf(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
 
-            var swapped = maximus.WithArtifact(slot, Artifact.UltimateCloakOfProtection);
+            var swapped = maximus.WithArtifact(slot, TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"]);
 
             Assert.That(swapped.PrimarySkills.Attack, Is.EqualTo(maximus.PrimarySkills.Attack - 12));
             Assert.That(swapped.PrimarySkills.Defense, Is.EqualTo(maximus.PrimarySkills.Defense + 12));
@@ -128,9 +128,9 @@ namespace Siniskalc.Homm2.Tests.Models
         [Test]
         public void ASkillNeverFallsBelowZero()
         {
-            var maximus = Maximus().WithArtifact(Artifact.UltimateSwordOfDominion) with { PrimarySkills = new PrimarySkills(3, 0, 0, 0) };
+            var maximus = Maximus().WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]) with { PrimarySkills = new PrimarySkills(3, 0, 0, 0) };
 
-            Assert.That(maximus.WithoutArtifact(Artifact.UltimateSwordOfDominion).PrimarySkills.Attack, Is.EqualTo(0));
+            Assert.That(maximus.WithoutArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).PrimarySkills.Attack, Is.EqualTo(0));
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var maximus = Maximus();
 
-            Assert.That(maximus.WithArtifact(Artifact.IceCloak).WithArtifact(Artifact.AmmoCart).PrimarySkills, Is.EqualTo(maximus.PrimarySkills));
+            Assert.That(maximus.WithArtifact(TestCatalog.Standard.Artifacts["IceCloak"]).WithArtifact(TestCatalog.Standard.Artifacts["AmmoCart"]).PrimarySkills, Is.EqualTo(maximus.PrimarySkills));
         }
     }
 }

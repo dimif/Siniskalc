@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class SphinxDifferTests
     {
-        private static SphinxModel Sphinx() => new(0, new MapPosition(5, 6), true, [0, 0, 0, 0, 0, 0, 1000], SphinxModel.NoArtifact, ["Time", "Clock"], "What is it?", 100);
+        private static SphinxModel Sphinx() => new(0, new MapPosition(5, 6), true, [0, 0, 0, 0, 0, 0, 1000], SphinxModel.NoArtifact, ["Time", "Clock"], "What is it?", 100, TestCatalog.Standard);
 
         [Test]
         public void TwoEqualSphinxesHaveNoChanges()

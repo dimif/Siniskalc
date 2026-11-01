@@ -35,15 +35,15 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var hero = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Marius")).Current;
 
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Demoniac));
+            Assert.That(hero.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).HeroClasses.ById("Demoniac")));
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)1));
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(
                 hero.Army.Filled,
                 Is.EqualTo(new[]
                 {
-                    new ArmySlot<Creature>(Creature.Imp, 20),
-                    new ArmySlot<Creature>(Creature.Gog, 7),
+                    new ArmySlot<Creature>(TestCatalog.For(GameVersion.ShadowOfDeath).Creatures.ById("Imp"), 20),
+                    new ArmySlot<Creature>(TestCatalog.For(GameVersion.ShadowOfDeath).Creatures.ById("Gog"), 7),
                 }));
         }
 
@@ -182,7 +182,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             marius.Update(h => h with
             {
                 PrimarySkills = new PrimarySkills(30, 20, 10, 5),
-                Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
+                Backpack = h.Backpack.WithSlot(0, TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition")),
             });
 
             var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"{Guid.NewGuid():N}.GM1");
@@ -198,7 +198,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 var reloaded = Load(path);
                 var hero = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Marius")).Current;
                 Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(30, 20, 10, 5)));
-                Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(Artifact.OrbOfInhibition));
+                Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition")));
                 Assert.That(hero.Army.Filled.Count(), Is.EqualTo(2));
             }
             finally

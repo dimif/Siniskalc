@@ -71,7 +71,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var shield = page.Shrines.Single(s => s.PositionText == "at 45, 7");
             Assert.That(shield.SpellField.Selected, Is.EqualTo("Shield"));
             shield.SpellField.Selected = "Fireball";
-            Assert.That(game.History.Current.Shrines().GetModels().Single(s => s.Position == new MapPosition(45, 7)).Spell, Is.EqualTo(Spell.Fireball));
+            Assert.That(game.History.Current.Shrines().GetModels().Single(s => s.Position == new MapPosition(45, 7)).Spell, Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]));
 
             var hidden = page.Shrines.Single(s => s.PositionText == "at 29, 42");
             Assert.That(hidden.SpellField.IsEnabled, Is.False);

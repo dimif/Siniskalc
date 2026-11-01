@@ -1,0 +1,38 @@
+[
+  {
+    "id": "Ballista",
+    "order": 0,
+    "name": "Ballista",
+    "code": 4,
+    "availableFrom": "restorationOfErathia",
+    "slot": "artillery",
+    "encoding": "ballista"
+  },
+  {
+    "id": "AmmoCart",
+    "order": 1,
+    "name": "Ammo Cart",
+    "code": 5,
+    "availableFrom": "restorationOfErathia",
+    "slot": "ammoCart",
+    "encoding": "ammoCart"
+  },
+  {
+    "id": "FirstAidTent",
+    "order": 2,
+    "name": "First Aid Tent",
+    "code": 6,
+    "availableFrom": "restorationOfErathia",
+    "slot": "firstAidTent",
+    "encoding": "firstAidTent"
+  },
+  {
+    "id": "Cannon",
+    "order": 3,
+    "name": "Cannon",
+    "code": 146,
+    "availableFrom": "hornOfTheAbyss",
+    "slot": "artillery",
+    "encoding": "cannon"
+  }
+]

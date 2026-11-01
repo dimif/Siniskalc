@@ -1,3 +1,4 @@
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.Data
@@ -37,7 +38,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             foreach (var name in castleNames)
             {
-                Assert.That(TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]).MageGuildLevel, Is.EqualTo(level), name);
+                Assert.That(castles.GetModel(castles.FindByName(name)).MageGuildLevel, Is.EqualTo(level), name);
             }
         }
 

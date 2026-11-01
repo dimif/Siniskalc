@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "ShrineFirst",
+      "name": "Shrine of the first circle",
+      "code": 0,
+      "order": 0,
+      "role": "shrineFirst",
+      "nameFormat": "Shrine of the first circle at {0}, {1}"
+    },
+    {
+      "id": "ShrineSecond",
+      "name": "Shrine of the second circle",
+      "code": 1,
+      "order": 1,
+      "role": "shrineSecond",
+      "nameFormat": "Shrine of the second circle at {0}, {1}"
+    },
+    {
+      "id": "ShrineThird",
+      "name": "Shrine of the third circle",
+      "code": 2,
+      "order": 2,
+      "role": "shrineThird",
+      "nameFormat": "Shrine of the third circle at {0}, {1}"
+    },
+    {
+      "id": "Sphinx",
+      "name": "Sphinx",
+      "code": 3,
+      "order": 3,
+      "role": "sphinx",
+      "nameFormat": "Sphinx at {0}, {1}"
+    },
+    {
+      "id": "SphinxUnlocated",
+      "name": "Unlocated sphinx",
+      "code": 4,
+      "order": 4,
+      "role": "sphinxUnlocated",
+      "nameFormat": "Sphinx {0}"
+    },
+    {
+      "id": "ShrineMarker",
+      "name": "Shrine",
+      "code": 5,
+      "order": 5,
+      "role": "shrineMarker",
+      "nameFormat": "Shrine at {0}, {1}"
+    }
+  ],
+  "replacements": []
+}

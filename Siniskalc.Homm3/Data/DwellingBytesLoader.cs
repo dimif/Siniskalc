@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Data
     /// Finds the table of dwellings by what its records look like (see <see cref="DwellingLayout"/>): a run of records of 150 bytes that all
     /// name the type of a creature generator, with an owner that is a colour or none and a tile on the map.
     /// </summary>
-    public sealed class DwellingBytesLoader : IDwellingBytesLoader
+    public sealed class DwellingBytesLoader(EntityCatalog catalog) : IDwellingBytesLoader
     {
         private static readonly ILogger<DwellingBytesLoader> Logger = LogFactory.For<DwellingBytesLoader>();
 
@@ -40,11 +40,11 @@ namespace Siniskalc.Homm3.Data
             return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 
-        private static RecordChunk Chunk(byte[] bytes, int start, int index)
+        private RecordChunk Chunk(byte[] bytes, int start, int index)
         {
-            var creature = Creature.FromByte(bytes[start + DwellingLayout.Creature]);
+            var creature = catalog.Creatures.Find(bytes[start + DwellingLayout.Creature]);
             return new RecordChunk(
-                $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} dwelling {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
+                $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} {catalog.MapMetadata.DwellingName} {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
                 bytes.AsSpan(start, DwellingLayout.RecordSize).ToArray(),
                 start,
                 index);

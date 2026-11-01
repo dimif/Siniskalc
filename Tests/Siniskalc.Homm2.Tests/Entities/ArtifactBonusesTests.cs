@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         {
             foreach (var (code, attack, defense, power, knowledge) in Expected)
             {
-                var artifact = Artifact.FromByte((byte)code);
+                var artifact = TestCatalog.Standard.Artifacts.Find((byte)code);
 
                 Assert.That(artifact, Is.Not.Null, $"artifact {code}");
                 Assert.That(ArtifactBonuses.Of(artifact!), Is.EqualTo(new PrimarySkillBonus(attack, defense, power, knowledge)), artifact!.Name);
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void AnArtifactThatAddsNoPointsAddsNone()
         {
-            var plain = Artifact.All.Where(a => Expected.All(e => e.Code != a.Code)).ToList();
+            var plain = TestCatalog.Standard.Artifacts.Where(a => Expected.All(e => e.Code != a.Code)).ToList();
 
             Assert.That(plain, Is.Not.Empty);
             Assert.That(plain.Select(ArtifactBonuses.Of), Is.All.EqualTo(PrimarySkillBonus.None));
@@ -45,10 +45,10 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void TheUltimateArtifactsAreTheOnesThatAddTheMost()
         {
-            Assert.That(ArtifactBonuses.Of(Artifact.UltimateBookOfKnowledge).Knowledge, Is.EqualTo(12));
-            Assert.That(ArtifactBonuses.Of(Artifact.UltimateSwordOfDominion).Attack, Is.EqualTo(12));
-            Assert.That(ArtifactBonuses.Of(Artifact.UltimateCloakOfProtection).Defense, Is.EqualTo(12));
-            Assert.That(ArtifactBonuses.Of(Artifact.UltimateWandOfMagic).SpellPower, Is.EqualTo(12));
+            Assert.That(ArtifactBonuses.Of(TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"]).Knowledge, Is.EqualTo(12));
+            Assert.That(ArtifactBonuses.Of(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).Attack, Is.EqualTo(12));
+            Assert.That(ArtifactBonuses.Of(TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"]).Defense, Is.EqualTo(12));
+            Assert.That(ArtifactBonuses.Of(TestCatalog.Standard.Artifacts["UltimateWandOfMagic"]).SpellPower, Is.EqualTo(12));
         }
     }
 }

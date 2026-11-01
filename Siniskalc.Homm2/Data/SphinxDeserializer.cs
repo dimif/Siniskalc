@@ -3,6 +3,7 @@ namespace Siniskalc.Homm2.Data
     using System.Linq;
     using System.Text;
     using Siniskalc.Core.Data;
+    using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
 
     /// <summary>
@@ -10,6 +11,13 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class SphinxDeserializer : IDeserializer<MapObjectChunk, SphinxModel>
     {
+        private readonly GameCatalog catalog;
+
+        public SphinxDeserializer(GameCatalog catalog)
+        {
+            this.catalog = catalog;
+        }
+
         public SphinxModel Deserialize(MapObjectChunk chunk)
         {
             var bytes = chunk.ToArray();
@@ -22,7 +30,8 @@ namespace Siniskalc.Homm2.Data
                 chunk.GetUInt16At(MapObjectLayout.SphinxArtifact),
                 Enumerable.Range(0, count).Select(i => Text(bytes, MapObjectLayout.SphinxAnswers + (i * MapObjectLayout.SphinxAnswerSize), MapObjectLayout.SphinxAnswerSize)).ToList(),
                 Text(bytes, MapObjectLayout.SphinxRiddle, bytes.Length - MapObjectLayout.SphinxRiddle),
-                bytes.Length - MapObjectLayout.SphinxRiddle - 1);
+                bytes.Length - MapObjectLayout.SphinxRiddle - 1,
+                this.catalog);
         }
 
         private static string Text(byte[] bytes, int start, int length)

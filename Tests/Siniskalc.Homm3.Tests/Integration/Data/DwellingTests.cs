@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
@@ -27,11 +27,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             Assert.That(dwellings, Has.Count.EqualTo(31));
             var guardhouse = At(AfterTheCastle, 31, 56);
-            Assert.That(guardhouse.Creature, Is.EqualTo(Creature.Pikeman));
+            Assert.That(guardhouse.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman")));
             Assert.That(guardhouse.Owner, Is.EqualTo(PlayerColor.Blue), "Tazar flagged it and Orrin flagged it to Blue");
             Assert.That(guardhouse.Stock, Is.EqualTo(28), "two weeks of the 14 pikemen it grows each week");
-            Assert.That(At(AfterTheCastle, 27, 56).Creature, Is.EqualTo(Creature.Archer));
-            Assert.That(At(AfterTheCastle, 28, 62).Creature, Is.EqualTo(Creature.Angel));
+            Assert.That(At(AfterTheCastle, 27, 56).Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer")));
+            Assert.That(At(AfterTheCastle, 28, 62).Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel")));
             Assert.That(At(AfterTheCastle, 28, 62).Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(At(AfterTheCastle, 31, 62).Creature?.Name, Is.EqualTo("Centaur"));
             Assert.That(At(AfterTheCastle, 31, 62).Owner, Is.EqualTo(PlayerColor.Neutral));

@@ -7,6 +7,13 @@ namespace Siniskalc.Homm3
     /// </summary>
     public static class Constants
     {
+        public static class Catalog
+        {
+            public const int SpellCapacity = 70;
+            public const int SkillCapacity = 30;
+            public const int PlaceCapacity = 12;
+        }
+
         public const byte ByteOn = 0;
         public const byte ByteOff = 255;
 

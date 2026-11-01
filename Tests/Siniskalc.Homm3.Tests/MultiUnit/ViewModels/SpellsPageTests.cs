@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Models;
+﻿using Siniskalc.Heroes.Models;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -36,14 +36,14 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             this.page.Dispose();
         }
 
-        private IEnumerable<Spell> SpellsOfTheVersion => Spell.All.Where(s => s.IsAvailableIn(this.session.GameVersion));
+        private IEnumerable<Spell> SpellsOfTheVersion => TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.All.Where(s => s.IsAvailableIn(this.session.GameVersion));
 
         [Test]
         public void ASpellAnArtifactGrantsNamesTheArtifactAsItsSource()
         {
-            this.session.Update(h => h with { EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, Artifact.SeaCaptainsHat) });
+            this.session.Update(h => h with { EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SeaCaptainsHat")) });
 
-            var row = this.Rows.Single(r => r.Spell == Spell.SummonBoat);
+            var row = this.Rows.Single(r => r.Spell == TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("SummonBoat"));
 
             Assert.That(row.IsAvailable, Is.True);
             Assert.That(row.Source, Is.EqualTo("Sea Captain's Hat"));
@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void TickingOneSelectedSpellChangesAllSelectedSpells()
         {
             var rows = this.Rows;
-            var picked = new[] { Spell.Bless, Spell.Cure, Spell.Fireball }.Select(s => rows.Single(r => r.Spell == s)).ToList();
+            var picked = new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Cure"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball") }.Select(s => rows.Single(r => r.Spell == s)).ToList();
             var bystander = rows.First(r => !picked.Contains(r));
             foreach (var row in picked)
             {
@@ -90,7 +90,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheListHasEverySpellOfTheVersionWithItsLearnedAndAvailableFlags()
         {
-            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(Spell.Bless, true).WithOtherAvailable([Spell.Cure]) });
+            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), true).WithOtherAvailable([TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Cure")]) });
             var book = this.session.Current.SpellBook;
 
             var rows = this.Rows;
@@ -102,8 +102,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Assert.That(row.IsAvailable, Is.EqualTo(book.IsAvailable(row.Spell)), row.Name);
             }
 
-            Assert.That(rows.Single(r => r.Spell == Spell.Bless).IsLearned, Is.True);
-            Assert.That(rows.Single(r => r.Spell == Spell.Cure).IsAvailable, Is.True);
+            Assert.That(rows.Single(r => r.Spell == TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")).IsLearned, Is.True);
+            Assert.That(rows.Single(r => r.Spell == TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Cure")).IsAvailable, Is.True);
             Assert.That(this.Spells.Finder.Items.Groups, Is.Not.Empty);
         }
 
@@ -138,19 +138,19 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             this.Spells.LearnAllCommand.Execute(null);
 
             var learned = this.SpellsOfTheVersion.Where(s => this.session.Current.SpellBook.IsLearned(s)).ToList();
-            Assert.That(learned, Is.EqualTo(new[] { Spell.MagicArrow }));
+            Assert.That(learned, Is.EqualTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow") }));
         }
 
         [Test]
         public void ForgetAllOnlyForgetsWhatIsShown()
         {
-            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(Spell.MagicArrow, true).WithLearned(Spell.Bless, true) });
+            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow"), true).WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), true) });
             this.Spells.Finder.Filter = "magic arrow";
 
             this.Spells.ForgetAllCommand.Execute(null);
 
-            Assert.That(this.session.Current.SpellBook.IsLearned(Spell.MagicArrow), Is.False);
-            Assert.That(this.session.Current.SpellBook.IsLearned(Spell.Bless), Is.True);
+            Assert.That(this.session.Current.SpellBook.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), Is.False);
+            Assert.That(this.session.Current.SpellBook.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")), Is.True);
         }
 
         [Test]
@@ -176,21 +176,21 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void LearnAllWithALevelFilterOnlyLearnsThatLevelAndForgetAllOnlyForgetsIt()
         {
             var spells = this.SpellsOfTheVersion.ToList();
-            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(Spell.MagicArrow, true) });
+            this.session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow"), true) });
 
             this.Spells.Finder.Filter = "level 5";
             this.Spells.LearnAllCommand.Execute(null);
 
             foreach (var spell in spells)
             {
-                Assert.That(this.session.Current.SpellBook.IsLearned(spell), Is.EqualTo(spell.Level == 5 || spell == Spell.MagicArrow), spell.Name);
+                Assert.That(this.session.Current.SpellBook.IsLearned(spell), Is.EqualTo(spell.Level == 5 || spell == TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), spell.Name);
             }
 
             this.Spells.ForgetAllCommand.Execute(null);
 
             foreach (var spell in spells)
             {
-                Assert.That(this.session.Current.SpellBook.IsLearned(spell), Is.EqualTo(spell == Spell.MagicArrow), spell.Name);
+                Assert.That(this.session.Current.SpellBook.IsLearned(spell), Is.EqualTo(spell == TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), spell.Name);
             }
         }
 

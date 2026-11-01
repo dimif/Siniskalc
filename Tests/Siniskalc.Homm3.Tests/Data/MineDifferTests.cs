@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class MineDifferTests
     {
-        private static MineModel Mine() => new(2, MineKind.GoldMine, PlayerColor.Blue, new MapPosition(14, 15, MapPosition.Underground), new Army<Creature>(Constants.CreatureSlotCount));
+        private static MineModel Mine() => new(2, MineKind.GoldMine, PlayerColor.Blue, new MapPosition(14, 15, MapPosition.Underground), new Army<Creature>(Constants.CreatureSlotCount), TestCatalog.Hota);
 
         [Test]
         public void TwoEqualMinesHaveNoChanges()
@@ -35,7 +35,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void AStackOfTheGuardIsAChangeOfItsSlotUnderTheGarrison()
         {
             var original = Mine();
-            var current = original with { Guard = original.Guard.WithSlot(3, Creature.Pikeman, 40) };
+            var current = original with { Guard = original.Guard.WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 40) };
 
             var change = new MineDiffer().Diff(2, original, current).Single();
 
@@ -46,7 +46,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void TheOwnerIsListedBeforeTheGuard()
         {
             var original = Mine();
-            var current = (original with { Owner = PlayerColor.Red }) with { Guard = original.Guard.WithSlot(0, Creature.Pikeman, 1) };
+            var current = (original with { Owner = PlayerColor.Red }) with { Guard = original.Guard.WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 1) };
 
             Assert.That(new MineDiffer().Diff(0, original, current).Select(c => c.Change.Description), Is.EqualTo(new[] { "Owner", "Slot 1" }));
         }

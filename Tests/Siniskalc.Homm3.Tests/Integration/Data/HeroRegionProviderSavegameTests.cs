@@ -111,10 +111,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             {
                 PrimarySkills = new PrimarySkills(11, 12, 13, 14),
                 HeroLevel = new HeroLevel { Level = 30, Experience = 123456 },
-                Army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10).WithSlot(6, Creature.Angel, 3),
+                Army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10).WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 3),
                 SecondarySkills = model.SecondarySkills.WithoutSlot(0),
-                Backpack = model.Backpack.WithSlot(Constants.BackpackSlotCount - 1, Artifact.OrbOfInhibition),
-                EquippedArtifacts = model.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
+                Backpack = model.Backpack.WithSlot(Constants.BackpackSlotCount - 1, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfInhibition")),
+                EquippedArtifacts = model.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfLevitation")),
                 SpellPoints = 77,
             });
 

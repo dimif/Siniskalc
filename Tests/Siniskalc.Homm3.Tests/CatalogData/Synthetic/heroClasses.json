@@ -1,0 +1,22 @@
+[
+  {
+    "id": "FixtureChampion",
+    "order": 24,
+    "name": "Astral Champion",
+    "code": 24,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "FixtureTown",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "FixtureOracle",
+    "order": 25,
+    "name": "Astral Oracle",
+    "code": 25,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "FixtureTown",
+    "type": "magic",
+    "fallback": false
+  }
+]

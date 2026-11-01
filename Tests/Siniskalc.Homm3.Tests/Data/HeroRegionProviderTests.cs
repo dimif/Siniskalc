@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class HeroRegionProviderTests
     {
-        private readonly HeroRegionProvider provider = new(new VersionSpecificEntitiesProviderFactory(_ => Mock.Of<IGrantedSpellsResolver>()));
+        private readonly HeroRegionProvider provider = new(new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs));
 
         private IReadOnlyList<ByteRegion> Regions(GameVersion version, int chunkLength = int.MaxValue) => this.provider.GetRegions(new HeroOffsets(version), chunkLength);
 
@@ -73,7 +73,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(levels.Parts!, Has.Count.EqualTo(28));
             Assert.That(levels.Parts!.Select(p => p.Start), Is.EqualTo(Enumerable.Range(208, 28)));
-            Assert.That(levels.Parts!.Select(p => p.Name), Is.EqualTo(SecondarySkill.All.Where(s => s.IsAvailableIn(GameVersion.ShadowOfDeath)).OrderBy(s => s.Code).Select(s => s.Name)));
+            Assert.That(levels.Parts!.Select(p => p.Name), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.Where(s => s.IsAvailableIn(GameVersion.ShadowOfDeath)).OrderBy(s => s.Code).Select(s => s.Name)));
             Assert.That(levels.Parts!.Select(p => p.Group), Has.All.EqualTo("Skill levels"));
         }
 

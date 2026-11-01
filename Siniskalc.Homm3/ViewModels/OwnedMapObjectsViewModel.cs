@@ -149,7 +149,7 @@ namespace Siniskalc.Homm3.ViewModels
         private ArmyViewModel CreateGuardEditor()
         {
             var editor = new ArmyViewModel(
-                this.version,
+                this.history.Current.Catalog(),
                 () => this.Mines.SelectedMine?.Guard ?? new Army<Creature>(Constants.CreatureSlotCount),
                 edit => this.Mines.SelectedMine?.UpdateGuard(edit));
             editor.SetTitle(this.GuardHeading);

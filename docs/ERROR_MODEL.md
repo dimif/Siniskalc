@@ -7,6 +7,7 @@ What is written to the log file, and when, is in `LOGGING.md`. Every place that 
 
 | Kind | Type | Thrown by | Caught by | The user sees |
 |---|---|---|---|---|
+| Standard game definitions are missing, malformed or inconsistent | `GameDefinitionException` | the JSON reader or a game's catalog loader | `App.StartServices` | the definition file and cause, with an instruction to correct or restore it and restart |
 | The file is not a compressed savegame, or is damaged | `CorruptSavefileException` (`SavefileException`) | `GzipSavefileCodec.Read` | `SavegameFileCommands.Run` | its message, as it is |
 | The file is a savegame of nothing this editor knows (another game, a map, an unknown version) | `UnsupportedSavefileException` (`SavefileException`) | `SavegameParser.Parse` | `SavegameFileCommands.Run` | its message, as it is |
 | The file cannot be opened, read or written (missing, locked, disk full) | `IOException` and kin | the codec, `NumberedSavefileBackupService` | `SavegameFileCommands.Run` | "Failed to ...: message" |
@@ -18,6 +19,7 @@ What is written to the log file, and when, is in `LOGGING.md`. Every place that 
 
 - **A value the editor does not know never stops a load.** Deserializers read it as a stand-in (or as nothing) and the serializer keeps the original byte (see `CLAUDE.md`).
   Each is logged at Trace with the record as its subject (see `LOGGING.md`).
+- **Invalid standard game definitions stop startup.** Both games' shipped JSON is read and validated before the editor is available. A missing file, unsupported schema, malformed value or inconsistent reference is not an unknown savefile value: it throws `GameDefinitionException` and the application reports the file and cause. There is no hardcoded fallback, partial catalog, reset-to-default operation or automatic reload. Correct or restore the JSON and restart the editor.
 - **Parsing only slices bytes; the models are read when a page needs them.** `Homm3EditorViewModel.SetGame` builds what reads the new game (the overview, the owners) before it lets go of the open game, so a game that cannot be shown leaves the open one as it was.
 - **A save is all or nothing.** `GameService.SaveGame` works out the bytes, makes the backup, then `GzipSavefileCodec.Write` writes a `.saving` file and moves it over the savefile.
   Only after that is the game tied to the file (`Game.SavedTo`) and marked saved.

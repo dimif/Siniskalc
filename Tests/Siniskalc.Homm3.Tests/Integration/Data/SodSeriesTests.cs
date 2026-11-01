@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -29,7 +29,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Castle(Game game, string name)
         {
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName(name)]);
         }
 
         private static HeroModel Hero(Game game, string name) => game.History.CreateHeroSession(game.History.Current.Heroes().FindByName(name)).Current;
@@ -53,10 +53,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(game.History.Current.Castles(), Has.Count.EqualTo(10));
 
             var conflux = Castle(game, "Conflux");
-            Assert.That(conflux.Faction, Is.EqualTo(Faction.Conflux));
+            Assert.That(conflux.Faction, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Conflux")));
             Assert.That(conflux.Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(conflux.Position, Is.EqualTo(new MapPosition(50, 4, 0)));
-            Assert.That(conflux.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
+            Assert.That(conflux.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("VillageHall") }));
             Assert.That(Castle(game, "8_Fort").Owner, Is.EqualTo(PlayerColor.Pink));
             Assert.That(Castle(game, "Marishen").Owner, Is.EqualTo(PlayerColor.Neutral));
         }
@@ -124,7 +124,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = Load("conflux_34_grail");
             var conflux = Castle(game, "Conflux");
 
-            Assert.That(conflux.Buildings, Does.Contain(Building.ConfluxAuroraBorealis));
+            Assert.That(conflux.Buildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("ConfluxAuroraBorealis")));
             Assert.That(conflux.VisitingHeroId, Is.EqualTo(Hero(game, "Tazar").Id));
             Assert.That(Hero(game, "Tazar").Position, Is.EqualTo(new HeroPosition(50, 4, 0, FacingDirection.NorthEast)));
         }
@@ -136,8 +136,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var to = Load(after).History.Current.Castles();
             var chunk = from[from.FindByName("Conflux")];
             var actual = to[to.FindByName("Conflux")];
-            var model = TestServices.CastleDeserializer.Deserialize(chunk);
-            var added = TestServices.CastleDeserializer.Deserialize(actual).Buildings.Except(model.Buildings).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
+            var model = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(chunk);
+            var added = new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(actual).Buildings.Except(model.Buildings).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
 
             Assert.That(added, Has.Count.EqualTo(1), after);
             var edited = TestServices.CastleSerializer.Serialize(chunk, CastleBuilder.Build(model, added[0]));
@@ -235,12 +235,12 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var before = Hero(Load("conflux_00_baseline"), "Tazar");
             var after = Hero(Load("conflux_01_tazar_wins_boots_tomes"), "Tazar");
 
-            Assert.That(before.Backpack.All.OfType<BackpackSlot>().Select(s => s.Art), Is.EqualTo(Enumerable.Repeat(Artifact.TheGrail, 8)));
-            Assert.That(before.EquippedArtifacts.GetEquippedArtifacts().Select(t => t.Item2), Is.EqualTo(new[] { Artifact.EquestriansGloves }));
-            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Helmet), Is.EqualTo(Artifact.SpellbindersHat));
-            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Cape), Is.EqualTo(Artifact.AngelWings));
-            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(Artifact.BootsOfLevitation));
-            Assert.That(after.EquippedArtifacts.GetEquippedArtifacts().Select(t => t.Item2), Does.Contain(Artifact.TomeOfFireMagic).And.Contain(Artifact.TomeOfWaterMagic));
+            Assert.That(before.Backpack.All.OfType<BackpackSlot>().Select(s => s.Art), Is.EqualTo(Enumerable.Repeat(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TheGrail"), 8)));
+            Assert.That(before.EquippedArtifacts.GetEquippedArtifacts().Select(t => t.Item2), Is.EqualTo(new[] { TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("EquestriansGloves") }));
+            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Helmet), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SpellbindersHat")));
+            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Cape), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("AngelWings")));
+            Assert.That(after.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("BootsOfLevitation")));
+            Assert.That(after.EquippedArtifacts.GetEquippedArtifacts().Select(t => t.Item2), Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfFireMagic")).And.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TomeOfWaterMagic")));
         }
 
         [TestCase("Red", "conflux_00_baseline", 77, 123)]

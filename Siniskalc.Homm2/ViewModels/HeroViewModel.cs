@@ -54,45 +54,29 @@
                     this.Row("Morale", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Morale, (h, v) => h with { NextBattle = h.NextBattle with { Morale = (int)v } }, () => "next battle only"),
                     this.Row("Luck", Constants.Hero.MinBattleBonus, Constants.Hero.MaxBattleBonus, 1, h => h.NextBattle.Luck, (h, v) => h with { NextBattle = h.NextBattle with { Luck = (int)v } }, () => "next battle only"),
                 ],
-                [
-                    this.Source("Temple", HeroEffects.Temple, 2, 0, "+2 morale for the next battle"),
-                    this.Source("Fountain", HeroEffects.Fountain, 0, 1, "+1 luck for the next battle"),
-                    this.Source("Oasis", HeroEffects.Oasis, 1, 0, "+1 morale for the next battle"),
-                    this.Source("Faerie ring", HeroEffects.FaerieRing, 0, 1, "+1 luck for the next battle"),
-                    this.Source("Graveyard visited before", HeroEffects.Graveyard, -1, 0, "-1 morale for the next battle"),
-                ],
+                game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.NextBattle).Select(e => this.Source(e.Name, e.Flag, e.Morale, e.Luck, e.Description)).ToList(),
                 "What a temple, a fountain, a faerie ring or a graveyard gave. The game takes it away after the next battle. Not tried in the game.",
-                () => this.session.Update(h => h with { NextBattle = default, Effects = h.Effects & ~(HeroEffects.Temple | HeroEffects.Fountain | HeroEffects.Oasis | HeroEffects.FaerieRing | HeroEffects.Graveyard) }));
-            this.usedOnce =
-            [
-                this.Remembered("Arena used", HeroEffects.Arena, "The hero used the arena: it gives a point of skill once per hero"),
-            ];
-            this.usedWeekly =
-            [
-                this.Remembered("Stables used this week", HeroEffects.Stables, "The stables give more movement points once a week for each hero; the game clears this at the start of a week"),
-            ];
-            this.visitedPlaces =
-            [
-                this.Visited(game, PlaceKind.Gazebo, "Gazebos", "A thousand experience points, once per hero"),
-                this.Visited(game, PlaceKind.Fort, "Forts", "A point of defense, once per hero"),
-                this.Visited(game, PlaceKind.WitchDoctorHut, "Witch doctor's huts", "A point of knowledge or a skill, once per hero"),
-                this.Visited(game, PlaceKind.MercenaryCamp, "Mercenary camps", "A point of attack, once per hero"),
-                this.Visited(game, PlaceKind.StandingStones, "Standing stones", "A point of spell power, once per hero"),
-                this.Visited(game, PlaceKind.Xanadu, "Xanadu", "A point of every primary skill, once per hero"),
-            ];
+                () => this.session.Update(h => h with { NextBattle = default, Effects = h.Effects & ~game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.NextBattle).Aggregate(HeroEffects.None, (flags, e) => flags | e.Flag) }));
+            this.usedOnce = game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.Once).Select(e => this.Remembered(e.Name, e.Flag, e.Description)).ToList();
+            this.usedWeekly = game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.Weekly).Select(e => this.Remembered(e.Name, e.Flag, e.Description)).ToList();
+            this.visitedPlaces = game.Catalog.Places.Select(place => this.Visited(game, place.Kind, place.Name, place.Description)).ToList();
             this.ArmyEditor = new ArmyViewModel(
+                game.Catalog,
                 game.GameVersion,
                 () => this.session.Current.Army,
                 edit => this.session.Update(h => h with { Army = edit(h.Army) }));
             this.SkillsEditor = new SecondarySkillsViewModel(
+                game.Catalog,
                 game.GameVersion,
                 () => this.session.Current.SecondarySkills,
                 edit => this.session.Update(h => h with { SecondarySkills = edit(h.SecondarySkills) }));
             this.SpellsEditor = new SpellsViewModel(
+                game.Catalog,
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
             this.ArtifactsEditor = new ArtifactsViewModel(
+                game.Catalog,
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
@@ -120,7 +104,7 @@
                 value => this.session.Update(h => h.WithExperience(value)),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
-                Faction.All.Select(f => f.Name).ToList(),
+                game.Catalog.Factions.Where(f => !f.IsNeutral).Select(f => f.Name).ToList(),
                 () => this.session.Current.Faction.ToString());
             this.Position = MapPointCardViewModel.ForPosition(
                 () => this.session.Current.Position,
@@ -366,7 +350,7 @@
                 .Select(mines.GetModel)
                 .Where(m => m.Owner == hero.Owner)
                 .Select(m => new MapDestination(
-                    MineKinds.NameOf(m.Kind),
+                    m.Catalog.Mines.Find((byte)m.Kind)!.Name,
                     "Mine",
                     m.Position,
                     MapLevelText.Place(m.Position.X, m.Position.Y),

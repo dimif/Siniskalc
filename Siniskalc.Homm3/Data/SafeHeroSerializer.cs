@@ -62,13 +62,14 @@
         {
             return Edit(chunk, buffer =>
             {
-                foreach (var kind in VisitedPlaceKind.All)
+                foreach (var kind in this.entities.Catalog.VisitedPlaces.All)
                 {
                     // A kind the savegame has no room for, or that does not exist in this version, is left alone.
-                    if (kind.HeroOffset + sizeof(uint) <= buffer.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss)
-                        && ByteBufferHelper.ReadUInt32(buffer, kind.HeroOffset) != visits.Of(kind))
+                    var offset = VisitedPlaceOffsets.For(kind.Slot);
+                    if (offset + sizeof(uint) <= buffer.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss)
+                        && ByteBufferHelper.ReadUInt32(buffer, offset) != visits.Of(kind))
                     {
-                        ByteBufferHelper.WriteUInt32(buffer, kind.HeroOffset, visits.Of(kind));
+                        ByteBufferHelper.WriteUInt32(buffer, offset, visits.Of(kind));
                     }
                 }
             });
@@ -76,7 +77,7 @@
 
         public HeroChunk SerializeCreatures(HeroChunk chunk, IArmy<Creature> creatures)
         {
-            return Edit(chunk, buffer => ArmyWriter.Write(buffer, this.heroOffsets.Army, creatures, CreatureCodes.Instance, nameof(creatures)));
+            return Edit(chunk, buffer => ArmyWriter.Write(buffer, this.heroOffsets.Army, creatures, this.entities.CreatureCodes, nameof(creatures)));
         }
 
         public HeroChunk SerializeMovementPoints(HeroChunk chunk, MovementPoints movementPoints)
@@ -175,7 +176,7 @@
             {
                 // A class this editor does not know reads as Knight, and is left alone while the hero stays a Knight.
                 var offset = this.heroOffsets[HeroOffsetName.Class];
-                if (HeroClass.FromCode<HeroClass>(buffer[offset]) == null && heroClass == HeroClass.Knight)
+                if (this.entities.Catalog.HeroClasses.Find(buffer[offset]) == null && heroClass == this.entities.Catalog.FallbackHeroClass)
                 {
                     return;
                 }
@@ -269,7 +270,7 @@
                 {
                     var offset = this.heroOffsets[HeroOffsetName.Backpack] + (i * Constants.BackpackSlotSize);
                     var currentId = ByteBufferHelper.ReadUInt32(buffer, offset);
-                    var currentlyPresent = currentId <= byte.MaxValue && Artifact.CarriedInBackpack.ContainsKey((byte)currentId);
+                    var currentlyPresent = currentId <= byte.MaxValue && this.entities.Catalog.Artifacts.Find((byte)currentId) is { CanBeInBackpack: true };
 
                     var slot = i < backpack.All.Count ? backpack.All[i] : null;
                     var artifact = slot?.Art;
@@ -285,7 +286,7 @@
                     {
                         WriteSlot(buffer, offset, artifact.Code, slot!.Spell?.Code ?? Constants.BlankId);
                     }
-                    else if (artifact == Artifact.SpellScroll && slot!.Spell is { } spell
+                    else if (artifact.IsScroll && slot!.Spell is { } spell
                         && ByteBufferHelper.ReadUInt32(buffer, offset + 4) != spell.Code)
                     {
                         // The same scroll holding another spell. A scroll without a known spell keeps the bytes it has.
@@ -309,7 +310,7 @@
 
                     if (slotsToArtifacts.TryGetValue(slot, out var artifact))
                     {
-                        var scrollSpell = artifact == Artifact.SpellScroll ? equippedArtifacts.GetScrollSpell(slot) : null;
+                        var scrollSpell = artifact.IsScroll ? equippedArtifacts.GetScrollSpell(slot) : null;
                         if (currentCode != artifact.Code)
                         {
                             WriteSlot(buffer, offset, artifact.Code, scrollSpell?.Code ?? Constants.BlankId);

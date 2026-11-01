@@ -48,12 +48,12 @@ namespace Siniskalc.Homm3.Tests.Data
         public void AnotherClassAndAnotherGenderAreListedByNameAndPutBack()
         {
             var original = HeroModels.Christian() with { Gender = null };
-            var current = original with { HeroClass = HeroClass.Cleric, Gender = HeroGender.Female };
+            var current = original with { HeroClass = TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Cleric"), Gender = HeroGender.Female };
 
             var changes = this.Diff(original, current);
 
             Assert.That(changes.Select(Words), Is.EqualTo(new[] { ("Class", "Knight", "Cleric"), ("Gender", "unknown", "Female") }));
-            Assert.That(this.fake.HeroReverts["Class"](current).HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(this.fake.HeroReverts["Class"](current).HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
             Assert.That(this.fake.HeroReverts["Gender"](current).Gender, Is.Null);
         }
 
@@ -103,32 +103,32 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ThePlacesAHeroVisitedAreListedAsTheNumberOfVisitsOfEachKind()
         {
             var original = HeroModels.Christian();
-            var current = original with { PlaceVisits = original.PlaceVisits.With(VisitedPlaceKind.LearningStone, 0b1011) };
+            var current = original with { PlaceVisits = original.PlaceVisits.With(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone"), 0b1011) };
 
             var change = this.Diff(original, current).Single();
 
             Assert.That(Words(change), Is.EqualTo(("Visited: learning stones", "0", "3")));
-            Assert.That(this.fake.HeroReverts["Visited: learning stones"](current).PlaceVisits.Of(VisitedPlaceKind.LearningStone), Is.Zero);
+            Assert.That(this.fake.HeroReverts["Visited: learning stones"](current).PlaceVisits.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")), Is.Zero);
         }
 
         [Test]
         public void TheSecondarySkillsAreOneChangeListingTheSlotsInOrderWithTheirLevels()
         {
             var original = HeroModels.Christian();
-            var current = original with { SecondarySkills = original.SecondarySkills.WithSkill(SecondarySkill.Archery, SkillLevel.Beginner) };
+            var current = original with { SecondarySkills = original.SecondarySkills.WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery"), SkillLevel.Beginner) };
 
             var change = this.Diff(original, current).Single();
 
             Assert.That(Words(change), Is.EqualTo(("Skills", "none", "Archery (Beginner)")));
-            Assert.That(this.fake.HeroReverts["Skills"](current).SecondarySkills.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.None));
+            Assert.That(this.fake.HeroReverts["Skills"](current).SecondarySkills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")), Is.EqualTo(SkillLevel.None));
         }
 
         [Test]
         public void ASkillBeyondTheEightSlotsIsListedAsNotShown()
         {
             var original = HeroModels.Christian();
-            var full = SecondarySkill.All.Take(8).Aggregate(original.SecondarySkills, (skills, skill) => skills.WithSkill(skill, SkillLevel.Beginner));
-            var extra = SecondarySkill.All[8];
+            var full = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.Take(8).Aggregate(original.SecondarySkills, (skills, skill) => skills.WithSkill(skill, SkillLevel.Beginner));
+            var extra = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All[8];
             original = original with { SecondarySkills = full };
             var current = original with { SecondarySkills = full.WithSkillLevel(extra, SkillLevel.Expert) };
 
@@ -142,7 +142,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void AStackIsAChangeOfItsSlotAndPutBackAsItWas()
         {
             var original = HeroModels.Christian();
-            var current = original with { Army = original.Army.WithSlot(1, Creature.Archer, 12) };
+            var current = original with { Army = original.Army.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 12) };
 
             var change = this.Diff(original, current).Single();
 
@@ -154,29 +154,29 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheWarMachinesAreOneChangeListedByNameInAnyOrder()
         {
-            var original = HeroModels.Christian() with { WarMachines = [WarMachine.Ballista] };
-            var current = original with { WarMachines = [WarMachine.FirstAidTent, WarMachine.Ballista] };
+            var original = HeroModels.Christian() with { WarMachines = [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista")] };
+            var current = original with { WarMachines = [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista")] };
 
             var change = this.Diff(original, current).Single();
 
             Assert.That(change.Change.Description, Is.EqualTo("War machines"));
             Assert.That(change.Change.Before, Is.EqualTo("Ballista"));
             Assert.That(change.Change.After, Does.Contain("Ballista").And.Contain("First Aid Tent"));
-            Assert.That(this.Diff(current, current with { WarMachines = [WarMachine.Ballista, WarMachine.FirstAidTent] }), Is.Empty, "the order of the machines is no change");
+            Assert.That(this.Diff(current, current with { WarMachines = [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent")] }), Is.Empty, "the order of the machines is no change");
         }
 
         [Test]
         public void AnArtifactWornInASlotAndAScrollWithItsSpellAreListedBySlotAndPutBack()
         {
             var original = HeroModels.Christian();
-            var current = original.WithEquippedArtifacts(original.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, Artifact.SkullHelmet).WithEquipped(ArtifactSlots.Misc1, Artifact.SpellScroll, Spell.Fly));
+            var current = original.WithEquippedArtifacts(original.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SkullHelmet")).WithEquipped(ArtifactSlots.Misc1, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")));
 
             var changes = this.Diff(original, current).Where(c => c.Change.Area == ChangeAreas.Artifacts).ToList();
 
             Assert.That(changes.Select(Words), Is.EquivalentTo(new[]
             {
                 ("Helmet", ChangeText.Empty, "Skull Helmet"),
-                ("Misc1", ChangeText.Empty, SpellScroll.NameOf(Spell.Fly)),
+                ("Misc1", ChangeText.Empty, SpellScroll.NameOf(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly"))),
             }));
             Assert.That(this.fake.HeroReverts["Helmet"](current).EquippedArtifacts.GetArtifact(ArtifactSlots.Helmet), Is.Null);
         }
@@ -185,7 +185,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void AnArtifactInTheBackpackIsAChangeOfItsSlotAndPutBackEmpty()
         {
             var original = HeroModels.Christian();
-            var current = original with { Backpack = original.Backpack.WithSlot(2, Artifact.SkullHelmet) };
+            var current = original with { Backpack = original.Backpack.WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SkullHelmet")) };
 
             var change = this.Diff(original, current).Single();
 
@@ -197,7 +197,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void TheSpellBookAndEachLearnedSpellAreListedAndPutBack()
         {
             var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell>(), new HashSet<Spell>(), hasSpellBook: false) };
-            var current = original with { SpellBook = original.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
+            var current = original with { SpellBook = original.SpellBook.WithHasSpellBook(true).WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), true) };
 
             var changes = this.Diff(original, current);
 
@@ -206,14 +206,14 @@ namespace Siniskalc.Homm3.Tests.Data
                 ("Spell book", "no", "yes"),
                 ("Bless", "not learned", "learned"),
             }));
-            Assert.That(this.fake.HeroReverts["Bless"](current).SpellBook.IsLearned(Spell.Bless), Is.False);
+            Assert.That(this.fake.HeroReverts["Bless"](current).SpellBook.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")), Is.False);
         }
 
         [Test]
         public void ASpellLearnedAndAnotherForgottenAreTwoChangesThatArePutBackOneByOne()
         {
-            var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell> { Spell.Haste }, new HashSet<Spell>(), hasSpellBook: true) };
-            var current = original with { SpellBook = original.SpellBook.WithLearned(Spell.Haste, false).WithLearned(Spell.Bless, true) };
+            var original = HeroModels.Christian() with { SpellBook = new SpellBook(new HashSet<Spell> { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste") }, new HashSet<Spell>(), hasSpellBook: true) };
+            var current = original with { SpellBook = original.SpellBook.WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), false).WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), true) };
 
             var changes = this.Diff(original, current);
 
@@ -223,7 +223,7 @@ namespace Siniskalc.Homm3.Tests.Data
                 ("Haste", "learned", "not learned"),
             }));
             var hasteBack = this.fake.HeroReverts["Haste"](current).SpellBook;
-            Assert.That((hasteBack.IsLearned(Spell.Haste), hasteBack.IsLearned(Spell.Bless)), Is.EqualTo((true, true)));
+            Assert.That((hasteBack.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), hasteBack.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"))), Is.EqualTo((true, true)));
         }
 
         [Test]

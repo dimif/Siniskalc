@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 secondarySkills",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "role": {
+        "type": "string",
+        "enum": [
+          "luck",
+          "morale",
+          "none",
+          "spellPointMultiplier"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "code",
+      "availableFrom",
+      "role"
+    ],
+    "additionalProperties": false
+  }
+}

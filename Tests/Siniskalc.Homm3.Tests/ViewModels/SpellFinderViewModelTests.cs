@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void AllRowsAreShownAtFirstAndTheFinderAllowsSeveralToBeSelected()
         {
-            var finder = this.Finder(this.Row(Spell.Haste), this.Row(Spell.MagicArrow), this.Row(Spell.Bless));
+            var finder = this.Finder(this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")));
 
             Assert.That(Shown(finder), Is.EquivalentTo(new[] { "Haste", "Magic Arrow", "Bless" }));
             Assert.That(finder.AllowsMultiSelect, Is.True);
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ASearchMatchesTheNameTheSchoolTheLevelAndTheType()
         {
-            var finder = this.Finder(this.Row(Spell.Haste), this.Row(Spell.MagicArrow), this.Row(Spell.Visions));
+            var finder = this.Finder(this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions")));
 
             finder.Filter = "haste";
             Assert.That(Shown(finder), Is.EqualTo(new[] { "Haste" }));
@@ -57,7 +57,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void EveryWordOfTheSearchMustMatchSomething()
         {
-            var finder = this.Finder(this.Row(Spell.Haste), this.Row(Spell.MagicArrow));
+            var finder = this.Finder(this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")));
 
             finder.Filter = "combat level 1 air";
 
@@ -67,13 +67,13 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheSummaryCountsWhatIsLearnedAndAvailableAndTellsHowManyAreShownWhenSearching()
         {
-            var haste = this.Row(Spell.Haste);
-            var arrow = this.Row(Spell.MagicArrow);
-            var bless = this.Row(Spell.Bless);
+            var haste = this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"));
+            var arrow = this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow"));
+            var bless = this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"));
             haste.Show(true, false);
             arrow.Show(false, true, "Ring");
             bless.Show(true, true);
-            var visions = this.Row(Spell.Visions);
+            var visions = this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions"));
             visions.Show(true, false);
             var finder = this.Finder(haste, arrow, bless, visions);
 
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheColumnsListTheSpellItsLevelTypeLearnedAvailableAndSource()
         {
-            var finder = this.Finder(this.Row(Spell.Haste));
+            var finder = this.Finder(this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")));
 
             Assert.That(finder.Columns.Select(c => c.Header), Is.EqualTo(new[] { "Spell", "Level", "Type", "Learned", "Available", "Source" }));
             Assert.That(finder.Columns.Single(c => c.Header == "Learned").Kind, Is.EqualTo(Siniskalc.Wpf.ViewModels.FinderColumnKind.CheckBox));
@@ -96,11 +96,11 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ARowReportsTheSchoolAndLevelOfItsSpellAndATickToTheCaller()
         {
-            var row = this.Row(Spell.Haste);
+            var row = this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"));
 
             row.IsLearned = true;
 
-            Assert.That((row.School, row.Level, row.Kind, row.Spell), Is.EqualTo(("Air magic", 1, "Combat", Spell.Haste)));
+            Assert.That((row.School, row.Level, row.Kind, row.Spell), Is.EqualTo(("Air magic", 1, "Combat", TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"))));
             Assert.That(this.changes, Is.EqualTo(new[] { ("Haste", true) }));
         }
 
@@ -108,7 +108,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [TestCase("Magic Arrow", "All schools")]
         public void TheSchoolOfARowIsThatOfItsSpell(string name, string school)
         {
-            Assert.That(this.Row(Spell.All.Single(s => s.Name == name)).School, Is.EqualTo(school));
+            Assert.That(this.Row(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.All.Single(s => s.Name == name)).School, Is.EqualTo(school));
         }
     }
 }

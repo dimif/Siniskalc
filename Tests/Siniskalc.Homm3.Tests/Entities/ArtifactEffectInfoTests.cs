@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 
 namespace Siniskalc.Homm3.Tests.Entities
 {
@@ -18,21 +18,21 @@ namespace Siniskalc.Homm3.Tests.Entities
         [Test]
         public void TheSpellsOfSeveralGrantsAreListedOnceEach()
         {
-            var info = new ArtifactEffectInfo { SpellGrants = [SpellGrantProvider.Of(Spell.Haste, Spell.Bless), SpellGrantProvider.Of(Spell.Haste)] };
+            var info = new ArtifactEffectInfo { SpellGrants = [SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"), TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Bless")), SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"))] };
 
-            Assert.That(info.GrantedSpells(GameVersion.ShadowOfDeath), Is.EquivalentTo(new[] { Spell.Haste, Spell.Bless }));
+            Assert.That(info.GrantedSpells(GameVersion.ShadowOfDeath), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"), TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Bless") }));
         }
 
         [Test]
         public void TwoEffectsAreTheSameWhenEveryFieldAndEveryGrantIsTheSame()
         {
-            var grant = SpellGrantProvider.Of(Spell.Haste);
+            var grant = SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"));
             var info = new ArtifactEffectInfo { Atk = 1, Other = "text", SpellGrants = [grant] };
 
             Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 1, Other = "text", SpellGrants = [grant] }), Is.True);
             Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 2, Other = "text", SpellGrants = [grant] }), Is.False);
             Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 1, Other = "other", SpellGrants = [grant] }), Is.False);
-            Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 1, Other = "text", SpellGrants = [SpellGrantProvider.Of(Spell.Bless)] }), Is.False);
+            Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 1, Other = "text", SpellGrants = [SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Bless"))] }), Is.False);
             Assert.That(info.Equals(new ArtifactEffectInfo { Atk = 1, Other = "text" }), Is.False);
         }
 
@@ -67,8 +67,8 @@ namespace Siniskalc.Homm3.Tests.Entities
         [Test]
         public void EqualEffectsHaveTheSameHashCode()
         {
-            var a = new ArtifactEffectInfo { Atk = 3, Other = "x", SpellGrants = [SpellGrantProvider.Of(Spell.Haste)] };
-            var b = new ArtifactEffectInfo { Atk = 3, Other = "x", SpellGrants = [SpellGrantProvider.Of(Spell.Haste)] };
+            var a = new ArtifactEffectInfo { Atk = 3, Other = "x", SpellGrants = [SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"))] };
+            var b = new ArtifactEffectInfo { Atk = 3, Other = "x", SpellGrants = [SpellGrantProvider.Of(TestCatalog.For(GameVersion.ShadowOfDeath).Spells.ById("Haste"))] };
 
             Assert.That(a.GetHashCode(), Is.EqualTo(b.GetHashCode()));
         }

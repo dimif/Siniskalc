@@ -1,4 +1,5 @@
-﻿using Siniskalc.Homm3.ViewModels;
+﻿using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels

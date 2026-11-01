@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
     internal sealed class SphinxViewModelTests
     {
         private static SphinxModel Sphinx(bool active = true, IReadOnlyList<string>? answers = null, int artifact = SphinxModel.NoArtifact) =>
-            new(2, new MapPosition(7, 8), active, [10, 20, 30, 40, 50, 60, 7000], artifact, answers ?? ["Time", "Moon"], "What is it?", 50);
+            new(2, new MapPosition(7, 8), active, [10, 20, 30, 40, 50, 60, 7000], artifact, answers ?? ["Time", "Moon"], "What is it?", 50, TestCatalog.Standard);
 
         private static Mock<IEditSession<SphinxModel>> Session(SphinxModel sphinx)
         {
@@ -30,7 +30,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
             return session;
         }
 
-        private static SphinxViewModel Page(Mock<IEditSession<SphinxModel>> session) => new(session.Object, GameVersion.BaseGame);
+        private static SphinxViewModel Page(Mock<IEditSession<SphinxModel>> session) => new(TestCatalog.Standard, session.Object, GameVersion.BaseGame);
 
         [Test]
         public void ThePageHasTheNameAndIndexOfTheSphinx()
@@ -84,8 +84,8 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
             var page = Page(session);
 
             var finder = (ArtifactFinderViewModel)page.ArtifactPicker.Finder;
-            finder.Choose(finder.Items.Cast<ArtifactChoiceViewModel>().First(c => c.Name == Artifact.UltimateSwordOfDominion.Name));
-            Assert.That(session.Object.Current.ArtifactCode, Is.EqualTo(Artifact.UltimateSwordOfDominion.Code));
+            finder.Choose(finder.Items.Cast<ArtifactChoiceViewModel>().First(c => c.Name == TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"].Name));
+            Assert.That(session.Object.Current.ArtifactCode, Is.EqualTo(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"].Code));
 
             page.ArtifactPicker.ClearCommand.Execute(null);
             Assert.That(session.Object.Current.ArtifactCode, Is.EqualTo(SphinxModel.NoArtifact));
@@ -139,7 +139,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
             var page = Page(session);
             var raised = new List<string?>();
             page.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
-            session.Object.Update(s => s with { IsActive = false, ArtifactCode = Artifact.UltimateBookOfKnowledge.Code, Riddle = "New", Answers = ["Sun"] });
+            session.Object.Update(s => s with { IsActive = false, ArtifactCode = TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"].Code, Riddle = "New", Answers = ["Sun"] });
             var told = new List<string>();
             page.SolvedToggle.PropertyChanged += (_, _) => told.Add("solved");
             page.Riddle.PropertyChanged += (_, _) => told.Add("riddle");
@@ -150,7 +150,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
 
             Assert.That(told.Distinct(), Is.EquivalentTo(new[] { "solved", "riddle", "answer", "reward" }));
             Assert.That(page.SolvedToggle.IsChecked, Is.True);
-            Assert.That(page.ArtifactPicker.ArtifactName, Is.EqualTo(Artifact.UltimateBookOfKnowledge.Name));
+            Assert.That(page.ArtifactPicker.ArtifactName, Is.EqualTo(TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"].Name));
             Assert.That(page.Answers[0].Text, Is.EqualTo("Sun"));
             Assert.That(page.Answers[1].Text, Is.Empty);
             Assert.That(page.Riddle.Text, Is.EqualTo("New"));

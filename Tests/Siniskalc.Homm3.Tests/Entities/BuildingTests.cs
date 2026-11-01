@@ -8,8 +8,8 @@ namespace Siniskalc.Homm3.Tests.Entities
     {
         private static readonly Faction[] OriginalFactions =
         [
-            Faction.Castle, Faction.Rampart, Faction.Tower, Faction.Inferno, Faction.Necropolis,
-            Faction.Dungeon, Faction.Stronghold, Faction.Fortress, Faction.Conflux,
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Inferno"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Necropolis"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Dungeon"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Stronghold"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Fortress"), TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Conflux"),
         ];
 
         [Test]
@@ -26,16 +26,16 @@ namespace Siniskalc.Homm3.Tests.Entities
         [Test]
         public void BuildingsOfDifferentFactionsAreNotEqualEvenWithTheSameBit()
         {
-            Assert.That(Building.CastleGuardhouse.Code, Is.EqualTo(Building.TowerWorkshop.Code));
-            Assert.That(Building.CastleGuardhouse, Is.Not.EqualTo(Building.TowerWorkshop));
-            Assert.That(Building.CastleGuardhouse == Building.TowerWorkshop, Is.False);
-            Assert.That(Building.All.Distinct().Count(), Is.EqualTo(Building.All.Count));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse").Code, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerWorkshop").Code));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse"), Is.Not.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerWorkshop")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse") == TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerWorkshop"), Is.False);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All.Distinct().Count(), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All.Count));
         }
 
         [Test]
         public void EveryPrerequisiteBelongsToTheSameFactionOrToAll()
         {
-            foreach (var building in Building.All)
+            foreach (var building in TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All)
             {
                 foreach (var prerequisite in building.Prerequisites)
                 {
@@ -62,7 +62,7 @@ namespace Siniskalc.Homm3.Tests.Entities
         [Test]
         public void PrerequisitesDoNotLoopBack()
         {
-            foreach (var building in Building.All)
+            foreach (var building in TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All)
             {
                 var seen = new HashSet<Building>();
                 var pending = new Stack<Building>(building.Prerequisites);
@@ -84,40 +84,40 @@ namespace Siniskalc.Homm3.Tests.Entities
         [Test]
         public void TheHallsUpgradeOneAnother()
         {
-            Assert.That(Building.TownHall.Upgrades, Is.EqualTo(Building.VillageHall));
-            Assert.That(Building.CityHall.Upgrades, Is.EqualTo(Building.TownHall));
-            Assert.That(Building.Capitol.Upgrades, Is.EqualTo(Building.CityHall));
-            Assert.That(Building.Capitol.Prerequisites, Is.EquivalentTo(new[] { Building.CityHall, Building.Castle }));
-            Assert.That(Building.CityHall.Requires, Is.EquivalentTo(new[] { Building.MagesGuild1, Building.Marketplace, Building.Blacksmith }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall").Upgrades, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall").Upgrades, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol").Upgrades, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Castle") }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall").Requires, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Marketplace"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Blacksmith") }));
         }
 
         [Test]
         public void TheCloudTempleIsTheSeventhDwellingOfTheTower()
         {
-            Assert.That(Building.TowerCloudTemple.Code, Is.EqualTo(36));
-            Assert.That(Building.TowerCloudTemple.Faction, Is.EqualTo(Faction.Tower));
-            Assert.That(Building.TowerCloudTemple.Prerequisites, Is.EquivalentTo(new[] { Building.TowerGoldenPavilion, Building.TowerAltarOfWishes }));
-            Assert.That(Building.FromBit(Faction.Tower, 36), Is.EqualTo(Building.TowerCloudTemple));
-            Assert.That(Building.FromBit(Faction.Castle, 36), Is.EqualTo(Building.CastlePortalOfGlory));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple").Code, Is.EqualTo(36));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple").Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerGoldenPavilion"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerAltarOfWishes") }));
+            Assert.That(Building.FromBit(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower"), 36), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple")));
+            Assert.That(Building.FromBit(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle"), 36), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastlePortalOfGlory")));
         }
 
         [Test]
         public void OnlyTheFactionsThatHaveAMageGuildLevelOrShipyardOfferIt()
         {
-            Assert.That(Building.MagesGuild5.IsAvailableFor(Faction.Tower), Is.True);
-            Assert.That(Building.MagesGuild5.IsAvailableFor(Faction.Castle), Is.False);
-            Assert.That(Building.MagesGuild4.IsAvailableFor(Faction.Castle), Is.True);
-            Assert.That(Building.MagesGuild4.IsAvailableFor(Faction.Stronghold), Is.False);
-            Assert.That(Building.Shipyard.IsAvailableFor(Faction.Castle), Is.True);
-            Assert.That(Building.Shipyard.IsAvailableFor(Faction.Tower), Is.False);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild5").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")), Is.True);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild5").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")), Is.False);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")), Is.True);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Stronghold")), Is.False);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")), Is.True);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard").IsAvailableFor(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")), Is.False);
         }
 
         [Test]
         public void ConfluxBuildingsAreFromArmageddonsBlade()
         {
-            Assert.That(Building.All.Where(b => b.Faction == Faction.Conflux), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.ArmageddonsBlade));
-            Assert.That(Building.All.Where(b => b.Faction != Faction.Conflux && b.GameVersion != GameVersion.HornOfTheAbyss), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.RestorationOfErathia));
-            Assert.That(Building.All.Where(b => b.Faction == Faction.Cove), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.HornOfTheAbyss));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All.Where(b => b.Faction == TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Conflux")), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.ArmageddonsBlade));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All.Where(b => b.Faction != TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Conflux") && b.GameVersion != GameVersion.HornOfTheAbyss), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.RestorationOfErathia));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All.Where(b => b.Faction == TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")), Has.All.Matches<Building>(b => b.GameVersion == GameVersion.HornOfTheAbyss));
         }
     }
 }

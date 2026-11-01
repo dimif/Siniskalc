@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -20,7 +20,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), $"{name} in {save}");
-            return TestServices.CastleDeserializer.Deserialize(castles[index]);
+            return castles.GetModel(index);
         }
 
         [TestCase("castles_00_baseline")]
@@ -53,21 +53,21 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var haret = Castle("castles_00_baseline", "Castle Haret");
 
-            Assert.That(haret.Faction, Is.EqualTo(Faction.Castle));
+            Assert.That(haret.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")));
             Assert.That(haret.Owner, Is.EqualTo(PlayerColor.Tan));
             Assert.That(haret.Position, Is.EqualTo(new MapPosition(33, 23, 0)));
             Assert.That(haret.Garrison.Filled, Is.Empty);
             Assert.That(haret.Buildings, Is.EquivalentTo(new[]
             {
-                Building.MagesGuild1,
-                Building.Fort,
-                Building.VillageHall,
-                Building.TownHall,
-                Building.CityHall,
-                Building.Capitol,
-                Building.CastleGuardhouse,
-                Building.CastleArchersTower,
-                Building.CastleGriffinTower,
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleArchersTower"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGriffinTower"),
             }));
         }
 
@@ -76,11 +76,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var tumlac = Castle("castles_00_baseline", "Castle Tumlac");
 
-            Assert.That(tumlac.Faction, Is.EqualTo(Faction.Tower));
+            Assert.That(tumlac.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")));
             Assert.That(tumlac.Owner, Is.EqualTo(PlayerColor.Tan));
             Assert.That(tumlac.Position, Is.EqualTo(new MapPosition(9, 29, 0)));
             Assert.That(tumlac.Garrison.Filled, Is.Empty);
-            Assert.That(tumlac.Buildings, Is.EquivalentTo(new[] { Building.MagesGuild1, Building.VillageHall, Building.TownHall }));
+            Assert.That(tumlac.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall") }));
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var before = Castle("castles_00_baseline", "Castle Haret");
             var after = Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Haret");
 
-            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { Building.Blacksmith }));
+            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Blacksmith") }));
             Assert.That(before.Buildings.Except(after.Buildings), Is.Empty);
 
             var expected = new[] { "Pikeman", "Archer", "Griffin", "Swordsman", "Monk", "Cavalier", "Angel" };
@@ -111,7 +111,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var before = Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Tumlac");
             var after = Castle("castles_02_cloud_temple", "Castle Tumlac");
 
-            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { Building.TowerCloudTemple }));
+            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple") }));
             Assert.That(after.Owner, Is.EqualTo(PlayerColor.Blue));
         }
 
@@ -123,8 +123,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             var current = TestServices.CastleDeserializer.DeserializeVisibleBuildings(haret);
 
-            Assert.That(current, Does.Contain(Building.Capitol));
-            Assert.That(current, Does.Not.Contain(Building.CityHall).And.Not.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));
+            Assert.That(current, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol")));
+            Assert.That(current, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")));
         }
     }
 }

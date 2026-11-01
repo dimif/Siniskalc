@@ -1,4 +1,4 @@
-using Siniskalc.Core.Models;
+﻿using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Tests.Models
         /// <summary>A town of <paramref name="faction"/> that has only its village hall and may build everything its faction can.</summary>
         public static CastleModel Village(Faction faction)
         {
-            var village = new HashSet<Building> { Building.VillageHall };
+            var village = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") };
             return new CastleModel(
                 "Test Town",
                 faction,

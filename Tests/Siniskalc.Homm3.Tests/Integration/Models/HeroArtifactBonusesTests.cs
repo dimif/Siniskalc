@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -24,10 +24,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         {
             var game = Load("arts_00_before_arts");
             var hero = Hero(game, "Valeska");
-            var withHat = hero with { EquippedArtifacts = hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, Artifact.SeaCaptainsHat) };
+            var withHat = hero with { EquippedArtifacts = hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Helmet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SeaCaptainsHat")) };
 
-            Assert.That(withHat.SpellBook.IsAvailable(Spell.SummonBoat), Is.True);
-            Assert.That(withHat.SpellBook.Source(Spell.SummonBoat), Is.EqualTo("Sea Captain's Hat"));
+            Assert.That(withHat.SpellBook.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("SummonBoat")), Is.True);
+            Assert.That(withHat.SpellBook.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("SummonBoat")), Is.EqualTo("Sea Captain's Hat"));
             Assert.That(withHat.ArtifactEffects.WaterMovement, Is.GreaterThan((short)0));
         }
 
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         {
             var game = Load("arts_00_before_arts");
             var hero = Hero(game, "Valeska");
-            var armed = hero.WithEquippedArtifacts(hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Weapon, Artifact.TitansThunder));
+            var armed = hero.WithEquippedArtifacts(hero.EquippedArtifacts.WithEquipped(ArtifactSlots.Weapon, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("TitansThunder")));
 
             Assert.That(armed.PrimarySkills.Attack, Is.EqualTo(hero.PrimarySkills.Attack + 9), "the game saves the skills with the artifact in them");
             Assert.That(armed.PrimarySkills.BaseAttack, Is.EqualTo(hero.PrimarySkills.BaseAttack), "what the hero learned is the same");

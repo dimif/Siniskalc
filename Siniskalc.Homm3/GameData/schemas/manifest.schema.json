@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 standard version manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "versions",
+    "sets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "versions": {
+      "type": "object",
+      "required": [
+        "restorationOfErathia",
+        "armageddonsBlade",
+        "shadowOfDeath",
+        "heroesChronicles",
+        "hornOfTheAbyss"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "restorationOfErathia": {
+          "type": "string",
+          "minLength": 1
+        },
+        "armageddonsBlade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "shadowOfDeath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "heroesChronicles": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hornOfTheAbyss": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sets": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "parent",
+          "directory"
+        ],
+        "properties": {
+          "parent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "directory": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

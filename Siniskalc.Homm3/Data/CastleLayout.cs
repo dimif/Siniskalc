@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.Data
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
 
@@ -169,17 +170,22 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public static IEnumerable<(Building Trigger, int Bit)> CompanionBits(Entities.Faction faction)
         {
-            if (faction == Entities.Faction.Rampart || faction == Entities.Faction.Necropolis)
+            if (faction.CompanionBits == CompanionBitPolicy.Halls)
             {
-                return [(Building.TownHall, TownHallBit), (Building.CityHall, CityHallBit), (Building.Capitol, CapitolBit)];
+                return Halls(faction);
             }
 
-            if (faction == Entities.Faction.Conflux)
+            if (faction.CompanionBits == CompanionBitPolicy.FortAndHalls)
             {
-                return [(Building.Fort, FortBitOfConflux), (Building.TownHall, TownHallBit), (Building.CityHall, CityHallBit), (Building.Capitol, CapitolBit)];
+                return new[] { (Building.FromType(faction, Entities.BuildingType.Fort)!, FortBitOfConflux) }.Concat(Halls(faction));
             }
 
-            return faction == Entities.Faction.Bulwark || faction == Entities.Faction.Factory || faction == Entities.Faction.Stronghold ? [(Building.Fort, FortBitOfFortressLikeFactions)] : [];
+            return faction.CompanionBits == CompanionBitPolicy.Fort ? [(Building.FromType(faction, Entities.BuildingType.Fort)!, FortBitOfFortressLikeFactions)] : [];
         }
+
+        private static IEnumerable<(Building Trigger, int Bit)> Halls(Entities.Faction faction) =>
+            [(Building.FromType(faction, Entities.BuildingType.TownHall)!, TownHallBit),
+             (Building.FromType(faction, Entities.BuildingType.CityHall)!, CityHallBit),
+             (Building.FromType(faction, Entities.BuildingType.Capitol)!, CapitolBit)];
     }
 }

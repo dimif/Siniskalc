@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 
 namespace Siniskalc.Homm3.Tests.Data
@@ -13,17 +13,17 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void EachWarMachineHasItsPlaceInTheHero()
         {
-            Assert.That(WarMachineOffsets.For(WarMachine.Ballista), Is.EqualTo(HeroOffsetName.Ballista));
-            Assert.That(WarMachineOffsets.For(WarMachine.Cannon), Is.EqualTo(HeroOffsetName.Cannon));
-            Assert.That(WarMachineOffsets.For(WarMachine.AmmoCart), Is.EqualTo(HeroOffsetName.AmmoCart));
-            Assert.That(WarMachineOffsets.For(WarMachine.FirstAidTent), Is.EqualTo(HeroOffsetName.FirstAidTent));
+            Assert.That(WarMachineOffsets.For(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista")), Is.EqualTo(HeroOffsetName.Ballista));
+            Assert.That(WarMachineOffsets.For(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Cannon")), Is.EqualTo(HeroOffsetName.Cannon));
+            Assert.That(WarMachineOffsets.For(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart")), Is.EqualTo(HeroOffsetName.AmmoCart));
+            Assert.That(WarMachineOffsets.For(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent")), Is.EqualTo(HeroOffsetName.FirstAidTent));
         }
 
         [Test]
         public void EveryWarMachineOfTheGameHasAPlace()
         {
-            Assert.That(WarMachine.All, Is.Not.Empty);
-            foreach (var machine in WarMachine.All)
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.All, Is.Not.Empty);
+            foreach (var machine in TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.All)
             {
                 Assert.DoesNotThrow(() => WarMachineOffsets.For(machine), machine.Name);
             }

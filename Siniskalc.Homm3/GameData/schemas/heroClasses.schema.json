@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 heroClasses",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "faction": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "magic",
+          "might"
+        ]
+      },
+      "fallback": {
+        "type": "boolean"
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "code",
+      "availableFrom",
+      "faction",
+      "type",
+      "fallback"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -1,4 +1,4 @@
-using Siniskalc;
+﻿using Siniskalc;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
@@ -35,7 +35,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = TestServices.GameService.LoadGameFromBytes(this.history.Current.ToBytes(), "edited.GM1");
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return castles.GetModel(castles.FindByName(name));
         }
 
         [Test]
@@ -64,8 +64,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheGarrisonSlotsAreEditedPendingAndReverted()
         {
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(0, Creature.GoldDragon, 5) });
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, Creature.Centaur, 120) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 5) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 120) });
 
             Assert.That(this.history.GetPendingChanges().Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[]
             {
@@ -73,13 +73,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 ("Slot 4", "empty", "Centaur × 120"),
             }));
             var reloaded = this.Reloaded("Still Water").Garrison;
-            Assert.That(reloaded.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.GoldDragon, 5)));
-            Assert.That(reloaded.Slots[3], Is.EqualTo(new ArmySlot<Creature>(Creature.Centaur, 120)));
+            Assert.That(reloaded.Slots[0], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 5)));
+            Assert.That(reloaded.Slots[3], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 120)));
 
             this.history.GetPendingChanges()[0].Revert(this.history);
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Is.EqualTo(new[] { "Slot 4" }));
 
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, Creature.Centaur, 7) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 7) });
             Assert.That(this.history.GetPendingChanges().Single().Change.After, Is.EqualTo("Centaur × 7"));
 
             this.history.GetPendingChanges().Single().Revert(this.history);
@@ -89,22 +89,22 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ACreatureReplacedInTheGarrisonRevertsToTheOriginalCreature()
         {
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, Creature.Pikeman, 10) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10) });
             this.history.MarkSaved();
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, Creature.Angel, 1) });
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 1) });
 
             var change = this.history.GetPendingChanges().Single();
             Assert.That((change.Change.Before, change.Change.After), Is.EqualTo(("Pikeman × 10", "Angel × 1")));
 
             change.Revert(this.history);
-            Assert.That(this.still.Current.Garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Pikeman, 10)));
+            Assert.That(this.still.Current.Garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10)));
         }
 
         [Test]
         public void TheCreaturesWaitingInADwellingAreEditedOnTheStandingDwelling()
         {
             // The Rampart dwelling of level 1 is still the centaur stables; in Bulwark the colliery is not upgraded yet.
-            Assert.That(CastleBuilder.DwellingOf(this.still.Current, 0), Is.EqualTo(Building.RampartCentaurStables));
+            Assert.That(CastleBuilder.DwellingOf(this.still.Current, 0), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
             this.still.Update(c => c.WithCreaturesWaiting(0, 99));
             this.jotunngard.Update(c => c.WithCreaturesWaiting(6, 1234));
 
@@ -131,7 +131,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheUpgradedDwellingHoldsTheSameCountAsTheDwelling()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgCentaurStables));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables")));
             var moved = this.still.Current.CreaturesAvailable[0];
 
             this.still.Update(c => c.WithCreaturesWaiting(0, moved + 10));
@@ -143,7 +143,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ADwellingThatIsNotBuiltCannotHoldCreatures()
         {
-            var empty = CastleBuilder.Unbuild(this.still.Current, Building.RampartDragonCliffs);
+            var empty = CastleBuilder.Unbuild(this.still.Current, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDragonCliffs"));
 
             Assert.That(CastleBuilder.DwellingOf(empty, 6), Is.Null);
             Assert.That(empty.CreaturesWaiting(6), Is.Null);
@@ -161,7 +161,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var reloaded = this.Reloaded("Still Water");
             Assert.That(reloaded.MageGuildLevel, Is.EqualTo(2));
             Assert.That(reloaded.MageGuildSpellCounts, Is.EqualTo(new[] { 5, 4, 0, 0, 0 }));
-            Assert.That(reloaded.VisibleBuildings, Does.Contain(Building.MagesGuild2).And.Not.Contain(Building.MagesGuild3));
+            Assert.That(reloaded.VisibleBuildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild2")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild3")));
 
             this.history.GetPendingChanges().First().Revert(this.history);
             Assert.That(this.still.Current.MageGuildLevel, Is.EqualTo(3));
@@ -188,8 +188,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void EveryEditUndoesInTheOrderItWasMade()
         {
             this.still.Update(c => c with { Owner = PlayerColor.Green });
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.RampartDragonCliffs));
-            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(6, Creature.Angel, 2) });
+            this.still.Update(c => CastleBuilder.Unbuild(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDragonCliffs")));
+            this.still.Update(c => c with { Garrison = c.Garrison.WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 2) });
 
             while (this.history.CanUndo)
             {

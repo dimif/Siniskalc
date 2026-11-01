@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void StartWithARampartVillage()
         {
             this.openedHeroes.Clear();
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart));
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")));
         }
 
         private CastleViewModel Page(FakeCastleSession? other = null)
@@ -57,7 +57,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ACastleOfNoKnownFactionHasNoBuildingsAndSaysSo()
         {
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { Faction = Faction.Neutral });
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")) with { Faction = TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Neutral") });
             using var page = this.Page();
 
             Assert.That(page.FactionText, Is.EqualTo("Unknown faction"));
@@ -75,7 +75,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             row.IsChecked = true;
 
             Assert.That(Row(page, "Fort").IsBuilt, Is.True);
-            Assert.That(this.session.Current.HasBuilt(Building.Fort), Is.True);
+            Assert.That(this.session.Current.HasBuilt(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")), Is.True);
             Assert.That(page.HasPendingChanges, Is.True);
 
             this.session.Update(_ => this.session.Original);
@@ -87,7 +87,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ABuildingTheRulesNeedAnotherForSaysWhyAndStaysBuilt()
         {
-            this.session = new FakeCastleSession(CastleModels.With(CastleModels.Village(Faction.Rampart), Building.Fort, Building.Citadel));
+            this.session = new FakeCastleSession(CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Citadel")));
             using var page = this.Page();
 
             var fort = Row(page, "Fort");
@@ -134,8 +134,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheDwellingCountIsEditedFromTheRowAndKeptWithinTheLimit()
         {
-            var dwelling = Building.FromDwellingLevel(Faction.Rampart, 2, upgraded: false)!;
-            this.session = new FakeCastleSession(CastleModels.With(CastleModels.Village(Faction.Rampart), dwelling));
+            var dwelling = Building.FromDwellingLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart"), 2, upgraded: false)!;
+            this.session = new FakeCastleSession(CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")), dwelling));
             using var page = this.Page();
             var row = page.Dwellings.Single(d => d.Level == 3);
             Assert.That(row.CanEdit, Is.True);
@@ -245,7 +245,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void AGarrisonedHeroNamesItAndItsArmyTakesTheGarrisonsPlaceAndCannotBeEdited()
         {
             var christian = HeroModels.Christian();
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { GarrisonedHeroId = christian.Id });
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")) with { GarrisonedHeroId = christian.Id });
             this.session.HeroModels[christian.Id] = christian;
             using var page = this.Page();
 
@@ -261,7 +261,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void TheStoredSlotsOfACastleAreLeftAloneWhileAHeroIsGarrisonedAndTheNoticeSaysWhy()
         {
             var christian = HeroModels.Christian();
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { GarrisonedHeroId = christian.Id });
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")) with { GarrisonedHeroId = christian.Id });
             this.session.HeroModels[christian.Id] = christian;
             using var page = this.Page();
 
@@ -285,7 +285,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void TheHeroesInTheCastleAreListedAndOpenedByTheirPlaceAmongTheHeroes()
         {
             var christian = HeroModels.Christian();
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { GarrisonedHeroId = christian.Id });
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")) with { GarrisonedHeroId = christian.Id });
             this.session.HeroModels[7] = christian with { Id = 7, Name = "Other" };
             this.session.HeroModels[christian.Id] = christian;
             using var page = this.Page();
@@ -301,7 +301,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void AHeroThatNoHeroHasTheIdOfIsNamedByItsIdAndCannotBeOpened()
         {
-            this.session = new FakeCastleSession(CastleModels.Village(Faction.Rampart) with { GarrisonedHeroId = 5 });
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")) with { GarrisonedHeroId = 5 });
             using var page = this.Page();
 
             Assert.That(page.GarrisonedHeroName, Is.EqualTo("Unknown hero 5"));

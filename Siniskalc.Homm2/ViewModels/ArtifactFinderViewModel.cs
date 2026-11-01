@@ -18,8 +18,8 @@ namespace Siniskalc.Homm2.ViewModels
         /// <param name="actionLabel">The text of the button on every row, such as "Equip".</param>
         /// <param name="onChoose">Called with the artifact when the user picks one.</param>
         /// <param name="canChoose">Tells whether an artifact can be picked right now; the button is disabled when not. Always when omitted.</param>
-        public ArtifactFinderViewModel(GameVersion gameVersion, string title, string actionLabel, Action<Artifact> onChoose, Func<bool>? canChoose = null)
-            : base(CreateRows(gameVersion), null, title, "artifacts", FinderColumns)
+        public ArtifactFinderViewModel(GameCatalog catalog, GameVersion gameVersion, string title, string actionLabel, Action<Artifact> onChoose, Func<bool>? canChoose = null)
+            : base(CreateRows(catalog, gameVersion), null, title, "artifacts", FinderColumns)
         {
             this.SetAction(actionLabel, choice => onChoose(choice.Artifact), _ => canChoose?.Invoke() ?? true);
             this.StartFiltering();
@@ -40,7 +40,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         protected override bool Matches(ArtifactChoiceViewModel row) => this.TextMatches(row.Name, row.Bonuses);
 
-        private static List<ArtifactChoiceViewModel> CreateRows(GameVersion gameVersion) => Artifact.All
+        private static List<ArtifactChoiceViewModel> CreateRows(GameCatalog catalog, GameVersion gameVersion) => catalog.Artifacts
             .Where(a => a.IsAvailableIn(gameVersion))
             .OrderBy(a => a.Name)
             .Select(a => new ArtifactChoiceViewModel(a))

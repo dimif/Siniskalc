@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             var attack = this.page.GeneralInfoViewModel.PrimarySkills.Attack;
             Assert.That(attack.ArtifactNote, Is.Empty);
 
-            this.page.ArtifactsViewModel.SelectedHelm = Artifact.HelmOfHeavenlyEnlightenment.Name;
+            this.page.ArtifactsViewModel.SelectedHelm = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfHeavenlyEnlightenment").Name;
 
             Assert.That(attack.ArtifactNote, Is.EqualTo("+6 from artifacts"));
             Assert.That(attack.Total, Is.EqualTo(attack.Base + 6));
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheNoteGoesWhenTheHeroIsPutBack()
         {
-            this.page.ArtifactsViewModel.SelectedHelm = Artifact.HelmOfHeavenlyEnlightenment.Name;
+            this.page.ArtifactsViewModel.SelectedHelm = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfHeavenlyEnlightenment").Name;
 
             this.session.Update(_ => this.session.Original);
 

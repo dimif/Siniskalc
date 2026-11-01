@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
@@ -29,7 +29,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             page.ResetCommand.Execute(null);
 
-            Assert.That(page.Merchants[1].Slots[0].ArtifactName, Is.EqualTo(Siniskalc.Homm3.Entities.Artifact.All[0x49].Name));
+            Assert.That(page.Merchants[1].Slots[0].ArtifactName, Is.EqualTo(TestCatalog.Hota.Artifacts.Find(0x49)!.Name));
             Assert.That(page.HasPendingChanges, Is.False);
         }
 

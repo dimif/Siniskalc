@@ -23,8 +23,8 @@
             var mines = TestServices.LoadThreedom(71).History.Current.Mines().GetModels();
 
             Assert.That(mines, Has.Count.EqualTo(41));
-            Assert.That(mines[0], Is.EqualTo(new MineModel(0, MineKind.SulfurMine, new MapPosition(67, 1), PlayerColor.Blue)));
-            Assert.That(Mine(71, 44, 56), Is.EqualTo(new MineModel(32, MineKind.Sawmill, new MapPosition(44, 56), PlayerColor.Blue)).Using<MineModel>((a, b) => a.Kind == b.Kind && a.Position == b.Position && a.Owner == b.Owner));
+            Assert.That(mines[0], Is.EqualTo(new MineModel(0, MineKind.SulfurMine, new MapPosition(67, 1), PlayerColor.Blue, TestCatalog.Standard)));
+            Assert.That(Mine(71, 44, 56), Is.EqualTo(new MineModel(32, MineKind.Sawmill, new MapPosition(44, 56), PlayerColor.Blue, TestCatalog.Standard)).Using<MineModel>((a, b) => a.Kind == b.Kind && a.Position == b.Position && a.Owner == b.Owner));
             Assert.That(Mine(71, 63, 43).Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(Mine(71, 55, 29).Owner, Is.EqualTo(PlayerColor.Neutral));
         }
@@ -114,9 +114,9 @@
             Assert.That(shrines.Count(s => s.Circle == 2), Is.EqualTo(3));
             Assert.That(shrines.Count(s => s.Circle == 3), Is.EqualTo(6));
             var first = shrines.Single(s => s.Position == new MapPosition(45, 7));
-            Assert.That(first.Spell, Is.EqualTo(Spell.Shield), "Charity learned Shield here in save 20");
-            Assert.That(shrines.Single(s => s.Position == new MapPosition(29, 42)).Spell, Is.EqualTo(Spell.MassHaste), "save 78");
-            Assert.That(shrines.Single(s => s.Position == new MapPosition(31, 47)).Spell, Is.EqualTo(Spell.MassBless), "save 79");
+            Assert.That(first.Spell, Is.EqualTo(TestCatalog.Standard.Spells["Shield"]), "Charity learned Shield here in save 20");
+            Assert.That(shrines.Single(s => s.Position == new MapPosition(29, 42)).Spell, Is.EqualTo(TestCatalog.Standard.Spells["MassHaste"]), "save 78");
+            Assert.That(shrines.Single(s => s.Position == new MapPosition(31, 47)).Spell, Is.EqualTo(TestCatalog.Standard.Spells["MassBless"]), "save 79");
         }
 
         [Test]
@@ -127,7 +127,7 @@
             var index = shrines.ToList().FindIndex(c => c.Position == new MapPosition(29, 42));
 
             Assert.That(shrines.GetModel(index).SpellCode, Is.EqualTo(-1));
-            game.History.CreateShrineSession(index).Update(s => s with { SpellCode = Spell.Fireball.Code });
+            game.History.CreateShrineSession(index).Update(s => s with { SpellCode = TestCatalog.Standard.Spells["Fireball"].Code });
             Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes));
         }
 
@@ -140,13 +140,13 @@
             var chunk = shrines[index];
             var before = chunk.GetUInt16At(0);
 
-            game.History.CreateShrineSession(index).Update(s => s.WithSpell(Spell.Fireball));
+            game.History.CreateShrineSession(index).Update(s => s.WithSpell(TestCatalog.Standard.Spells["Fireball"]));
 
             var saved = game.GetBytesToSave();
             var after = BitConverter.ToUInt16(saved, chunk.StartIndex);
-            Assert.That(after >> 3, Is.EqualTo(Spell.Fireball.Code));
+            Assert.That(after >> 3, Is.EqualTo(TestCatalog.Standard.Spells["Fireball"].Code));
             Assert.That(after & 7, Is.EqualTo(before & 7));
-            Assert.That(TestServices.Parser.Parse(saved, null).History.Current.Shrines().GetModel(index).Spell, Is.EqualTo(Spell.Fireball));
+            Assert.That(TestServices.Parser.Parse(saved, null).History.Current.Shrines().GetModel(index).Spell, Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]));
         }
 
         [Test]

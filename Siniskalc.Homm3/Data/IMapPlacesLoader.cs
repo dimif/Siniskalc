@@ -7,6 +7,6 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public interface IMapPlacesLoader
     {
-        MapPlaces Load(byte[] bytes);
+        MapPlaces Load(byte[] bytes, Entities.EntityCatalog catalog);
     }
 }

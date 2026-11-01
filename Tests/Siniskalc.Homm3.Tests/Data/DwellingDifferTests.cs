@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Models;
+﻿using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class DwellingDifferTests
     {
-        private static DwellingModel Dwelling() => new(1, Creature.Pikeman.Code, Creature.Pikeman, PlayerColor.Neutral, new MapPosition(7, 8), 14);
+        private static DwellingModel Dwelling() => new(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman").Code, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), PlayerColor.Neutral, new MapPosition(7, 8), 14);
 
         [Test]
         public void TwoEqualDwellingsHaveNoChanges()

@@ -1,0 +1,656 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Fireball",
+      "name": "Fireball",
+      "code": 1,
+      "order": 0,
+      "spellPoints": 9,
+      "type": "Combat",
+      "level": 3,
+      "group": "Elemental"
+    },
+    {
+      "id": "Fireblast",
+      "name": "Fireblast",
+      "code": 2,
+      "order": 1,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "Elemental"
+    },
+    {
+      "id": "LightningBolt",
+      "name": "Lightning Bolt",
+      "code": 3,
+      "order": 2,
+      "spellPoints": 7,
+      "type": "Combat",
+      "level": 2,
+      "group": "Elemental"
+    },
+    {
+      "id": "ChainLightning",
+      "name": "Chain Lightning",
+      "code": 4,
+      "order": 3,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "Elemental"
+    },
+    {
+      "id": "Teleport",
+      "name": "Teleport",
+      "code": 5,
+      "order": 4,
+      "spellPoints": 9,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "Cure",
+      "name": "Cure",
+      "code": 6,
+      "order": 5,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassCure",
+      "name": "Mass Cure",
+      "code": 7,
+      "order": 6,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "Resurrect",
+      "name": "Resurrect",
+      "code": 8,
+      "order": 7,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "ResurrectTrue",
+      "name": "Resurrect True",
+      "code": 9,
+      "order": 8,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "Haste",
+      "name": "Haste",
+      "code": 10,
+      "order": 9,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassHaste",
+      "name": "Mass Haste",
+      "code": 11,
+      "order": 10,
+      "spellPoints": 10,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "Slow",
+      "name": "Slow",
+      "code": 12,
+      "order": 11,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassSlow",
+      "name": "Mass Slow",
+      "code": 13,
+      "order": 12,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "Blind",
+      "name": "Blind",
+      "code": 14,
+      "order": 13,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 2,
+      "group": "Mind"
+    },
+    {
+      "id": "Bless",
+      "name": "Bless",
+      "code": 15,
+      "order": 14,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassBless",
+      "name": "Mass Bless",
+      "code": 16,
+      "order": 15,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "Stoneskin",
+      "name": "Stoneskin",
+      "code": 17,
+      "order": 16,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "Steelskin",
+      "name": "Steelskin",
+      "code": 18,
+      "order": 17,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "Curse",
+      "name": "Curse",
+      "code": 19,
+      "order": 18,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassCurse",
+      "name": "Mass Curse",
+      "code": 20,
+      "order": 19,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "HolyWord",
+      "name": "Holy Word",
+      "code": 21,
+      "order": 20,
+      "spellPoints": 9,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "HolyShout",
+      "name": "Holy Shout",
+      "code": 22,
+      "order": 21,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "AntiMagic",
+      "name": "Anti-Magic",
+      "code": 23,
+      "order": 22,
+      "spellPoints": 7,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "DispelMagic",
+      "name": "Dispel Magic",
+      "code": 24,
+      "order": 23,
+      "spellPoints": 5,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassDispel",
+      "name": "Mass Dispel",
+      "code": 25,
+      "order": 24,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "MagicArrow",
+      "name": "Magic Arrow",
+      "code": 26,
+      "order": 25,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "Berserker",
+      "name": "Berserker",
+      "code": 27,
+      "order": 26,
+      "spellPoints": 12,
+      "type": "Combat",
+      "level": 4,
+      "group": "Mind"
+    },
+    {
+      "id": "Armageddon",
+      "name": "Armageddon",
+      "code": 28,
+      "order": 27,
+      "spellPoints": 20,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "ElementalStorm",
+      "name": "Elemental Storm",
+      "code": 29,
+      "order": 28,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "Elemental"
+    },
+    {
+      "id": "MeteorShower",
+      "name": "Meteor Shower",
+      "code": 30,
+      "order": 29,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "Paralyze",
+      "name": "Paralyze",
+      "code": 31,
+      "order": 30,
+      "spellPoints": 9,
+      "type": "Combat",
+      "level": 3,
+      "group": "Mind"
+    },
+    {
+      "id": "Hypnotize",
+      "name": "Hypnotize",
+      "code": 32,
+      "order": 31,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 5,
+      "group": "Mind"
+    },
+    {
+      "id": "ColdRay",
+      "name": "Cold Ray",
+      "code": 33,
+      "order": 32,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 2,
+      "group": "Elemental"
+    },
+    {
+      "id": "ColdRing",
+      "name": "Cold Ring",
+      "code": 34,
+      "order": 33,
+      "spellPoints": 9,
+      "type": "Combat",
+      "level": 3,
+      "group": "Elemental"
+    },
+    {
+      "id": "DisruptingRay",
+      "name": "Disrupting Ray",
+      "code": 35,
+      "order": 34,
+      "spellPoints": 7,
+      "type": "Combat",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "DeathRipple",
+      "name": "Death Ripple",
+      "code": 36,
+      "order": 35,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "DeathWave",
+      "name": "Death Wave",
+      "code": 37,
+      "order": 36,
+      "spellPoints": 10,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "DragonSlayer",
+      "name": "Dragon Slayer",
+      "code": 38,
+      "order": 37,
+      "spellPoints": 6,
+      "type": "Combat",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "BloodLust",
+      "name": "Blood Lust",
+      "code": 39,
+      "order": 38,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "AnimateDead",
+      "name": "Animate Dead",
+      "code": 40,
+      "order": 39,
+      "spellPoints": 10,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "MirrorImage",
+      "name": "Mirror Image",
+      "code": 41,
+      "order": 40,
+      "spellPoints": 25,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "Shield",
+      "name": "Shield",
+      "code": 42,
+      "order": 41,
+      "spellPoints": 3,
+      "type": "Combat",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "MassShield",
+      "name": "Mass Shield",
+      "code": 43,
+      "order": 42,
+      "spellPoints": 7,
+      "type": "Combat",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "SummonEarthElemental",
+      "name": "Summon Earth Elemental",
+      "code": 44,
+      "order": 43,
+      "spellPoints": 30,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "SummonAirElemental",
+      "name": "Summon Air Elemental",
+      "code": 45,
+      "order": 44,
+      "spellPoints": 30,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "SummonFireElemental",
+      "name": "Summon Fire Elemental",
+      "code": 46,
+      "order": 45,
+      "spellPoints": 30,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "SummonWaterElemental",
+      "name": "Summon Water Elemental",
+      "code": 47,
+      "order": 46,
+      "spellPoints": 30,
+      "type": "Combat",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "Earthquake",
+      "name": "Earthquake",
+      "code": 48,
+      "order": 47,
+      "spellPoints": 15,
+      "type": "Combat",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "ViewMines",
+      "name": "View Mines",
+      "code": 49,
+      "order": 48,
+      "spellPoints": 1,
+      "type": "Adventure",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "ViewResources",
+      "name": "View Resources",
+      "code": 50,
+      "order": 49,
+      "spellPoints": 1,
+      "type": "Adventure",
+      "level": 1,
+      "group": "None"
+    },
+    {
+      "id": "ViewArtifacts",
+      "name": "View Artifacts",
+      "code": 51,
+      "order": 50,
+      "spellPoints": 2,
+      "type": "Adventure",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "ViewTowns",
+      "name": "View Towns",
+      "code": 52,
+      "order": 51,
+      "spellPoints": 2,
+      "type": "Adventure",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "ViewHeroes",
+      "name": "View Heroes",
+      "code": 53,
+      "order": 52,
+      "spellPoints": 2,
+      "type": "Adventure",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "ViewAll",
+      "name": "View All",
+      "code": 54,
+      "order": 53,
+      "spellPoints": 3,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "IdentifyHero",
+      "name": "Identify Hero",
+      "code": 55,
+      "order": 54,
+      "spellPoints": 3,
+      "type": "Adventure",
+      "level": 3,
+      "group": "None"
+    },
+    {
+      "id": "SummonBoat",
+      "name": "Summon Boat",
+      "code": 56,
+      "order": 55,
+      "spellPoints": 5,
+      "type": "Adventure",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "DimensionDoor",
+      "name": "Dimension Door",
+      "code": 57,
+      "order": 56,
+      "spellPoints": 10,
+      "type": "Adventure",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "TownGate",
+      "name": "Town Gate",
+      "code": 58,
+      "order": 57,
+      "spellPoints": 10,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "TownPortal",
+      "name": "Town Portal",
+      "code": 59,
+      "order": 58,
+      "spellPoints": 20,
+      "type": "Adventure",
+      "level": 5,
+      "group": "None"
+    },
+    {
+      "id": "Visions",
+      "name": "Visions",
+      "code": 60,
+      "order": 59,
+      "spellPoints": 6,
+      "type": "Adventure",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "Haunt",
+      "name": "Haunt",
+      "code": 61,
+      "order": 60,
+      "spellPoints": 8,
+      "type": "Adventure",
+      "level": 2,
+      "group": "None"
+    },
+    {
+      "id": "SetEarthGuardian",
+      "name": "Set Earth Guardian",
+      "code": 62,
+      "order": 61,
+      "spellPoints": 15,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "SetAirGuardian",
+      "name": "Set Air Guardian",
+      "code": 63,
+      "order": 62,
+      "spellPoints": 15,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "SetFireGuardian",
+      "name": "Set Fire Guardian",
+      "code": 64,
+      "order": 63,
+      "spellPoints": 15,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    },
+    {
+      "id": "SetWaterGuardian",
+      "name": "Set Water Guardian",
+      "code": 65,
+      "order": 64,
+      "spellPoints": 15,
+      "type": "Adventure",
+      "level": 4,
+      "group": "None"
+    }
+  ],
+  "replacements": []
+}

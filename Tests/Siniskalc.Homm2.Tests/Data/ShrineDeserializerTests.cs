@@ -16,7 +16,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheSpellIsTheNumberAboveTheLowThreeBitsAndTheCircleIsInTheTag()
         {
-            var shrine = new ShrineDeserializer().Deserialize(Shrine((1 << 3) | 5, 2));
+            var shrine = new ShrineDeserializer(TestCatalog.Standard).Deserialize(Shrine((1 << 3) | 5, 2));
 
             Assert.That((shrine.Index, shrine.Circle, shrine.Position, shrine.SpellCode), Is.EqualTo((1, 2, new MapPosition(30, 31), 1)));
         }
@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheCircleIsTheTwoLowBitsOfTheTagWhateverElseTheTagHolds()
         {
-            var shrine = new ShrineDeserializer().Deserialize(Shrine(8, 3 | 0x44));
+            var shrine = new ShrineDeserializer(TestCatalog.Standard).Deserialize(Shrine(8, 3 | 0x44));
 
             Assert.That(shrine.Circle, Is.EqualTo(3));
         }
@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void AHiddenShrineHasNoSpellToShow()
         {
-            var shrine = new ShrineDeserializer().Deserialize(Shrine(8 * 17, 1 | MapObjectsReader.HiddenShrine));
+            var shrine = new ShrineDeserializer(TestCatalog.Standard).Deserialize(Shrine(8 * 17, 1 | MapObjectsReader.HiddenShrine));
 
             Assert.That(shrine.SpellCode, Is.EqualTo(-1));
         }
@@ -40,7 +40,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void ASpellNumberTheGameDoesNotHaveIsReadAsTheNumberItIs()
         {
-            var shrine = new ShrineDeserializer().Deserialize(Shrine(8 * 200, 1));
+            var shrine = new ShrineDeserializer(TestCatalog.Standard).Deserialize(Shrine(8 * 200, 1));
 
             Assert.That((shrine.SpellCode, shrine.Spell), Is.EqualTo((200, (object?)null)));
         }

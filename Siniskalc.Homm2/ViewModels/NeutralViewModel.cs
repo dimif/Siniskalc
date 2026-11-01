@@ -33,7 +33,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the mines nobody owns, for the Mines tab.
         /// </summary>
-        public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
+        public MinesListViewModel<MineRowViewModel> Mines { get; }
 
         /// <inheritdoc/>
         protected override string ObjectsSummary => Count(this.Mines.Rows.Count, "mine", "mines");

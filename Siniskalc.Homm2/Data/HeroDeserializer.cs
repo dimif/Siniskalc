@@ -17,6 +17,15 @@
     {
         private static readonly ILogger<HeroDeserializer> Logger = LogFactory.For<HeroDeserializer>();
 
+        private readonly GameCatalog catalog;
+        private readonly ICreatureCodes<Creature> creatureCodes;
+
+        public HeroDeserializer(GameCatalog catalog, ICreatureCodes<Creature> creatureCodes)
+        {
+            this.catalog = catalog;
+            this.creatureCodes = creatureCodes;
+        }
+
         /// <inheritdoc/>
         public PlayerColor DeserializeOwner(HeroChunk chunk)
         {
@@ -30,7 +39,7 @@
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var bytes = chunk.ToArray();
             var id = chunk.GetByteAt(HeroLayout.Id);
-            var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(Bytes.ReadArtifact));
+            var artifacts = new Artifacts(chunk.GetBytesAt(HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount).Select(code => Bytes.ReadArtifact(code, this.catalog)));
 
             return new HeroModel(
                 id,
@@ -52,11 +61,12 @@
                 },
                 Bytes.SecondarySkills(
                     chunk.GetBytesAt(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount),
-                    chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount)),
-                ArmyReader.Read(chunk, HeroLayout.Army, CreatureCodes.Instance),
-                FactionOf(id),
+                    chunk.GetBytesAt(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount),
+                    this.catalog),
+                ArmyReader.Read(chunk, HeroLayout.Army, this.creatureCodes),
+                this.catalog.FactionForHero(id),
                 artifacts,
-                Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength)))
+                Bytes.SpellBook(chunk.GetBytesAt(HeroLayout.Spells, HeroLayout.SpellsLength), this.catalog))
             {
                 NextBattle = new NextBattleBonus((sbyte)chunk.GetByteAt(HeroLayout.BattleMorale), (sbyte)chunk.GetByteAt(HeroLayout.BattleLuck)),
                 Effects = (HeroEffects)chunk.GetUInt32At(HeroLayout.Effects),
@@ -69,8 +79,5 @@
                     chunk.GetUInt32At(HeroLayout.VisitedXanadu)),
             };
         }
-
-        // The heroes of each faction are numbered together, nine at a time; a number past the last faction belongs to the last one.
-        private static Faction FactionOf(int heroId) => Faction.All[Math.Min(heroId / Constants.Hero.PerFaction, Faction.All.Count - 1)];
     }
 }

@@ -20,7 +20,7 @@
         {
             var warlock = TestServices.LoadBrokenAlliance(24).History.Current.Castles().GetModel(1);
 
-            Assert.That(warlock.Faction, Is.EqualTo(Faction.Warlock));
+            Assert.That(warlock.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Warlock"]));
             Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 1, 1, 2, 1, 1 }), "Whiteshield has a Minotaur King: dwelling 4 is upgraded");
             Assert.That(((uint)warlock.Dwellings & 0x40) == 0 && ((uint)warlock.Dwellings & 0x800) != 0, Is.True);
         }

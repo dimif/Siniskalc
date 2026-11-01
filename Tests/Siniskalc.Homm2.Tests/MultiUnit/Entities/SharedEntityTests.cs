@@ -30,22 +30,22 @@
         [Test]
         public void EveryFactionOfTheGameIsAnIFactionWithItsNameAndCode()
         {
-            Assert.That(Faction.All.Cast<IFaction>().Select(f => (f.Name, f.Code)), Is.EqualTo(Faction.All.Select(f => (f.ToString(), f.Code))));
-            Assert.That(Faction.FromByte(4), Is.SameAs(Faction.Wizard));
+            Assert.That(TestCatalog.Standard.Factions.Cast<IFaction>().Select(f => (f.Name, f.Code)), Is.EqualTo(TestCatalog.Standard.Factions.Select(f => (f.ToString(), f.Code))));
+            Assert.That(TestCatalog.Standard.Factions.Find(4), Is.SameAs(TestCatalog.Standard.Factions["Wizard"]));
         }
 
         [Test]
         public void AnArtifactTellsWhatItAddsToThePrimarySkills()
         {
-            Assert.That(((IArtifact)Artifact.UltimateSwordOfDominion).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
-            Assert.That(Artifact.UltimateSwordOfDominion.PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
-            Assert.That(Artifact.AmmoCart.PrimarySkillBonus, Is.EqualTo(PrimarySkillBonus.None));
+            Assert.That(((IArtifact)TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
+            Assert.That(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"].PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));
+            Assert.That(TestCatalog.Standard.Artifacts["AmmoCart"].PrimarySkillBonus, Is.EqualTo(PrimarySkillBonus.None));
         }
 
         [Test]
         public void EverySecondarySkillOfTheGameIsAnISecondarySkill()
         {
-            Assert.That(SecondarySkill.All.Cast<ISecondarySkill>().Select(s => s.Code), Is.EqualTo(SecondarySkill.All.Select(s => s.Code)));
+            Assert.That(TestCatalog.Standard.Skills.Cast<ISecondarySkill>().Select(s => s.Code), Is.EqualTo(TestCatalog.Standard.Skills.Select(s => s.Code)));
         }
     }
 }

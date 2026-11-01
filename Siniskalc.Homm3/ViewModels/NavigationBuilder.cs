@@ -157,7 +157,7 @@
         private void MarkCastle(NavNodeViewModel node, Game game, CastleModel castle)
         {
             var badges = new List<NavBadge>();
-            if (castle.HasBuilt(Building.Capitol))
+            if (castle.HasBuilt(BuildingType.Capitol))
             {
                 badges.Add(new NavBadge(CapitalBadge, "♛", "Capital", NavBadgeTone.Accent));
             }

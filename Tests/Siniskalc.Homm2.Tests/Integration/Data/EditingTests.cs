@@ -45,12 +45,12 @@
                 HeroLevel = new HeroLevel(12_345, 5),
                 PrimarySkills = new PrimarySkills(9, 8, 7, 6),
                 SecondarySkills = new SecondarySkills(Enumerable.Empty<SkillEntry>())
-                    .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
-                    .WithSkill(SecondarySkill.Estates, SkillLevel.Intermediate)
-                    .WithSkill(SecondarySkill.Pathfinding, SkillLevel.Beginner),
-                Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(Creature.Titan, 3)).WithSlot(4, new ArmySlot<Creature>(Creature.Peasant, 32_767)),
-                Artifacts = Artifacts.None.Add(Artifact.UltimateCrown).Add(Artifact.IceCloak),
-                Spells = new SpellSet<Spell>([Spell.Fireball, Spell.TownPortal]),
+                    .WithSkill(TestCatalog.Standard.Skills["Wisdom"], SkillLevel.Expert)
+                    .WithSkill(TestCatalog.Standard.Skills["Estates"], SkillLevel.Intermediate)
+                    .WithSkill(TestCatalog.Standard.Skills["Pathfinding"], SkillLevel.Beginner),
+                Army = new Army<Creature>(Constants.ArmySlotCount).WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Titan"], 3)).WithSlot(4, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Peasant"], 32_767)),
+                Artifacts = Artifacts.None.Add(TestCatalog.Standard.Artifacts["UltimateCrown"]).Add(TestCatalog.Standard.Artifacts["IceCloak"]),
+                Spells = new SpellSet<Spell>([TestCatalog.Standard.Spells["Fireball"], TestCatalog.Standard.Spells["TownPortal"]]),
                 Owner = PlayerColor.Red,
                 Destination = new MapPosition(3, 4),
             };
@@ -59,7 +59,7 @@
 
             var reread = TestServices.Parser.Parse(this.game.GetBytesToSave(), null).History.Current.Heroes().GetModel(7);
             Assert.That(reread, Is.EqualTo(edited));
-            Assert.That(reread.SecondarySkills.Entries.Select(e => e.Skill), Is.EqualTo(new[] { SecondarySkill.Wisdom, SecondarySkill.Estates, SecondarySkill.Pathfinding }));
+            Assert.That(reread.SecondarySkills.Entries.Select(e => e.Skill), Is.EqualTo(new[] { TestCatalog.Standard.Skills["Wisdom"], TestCatalog.Standard.Skills["Estates"], TestCatalog.Standard.Skills["Pathfinding"] }));
         }
 
         [Test]
@@ -69,7 +69,7 @@
 
             session.Update(h => h.WithSpellBook());
             Assert.That(session.Current.HasSpellBook, Is.True);
-            Assert.That(session.Current.Artifacts.Slots[0], Is.EqualTo(Artifact.MagicBook));
+            Assert.That(session.Current.Artifacts.Slots[0], Is.EqualTo(TestCatalog.Standard.Artifacts["MagicBook"]));
 
             session.Update(h => h.WithoutSpellBook());
             Assert.That(session.Current.HasSpellBook, Is.False);
@@ -83,7 +83,7 @@
             session.Update(c => c with
             {
                 Owner = PlayerColor.Green,
-                Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)),
+                Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Paladin"], 10)),
                 Town = c.Town | TownBuildings.Tavern | TownBuildings.Statue,
                 Dwellings = c.Dwellings | Dwellings.Dwelling3 | Dwellings.MageGuild2,
                 CreaturesAvailable = c.CreaturesAvailable.With(2, 4),
@@ -91,7 +91,7 @@
 
             var castle = TestServices.Parser.Parse(this.game.GetBytesToSave(), null).History.Current.Castles().GetModel(3);
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Green));
-            Assert.That(castle.Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Paladin, 10)));
+            Assert.That(castle.Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Paladin"], 10)));
             Assert.That(castle.Town, Is.EqualTo(TownBuildings.Castle | TownBuildings.Tavern | TownBuildings.Statue));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(2));
             Assert.That(castle.HasDwelling(3), Is.True);
@@ -109,8 +109,8 @@
             var chunk = heroes[7].WithBytes(bytes);
 
             var model = TestServices.HeroDeserializer.Deserialize(chunk);
-            Assert.That(model.Army.Slots[0]!.Creature, Is.EqualTo(Creature.Peasant));
-            Assert.That(model.Artifacts.Slots[5], Is.EqualTo(Artifact.UltimateBookOfKnowledge));
+            Assert.That(model.Army.Slots[0]!.Creature, Is.EqualTo(TestCatalog.Standard.Creatures["Peasant"]));
+            Assert.That(model.Artifacts.Slots[5], Is.EqualTo(TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"]));
             Assert.That(model.Owner, Is.EqualTo(PlayerColor.Neutral));
 
             var untouched = TestServices.HeroSerializer.Serialize(chunk, model).ToArray();
@@ -118,8 +118,8 @@
             Assert.That(untouched[HeroLayout.Artifacts + 5], Is.EqualTo(0xC9));
             Assert.That(untouched[HeroLayout.Owner], Is.EqualTo(0x77));
 
-            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 1)), Owner = PlayerColor.Blue }).ToArray();
-            Assert.That(changed[HeroLayout.ArmyTypes], Is.EqualTo(Creature.Archer.Code));
+            var changed = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Archer"], 1)), Owner = PlayerColor.Blue }).ToArray();
+            Assert.That(changed[HeroLayout.ArmyTypes], Is.EqualTo(TestCatalog.Standard.Creatures["Archer"].Code));
             Assert.That(changed[HeroLayout.Owner], Is.EqualTo(PlayerColor.Blue.Code));
         }
 
@@ -134,7 +134,7 @@
             var chunk = heroes[7].WithBytes(bytes);
             var model = TestServices.HeroDeserializer.Deserialize(chunk);
 
-            var written = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Archer, 258)) }).ToArray();
+            var written = TestServices.HeroSerializer.Serialize(chunk, model with { Army = model.Army.WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Archer"], 258)) }).ToArray();
 
             var allowed = new[] { HeroLayout.ArmyTypes, HeroLayout.ArmyCounts, HeroLayout.ArmyCounts + 1 };
             Assert.That(DifferingOffsets(bytes, written), Is.Not.Empty.And.All.AnyOf(allowed));
@@ -164,7 +164,7 @@
 
             Assert.That(() => session.Update(p => p with { Resources = p.Resources.With(Resource.Gold, -1) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { HeroLevel = h.HeroLevel with { Level = 300 } }), Throws.InstanceOf<ArgumentOutOfRangeException>());
-            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(0, new ArmySlot<Creature>(Creature.Peasant, 70_000)) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
+            Assert.That(() => this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Peasant"], 70_000)) }), Throws.InstanceOf<ArgumentOutOfRangeException>());
             Assert.That(this.game.History.CanUndo, Is.False);
         }
 
@@ -172,7 +172,7 @@
         public void EditsArePendingChangesThatCanBePutBackOneByOneAndUndone()
         {
             this.game.History.CreatePlayerSession(0).Update(p => p with { Resources = p.Resources.With(Resource.Gold, 9_999).With(Resource.Ore, 1) });
-            this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(2, new ArmySlot<Creature>(Creature.Roc, 2)) });
+            this.game.History.CreateHeroSession(7).Update(h => h with { Army = h.Army.WithSlot(2, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Roc"], 2)) });
 
             var changes = this.game.History.GetPendingChanges();
 

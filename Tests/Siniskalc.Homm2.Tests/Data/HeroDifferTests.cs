@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [SetUp]
         public void StartWithNoReverts() => this.fake = new();
 
-        private IReadOnlyList<PendingChange> Diff(HeroModel original, HeroModel current) => new HeroDiffer(this.fake.Factory).Diff(7, original, current);
+        private IReadOnlyList<PendingChange> Diff(HeroModel original, HeroModel current) => new HeroDiffer(this.fake.Factory, TestCatalog.Standard).Diff(7, original, current);
 
         [Test]
         public void TwoEqualHeroesHaveNoChanges()
@@ -97,7 +97,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void AnArtifactInASlotIsAChangeOfThatSlotAndPutBackEmpty()
         {
             var original = DifferSamples.Hero();
-            var current = original with { Artifacts = original.Artifacts.WithSlot(2, Artifact.UltimateSwordOfDominion) };
+            var current = original with { Artifacts = original.Artifacts.WithSlot(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]) };
 
             var change = this.Diff(original, current).Single();
 
@@ -111,8 +111,8 @@ namespace Siniskalc.Homm2.Tests.Data
             var original = DifferSamples.Hero();
             var current = original with
             {
-                Spells = original.Spells.With(Spell.Fireball),
-                SecondarySkills = original.SecondarySkills.WithSkill(SecondarySkill.Archery, SkillLevel.Expert),
+                Spells = original.Spells.With(TestCatalog.Standard.Spells["Fireball"]),
+                SecondarySkills = original.SecondarySkills.WithSkill(TestCatalog.Standard.Skills["Archery"], SkillLevel.Expert),
             };
 
             var changes = this.Diff(original, current);
@@ -122,7 +122,7 @@ namespace Siniskalc.Homm2.Tests.Data
                 ("Fireball", "not learned", "learned"),
                 ("Skills", "none", "Archery (Expert)"),
             }));
-            Assert.That(this.fake.HeroReverts["Fireball"](current).Spells.Contains(Spell.Fireball), Is.False);
+            Assert.That(this.fake.HeroReverts["Fireball"](current).Spells.Contains(TestCatalog.Standard.Spells["Fireball"]), Is.False);
             Assert.That(this.fake.HeroReverts["Skills"](current).SecondarySkills, Is.EqualTo(original.SecondarySkills));
         }
 
@@ -131,7 +131,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var original = DifferSamples.Hero() with
             {
-                SecondarySkills = new SecondarySkills([new SkillEntry(SecondarySkill.Archery, SkillLevel.Beginner), new SkillEntry(SecondarySkill.Wisdom, SkillLevel.Expert)]),
+                SecondarySkills = new SecondarySkills([new SkillEntry(TestCatalog.Standard.Skills["Archery"], SkillLevel.Beginner), new SkillEntry(TestCatalog.Standard.Skills["Wisdom"], SkillLevel.Expert)]),
             };
             var current = original with { SecondarySkills = original.SecondarySkills.Swap(0, 1) };
 
@@ -145,7 +145,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void AChangedStackIsAChangeOfItsSlotAndPutBackAsItWas()
         {
             var original = DifferSamples.Hero();
-            var current = original with { Army = original.Army.WithSlot(1, Creature.Archer, 12) };
+            var current = original with { Army = original.Army.WithSlot(1, TestCatalog.Standard.Creatures["Archer"], 12) };
 
             var change = this.Diff(original, current).Single();
 

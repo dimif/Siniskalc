@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Tests.Models
+﻿namespace Siniskalc.Homm3.Tests.Models
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -67,12 +67,12 @@ namespace Siniskalc.Homm3.Tests.Models
         public void AHeroTellsWhetherItHasASpellBookAndWhatItHasLearnedThroughTheSharedInterface()
         {
             var hero = HeroModels.Christian();
-            var withBook = hero with { SpellBook = hero.SpellBook.WithHasSpellBook(true).WithLearned(Spell.Bless, true) };
+            var withBook = hero with { SpellBook = hero.SpellBook.WithHasSpellBook(true).WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), true) };
 
             IHeroModel<SecondarySkill, SecondarySkills, Creature, PlayerColor> shared = withBook;
 
             Assert.That(shared.HasSpellBook, Is.True);
-            Assert.That(shared.LearnedSpells, Does.Contain(Spell.Bless));
+            Assert.That(shared.LearnedSpells, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")));
         }
 
         [Test]

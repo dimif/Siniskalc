@@ -14,23 +14,23 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void ASpellRowShowsTheSpellItsLevelItsTypeItsMagicAndItsCost()
         {
-            var row = new SpellRowViewModel(Spell.Fireball, (_, _) => { });
+            var row = new SpellRowViewModel(TestCatalog.Standard.Spells["Fireball"], (_, _) => { });
 
-            Assert.That((row.Name, row.Level, row.Kind, row.Magic, row.Cost, row.Spell), Is.EqualTo(("Fireball", 3, "Combat", "Elemental", 9, Spell.Fireball)));
+            Assert.That((row.Name, row.Level, row.Kind, row.Magic, row.Cost, row.Spell), Is.EqualTo(("Fireball", 3, "Combat", "Elemental", 9, TestCatalog.Standard.Spells["Fireball"])));
             Assert.That(row.Group, Is.Empty);
         }
 
         [Test]
         public void ASpellOfNoMagicHasNoMagicText()
         {
-            Assert.That(new SpellRowViewModel(Spell.Cure, (_, _) => { }).Magic, Is.Empty);
+            Assert.That(new SpellRowViewModel(TestCatalog.Standard.Spells["Cure"], (_, _) => { }).Magic, Is.Empty);
         }
 
         [Test]
         public void TickingTheRowTellsTheCallerWhichRowAndTheNewValue()
         {
             var seen = new List<(string Name, bool Learned)>();
-            var row = new SpellRowViewModel(Spell.Cure, (r, learned) => seen.Add((r.Name, learned)));
+            var row = new SpellRowViewModel(TestCatalog.Standard.Spells["Cure"], (r, learned) => seen.Add((r.Name, learned)));
 
             row.IsLearned = true;
 

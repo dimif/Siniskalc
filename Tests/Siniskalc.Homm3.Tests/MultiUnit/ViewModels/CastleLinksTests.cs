@@ -43,16 +43,16 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         private static CastleModel Castle(string name, PlayerColor owner, Faction? faction = null) =>
-            CastleModels.Village(faction ?? Faction.Castle) with { Name = name, Owner = owner };
+            CastleModels.Village(faction ?? TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Castle")) with { Name = name, Owner = owner };
 
         private IReadOnlyList<CastleLinkViewModel> OwnedBy(PlayerColor owner, params HeroChunk[] heroes)
         {
             var deserializer = new Mock<ICastleDeserializer>();
             deserializer.Setup(d => d.Deserialize(It.IsAny<CastleChunk>())).Returns<CastleChunk>(c => this.castles[c.Name]);
             var factory = new SaveDocumentFactory(
-                new VersionSpecificEntitiesProviderFactory(version => new GrantedSpellsResolver(version)),
+                new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs),
                 Mock.Of<IDiffer<HeroModel>>(),
-                deserializer.Object,
+                _ => deserializer.Object,
                 Mock.Of<ISerializer<CastleChunk, CastleModel>>(),
                 Mock.Of<ICastleDiffer>(),
                 Mock.Of<IPlayerDeserializer>(),
@@ -63,9 +63,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Mock.Of<IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<IDiffer<ObeliskVisits<PlayerColor>>>(),
-                Kit<MineModel>(),
-                Kit<DwellingModel>(),
-                Kit<MerchantStockModel>(),
+                _ => Kit<MineModel>(),
+                _ => Kit<DwellingModel>(),
+                _ => Kit<MerchantStockModel>(),
                 Kit<HeroOwnersModel>(),
                 Kit<TurnModel>(),
                 Mock.Of<IDocumentReconciler>(),
@@ -115,7 +115,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ACastleListsItsGarrisonedAndItsVisitingHeroAsLinksThatOpenTheirPageByPlaceAmongTheHeroes()
         {
-            this.castles["Inferno"] = Castle("Inferno", PlayerColor.Red, Faction.Inferno) with { GarrisonedHeroId = 3, VisitingHeroId = 9 };
+            this.castles["Inferno"] = Castle("Inferno", PlayerColor.Red, TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Inferno")) with { GarrisonedHeroId = 3, VisitingHeroId = 9 };
 
             var link = this.OwnedBy(PlayerColor.Red, Hero("Crag Hack", 7), Hero("Nymus", 3), Hero("Tazar", 9)).Single();
             link.Heroes[1].OpenCommand.Execute(null);
@@ -139,9 +139,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ACastleWithTheGrailStructureIsMarkedAndItsStructureIsNamed()
         {
-            var grail = Building.All.First(b => b.IsGrail && b.Faction == Faction.Conflux);
-            this.castles["Conflux"] = CastleModels.With(Castle("Conflux", PlayerColor.Red, Faction.Conflux), grail);
-            this.castles["Necropolis"] = Castle("Necropolis", PlayerColor.Red, Faction.Necropolis);
+            var grail = TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.All.First(b => b.IsGrail && b.Faction == TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Conflux"));
+            this.castles["Conflux"] = CastleModels.With(Castle("Conflux", PlayerColor.Red, TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Conflux")), grail);
+            this.castles["Necropolis"] = Castle("Necropolis", PlayerColor.Red, TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Necropolis"));
 
             var links = this.OwnedBy(PlayerColor.Red);
 
@@ -153,8 +153,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void OnlyACastleWithTheCapitolIsTheCapital()
         {
-            this.castles["Capital"] = CastleModels.With(Castle("Capital", PlayerColor.Red), Building.Capitol);
-            this.castles["Town"] = CastleModels.With(Castle("Town", PlayerColor.Red), Building.TownHall);
+            this.castles["Capital"] = CastleModels.With(Castle("Capital", PlayerColor.Red), TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol"));
+            this.castles["Town"] = CastleModels.With(Castle("Town", PlayerColor.Red), TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("TownHall"));
 
             var links = this.OwnedBy(PlayerColor.Red);
 
@@ -170,10 +170,10 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var building = hall switch
             {
-                "Town" => Building.TownHall,
-                "City" => Building.CityHall,
-                "Capitol" => Building.Capitol,
-                _ => Building.VillageHall,
+                "Town" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("TownHall"),
+                "City" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("CityHall"),
+                "Capitol" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol"),
+                _ => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("VillageHall"),
             };
             this.castles["C"] = CastleModels.With(Castle("C", PlayerColor.Red), building);
 
@@ -188,9 +188,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var building = fort switch
             {
-                "Fort" => Building.Fort,
-                "Citadel" => Building.Citadel,
-                "Castle" => Building.Castle,
+                "Fort" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Fort"),
+                "Citadel" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Citadel"),
+                "Castle" => TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Castle"),
                 _ => null,
             };
             this.castles["C"] = building == null ? Castle("C", PlayerColor.Red) : CastleModels.With(Castle("C", PlayerColor.Red), building);
@@ -201,8 +201,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheStatusAlsoTellsTheMageGuildAndTheDwellings()
         {
-            var guild = CastleBuilder.SetMageGuildLevel(CastleModels.Village(Faction.Castle), 2) with { Name = "C", Owner = PlayerColor.Red };
-            this.castles["C"] = CastleModels.With(guild, Building.FromDwellingLevel(Faction.Castle, 0, upgraded: false)!);
+            var guild = CastleBuilder.SetMageGuildLevel(CastleModels.Village(TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Castle")), 2) with { Name = "C", Owner = PlayerColor.Red };
+            this.castles["C"] = CastleModels.With(guild, Building.FromDwellingLevel(TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Castle"), 0, upgraded: false)!);
 
             Assert.That(this.OwnedBy(PlayerColor.Red).Single().Status, Is.EqualTo("Village · Mage Guild 2 · 1 dwelling"));
         }

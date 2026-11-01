@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Runtime
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.Logging;
@@ -18,12 +19,12 @@
 
         private readonly ISavegameVersionDetector versionDetector;
         private readonly IHeroBytesLoader heroLoader;
-        private readonly ICastleBytesLoader castleLoader;
+        private readonly Func<GameVersion, ICastleBytesLoader> castleLoader;
         private readonly IPlayerBytesLoader playerLoader;
         private readonly IObeliskBytesLoader obeliskLoader;
-        private readonly IMineBytesLoader mineLoader;
-        private readonly IDwellingBytesLoader dwellingLoader;
-        private readonly IMerchantBytesLoader merchantLoader;
+        private readonly Func<GameVersion, IMineBytesLoader> mineLoader;
+        private readonly Func<GameVersion, IDwellingBytesLoader> dwellingLoader;
+        private readonly Func<GameVersion, IMerchantBytesLoader> merchantLoader;
         private readonly IHeroOwnersBytesLoader heroOwnersLoader;
         private readonly ITurnBytesLoader turnLoader;
         private readonly IMapPlacesLoader placesLoader;
@@ -35,12 +36,12 @@
         public SavegameParser(
             ISavegameVersionDetector versionDetector,
             IHeroBytesLoader heroLoader,
-            ICastleBytesLoader castleLoader,
+            Func<GameVersion, ICastleBytesLoader> castleLoader,
             IPlayerBytesLoader playerLoader,
             IObeliskBytesLoader obeliskLoader,
-            IMineBytesLoader mineLoader,
-            IDwellingBytesLoader dwellingLoader,
-            IMerchantBytesLoader merchantLoader,
+            Func<GameVersion, IMineBytesLoader> mineLoader,
+            Func<GameVersion, IDwellingBytesLoader> dwellingLoader,
+            Func<GameVersion, IMerchantBytesLoader> merchantLoader,
             IHeroOwnersBytesLoader heroOwnersLoader,
             ITurnBytesLoader turnLoader,
             IMapPlacesLoader placesLoader,
@@ -77,15 +78,15 @@
 
             var heroChunks = this.heroLoader.LoadHeroChunks(bytes, gameVersion);
 
-            var castleChunks = this.castleLoader.LoadCastleChunks(bytes);
+            var castleChunks = this.castleLoader(gameVersion).LoadCastleChunks(bytes);
             var setup = this.setupLocator.FindSetup(bytes, gameVersion);
             var playerChunks = PlayersInTheGame.Of(
                 this.playerLoader.LoadPlayerChunks(bytes, gameVersion, heroChunks.Cast<BytesChunk>().Concat(castleChunks)),
                 setup?.PlayerControls);
 
             var obeliskChunks = this.obeliskLoader.LoadObeliskChunks(bytes, playerChunks);
-            var mineChunks = this.mineLoader.LoadMineChunks(bytes);
-            var dwellingChunks = this.dwellingLoader.LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
+            var mineChunks = this.mineLoader(gameVersion).LoadMineChunks(bytes);
+            var dwellingChunks = this.dwellingLoader(gameVersion).LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
 
             var afterPlayers = playerChunks.Count == 0 ? 0 : playerChunks[^1].End;
             var metadata = new SaveMetadata<PlayerColor>(
@@ -94,8 +95,8 @@
                 Setup: setup);
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader.LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion));
-            var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes).WithStanding(StandingOn(document)));
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader(gameVersion).LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion));
+            var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes, document.Catalog()).WithStanding(StandingOn(document)));
             Logger.LogInformation(
                 "Opened {File} as Heroes III {Version}: {Heroes} heroes, {Castles} castles, {Players} players, {Mines} mines, {Dwellings} dwellings",
                 LogPaths.Label(file, name),
@@ -115,7 +116,7 @@
             var heroes = document.Heroes();
             for (var i = 0; i < heroes.Count; i++)
             {
-                var kind = VisitedPlaceKind.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
+                var kind = document.Catalog().VisitedPlaces.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
                 if (kind != null && heroes[i].GetByteAt(15) == 1 && heroes.GetModel(i).Position is { X: >= 0 } position)
                 {
                     yield return (kind, heroes[i].GetByteAt(16) & kind.NumberMask, position);

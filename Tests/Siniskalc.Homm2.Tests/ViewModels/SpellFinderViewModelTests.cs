@@ -23,7 +23,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void AllRowsAreShownAtFirstAndTheFinderAllowsSeveralToBeSelected()
         {
-            var finder = new SpellFinderViewModel([Row(Spell.Fireball), Row(Spell.Cure), Row(Spell.Teleport)]);
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"]), Row(TestCatalog.Standard.Spells["Cure"]), Row(TestCatalog.Standard.Spells["Teleport"])]);
 
             Assert.That(Shown(finder), Is.EquivalentTo(new[] { "Fireball", "Cure", "Teleport" }));
             Assert.That(finder.AllowsMultiSelect, Is.True);
@@ -33,7 +33,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void ASearchMatchesTheNameTheLevelTheTypeAndTheMagic()
         {
-            var finder = new SpellFinderViewModel([Row(Spell.Fireball), Row(Spell.Cure), Row(Spell.Teleport)]);
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"]), Row(TestCatalog.Standard.Spells["Cure"]), Row(TestCatalog.Standard.Spells["Teleport"])]);
 
             finder.Filter = "fire";
             Assert.That(Shown(finder), Is.EqualTo(new[] { "Fireball" }));
@@ -51,7 +51,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void EveryWordOfTheSearchMustMatchSomething()
         {
-            var finder = new SpellFinderViewModel([Row(Spell.Fireball), Row(Spell.Cure), Row(Spell.Teleport)]);
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"]), Row(TestCatalog.Standard.Spells["Cure"]), Row(TestCatalog.Standard.Spells["Teleport"])]);
 
             finder.Filter = "combat level 3";
 
@@ -61,7 +61,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void TheSummaryCountsWhatIsLearnedAndTellsHowManyAreShownWhenSearching()
         {
-            var finder = new SpellFinderViewModel([Row(Spell.Fireball, true), Row(Spell.Cure), Row(Spell.Teleport, true)]);
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"], true), Row(TestCatalog.Standard.Spells["Cure"]), Row(TestCatalog.Standard.Spells["Teleport"], true)]);
 
             Assert.That(finder.Summary, Is.EqualTo("2 of 3 learned"));
 
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void TheColumnsListTheSpellItsLevelTypeMagicCostAndWhetherItIsLearned()
         {
-            var finder = new SpellFinderViewModel([Row(Spell.Fireball)]);
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"])]);
 
             Assert.That(finder.Columns.Select(c => c.Header), Is.EqualTo(new[] { "Spell", "Level", "Type", "Magic", "Cost", "Learned" }));
             Assert.That(finder.Columns.Single(c => c.Header == "Learned").Kind, Is.EqualTo(FinderColumnKind.CheckBox));

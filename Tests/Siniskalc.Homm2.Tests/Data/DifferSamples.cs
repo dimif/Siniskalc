@@ -23,7 +23,7 @@ namespace Siniskalc.Homm2.Tests.Data
             new PrimarySkills(2, 3, 4, 5),
             SecondarySkills.None,
             new Army<Creature>(5),
-            Faction.Knight,
+            TestCatalog.Standard.Factions["Knight"],
             Artifacts.None,
             SpellSet<Spell>.None);
 
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
         public static CastleModel Castle() => new(
             "Xabran",
-            Faction.Knight,
+            TestCatalog.Standard.Factions["Knight"],
             PlayerColor.Blue,
             new MapPosition(20, 21),
             null,

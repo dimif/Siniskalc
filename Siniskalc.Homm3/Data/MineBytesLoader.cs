@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Data
     /// records of 62 bytes whose owner is a colour or none, whose guard has a creature and a count in each slot that is used and nothing in the
     /// others, and whose tile is on the map. The mines are the records of the run whose kind is one of the seven mines.
     /// </summary>
-    public sealed class MineBytesLoader : IMineBytesLoader
+    public sealed class MineBytesLoader(EntityCatalog catalog) : IMineBytesLoader
     {
         /// <inheritdoc/>
         public IReadOnlyList<RecordChunk> LoadMineChunks(byte[] bytes)
@@ -55,11 +55,11 @@ namespace Siniskalc.Homm3.Data
             return chunks;
         }
 
-        private static RecordChunk Chunk(byte[] bytes, int start, int index)
+        private RecordChunk Chunk(byte[] bytes, int start, int index)
         {
             var kind = (MineKind)bytes[start + MineLayout.Kind];
             return new RecordChunk(
-                MineKinds.NameAt(kind, new MapPosition(bytes[start + MineLayout.X], bytes[start + MineLayout.Y], bytes[start + MineLayout.Level]), hasLevels: true),
+                catalog.MapMetadata.MineNameAt(kind, new MapPosition(bytes[start + MineLayout.X], bytes[start + MineLayout.Y], bytes[start + MineLayout.Level])),
                 bytes.AsSpan(start, MineLayout.RecordSize).ToArray(),
                 start,
                 index);

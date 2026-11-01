@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Tests.Models;
 using Siniskalc.Homm3.ViewModels;
@@ -15,49 +15,49 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void AnUpgradeNamesTheBuildingItNeedsAndAnAllowedBuildingHasNoMessage()
         {
-            var castle = CastleModels.Village(Faction.Bulwark);
+            var castle = CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Bulwark"));
 
-            Assert.That(this.messages.DescribeBuild(castle, Building.Citadel), Is.EqualTo("Requires Fort"));
-            Assert.That(this.messages.DescribeBuild(castle, Building.Fort), Is.Null);
-            Assert.That(this.messages.DescribeBuild(castle, Building.VillageHall), Is.EqualTo("Already built"));
-            Assert.That(this.messages.DescribeBuild(castle, Building.CastleGuardhouse), Is.EqualTo("This town cannot have it"));
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Citadel")), Is.EqualTo("Requires Fort"));
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")), Is.Null);
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")), Is.EqualTo("Already built"));
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse")), Is.EqualTo("This town cannot have it"));
         }
 
         [Test]
         public void ABuildingTheMapForbidsIsSaidToBeNotAllowed()
         {
-            var castle = CastleModels.Village(Faction.Bulwark);
-            var forbidden = castle with { EnabledBuildings = castle.EnabledBuildings.Except([Building.Fort]).ToHashSet() };
+            var castle = CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Bulwark"));
+            var forbidden = castle with { EnabledBuildings = castle.EnabledBuildings.Except([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")]).ToHashSet() };
 
-            Assert.That(this.messages.DescribeBuild(forbidden, Building.Fort), Is.EqualTo("Not allowed by the map"));
+            Assert.That(this.messages.DescribeBuild(forbidden, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")), Is.EqualTo("Not allowed by the map"));
         }
 
         [Test]
         public void AHordeBuildingIsSaidToComeFromItsDwelling()
         {
-            var castle = CastleModels.Village(Faction.Rampart);
+            var castle = CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart"));
 
-            Assert.That(this.messages.DescribeBuild(castle, Building.RampartUpgMinersGuild), Does.StartWith("The game builds it by itself"));
-            Assert.That(this.messages.DescribeBuild(castle, Building.RampartUpgDwarfCottage), Is.EqualTo("Requires Dwarf Cottage"));
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgMinersGuild")), Does.StartWith("The game builds it by itself"));
+            Assert.That(this.messages.DescribeBuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgDwarfCottage")), Is.EqualTo("Requires Dwarf Cottage"));
         }
 
         [Test]
         public void ABuildingAnotherNeedsIsSaidToBeNeededByIt()
         {
-            var castle = CastleModels.With(CastleModels.Village(Faction.Bulwark), Building.Fort, Building.Citadel);
+            var castle = CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Bulwark")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Citadel"));
 
-            Assert.That(this.messages.DescribeUnbuild(castle, Building.Fort), Is.EqualTo("Needed by Citadel"));
-            Assert.That(this.messages.DescribeUnbuild(castle, Building.VillageHall), Is.EqualTo("Every town has a village hall"));
-            Assert.That(this.messages.DescribeUnbuild(castle, Building.Capitol), Is.EqualTo("Not built"));
-            Assert.That(this.messages.DescribeUnbuild(castle, Building.Citadel), Is.Null);
+            Assert.That(this.messages.DescribeUnbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")), Is.EqualTo("Needed by Citadel"));
+            Assert.That(this.messages.DescribeUnbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")), Is.EqualTo("Every town has a village hall"));
+            Assert.That(this.messages.DescribeUnbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol")), Is.EqualTo("Not built"));
+            Assert.That(this.messages.DescribeUnbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Citadel")), Is.Null);
         }
 
         [Test]
         public void ADwellingNeededByItsUpgradeNamesTheUpgrade()
         {
-            var castle = CastleModels.With(CastleModels.Village(Faction.Rampart), Building.RampartDwarfCottage, Building.RampartUpgDwarfCottage);
+            var castle = CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDwarfCottage"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgDwarfCottage"));
 
-            Assert.That(this.messages.DescribeUnbuild(castle, Building.RampartDwarfCottage), Is.EqualTo("Needed by Upg. Dwarf Cottage"));
+            Assert.That(this.messages.DescribeUnbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDwarfCottage")), Is.EqualTo("Needed by Upg. Dwarf Cottage"));
         }
     }
 }

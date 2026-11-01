@@ -1,3 +1,4 @@
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -12,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class MineBytesLoaderTests
     {
-        private readonly MineBytesLoader loader = new();
+        private readonly MineBytesLoader loader = new(TestCatalog.Hota);
 
         /// <summary>A record that passes every check of the loader: no creature in the guard, a tile, an owner, a kind.</summary>
         private static byte[] Record(int x = 5, int y = 6, int level = 0, int owner = 0xFF, int kind = 6, int abandoned = 0)

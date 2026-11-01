@@ -72,11 +72,11 @@
         public EquippedArtifactsViewModel(
             EffectLineProvider effectLines,
             EquippedArtifacts model,
+            EntityCatalog catalog,
             Action<EquippedArtifacts>? onChanged = null,
-            GameVersion gameVersion = GameVersion.HornOfTheAbyss,
             Action<Artifact>? sendToBackpack = null,
             Func<bool>? canSendToBackpack = null)
-            : base("Artifacts", effectLines)
+            : base("Artifacts", effectLines, catalog)
         {
             this.model = model;
             this.onChanged = onChanged;
@@ -84,15 +84,15 @@
                 p => p.Key,
                 p => new ArtifactSlotViewModel(
                     p.Value,
-                    onChoose => new ArtifactFinderViewModel(gameVersion, this.EffectLines, string.Empty, "Choose", onChoose, null, includeScrolls: true, rowFilter: a => a.BlockedSlots.HasFlag(p.Key)),
+                    onChoose => new ArtifactFinderViewModel(catalog, this.EffectLines, string.Empty, "Choose", onChoose, null, includeScrolls: true, rowFilter: a => a.BlockedSlots.HasFlag(p.Key)),
                     name => this.UpdateSelection(p.Key, name)));
             this.ClearSlotCommand = new DelegateCommand(
                 p => this.UpdateSelection((ArtifactSlots)p!, null),
                 p => p is ArtifactSlots slot && !string.IsNullOrEmpty(this.GetSlotValue(slot)));
-            this.Finder = new ArtifactFinderViewModel(gameVersion, this.EffectLines, "Find artifacts", "Equip", this.Equip, c => this.FindFreeSlot(c.Artifact) != null, includeScrolls: true);
+            this.Finder = new ArtifactFinderViewModel(catalog, this.EffectLines, "Find artifacts", "Equip", this.Equip, c => this.FindFreeSlot(c.Artifact) != null, includeScrolls: true);
             if (sendToBackpack != null)
             {
-                this.Finder.AddAction("Backpack", sendToBackpack, a => a != Artifact.SpellScroll && (canSendToBackpack?.Invoke() ?? true));
+                this.Finder.AddAction("Backpack", sendToBackpack, a => !a.IsScroll && (canSendToBackpack?.Invoke() ?? true));
             }
 
             this.Refresh(model);
@@ -317,12 +317,12 @@
                 ? this.model.WithUnequipped(this.FindSlotOf(currentArtifact) ?? slot)
                 : this.model.WithUnequipped(slot);
 
-            var artifact = string.IsNullOrWhiteSpace(name) ? null : Artifact.FindByName(name);
+            var artifact = string.IsNullOrWhiteSpace(name) ? null : this.Catalog.FindArtifact(name);
             if (artifact != null)
             {
                 // Combination artifacts live in their own slot, unless that is a group (e.g. Misc), then in the chosen one.
                 var targetSlot = artifact.IsCombination && EquippedArtifacts.IsSingleSlot(artifact.Slot) ? artifact.Slot : slot;
-                SpellScroll.TryParse(name, out var spell);
+                SpellScroll.TryParse(this.Catalog, name, out var spell);
                 updated = updated.WithEquipped(targetSlot, artifact, spell);
             }
 
@@ -358,7 +358,7 @@
         private Artifact? GetArtifactForSlot(ArtifactSlots slot)
         {
             var name = this.GetSlotValue(slot);
-            return string.IsNullOrWhiteSpace(name) ? null : Artifact.FindByName(name);
+            return string.IsNullOrWhiteSpace(name) ? null : this.Catalog.FindArtifact(name);
         }
 
         private string? GetSlotValue(ArtifactSlots slot) => this.slots[slot].ArtifactName;

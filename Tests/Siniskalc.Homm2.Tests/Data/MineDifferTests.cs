@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class MineDifferTests
     {
-        private static MineModel Mine() => new(2, MineKind.GoldMine, new MapPosition(14, 15), PlayerColor.Blue);
+        private static MineModel Mine() => new(2, MineKind.GoldMine, new MapPosition(14, 15), PlayerColor.Blue, TestCatalog.Standard);
 
         [Test]
         public void TwoEqualMinesHaveNoChanges()

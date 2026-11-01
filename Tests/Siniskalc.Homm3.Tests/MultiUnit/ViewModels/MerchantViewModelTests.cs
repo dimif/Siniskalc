@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Entities;
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         private static MerchantViewModel Page(Mock<IEditSession<MerchantStockModel>> session, string location = "") =>
-            new(session.Object, GameVersion.ShadowOfDeath, TestServices.EffectLines, location);
+            new(session.Object, TestCatalog.For(GameVersion.ShadowOfDeath), TestServices.EffectLines, location);
 
         [Test]
         public void ThePageHasTheNameOfTheMerchantAndSevenSlotsLabelledFromOne()
@@ -51,23 +51,23 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void EverySlotShowsTheArtifactInItsPlaceOfTheListAndEmptyOnesAreEmpty()
         {
-            var page = Page(Session(Stock(Artifact.HelmOfTheAlabasterUnicorn, null, Artifact.OrbOfInhibition)));
+            var page = Page(Session(Stock(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HelmOfTheAlabasterUnicorn"), null, TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition"))));
 
-            Assert.That(page.Slots[0].ArtifactName, Is.EqualTo(Artifact.HelmOfTheAlabasterUnicorn.Name));
+            Assert.That(page.Slots[0].ArtifactName, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HelmOfTheAlabasterUnicorn").Name));
             Assert.That(page.Slots[1].HasArtifact, Is.False);
-            Assert.That(page.Slots[2].ArtifactName, Is.EqualTo(Artifact.OrbOfInhibition.Name));
+            Assert.That(page.Slots[2].ArtifactName, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition").Name));
         }
 
         [Test]
         public void ClearingASlotWritesAnEmptySlotToTheSession()
         {
-            var session = Session(Stock(Artifact.HelmOfTheAlabasterUnicorn, Artifact.OrbOfInhibition));
+            var session = Session(Stock(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HelmOfTheAlabasterUnicorn"), TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition")));
             var page = Page(session);
 
             page.Slots[1].ClearCommand.Execute(null);
 
             Assert.That(session.Object.Current.Slots[1], Is.Null);
-            Assert.That(session.Object.Current.Slots[0], Is.SameAs(Artifact.HelmOfTheAlabasterUnicorn));
+            Assert.That(session.Object.Current.Slots[0], Is.SameAs(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HelmOfTheAlabasterUnicorn")));
         }
 
         [Test]
@@ -76,27 +76,27 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             var session = Session(Stock());
             var page = Page(session);
             var finder = page.Slots[3].Finder;
-            var choice = finder.Artifacts.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == Artifact.SkullHelmet);
+            var choice = finder.Artifacts.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SkullHelmet"));
 
             finder.ChooseCommand.Execute(choice);
 
-            Assert.That(session.Object.Current.Slots[3], Is.SameAs(Artifact.SkullHelmet));
+            Assert.That(session.Object.Current.Slots[3], Is.SameAs(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SkullHelmet")));
             Assert.That(session.Object.Current.Slots.Count(s => s != null), Is.EqualTo(1));
         }
 
         [Test]
         public void RefreshShowsWhatTheSessionNowHolds()
         {
-            var session = Session(Stock(Artifact.HelmOfTheAlabasterUnicorn));
+            var session = Session(Stock(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HelmOfTheAlabasterUnicorn")));
             var page = Page(session);
-            session.Object.Update(stock => stock.WithSlot(0, Artifact.OrbOfInhibition).WithSlot(4, Artifact.SkullHelmet));
+            session.Object.Update(stock => stock.WithSlot(0, TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition")).WithSlot(4, TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SkullHelmet")));
             var raised = new List<string?>();
             page.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
             page.Refresh();
 
-            Assert.That(page.Slots[0].ArtifactName, Is.EqualTo(Artifact.OrbOfInhibition.Name));
-            Assert.That(page.Slots[4].ArtifactName, Is.EqualTo(Artifact.SkullHelmet.Name));
+            Assert.That(page.Slots[0].ArtifactName, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("OrbOfInhibition").Name));
+            Assert.That(page.Slots[4].ArtifactName, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("SkullHelmet").Name));
             Assert.That(raised, Is.Not.Empty);
         }
     }

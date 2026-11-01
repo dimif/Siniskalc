@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -24,11 +24,11 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [SetUp]
         public void StartWithArcheryWisdomAndLuck()
         {
-            var levels = SecondarySkill.All.ToDictionary(s => s, _ => SkillLevel.None);
-            levels[SecondarySkill.Archery] = SkillLevel.Beginner;
-            levels[SecondarySkill.Wisdom] = SkillLevel.Expert;
-            levels[SecondarySkill.Luck] = SkillLevel.Intermediate;
-            var hero = HeroModels.Christian() with { SecondarySkills = new SecondarySkills(levels, [SecondarySkill.Archery, SecondarySkill.Wisdom, SecondarySkill.Luck]) };
+            var levels = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.ToDictionary(s => s, _ => SkillLevel.None);
+            levels[TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")] = SkillLevel.Beginner;
+            levels[TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")] = SkillLevel.Expert;
+            levels[TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")] = SkillLevel.Intermediate;
+            var hero = HeroModels.Christian() with { SecondarySkills = new SecondarySkills(levels, [TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery"), TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")]) };
             this.session = new FakeHeroSession(hero);
             this.page = HeroPages.Create(this.session);
         }
@@ -66,7 +66,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 
             Assert.That(slots.Take(3).Select(s => s.SkillName), Is.EqualTo(new[] { "Wisdom", "Archery", "Luck" }));
             Assert.That(slots.Take(2).Select(s => s.LevelName), Is.EqualTo(new[] { SkillLevelNames.Expert, SkillLevelNames.Basic }));
-            Assert.That(this.session.Current.SecondarySkills.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Wisdom));
+            Assert.That(this.session.Current.SecondarySkills.GetSkillInSlot(0), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")));
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             slots[1].LevelName = SkillLevelNames.Basic;
 
             Assert.That(slots[1].LevelName, Is.EqualTo(SkillLevelNames.Basic));
-            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(SecondarySkill.Wisdom), Is.EqualTo(SkillLevel.Beginner));
+            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")), Is.EqualTo(SkillLevel.Beginner));
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             Assert.That(Row("Mysticism").Placement, Does.Contain("Not shown"));
             Assert.That(this.Skills.HasExtraSkills, Is.True);
             Assert.That(this.Skills.ExtraSummary, Does.StartWith("2 skills"));
-            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(SecondarySkill.Mysticism), Is.EqualTo(SkillLevel.Intermediate));
+            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Mysticism")), Is.EqualTo(SkillLevel.Intermediate));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             }
 
             Row("Mysticism").LevelName = SkillLevelNames.Expert;
-            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(SecondarySkill.Mysticism), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(this.session.Current.SecondarySkills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Mysticism")), Is.EqualTo(SkillLevel.Expert));
             Row("Mysticism").LevelName = SkillLevelNames.None;
             Row("Sorcery").LevelName = SkillLevelNames.None;
 

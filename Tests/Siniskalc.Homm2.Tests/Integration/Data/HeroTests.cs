@@ -26,7 +26,7 @@
 
             Assert.That(maximus.Name, Is.EqualTo("Maximus"));
             Assert.That(maximus.Id, Is.EqualTo(Maximus));
-            Assert.That(maximus.Faction, Is.EqualTo(Faction.Knight));
+            Assert.That(maximus.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Knight"]));
             Assert.That(maximus.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That((maximus.Position.X, maximus.Position.Y), Is.EqualTo((28, 27)));
             Assert.That(maximus.Destination, Is.EqualTo(MapPosition.None));
@@ -35,10 +35,10 @@
             Assert.That(maximus.PrimarySkills, Is.EqualTo(new PrimarySkills(2, 2, 1, 1)));
             Assert.That(maximus.SecondarySkills.Entries, Is.EqualTo(new[]
             {
-                new SkillEntry(SecondarySkill.Leadership, SkillLevel.Beginner),
-                new SkillEntry(SecondarySkill.Ballistics, SkillLevel.Beginner),
+                new SkillEntry(TestCatalog.Standard.Skills["Leadership"], SkillLevel.Beginner),
+                new SkillEntry(TestCatalog.Standard.Skills["Ballistics"], SkillLevel.Beginner),
             }));
-            Assert.That(maximus.Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(Creature.Peasant, 37), new ArmySlot<Creature>(Creature.Archer, 4), null, null, null }));
+            Assert.That(maximus.Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Peasant"], 37), new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Archer"], 4), null, null, null }));
             Assert.That(maximus.Artifacts, Is.EqualTo(Artifacts.None));
             Assert.That(maximus.HasSpellBook, Is.False);
             Assert.That(maximus.Spells.Count, Is.Zero);
@@ -52,7 +52,7 @@
             var army = Hero(2, Maximus).Army;
 
             Assert.That(army.Slots.Select(s => s?.Count), Is.EqualTo(new int?[] { 34, 4, 1, 1, 1 }));
-            Assert.That(army.Slots.Select(s => s?.Creature), Is.EqualTo(new[] { Creature.Peasant, Creature.Archer, Creature.Peasant, Creature.Peasant, Creature.Peasant }));
+            Assert.That(army.Slots.Select(s => s?.Creature), Is.EqualTo(new[] { TestCatalog.Standard.Creatures["Peasant"], TestCatalog.Standard.Creatures["Archer"], TestCatalog.Standard.Creatures["Peasant"], TestCatalog.Standard.Creatures["Peasant"], TestCatalog.Standard.Creatures["Peasant"] }));
         }
 
         [Test]
@@ -79,15 +79,15 @@
             var maximus = Hero(10, Maximus);
 
             Assert.That(maximus.HasSpellBook, Is.True);
-            Assert.That(maximus.Artifacts.Slots[0], Is.EqualTo(Artifact.MagicBook));
+            Assert.That(maximus.Artifacts.Slots[0], Is.EqualTo(TestCatalog.Standard.Artifacts["MagicBook"]));
             Assert.That(maximus.Spells, Is.EqualTo(new[]
             {
-                Spell.Cure,
-                Spell.Steelskin,
-                Spell.MagicArrow,
-                Spell.DisruptingRay,
-                Spell.ViewResources,
-                Spell.ViewArtifacts,
+                TestCatalog.Standard.Spells["Cure"],
+                TestCatalog.Standard.Spells["Steelskin"],
+                TestCatalog.Standard.Spells["MagicArrow"],
+                TestCatalog.Standard.Spells["DisruptingRay"],
+                TestCatalog.Standard.Spells["ViewResources"],
+                TestCatalog.Standard.Spells["ViewArtifacts"],
             }));
         }
 
@@ -113,21 +113,21 @@
             Assert.That(after.HeroLevel.Experience, Is.EqualTo(1550));
             Assert.That(after.PrimarySkills.Defense, Is.EqualTo(before.PrimarySkills.Defense + 1));
             Assert.That(after.SecondarySkills.SlotCount, Is.EqualTo(before.SecondarySkills.SlotCount + 1));
-            Assert.That(after.SecondarySkills.Entries[^1], Is.EqualTo(new SkillEntry(SecondarySkill.Pathfinding, SkillLevel.Beginner)));
+            Assert.That(after.SecondarySkills.Entries[^1], Is.EqualTo(new SkillEntry(TestCatalog.Standard.Skills["Pathfinding"], SkillLevel.Beginner)));
         }
 
         [Test]
         public void ThePickedUpArtifactsAreInTheFirstFreeSlots()
         {
-            Assert.That(Hero(11, SirGallant).Artifacts.Slots[0], Is.EqualTo(Artifact.MedalOfCourage));
-            Assert.That(Hero(15, Maximus).Artifacts.Slots.Take(2), Is.EqualTo(new[] { Artifact.MagicBook, Artifact.AmmoCart }));
-            Assert.That(Hero(16, SirGallant).Artifacts.Slots.Take(2), Is.EqualTo(new[] { Artifact.MedalOfCourage, Artifact.IceCloak }));
+            Assert.That(Hero(11, SirGallant).Artifacts.Slots[0], Is.EqualTo(TestCatalog.Standard.Artifacts["MedalOfCourage"]));
+            Assert.That(Hero(15, Maximus).Artifacts.Slots.Take(2), Is.EqualTo(new[] { TestCatalog.Standard.Artifacts["MagicBook"], TestCatalog.Standard.Artifacts["AmmoCart"] }));
+            Assert.That(Hero(16, SirGallant).Artifacts.Slots.Take(2), Is.EqualTo(new[] { TestCatalog.Standard.Artifacts["MedalOfCourage"], TestCatalog.Standard.Artifacts["IceCloak"] }));
         }
 
         [Test]
         public void TheFountainTurnedTheArmyIntoFiveBlackDragons()
         {
-            Assert.That(Hero(13, Maximus).Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(Creature.BlackDragon, 5), null, null, null, null }));
+            Assert.That(Hero(13, Maximus).Army.Slots, Is.EqualTo(new[] { new ArmySlot<Creature>(TestCatalog.Standard.Creatures["BlackDragon"], 5), null, null, null, null }));
         }
 
         [Test]
@@ -144,9 +144,9 @@
             var after = Hero(16, Natasha);
 
             Assert.That(before.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(before.Artifacts.Slots.Take(2), Is.EqualTo(new[] { Artifact.MagicBook, Artifact.IceCloak }));
+            Assert.That(before.Artifacts.Slots.Take(2), Is.EqualTo(new[] { TestCatalog.Standard.Artifacts["MagicBook"], TestCatalog.Standard.Artifacts["IceCloak"] }));
             Assert.That(after.Owner, Is.EqualTo(PlayerColor.Neutral));
-            Assert.That(after.Artifacts.Slots.Take(2), Is.EqualTo(new Artifact?[] { Artifact.MagicBook, null }));
+            Assert.That(after.Artifacts.Slots.Take(2), Is.EqualTo(new Artifact?[] { TestCatalog.Standard.Artifacts["MagicBook"], null }));
             Assert.That(after.SpellPoints, Is.EqualTo(27));
         }
 
@@ -159,7 +159,7 @@
             Assert.That(heroes.Select(h => h.Id), Is.EqualTo(Enumerable.Range(0, 54)));
             Assert.That(heroes[0].Name, Is.EqualTo("Lord Kilburn"));
             Assert.That(heroes[51].Name, Is.EqualTo("Roxana"));
-            Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(Faction.All));
+            Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(TestCatalog.Standard.Factions.Where(f => !f.IsNeutral)));
             Assert.That(heroes.GroupBy(h => h.Faction).Select(g => g.Count()), Is.All.EqualTo(9));
             Assert.That(heroes.Where(h => h.Owner == PlayerColor.Blue).Select(h => h.Name), Is.EqualTo(new[] { "Maximus" }));
         }

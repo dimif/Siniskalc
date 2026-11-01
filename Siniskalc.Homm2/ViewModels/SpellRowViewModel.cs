@@ -20,7 +20,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets "Mind" or "Elemental" for the spells the rules single out (the giants and the titans are immune to the mind spells), otherwise nothing.
         /// </summary>
-        public string Magic => this.Spell.Group == SpellGroup.None ? string.Empty : this.Spell.Group.ToString();
+        public string Magic => this.Spell.Group.Hidden ? string.Empty : this.Spell.Group.ToString();
 
         /// <summary>
         /// Gets how many spell points casting the spell costs.

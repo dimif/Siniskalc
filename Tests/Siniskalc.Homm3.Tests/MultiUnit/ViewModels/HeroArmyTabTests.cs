@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;
@@ -34,7 +34,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             using var page = this.Page();
             var slot = page.ArmyViewModel.CreatureSlots[0];
-            var info = Creature.Pikeman.GetInfo(this.session.GameVersion);
+            var info = TestCatalog.For(this.session.GameVersion).Creatures.ById("Pikeman").Info;
 
             Assert.That(slot.CreatureAmount, Is.EqualTo(10));
             Assert.That(slot.TotalAiValue, Is.EqualTo((info.AiValue * 10).ToString("N0")));
@@ -44,11 +44,11 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheArmySummaryAddsUpTheHealthAndTheCostOfTheStacks()
         {
-            this.session = new FakeHeroSession(HeroModels.Christian() with { Army = HeroModels.Christian().Army.WithSlot(1, Creature.Troll, 3) });
+            this.session = new FakeHeroSession(HeroModels.Christian() with { Army = HeroModels.Christian().Army.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Troll"), 3) });
             using var page = this.Page();
             var version = this.session.GameVersion;
-            var pikeman = Creature.Pikeman.GetInfo(version);
-            var troll = Creature.Troll.GetInfo(version);
+            var pikeman = TestCatalog.For(version).Creatures.ById("Pikeman").Info;
+            var troll = TestCatalog.For(version).Creatures.ById("Troll").Info;
 
             var health = ((long)pikeman.Health * 10) + ((long)troll.Health * 3);
             var gold = ((long)pikeman.Gold * 10) + ((long)troll.Gold * 3);
@@ -64,7 +64,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             using var page = this.Page();
             var before = page.ArmyViewModel.ArmySummary;
 
-            this.session.Update(h => h with { Army = h.Army.WithSlot(1, Creature.Troll, 3) });
+            this.session.Update(h => h with { Army = h.Army.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Troll"), 3) });
 
             Assert.That(page.ArmyViewModel.ArmySummary, Is.Not.EqualTo(before));
         }
@@ -82,7 +82,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ACreatureChoiceTellsItsSpecialAndNoResourcesWhenItCostsOnlyGold()
         {
-            var troll = new CreatureChoiceViewModel(Creature.Troll, Creature.Troll.GetInfo(this.session.GameVersion));
+            var troll = new CreatureChoiceViewModel(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Troll"), TestCatalog.For(this.session.GameVersion).Creatures.ById("Troll").Info);
 
             Assert.That(troll.Special, Does.Contain("Regeneration"));
             Assert.That(troll.Resources, Is.Empty);
@@ -93,7 +93,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var version = this.session.GameVersion;
 
-            var pricey = Creature.All.Where(c => c.IsAvailableIn(version)).Select(c => new CreatureChoiceViewModel(c, c.GetInfo(version))).First(c => c.Resources.Length > 0);
+            var pricey = TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All.Where(c => c.IsAvailableIn(version)).Select(c => new CreatureChoiceViewModel(c, c.Info)).First(c => c.Resources.Length > 0);
 
             Assert.That(pricey.Details, Does.Contain(pricey.Resources));
         }

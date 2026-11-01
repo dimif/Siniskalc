@@ -19,12 +19,15 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         private const bool HasLevels = false;
 
+        private readonly GameCatalog catalog;
+
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
+        public HeroDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges, GameCatalog catalog)
         {
             this.pendingChanges = pendingChanges;
+            this.catalog = catalog;
         }
 
         /// <inheritdoc/>
@@ -61,7 +64,7 @@ namespace Siniskalc.Homm2.Data
             }
 
             DiffPrimarySkills(original, current, changes);
-            DiffSecondarySkills(original, current, changes);
+            this.DiffSecondarySkills(original, current, changes);
 
             changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });
 
@@ -82,7 +85,7 @@ namespace Siniskalc.Homm2.Data
         private static void DiffPrimarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
-        private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
-            changes.AddSecondarySkills(SecondarySkill.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
+        private void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
+            changes.AddSecondarySkills(this.catalog.Skills, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
     }
 }

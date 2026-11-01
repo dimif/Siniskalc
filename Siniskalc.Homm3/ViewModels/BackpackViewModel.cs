@@ -10,7 +10,6 @@
     public sealed class BackpackViewModel : ArtifactInfoViewModelBase
     {
         private readonly Action<Backpack>? onChanged;
-        private readonly GameVersion gameVersion;
         private Backpack model;
         private bool isRefreshing;
 
@@ -18,15 +17,14 @@
         /// <param name="model">The backpack to show.</param>
         /// <param name="onChanged">Called with the new backpack whenever the user changes a slot.</param>
         /// <param name="gameVersion">The game version; the finder leaves out artifacts from later versions.</param>
-        public BackpackViewModel(EffectLineProvider effectLines, Backpack model, Action<Backpack>? onChanged = null, GameVersion gameVersion = GameVersion.HornOfTheAbyss)
-            : base("Backpack", effectLines)
+        public BackpackViewModel(EffectLineProvider effectLines, Backpack model, EntityCatalog catalog, Action<Backpack>? onChanged = null)
+            : base("Backpack", effectLines, catalog)
         {
             this.model = model;
             this.onChanged = onChanged;
             this.Slots1To32 = new ObservableCollection<BackpackSlotViewModel>(Enumerable.Range(1, Constants.Backpack.SlotsPerPage).Select(i => new BackpackSlotViewModel(i, this.UpdateBackpackSlot, this.CreateSlotFinder)));
             this.Slots33To64 = new ObservableCollection<BackpackSlotViewModel>(Enumerable.Range(Constants.Backpack.SlotsPerPage + 1, Constants.Backpack.SlotsPerPage).Select(i => new BackpackSlotViewModel(i, this.UpdateBackpackSlot, this.CreateSlotFinder)));
-            this.Finder = new ArtifactFinderViewModel(gameVersion, this.EffectLines, "Find artifacts", "Add", this.AddToBackpack, _ => this.FirstEmptySlot() != null, includeScrolls: true);
-            this.gameVersion = gameVersion;
+            this.Finder = new ArtifactFinderViewModel(catalog, this.EffectLines, "Find artifacts", "Add", this.AddToBackpack, _ => this.FirstEmptySlot() != null, includeScrolls: true);
             this.Refresh(model);
         }
 
@@ -83,7 +81,7 @@
             slot?.Spell != null ? SpellScroll.NameOf(slot.Spell) : slot?.Art?.Name;
 
         private ArtifactFinderViewModel CreateSlotFinder(Action<ArtifactChoiceViewModel> onChoose) =>
-            new(this.gameVersion, this.EffectLines, string.Empty, "Choose", onChoose, null, includeScrolls: true);
+            new(this.Catalog, this.EffectLines, string.Empty, "Choose", onChoose, null, includeScrolls: true);
 
         private BackpackSlotViewModel? FirstEmptySlot() =>
             this.Slots1To32.Concat(this.Slots33To64).FirstOrDefault(s => string.IsNullOrEmpty(s.SelectedArtifact));
@@ -104,8 +102,8 @@
                 return;
             }
 
-            var artifact = string.IsNullOrWhiteSpace(artifactName) ? null : Artifact.FindByName(artifactName);
-            SpellScroll.TryParse(artifactName, out var spell);
+            var artifact = string.IsNullOrWhiteSpace(artifactName) ? null : this.Catalog.FindArtifact(artifactName);
+            SpellScroll.TryParse(this.Catalog, artifactName, out var spell);
             this.model = this.model.WithSlot(slotNumber - 1, artifact, spell);
             this.onChanged?.Invoke(this.model);
         }

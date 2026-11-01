@@ -15,6 +15,13 @@
     /// </summary>
     public sealed class SafeCastleSerializer : ISerializer<CastleChunk, CastleModel>
     {
+        private readonly GameCatalog catalog;
+
+        public SafeCastleSerializer(GameCatalog catalog)
+        {
+            this.catalog = catalog;
+        }
+
         /// <inheritdoc/>
         public CastleChunk Serialize(CastleChunk chunk, CastleModel model)
         {
@@ -27,7 +34,7 @@
             WriteBoat(bytes, model.ShipyardPosition);
             bytes[CastleLayout.VisitingHero] = Bytes.IdByte(model.VisitingHeroId, bytes[CastleLayout.VisitingHero]);
 
-            ArmyWriter.Write(bytes, CastleLayout.Garrison, model.Garrison, CreatureCodes.Instance, nameof(model.Garrison));
+            ArmyWriter.Write(bytes, CastleLayout.Garrison, model.Garrison, new CreatureCodes(this.catalog), nameof(model.Garrison));
 
             RangeGuard.ThrowIfOutOfRange<long>((long)model.Town, 0, Constants.Castle.MaxTownBuildings, nameof(model.Town));
             ByteBufferHelper.WriteUInt16(bytes, CastleLayout.TownBuildings, (ushort)model.Town);

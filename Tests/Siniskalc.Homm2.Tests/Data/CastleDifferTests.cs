@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [SetUp]
         public void StartWithNoReverts() => this.fake = new();
 
-        private IReadOnlyList<PendingChange> Diff(CastleModel original, CastleModel current) => new CastleDiffer(this.fake.Factory).Diff(3, original, current);
+        private IReadOnlyList<PendingChange> Diff(CastleModel original, CastleModel current) => new CastleDiffer(this.fake.Factory, TestCatalog.Standard).Diff(3, original, current);
 
         [Test]
         public void TwoEqualCastlesHaveNoChanges()
@@ -66,7 +66,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void ADifferentSpellInAPlaceOfTheMageGuildIsAChangeOfThatPlaceAndPutBack()
         {
             var original = DifferSamples.Castle().WithMageGuildLevel(2);
-            var current = original.WithMageGuildSpell(2, 1, Spell.Fireball);
+            var current = original.WithMageGuildSpell(2, 1, TestCatalog.Standard.Spells["Fireball"]);
 
             var change = this.Diff(original, current).Single();
 
@@ -103,7 +103,7 @@ namespace Siniskalc.Homm2.Tests.Data
         public void AChangedGarrisonStackIsAChangeOfItsSlot()
         {
             var original = DifferSamples.Castle();
-            var current = original with { Garrison = original.Garrison.WithSlot(0, Creature.Peasant, 30) };
+            var current = original with { Garrison = original.Garrison.WithSlot(0, TestCatalog.Standard.Creatures["Peasant"], 30) };
 
             var change = this.Diff(original, current).Single();
 

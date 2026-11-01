@@ -18,7 +18,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void AMineIsItsKindItsTileItsPlaceInTheTableAndItsOwner()
         {
-            var mine = new MineDeserializer().Deserialize(Mine(2, (byte)MineKind.GoldMine));
+            var mine = new MineDeserializer(TestCatalog.Standard).Deserialize(Mine(2, (byte)MineKind.GoldMine));
 
             Assert.That((mine.Index, mine.Kind, mine.Position, mine.Owner), Is.EqualTo((2, MineKind.GoldMine, new MapPosition(14, 15), PlayerColor.Red)));
         }
@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase(0x80)]
         public void AnOwnerByteThatIsTheNeutralByteOrNoColourReadsAsNeutral(int owner)
         {
-            var mine = new MineDeserializer().Deserialize(Mine((byte)owner, (byte)MineKind.Sawmill));
+            var mine = new MineDeserializer(TestCatalog.Standard).Deserialize(Mine((byte)owner, (byte)MineKind.Sawmill));
 
             Assert.That(mine.Owner, Is.EqualTo(PlayerColor.Neutral));
         }

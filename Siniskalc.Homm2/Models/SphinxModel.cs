@@ -1,7 +1,9 @@
 namespace Siniskalc.Homm2.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// A sphinx of the map: it asks a riddle and gives a reward for any of its answers, once. Its block of the savegame has a fixed size,
@@ -23,14 +25,15 @@ namespace Siniskalc.Homm2.Models
         int ArtifactCode,
         IReadOnlyList<string> Answers,
         string Riddle,
-        int RiddleCapacity)
+        int RiddleCapacity,
+        GameCatalog Catalog)
     {
         /// <summary>
         /// The artifact code that stands for "no artifact".
         /// </summary>
         public const int NoArtifact = 96;
 
-        public string Name => this.Position is { } at ? $"Sphinx at {at.X}, {at.Y}" : $"Sphinx {this.Index + 1}";
+        public string Name => this.Position is { } at ? this.Catalog.MapObjects.Single(o => o.Role == MapObjectRole.Sphinx).FormatName(at.X, at.Y) : this.Catalog.MapObjects.Single(o => o.Role == MapObjectRole.SphinxUnlocated).FormatName(this.Index + 1);
 
         public bool Equals(SphinxModel? other) =>
             other is not null

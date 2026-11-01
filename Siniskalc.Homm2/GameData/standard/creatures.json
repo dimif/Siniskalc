@@ -1,0 +1,1760 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Peasant",
+      "name": "Peasant",
+      "code": 0,
+      "order": 0,
+      "faction": "Knight",
+      "tier": 1,
+      "stats": {
+        "atk": 1,
+        "def": 1,
+        "minDamage": 1,
+        "maxDamage": 1,
+        "health": 1,
+        "speed": 2,
+        "growth": 12,
+        "gold": 20,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": true
+    },
+    {
+      "id": "Archer",
+      "name": "Archer",
+      "code": 1,
+      "order": 1,
+      "faction": "Knight",
+      "tier": 2,
+      "stats": {
+        "atk": 5,
+        "def": 3,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 10,
+        "speed": 2,
+        "growth": 8,
+        "gold": 150,
+        "shots": 12,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "Ranger",
+      "name": "Ranger",
+      "code": 2,
+      "order": 2,
+      "faction": "Knight",
+      "tier": 2,
+      "stats": {
+        "atk": 5,
+        "def": 3,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 10,
+        "speed": 4,
+        "growth": 8,
+        "gold": 200,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "DoubleShot"
+      ],
+      "baseCreature": "Archer",
+      "dwelling": "Dwelling2Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Pikeman",
+      "name": "Pikeman",
+      "code": 3,
+      "order": 3,
+      "faction": "Knight",
+      "tier": 3,
+      "stats": {
+        "atk": 5,
+        "def": 9,
+        "minDamage": 3,
+        "maxDamage": 4,
+        "health": 15,
+        "speed": 4,
+        "growth": 5,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "VeteranPikeman",
+      "name": "Veteran Pikeman",
+      "code": 4,
+      "order": 4,
+      "faction": "Knight",
+      "tier": 3,
+      "stats": {
+        "atk": 5,
+        "def": 9,
+        "minDamage": 3,
+        "maxDamage": 4,
+        "health": 20,
+        "speed": 5,
+        "growth": 5,
+        "gold": 250,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": "Pikeman",
+      "dwelling": "Dwelling3Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Swordsman",
+      "name": "Swordsman",
+      "code": 5,
+      "order": 5,
+      "faction": "Knight",
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 9,
+        "minDamage": 4,
+        "maxDamage": 6,
+        "health": 25,
+        "speed": 4,
+        "growth": 4,
+        "gold": 250,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "MasterSwordsman",
+      "name": "Master Swordsman",
+      "code": 6,
+      "order": 6,
+      "faction": "Knight",
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 9,
+        "minDamage": 4,
+        "maxDamage": 6,
+        "health": 30,
+        "speed": 5,
+        "growth": 4,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": "Swordsman",
+      "dwelling": "Dwelling4Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Cavalry",
+      "name": "Cavalry",
+      "code": 7,
+      "order": 7,
+      "faction": "Knight",
+      "tier": 5,
+      "stats": {
+        "atk": 10,
+        "def": 9,
+        "minDamage": 5,
+        "maxDamage": 10,
+        "health": 30,
+        "speed": 6,
+        "growth": 3,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "Champion",
+      "name": "Champion",
+      "code": 8,
+      "order": 8,
+      "faction": "Knight",
+      "tier": 5,
+      "stats": {
+        "atk": 10,
+        "def": 9,
+        "minDamage": 5,
+        "maxDamage": 10,
+        "health": 40,
+        "speed": 7,
+        "growth": 3,
+        "gold": 375,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": "Cavalry",
+      "dwelling": "Dwelling5Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Paladin",
+      "name": "Paladin",
+      "code": 9,
+      "order": 9,
+      "faction": "Knight",
+      "tier": 6,
+      "stats": {
+        "atk": 11,
+        "def": 12,
+        "minDamage": 10,
+        "maxDamage": 20,
+        "health": 50,
+        "speed": 5,
+        "growth": 2,
+        "gold": 600,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "DoubleAttack"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "Crusader",
+      "name": "Crusader",
+      "code": 10,
+      "order": 10,
+      "faction": "Knight",
+      "tier": 6,
+      "stats": {
+        "atk": 11,
+        "def": 12,
+        "minDamage": 10,
+        "maxDamage": 20,
+        "health": 65,
+        "speed": 6,
+        "growth": 2,
+        "gold": 1000,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "DoubleAttack"
+      ],
+      "baseCreature": "Paladin",
+      "dwelling": "Dwelling6Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Goblin",
+      "name": "Goblin",
+      "code": 11,
+      "order": 11,
+      "faction": "Barbarian",
+      "tier": 1,
+      "stats": {
+        "atk": 3,
+        "def": 1,
+        "minDamage": 1,
+        "maxDamage": 2,
+        "health": 3,
+        "speed": 4,
+        "growth": 10,
+        "gold": 40,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": false
+    },
+    {
+      "id": "Orc",
+      "name": "Orc",
+      "code": 12,
+      "order": 12,
+      "faction": "Barbarian",
+      "tier": 2,
+      "stats": {
+        "atk": 3,
+        "def": 4,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 10,
+        "speed": 2,
+        "growth": 8,
+        "gold": 140,
+        "shots": 8,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "OrcChief",
+      "name": "Orc Chief",
+      "code": 13,
+      "order": 13,
+      "faction": "Barbarian",
+      "tier": 2,
+      "stats": {
+        "atk": 3,
+        "def": 4,
+        "minDamage": 3,
+        "maxDamage": 4,
+        "health": 15,
+        "speed": 3,
+        "growth": 8,
+        "gold": 175,
+        "shots": 16,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": "Orc",
+      "dwelling": "Dwelling2Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Wolf",
+      "name": "Wolf",
+      "code": 14,
+      "order": 14,
+      "faction": "Barbarian",
+      "tier": 3,
+      "stats": {
+        "atk": 6,
+        "def": 2,
+        "minDamage": 3,
+        "maxDamage": 5,
+        "health": 20,
+        "speed": 6,
+        "growth": 5,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "DoubleAttack"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "Ogre",
+      "name": "Ogre",
+      "code": 15,
+      "order": 15,
+      "faction": "Barbarian",
+      "tier": 4,
+      "stats": {
+        "atk": 9,
+        "def": 5,
+        "minDamage": 4,
+        "maxDamage": 6,
+        "health": 40,
+        "speed": 2,
+        "growth": 4,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "OgreLord",
+      "name": "Ogre Lord",
+      "code": 16,
+      "order": 16,
+      "faction": "Barbarian",
+      "tier": 4,
+      "stats": {
+        "atk": 9,
+        "def": 5,
+        "minDamage": 5,
+        "maxDamage": 7,
+        "health": 60,
+        "speed": 4,
+        "growth": 4,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": "Ogre",
+      "dwelling": "Dwelling4Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Troll",
+      "name": "Troll",
+      "code": 17,
+      "order": 17,
+      "faction": "Barbarian",
+      "tier": 5,
+      "stats": {
+        "atk": 10,
+        "def": 5,
+        "minDamage": 5,
+        "maxDamage": 7,
+        "health": 40,
+        "speed": 4,
+        "growth": 3,
+        "gold": 600,
+        "shots": 8,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "Regeneration"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "WarTroll",
+      "name": "War Troll",
+      "code": 18,
+      "order": 18,
+      "faction": "Barbarian",
+      "tier": 5,
+      "stats": {
+        "atk": 10,
+        "def": 5,
+        "minDamage": 7,
+        "maxDamage": 9,
+        "health": 40,
+        "speed": 5,
+        "growth": 3,
+        "gold": 700,
+        "shots": 16,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "Regeneration"
+      ],
+      "baseCreature": "Troll",
+      "dwelling": "Dwelling5Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Cyclops",
+      "name": "Cyclops",
+      "code": 19,
+      "order": 19,
+      "faction": "Barbarian",
+      "tier": 6,
+      "stats": {
+        "atk": 12,
+        "def": 9,
+        "minDamage": 12,
+        "maxDamage": 24,
+        "health": 80,
+        "speed": 5,
+        "growth": 2,
+        "gold": 750,
+        "crystal": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "ParalyzingAttack"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "Sprite",
+      "name": "Sprite",
+      "code": 20,
+      "order": 20,
+      "faction": "Sorceress",
+      "tier": 1,
+      "stats": {
+        "atk": 4,
+        "def": 2,
+        "minDamage": 1,
+        "maxDamage": 2,
+        "health": 2,
+        "speed": 4,
+        "growth": 8,
+        "gold": 50,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": false
+    },
+    {
+      "id": "Dwarf",
+      "name": "Dwarf",
+      "code": 21,
+      "order": 21,
+      "faction": "Sorceress",
+      "tier": 2,
+      "stats": {
+        "atk": 6,
+        "def": 5,
+        "minDamage": 2,
+        "maxDamage": 4,
+        "health": 20,
+        "speed": 2,
+        "growth": 6,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "MagicResistance"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "BattleDwarf",
+      "name": "Battle Dwarf",
+      "code": 22,
+      "order": 22,
+      "faction": "Sorceress",
+      "tier": 2,
+      "stats": {
+        "atk": 6,
+        "def": 6,
+        "minDamage": 2,
+        "maxDamage": 4,
+        "health": 20,
+        "speed": 4,
+        "growth": 6,
+        "gold": 250,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "MagicResistance"
+      ],
+      "baseCreature": "Dwarf",
+      "dwelling": "Dwelling2Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Elf",
+      "name": "Elf",
+      "code": 23,
+      "order": 23,
+      "faction": "Sorceress",
+      "tier": 3,
+      "stats": {
+        "atk": 4,
+        "def": 3,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 15,
+        "speed": 4,
+        "growth": 4,
+        "gold": 250,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "GrandElf",
+      "name": "Grand Elf",
+      "code": 24,
+      "order": 24,
+      "faction": "Sorceress",
+      "tier": 3,
+      "stats": {
+        "atk": 5,
+        "def": 5,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 15,
+        "speed": 6,
+        "growth": 4,
+        "gold": 300,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "DoubleShot"
+      ],
+      "baseCreature": "Elf",
+      "dwelling": "Dwelling3Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Druid",
+      "name": "Druid",
+      "code": 25,
+      "order": 25,
+      "faction": "Sorceress",
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 5,
+        "minDamage": 5,
+        "maxDamage": 8,
+        "health": 25,
+        "speed": 5,
+        "growth": 3,
+        "gold": 350,
+        "shots": 8,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "GreaterDruid",
+      "name": "Greater Druid",
+      "code": 26,
+      "order": 26,
+      "faction": "Sorceress",
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 7,
+        "minDamage": 5,
+        "maxDamage": 8,
+        "health": 25,
+        "speed": 6,
+        "growth": 3,
+        "gold": 400,
+        "shots": 16,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": "Druid",
+      "dwelling": "Dwelling4Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Unicorn",
+      "name": "Unicorn",
+      "code": 27,
+      "order": 27,
+      "faction": "Sorceress",
+      "tier": 5,
+      "stats": {
+        "atk": 10,
+        "def": 9,
+        "minDamage": 7,
+        "maxDamage": 14,
+        "health": 40,
+        "speed": 5,
+        "growth": 2,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "BlindingAttack"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "Phoenix",
+      "name": "Phoenix",
+      "code": 28,
+      "order": 28,
+      "faction": "Sorceress",
+      "tier": 6,
+      "stats": {
+        "atk": 12,
+        "def": 10,
+        "minDamage": 20,
+        "maxDamage": 40,
+        "health": 100,
+        "speed": 7,
+        "growth": 1,
+        "gold": 1500,
+        "mercury": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "ElementalSpellsImmunity"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "Centaur",
+      "name": "Centaur",
+      "code": 29,
+      "order": 29,
+      "faction": "Warlock",
+      "tier": 1,
+      "stats": {
+        "atk": 3,
+        "def": 1,
+        "minDamage": 1,
+        "maxDamage": 2,
+        "health": 5,
+        "speed": 4,
+        "growth": 8,
+        "gold": 60,
+        "shots": 8,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": false
+    },
+    {
+      "id": "Gargoyle",
+      "name": "Gargoyle",
+      "code": 30,
+      "order": 30,
+      "faction": "Warlock",
+      "tier": 2,
+      "stats": {
+        "atk": 4,
+        "def": 7,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 15,
+        "speed": 6,
+        "growth": 6,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "Griffin",
+      "name": "Griffin",
+      "code": 31,
+      "order": 31,
+      "faction": "Warlock",
+      "tier": 3,
+      "stats": {
+        "atk": 6,
+        "def": 6,
+        "minDamage": 3,
+        "maxDamage": 5,
+        "health": 25,
+        "speed": 4,
+        "growth": 4,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "UnlimitedRetaliations"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "Minotaur",
+      "name": "Minotaur",
+      "code": 32,
+      "order": 32,
+      "faction": "Warlock",
+      "tier": 4,
+      "stats": {
+        "atk": 9,
+        "def": 8,
+        "minDamage": 5,
+        "maxDamage": 10,
+        "health": 35,
+        "speed": 4,
+        "growth": 3,
+        "gold": 400,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "MinotaurKing",
+      "name": "Minotaur King",
+      "code": 33,
+      "order": 33,
+      "faction": "Warlock",
+      "tier": 4,
+      "stats": {
+        "atk": 9,
+        "def": 8,
+        "minDamage": 5,
+        "maxDamage": 10,
+        "health": 45,
+        "speed": 6,
+        "growth": 3,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": "Minotaur",
+      "dwelling": "Dwelling4Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Hydra",
+      "name": "Hydra",
+      "code": 34,
+      "order": 34,
+      "faction": "Warlock",
+      "tier": 5,
+      "stats": {
+        "atk": 8,
+        "def": 9,
+        "minDamage": 6,
+        "maxDamage": 12,
+        "health": 75,
+        "speed": 2,
+        "growth": 2,
+        "gold": 800,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "NoEnemyRetaliation",
+        "AttacksAllAdjacentEnemies"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "GreenDragon",
+      "name": "Green Dragon",
+      "code": 35,
+      "order": 35,
+      "faction": "Warlock",
+      "tier": 6,
+      "stats": {
+        "atk": 12,
+        "def": 12,
+        "minDamage": 25,
+        "maxDamage": 50,
+        "health": 200,
+        "speed": 4,
+        "growth": 1,
+        "gold": 3000,
+        "sulfur": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "BreathAttack",
+        "Dragon"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "RedDragon",
+      "name": "Red Dragon",
+      "code": 36,
+      "order": 36,
+      "faction": "Warlock",
+      "tier": 6,
+      "stats": {
+        "atk": 13,
+        "def": 13,
+        "minDamage": 25,
+        "maxDamage": 50,
+        "health": 250,
+        "speed": 5,
+        "growth": 1,
+        "gold": 3500,
+        "sulfur": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "BreathAttack",
+        "Dragon"
+      ],
+      "baseCreature": "GreenDragon",
+      "dwelling": "Dwelling6Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "BlackDragon",
+      "name": "Black Dragon",
+      "code": 37,
+      "order": 37,
+      "faction": "Warlock",
+      "tier": 6,
+      "stats": {
+        "atk": 14,
+        "def": 14,
+        "minDamage": 25,
+        "maxDamage": 50,
+        "health": 300,
+        "speed": 6,
+        "growth": 1,
+        "gold": 4000,
+        "sulfur": 2,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "BreathAttack",
+        "Dragon",
+        "MagicImmunity"
+      ],
+      "baseCreature": "RedDragon",
+      "dwelling": "Dwelling6UpgradedTwice",
+      "fallback": false
+    },
+    {
+      "id": "Halfling",
+      "name": "Halfling",
+      "code": 38,
+      "order": 38,
+      "faction": "Wizard",
+      "tier": 1,
+      "stats": {
+        "atk": 2,
+        "def": 1,
+        "minDamage": 1,
+        "maxDamage": 3,
+        "health": 3,
+        "speed": 3,
+        "growth": 8,
+        "gold": 50,
+        "shots": 12,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": false
+    },
+    {
+      "id": "Boar",
+      "name": "Boar",
+      "code": 39,
+      "order": 39,
+      "faction": "Wizard",
+      "tier": 2,
+      "stats": {
+        "atk": 5,
+        "def": 4,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 15,
+        "speed": 6,
+        "growth": 6,
+        "gold": 150,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "IronGolem",
+      "name": "Iron Golem",
+      "code": 40,
+      "order": 40,
+      "faction": "Wizard",
+      "tier": 3,
+      "stats": {
+        "atk": 5,
+        "def": 10,
+        "minDamage": 4,
+        "maxDamage": 5,
+        "health": 30,
+        "speed": 2,
+        "growth": 4,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "SpellDamageReduction"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "SteelGolem",
+      "name": "Steel Golem",
+      "code": 41,
+      "order": 41,
+      "faction": "Wizard",
+      "tier": 3,
+      "stats": {
+        "atk": 7,
+        "def": 10,
+        "minDamage": 4,
+        "maxDamage": 5,
+        "health": 35,
+        "speed": 3,
+        "growth": 4,
+        "gold": 350,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "SpellDamageReduction"
+      ],
+      "baseCreature": "IronGolem",
+      "dwelling": "Dwelling3Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Roc",
+      "name": "Roc",
+      "code": 42,
+      "order": 42,
+      "faction": "Wizard",
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 7,
+        "minDamage": 4,
+        "maxDamage": 8,
+        "health": 40,
+        "speed": 4,
+        "growth": 3,
+        "gold": 400,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "Mage",
+      "name": "Mage",
+      "code": 43,
+      "order": 43,
+      "faction": "Wizard",
+      "tier": 5,
+      "stats": {
+        "atk": 11,
+        "def": 7,
+        "minDamage": 7,
+        "maxDamage": 9,
+        "health": 30,
+        "speed": 5,
+        "growth": 2,
+        "gold": 600,
+        "shots": 12,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "Archmage",
+      "name": "Archmage",
+      "code": 44,
+      "order": 44,
+      "faction": "Wizard",
+      "tier": 5,
+      "stats": {
+        "atk": 12,
+        "def": 8,
+        "minDamage": 7,
+        "maxDamage": 9,
+        "health": 35,
+        "speed": 6,
+        "growth": 2,
+        "gold": 700,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged"
+      ],
+      "baseCreature": "Mage",
+      "dwelling": "Dwelling5Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Giant",
+      "name": "Giant",
+      "code": 45,
+      "order": 45,
+      "faction": "Wizard",
+      "tier": 6,
+      "stats": {
+        "atk": 13,
+        "def": 10,
+        "minDamage": 20,
+        "maxDamage": 30,
+        "health": 150,
+        "speed": 4,
+        "growth": 1,
+        "gold": 2000,
+        "gems": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "MindSpellsImmunity"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "Titan",
+      "name": "Titan",
+      "code": 46,
+      "order": 46,
+      "faction": "Wizard",
+      "tier": 6,
+      "stats": {
+        "atk": 15,
+        "def": 15,
+        "minDamage": 20,
+        "maxDamage": 30,
+        "health": 300,
+        "speed": 6,
+        "growth": 1,
+        "gold": 5000,
+        "gems": 2,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "MindSpellsImmunity"
+      ],
+      "baseCreature": "Giant",
+      "dwelling": "Dwelling6Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Skeleton",
+      "name": "Skeleton",
+      "code": 47,
+      "order": 47,
+      "faction": "Necromancer",
+      "tier": 1,
+      "stats": {
+        "atk": 4,
+        "def": 3,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 4,
+        "speed": 4,
+        "growth": 8,
+        "gold": 75,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Undead"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling1",
+      "fallback": false
+    },
+    {
+      "id": "Zombie",
+      "name": "Zombie",
+      "code": 48,
+      "order": 48,
+      "faction": "Necromancer",
+      "tier": 2,
+      "stats": {
+        "atk": 5,
+        "def": 2,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 15,
+        "speed": 2,
+        "growth": 6,
+        "gold": 150,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Undead"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling2",
+      "fallback": false
+    },
+    {
+      "id": "MutantZombie",
+      "name": "Mutant Zombie",
+      "code": 49,
+      "order": 49,
+      "faction": "Necromancer",
+      "tier": 2,
+      "stats": {
+        "atk": 5,
+        "def": 2,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 20,
+        "speed": 4,
+        "growth": 6,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Undead"
+      ],
+      "baseCreature": "Zombie",
+      "dwelling": "Dwelling2Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Mummy",
+      "name": "Mummy",
+      "code": 50,
+      "order": 50,
+      "faction": "Necromancer",
+      "tier": 3,
+      "stats": {
+        "atk": 6,
+        "def": 6,
+        "minDamage": 3,
+        "maxDamage": 4,
+        "health": 25,
+        "speed": 4,
+        "growth": 4,
+        "gold": 250,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Undead",
+        "Curse"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling3",
+      "fallback": false
+    },
+    {
+      "id": "RoyalMummy",
+      "name": "Royal Mummy",
+      "code": 51,
+      "order": 51,
+      "faction": "Necromancer",
+      "tier": 3,
+      "stats": {
+        "atk": 6,
+        "def": 6,
+        "minDamage": 3,
+        "maxDamage": 4,
+        "health": 30,
+        "speed": 5,
+        "growth": 4,
+        "gold": 300,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Undead",
+        "Curse"
+      ],
+      "baseCreature": "Mummy",
+      "dwelling": "Dwelling3Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Vampire",
+      "name": "Vampire",
+      "code": 52,
+      "order": 52,
+      "faction": "Necromancer",
+      "tier": 4,
+      "stats": {
+        "atk": 8,
+        "def": 6,
+        "minDamage": 5,
+        "maxDamage": 7,
+        "health": 30,
+        "speed": 4,
+        "growth": 3,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "Undead"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling4",
+      "fallback": false
+    },
+    {
+      "id": "VampireLord",
+      "name": "Vampire Lord",
+      "code": 53,
+      "order": 53,
+      "faction": "Necromancer",
+      "tier": 4,
+      "stats": {
+        "atk": 8,
+        "def": 6,
+        "minDamage": 5,
+        "maxDamage": 7,
+        "health": 40,
+        "speed": 5,
+        "growth": 3,
+        "gold": 650,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "Undead",
+        "LifeDrain"
+      ],
+      "baseCreature": "Vampire",
+      "dwelling": "Dwelling4Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "Lich",
+      "name": "Lich",
+      "code": 54,
+      "order": 54,
+      "faction": "Necromancer",
+      "tier": 5,
+      "stats": {
+        "atk": 7,
+        "def": 12,
+        "minDamage": 8,
+        "maxDamage": 10,
+        "health": 25,
+        "speed": 5,
+        "growth": 2,
+        "gold": 750,
+        "shots": 12,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "Undead",
+        "DeathCloud"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling5",
+      "fallback": false
+    },
+    {
+      "id": "PowerLich",
+      "name": "Power Lich",
+      "code": 55,
+      "order": 55,
+      "faction": "Necromancer",
+      "tier": 5,
+      "stats": {
+        "atk": 7,
+        "def": 13,
+        "minDamage": 8,
+        "maxDamage": 10,
+        "health": 35,
+        "speed": 6,
+        "growth": 2,
+        "gold": 900,
+        "shots": 24,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Ranged",
+        "Undead",
+        "DeathCloud"
+      ],
+      "baseCreature": "Lich",
+      "dwelling": "Dwelling5Upgraded",
+      "fallback": false
+    },
+    {
+      "id": "BoneDragon",
+      "name": "Bone Dragon",
+      "code": 56,
+      "order": 56,
+      "faction": "Necromancer",
+      "tier": 6,
+      "stats": {
+        "atk": 11,
+        "def": 9,
+        "minDamage": 25,
+        "maxDamage": 45,
+        "health": 150,
+        "speed": 4,
+        "growth": 1,
+        "gold": 1500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "Dragon",
+        "Undead",
+        "MoraleMinus1"
+      ],
+      "baseCreature": null,
+      "dwelling": "Dwelling6",
+      "fallback": false
+    },
+    {
+      "id": "Rogue",
+      "name": "Rogue",
+      "code": 57,
+      "order": 57,
+      "faction": null,
+      "tier": 1,
+      "stats": {
+        "atk": 6,
+        "def": 1,
+        "minDamage": 1,
+        "maxDamage": 2,
+        "health": 4,
+        "speed": 5,
+        "growth": 8,
+        "gold": 50,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "Nomad",
+      "name": "Nomad",
+      "code": 58,
+      "order": 58,
+      "faction": null,
+      "tier": 2,
+      "stats": {
+        "atk": 7,
+        "def": 6,
+        "minDamage": 2,
+        "maxDamage": 5,
+        "health": 20,
+        "speed": 6,
+        "growth": 4,
+        "gold": 200,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "Ghost",
+      "name": "Ghost",
+      "code": 59,
+      "order": 59,
+      "faction": null,
+      "tier": 3,
+      "stats": {
+        "atk": 8,
+        "def": 7,
+        "minDamage": 4,
+        "maxDamage": 6,
+        "health": 20,
+        "speed": 5,
+        "growth": 3,
+        "gold": 1000,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "Undead"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "Genie",
+      "name": "Genie",
+      "code": 60,
+      "order": 60,
+      "faction": null,
+      "tier": 6,
+      "stats": {
+        "atk": 10,
+        "def": 9,
+        "minDamage": 20,
+        "maxDamage": 30,
+        "health": 50,
+        "speed": 6,
+        "growth": 2,
+        "gold": 650,
+        "gems": 1,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Flying",
+        "HalvesEnemyStack"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "Medusa",
+      "name": "Medusa",
+      "code": 61,
+      "order": 61,
+      "faction": null,
+      "tier": 4,
+      "stats": {
+        "atk": 8,
+        "def": 9,
+        "minDamage": 6,
+        "maxDamage": 10,
+        "health": 35,
+        "speed": 4,
+        "growth": 5,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "PetrifyingAttack"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "EarthElemental",
+      "name": "Earth Elemental",
+      "code": 62,
+      "order": 62,
+      "faction": null,
+      "tier": 4,
+      "stats": {
+        "atk": 8,
+        "def": 8,
+        "minDamage": 4,
+        "maxDamage": 5,
+        "health": 50,
+        "speed": 3,
+        "growth": 4,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Elemental",
+        "MindSpellsImmunity",
+        "NeutralMorale",
+        "ImmuneToLightningAndMeteorSpells"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "AirElemental",
+      "name": "Air Elemental",
+      "code": 63,
+      "order": 63,
+      "faction": null,
+      "tier": 4,
+      "stats": {
+        "atk": 7,
+        "def": 7,
+        "minDamage": 2,
+        "maxDamage": 8,
+        "health": 35,
+        "speed": 6,
+        "growth": 4,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Elemental",
+        "MindSpellsImmunity",
+        "NeutralMorale",
+        "ImmuneToMeteorShower",
+        "VulnerableToLightningSpells"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "FireElemental",
+      "name": "Fire Elemental",
+      "code": 64,
+      "order": 64,
+      "faction": null,
+      "tier": 4,
+      "stats": {
+        "atk": 8,
+        "def": 6,
+        "minDamage": 4,
+        "maxDamage": 6,
+        "health": 40,
+        "speed": 5,
+        "growth": 4,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Elemental",
+        "MindSpellsImmunity",
+        "NeutralMorale",
+        "VulnerableToColdSpells",
+        "FireImmunity"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    },
+    {
+      "id": "WaterElemental",
+      "name": "Water Elemental",
+      "code": 65,
+      "order": 65,
+      "faction": null,
+      "tier": 4,
+      "stats": {
+        "atk": 6,
+        "def": 8,
+        "minDamage": 3,
+        "maxDamage": 7,
+        "health": 45,
+        "speed": 4,
+        "growth": 4,
+        "gold": 500,
+        "aiValue": 0,
+        "fightValue": 0
+      },
+      "abilities": [
+        "Elemental",
+        "MindSpellsImmunity",
+        "NeutralMorale",
+        "ImmuneToColdSpells"
+      ],
+      "baseCreature": null,
+      "dwelling": null,
+      "fallback": false
+    }
+  ],
+  "replacements": []
+}

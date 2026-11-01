@@ -8,7 +8,7 @@ namespace Siniskalc.Homm3.Data
     /// <summary>
     /// Reads the record of a dwelling: the creature, the owner, the tile and the creatures that can be hired.
     /// </summary>
-    public sealed class DwellingDeserializer : IDeserializer<RecordChunk, DwellingModel>
+    public sealed class DwellingDeserializer(EntityCatalog catalog) : IDeserializer<RecordChunk, DwellingModel>
     {
         public DwellingModel Deserialize(RecordChunk chunk)
         {
@@ -16,7 +16,7 @@ namespace Siniskalc.Homm3.Data
             return new DwellingModel(
                 chunk.Index,
                 code,
-                Creature.FromByte(code),
+                catalog.Creatures.Find(code),
                 PlayerColor.FromByte(chunk.GetByteAt(DwellingLayout.Owner)),
                 new MapPosition(chunk.GetByteAt(DwellingLayout.X), chunk.GetByteAt(DwellingLayout.Y), chunk.GetByteAt(DwellingLayout.Level)),
                 chunk.GetUInt32At(DwellingLayout.Stock));

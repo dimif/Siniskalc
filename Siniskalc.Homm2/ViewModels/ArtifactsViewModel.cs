@@ -20,22 +20,24 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
         private readonly GameVersion gameVersion;
+        private readonly GameCatalog catalog;
         private IReadOnlyList<FactRow> bonuses = [];
 
-        public ArtifactsViewModel(GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
+        public ArtifactsViewModel(GameCatalog catalog, GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
             : base("Artifacts")
         {
             this.gameVersion = gameVersion;
+            this.catalog = catalog;
             this.getHero = getHero;
             this.update = update;
 
             this.Slots = Enumerable.Range(0, Constants.Hero.ArtifactSlotCount)
                 .Select(slot => new ArtifactPickerViewModel(
                     $"Slot {slot + 1}",
-                    onPick => new ArtifactFinderViewModel(gameVersion, string.Empty, "Choose", artifact => onPick(artifact.Name)),
+                    onPick => new ArtifactFinderViewModel(catalog, gameVersion, string.Empty, "Choose", artifact => onPick(artifact.Name)),
                     name => this.Put(slot, name)))
                 .ToList();
-            this.Finder = new ArtifactFinderViewModel(gameVersion, "Find artifacts", "Equip", this.Equip, () => !this.getHero().Artifacts.IsFull);
+            this.Finder = new ArtifactFinderViewModel(catalog, gameVersion, "Find artifacts", "Equip", this.Equip, () => !this.getHero().Artifacts.IsFull);
 
             this.Refresh();
         }
@@ -85,7 +87,7 @@ namespace Siniskalc.Homm2.ViewModels
 
         private void Put(int slot, string? name)
         {
-            var artifact = string.IsNullOrEmpty(name) ? null : AbstractEnumeration.FromName<Artifact>(name);
+            var artifact = string.IsNullOrEmpty(name) ? null : this.catalog.Artifacts.FindName(name);
             if (name == null || artifact != null)
             {
                 this.update(hero => hero.WithArtifact(slot, artifact));

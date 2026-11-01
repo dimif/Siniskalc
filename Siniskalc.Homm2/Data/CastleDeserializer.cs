@@ -16,6 +16,13 @@
     {
         private static readonly ILogger<CastleDeserializer> Logger = LogFactory.For<CastleDeserializer>();
 
+        private readonly GameCatalog catalog;
+
+        public CastleDeserializer(GameCatalog catalog)
+        {
+            this.catalog = catalog;
+        }
+
         /// <inheritdoc/>
         public PlayerColor DeserializeOwner(CastleChunk chunk)
         {
@@ -33,11 +40,11 @@
 
             return new CastleModel(
                 Bytes.ReadText(bytes, CastleLayout.Name, Constants.Castle.NameLength),
-                Bytes.ReadFaction(chunk.GetByteAt(CastleLayout.Faction)),
+                Bytes.ReadFaction(chunk.GetByteAt(CastleLayout.Faction), this.catalog),
                 this.DeserializeOwner(chunk),
                 new MapPosition(chunk.GetByteAt(CastleLayout.X), chunk.GetByteAt(CastleLayout.Y)),
                 boatX == Bytes.Empty ? null : new MapPosition(boatX, chunk.GetByteAt(CastleLayout.Boat + 1)),
-                ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance),
+                ArmyReader.Read(chunk, CastleLayout.Garrison, new CreatureCodes(this.catalog)),
                 Bytes.Id(chunk.GetByteAt(CastleLayout.VisitingHero)),
                 new Numbers(Enumerable.Range(1, Constants.Castle.DwellingCount).Select(d => (int)chunk.GetUInt16At(CastleLayout.CreaturesOffset(d, CastleModel.DwellingLevel(dwellings, d))))),
                 chunk.GetByteAt(CastleLayout.Index),

@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Bulwark", save + ".GM1"));
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return castles.GetModel(castles.FindByName(name));
         }
 
         // Bits 19 and 25 are set by the game itself once a horde building and the upgrade of its dwelling both exist.
@@ -73,11 +73,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var rampart = Castle("bulwark_00_baseline", "Still Water");
             var bulwark = Castle("bulwark_00_baseline", "Jotunngard");
 
-            Assert.That(rampart.Faction, Is.EqualTo(Faction.Rampart));
-            Assert.That(bulwark.Faction, Is.EqualTo(Faction.Bulwark));
+            Assert.That(rampart.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")));
+            Assert.That(bulwark.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Bulwark")));
             Assert.That(rampart.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(rampart.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
-            Assert.That(bulwark.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
+            Assert.That(rampart.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }));
+            Assert.That(bulwark.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }));
         }
 
         [TestCase("Still Water")]
@@ -86,7 +86,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Castle("bulwark_35_nothing__spirits_of_the_forebears", name);
 
-            Assert.That(castle.EnabledBuildings.Except(castle.Buildings), Is.EquivalentTo(new[] { Building.Capitol }));
+            Assert.That(castle.EnabledBuildings.Except(castle.Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol") }));
         }
     }
 }

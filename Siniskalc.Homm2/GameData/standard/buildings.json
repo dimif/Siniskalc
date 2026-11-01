@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Castle",
+      "name": "Castle",
+      "code": 0,
+      "order": 0,
+      "flag": "Castle",
+      "description": "A town becomes a castle when it is built.",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "Tavern",
+      "name": "Tavern",
+      "code": 1,
+      "order": 1,
+      "flag": "Tavern",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "ThievesGuild",
+      "name": "Thieves' Guild",
+      "code": 2,
+      "order": 2,
+      "flag": "ThievesGuild",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "Shipyard",
+      "name": "Shipyard",
+      "code": 3,
+      "order": 3,
+      "flag": "Shipyard",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "Well",
+      "name": "Well",
+      "code": 4,
+      "order": 4,
+      "flag": "Well",
+      "description": "",
+      "role": "ordinary",
+      "growth": 2
+    },
+    {
+      "id": "Statue",
+      "name": "Statue",
+      "code": 5,
+      "order": 5,
+      "flag": "Statue",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "Marketplace",
+      "name": "Marketplace",
+      "code": 6,
+      "order": 6,
+      "flag": "Marketplace",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "LeftTurret",
+      "name": "Left turret",
+      "code": 7,
+      "order": 7,
+      "flag": "LeftTurret",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "RightTurret",
+      "name": "Right turret",
+      "code": 8,
+      "order": 8,
+      "flag": "RightTurret",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "Moat",
+      "name": "Moat",
+      "code": 9,
+      "order": 9,
+      "flag": "Moat",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "CaptainsQuarters",
+      "name": "Captain's quarters",
+      "code": 10,
+      "order": 10,
+      "flag": "CaptainsQuarters",
+      "description": "",
+      "role": "ordinary",
+      "growth": 0
+    },
+    {
+      "id": "GrowthBuilding",
+      "name": "Second well",
+      "code": 11,
+      "order": 11,
+      "flag": "GrowthBuilding",
+      "description": "More creatures every week. Found in the savegames of Threedom; not tried in the game.",
+      "role": "growth",
+      "growth": 8
+    },
+    {
+      "id": "Special",
+      "name": "Special building",
+      "code": 12,
+      "order": 12,
+      "flag": "Special",
+      "description": "The special building of the faction. Found in the savegames of Threedom; not tried in the game.",
+      "role": "special",
+      "growth": 0
+    }
+  ],
+  "replacements": []
+}

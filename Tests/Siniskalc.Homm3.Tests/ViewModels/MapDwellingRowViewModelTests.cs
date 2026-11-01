@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
@@ -31,7 +31,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void TheRowShowsTheDwellingOfTheSession()
         {
-            var row = new MapDwellingRowViewModel(Session(Dwelling(Creature.Centaur)).Object);
+            var row = new MapDwellingRowViewModel(Session(Dwelling(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"))).Object);
 
             Assert.That((row.Index, row.CreatureName, row.X, row.Y, row.Level, row.Stock), Is.EqualTo((4, "Centaur", 9, 8, MapPosition.Underground, 7L)));
             Assert.That(row.PositionText, Does.Contain("at 9, 8").And.Contain("Underground"));

@@ -56,17 +56,17 @@
 
         public static byte ColorByte(PlayerColor color, byte existing) => ByteEnumerations.WriteKeeping(color, existing, PlayerColor.Neutral);
 
-        public static Faction ReadFaction(byte code)
+        public static Faction ReadFaction(byte code, GameCatalog catalog)
         {
-            if (AbstractEnumeration.FromCode<Faction>(code) is null)
+            if (catalog.Factions.Find(code) is null)
             {
                 Logger.LogTrace("Faction byte {Code:X2} is no faction, read as neutral", code);
             }
 
-            return Faction.FromByte(code);
+            return catalog.Factions.Find(code) ?? catalog.NeutralFaction;
         }
 
-        public static byte FactionByte(Faction faction, byte existing) => ByteEnumerations.WriteKeeping(faction, existing, Faction.Neutral);
+        public static byte FactionByte(Faction faction, byte existing) => ReadFaction(existing, faction.Catalog) == faction ? existing : faction.IsNeutral ? Empty : faction.Code;
 
         /// <summary>
         /// Reads a number of a hero, a castle or a tile that is 0xFF when there is none.
@@ -75,23 +75,23 @@
 
         public static byte IdByte(int? id, byte existing) => Id(existing) == id ? existing : id is null ? Empty : (byte)id.Value;
 
-        public static Artifact? ReadArtifact(byte code)
+        public static Artifact? ReadArtifact(byte code, GameCatalog catalog)
         {
             if (code == Empty)
             {
                 return null;
             }
 
-            var artifact = Artifact.FromByte(code);
+            var artifact = catalog.Artifacts.Find(code);
             if (artifact is null)
             {
-                Logger.LogTrace("Artifact code {Code:X2} is unknown, read as the Ultimate Book of Knowledge", code);
+                Logger.LogTrace("Artifact code {Code:X2} is unknown, read as the catalog fallback {Fallback}", code, catalog.FallbackArtifact.Name);
             }
 
-            return artifact ?? Artifact.UltimateBookOfKnowledge;
+            return artifact ?? catalog.FallbackArtifact;
         }
 
-        public static byte ArtifactByte(Artifact? artifact, byte existing) => ReadArtifact(existing) == artifact ? existing : artifact?.Code ?? Empty;
+        public static byte ArtifactByte(Artifact? artifact, byte existing, GameCatalog catalog) => ReadArtifact(existing, catalog) == artifact ? existing : artifact?.Code ?? Empty;
 
         public static SkillLevel ReadSkillLevel(byte code)
         {
@@ -107,9 +107,9 @@
         /// Reads the secondary skills from the table of levels and the table of the order they were learned in: the skills with a level,
         /// the first learned first (the ones with no order after those that have one, by the number of the skill), at most eight.
         /// </summary>
-        public static SecondarySkills SecondarySkills(byte[] levels, byte[] order)
+        public static SecondarySkills SecondarySkills(byte[] levels, byte[] order, GameCatalog catalog)
         {
-            var entries = SecondarySkill.All
+            var entries = catalog.Skills
                 .Where(skill => skill.Code < levels.Length && levels[skill.Code] > 0)
                 .OrderBy(skill => order[skill.Code] == 0 ? int.MaxValue : order[skill.Code])
                 .ThenBy(skill => skill.Code)
@@ -121,9 +121,9 @@
         /// <summary>
         /// Reads the spells the savegame marks, from its flags (the first is the flag of spell number 0, which is none).
         /// </summary>
-        public static SpellSet<Spell> SpellBook(byte[] flags)
+        public static SpellSet<Spell> SpellBook(byte[] flags, GameCatalog catalog)
         {
-            return new SpellSet<Spell>(Spell.All.Where(spell => spell.Code < flags.Length && flags[spell.Code] != 0));
+            return new SpellSet<Spell>(catalog.Spells.Where(spell => spell.Code < flags.Length && flags[spell.Code] != 0));
         }
 
         /// <summary>

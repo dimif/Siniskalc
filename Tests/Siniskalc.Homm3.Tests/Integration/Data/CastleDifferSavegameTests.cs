@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Models;
@@ -36,8 +36,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void EachBuildingBuiltIsOnePendingChangeNamedAfterTheCastle()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartDwarfCottage));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDwarfCottage")));
 
             var changes = this.history.GetPendingChanges();
 
@@ -51,19 +51,19 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void AnAutomaticBuildingIsNotListed()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartDwarfCottage));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartMinersGuild));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgDwarfCottage));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartDwarfCottage")));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartMinersGuild")));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgDwarfCottage")));
 
-            Assert.That(this.still.Current.Buildings, Does.Contain(Building.RampartUpgMinersGuild));
+            Assert.That(this.still.Current.Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgMinersGuild")));
             Assert.That(this.history.GetPendingChanges().Select(c => c.Change.Description), Does.Not.Contain("Upg. Miners' Guild"));
         }
 
         [Test]
         public void ARemovedBuildingIsListedAsBuiltBefore()
         {
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
+            this.still.Update(c => CastleBuilder.Unbuild(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4")));
 
             var change = this.history.GetPendingChanges().Single();
 
@@ -75,8 +75,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void RevertingABuildingPutsTheBytesBack()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
+            this.still.Update(c => CastleBuilder.Unbuild(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4")));
 
             this.history.GetPendingChanges().Single(c => c.Change.Description == "Centaur Stables").Revert(this.history);
 
@@ -92,8 +92,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void RevertingABuildingAlsoRevertsWhatWasBuiltOnTopOfIt()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartUpgCentaurStables));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables")));
 
             this.history.GetPendingChanges().Single(c => c.Change.Description == "Centaur Stables").Revert(this.history);
 
@@ -104,8 +104,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void RevertingARemovedBuildingBringsBackWhatItNeeded()
         {
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild4));
-            this.still.Update(c => CastleBuilder.Unbuild(c, Building.MagesGuild3));
+            this.still.Update(c => CastleBuilder.Unbuild(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4")));
+            this.still.Update(c => CastleBuilder.Unbuild(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild3")));
 
             this.history.GetPendingChanges().Single(c => c.Change.Description == "Mage Guild, level 4").Revert(this.history);
 
@@ -116,7 +116,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ARevertOfAChangeCanBeUndone()
         {
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
             this.history.GetPendingChanges().Single().Revert(this.history);
 
             this.history.Undo();
@@ -162,8 +162,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheChangesOfTwoCastlesAreListedEachWithItsOwnCastle()
         {
             var jotunngard = this.history.CreateCastleSession(this.history.Current.Castles().FindByName("Jotunngard"));
-            this.still.Update(c => CastleBuilder.Build(c, Building.RampartCentaurStables));
-            jotunngard.Update(c => CastleBuilder.Build(c, Building.BulwarkColliery));
+            this.still.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")));
+            jotunngard.Update(c => CastleBuilder.Build(c, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("BulwarkColliery")));
 
             var changes = this.history.GetPendingChanges();
 

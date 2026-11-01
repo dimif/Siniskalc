@@ -1,0 +1,110 @@
+[
+  {
+    "id": "LearningStone",
+    "order": 0,
+    "name": "Learning stones",
+    "objectType": 100,
+    "heroOffset": 79,
+    "toolTip": "Learning stones: experience, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "MarlettoTower",
+    "order": 1,
+    "name": "Marletto towers",
+    "objectType": 23,
+    "heroOffset": 83,
+    "toolTip": "A point of defense, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "GardenOfRevelation",
+    "order": 2,
+    "name": "Revelation gardens",
+    "objectType": 32,
+    "heroOffset": 87,
+    "toolTip": "A point of knowledge, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "MercenaryCamp",
+    "order": 3,
+    "name": "Mercenary camps",
+    "objectType": 51,
+    "heroOffset": 91,
+    "toolTip": "A point of attack, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "StarAxis",
+    "order": 4,
+    "name": "Star axes",
+    "objectType": 61,
+    "heroOffset": 95,
+    "toolTip": "A point of spell power, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "TreeOfKnowledge",
+    "order": 5,
+    "name": "Trees of knowledge",
+    "objectType": 102,
+    "heroOffset": 99,
+    "toolTip": "A level, once per hero, for a payment",
+    "numberMask": 31
+  },
+  {
+    "id": "LibraryOfEnlightenment",
+    "order": 6,
+    "name": "Libraries",
+    "objectType": 41,
+    "heroOffset": 103,
+    "toolTip": "Libraries of enlightenment: two points of every primary skill for a hero of a high level, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "Arena",
+    "order": 7,
+    "name": "Arenas",
+    "objectType": 4,
+    "heroOffset": 107,
+    "toolTip": "A point of attack or defense, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "SchoolOfMagic",
+    "order": 8,
+    "name": "Schools of magic",
+    "objectType": 47,
+    "heroOffset": 111,
+    "toolTip": "A point of spell power or knowledge for a payment, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "SchoolOfWar",
+    "order": 9,
+    "name": "Schools of war",
+    "objectType": 107,
+    "heroOffset": 115,
+    "toolTip": "A point of attack or defense for a payment, once per hero",
+    "numberMask": 255
+  },
+  {
+    "id": "ColossusOfTheMagi",
+    "order": 10,
+    "name": "Colossi",
+    "objectType": null,
+    "heroOffset": 1098,
+    "toolTip": "Colossi of the magi, Horn of the Abyss only: once per hero. The places are not listed: the savegame does not number them apart from the gazebos",
+    "numberMask": 255
+  },
+  {
+    "id": "Gazebo",
+    "order": 11,
+    "name": "Gazebos",
+    "objectType": null,
+    "heroOffset": 1114,
+    "toolTip": "Horn of the Abyss only: two thousand experience points, once per hero. The places are not listed: the savegame does not number them apart from the colossi",
+    "numberMask": 255
+  }
+]

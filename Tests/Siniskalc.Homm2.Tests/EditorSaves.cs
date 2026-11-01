@@ -39,7 +39,7 @@
                 Make("E21SKILL", "Maximus learns eight skills, all at expert", MaximusEightSkills, game =>
                     $"Maximus has eight secondary skills at expert: {SecondaryOf(game, 7)}."),
                 Make("E22BOOK", "Sir Gallant buys a spell book and learns the spells without 'fire' in the name", GallantBook, game =>
-                    $"Sir Gallant has a spell book with {game.History.Current.Heroes().GetModel(1).Spells.Count} spells: all but {string.Join(", ", Spell.All.Where(x => !game.History.Current.Heroes().GetModel(1).Spells.Contains(x)).Select(x => x.Name))}."),
+                    $"Sir Gallant has a spell book with {game.History.Current.Heroes().GetModel(1).Spells.Count} spells: all but {string.Join(", ", TestCatalog.Standard.Spells.Where(x => !game.History.Current.Heroes().GetModel(1).Spells.Contains(x)).Select(x => x.Name))}."),
                 Make("E23LIMIT", "Blue's resources at the limits of the editor", BlueAtTheLimits, game =>
                     $"Blue has {game.History.Current.Players().GetModel(0).Resources.Gold:N0} gold and {Constants.Player.MaxOther:N0} of every other resource. Look at how the screens show them."),
                 Make("E24STACK", "Sir Gallant's army: a stack of 65,535, a neutral creature and a dragon", GallantArmy, game =>
@@ -156,9 +156,9 @@
                 slot.ClearCommand.Execute(null);
             }
 
-            army.SendToSlot(Creature.Peasant, 1, 32_767);
-            army.SendToSlot(Creature.Rogue, 2, 9_999);
-            army.SendToSlot(Creature.BlackDragon, 3, 1);
+            army.SendToSlot(TestCatalog.Standard.Creatures["Peasant"], 1, 32_767);
+            army.SendToSlot(TestCatalog.Standard.Creatures["Rogue"], 2, 9_999);
+            army.SendToSlot(TestCatalog.Standard.Creatures["BlackDragon"], 3, 1);
         }
 
         private static void ChangeXabranGuild(Game game)
@@ -175,10 +175,10 @@
             var artifacts = Hero(game, 7).ArtifactsEditor;
             foreach (var artifact in new[]
             {
-                Artifact.UltimateSwordOfDominion, Artifact.UltimateCloakOfProtection, Artifact.UltimateWandOfMagic, Artifact.UltimateBookOfKnowledge,
-                Artifact.UltimateShield, Artifact.UltimateStaff, Artifact.UltimateCrown, Artifact.ThunderMaceOfDominion,
-                Artifact.ArmoredGauntletsOfProtection, Artifact.DragonSwordOfDominion, Artifact.PowerAxeOfDominion, Artifact.DivineBreastplateOfProtection,
-                Artifact.ArcaneNecklaceOfMagic, Artifact.MagesRingOfPower,
+                TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"], TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"], TestCatalog.Standard.Artifacts["UltimateWandOfMagic"], TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"],
+                TestCatalog.Standard.Artifacts["UltimateShield"], TestCatalog.Standard.Artifacts["UltimateStaff"], TestCatalog.Standard.Artifacts["UltimateCrown"], TestCatalog.Standard.Artifacts["ThunderMaceOfDominion"],
+                TestCatalog.Standard.Artifacts["ArmoredGauntletsOfProtection"], TestCatalog.Standard.Artifacts["DragonSwordOfDominion"], TestCatalog.Standard.Artifacts["PowerAxeOfDominion"], TestCatalog.Standard.Artifacts["DivineBreastplateOfProtection"],
+                TestCatalog.Standard.Artifacts["ArcaneNecklaceOfMagic"], TestCatalog.Standard.Artifacts["MagesRingOfPower"],
             })
             {
                 if (artifacts.Slots.Any(s => !s.HasArtifact))
@@ -191,8 +191,8 @@
         private static void EquipAndTakeOff(Game game)
         {
             var artifacts = Hero(game, 7).ArtifactsEditor;
-            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == Artifact.UltimateCloakOfProtection));
-            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == Artifact.UltimateSwordOfDominion));
+            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"]));
+            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]));
             artifacts.Slots.Single(s => s.ArtifactName == "Ultimate Sword of Dominion").ClearCommand.Execute(null);
         }
 
@@ -240,10 +240,10 @@
                 slot.ClearCommand.Execute(null);
             }
 
-            army.SendToSlot(Creature.Peasant, 1, 65_535);
+            army.SendToSlot(TestCatalog.Standard.Creatures["Peasant"], 1, 65_535);
             army.Finder.AddAmount = 500;
             army.Finder.Choose(army.Finder.Items.Cast<CreatureChoiceViewModel>().Single(c => c.Name == "Rogue"));
-            army.SendToSlot(Creature.BlackDragon, 3, 1);
+            army.SendToSlot(TestCatalog.Standard.Creatures["BlackDragon"], 3, 1);
         }
 
         private static void GallantStats(Game game)

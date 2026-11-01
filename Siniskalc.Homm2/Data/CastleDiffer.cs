@@ -14,12 +14,15 @@
     /// </summary>
     public sealed class CastleDiffer : IDiffer<CastleModel>
     {
+        private readonly GameCatalog catalog;
+
         private readonly IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges;
 
         /// <param name="pendingChanges">Makes the pending changes of what the differ finds.</param>
-        public CastleDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges)
+        public CastleDiffer(IPendingChangesFactory<HeroModel, PlayerModel, CastleModel, ObeliskVisits<PlayerColor>> pendingChanges, GameCatalog catalog)
         {
             this.pendingChanges = pendingChanges;
+            this.catalog = catalog;
         }
 
         /// <inheritdoc/>
@@ -37,7 +40,8 @@
                 if (had != has)
                 {
                     var which = building;
-                    changes.Add(ChangeAreas.Buildings, which.ToString(), had ? "built" : "not built", has ? "built" : "not built", c => c with { Town = had ? c.Town | which : c.Town & ~which });
+                    var name = this.catalog.Buildings.SingleOrDefault(b => b.Flag == which)?.NameFor(current.Faction) ?? which.ToString();
+                    changes.Add(ChangeAreas.Buildings, name, had ? "built" : "not built", has ? "built" : "not built", c => c with { Town = had ? c.Town | which : c.Town & ~which });
                 }
             }
 
@@ -63,7 +67,7 @@
                 if (before != after)
                 {
                     var level = (slot / Constants.Castle.MageGuildSlotsPerLevel) + 1;
-                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { MageGuildSpells = c.MageGuildSpells.With(index, before) });
+                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", this.SpellText(before), this.SpellText(after), c => c with { MageGuildSpells = c.MageGuildSpells.With(index, before) });
                 }
             }
 
@@ -77,6 +81,6 @@
         private static string MageGuildText(CastleModel castle) =>
             castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.MageGuildSpellCounts)}";
 
-        private static string SpellText(int number) => number == 0 ? "none" : Spell.NameOf((byte)number);
+        private string SpellText(int number) => number == 0 ? "none" : this.catalog.Spells.Find((byte)number)?.Name ?? $"Unknown spell {number}";
     }
 }

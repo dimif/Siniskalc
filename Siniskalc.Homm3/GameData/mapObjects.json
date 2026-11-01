@@ -1,0 +1,120 @@
+{
+  "merchantName": "Black market",
+  "dwellingName": "dwelling",
+  "mines": [
+    {
+      "kind": "sawmill",
+      "name": "Sawmill",
+      "resource": "wood",
+      "dailyAmount": 2,
+      "fallback": false
+    },
+    {
+      "kind": "alchemistLab",
+      "name": "Alchemist's lab",
+      "resource": "mercury",
+      "dailyAmount": 1,
+      "fallback": false
+    },
+    {
+      "kind": "oreMine",
+      "name": "Ore mine",
+      "resource": "ore",
+      "dailyAmount": 2,
+      "fallback": false
+    },
+    {
+      "kind": "sulfurMine",
+      "name": "Sulfur mine",
+      "resource": "sulfur",
+      "dailyAmount": 1,
+      "fallback": false
+    },
+    {
+      "kind": "crystalMine",
+      "name": "Crystal mine",
+      "resource": "crystal",
+      "dailyAmount": 1,
+      "fallback": false
+    },
+    {
+      "kind": "gemMine",
+      "name": "Gem mine",
+      "resource": "gems",
+      "dailyAmount": 1,
+      "fallback": false
+    },
+    {
+      "kind": "goldMine",
+      "name": "Gold mine",
+      "resource": "gold",
+      "dailyAmount": 1000,
+      "fallback": true
+    }
+  ],
+  "visitEffects": [
+    {
+      "effect": "wateringHole",
+      "order": 0,
+      "name": "Watering hole",
+      "description": "+1 morale until the next battle",
+      "morale": 1,
+      "luck": 0,
+      "editable": true
+    },
+    {
+      "effect": "swanPond",
+      "order": 1,
+      "name": "Swan pond",
+      "description": "+2 luck until the next battle",
+      "morale": 0,
+      "luck": 2,
+      "editable": true
+    },
+    {
+      "effect": "crypt",
+      "order": 2,
+      "name": "Crypt",
+      "description": "-1 morale until the next battle",
+      "morale": -1,
+      "luck": 0,
+      "editable": true
+    },
+    {
+      "effect": "stables",
+      "order": 3,
+      "name": "Stables",
+      "description": "More movement points until the end of the week",
+      "morale": 0,
+      "luck": 0,
+      "editable": true
+    },
+    {
+      "effect": "faerieRing",
+      "order": 4,
+      "name": "Faerie ring",
+      "description": "+1 luck until the next battle",
+      "morale": 0,
+      "luck": 0,
+      "editable": false
+    },
+    {
+      "effect": "fountainOfFortune",
+      "order": 5,
+      "name": "Fountain of fortune",
+      "description": "A luck that the game draws, until the next battle",
+      "morale": 0,
+      "luck": 0,
+      "editable": false
+    },
+    {
+      "effect": "idolOfFortune",
+      "order": 6,
+      "name": "Idol of fortune",
+      "description": "+1 morale or +1 luck, depending on the day",
+      "morale": 0,
+      "luck": 0,
+      "editable": false
+    }
+  ]
+}

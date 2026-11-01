@@ -26,7 +26,7 @@
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));
             Assert.That(xabran.Index, Is.EqualTo(Xabran));
             Assert.That(xabran.Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(xabran.Faction, Is.EqualTo(Faction.Knight));
+            Assert.That(xabran.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Knight"]));
             Assert.That(xabran.Position, Is.EqualTo(new MapPosition(28, 25)));
             Assert.That(xabran.ShipyardPosition, Is.Null);
             Assert.That(xabran.HasCastle, Is.True);
@@ -62,8 +62,8 @@
             Assert.That(two.MageGuildLevel, Is.EqualTo(2));
             Assert.That(two.Dwellings.HasFlag(Dwellings.MageGuild1), Is.False);
             Assert.That(two.MageGuildSpellCounts.Take(3), Is.EqualTo(new[] { 3, 3, 0 }));
-            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(1, slot)), Is.EqualTo(new[] { Spell.MagicArrow, Spell.ViewResources, Spell.Cure }));
-            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(2, slot)), Is.EqualTo(new[] { Spell.DisruptingRay, Spell.ViewArtifacts, Spell.Steelskin }));
+            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(1, slot)), Is.EqualTo(new[] { TestCatalog.Standard.Spells["MagicArrow"], TestCatalog.Standard.Spells["ViewResources"], TestCatalog.Standard.Spells["Cure"] }));
+            Assert.That(Enumerable.Range(0, 3).Select(slot => two.MageGuildSpell(2, slot)), Is.EqualTo(new[] { TestCatalog.Standard.Spells["DisruptingRay"], TestCatalog.Standard.Spells["ViewArtifacts"], TestCatalog.Standard.Spells["Steelskin"] }));
         }
 
         [Test]
@@ -84,7 +84,7 @@
             var captured = Castle(14, Corackston);
 
             Assert.That(neutral.Owner, Is.EqualTo(PlayerColor.Neutral));
-            Assert.That(neutral.Faction, Is.EqualTo(Faction.Wizard));
+            Assert.That(neutral.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Wizard"]));
             Assert.That(neutral.Garrison.Slots.Count(s => s != null), Is.EqualTo(3));
             Assert.That(captured.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That(captured.Garrison.Slots, Is.All.Null);
@@ -109,7 +109,7 @@
             var shipyard = Castle(20, Whiteshield);
             var tower = Castle(24, Whiteshield);
 
-            Assert.That(shipyard.Faction, Is.EqualTo(Faction.Warlock));
+            Assert.That(shipyard.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Warlock"]));
             Assert.That(shipyard.Town.HasFlag(TownBuildings.Shipyard), Is.True);
             Assert.That(shipyard.ShipyardPosition, Is.EqualTo(new MapPosition(62, 10)));
             Assert.That(Castle(19, Whiteshield).Town.HasFlag(TownBuildings.Shipyard), Is.False);

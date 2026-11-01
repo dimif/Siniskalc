@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "None",
+      "name": "None",
+      "code": 0,
+      "order": 0,
+      "hidden": true
+    },
+    {
+      "id": "Mind",
+      "name": "Mind",
+      "code": 1,
+      "order": 1,
+      "hidden": false
+    },
+    {
+      "id": "Elemental",
+      "name": "Elemental",
+      "code": 2,
+      "order": 2,
+      "hidden": false
+    }
+  ],
+  "replacements": []
+}

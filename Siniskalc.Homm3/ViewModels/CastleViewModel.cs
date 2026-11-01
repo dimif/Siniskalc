@@ -43,7 +43,7 @@
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
             // the place of the castle's: the editor shows that army and cannot change anything.
             this.GarrisonEditor = new ArmyViewModel(
-                session.GameVersion,
+                this.Castle.Faction.Catalog,
                 () => this.GarrisonedHeroModel?.Army ?? this.Castle.Garrison,
                 edit => this.Edit(castle => castle.WithGarrison(edit(castle.Garrison))),
                 () => this.HasGarrisonedHero);
@@ -57,7 +57,7 @@
         /// <summary>
         /// Gets the name of the faction, or "Unknown faction".
         /// </summary>
-        public string FactionText => this.Castle.Faction == Faction.Neutral ? "Unknown faction" : this.Castle.Faction.Name;
+        public string FactionText => this.Castle.Faction.IsNeutral ? "Unknown faction" : this.Castle.Faction.Name;
 
         /// <summary>
         /// Gets a line such as "Mage Guild level 4 · built this turn".
@@ -239,7 +239,7 @@
 
             // The upgraded horde buildings (bits 19 and 25) are no buildings of the game: it sets the bits by itself when a growth building and the
             // upgrade of its dwelling both exist, and the growth building works on both dwellings. They are not listed or counted.
-            IReadOnlyList<Building> available = this.Castle.Faction == Faction.Neutral ? [] : Building.ForFaction(this.Castle.Faction).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
+            IReadOnlyList<Building> available = this.Castle.Faction.IsNeutral ? [] : Building.ForFaction(this.Castle.Faction).Where(b => !CastleBuilder.IsAutomatic(b)).ToList();
             BuildingGroupViewModel Group(string title, Func<Building, bool> filter) => new(
                 title,
                 available.Where(filter).Select(this.CreateBuildingRow(available)).ToList());
@@ -348,7 +348,7 @@
 
         private List<MageGuildSpellSlotViewModel> CreateSpellSlots(int level)
         {
-            var choices = Spell.All.Where(s => s.Level == level && s.CanBeInMageGuild).OrderBy(s => s.Name).ToList();
+            var choices = this.Castle.Faction.Catalog.Spells.All.Where(s => s.Level == level && s.CanBeInMageGuild).OrderBy(s => s.Name).ToList();
             return Enumerable.Range(0, this.Castle.MageGuildSpells[level - 1].Count)
                 .Select(slot => new MageGuildSpellSlotViewModel(
                     () => this.Castle.MageGuildSpells[level - 1][slot],

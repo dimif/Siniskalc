@@ -17,8 +17,8 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
 
-        public SpellsViewModel(GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
-            : base(learned => CreateRows(gameVersion, learned))
+        public SpellsViewModel(GameCatalog catalog, GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
+            : base(learned => CreateRows(catalog, gameVersion, learned))
         {
             this.getHero = getHero;
             this.update = update;
@@ -52,7 +52,7 @@ namespace Siniskalc.Homm2.ViewModels
             this.update(hero => hero with { Spells = spells.Aggregate(hero.Spells, (book, spell) => learned ? book.With(spell) : book.Without(spell)) });
         }
 
-        private static IReadOnlyList<SpellRowViewModel> CreateRows(GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => Spell.All
+        private static IReadOnlyList<SpellRowViewModel> CreateRows(GameCatalog catalog, GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => catalog.Spells
             .Where(s => s.IsAvailableIn(gameVersion))
             .OrderBy(s => s.Name)
             .Select(s => new SpellRowViewModel(s, learned))

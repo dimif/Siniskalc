@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -14,12 +14,12 @@ namespace Siniskalc.Homm3.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class SafeMineSerializerTests
     {
-        private readonly SafeMineSerializer serializer = new();
+        private readonly SafeMineSerializer serializer = new(new CreatureCodes(TestCatalog.For(GameVersion.HornOfTheAbyss)));
 
         private static RecordChunk Blank() => new("Mine", new byte[MineLayout.RecordSize], 0, 0);
 
         private static MineModel Mine(PlayerColor? owner = null, IArmy<Creature>? guard = null) =>
-            new(0, MineKind.GoldMine, owner ?? PlayerColor.Neutral, new MapPosition(1, 2), guard ?? new Army<Creature>(Constants.CreatureSlotCount));
+            new(0, MineKind.GoldMine, owner ?? PlayerColor.Neutral, new MapPosition(1, 2), guard ?? new Army<Creature>(Constants.CreatureSlotCount), TestCatalog.Hota);
 
         private RecordChunk Write(RecordChunk chunk, MineModel mine) => this.serializer.Serialize(chunk, mine);
 
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheGuardIsWrittenAsLittleEndianTypeAndCountIntegersInTheirOwnTables()
         {
-            var guard = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3);
+            var guard = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 1234).WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 3);
 
             var written = this.Write(Blank(), Mine(guard: guard));
 
@@ -60,7 +60,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void AnEmptiedSlotGoesBackToTheEmptyMark()
         {
-            var filled = this.Write(Blank(), Mine(guard: new Army<Creature>(Constants.CreatureSlotCount).WithSlot(2, Creature.Angel, 5)));
+            var filled = this.Write(Blank(), Mine(guard: new Army<Creature>(Constants.CreatureSlotCount).WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 5)));
 
             var emptied = this.Write(filled, Mine());
 
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var before = this.Write(Blank(), Mine());
 
-            var after = this.Write(before, Mine(PlayerColor.Teal, new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Centaur, 7)));
+            var after = this.Write(before, Mine(PlayerColor.Teal, new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 7)));
 
             var inFirstSlot = Enumerable.Range(MineLayout.Guard.TypeOffset, 4).Concat(Enumerable.Range(MineLayout.Guard.CountOffset, 4)).Append(MineLayout.Owner);
             var changed = ByteDiff.Of(before.ToArray(), after.ToArray()).Select(d => d.Offset).ToList();

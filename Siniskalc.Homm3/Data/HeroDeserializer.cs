@@ -57,7 +57,13 @@
                 this.DeserializePlaceVisits(chunk));
         }
 
-        public PlaceVisits DeserializePlaceVisits(HeroChunk chunk) => new(VisitedPlaceKind.All.Select(kind => this.HasPlaces(chunk, kind) ? chunk.GetUInt32At(kind.HeroOffset) : 0u));
+        public PlaceVisits DeserializePlaceVisits(HeroChunk chunk)
+        {
+            var masks = new uint[Constants.Catalog.PlaceCapacity];
+            foreach (var kind in this.entities.Catalog.VisitedPlaces.All)
+                masks[kind.Index] = this.HasPlaces(chunk, kind) ? chunk.GetUInt32At(VisitedPlaceOffsets.For(kind.Slot)) : 0u;
+            return new PlaceVisits(masks);
+        }
 
         public int DeserializeMoraleBonus(HeroChunk chunk) => (sbyte)chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MoraleBonus]);
 
@@ -107,7 +113,7 @@
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
-        public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, CreatureCodes.Instance);
+        public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, this.entities.CreatureCodes);
 
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {
@@ -171,12 +177,12 @@
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
             var code = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Class]);
-            if (HeroClass.FromCode<HeroClass>(code) is null)
+            if (this.entities.Catalog.HeroClasses.Find(code) is null)
             {
                 Logger.LogTrace("Class byte {Code:X2} read as Knight and kept until the class is changed", code);
             }
 
-            return HeroClass.FromByte(code);
+            return this.entities.Catalog.HeroClasses.Find(code) ?? this.entities.Catalog.FallbackHeroClass;
         }
 
         public HeroLevel DeserializeLevel(HeroChunk chunk)
@@ -244,10 +250,10 @@
                     continue;
                 }
 
-                if (id <= byte.MaxValue && Artifact.CarriedInBackpack.TryGetValue((byte)id, out var artifact))
+                if (id <= byte.MaxValue && this.entities.Catalog.Artifacts.Find((byte)id) is { CanBeInBackpack: true } artifact)
                 {
                     var spellId = chunk.GetUInt32At(offset + 4);
-                    var spell = artifact == Artifact.SpellScroll && spellId <= byte.MaxValue ? Spell.FromCode<Spell>((byte)spellId) : null;
+                    var spell = artifact.IsScroll && spellId <= byte.MaxValue ? this.entities.Catalog.Spells.Find((byte)spellId) : null;
                     artifacts[i] = new BackpackSlot(i, artifact, spell);
                 }
                 else
@@ -273,13 +279,13 @@
                     continue;
                 }
 
-                if (Artifact.All.TryGetValue(code, out var artifact))
+                if (this.entities.Catalog.Artifacts.Find(code) is { Wearable: true } artifact)
                 {
                     slotsToArtifacts[slot] = artifact;
 
                     // Like a backpack slot, a worn scroll keeps its spell id in the 4 bytes after the artifact id.
                     var spellId = chunk.GetUInt32At(offset + 4);
-                    if (artifact == Artifact.SpellScroll && spellId <= byte.MaxValue && Spell.FromCode<Spell>((byte)spellId) is { } spell)
+                    if (artifact.IsScroll && spellId <= byte.MaxValue && this.entities.Catalog.Spells.Find((byte)spellId) is { } spell)
                     {
                         scrollSpells[slot] = spell;
                     }
@@ -341,6 +347,6 @@
         }
 
         private bool HasPlaces(HeroChunk chunk, VisitedPlaceKind kind) =>
-            kind.HeroOffset + sizeof(uint) <= chunk.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss);
+            VisitedPlaceOffsets.For(kind.Slot) + sizeof(uint) <= chunk.Length && (!kind.IsHotaOnly || this.heroOffsets.GameVersion == GameVersion.HornOfTheAbyss);
     }
 }

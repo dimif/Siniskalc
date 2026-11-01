@@ -30,14 +30,14 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Gets the slots, <c>null</c> for an empty one.
         /// </summary>
-        public IReadOnlyList<Artifact?> Slots => this.slots;
+        public IReadOnlyList<Artifact?> Slots => Array.AsReadOnly(this.slots);
 
         /// <summary>
         /// Gets what the artifacts together add to the primary skills of the hero.
         /// </summary>
         public PrimarySkillBonus TotalBonus => this.slots.Where(s => s != null).Aggregate(PrimarySkillBonus.None, (sum, a) => sum + a!.PrimarySkillBonus);
 
-        public bool HasMagicBook => this.slots.Contains(Artifact.MagicBook);
+        public bool HasMagicBook => this.slots.Any(a => a?.IsSpellBook == true);
 
         public bool IsFull => this.slots.All(s => s != null);
 

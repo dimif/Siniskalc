@@ -1,15 +1,15 @@
-﻿namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Homm3.Entities;
+
+using Siniskalc.Homm3.Data;
+
+public sealed class SpellSchool : CatalogEntity
 {
-    public enum SpellSchool
+    internal SpellSchool(EntityCatalog catalog, SchoolDefinition definition) : base(catalog, definition)
     {
-        Water,
-
-        Earth,
-
-        Fire,
-
-        Wind,
-
-        All,
+        this.Description = definition.Description;
+        this.Universal = definition.Universal;
     }
+
+    public string Description { get; }
+    public bool Universal { get; }
 }

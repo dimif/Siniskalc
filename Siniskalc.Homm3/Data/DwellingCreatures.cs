@@ -12,7 +12,7 @@
         /// <summary>
         /// Returns the creature that <paramref name="building"/> recruits, or null when it is not a dwelling.
         /// </summary>
-        public static Creature? Of(Building building) => Creature.All.FirstOrDefault(c => building.Equals(c.Dwelling));
+        public static Creature? Of(Building building) => building.Catalog.Creatures.All.FirstOrDefault(c => building.Equals(c.Dwelling));
 
         /// <summary>
         /// Returns the creature of <paramref name="faction"/> at the zero-based creature <paramref name="level"/>, or null if it has none.

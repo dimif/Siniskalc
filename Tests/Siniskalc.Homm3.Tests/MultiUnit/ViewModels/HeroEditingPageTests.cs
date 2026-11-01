@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void StartWithPikemenAndArchers()
         {
             var christian = HeroModels.Christian();
-            this.session = new FakeHeroSession(christian with { Army = christian.Army.WithSlot(1, Creature.Archer, 5) });
+            this.session = new FakeHeroSession(christian with { Army = christian.Army.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5) });
             this.page = HeroPages.Create(this.session);
         }
 
@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             Assert.That(slots[0].SelectedCreature, Is.EqualTo("Archer"));
             Assert.That(slots[1].SelectedCreature, Is.EqualTo("Pikeman"));
             Assert.That(slots[1].CreatureAmount, Is.EqualTo(10));
-            Assert.That(this.session.Current.Army.Slots[1]!.Creature, Is.EqualTo(Creature.Pikeman));
+            Assert.That(this.session.Current.Army.Slots[1]!.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman")));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 
             slots[5].CreatureAmount = 40;
 
-            Assert.That(this.session.Current.Army.Slots[5], Is.EqualTo(new ArmySlot<Creature>(Creature.Angel, 40)));
+            Assert.That(this.session.Current.Army.Slots[5], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 40)));
         }
 
         [Test]
@@ -121,8 +121,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 
             Assert.That(this.session.Current.PrimarySkills.Attack, Is.EqualTo((byte)42));
             Assert.That(this.session.Current.SpellPoints, Is.EqualTo(99));
-            Assert.That(this.session.Current.WarMachines, Does.Contain(WarMachine.AmmoCart));
-            Assert.That(this.General.WarMachinesChecked[3], Is.True);
+            Assert.That(this.session.Current.WarMachines, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart")));
+            Assert.That(this.General.WarMachineChoices.Single(c => c.Name == "Ammo Cart").IsChecked, Is.True);
             Assert.That(this.session.IsDirty, Is.True);
         }
 
@@ -132,10 +132,10 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             this.General.UpdateWarMachine("Ballista", true);
             this.General.UpdateWarMachine("Cannon", true);
 
-            Assert.That(this.session.Current.WarMachines, Does.Contain(WarMachine.Cannon));
-            Assert.That(this.session.Current.WarMachines, Does.Not.Contain(WarMachine.Ballista));
-            Assert.That(this.General.WarMachinesChecked[0], Is.False);
-            Assert.That(this.General.WarMachinesChecked[2], Is.True);
+            Assert.That(this.session.Current.WarMachines, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Cannon")));
+            Assert.That(this.session.Current.WarMachines, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista")));
+            Assert.That(this.General.WarMachineChoices.Single(c => c.Name == "Ballista").IsChecked, Is.False);
+            Assert.That(this.General.WarMachineChoices.Single(c => c.Name == "Cannon").IsChecked, Is.True);
         }
 
         [Test]
@@ -145,8 +145,8 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 
             this.General.UpdateWarMachine("Ammo_Cart", false);
 
-            Assert.That(this.session.Current.WarMachines, Does.Not.Contain(WarMachine.AmmoCart));
-            Assert.That(this.General.WarMachinesChecked[3], Is.False);
+            Assert.That(this.session.Current.WarMachines, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart")));
+            Assert.That(this.General.WarMachineChoices.Single(c => c.Name == "Ammo Cart").IsChecked, Is.False);
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             this.General.SelectAllWarMachinesCommand.Execute(null);
 
-            Assert.That(this.session.Current.WarMachines, Is.EquivalentTo(new[] { WarMachine.Ballista, WarMachine.AmmoCart, WarMachine.FirstAidTent }));
+            Assert.That(this.session.Current.WarMachines, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent") }));
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             using var other = HeroPages.Create(this.session = new FakeHeroSession(HeroModels.Christian()) { GameVersion = version });
             var knowledge = (int)this.session.Current.PrimarySkills.Knowledge;
 
-            this.session.Update(h => h with { SecondarySkills = h.SecondarySkills.WithSkill(SecondarySkill.Intelligence, SkillLevel.Of((byte)level)) });
+            this.session.Update(h => h with { SecondarySkills = h.SecondarySkills.WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Intelligence"), SkillLevel.Of((byte)level)) });
 
             Assert.That(other.GeneralInfoViewModel.MovementAndSpellPoints.MostSpellPoints, Is.EqualTo(knowledge * 10 * (100 + percent) / 100));
         }

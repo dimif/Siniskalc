@@ -15,9 +15,9 @@
     {
         private const int MinStackSize = 1;
 
-        public ArmyViewModel(GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
+        public ArmyViewModel(GameCatalog catalog, GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
             : base(
-                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
+                catalog.Creatures.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
                 c => c.Info,
                 Constants.ArmySlotCount,
                 MinStackSize,

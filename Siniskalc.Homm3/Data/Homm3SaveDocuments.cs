@@ -76,6 +76,8 @@
         /// </summary>
         public static GameVersion GameVersion(this SaveDocument document) => document.Heroes().Offsets.GameVersion;
 
+        public static EntityCatalog Catalog(this SaveDocument document) => document.Heroes().Catalog;
+
         public static SaveDocument WithHero(this SaveDocument document, int index, HeroChunk chunk) => document.WithChunk(Homm3ChunkKinds.Hero, index, chunk);
 
         public static SaveDocument WithPlayer(this SaveDocument document, int index, PlayerChunk chunk) => document.WithChunk(Homm3ChunkKinds.Player, index, chunk);

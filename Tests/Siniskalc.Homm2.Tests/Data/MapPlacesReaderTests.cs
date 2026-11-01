@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class MapPlacesReaderTests
     {
-        private readonly MapPlacesReader reader = new();
+        private readonly MapPlacesReader reader = new(TestCatalog.Catalogs);
 
         [Test]
         public void ASavegameWithNoTableOfTilesHasNoPlaces()

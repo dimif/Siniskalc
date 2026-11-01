@@ -42,27 +42,27 @@
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo);
             this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
-                this.GameVersion,
+                this.HeroModel.HeroClass.Catalog,
                 () => this.HeroModel.SecondarySkills,
                 edit => this.Update(h => h with { SecondarySkills = edit(h.SecondarySkills) }));
             this.SpellsViewModel = new SpellsViewModel(
-                this.GameVersion,
+                this.HeroModel.HeroClass.Catalog,
                 () => this.HeroModel.SpellBook,
                 edit => this.Update(h => h with { SpellBook = edit(h.SpellBook) }));
             this.ArmyViewModel = new ArmyViewModel(
-                this.GameVersion,
+                this.HeroModel.HeroClass.Catalog,
                 () => this.HeroModel.Army,
                 edit => this.Update(h => h with { Army = edit(h.Army) }));
             this.BackpackViewModel = new BackpackViewModel(
                 effectLines,
                 this.HeroModel.Backpack,
-                backpack => this.Update(h => h with { Backpack = backpack }),
-                this.GameVersion);
+                this.HeroModel.HeroClass.Catalog,
+                backpack => this.Update(h => h with { Backpack = backpack }));
             this.ArtifactsViewModel = new EquippedArtifactsViewModel(
                 effectLines,
                 this.HeroModel.EquippedArtifacts,
+                this.HeroModel.HeroClass.Catalog,
                 artifacts => this.Update(h => h.WithEquippedArtifacts(artifacts)),
-                this.GameVersion,
                 artifact => this.BackpackViewModel.Add(artifact),
                 () => this.BackpackViewModel.HasFreeSlot);
 
@@ -358,7 +358,7 @@
                 .Select(c => new MapDestination(c.Name, "Castle", c.Position, MapLevelText.Place(c.Position, hasLevels), c.VisitingHeroId is { } visiting && visiting != hero.Id, c.Faction?.Name ?? string.Empty));
             var mineDestinations = document.Mines().GetModels()
                 .Where(m => m.Owner == hero.Owner)
-                .Select(m => new MapDestination(MineKinds.NameOf(m.Kind), "Mine", m.Position, MapLevelText.Place(m.Position, hasLevels), HeroStandsOn(m.Position), IsApproximate: true));
+                .Select(m => new MapDestination(m.Catalog.MapMetadata.Mine(m.Kind).Name, "Mine", m.Position, MapLevelText.Place(m.Position, hasLevels), HeroStandsOn(m.Position), IsApproximate: true));
             var dwellingDestinations = document.Dwellings().GetModels()
                 .Where(d => d.Owner == hero.Owner)
                 .Select(d => new MapDestination($"{d.Creature?.Name ?? $"Creature {d.CreatureCode}"} dwelling", "Dwelling", d.Position, MapLevelText.Place(d.Position, hasLevels), HeroStandsOn(d.Position)));

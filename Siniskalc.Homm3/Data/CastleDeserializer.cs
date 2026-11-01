@@ -16,6 +16,14 @@
     public sealed class CastleDeserializer : ICastleDeserializer
     {
         private static readonly ILogger<CastleDeserializer> Logger = LogFactory.For<CastleDeserializer>();
+        private readonly EntityCatalog catalog;
+        private readonly CreatureCodes creatureCodes;
+
+        public CastleDeserializer(EntityCatalog catalog)
+        {
+            this.catalog = catalog;
+            this.creatureCodes = new CreatureCodes(catalog);
+        }
 
         public CastleModel Deserialize(CastleChunk chunk)
         {
@@ -37,12 +45,12 @@
                 DeserializeBuildings(chunk, faction, CastleLayout.VisibleBuildingsFromNameEnd),
                 chunk.GetByteAt(CastleLayout.BuiltThisTurn) != 0,
                 DeserializeSpellCounts(chunk),
-                DeserializeMageGuildSpells(chunk));
+                this.DeserializeMageGuildSpells(chunk));
         }
 
         public Faction DeserializeFaction(CastleChunk chunk)
         {
-            return Faction.FromByte(chunk.GetByteAt(CastleLayout.Faction));
+            return this.catalog.Factions.Find(chunk.GetByteAt(CastleLayout.Faction)) ?? this.catalog.NeutralFaction;
         }
 
         public PlayerColor DeserializeOwner(CastleChunk chunk)
@@ -75,7 +83,7 @@
         public IArmy<Creature> DeserializeGarrison(CastleChunk chunk)
         {
             using var subject = Logger.BeginSubject("Castle", chunk.Name);
-            return ArmyReader.Read(chunk, CastleLayout.Garrison, CreatureCodes.Instance);
+            return ArmyReader.Read(chunk, CastleLayout.Garrison, this.creatureCodes);
         }
 
         /// <summary>
@@ -117,7 +125,7 @@
         /// (-1 for a level the faction cannot build, or a code that is no spell) is left out, and a chunk that ends before the lists
         /// (a savefile cut short) has none.
         /// </summary>
-        private static IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
+        private IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
         {
             using var subject = Logger.BeginSubject("Castle", chunk.Name);
             var levels = new IReadOnlyList<Spell>[CastleLayout.SpellLevelCount];
@@ -128,7 +136,7 @@
                 {
                     var offset = MageGuildSpellSlots.Offset(chunk, level, slot);
                     var code = offset < 0 ? -1 : chunk.GetInt32At(offset);
-                    var spell = code is >= 0 and <= byte.MaxValue ? AbstractEnumeration.FromCode<Spell>((byte)code) : null;
+                    var spell = code is >= 0 and <= byte.MaxValue ? this.catalog.Spells.Find((byte)code) : null;
                     if (spell != null)
                     {
                         spells.Add(spell);
@@ -151,7 +159,7 @@
             var counts = new int[CastleLayout.CreatureLevelCount];
             for (var level = 0; level < counts.Length; level++)
             {
-                var upgrade = faction == Faction.Neutral ? null : Building.FromDwellingLevel(faction, level, upgraded: true);
+                var upgrade = faction.IsNeutral ? null : Building.FromDwellingLevel(faction, level, upgraded: true);
                 var from = upgrade != null && built.Contains(upgrade) ? CastleLayout.UpgradedCreaturesAvailableFromNameEnd : CastleLayout.CreaturesAvailableFromNameEnd;
                 counts[level] = chunk.GetUInt16At(chunk.NameEnd + from + (level * 2));
             }
@@ -164,7 +172,7 @@
             var mask = chunk.GetUInt64At(chunk.NameEnd + offsetFromNameEnd);
             var buildings = new HashSet<Building>();
 
-            if (faction == Faction.Neutral)
+            if (faction.IsNeutral)
             {
                 return buildings;
             }

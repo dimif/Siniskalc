@@ -1,0 +1,7 @@
+Knight|Knight|0
+Barbarian|Barbarian|1
+Sorceress|Sorceress|2
+Warlock|Warlock|3
+Wizard|Wizard|4
+Necromancer|Necromancer|5
+Neutral|Neutral|99

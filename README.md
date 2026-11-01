@@ -79,6 +79,18 @@ Edits go through an *edit session* that records pending changes against the orig
 
 See `CLAUDE.md` for the repo rules and `docs/SINISKALC_ARCHITECTURE.md` for how the view models, models and edit sessions fit together.
 
+### Game entity definitions
+
+Standard game entities are supplied as JSON in `GameData\Homm2` and `GameData\Homm3` beside the application.
+Keep these folders with the executable when distributing or moving it.
+Definitions are loaded once at startup: after editing them, **restart the editor** to apply changes.
+Missing or invalid definitions stop startup with an error identifying the file; restore or correct it rather than expecting a hardcoded fallback.
+
+Entity definitions can add content using the editor's existing mechanics and the selected save format's available codes and storage.
+They cannot add new binary formats, enlarge fixed savefile tables or implement new game mechanics.
+There are no custom profiles or live reload.
+See [Standard game definitions](docs/SINISKALC_ARCHITECTURE.md#standard-game-definitions) for the architecture and boundaries.
+
 ## Building
 
 Requires the .NET 8 SDK on Windows.

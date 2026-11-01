@@ -18,10 +18,12 @@ namespace Siniskalc.Homm2.ViewModels
         private static readonly Resource[] ResourceOrder = [Resource.Gold, Resource.Wood, Resource.Ore, Resource.Mercury, Resource.Sulfur, Resource.Crystal, Resource.Gems];
 
         private readonly IEditSession<SphinxModel> session;
+        private readonly GameCatalog catalog;
 
-        public SphinxViewModel(IEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
+        public SphinxViewModel(GameCatalog catalog, IEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
         {
             this.session = session;
+            this.catalog = catalog;
             this.SolvedToggle = new ToggleRowViewModel(
                 "Solved",
                 () => !this.session.Current.IsActive,
@@ -30,8 +32,8 @@ namespace Siniskalc.Homm2.ViewModels
             this.Reward = ResourceOrder.Select(this.CreateRewardRow).ToList();
             this.ArtifactPicker = new ArtifactPickerViewModel(
                 "Artifact",
-                onPick => new ArtifactFinderViewModel(version, string.Empty, "Choose", artifact => onPick(artifact.Name)),
-                name => this.session.Update(sphinx => sphinx with { ArtifactCode = name == null ? SphinxModel.NoArtifact : Artifact.All.First(a => a.Name == name).Code }));
+                onPick => new ArtifactFinderViewModel(catalog, version, string.Empty, "Choose", artifact => onPick(artifact.Name)),
+                name => this.session.Update(sphinx => sphinx with { ArtifactCode = name == null ? SphinxModel.NoArtifact : catalog.Artifacts.First(a => a.Name == name).Code }));
             this.Answers = Enumerable.Range(0, Constants.Sphinx.MaxAnswers).Select(this.CreateAnswerField).ToList();
             this.Riddle = new TextFieldViewModel(
                 "Riddle",
@@ -65,7 +67,7 @@ namespace Siniskalc.Homm2.ViewModels
         public void Refresh()
         {
             this.SolvedToggle.Refresh();
-            this.ArtifactPicker.UpdateFromModel(this.session.Current.ArtifactCode == SphinxModel.NoArtifact ? null : Artifact.FromByte((byte)this.session.Current.ArtifactCode)?.Name);
+            this.ArtifactPicker.UpdateFromModel(this.session.Current.ArtifactCode == SphinxModel.NoArtifact ? null : this.catalog.Artifacts.Find((byte)this.session.Current.ArtifactCode)?.Name);
             foreach (var row in this.Reward)
             {
                 row.Refresh();

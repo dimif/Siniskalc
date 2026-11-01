@@ -37,9 +37,9 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             this.editor.ShowCastle(castle.Index);
             var garrison = ((CastleViewModel)this.editor.CurrentPage!).GarrisonEditor;
 
-            garrison.SendToSlot(Creature.Paladin, 1, 10);
+            garrison.SendToSlot(this.editor.CurrentGame!.Catalog.Creatures["Paladin"], 1, 10);
 
-            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(castle.Index).Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Paladin, 10)));
+            Assert.That(this.editor.CurrentGame.History.Current.Castles().GetModel(castle.Index).Garrison.Slots[0], Is.EqualTo(new ArmySlot<Creature>(this.editor.CurrentGame!.Catalog.Creatures["Paladin"], 10)));
             Assert.That(garrison.CreatureSlots[0].SelectedCreature, Is.EqualTo("Paladin"));
         }
 
@@ -87,7 +87,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(slot.IsEnabled, Is.True);
             Assert.That(page.GuildLevels[1].Spells[3].IsEnabled, Is.False, "a level of this guild shows three spells, not four");
             slot.Selected = "Fireball";
-            Assert.That(model().MageGuildSpell(2, 0), Is.EqualTo(Spell.Fireball));
+            Assert.That(model().MageGuildSpell(2, 0), Is.EqualTo(this.editor.CurrentGame!.Catalog.Spells["Fireball"]));
             slot.Selected = "(none)";
             Assert.That(model().MageGuildSpell(2, 0), Is.Null);
 

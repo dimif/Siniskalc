@@ -20,7 +20,7 @@
         /// <inheritdoc/>
         public int GetMaximum(PrimarySkills primarySkills, SecondarySkills secondarySkills)
         {
-            var percent = secondarySkills.GetSkillLevel(SecondarySkill.Intelligence).Code switch
+            var percent = secondarySkills.GetSkillLevel(Data.SkillRole.SpellPointMultiplier).Code switch
             {
                 1 => this.hota ? 20 : 25,
                 2 => this.hota ? 35 : 50,

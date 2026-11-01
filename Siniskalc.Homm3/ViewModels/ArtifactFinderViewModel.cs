@@ -29,8 +29,8 @@
         /// <param name="actionLabel">The text of the button on every row, such as "Equip".</param>
         /// <param name="onChoose">Called with the artifact when the user picks one.</param>
         /// <param name="canChoose">Tells whether an artifact can be picked right now; the button is disabled when not. Always when omitted.</param>
-        public ArtifactFinderViewModel(GameVersion gameVersion, EffectLineProvider effectLines, string title, string actionLabel, Action<Artifact> onChoose, Func<Artifact, bool>? canChoose = null)
-            : this(gameVersion, effectLines, title, actionLabel, OfArtifact(onChoose), OfArtifact(canChoose), false)
+        public ArtifactFinderViewModel(EntityCatalog catalog, EffectLineProvider effectLines, string title, string actionLabel, Action<Artifact> onChoose, Func<Artifact, bool>? canChoose = null)
+            : this(catalog, effectLines, title, actionLabel, OfArtifact(onChoose), OfArtifact(canChoose), false)
         {
         }
 
@@ -39,8 +39,8 @@
         /// </summary>
         /// <param name="includeScrolls">Lists one Spell Scroll row per spell instead of a single spell-less one.</param>
         /// <param name="rowFilter">Leaves out the artifacts it returns false for, e.g. those that do not fit a slot. All are listed when omitted.</param>
-        public ArtifactFinderViewModel(GameVersion gameVersion, EffectLineProvider effectLines, string title, string actionLabel, Action<ArtifactChoiceViewModel> onChoose, Func<ArtifactChoiceViewModel, bool>? canChoose, bool includeScrolls, Func<Artifact, bool>? rowFilter = null)
-            : base(CreateRows(gameVersion, effectLines, includeScrolls, rowFilter), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", FinderColumns)
+        public ArtifactFinderViewModel(EntityCatalog catalog, EffectLineProvider effectLines, string title, string actionLabel, Action<ArtifactChoiceViewModel> onChoose, Func<ArtifactChoiceViewModel, bool>? canChoose, bool includeScrolls, Func<Artifact, bool>? rowFilter = null)
+            : base(CreateRows(catalog, effectLines, includeScrolls, rowFilter), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", FinderColumns)
         {
             this.SetAction(actionLabel, onChoose, canChoose);
             this.StartFiltering();
@@ -93,19 +93,19 @@
             return canChoose == null ? null : choice => canChoose(choice.Artifact);
         }
 
-        private static List<ArtifactChoiceViewModel> CreateRows(GameVersion gameVersion, EffectLineProvider effectLines, bool includeScrolls, Func<Artifact, bool>? rowFilter)
+        private static List<ArtifactChoiceViewModel> CreateRows(EntityCatalog catalog, EffectLineProvider effectLines, bool includeScrolls, Func<Artifact, bool>? rowFilter)
         {
-            var rows = Artifact.All.Values
-                .Where(a => a.IsAvailableIn(gameVersion) && a.Slot != ArtifactSlots.None && (rowFilter?.Invoke(a) ?? true))
+            var rows = catalog.WearableArtifacts
+                .Where(a => a.Slot != ArtifactSlots.None && (rowFilter?.Invoke(a) ?? true))
                 .GroupBy(a => a.Name)
                 .Select(g => g.First())
-                .Where(a => !includeScrolls || a != Artifact.SpellScroll)
+                .Where(a => !includeScrolls || !a.IsScroll)
                 .Select(a => new ArtifactChoiceViewModel(a, effectLines))
                 .ToList();
 
-            if (includeScrolls && (rowFilter?.Invoke(Artifact.SpellScroll) ?? true))
+            if (includeScrolls && (rowFilter?.Invoke(catalog.Scroll) ?? true))
             {
-                rows.AddRange(SpellScroll.For(gameVersion).Select(s => new ArtifactChoiceViewModel(Artifact.SpellScroll, effectLines, s)));
+                rows.AddRange(SpellScroll.For(catalog).Select(s => new ArtifactChoiceViewModel(catalog.Scroll, effectLines, s)));
             }
 
             return rows

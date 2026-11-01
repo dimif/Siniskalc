@@ -1,0 +1,242 @@
+[
+  {
+    "id": "Knight",
+    "order": 0,
+    "name": "Knight",
+    "code": 0,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Castle",
+    "type": "might",
+    "fallback": true
+  },
+  {
+    "id": "Cleric",
+    "order": 1,
+    "name": "Cleric",
+    "code": 1,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Castle",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Ranger",
+    "order": 2,
+    "name": "Ranger",
+    "code": 2,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Rampart",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Druid",
+    "order": 3,
+    "name": "Druid",
+    "code": 3,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Rampart",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Alchemist",
+    "order": 4,
+    "name": "Alchemist",
+    "code": 4,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Tower",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Wizard",
+    "order": 5,
+    "name": "Wizard",
+    "code": 5,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Tower",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Demoniac",
+    "order": 6,
+    "name": "Demoniac",
+    "code": 6,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Inferno",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Heretic",
+    "order": 7,
+    "name": "Heretic",
+    "code": 7,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Inferno",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "DeathKnight",
+    "order": 8,
+    "name": "Death Knight",
+    "code": 8,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Necropolis",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Necromancer",
+    "order": 9,
+    "name": "Necromancer",
+    "code": 9,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Necropolis",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Overlord",
+    "order": 10,
+    "name": "Overlord",
+    "code": 10,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Dungeon",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Warlock",
+    "order": 11,
+    "name": "Warlock",
+    "code": 11,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Dungeon",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Barbarian",
+    "order": 12,
+    "name": "Barbarian",
+    "code": 12,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Stronghold",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "BattleMage",
+    "order": 13,
+    "name": "Battle Mage",
+    "code": 13,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Stronghold",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Beastmaster",
+    "order": 14,
+    "name": "Beastmaster",
+    "code": 14,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Fortress",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Witch",
+    "order": 15,
+    "name": "Witch",
+    "code": 15,
+    "availableFrom": "restorationOfErathia",
+    "faction": "Fortress",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Planeswalker",
+    "order": 16,
+    "name": "Planeswalker",
+    "code": 16,
+    "availableFrom": "armageddonsBlade",
+    "faction": "Conflux",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Elementalist",
+    "order": 17,
+    "name": "Elementalist",
+    "code": 17,
+    "availableFrom": "armageddonsBlade",
+    "faction": "Conflux",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Captain",
+    "order": 18,
+    "name": "Captain",
+    "code": 18,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Cove",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Navigator",
+    "order": 19,
+    "name": "Navigator",
+    "code": 19,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Cove",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Mercenary",
+    "order": 20,
+    "name": "Mercenary",
+    "code": 20,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Factory",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Artificier",
+    "order": 21,
+    "name": "Artificier",
+    "code": 21,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Factory",
+    "type": "magic",
+    "fallback": false
+  },
+  {
+    "id": "Chieftain",
+    "order": 22,
+    "name": "Chieftain",
+    "code": 22,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Bulwark",
+    "type": "might",
+    "fallback": false
+  },
+  {
+    "id": "Elder",
+    "order": 23,
+    "name": "Elder",
+    "code": 23,
+    "availableFrom": "hornOfTheAbyss",
+    "faction": "Bulwark",
+    "type": "magic",
+    "fallback": false
+  }
+]

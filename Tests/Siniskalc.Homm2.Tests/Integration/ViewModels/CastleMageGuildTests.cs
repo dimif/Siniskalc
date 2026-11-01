@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 
             for (var level = 1; level <= Constants.Castle.MageGuildLevels; level++)
             {
-                var expected = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion) && s.Level == level).Select(s => s.Name);
+                var expected = TestCatalog.Standard.Spells.Where(s => s.IsAvailableIn(game.GameVersion) && s.Level == level).Select(s => s.Name);
                 foreach (var slot in page.GuildLevels[level - 1].Spells)
                 {
                     Assert.That(slot.Choices[0], Is.EqualTo("(none)"));
@@ -35,7 +35,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var game = TestServices.LoadBrokenAlliance(24);
             var index = game.History.Current.Castles().FindByName("Xabran");
-            game.History.CreateCastleSession(index).Update(c => c.WithMageGuildSpell(1, 0, Spell.Armageddon));
+            game.History.CreateCastleSession(index).Update(c => c.WithMageGuildSpell(1, 0, TestCatalog.Standard.Spells["Armageddon"]));
             var loaded = TestServices.Parser.Parse(game.GetBytesToSave(), null);
 
             var slot = Xabran(loaded).GuildLevels[0].Spells[0];

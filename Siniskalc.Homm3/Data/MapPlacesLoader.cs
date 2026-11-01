@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Data
         private const int MaxNumber = 32;
 
         /// <inheritdoc/>
-        public MapPlaces Load(byte[] bytes)
+        public MapPlaces Load(byte[] bytes, EntityCatalog catalog)
         {
             var firstDefinition = FirstDefinition(bytes);
             var objects = firstDefinition < 0 ? [] : MapObjectPositions.Find(bytes, bytes.Length);
@@ -29,7 +29,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             var places = new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>();
-            foreach (var kind in VisitedPlaceKind.All.Where(k => k.ObjectType != null))
+            foreach (var kind in catalog.VisitedPlaces.All.Where(k => k.ObjectType != null))
             {
                 places[kind] = Find(bytes, firstDefinition, objects, kind.ObjectType!.Value, kind.NumberMask, kind.CellHasFlags);
             }

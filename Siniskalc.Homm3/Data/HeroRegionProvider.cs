@@ -39,7 +39,7 @@ namespace Siniskalc.Homm3.Data
 
             foreach (var name in Enum.GetValues<HeroOffsetName>())
             {
-                if (name == HeroOffsetName.Cannon && !entities.WarMachines.Contains(WarMachine.Cannon))
+                if (name == HeroOffsetName.Cannon && !entities.WarMachines.Any(m => m.Encoding == WarMachineEncoding.Cannon))
                 {
                     continue;
                 }

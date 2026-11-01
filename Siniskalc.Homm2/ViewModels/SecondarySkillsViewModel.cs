@@ -14,10 +14,11 @@
     public sealed class SecondarySkillsViewModel : HeroesSecondarySkillsViewModel<SecondarySkill, SecondarySkills>
     {
         public SecondarySkillsViewModel(
+            GameCatalog catalog,
             GameVersion gameVersion,
             Func<SecondarySkills> getSkills,
             Action<Func<SecondarySkills, SecondarySkills>> update)
-            : base(SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.Hero.MaxSecondarySkills, getSkills, update)
+            : base(catalog.Skills.Where(s => s.IsAvailableIn(gameVersion)).ToList(), Constants.Hero.MaxSecondarySkills, getSkills, update)
         {
         }
 

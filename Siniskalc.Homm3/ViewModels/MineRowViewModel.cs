@@ -23,6 +23,10 @@ namespace Siniskalc.Homm3.ViewModels
         {
         }
 
+        public new string Kind => this.Session.Current.Name;
+
+        public new string ResourceName => this.Session.Current.Catalog.MapMetadata.Mine(this.Session.Current.Kind).Resource.ToString();
+
         /// <summary>
         /// Gets a few words about the guard: none, or how many slots it uses.
         /// </summary>

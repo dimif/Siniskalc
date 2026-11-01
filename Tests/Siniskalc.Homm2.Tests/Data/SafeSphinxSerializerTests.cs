@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.Tests.Data
     internal sealed class SafeSphinxSerializerTests
     {
         private readonly SafeSphinxSerializer serializer = new();
-        private readonly SphinxDeserializer reader = new();
+        private readonly SphinxDeserializer reader = new(TestCatalog.Standard);
 
         private static MapObjectChunk Record() => SphinxDeserializerTests.Sphinx(b =>
         {

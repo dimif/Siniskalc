@@ -1,25 +1,19 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data;
+
+using System.Collections.Frozen;
+using System.Collections.Generic;
+using System.Linq;
+using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Models;
+
+public sealed class VersionSpecificEntitiesProviderFactory : IVersionSpecificEntitiesProviderFactory
 {
-    using System;
-    using System.Collections.Concurrent;
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
+    private readonly FrozenDictionary<GameVersion, VersionSpecificEntitiesProvider> providers;
 
-    /// <inheritdoc />
-    public sealed class VersionSpecificEntitiesProviderFactory : IVersionSpecificEntitiesProviderFactory
+    public VersionSpecificEntitiesProviderFactory(IReadOnlyDictionary<GameVersion, EntityCatalog> catalogs)
     {
-        private readonly Func<GameVersion, IGrantedSpellsResolver> resolvers;
-        private readonly ConcurrentDictionary<GameVersion, VersionSpecificEntitiesProvider> providers = new();
-
-        /// <param name="resolvers">Makes the resolver of the spells artifacts grant in a game version.</param>
-        public VersionSpecificEntitiesProviderFactory(Func<GameVersion, IGrantedSpellsResolver> resolvers)
-        {
-            this.resolvers = resolvers;
-        }
-
-        public VersionSpecificEntitiesProvider For(GameVersion gameVersion)
-        {
-            return this.providers.GetOrAdd(gameVersion, version => new VersionSpecificEntitiesProvider(version, this.resolvers(version)));
-        }
+        this.providers = catalogs.ToFrozenDictionary(p => p.Key, p => new VersionSpecificEntitiesProvider(p.Value, new GrantedSpellsResolver(p.Key)));
     }
+
+    public VersionSpecificEntitiesProvider For(GameVersion gameVersion) => this.providers[gameVersion];
 }

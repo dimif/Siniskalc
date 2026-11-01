@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
@@ -77,10 +77,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var chunk = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current.Castles().First(c => c.Name == "Still Water");
             var castle = TestServices.CastleDeserializer.Deserialize(chunk);
 
-            var filled = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3) });
+            var filled = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 1234).WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 3) });
             var garrison = TestServices.CastleDeserializer.DeserializeGarrison(filled);
-            Assert.That(garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Centaur, 1234)));
-            Assert.That(garrison.Slots[6], Is.EqualTo(new ArmySlot<Creature>(Creature.GoldDragon, 3)));
+            Assert.That(garrison.Slots[1], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 1234)));
+            Assert.That(garrison.Slots[6], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 3)));
             Assert.That(garrison.Filled.Count(), Is.EqualTo(2));
 
             var emptied = TestServices.SerializeCastle(filled, TestServices.CastleDeserializer.Deserialize(filled) with { Garrison = new Army<Creature>(Constants.CreatureSlotCount) });
@@ -93,7 +93,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var chunk = StillWater();
             var castle = TestServices.CastleDeserializer.Deserialize(chunk);
 
-            var written = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, Creature.Centaur, 1234).WithSlot(6, Creature.GoldDragon, 3) });
+            var written = TestServices.SerializeCastle(chunk, castle with { Garrison = castle.Garrison.WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 1234).WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 3) });
 
             Assert.That(written.GetBytesAt(CastleLayout.GarrisonTypes + 4, 4), Is.EqualTo(new byte[] { 0x0E, 0, 0, 0 }));
             Assert.That(written.GetBytesAt(CastleLayout.GarrisonCounts + 4, 4), Is.EqualTo(new byte[] { 0xD2, 0x04, 0, 0 }));
@@ -133,9 +133,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             var written = TestServices.SerializeCastle(unknown, model);
 
-            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(Creature.All[0]));
+            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All[0]));
             Assert.That(written.ToArray(), Is.EqualTo(unknown.ToArray()));
-            Assert.That(TestServices.SerializeCastle(unknown, model with { Garrison = model.Garrison.WithSlot(3, Creature.Angel, 2) }).GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(Creature.Angel.Code));
+            Assert.That(TestServices.SerializeCastle(unknown, model with { Garrison = model.Garrison.WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 2) }).GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel").Code));
         }
 
         [Test]
@@ -183,9 +183,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static (CastleChunk Built, CastleChunk Upgraded) WithBuiltAndUpgradedStables()
         {
             var chunk = StillWater();
-            var built = CastleBuilder.Build(TestServices.CastleDeserializer.Deserialize(chunk), Building.RampartCentaurStables);
+            var built = CastleBuilder.Build(TestServices.CastleDeserializer.Deserialize(chunk), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"));
             var builtChunk = TestServices.SerializeCastle(chunk, built);
-            var upgradedChunk = TestServices.SerializeCastle(builtChunk, CastleBuilder.Build(built, Building.RampartUpgCentaurStables));
+            var upgradedChunk = TestServices.SerializeCastle(builtChunk, CastleBuilder.Build(built, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables")));
             return (builtChunk, upgradedChunk);
         }
 

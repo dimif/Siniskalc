@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Ellesmere(Game game)
         {
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("Ellesmere")]);
+            return castles.GetModel(castles.FindByName("Ellesmere"));
         }
 
         [TestCase("sleep_garrison_visiting_01_akka_visiting", null, Akka)]

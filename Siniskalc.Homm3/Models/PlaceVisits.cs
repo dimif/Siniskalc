@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Models
         public PlaceVisits(IEnumerable<uint> masks)
         {
             this.masks = masks.ToArray();
-            if (this.masks.Length != VisitedPlaceKind.All.Count)
+            if (this.masks.Length != Constants.Catalog.PlaceCapacity)
             {
                 throw new ArgumentException("There is a number for each kind of place.", nameof(masks));
             }
@@ -24,7 +24,7 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Gets the visits of a hero that visited nothing.
         /// </summary>
-        public static PlaceVisits None { get; } = new(new uint[VisitedPlaceKind.All.Count]);
+        public static PlaceVisits None { get; } = new(new uint[Constants.Catalog.PlaceCapacity]);
 
         /// <summary>
         /// Returns the number of the kind: a bit for each place the hero visited.

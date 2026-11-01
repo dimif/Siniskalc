@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Castle(string save, string name)
         {
             var castles = Load(save).History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName(name)]);
         }
 
         // The buildings each castle added since the previous save: "castle=Building|Building;castle=Building".
@@ -242,11 +242,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             foreach (var name in new[] { "7_Strong", "8_Fort" })
             {
                 Assert.That(Castle("roe_46_mage_guild_5", name).MageGuildLevel, Is.EqualTo(3), name);
-                Assert.That(Castle("roe_46_mage_guild_5", name).Buildings, Does.Not.Contain(Building.MagesGuild4), name);
+                Assert.That(Castle("roe_46_mage_guild_5", name).Buildings, Does.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("MagesGuild4")), name);
             }
 
             Assert.That(Castle("roe_46_mage_guild_5", "1_Castle").MageGuildLevel, Is.EqualTo(4));
-            Assert.That(Castle("roe_46_mage_guild_5", "1_Castle").Buildings, Does.Not.Contain(Building.MagesGuild5));
+            Assert.That(Castle("roe_46_mage_guild_5", "1_Castle").Buildings, Does.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("MagesGuild5")));
         }
 
         [Test]
@@ -279,10 +279,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("roe_48b_rampart_capitol", "2_Rampart", "1_Castle")]
         public void OnlyTheCastleThatBuiltTheCapitolHasItAndItReplacesTheCityHall(string save, string withCapitol, string without)
         {
-            Assert.That(Castle(save, withCapitol).Buildings, Does.Contain(Building.Capitol));
-            Assert.That(Castle(save, withCapitol).VisibleBuildings, Does.Contain(Building.Capitol).And.Not.Contain(Building.CityHall));
-            Assert.That(Castle(save, without).Buildings, Does.Not.Contain(Building.Capitol));
-            Assert.That(Castle(save, without).VisibleBuildings, Does.Contain(Building.CityHall));
+            Assert.That(Castle(save, withCapitol).Buildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol")));
+            Assert.That(Castle(save, withCapitol).VisibleBuildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol")).And.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("CityHall")));
+            Assert.That(Castle(save, without).Buildings, Does.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("Capitol")));
+            Assert.That(Castle(save, without).VisibleBuildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("CityHall")));
         }
 
         [Test]
@@ -301,7 +301,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             {
                 foreach (var chunk in SavedGames.Get(path).History.Current.Castles())
                 {
-                    Assert.That(TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{chunk.Name} in {path}");
+                    Assert.That(TestServices.SerializeCastle(chunk, new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(chunk)).HasSameBytes(chunk), Is.True, $"{chunk.Name} in {path}");
                 }
             }
         }

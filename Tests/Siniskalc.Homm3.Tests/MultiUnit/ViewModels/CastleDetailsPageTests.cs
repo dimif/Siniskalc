@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -27,19 +27,19 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         /// <summary>A Cove town with its village hall, a built Shack and an upgraded Nymph Waterfall that replaced the Nymph Waterfall.</summary>
         private static CastleModel LakenshireWithAnUpgradedWaterfall()
         {
-            var built = CastleModels.With(CastleModels.Village(Faction.Cove), Building.CoveNymphWaterfall, Building.CoveUpgNymphWaterfall, Building.CoveShack);
+            var built = CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNymphWaterfall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveUpgNymphWaterfall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveShack"));
             return built with
             {
                 CreaturesAvailable = Numbers.Of(16, 9, 0, 0, 0, 0, 0),
-                VisibleBuildings = built.VisibleBuildings.Where(b => b != Building.CoveNymphWaterfall).ToHashSet(),
+                VisibleBuildings = built.VisibleBuildings.Where(b => b != TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNymphWaterfall")).ToHashSet(),
             };
         }
 
         [Test]
         public void BuildingsTheMapDisablesAreMarked()
         {
-            var cove = CastleModels.Village(Faction.Cove);
-            using var page = Page(cove with { EnabledBuildings = cove.EnabledBuildings.Where(b => b != Building.Tavern).ToHashSet() });
+            var cove = CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove"));
+            using var page = Page(cove with { EnabledBuildings = cove.EnabledBuildings.Where(b => b != TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Tavern")).ToHashSet() });
 
             Assert.That(Row(page, "Tavern").IsDisabled, Is.True);
             Assert.That(Row(page, "Tavern").Note, Is.EqualTo("Not allowed by the map"));
@@ -50,7 +50,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void WhenTheMapAllowsEverythingNoBuildingIsMarkedAndNoneIsCountedAsNotAllowed()
         {
-            using var page = Page(CastleModels.Village(Faction.Cove));
+            using var page = Page(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")));
 
             Assert.That(page.BuildingGroups.SelectMany(g => g.Rows).Where(r => r.IsDisabled), Is.Empty);
             Assert.That(page.BuildingsSummary, Does.EndWith(" 0 not allowed"));
@@ -81,7 +81,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void ADwellingTheMapDoesNotAllowSaysSo()
         {
             var cove = LakenshireWithAnUpgradedWaterfall();
-            using var page = Page(cove with { EnabledBuildings = cove.EnabledBuildings.Where(b => b != Building.CoveFrigate).ToHashSet() });
+            using var page = Page(cove with { EnabledBuildings = cove.EnabledBuildings.Where(b => b != TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveFrigate")).ToHashSet() });
 
             Assert.That(page.Dwellings[2].State, Is.EqualTo("Not allowed by the map"));
         }
@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheMageGuildShowsTheSpellsOfEachBuiltLevel()
         {
-            var guild = CastleBuilder.SetMageGuildLevel(CastleModels.Village(Faction.Cove), 4) with { MageGuildSpellCounts = Numbers.Of(5, 4, 3, 2, 0) };
+            var guild = CastleBuilder.SetMageGuildLevel(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")), 4) with { MageGuildSpellCounts = Numbers.Of(5, 4, 3, 2, 0) };
             using var page = Page(guild);
 
             Assert.That(page.MageGuildSummary, Is.EqualTo("Level 4 of 4"));
@@ -109,7 +109,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void WithoutAMageGuildEveryLevelSaysNotBuilt()
         {
-            using var page = Page(CastleModels.Village(Faction.Cove));
+            using var page = Page(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")));
 
             Assert.That(page.MageGuildSummary, Is.EqualTo("No Mage Guild, up to level 4"));
             Assert.That(page.MageGuildLevels.Select(l => l.SpellsText), Has.All.EqualTo("Not built"));
@@ -118,7 +118,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheCastleSaysWhereItsBoatsAppear()
         {
-            using var page = Page(CastleModels.Village(Faction.Cove) with { ShipyardPosition = new MapPosition(55, 16) });
+            using var page = Page(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")) with { ShipyardPosition = new MapPosition(55, 16) });
 
             Assert.That(page.ShipyardText, Is.EqualTo("Boats appear at X 55, Y 16"));
         }
@@ -126,7 +126,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void ACastleOnNoCoastSaysItIsInland()
         {
-            using var page = Page(CastleModels.Village(Faction.Cove));
+            using var page = Page(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")));
 
             Assert.That(page.ShipyardText, Is.EqualTo("Not on the coast, so no boats"));
         }
@@ -142,12 +142,12 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             Assert.That(special, Has.None.StartsWith("Upg."), faction.Name);
         }
 
-        public static IEnumerable<Faction> Factions => Faction.All.Where(f => f != Faction.Neutral && f != Faction.Factory);
+        public static IEnumerable<Faction> Factions => TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.All.Where(f => f != TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Neutral") && f != TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Factory"));
 
         [Test]
         public void TheUpgradedGantryOfTheFactoryIsARealBuildingAndIsListed()
         {
-            var everything = CastleModels.With(CastleModels.Village(Faction.Factory), Building.ForFaction(Faction.Factory).ToArray());
+            var everything = CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Factory")), Building.ForFaction(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Factory")).ToArray());
             using var page = Page(everything);
 
             Assert.That(page.BuildingGroups.Single(g => g.Title == "Special buildings").Rows.Select(r => r.Name), Does.Contain("Upg. Gantry"));

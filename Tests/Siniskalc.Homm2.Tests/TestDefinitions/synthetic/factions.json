@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Observatory",
+      "name": "Observatory",
+      "code": 6,
+      "order": 7,
+      "neutral": false,
+      "library": true,
+      "growthBuildingName": "Astral Garden",
+      "specialBuildingName": "Star Library",
+      "heroIds": [
+        0
+      ],
+      "heroFallback": false,
+      "guildSpellCounts": [
+        3,
+        3,
+        2,
+        2,
+        1
+      ],
+      "specialBuildingDescription": "Teaches one additional spell at each built Mage Guild level."
+    }
+  ],
+  "replacements": [
+    {
+      "id": "Knight",
+      "name": "Knight",
+      "code": 0,
+      "order": 0,
+      "neutral": false,
+      "library": false,
+      "growthBuildingName": "Farm",
+      "specialBuildingName": "Fortifications",
+      "heroIds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "heroFallback": false,
+      "guildSpellCounts": [
+        3,
+        3,
+        2,
+        2,
+        1
+      ],
+      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+    }
+  ]
+}

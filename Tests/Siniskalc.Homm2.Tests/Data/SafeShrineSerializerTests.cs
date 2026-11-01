@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Tests.Data
         private static MapObjectChunk Shrine(ushort word, int tag = 1) =>
             new("Shrine", BitConverter.GetBytes(word), 200, new MapPosition(30, 31), 1, tag);
 
-        private static ShrineModel Model(int spell) => new(1, 1, new MapPosition(30, 31), spell);
+        private static ShrineModel Model(int spell) => new(1, 1, new MapPosition(30, 31), spell, TestCatalog.Standard);
 
         [Test]
         public void ANewSpellIsWrittenAboveTheLowThreeBitsWhichAreKept()

@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
@@ -21,7 +21,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castles = game.History.Current.Castles();
             var index = castles.FindByName("Lakenshire");
             Assert.That(index, Is.GreaterThanOrEqualTo(0), save);
-            return TestServices.CastleDeserializer.Deserialize(castles[index]);
+            return castles.GetModel(index);
         }
 
         private static IReadOnlySet<Building> Current(string save)
@@ -36,14 +36,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Lakenshire("baseline");
 
-            Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
+            Assert.That(castle.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")));
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Red));
             Assert.That(castle.Position, Is.EqualTo(new MapPosition(15, 12, 0)));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(0));
             Assert.That(castle.BuiltThisTurn, Is.False);
             Assert.That(castle.Buildings, Is.EquivalentTo(new[]
             {
-                Building.Tavern, Building.Fort, Building.VillageHall, Building.CoveNymphWaterfall, Building.CoveShack,
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Tavern"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNymphWaterfall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveShack"),
             }));
         }
 
@@ -60,9 +60,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Lakenshire("pub");
 
-            Assert.That(castle.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CovePub }));
+            Assert.That(castle.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CovePub") }));
             Assert.That(castle.BuiltThisTurn, Is.True);
-            Assert.That(Current("pub"), Does.Contain(Building.CovePub).And.Not.Contain(Building.CoveShack));
+            Assert.That(Current("pub"), Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CovePub")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveShack")));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Lakenshire("nest");
 
-            Assert.That(castle.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CoveNest }));
+            Assert.That(castle.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNest") }));
             Assert.That(castle.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 4, 0, 0, 0 }));
         }
 
@@ -80,11 +80,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var nymphs = Lakenshire("upg_nymph_waterfall");
             var shack = Lakenshire("upg_shack");
 
-            Assert.That(nymphs.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CoveUpgNymphWaterfall }));
+            Assert.That(nymphs.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveUpgNymphWaterfall") }));
             Assert.That(nymphs.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 0, 0, 0, 0 }));
-            Assert.That(Current("upg_nymph_waterfall"), Does.Contain(Building.CoveUpgNymphWaterfall).And.Not.Contain(Building.CoveNymphWaterfall));
+            Assert.That(Current("upg_nymph_waterfall"), Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveUpgNymphWaterfall")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNymphWaterfall")));
 
-            Assert.That(shack.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { Building.CoveUpgShack }));
+            Assert.That(shack.Buildings.Except(Lakenshire("baseline").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveUpgShack") }));
             Assert.That(shack.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 0, 0, 0, 0, 0 }));
         }
 
@@ -99,7 +99,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(castle.Buildings.Select(b => (int)b.Code), Is.EquivalentTo(expected));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(4));
             Assert.That(castle.CreaturesAvailable, Is.EqualTo(new[] { 16, 9, 7, 4, 3, 2, 1 }));
-            Assert.That(castle.Buildings, Does.Contain(Building.CoveUpgMaelstrom).And.Contain(Building.MagesGuild4).And.Not.Contain(Building.MagesGuild5));
+            Assert.That(castle.Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveUpgMaelstrom")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild4")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild5")));
         }
 
         [Test]
@@ -107,20 +107,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             Assert.That(Lakenshire("nix_fort").Buildings, Is.EquivalentTo(new[]
             {
-                Building.Tavern, Building.Fort, Building.VillageHall, Building.CoveNymphWaterfall, Building.CoveShack, Building.CoveNest, Building.CoveNixFort,
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Tavern"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNymphWaterfall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveShack"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNest"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNixFort"),
             }));
-            Assert.That(Lakenshire("tower_of_the_seas").Buildings.Except(Lakenshire("nix_fort").Buildings), Is.EquivalentTo(new[] { Building.MagesGuild1, Building.CoveToweroftheSeas }));
+            Assert.That(Lakenshire("tower_of_the_seas").Buildings.Except(Lakenshire("nix_fort").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveToweroftheSeas") }));
             Assert.That(Lakenshire("tower_of_the_seas").MageGuildLevel, Is.EqualTo(1));
-            Assert.That(Lakenshire("roost").Buildings.Except(Lakenshire("tower_of_the_seas").Buildings), Is.EquivalentTo(new[] { Building.CoveRoost }));
-            Assert.That(Lakenshire("thieves_guild").Buildings.Except(Lakenshire("roost").Buildings), Is.EquivalentTo(new[] { Building.CoveThievesGuild }));
-            Assert.That(Lakenshire("blacksmith").Buildings.Except(Lakenshire("thieves_guild").Buildings), Is.EquivalentTo(new[] { Building.Blacksmith }));
-            Assert.That(Lakenshire("frigate").Buildings.Except(Lakenshire("blacksmith").Buildings), Is.EquivalentTo(new[] { Building.CoveFrigate }));
+            Assert.That(Lakenshire("roost").Buildings.Except(Lakenshire("tower_of_the_seas").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveRoost") }));
+            Assert.That(Lakenshire("thieves_guild").Buildings.Except(Lakenshire("roost").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveThievesGuild") }));
+            Assert.That(Lakenshire("blacksmith").Buildings.Except(Lakenshire("thieves_guild").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Blacksmith") }));
+            Assert.That(Lakenshire("frigate").Buildings.Except(Lakenshire("blacksmith").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveFrigate") }));
         }
 
         [Test]
         public void TheRoostReplacesTheNestInTheVisibleBuildings()
         {
-            Assert.That(Current("roost"), Does.Contain(Building.CoveRoost).And.Not.Contain(Building.CoveNest));
+            Assert.That(Current("roost"), Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveRoost")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveNest")));
         }
 
         [Test]
@@ -133,18 +133,18 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheMarketplaceAndTheGrottoThatNeedsItAreRecognised()
         {
-            Assert.That(Lakenshire("marketplace").Buildings.Except(Lakenshire("nix_fort").Buildings), Is.EquivalentTo(new[] { Building.Marketplace }));
-            Assert.That(Lakenshire("grotto").Buildings.Except(Lakenshire("marketplace").Buildings), Is.EquivalentTo(new[] { Building.CoveGrotto }));
-            Assert.That(Building.CoveGrotto.Prerequisites, Is.EquivalentTo(new[] { Building.Marketplace }));
+            Assert.That(Lakenshire("marketplace").Buildings.Except(Lakenshire("nix_fort").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Marketplace") }));
+            Assert.That(Lakenshire("grotto").Buildings.Except(Lakenshire("marketplace").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveGrotto") }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveGrotto").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Marketplace") }));
         }
 
         [Test]
         public void TheMaelstromNeedsTheTowerOfTheSeas()
         {
-            Assert.That(Lakenshire("maelstrom").Buildings.Except(Lakenshire("without_maelstrom").Buildings), Is.EquivalentTo(new[] { Building.CoveMaelstrom }));
-            Assert.That(Lakenshire("without_maelstrom").Buildings, Does.Contain(Building.CoveToweroftheSeas).And.Contain(Building.MagesGuild1));
+            Assert.That(Lakenshire("maelstrom").Buildings.Except(Lakenshire("without_maelstrom").Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveMaelstrom") }));
+            Assert.That(Lakenshire("without_maelstrom").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveToweroftheSeas")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1")));
             Assert.That(Lakenshire("maelstrom").CreaturesAvailable[6], Is.EqualTo(1));
-            Assert.That(Building.CoveMaelstrom.Prerequisites, Is.EquivalentTo(new[] { Building.CoveToweroftheSeas }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveMaelstrom").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CoveToweroftheSeas") }));
         }
 
         private static CastleModel Named(string save, string name)
@@ -153,7 +153,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), name + " in " + string.Join("; ", castles.Select(c => c.Name)));
-            return TestServices.CastleDeserializer.Deserialize(castles[index]);
+            return castles.GetModel(index);
         }
 
         [Test]
@@ -162,15 +162,15 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castle = Named("neutral_cove_and_factory_castles", "Cove Castle");
             var disabled = Named("neutral_cove_and_factory_castles", "Cove Castle D");
 
-            Assert.That(castle.Faction, Is.EqualTo(Faction.Cove));
+            Assert.That(castle.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Cove")));
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Neutral));
-            Assert.That(castle.Buildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
+            Assert.That(castle.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }));
             Assert.That(castle.ShipyardPosition, Is.EqualTo(new MapPosition(55, 16, 0)));
-            Assert.That(castle.EnabledBuildings, Does.Contain(Building.Shipyard));
+            Assert.That(castle.EnabledBuildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard")));
             Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").ShipyardPosition, Is.Null);
-            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(Building.Shipyard));
-            Assert.That(disabled.EnabledBuildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall }));
-            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(Building.Fort));
+            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard")));
+            Assert.That(disabled.EnabledBuildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }));
+            Assert.That(Named("neutral_cove_and_factory_castles", "Cove Town").EnabledBuildings, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")));
         }
 
         [Test]
@@ -179,10 +179,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var serpentarium = Named("neutral_cove_and_factory_castles", "Fac Castle S");
             var gantry = Named("neutral_cove_and_factory_castles", "Fac Castle G");
 
-            Assert.That(serpentarium.Faction, Is.EqualTo(Faction.Factory));
-            Assert.That(serpentarium.Buildings, Is.EquivalentTo(new[] { Building.VillageHall, Building.FactorySerpentarium }));
+            Assert.That(serpentarium.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Factory")));
+            Assert.That(serpentarium.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FactorySerpentarium") }));
             Assert.That(serpentarium.CreaturesAvailable[6], Is.EqualTo(1));
-            Assert.That(gantry.Buildings, Is.EquivalentTo(new[] { Building.VillageHall, Building.FactoryGantry }));
+            Assert.That(gantry.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FactoryGantry") }));
         }
 
         [Test]

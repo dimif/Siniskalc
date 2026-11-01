@@ -1,4 +1,4 @@
-using Siniskalc.Core.Models;
+﻿using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.Data
             return new CastleChunk("Test", bytes, 0);
         }
 
-        private static CastleModel Rampart() => CastleModels.Village(Faction.Rampart);
+        private static CastleModel Rampart() => CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart"));
 
         private static ulong Mask(CastleChunk chunk, int fromNameEnd) => BitConverter.ToUInt64(chunk.ToArray(), NameEnd + fromNameEnd);
 
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void TheMageGuildLevelIsTheHighestGuildBuilt()
         {
             var none = this.Write(Blank(), Rampart());
-            var three = this.Write(Blank(), CastleModels.With(Rampart(), Building.MagesGuild1, Building.MagesGuild2, Building.MagesGuild3));
+            var three = this.Write(Blank(), CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild2"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild3")));
 
             Assert.That((none.GetByteAt(CastleLayout.MageGuildLevel), three.GetByteAt(CastleLayout.MageGuildLevel)), Is.EqualTo(((byte)0, (byte)3)));
         }
@@ -113,18 +113,18 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = chunk.ToArray();
             foreach (var (level, slot) in new[] { (1, 0), (1, 1), (2, 0) })
             {
-                BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, level, slot));
+                BitConverter.GetBytes((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, level, slot));
             }
 
             var spells = Rampart().MageGuildSpells.ToList();
-            spells[0] = [Spell.Haste, Spell.MagicArrow];
-            spells[1] = [Spell.Bless];
+            spells[0] = [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")];
+            spells[1] = [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")];
 
             var written = this.Write(chunk.WithBytes(bytes), Rampart() with { MageGuildSpells = spells });
 
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(Spell.Haste.Code));
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.MagicArrow.Code));
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 2, 0)), Is.EqualTo(Spell.Bless.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste").Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow").Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 2, 0)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code));
             Assert.That(written.GetBytesAt(MageGuildSpellSlots.Offset(written, 1, 0), 4), Is.EqualTo(new byte[] { 53, 0, 0, 0 }));
         }
 
@@ -133,17 +133,17 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = Blank();
             var bytes = chunk.ToArray();
-            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
-            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 3));
+            BitConverter.GetBytes((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
+            BitConverter.GetBytes((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 3));
             var spells = Rampart().MageGuildSpells.ToList();
-            spells[0] = [Spell.Haste, Spell.MagicArrow];
+            spells[0] = [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")];
 
             var written = this.Write(chunk.WithBytes(bytes), Rampart() with { MageGuildSpells = spells });
 
             Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(-1));
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.Haste.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste").Code));
             Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 2)), Is.EqualTo(-1));
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 3)), Is.EqualTo(Spell.MagicArrow.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 3)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow").Code));
         }
 
         [Test]
@@ -151,16 +151,16 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = Blank();
             var bytes = chunk.ToArray();
-            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 0));
-            BitConverter.GetBytes((int)Spell.Bless.Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
+            BitConverter.GetBytes((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 0));
+            BitConverter.GetBytes((int)TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code).CopyTo(bytes, MageGuildSpellSlots.Offset(chunk, 1, 1));
             var odd = chunk.WithBytes(bytes);
             var spells = Rampart().MageGuildSpells.ToList();
-            spells[0] = [Spell.Haste];
+            spells[0] = [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")];
 
             var written = this.Write(odd, Rampart() with { MageGuildSpells = spells });
 
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(Spell.Bless.Code));
-            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(Spell.Bless.Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 0)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code));
+            Assert.That(written.GetInt32At(MageGuildSpellSlots.Offset(written, 1, 1)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless").Code));
         }
 
         [Test]
@@ -176,7 +176,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void WithTheUpgradeBuiltTheCreaturesAreWrittenInTheSlotOfTheUpgrade()
         {
-            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+            var castle = CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables"));
 
             var written = this.Write(Blank(), castle with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
 
@@ -190,7 +190,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var chunk = Blank();
             var bytes = chunk.ToArray();
             BitConverter.GetBytes((ushort)12).CopyTo(bytes, NameEnd + CastleLayout.CreaturesAvailableFromNameEnd);
-            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+            var castle = CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables"));
 
             var written = this.Write(chunk.WithBytes(bytes), castle with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
 
@@ -205,7 +205,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = chunk.ToArray();
             BitConverter.GetBytes((ushort)12).CopyTo(bytes, NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd);
 
-            var written = this.Write(chunk.WithBytes(bytes), CastleModels.With(Rampart(), Building.RampartCentaurStables) with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
+            var written = this.Write(chunk.WithBytes(bytes), CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")) with { CreaturesAvailable = Numbers.Of(12, 0, 0, 0, 0, 0, 0) });
 
             Assert.That(written.GetUInt16At(NameEnd + CastleLayout.CreaturesAvailableFromNameEnd), Is.EqualTo(12));
             Assert.That(written.GetUInt16At(NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd), Is.EqualTo(0));
@@ -218,7 +218,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var bytes = chunk.ToArray();
             BitConverter.GetBytes((ushort)5).CopyTo(bytes, NameEnd + CastleLayout.CreaturesAvailableFromNameEnd);
             BitConverter.GetBytes((ushort)9).CopyTo(bytes, NameEnd + CastleLayout.UpgradedCreaturesAvailableFromNameEnd);
-            var castle = CastleModels.With(Rampart(), Building.RampartCentaurStables, Building.RampartUpgCentaurStables);
+            var castle = CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgCentaurStables"));
 
             var written = this.Write(chunk.WithBytes(bytes), castle with { CreaturesAvailable = Numbers.Of(20, 0, 0, 0, 0, 0, 0) });
 
@@ -238,16 +238,16 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var castle = Rampart() with
             {
-                Buildings = new HashSet<Building> { Building.VillageHall, Building.RampartCentaurStables },
-                VisibleBuildings = new HashSet<Building> { Building.VillageHall },
-                EnabledBuildings = new HashSet<Building> { Building.RampartCentaurStables, Building.MagesGuild1 },
+                Buildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables") },
+                VisibleBuildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") },
+                EnabledBuildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1") },
             };
 
             var written = this.Write(Blank(), castle);
 
-            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall, Building.RampartCentaurStables])));
-            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall])));
-            Assert.That(Mask(written, CastleLayout.EnabledBuildingsFromNameEnd), Is.EqualTo(Bits([Building.RampartCentaurStables, Building.MagesGuild1])));
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")])));
+            Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")])));
+            Assert.That(Mask(written, CastleLayout.EnabledBuildingsFromNameEnd), Is.EqualTo(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1")])));
         }
 
         [Test]
@@ -255,12 +255,12 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = Blank();
             var bytes = chunk.ToArray();
-            BitConverter.GetBytes(Bits([Building.VillageHall, Building.RampartCentaurStables])).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
-            BitConverter.GetBytes(Bits([Building.RampartCentaurStables])).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
+            BitConverter.GetBytes(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")])).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
+            BitConverter.GetBytes(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables")])).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
 
             var written = this.Write(chunk.WithBytes(bytes), Rampart() with { VisibleBuildings = new HashSet<Building>() });
 
-            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([Building.VillageHall])));
+            Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")])));
             Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(0));
         }
 
@@ -285,7 +285,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void BuildingTheTownHallOfARampartAlsoSetsItsCompanionBitInTheBuiltAndVisibleMasksOnly()
         {
             var plain = this.Write(Blank(), Rampart());
-            var hall = this.Write(Blank(), CastleModels.With(Rampart(), Building.TownHall));
+            var hall = this.Write(Blank(), CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall")));
 
             var companion = 1UL << 27;
             Assert.That(Mask(hall, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(companion));
@@ -297,11 +297,11 @@ namespace Siniskalc.Homm3.Tests.Data
         public void TakingTheCityHallDownClearsItsCompanionBit()
         {
             var chunk = Blank();
-            var withCity = this.Write(chunk, CastleModels.With(Rampart(), Building.TownHall, Building.CityHall));
+            var withCity = this.Write(chunk, CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall")));
             var companion = 1UL << 28;
             Assert.That(Mask(withCity, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(companion), "built");
 
-            var without = this.Write(withCity, CastleModels.With(Rampart(), Building.TownHall));
+            var without = this.Write(withCity, CastleModels.With(Rampart(), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall")));
 
             Assert.That(Mask(without, CastleLayout.BuiltBuildingsFromNameEnd) & companion, Is.EqualTo(0));
             Assert.That(Mask(without, CastleLayout.VisibleBuildingsFromNameEnd) & companion, Is.EqualTo(0));
@@ -312,7 +312,7 @@ namespace Siniskalc.Homm3.Tests.Data
         {
             var chunk = Blank();
             var bytes = chunk.ToArray();
-            BitConverter.GetBytes(Bits([Building.VillageHall]) | (1UL << 29)).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
+            BitConverter.GetBytes(Bits([TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")]) | (1UL << 29)).CopyTo(bytes, NameEnd + CastleLayout.BuiltBuildingsFromNameEnd);
 
             var written = this.Write(chunk.WithBytes(bytes), Rampart());
 
@@ -322,9 +322,9 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TheFortOfAConfluxHasItsCompanionBitAtTwentyTwoAndTheOthersAtTheirOwn()
         {
-            var conflux = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Conflux), Building.Fort));
-            var bulwark = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Bulwark), Building.Fort));
-            var castle = this.Write(Blank(), CastleModels.With(CastleModels.Village(Faction.Castle), Building.Fort));
+            var conflux = this.Write(Blank(), CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Conflux")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")));
+            var bulwark = this.Write(Blank(), CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Bulwark")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")));
+            var castle = this.Write(Blank(), CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort")));
 
             Assert.That(Mask(conflux, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 22), Is.EqualTo(1UL << 22));
             Assert.That(Mask(bulwark, CastleLayout.BuiltBuildingsFromNameEnd) & (1UL << 27), Is.EqualTo(1UL << 27));
@@ -340,7 +340,7 @@ namespace Siniskalc.Homm3.Tests.Data
             BitConverter.GetBytes(0x5678UL).CopyTo(bytes, NameEnd + CastleLayout.VisibleBuildingsFromNameEnd);
             BitConverter.GetBytes(0x9ABCUL).CopyTo(bytes, NameEnd + CastleLayout.EnabledBuildingsFromNameEnd);
 
-            var written = this.Write(chunk.WithBytes(bytes), CastleModels.Village(Faction.Neutral));
+            var written = this.Write(chunk.WithBytes(bytes), CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Neutral")));
 
             Assert.That(Mask(written, CastleLayout.BuiltBuildingsFromNameEnd), Is.EqualTo(0x1234UL));
             Assert.That(Mask(written, CastleLayout.VisibleBuildingsFromNameEnd), Is.EqualTo(0x5678UL));

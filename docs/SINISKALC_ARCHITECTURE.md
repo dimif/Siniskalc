@@ -71,6 +71,36 @@ Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fak
 A game's tests reference only that game's project, so they build the game from its module factory and never see the other game or the exe (`Homm3LayeringTests`, `Homm2LayeringTests`).
 `Siniskalc.Tests` mirrors the exe: it references both games and tests the application as a whole (`AppServices`, the shell with both games), with a few savegames of each game.
 
+## Standard game definitions
+
+The standard entity data belongs to each game, not to Core or the shared Heroes projects.
+`GameData\Homm2` and `GameData\Homm3` beside the application contain the shipped JSON for the supported versions.
+Files are resolved relative to the application, never the current working directory.
+The game's project copies its definitions to build and publish output; the files must be distributed with the executable.
+
+`AppServices` supplies one `IGameDefinitionReader` (`JsonGameDefinitionReader`) to the game module factories.
+At startup they read and validate their standard definitions and build typed, immutable catalogs.
+Opening a savefile selects its version's already loaded data; it does not read the definitions again.
+Every document and its collaborators retain that catalog snapshot throughout loading, editing, pending changes, undo/redo and saving.
+There is no mutable global current catalog and neither game can change the other's definitions.
+
+JSON holds creature and ability data, artifacts and their supported effects, factions, castle buildings, supported map-object definitions, spells, hero/faction mappings, secondary skills, spell groupings and war machines where applicable.
+References use stable entity IDs rather than localized names or positions in a list.
+Save codes remain format-specific; in particular a castle building's bit is interpreted in the context of its faction, not as a globally unique entity code.
+Readers, independent safe serializers, reducers, finders and pages use the same typed catalog, not JSON documents.
+
+Definitions supply data and parameters for implemented behaviours, not executable scripts.
+New faction content can use existing dwelling, building and effect policies without adding faction-specific branches.
+Binary offsets, record sizes, scanning algorithms and encoding stay in the game's Data layer.
+The format's fixed capacities still apply: adding data does not enlarge a hero table, spell bitset or building mask, and does not add support to the game executable itself.
+Genuinely new binary layouts or behaviour implementations still require C#.
+
+Definitions are read once per application run.
+After editing JSON, restart the editor; reopening a savefile is not enough.
+There are no custom profiles, user overrides, live reload or in-app entity editor.
+Invalid or missing standard definitions prevent startup with `GameDefinitionException`; correct or restore the named file and restart.
+This does not change the separate rule that an unknown value inside a savefile loads safely and its original bytes are preserved.
+
 ## Adding a game
 
 A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:

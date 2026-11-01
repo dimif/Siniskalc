@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestDefinitions\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestDefinitions\baseline\*.txt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\TestData\Homm2\**\*.GM1" Link="TestData\Homm2\%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

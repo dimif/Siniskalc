@@ -17,18 +17,17 @@
     /// </remarks>
     public sealed class CastleBytesLoader : ICastleBytesLoader
     {
-        private const int MaxCreatureCode = 200;
         private const int MaxNameLength = 48;
         private const int MaxMageGuildLevel = 5;
         private const int MaxSpellCount = 8;
 
-        private static readonly int MaxFactionCode = Faction.All.Where(f => f != Faction.Neutral).Max(f => f.Code);
-
         private readonly Encoding encoding;
+        private readonly EntityCatalog catalog;
 
-        public CastleBytesLoader(Encoding encoding)
+        public CastleBytesLoader(Encoding encoding, EntityCatalog catalog)
         {
             this.encoding = encoding;
+            this.catalog = catalog;
         }
 
         public IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes)
@@ -53,7 +52,7 @@
                 var length = BitConverter.ToUInt16(bytes, i + CastleLayout.NamePrefixLength);
                 var nameEnd = start + CastleLayout.Name + length;
                 var tailEnd = nameEnd + CastleLayout.ChunkTailFromNameEnd;
-                if (start < 0 || length == 0 || length > MaxNameLength || tailEnd > bytes.Length || !IsCastle(bytes, start, nameEnd, length))
+                if (start < 0 || length == 0 || length > MaxNameLength || tailEnd > bytes.Length || !this.IsCastle(bytes, start, nameEnd, length))
                 {
                     continue;
                 }
@@ -70,7 +69,7 @@
             return chunks.AsReadOnly();
         }
 
-        private static bool IsCastle(byte[] bytes, int start, int nameEnd, int nameLength)
+        private bool IsCastle(byte[] bytes, int start, int nameEnd, int nameLength)
         {
             var owner = bytes[start + CastleLayout.Owner];
             if (owner >= Constants.Player.ColorCount && owner != Constants.ByteOff)
@@ -78,7 +77,7 @@
                 return false;
             }
 
-            if (bytes[start + CastleLayout.BuiltThisTurn] > 1 || bytes[start + CastleLayout.Faction] > MaxFactionCode)
+            if (bytes[start + CastleLayout.BuiltThisTurn] > 1 || this.catalog.Factions.Find(bytes[start + CastleLayout.Faction]) is not { IsNeutral: false })
             {
                 return false;
             }
@@ -95,7 +94,7 @@
             {
                 var type = BitConverter.ToInt32(bytes, start + CastleLayout.GarrisonTypes + (slot * 4));
                 var count = BitConverter.ToInt32(bytes, start + CastleLayout.GarrisonCounts + (slot * 4));
-                if ((type != -1 && (type < 0 || type > MaxCreatureCode)) || count < 0)
+                if ((type != -1 && (type < 0 || type > byte.MaxValue)) || count < 0)
                 {
                     return false;
                 }

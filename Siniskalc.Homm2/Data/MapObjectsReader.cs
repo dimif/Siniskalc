@@ -17,6 +17,13 @@
         /// </summary>
         public const int HiddenShrine = 0x100;
 
+        private readonly GameCatalogs catalogs;
+
+        public MapObjectsReader(GameCatalogs catalogs)
+        {
+            this.catalogs = catalogs;
+        }
+
         /// <inheritdoc/>
         public MapObjectChunks Read(byte[] bytes, SaveLayout layout)
         {
@@ -26,11 +33,12 @@
             var size = layout.Width;
             var sphinxTiles = tiles < 0 ? [] : MapTileTable.Find(objects, size, MapObjectLayout.Sphinx);
             var firstTable = tiles < 0 ? int.MaxValue : tiles;
+            var catalog = this.catalogs.For(layout.Version);
 
             return new MapObjectChunks(
-                tiles < 0 ? [] : ReadMines(bytes, layout, mapStart, tiles),
-                tiles < 0 ? [] : ReadShrines(bytes, layout, tiles, objects),
-                ReadSphinxes(bytes, mapStart, firstTable, sphinxTiles),
+                tiles < 0 ? [] : ReadMines(bytes, layout, mapStart, tiles, catalog),
+                tiles < 0 ? [] : ReadShrines(bytes, layout, tiles, objects, catalog),
+                ReadSphinxes(bytes, mapStart, firstTable, sphinxTiles, catalog),
                 [new MapObjectChunk("Current turn", bytes.AsSpan(layout.CurrentHumanStart, 1).ToArray(), layout.CurrentHumanStart, null, 0, PlayerRecordOrder.Pack(PlayerRecordOrder.ColorsOf(bytes, layout)))],
                 ReadBuiltToday(bytes, mapStart));
         }
@@ -41,7 +49,7 @@
             return [new MapObjectChunk("Built this turn", bytes.AsSpan(start, MapObjectLayout.BuiltTodaySize).ToArray(), start, null, 0)];
         }
 
-        private static List<MapObjectChunk> ReadMines(byte[] bytes, SaveLayout layout, int mapStart, int tiles)
+        private static List<MapObjectChunk> ReadMines(byte[] bytes, SaveLayout layout, int mapStart, int tiles, GameCatalog catalog)
         {
             var size = layout.Width;
             var chunks = new List<MapObjectChunk>();
@@ -60,7 +68,7 @@
                 }
 
                 var position = new MapPosition(x, y);
-                chunks.Add(new MapObjectChunk(MineKinds.NameAt((MineKind)kind, position, hasLevels: false), bytes.AsSpan(offset, MapObjectLayout.MineRecordSize).ToArray(), offset, position, chunks.Count, kind, parts));
+                chunks.Add(new MapObjectChunk($"{catalog.Mines.Find(kind)!.Name} at {position.X}, {position.Y}", bytes.AsSpan(offset, MapObjectLayout.MineRecordSize).ToArray(), offset, position, chunks.Count, kind, parts));
             }
 
             return chunks;
@@ -101,7 +109,7 @@
             return addon + 2 <= bytes.Length && IsFlagOrEmpty(addon) ? addon : null;
         }
 
-        private static List<MapObjectChunk> ReadShrines(byte[] bytes, SaveLayout layout, int tiles, byte[] objects)
+        private static List<MapObjectChunk> ReadShrines(byte[] bytes, SaveLayout layout, int tiles, byte[] objects, GameCatalog catalog)
         {
             var size = layout.Width;
             var chunks = new List<MapObjectChunk>();
@@ -122,13 +130,13 @@
                 var offset = tiles + (tile * MapTileTable.TileSize);
                 var hidden = bytes[offset + MapTileTable.ObjectOffset] == MapObjectLayout.HeroMarker;
                 var position = new MapPosition(tile % size, tile / size);
-                chunks.Add(new MapObjectChunk($"Shrine at {position.X}, {position.Y}", bytes.AsSpan(offset + MapObjectLayout.TileQuantity, 2).ToArray(), offset + MapObjectLayout.TileQuantity, position, chunks.Count, circle | (hidden ? HiddenShrine : 0)));
+                chunks.Add(new MapObjectChunk(catalog.MapObjects.Single(o => o.Role == MapObjectRole.ShrineMarker).FormatName(position.X, position.Y), bytes.AsSpan(offset + MapObjectLayout.TileQuantity, 2).ToArray(), offset + MapObjectLayout.TileQuantity, position, chunks.Count, circle | (hidden ? HiddenShrine : 0)));
             }
 
             return chunks;
         }
 
-        private static List<MapObjectChunk> ReadSphinxes(byte[] bytes, int mapStart, int end, IReadOnlyList<MapPosition> tiles)
+        private static List<MapObjectChunk> ReadSphinxes(byte[] bytes, int mapStart, int end, IReadOnlyList<MapPosition> tiles, GameCatalog catalog)
         {
             var found = new List<(int Start, int Length)>();
             var limit = Math.Min(end, bytes.Length);
@@ -158,7 +166,7 @@
 
             return found
                 .Select((block, index) => new MapObjectChunk(
-                    $"Sphinx {index + 1}",
+                    catalog.MapObjects.Single(o => o.Role == MapObjectRole.SphinxUnlocated).FormatName(index + 1),
                     bytes.AsSpan(block.Start, block.Length).ToArray(),
                     block.Start,
                     tiles.Count == found.Count ? tiles[index] : null,

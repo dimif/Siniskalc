@@ -37,29 +37,29 @@
                 {
                     Army = new Army<Creature>(
                     [
-                        new ArmySlot<Creature>(Creature.BlackDragon, 7),
-                        new ArmySlot<Creature>(Creature.Titan, 3),
-                        new ArmySlot<Creature>(Creature.Phoenix, 5),
-                        new ArmySlot<Creature>(Creature.Paladin, 20),
-                        new ArmySlot<Creature>(Creature.Peasant, 100),
+                        new ArmySlot<Creature>(TestCatalog.Standard.Creatures["BlackDragon"], 7),
+                        new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Titan"], 3),
+                        new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Phoenix"], 5),
+                        new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Paladin"], 20),
+                        new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Peasant"], 100),
                     ]),
                 })),
                 Make("E04SKILL", 5, "Maximus's primary skills", "Maximus has attack 15, defense 15, spell power 15 and knowledge 15.", game => Hero(game, 7, h => h with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) })),
                 Make("E05SKL2", 5, "Maximus's secondary skills", "Maximus has eight skills: Expert Wisdom, Expert Mysticism, Expert Logistics, Expert Pathfinding, Advanced Archery, Advanced Leadership, Basic Luck and Basic Estates.", game => Hero(game, 7, h => h with
                 {
                     SecondarySkills = SecondarySkills.None
-                        .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
-                        .WithSkill(SecondarySkill.Mysticism, SkillLevel.Expert)
-                        .WithSkill(SecondarySkill.Logistics, SkillLevel.Expert)
-                        .WithSkill(SecondarySkill.Pathfinding, SkillLevel.Expert)
-                        .WithSkill(SecondarySkill.Archery, SkillLevel.Intermediate)
-                        .WithSkill(SecondarySkill.Leadership, SkillLevel.Intermediate)
-                        .WithSkill(SecondarySkill.Luck, SkillLevel.Beginner)
-                        .WithSkill(SecondarySkill.Estates, SkillLevel.Beginner),
+                        .WithSkill(TestCatalog.Standard.Skills["Wisdom"], SkillLevel.Expert)
+                        .WithSkill(TestCatalog.Standard.Skills["Mysticism"], SkillLevel.Expert)
+                        .WithSkill(TestCatalog.Standard.Skills["Logistics"], SkillLevel.Expert)
+                        .WithSkill(TestCatalog.Standard.Skills["Pathfinding"], SkillLevel.Expert)
+                        .WithSkill(TestCatalog.Standard.Skills["Archery"], SkillLevel.Intermediate)
+                        .WithSkill(TestCatalog.Standard.Skills["Leadership"], SkillLevel.Intermediate)
+                        .WithSkill(TestCatalog.Standard.Skills["Luck"], SkillLevel.Beginner)
+                        .WithSkill(TestCatalog.Standard.Skills["Estates"], SkillLevel.Beginner),
                 })),
                 Make("E06ARTI", 10, "Maximus's artifacts", "Maximus (who has the spell book) also carries the Ultimate Sword of Dominion, the Thunder Mace of Dominion, the Ice Cloak, the Evercold Icicle and the Ammo Cart, and his attack is 15 (2 and the 12 and 1 of the two weapons; the game keeps the bonuses in the skills).", game => Hero(game, 7, h => h
-                    .WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.ThunderMaceOfDominion).WithArtifact(Artifact.IceCloak).WithArtifact(Artifact.EvercoldIcicle).WithArtifact(Artifact.AmmoCart))),
-                Make("E07BOOK", 1, "A spell book and every spell for Maximus", "Maximus has a spell book with all 65 spells (the save starts without a book).", game => Hero(game, 7, h => h.WithSpellBook() with { Spells = new SpellSet<Spell>(Spell.All) })),
+                    .WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).WithArtifact(TestCatalog.Standard.Artifacts["ThunderMaceOfDominion"]).WithArtifact(TestCatalog.Standard.Artifacts["IceCloak"]).WithArtifact(TestCatalog.Standard.Artifacts["EvercoldIcicle"]).WithArtifact(TestCatalog.Standard.Artifacts["AmmoCart"]))),
+                Make("E07BOOK", 1, "A spell book and every spell for Maximus", "Maximus has a spell book with all 65 spells (the save starts without a book).", game => Hero(game, 7, h => h.WithSpellBook() with { Spells = new SpellSet<Spell>(TestCatalog.Standard.Spells) })),
                 Make("E08LEVEL", 5, "Maximus's level, experience and movement", "Maximus is level 10 with 14,700 experience, and has all his movement points (1,000) although he has none left in the original.", game => Hero(game, 7, h => h with { HeroLevel = new HeroLevel(14_700, 10), MovementPoints = h.MovementPoints with { Current = h.MovementPoints.Max } })),
                 Make("E09CAST", 5, "Xabran's buildings and creatures", "Xabran has the dwellings 3 and 4 built on top of the first two (hut, archery range, blacksmith, armory), a tavern, a statue and a well, and 20 creatures wait in each dwelling that is built.", game => Castle(game, 3, c => c with
                 {
@@ -70,9 +70,9 @@
                 Make("E10GARR", 5, "Xabran's garrison", "Xabran has a garrison of 10 Paladins, 20 Cavalry and 5 Champions; open the castle to see it.", game => Castle(game, 3, c => c with
                 {
                     Garrison = c.Garrison
-                        .WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10))
-                        .WithSlot(1, new ArmySlot<Creature>(Creature.Cavalry, 20))
-                        .WithSlot(2, new ArmySlot<Creature>(Creature.Champion, 5)),
+                        .WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Paladin"], 10))
+                        .WithSlot(1, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Cavalry"], 20))
+                        .WithSlot(2, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Champion"], 5)),
                 })),
                 Make("E11OWNR", 13, "Corackston given to Blue", "Blue owns Corackston (a town without a castle) as well as Xabran; it is in the list of Blue's castles. Its garrison is the neutral one.", game =>
                 {
@@ -81,13 +81,13 @@
                 Make("E12ALL", 10, "Everything above that is in a save of the same game", "Gold, resources, army, primary skills (15 each, the sword included), secondary skills, artifacts and the garrison of Xabran changed together (Blue has only Xabran in this save; the second town is in E11OWNR).", game =>
                 {
                     Player(game, 0, p => p with { Resources = new ResourceSet(500, 500, 500, 500, 500, 500, 50_000) });
-                    Hero(game, 7, h => h.WithArtifact(Artifact.UltimateSwordOfDominion).WithArtifact(Artifact.IceCloak) with
+                    Hero(game, 7, h => h.WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).WithArtifact(TestCatalog.Standard.Artifacts["IceCloak"]) with
                     {
                         PrimarySkills = new PrimarySkills(15, 15, 15, 15),
-                        Army = new Army<Creature>([new ArmySlot<Creature>(Creature.BlackDragon, 7), new ArmySlot<Creature>(Creature.Titan, 3), null, null, null]),
-                        SecondarySkills = h.SecondarySkills.WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert),
+                        Army = new Army<Creature>([new ArmySlot<Creature>(TestCatalog.Standard.Creatures["BlackDragon"], 7), new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Titan"], 3), null, null, null]),
+                        SecondarySkills = h.SecondarySkills.WithSkill(TestCatalog.Standard.Skills["Wisdom"], SkillLevel.Expert),
                     });
-                    Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(Creature.Paladin, 10)) });
+                    Castle(game, 3, c => c with { Garrison = c.Garrison.WithSlot(0, new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Paladin"], 10)) });
                 }),
             ];
         }

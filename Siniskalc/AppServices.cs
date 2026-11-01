@@ -32,9 +32,10 @@
         /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
         /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
         /// <param name="loggerFactory">Makes the loggers; the application leaves it out and gets the log file of the user, tests give a silent one.</param>
+        /// <param name="definitions">Reads the shipped game definitions; tests can supply definitions of their own.</param>
         /// <exception cref="SettingsException">The settings file exists but cannot be read.</exception>
         /// <exception cref="LoggingException">The log folder the user chose cannot be used, or the Serilog configuration cannot be read or built.</exception>
-        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null)
+        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null, IGameDefinitionReader? definitions = null)
         {
             this.BytesPatcher = new SavefileBytesPatcher();
             var settingsFile = settingsPath ?? UserSettings.PathFor(AppInfo.Name);
@@ -53,8 +54,9 @@
             this.About = CreateAboutInfo();
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl, LogPaths.Resolve(this.Settings.Settings, AppInfo.Name));
 
-            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText);
-            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText);
+            var definitionReader = definitions ?? new JsonGameDefinitionReader();
+            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, definitionReader);
+            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText, definitionReader);
 
             Logger.LogInformation(
                 "Started {App} {Version} on {Os} with {Runtime}",

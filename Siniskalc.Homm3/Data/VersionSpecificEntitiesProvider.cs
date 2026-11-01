@@ -1,23 +1,23 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data;
+
+using System.Collections.Generic;
+using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Models;
+
+public sealed class VersionSpecificEntitiesProvider
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
-
-    /// <summary>
-    /// Provides entities that exist in savefiles of a specific game version, e.g. HotA adds skills and the cannon.
-    /// </summary>
-    public sealed class VersionSpecificEntitiesProvider(GameVersion gameVersion, IGrantedSpellsResolver grantedSpellsResolver)
+    public VersionSpecificEntitiesProvider(EntityCatalog catalog, IGrantedSpellsResolver grantedSpellsResolver)
     {
-        public GameVersion GameVersion { get; } = gameVersion;
-
-        public IGrantedSpellsResolver GrantedSpellsResolver { get; } = grantedSpellsResolver;
-
-        public IReadOnlyList<SecondarySkill> SecondarySkills { get; } = SecondarySkill.All.Where(s => s.IsAvailableIn(gameVersion)).ToList();
-
-        public IReadOnlyList<WarMachine> WarMachines { get; } = WarMachine.All.Where(w => w.IsAvailableIn(gameVersion)).ToList();
-
-        public IReadOnlyList<Spell> Spells { get; } = Spell.All.Where(s => s.IsAvailableIn(gameVersion)).ToList();
+        this.Catalog = catalog;
+        this.GrantedSpellsResolver = grantedSpellsResolver;
+        this.CreatureCodes = new CreatureCodes(catalog);
     }
+
+    public EntityCatalog Catalog { get; }
+    public GameVersion GameVersion => this.Catalog.Version;
+    public IGrantedSpellsResolver GrantedSpellsResolver { get; }
+    public CreatureCodes CreatureCodes { get; }
+    public IReadOnlyList<SecondarySkill> SecondarySkills => this.Catalog.SecondarySkills.All;
+    public IReadOnlyList<WarMachine> WarMachines => this.Catalog.WarMachines.All;
+    public IReadOnlyList<Spell> Spells => this.Catalog.Spells.All;
 }

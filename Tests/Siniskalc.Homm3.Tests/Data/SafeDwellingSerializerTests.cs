@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Data
         private static RecordChunk Blank() => new("Dwelling", new byte[DwellingLayout.RecordSize], 0, 0);
 
         private static DwellingModel Dwelling(PlayerColor? owner = null, long stock = 0) =>
-            new(0, Creature.Centaur.Code, Creature.Centaur, owner ?? PlayerColor.Neutral, new MapPosition(1, 2), stock);
+            new(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur").Code, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), owner ?? PlayerColor.Neutral, new MapPosition(1, 2), stock);
 
         private static RecordChunk WithBytes(RecordChunk chunk, params (int Offset, byte Value)[] bytes)
         {

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "FixtureBeam",
+    "order": 138,
+    "name": "Astral Beam",
+    "code": 200,
+    "availableFrom": "hornOfTheAbyss",
+    "isRanged": true
+  }
+]

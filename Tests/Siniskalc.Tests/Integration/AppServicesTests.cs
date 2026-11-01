@@ -1,5 +1,7 @@
 namespace Siniskalc.Tests.Integration
 {
+    using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Homm3.ViewModels;
     using Siniskalc.Wpf.ViewModels;
@@ -65,6 +67,61 @@ namespace Siniskalc.Tests.Integration
 
             Assert.That(this.services.Homm3.ValidateSavegameName(name), Is.Null);
             Assert.That(this.services.Homm2.ValidateSavegameName(name), Does.Contain("would not show in the game"));
+        }
+
+        [Test]
+        public void BothGamesReadTheirDefinitionsAtStartupAndNeverWhenOpeningASavegame()
+        {
+            var reader = new StartupDefinitionReader();
+            var application = new AppServices(
+                settingsPath: Path.Combine(this.folder, "catalog-settings.json"),
+                loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
+                definitions: reader);
+
+            Assert.That(reader.Paths, Has.Some.Contains("Homm2"));
+            Assert.That(reader.Paths, Has.Some.Contains("Homm3"));
+            reader.StartupFinished = true;
+            var editor = application.CreateShellViewModel();
+
+            editor.LoadGame(Saves.Homm2());
+            editor.LoadGame(Saves.Homm3());
+            editor.LoadGame(Saves.Homm2());
+
+            Assert.That(editor.Editor, Is.InstanceOf<Homm2EditorViewModel>());
+        }
+
+        [Test]
+        public void MissingStandardDefinitionsPreventTheApplicationFromStarting()
+        {
+            var reader = new StartupDefinitionReader { StartupFinished = true };
+
+            Assert.That(
+                () => new AppServices(
+                    settingsPath: Path.Combine(this.folder, "missing-settings.json"),
+                    loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
+                    definitions: reader),
+                Throws.TypeOf<GameDefinitionException>());
+        }
+
+        private sealed class StartupDefinitionReader : IGameDefinitionReader
+        {
+            private readonly IGameDefinitionReader files = new JsonGameDefinitionReader();
+
+            public bool StartupFinished { get; set; }
+
+            public List<string> Paths { get; } = [];
+
+            public T Read<T>(string relativePath)
+                where T : class
+            {
+                if (this.StartupFinished)
+                {
+                    throw new GameDefinitionException(relativePath, "Definitions were requested outside startup.");
+                }
+
+                this.Paths.Add(relativePath);
+                return this.files.Read<T>(relativePath);
+            }
         }
     }
 }

@@ -25,8 +25,8 @@ namespace Siniskalc.Homm2.ViewModels
             : base("Map", game.History, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
             var document = game.History.Current;
-            var spellNames = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
-            var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.History.CreateShrineSession(i), spellNames)).ToList();
+            var spellNames = game.Catalog.Spells.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
+            var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.Catalog, game.History.CreateShrineSession(i), spellNames)).ToList();
             this.ShrineList = new SortableListViewModel<ShrineRowViewModel>(
                 shrines,
                 new Dictionary<string, Func<ShrineRowViewModel, IComparable>>
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm2.ViewModels
                     ["Y"] = s => (s.Y, s.X),
                     ["Spell"] = s => s.SpellName,
                 });
-            this.Sphinxes = Enumerable.Range(0, document.Sphinxes().Count).Select(i => new SphinxViewModel(game.History.CreateSphinxSession(i), game.GameVersion)).ToList();
+            this.Sphinxes = Enumerable.Range(0, document.Sphinxes().Count).Select(i => new SphinxViewModel(game.Catalog, game.History.CreateSphinxSession(i), game.GameVersion)).ToList();
             this.Records = byteEditTargets == null ? [] : RecordsOf(game.History, byteEditTargets);
             this.selectedRecord = this.Records.FirstOrDefault();
             this.Refresh();

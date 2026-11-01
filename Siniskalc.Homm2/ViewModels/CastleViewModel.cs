@@ -59,6 +59,7 @@
                 toolTip: "Whether a building can still be built in this town today. The game allows one building per town per day.");
 
             this.GarrisonEditor = new ArmyViewModel(
+                game.Catalog,
                 game.GameVersion,
                 () => this.session.Current.Garrison,
                 edit => this.session.Update(c => c with { Garrison = edit(c.Garrison) }));
@@ -73,33 +74,14 @@
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
 
             var faction = this.castle.Faction;
-            this.buildings =
-            [
-                this.Building("Castle", TownBuildings.Castle, "A town becomes a castle when it is built."),
-                this.Building("Tavern", TownBuildings.Tavern),
-                this.Building("Thieves' Guild", TownBuildings.ThievesGuild),
-                this.Building("Shipyard", TownBuildings.Shipyard),
-                this.Building("Well", TownBuildings.Well),
-                this.Building("Statue", TownBuildings.Statue),
-                this.Building("Marketplace", TownBuildings.Marketplace),
-                this.Building("Left turret", TownBuildings.LeftTurret),
-                this.Building("Right turret", TownBuildings.RightTurret),
-                this.Building("Moat", TownBuildings.Moat),
-                this.Building("Captain's quarters", TownBuildings.CaptainsQuarters),
-                this.Building(TownBuildingNames.SecondWellOf(faction), TownBuildings.GrowthBuilding, "More creatures every week. Found in the savegames of Threedom; not tried in the game."),
-            ];
-
-            this.buildings = faction == Faction.Wizard
-                ?
-                [
-                    .. this.buildings,
-                    new ToggleRowViewModel(
-                        TownBuildingNames.SpecialOf(faction),
+            this.buildings = game.Catalog.Buildings.Select(building =>
+                building.Role == BuildingRole.Special && faction.HasLibrary
+                    ? new ToggleRowViewModel(
+                        building.NameFor(faction),
                         () => this.session.Current.HasLibrary,
                         built => this.session.Update(c => c.WithLibrary(built)),
-                        toolTip: "Gives each level of the Mage Guild a fourth spell."),
-                ]
-                : [.. this.buildings, this.Building(TownBuildingNames.SpecialOf(faction), TownBuildings.Special, "The special building of the faction. Found in the savegames of Threedom; not tried in the game.")];
+                        toolTip: building.DescriptionFor(faction))
+                    : this.Building(building.NameFor(faction), building.Flag, building.DescriptionFor(faction))).ToList();
 
             this.GuildLevelField = new ChoiceFieldViewModel(
                 "Level",
@@ -108,7 +90,7 @@
                 name => this.session.Update(c => c.WithMageGuildLevel(name == "None" ? 0 : name[^1] - '0')),
                 toolTip: "Builds the Mage Guild to this level, or takes it down. Each level shows 3, 3, 2, 2 and 1 spells (one more with the Library of a Wizard).");
 
-            var spells = Spell.All.Where(s => s.IsAvailableIn(game.GameVersion)).ToList();
+            var spells = game.Catalog.Spells.Where(s => s.IsAvailableIn(game.GameVersion)).ToList();
             var (original, current) = (this.session.Original, this.session.Current);
             this.guildLevels = Enumerable.Range(1, Constants.Castle.MageGuildLevels)
                 .Select(level => new GuildLevelViewModel(
@@ -118,7 +100,7 @@
                             $"Spell {slot + 1}",
                             GuildSpellChoices(spells, level, original.MageGuildSpell(level, slot), current.MageGuildSpell(level, slot)),
                             () => this.session.Current.MageGuildSpell(level, slot)?.Name ?? NoSpell,
-                            name => this.session.Update(c => c.WithMageGuildSpell(level, slot, name == NoSpell ? null : AbstractEnumeration.FromName<Spell>(name))),
+                            name => this.session.Update(c => c.WithMageGuildSpell(level, slot, name == NoSpell ? null : game.Catalog.Spells.FindName(name))),
                             () => this.session.Current.MageGuildLevel >= level && slot < this.session.Current.MageGuildSpellCounts[level - 1],
                             $"A guild of level {level} teaches spells of level {level}, as every guild of the test saves does; the spell levels are read from those saves and not all were checked in the game. A spell of another level that the savegame has here is kept. The guild shows only the spells counted for its level: three at the first levels, and a fourth only with the Library of a Wizard."))
                         .ToList()))
@@ -135,7 +117,7 @@
 
         public string ColorHex => PlayerPalette.Of(this.castle.Owner);
 
-        public string FactionName => this.castle.Faction == Faction.Neutral ? "Unknown faction" : this.castle.Faction.ToString();
+        public string FactionName => this.castle.Faction.IsNeutral ? "Unknown faction" : this.castle.Faction.ToString();
 
         /// <summary>
         /// Gets what the settlement is: a castle, or a town that has none built.
@@ -275,7 +257,7 @@
         private DwellingRowViewModel CreateDwelling(int dwelling)
         {
             // The creatures of the level, in the order of the table: the dwelling, then what its upgrades make.
-            var creatures = this.castle.Faction != Faction.Neutral ? Creature.ForFaction(this.castle.Faction).Where(c => c.Tier == dwelling).Select(c => c.Name).ToList() : [];
+            var creatures = !this.castle.Faction.IsNeutral ? this.castle.Faction.Creatures.Where(c => c.Tier == dwelling).Select(c => c.Name).ToList() : [];
             var levels = new List<string> { NotBuilt };
             levels.AddRange(Enumerable.Range(0, CastleModel.MaxDwellingLevel(this.castle.Faction, dwelling)).Select(i => i < creatures.Count ? creatures[i] : $"Dwelling {dwelling}"));
             return new DwellingRowViewModel(

@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Castle(string save, string name)
         {
             var castles = Load(save).History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName(name)]);
         }
 
         [TestCaseSource(nameof(Saves))]
@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             Assert.That(castle.Faction?.Name, Is.EqualTo(faction));
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Red));
-            Assert.That(castle.Buildings, Is.EquivalentTo(new[] { Building.VillageHall }));
+            Assert.That(castle.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("VillageHall") }));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(0));
         }
 
@@ -90,9 +90,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var townHall = Castle("roe_09_town_hall", "2_Rampart");
             var cityHall = Castle("roe_11_city_hall", "2_Rampart");
 
-            Assert.That(townHall.VisibleBuildings, Does.Contain(Building.TownHall).And.Not.Contain(Building.VillageHall));
-            Assert.That(cityHall.VisibleBuildings, Does.Contain(Building.CityHall).And.Not.Contain(Building.TownHall));
-            Assert.That(cityHall.Buildings, Does.Contain(Building.VillageHall).And.Contain(Building.TownHall));
+            Assert.That(townHall.VisibleBuildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("TownHall")).And.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("VillageHall")));
+            Assert.That(cityHall.VisibleBuildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("CityHall")).And.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("TownHall")));
+            Assert.That(cityHall.Buildings, Does.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("VillageHall")).And.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Buildings.ById("TownHall")));
         }
 
         [TestCaseSource(nameof(Saves))]
@@ -100,7 +100,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Castle(save, "Elfwind");
 
-            Assert.That(castle.Faction, Is.EqualTo(Faction.Rampart));
+            Assert.That(castle.Faction, Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Factions.ById("Rampart")));
             Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Neutral));
             Assert.That(castle.Buildings, Has.Count.EqualTo(4));
         }
@@ -112,7 +112,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             {
                 foreach (var chunk in Load(save).History.Current.Castles())
                 {
-                    var written = TestServices.SerializeCastle(chunk, TestServices.CastleDeserializer.Deserialize(chunk));
+                    var written = TestServices.SerializeCastle(chunk, new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(chunk));
 
                     Assert.That(written.HasSameBytes(chunk), Is.True, $"{chunk.Name} in {save}");
                 }

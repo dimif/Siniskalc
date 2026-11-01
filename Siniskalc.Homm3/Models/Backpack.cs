@@ -24,7 +24,7 @@
         public Backpack WithSlot(int index, Artifact? artifact, Spell? spell = null)
         {
             var artifacts = (BackpackSlot?[])this.artifacts.Clone();
-            artifacts[index] = artifact == null ? null : new BackpackSlot(index, artifact, artifact == Artifact.SpellScroll ? spell : null);
+            artifacts[index] = artifact == null ? null : new BackpackSlot(index, artifact, artifact.IsScroll ? spell : null);
             return new Backpack(artifacts);
         }
     }

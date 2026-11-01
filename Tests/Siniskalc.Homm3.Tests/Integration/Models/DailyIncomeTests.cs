@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.Models
 {
@@ -42,7 +42,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
 
             foreach (var castle in castles)
             {
-                var expected = castle.HasBuilt(Building.Capitol) ? 4000 : castle.HasBuilt(Building.CityHall) ? 2000 : castle.HasBuilt(Building.TownHall) ? 1000 : castle.HasBuilt(Building.VillageHall) ? 500 : 0;
+                var expected = castle.HasBuilt(BuildingType.Capitol) ? 4000 : castle.HasBuilt(BuildingType.CityHall) ? 2000 : castle.HasBuilt(BuildingType.TownHall) ? 1000 : castle.HasBuilt(BuildingType.VillageHall) ? 500 : 0;
                 Assert.That(DailyIncome.HallGold(castle), Is.EqualTo(expected), castle.Name);
                 Assert.That(DailyIncome.Of(castle.Owner, [], [castle]).Gold, Is.EqualTo(expected), castle.Name);
             }

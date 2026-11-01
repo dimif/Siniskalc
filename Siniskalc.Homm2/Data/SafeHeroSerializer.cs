@@ -15,6 +15,13 @@
     /// </summary>
     public sealed class SafeHeroSerializer : ISerializer<HeroChunk, HeroModel>
     {
+        private readonly GameCatalog catalog;
+
+        public SafeHeroSerializer(GameCatalog catalog)
+        {
+            this.catalog = catalog;
+        }
+
         /// <inheritdoc/>
         public HeroChunk Serialize(HeroChunk chunk, HeroModel model)
         {
@@ -46,16 +53,16 @@
                 ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Effects, (uint)model.Effects);
             }
 
-            WriteSecondarySkills(bytes, model.SecondarySkills);
-            ArmyWriter.Write(bytes, HeroLayout.Army, model.Army, CreatureCodes.Instance, nameof(model.Army));
+            this.WriteSecondarySkills(bytes, model.SecondarySkills);
+            ArmyWriter.Write(bytes, HeroLayout.Army, model.Army, new CreatureCodes(this.catalog), nameof(model.Army));
 
             for (var slot = 0; slot < Constants.Hero.ArtifactSlotCount; slot++)
             {
                 var offset = HeroLayout.Artifacts + slot;
-                bytes[offset] = Bytes.ArtifactByte(model.Artifacts.Slots[slot], bytes[offset]);
+                bytes[offset] = Bytes.ArtifactByte(model.Artifacts.Slots[slot], bytes[offset], this.catalog);
             }
 
-            foreach (var spell in Spell.All)
+            foreach (var spell in this.catalog.Spells)
             {
                 var offset = HeroLayout.Spells + spell.Code;
                 var marked = bytes[offset] != 0;
@@ -141,11 +148,11 @@
             ByteBufferHelper.WriteUInt32(bytes, HeroLayout.Destination + 4, destination.Y < 0 ? uint.MaxValue : (uint)destination.Y);
         }
 
-        private static void WriteSecondarySkills(byte[] bytes, SecondarySkills skills)
+        private void WriteSecondarySkills(byte[] bytes, SecondarySkills skills)
         {
             var levels = bytes.AsSpan(HeroLayout.SkillLevels, Constants.Hero.SecondarySkillCount).ToArray();
             var order = bytes.AsSpan(HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount).ToArray();
-            if (Bytes.SecondarySkills(levels, order).Equals(skills))
+            if (Bytes.SecondarySkills(levels, order, this.catalog).Equals(skills))
             {
                 return;
             }

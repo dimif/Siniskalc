@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             Assert.That(() => primarySkills, Is.EqualTo(expectedSkills));
 
-            var ExpectedClass = HeroClass.Knight;
+            var ExpectedClass = TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight");
 
             var heroClass = this.deserializer.DeserializeClass(bytesChunk);
 
@@ -48,8 +48,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 null,
                 null,
                 null,
-                new ArmySlot<Creature>(Creature.FromByte(0x0D)!, 42),
-                new ArmySlot<Creature>(Creature.FromByte(0x0D)!, 41),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.Find(0x0D)!, 42),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.Find(0x0D)!, 41),
                 null,
                 null,
             };
@@ -81,20 +81,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)32));
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(779943));
 
-            Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(hero.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
 
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(32, 32, 35, 23)));
 
             var expectedSkills = new[]
             {
-                (SecondarySkill.Wisdom, SkillLevel.Expert),
-                (SecondarySkill.EarthMagic, SkillLevel.Expert),
-                (SecondarySkill.Ballistics, SkillLevel.Expert),
-                (SecondarySkill.AirMagic, SkillLevel.Expert),
-                (SecondarySkill.Armorer, SkillLevel.Expert),
-                (SecondarySkill.FireMagic, SkillLevel.Expert),
-                (SecondarySkill.WaterMagic, SkillLevel.Expert),
-                (SecondarySkill.Necromancy, SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("EarthMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Ballistics"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("AirMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Armorer"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("FireMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("WaterMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Necromancy"), SkillLevel.Expert),
             };
 
             for (var i = 0; i < expectedSkills.Length; i++)
@@ -106,40 +106,40 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             var expectedCreatures = new ArmySlot<Creature>?[]
             {
-                new ArmySlot<Creature>(Creature.Skeleton, 15),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Skeleton"), 15),
                 null,
-                new ArmySlot<Creature>(Creature.RoyalGriffin, 832),
-                new ArmySlot<Creature>(Creature.Archangel, 145),
-                new ArmySlot<Creature>(Creature.Zealot, 411),
-                new ArmySlot<Creature>(Creature.Champion, 276),
-                new ArmySlot<Creature>(Creature.GoldDragon, 63),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("RoyalGriffin"), 832),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 145),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Zealot"), 411),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Champion"), 276),
+                new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 63),
             };
 
             Assert.That(hero.Army.Slots, Is.EqualTo(expectedCreatures));
 
             var expectedArtifacts = new Dictionary<ArtifactSlots, Artifact>
             {
-                [ArtifactSlots.Helmet] = Artifact.HelmOfChaos,
-                [ArtifactSlots.Weapon] = Artifact.SwordOfJudgement,
-                [ArtifactSlots.Ring1] = Artifact.RingOfTheWayfarer,
-                [ArtifactSlots.Necklace] = Artifact.NecklaceOfSwiftness,
-                [ArtifactSlots.Ring2] = Artifact.EquestriansGloves,
-                [ArtifactSlots.Shield] = Artifact.BucklerOfTheGnollKing,
-                [ArtifactSlots.Torso] = Artifact.TitansCuirass,
-                [ArtifactSlots.Feet] = Artifact.SandalsOfTheSaint,
-                [ArtifactSlots.Cape] = Artifact.VampiresCowl,
-                [ArtifactSlots.Misc1] = Artifact.HideousMask,
-                [ArtifactSlots.Misc2] = Artifact.RunesOfImminency,
-                [ArtifactSlots.Misc3] = Artifact.CardsOfProphecy,
-                [ArtifactSlots.Misc4] = Artifact.MysticOrbOfSpellPoints,
-                [ArtifactSlots.Misc5] = Artifact.CharmOfSpellPoints,
+                [ArtifactSlots.Helmet] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos"),
+                [ArtifactSlots.Weapon] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SwordOfJudgement"),
+                [ArtifactSlots.Ring1] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RingOfTheWayfarer"),
+                [ArtifactSlots.Necklace] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("NecklaceOfSwiftness"),
+                [ArtifactSlots.Ring2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("EquestriansGloves"),
+                [ArtifactSlots.Shield] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BucklerOfTheGnollKing"),
+                [ArtifactSlots.Torso] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("TitansCuirass"),
+                [ArtifactSlots.Feet] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SandalsOfTheSaint"),
+                [ArtifactSlots.Cape] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("VampiresCowl"),
+                [ArtifactSlots.Misc1] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HideousMask"),
+                [ArtifactSlots.Misc2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RunesOfImminency"),
+                [ArtifactSlots.Misc3] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CardsOfProphecy"),
+                [ArtifactSlots.Misc4] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("MysticOrbOfSpellPoints"),
+                [ArtifactSlots.Misc5] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints"),
             };
 
             var actualArtifacts = hero.EquippedArtifacts.GetEquippedArtifacts().ToDictionary(t => t.Item1, t => t.Item2);
 
             Assert.That(actualArtifacts, Is.EquivalentTo(expectedArtifacts));
 
-            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.FirstAidTent }));
+            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent") }));
         }
 
         [Test]
@@ -173,25 +173,25 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var offsets = new HeroOffsets(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss);
             var bytes = File.ReadAllBytes(Path.Combine("TestData", "Heroes", "hero_maximus_pre_hota.bin"));
-            foreach (var spell in Spell.All)
+            foreach (var spell in TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.All)
             {
                 bytes[offsets[HeroOffsetName.SpellBookSpells] + spell.Code] = 0;
                 bytes[offsets[HeroOffsetName.AvailableSpells] + spell.Code] = 0;
             }
 
-            bytes[offsets[HeroOffsetName.SpellBookSpells] + Spell.Haste.Code] = 1;
-            foreach (var spell in new[] { Spell.Haste, Spell.Fireball, Spell.Fly })
+            bytes[offsets[HeroOffsetName.SpellBookSpells] + TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste").Code] = 1;
+            foreach (var spell in new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly") })
             {
                 bytes[offsets[HeroOffsetName.AvailableSpells] + spell.Code] = 1;
             }
 
-            var tome = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Misc1, Artifact.TomeOfFireMagic);
+            var tome = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>()).WithEquipped(ArtifactSlots.Misc1, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("TomeOfFireMagic"));
             var book = this.deserializer.DeserializeSpellBook(new HeroChunk("Maximus", bytes, 0), tome)
                 .WithGrants(new GrantedSpellsResolver(Siniskalc.Homm3.Entities.GameVersion.HornOfTheAbyss).ResolveGrantedSpells(tome), false);
 
-            Assert.That(book.Source(Spell.Fireball), Does.Contain("Tome of Fire Magic"));
-            Assert.That(book.Source(Spell.Fly), Is.EqualTo("Unknown source"));
-            Assert.That(book.WithGrants(new Dictionary<Spell, string>(), false).IsAvailable(Spell.Fireball), Is.False);
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball")), Does.Contain("Tome of Fire Magic"));
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")), Is.EqualTo("Unknown source"));
+            Assert.That(book.WithGrants(new Dictionary<Spell, string>(), false).IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball")), Is.False);
         }
     }
 }

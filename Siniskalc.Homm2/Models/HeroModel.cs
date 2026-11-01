@@ -143,11 +143,11 @@
         /// Returns the hero with the Magic Book in its first free slot (nothing changes when it has it already).
         /// </summary>
         /// <exception cref="GameRuleException">The hero has no free artifact slot.</exception>
-        public HeroModel WithSpellBook() => this.HasSpellBook ? this : this with { Artifacts = this.Artifacts.Add(Artifact.MagicBook) };
+        public HeroModel WithSpellBook() => this.HasSpellBook ? this : this with { Artifacts = this.Artifacts.Add(this.Faction.Catalog.SpellBook) };
 
         /// <summary>
         /// Returns the hero without the Magic Book. The spells it had stay marked, as they do in the game.
         /// </summary>
-        public HeroModel WithoutSpellBook() => this with { Artifacts = this.Artifacts.Remove(Artifact.MagicBook) };
+        public HeroModel WithoutSpellBook() => this with { Artifacts = this.Artifacts.Remove(this.Faction.Catalog.SpellBook) };
     }
 }

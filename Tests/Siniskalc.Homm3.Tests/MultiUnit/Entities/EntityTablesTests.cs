@@ -9,12 +9,12 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
     [Category(TestKinds.MultiUnit)]
     internal sealed class EntityTablesTests
     {
-        private static readonly Faction[] AllFactions = Faction.All.Where(f => f != Faction.Neutral).ToArray();
+        private static readonly Faction[] AllFactions = TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.All.Where(f => f != TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Neutral")).ToArray();
 
         [Test]
         public void ABuildingsTypeAgreesWithItsBit()
         {
-            foreach (var building in Building.All)
+            foreach (var building in TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.All)
             {
                 var common = building.Faction == null;
                 Assert.That(building.IsMageGuild, Is.EqualTo(common && building.Code < 5), building.Name);
@@ -56,11 +56,11 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
         [Test]
         public void ACreatureIsRangedExactlyWhenItHasShots()
         {
-            foreach (var creature in Creature.All)
+            foreach (var creature in TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All)
             {
-                foreach (var info in new[] { creature.Info }.Concat(creature.VersionInfo.Values))
+                foreach (var info in TestCatalog.Catalogs.Values.Select(c => c.Creatures.ById(creature.Id).Info))
                 {
-                    var ranged = info.Special?.Contains(CreatureAbility.Ranged) ?? false;
+                    var ranged = info.Special?.Any(a => a.IsRanged) ?? false;
                     Assert.That(ranged, Is.EqualTo(info.Shots > 0), creature.Name);
                 }
             }
@@ -71,7 +71,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
         {
             foreach (var faction in AllFactions)
             {
-                var classes = HeroClass.All.Where(c => c.Faction == faction).ToList();
+                var classes = TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.All.Where(c => c.Faction == faction).ToList();
 
                 Assert.That(classes.Select(c => c.Type), Is.EquivalentTo(new[] { HeroClassType.Might, HeroClassType.Magic }), faction.Name);
             }

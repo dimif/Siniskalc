@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Models
         /// Gets whether the game builds <paramref name="building"/> by itself once what it needs exists: the upgraded horde
         /// buildings, whose bits are 19 and 25.
         /// </summary>
-        public static bool IsAutomatic(Building building) => building.Faction != null && (building.Code == 19 || building.Code == 25);
+        public static bool IsAutomatic(Building building) => building.Automatic;
 
         /// <summary>
         /// Returns the buildings that <paramref name="building"/> requires (<see cref="Building.Requires"/>) and the castle has
@@ -44,7 +44,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleBuildFailureReason GetBuildFailureReason(CastleModel castle, Building building)
         {
-            if (castle.Faction == Faction.Neutral || !building.IsAvailableFor(castle.Faction))
+            if (castle.Faction.IsNeutral || !building.IsAvailableFor(castle.Faction))
             {
                 return CastleBuildFailureReason.NotAvailableForTown;
             }
@@ -78,7 +78,7 @@ namespace Siniskalc.Homm3.Models
                 return CastleBuildFailureReason.NotBuilt;
             }
 
-            if (building == Building.VillageHall)
+            if (building.Type == BuildingType.VillageHall)
             {
                 return CastleBuildFailureReason.VillageHallRequired;
             }
@@ -124,7 +124,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleBuildFailureReason GetSetAllowedFailureReason(CastleModel castle, Building building)
         {
-            if (castle.Faction == Faction.Neutral || !building.IsAvailableFor(castle.Faction))
+            if (castle.Faction.IsNeutral || !building.IsAvailableFor(castle.Faction))
             {
                 return CastleBuildFailureReason.NotAvailableForTown;
             }
@@ -211,8 +211,8 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleModel SetMageGuildLevel(CastleModel castle, int level)
         {
-            var levels = new[] { Building.MagesGuild1, Building.MagesGuild2, Building.MagesGuild3, Building.MagesGuild4, Building.MagesGuild5 };
-            var maximum = castle.Faction == Faction.Neutral ? 0 : levels.Count(l => l.IsAvailableFor(castle.Faction));
+            var levels = Building.ForFaction(castle.Faction).Where(b => b.IsMageGuild).OrderBy(b => b.MageGuildLevel).ToArray();
+            var maximum = castle.Faction.IsNeutral ? 0 : levels.Length;
             RangeGuard.ThrowIfOutOfRange(level, 0, int.MaxValue, nameof(level));
             if (level > maximum)
             {
@@ -244,7 +244,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static Building? DwellingOf(CastleModel castle, int level)
         {
-            if (castle.Faction == Faction.Neutral || !RangeGuard.IsInRange(level, 0, castle.CreaturesAvailable.Count - 1))
+            if (castle.Faction.IsNeutral || !RangeGuard.IsInRange(level, 0, castle.CreaturesAvailable.Count - 1))
             {
                 return null;
             }
@@ -265,7 +265,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static CastleModel SetBuilt(CastleModel castle, Building building, bool built)
         {
-            if (castle.Faction == Faction.Neutral || castle.HasBuilt(building) == built)
+            if (castle.Faction.IsNeutral || castle.HasBuilt(building) == built)
             {
                 return castle;
             }

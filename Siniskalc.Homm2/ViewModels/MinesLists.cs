@@ -18,18 +18,18 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Creates the list of the mines of <paramref name="game"/>, or of the mines of <paramref name="owner"/> when it is given.
         /// </summary>
-        public static MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Create(Game game, PlayerColor? owner = null)
+        public static MinesListViewModel<MineRowViewModel> Create(Game game, PlayerColor? owner = null)
         {
             var rows = Enumerable.Range(0, game.History.Current.Mines().Count)
-                .Select(i => new MineRowViewModel<MineModel, PlayerColor>(game.History.CreateMineSession(i), (mine, color) => mine with { Owner = color }, MineOwnerToolTip, hasLevels: false))
+                .Select(i => new MineRowViewModel(game.History.CreateMineSession(i), game.Catalog, MineOwnerToolTip))
                 .ToList();
             if (owner == null)
             {
-                return new MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>>(rows);
+                return new MinesListViewModel<MineRowViewModel>(rows);
             }
 
             var ownerName = OwnerNames<PlayerColor>.Of(owner);
-            return new MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>>(rows, mine => mine.OwnerSort == ownerName);
+            return new MinesListViewModel<MineRowViewModel>(rows, mine => mine.OwnerSort == ownerName);
         }
     }
 }

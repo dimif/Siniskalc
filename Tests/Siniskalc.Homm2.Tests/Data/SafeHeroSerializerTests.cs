@@ -14,7 +14,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class SafeHeroSerializerTests
     {
-        private readonly SafeHeroSerializer serializer = new();
+        private readonly SafeHeroSerializer serializer = new(TestCatalog.Standard);
 
         private static HeroChunk Record(Action<byte[]>? prepare = null)
         {
@@ -105,10 +105,10 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = this.Baseline();
 
-            var worn = this.Written(chunk, DifferSamples.Hero() with { Artifacts = Artifacts.None.WithSlot(2, Artifact.UltimateSwordOfDominion) });
+            var worn = this.Written(chunk, DifferSamples.Hero() with { Artifacts = Artifacts.None.WithSlot(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]) });
             Assert.That(ByteDiff.Of(chunk.ToArray(), worn), Is.EqualTo(new[] { (HeroLayout.Artifacts + 2, (byte)0xFF, (byte)1) }));
 
-            var taken = this.Written(this.serializer.Serialize(chunk, DifferSamples.Hero() with { Artifacts = Artifacts.None.WithSlot(2, Artifact.UltimateSwordOfDominion) }), DifferSamples.Hero());
+            var taken = this.Written(this.serializer.Serialize(chunk, DifferSamples.Hero() with { Artifacts = Artifacts.None.WithSlot(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]) }), DifferSamples.Hero());
             Assert.That(taken, Is.EqualTo(chunk.ToArray()));
         }
 
@@ -117,7 +117,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = this.Baseline();
 
-            var written = this.Written(chunk, DifferSamples.Hero() with { Spells = SpellSet<Spell>.None.With(Spell.Fireball) });
+            var written = this.Written(chunk, DifferSamples.Hero() with { Spells = SpellSet<Spell>.None.With(TestCatalog.Standard.Spells["Fireball"]) });
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[] { (HeroLayout.Spells + 1, (byte)0, (byte)1) }));
         }
@@ -127,7 +127,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = this.Baseline();
 
-            var written = this.Written(chunk, DifferSamples.Hero() with { SecondarySkills = SecondarySkills.None.WithSkill(SecondarySkill.Archery, SkillLevel.Expert) });
+            var written = this.Written(chunk, DifferSamples.Hero() with { SecondarySkills = SecondarySkills.None.WithSkill(TestCatalog.Standard.Skills["Archery"], SkillLevel.Expert) });
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[]
             {

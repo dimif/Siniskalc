@@ -1,0 +1,49 @@
+[
+  {
+    "id": "FixtureCharm",
+    "order": 159,
+    "name": "Astral Charm",
+    "code": 200,
+    "availableFrom": "hornOfTheAbyss",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "atk": 2,
+      "def": 0,
+      "pow": 0,
+      "kno": 1,
+      "luck": 0,
+      "morale": 0,
+      "landMovement": 0,
+      "waterMovement": 0,
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "Haste"
+          ],
+          "school": null,
+          "level": null,
+          "description": "Haste"
+        }
+      ],
+      "grantsSpellBook": false,
+      "gold": 0,
+      "ore": 0,
+      "wood": 0,
+      "crystal": 0,
+      "gems": 0,
+      "mercury": 0,
+      "sulfur": 0,
+      "other": "A light from a JSON-only faction."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1500,
+    "combinesInto": null,
+    "role": "none",
+    "wearable": true,
+    "backpack": true
+  }
+]

@@ -195,6 +195,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="CatalogData\**\*.json" CopyToOutputDirectory="PreserveNewest" />
     <Folder Include="Models\" />
   </ItemGroup>
 

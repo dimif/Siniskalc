@@ -1,4 +1,4 @@
-using Siniskalc.Core.Data;
+﻿using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc;
 using Siniskalc.Heroes.Models;
@@ -33,7 +33,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = TestServices.GameService.LoadGameFromBytes(this.history.Current.ToBytes(), "edited.GM1");
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("Jotunngard")]);
+            return castles.GetModel(castles.FindByName("Jotunngard"));
         }
 
         private static string[] Names(CastleModel castle, int level) => [.. castle.MageGuildSpells[level - 1].Select(s => s.Name)];
@@ -41,7 +41,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ASpellOfTheGuildCanBeReplacedAndTheChangeIsPendingRevertsAndSurvivesSaving()
         {
-            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 0, Spell.Haste));
+            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")));
 
             var change = this.history.GetPendingChanges().Single();
             Assert.That((change.Path, change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Jotunngard › Spells", "Mage Guild level 1, spell 1", "Protection from Water", "Haste")));
@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void ChoosingASpellTheGuildHoldsSwapsTheTwoSlotsAndEachChangeRevertsOnItsOwn()
         {
-            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 0, Spell.Bless));
+            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")));
 
             Assert.That(Names(this.Reloaded(), 1), Is.EqualTo(new[] { "Bless", "Magic Arrow", "View Air", "Protection from Water", "Summon Boat" }));
 
@@ -70,7 +70,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void OnlyTheVisibleSlotsAreWrittenAndTheOnesAfterThemAreLeftAlone()
         {
-            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 2, 3, Spell.Precision));
+            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 2, 3, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Precision")));
 
             var before = CastleSamples.Load(CastleSamples.Folder("Bulwark").Single(p => p.EndsWith("bulwark_33_mage_guild_5__nothing.GM1"))).History.Current.ToBytes();
             var after = this.history.Current.ToBytes();
@@ -85,7 +85,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = this.session.Current;
 
-            Assert.That(() => CastleBuilder.SetMageGuildSpell(castle, 1, 0, Spell.Fireball), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => CastleBuilder.SetMageGuildSpell(castle, 1, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball")), Throws.TypeOf<GameRuleException>());
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
             Assert.That(castle.MageGuildSpells[4], Is.Empty, "Bulwark has no level 5 guild, so the level 5 test below uses another castle");
             var still = this.history.CreateCastleSession(this.history.Current.Castles().FindByName("Still Water")).Current;
-            Assert.That(() => CastleBuilder.SetMageGuildSpell(still, 5, 0, Spell.TitansLightningBolt), Throws.TypeOf<GameRuleException>());
+            Assert.That(() => CastleBuilder.SetMageGuildSpell(still, 5, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TitansLightningBolt")), Throws.TypeOf<GameRuleException>());
         }
 
         [TestCase(0, 0)]
@@ -106,13 +106,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = this.session.Current;
 
-            Assert.That(() => CastleBuilder.SetMageGuildSpell(castle, level, slot, Spell.MagicArrow), Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.That(() => CastleBuilder.SetMageGuildSpell(castle, level, slot, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void ReplacingTheSameSpellChangesNothing()
         {
-            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 1, Spell.MagicArrow));
+            this.session.Update(c => CastleBuilder.SetMageGuildSpell(c, 1, 1, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")));
 
             Assert.That(this.history.GetPendingChanges(), Is.Empty);
         }

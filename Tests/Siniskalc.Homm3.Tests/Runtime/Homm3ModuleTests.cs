@@ -1,4 +1,5 @@
-﻿namespace Siniskalc.Homm3.Tests.Runtime
+﻿using Siniskalc.Homm3.Entities;
+namespace Siniskalc.Homm3.Tests.Runtime
 {
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Runtime;

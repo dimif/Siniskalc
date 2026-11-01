@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Heroes.Data;
@@ -63,7 +63,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.turn = new Mock<ITurnBytesLoader>();
             this.turn.Setup(l => l.LoadTurnChunks(It.IsAny<byte[]>(), It.IsAny<GameVersion>())).Returns([]);
             this.places = new Mock<IMapPlacesLoader>();
-            this.places.Setup(l => l.Load(It.IsAny<byte[]>())).Returns(MapPlaces.None);
+            this.places.Setup(l => l.Load(It.IsAny<byte[]>(), It.IsAny<EntityCatalog>())).Returns(MapPlaces.None);
             this.date = new Mock<IGameDateLocator>();
             this.setup = new Mock<IPlayerControlLocator>();
             this.map = new Mock<IMapHeaderLocator>();
@@ -75,8 +75,8 @@ namespace Siniskalc.Homm3.Tests.Runtime
         }
 
         private SavegameParser Parser() => new(
-            this.detector.Object, this.heroes.Object, this.castles.Object, this.players.Object, this.obelisks.Object, this.mines.Object, this.dwellings.Object,
-            this.merchants.Object, this.heroOwners.Object, this.turn.Object, this.places.Object, this.date.Object, this.setup.Object, this.map.Object, this.documents.Object);
+            this.detector.Object, this.heroes.Object, _ => this.castles.Object, this.players.Object, this.obelisks.Object, _ => this.mines.Object, _ => this.dwellings.Object,
+            _ => this.merchants.Object, this.heroOwners.Object, this.turn.Object, this.places.Object, this.date.Object, this.setup.Object, this.map.Object, this.documents.Object);
 
         [Test]
         public void ABytesArrayOfNoKnownVersionIsRefusedBeforeAnythingIsLookedFor()
@@ -109,7 +109,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.merchants.Verify(l => l.LoadMerchantChunks(Bytes), Times.Once);
             this.castles.Verify(l => l.LoadCastleChunks(Bytes), Times.Once);
             this.mines.Verify(l => l.LoadMineChunks(Bytes), Times.Once);
-            this.places.Verify(l => l.Load(Bytes), Times.Once);
+            this.places.Verify(l => l.Load(Bytes, It.IsAny<EntityCatalog>()), Times.Once);
         }
 
         [Test]

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Siniskalc.Homm3.Entities;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;

@@ -1,0 +1,93 @@
+[
+  {
+    "id": "Neutral",
+    "order": 0,
+    "name": "Neutral",
+    "code": 99,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Castle",
+    "order": 1,
+    "name": "Castle",
+    "code": 0,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Rampart",
+    "order": 2,
+    "name": "Rampart",
+    "code": 1,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Tower",
+    "order": 3,
+    "name": "Tower",
+    "code": 2,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Dungeon",
+    "order": 4,
+    "name": "Dungeon",
+    "code": 5,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Inferno",
+    "order": 5,
+    "name": "Inferno",
+    "code": 3,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Necropolis",
+    "order": 6,
+    "name": "Necropolis",
+    "code": 4,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Stronghold",
+    "order": 7,
+    "name": "Stronghold",
+    "code": 6,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Fortress",
+    "order": 8,
+    "name": "Fortress",
+    "code": 7,
+    "availableFrom": "restorationOfErathia"
+  },
+  {
+    "id": "Conflux",
+    "order": 9,
+    "name": "Conflux",
+    "code": 8,
+    "availableFrom": "armageddonsBlade"
+  },
+  {
+    "id": "Cove",
+    "order": 10,
+    "name": "Cove",
+    "code": 9,
+    "availableFrom": "hornOfTheAbyss"
+  },
+  {
+    "id": "Factory",
+    "order": 11,
+    "name": "Factory",
+    "code": 10,
+    "availableFrom": "hornOfTheAbyss"
+  },
+  {
+    "id": "Bulwark",
+    "order": 12,
+    "name": "Bulwark",
+    "code": 11,
+    "availableFrom": "hornOfTheAbyss"
+  }
+]

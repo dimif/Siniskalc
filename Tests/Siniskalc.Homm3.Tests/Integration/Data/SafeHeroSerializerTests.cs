@@ -51,11 +51,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var chunk = new HeroChunk("Maximus", bytes, 0);
 
             var model = this.deserializer.Deserialize(chunk);
-            Assert.That(model.HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(model.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
             Assert.That(this.serializer.Serialize(chunk, model).ToArray(), Is.EqualTo(bytes));
 
-            var changed = this.serializer.Serialize(chunk, model with { HeroClass = HeroClass.Cleric });
-            Assert.That(this.deserializer.DeserializeClass(changed), Is.EqualTo(HeroClass.Cleric));
+            var changed = this.serializer.Serialize(chunk, model with { HeroClass = TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Cleric") });
+            Assert.That(this.deserializer.DeserializeClass(changed), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Cleric")));
         }
 
         [Test]
@@ -106,8 +106,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
             var creatures = new Army<Creature>(Constants.CreatureSlotCount)
-                .WithSlot(1, Creature.Archangel, 7)
-                .WithSlot(2, Creature.RoyalGriffin, 5);
+                .WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 7)
+                .WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("RoyalGriffin"), 5);
 
             var result = this.serializer.SerializeCreatures(chunk, creatures);
 
@@ -125,7 +125,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var chunk = new HeroChunk("Maximus", bytes, 0);
             var creatures = this.deserializer.DeserializeCreatures(chunk);
 
-            Assert.That(creatures.Slots[0]?.Creature, Is.EqualTo(Creature.All[0]));
+            Assert.That(creatures.Slots[0]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All[0]));
             Assert.That(this.serializer.SerializeCreatures(chunk, creatures).GetByteAt(slotAt), Is.EqualTo(250));
             Assert.That(this.serializer.SerializeCreatures(chunk, creatures.WithoutSlot(0)).GetUInt32At(slotAt), Is.EqualTo(Constants.BlankId));
         }
@@ -137,7 +137,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var skills = this.deserializer.DeserializeSecondarySkills(chunk);
             var removed = skills.GetSkillInSlot(skills.SlotCount - 1)!;
 
-            var levels = SecondarySkill.All
+            var levels = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All
                 .Where(s => s.IsAvailableIn(GameVersion.HornOfTheAbyss))
                 .ToDictionary(s => s, s => s == removed ? SkillLevel.None : skills.GetSkillLevel(s));
             var slots = Enumerable.Range(0, skills.SlotCount - 1).Select(skills.GetSkillInSlot).OfType<SecondarySkill>().ToArray();
@@ -158,9 +158,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var backpack = this.deserializer.DeserializeBackpack(chunk);
             var emptySlot = Enumerable.Range(0, backpack.All.Count).Last(i => backpack.All[i] == null);
 
-            var result = this.serializer.SerializeBackpack(chunk, backpack.WithSlot(emptySlot, Artifact.HelmOfChaos));
+            var result = this.serializer.SerializeBackpack(chunk, backpack.WithSlot(emptySlot, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos")));
 
-            Assert.That(this.deserializer.DeserializeBackpack(result).All[emptySlot]?.Art, Is.EqualTo(Artifact.HelmOfChaos));
+            Assert.That(this.deserializer.DeserializeBackpack(result).All[emptySlot]?.Art, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos")));
             var offset = HotaOffsets[HeroOffsetName.Backpack] + emptySlot * Constants.BackpackSlotSize;
             Assert.That(result.GetUInt32At(offset + 4), Is.EqualTo(Constants.BlankId));
         }
@@ -173,20 +173,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var emptySlot = Enumerable.Range(0, backpack.All.Count).Last(i => backpack.All[i] == null);
             var offset = HotaOffsets[HeroOffsetName.Backpack] + emptySlot * Constants.BackpackSlotSize;
 
-            var written = this.serializer.SerializeBackpack(chunk, backpack.WithSlot(emptySlot, Artifact.SpellScroll, Spell.TownPortal));
+            var written = this.serializer.SerializeBackpack(chunk, backpack.WithSlot(emptySlot, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal")));
 
-            Assert.That(written.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { Artifact.SpellScroll.Code, 0, 0, 0, Spell.TownPortal.Code, 0, 0, 0 }));
+            Assert.That(written.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll").Code, 0, 0, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal").Code, 0, 0, 0 }));
             var read = this.deserializer.DeserializeBackpack(written).All[emptySlot];
-            Assert.That(read?.Art, Is.EqualTo(Artifact.SpellScroll));
-            Assert.That(read?.Spell, Is.EqualTo(Spell.TownPortal));
+            Assert.That(read?.Art, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll")));
+            Assert.That(read?.Spell, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal")));
 
             // Writing the same backpack back changes nothing, and another spell replaces only the spell.
             Assert.That(this.serializer.SerializeBackpack(written, this.deserializer.DeserializeBackpack(written)).ToArray(), Is.EqualTo(written.ToArray()));
-            var changed = this.serializer.SerializeBackpack(written, backpack.WithSlot(emptySlot, Artifact.SpellScroll, Spell.Fly));
-            Assert.That(this.deserializer.DeserializeBackpack(changed).All[emptySlot]?.Spell, Is.EqualTo(Spell.Fly));
+            var changed = this.serializer.SerializeBackpack(written, backpack.WithSlot(emptySlot, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")));
+            Assert.That(this.deserializer.DeserializeBackpack(changed).All[emptySlot]?.Spell, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")));
 
             // Swapping the scroll for another artifact leaves no spell behind.
-            var replaced = this.serializer.SerializeBackpack(changed, backpack.WithSlot(emptySlot, Artifact.HelmOfChaos));
+            var replaced = this.serializer.SerializeBackpack(changed, backpack.WithSlot(emptySlot, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos")));
             Assert.That(replaced.GetUInt32At(offset + 4), Is.EqualTo(Constants.BlankId));
             Assert.That(this.deserializer.DeserializeBackpack(replaced).All[emptySlot]?.Spell, Is.Null);
         }
@@ -198,20 +198,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var offset = HotaOffsets[HeroOffsetName.Item5];
             var equipped = this.deserializer.DeserializeEquippedArtifacts(chunk).WithUnequipped(ArtifactSlots.Misc5);
 
-            var written = this.serializer.SerializeEquippedArtifacts(chunk, equipped.WithEquipped(ArtifactSlots.Misc5, Artifact.SpellScroll, Spell.TownPortal));
+            var written = this.serializer.SerializeEquippedArtifacts(chunk, equipped.WithEquipped(ArtifactSlots.Misc5, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal")));
 
-            Assert.That(written.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { Artifact.SpellScroll.Code, 0, 0, 0, Spell.TownPortal.Code, 0, 0, 0 }));
+            Assert.That(written.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll").Code, 0, 0, 0, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal").Code, 0, 0, 0 }));
             var read = this.deserializer.DeserializeEquippedArtifacts(written);
-            Assert.That(read.GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(Artifact.SpellScroll));
-            Assert.That(read.GetScrollSpell(ArtifactSlots.Misc5), Is.EqualTo(Spell.TownPortal));
+            Assert.That(read.GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll")));
+            Assert.That(read.GetScrollSpell(ArtifactSlots.Misc5), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("TownPortal")));
 
             // Writing the same artifacts back changes nothing, and another spell replaces only the spell.
             Assert.That(this.serializer.SerializeEquippedArtifacts(written, read).ToArray(), Is.EqualTo(written.ToArray()));
-            var changed = this.serializer.SerializeEquippedArtifacts(written, read.WithEquipped(ArtifactSlots.Misc5, Artifact.SpellScroll, Spell.Fly));
-            Assert.That(this.deserializer.DeserializeEquippedArtifacts(changed).GetScrollSpell(ArtifactSlots.Misc5), Is.EqualTo(Spell.Fly));
+            var changed = this.serializer.SerializeEquippedArtifacts(written, read.WithEquipped(ArtifactSlots.Misc5, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")));
+            Assert.That(this.deserializer.DeserializeEquippedArtifacts(changed).GetScrollSpell(ArtifactSlots.Misc5), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")));
 
             // A scroll without a known spell keeps the spell bytes it has.
-            var unknown = this.serializer.SerializeEquippedArtifacts(written, read.WithEquipped(ArtifactSlots.Misc5, Artifact.SpellScroll));
+            var unknown = this.serializer.SerializeEquippedArtifacts(written, read.WithEquipped(ArtifactSlots.Misc5, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpellScroll")));
             Assert.That(unknown.ToArray(), Is.EqualTo(written.ToArray()));
         }
 
@@ -228,10 +228,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var equipped = this.deserializer.DeserializeEquippedArtifacts(chunk);
             Assert.That(equipped.GetArtifact(ArtifactSlots.Misc5), Is.Null);
 
-            var result = this.serializer.SerializeEquippedArtifacts(chunk, equipped.WithEquipped(ArtifactSlots.Misc5, Artifact.CharmOfSpellPoints));
+            var result = this.serializer.SerializeEquippedArtifacts(chunk, equipped.WithEquipped(ArtifactSlots.Misc5, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints")));
 
-            Assert.That(result.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { Artifact.CharmOfSpellPoints.Code, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF }));
-            Assert.That(this.deserializer.DeserializeEquippedArtifacts(result).GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(Artifact.CharmOfSpellPoints));
+            Assert.That(result.GetBytesAt(offset, 8), Is.EqualTo(new byte[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints").Code, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF }));
+            Assert.That(this.deserializer.DeserializeEquippedArtifacts(result).GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints")));
         }
 
         [Test]
@@ -253,14 +253,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var empty = new EquippedArtifacts(new Dictionary<ArtifactSlots, Artifact>());
             var counters = HotaOffsets.ReservedSlotCounters.ToDictionary(c => c.Group, c => c.Offset);
 
-            var cornucopia = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Misc1, Artifact.Cornucopia));
+            var cornucopia = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Misc1, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("Cornucopia")));
 
             Assert.That(cornucopia.GetByteAt(counters[ArtifactSlots.Cape]), Is.EqualTo(1));
             Assert.That(cornucopia.GetByteAt(counters[ArtifactSlots.Rings]), Is.EqualTo(2));
             Assert.That(cornucopia.GetByteAt(counters[ArtifactSlots.Misc]), Is.EqualTo(0));
             Assert.That(cornucopia.GetByteAt(counters[ArtifactSlots.Helmet]), Is.EqualTo(0));
 
-            var alliance = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Weapon, Artifact.AngelicAlliance));
+            var alliance = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Weapon, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AngelicAlliance")));
 
             Assert.That(alliance.GetByteAt(counters[ArtifactSlots.Weapon]), Is.EqualTo(0));
             Assert.That(
@@ -268,7 +268,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 Is.All.EqualTo(1));
             Assert.That(alliance.GetByteAt(counters[ArtifactSlots.Cape]), Is.EqualTo(0));
 
-            var sharpshooter = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Misc1, Artifact.BowOfTheSharpshooter));
+            var sharpshooter = this.serializer.SerializeEquippedArtifacts(chunk, empty.WithEquipped(ArtifactSlots.Misc1, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BowOfTheSharpshooter")));
 
             Assert.That(sharpshooter.GetByteAt(counters[ArtifactSlots.Misc]), Is.EqualTo(2));
         }
@@ -285,11 +285,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
 
-            var withBallista = this.serializer.SerializeWarMachines(chunk, [WarMachine.Ballista, WarMachine.AmmoCart]);
-            Assert.That(this.deserializer.DeserializeWarMachines(withBallista), Is.EquivalentTo(new[] { WarMachine.Ballista, WarMachine.AmmoCart }));
+            var withBallista = this.serializer.SerializeWarMachines(chunk, [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart")]);
+            Assert.That(this.deserializer.DeserializeWarMachines(withBallista), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart") }));
 
-            var withCannon = this.serializer.SerializeWarMachines(withBallista, [WarMachine.Cannon]);
-            Assert.That(this.deserializer.DeserializeWarMachines(withCannon), Is.EquivalentTo(new[] { WarMachine.Cannon }));
+            var withCannon = this.serializer.SerializeWarMachines(withBallista, [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Cannon")]);
+            Assert.That(this.deserializer.DeserializeWarMachines(withCannon), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Cannon") }));
         }
 
         [Test]
@@ -309,7 +309,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
 
-            var result = this.serializer.SerializeClass(chunk, HeroClass.Cleric);
+            var result = this.serializer.SerializeClass(chunk, TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Cleric"));
 
             Assert.That(ChangedOffsets(chunk, result), Is.EqualTo(new[] { HotaOffsets[HeroOffsetName.Class] }));
             Assert.That(result.GetByteAt(HotaOffsets[HeroOffsetName.Class]), Is.EqualTo(0x01));
@@ -343,8 +343,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var chunk = new HeroChunk("Maximus", ReadDump("hero_maximus_hota.bin"), 0);
             var creatures = new Army<Creature>(Constants.CreatureSlotCount)
-                .WithSlot(1, Creature.Archangel, 7)
-                .WithSlot(2, Creature.RoyalGriffin, 300);
+                .WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 7)
+                .WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("RoyalGriffin"), 300);
 
             var result = this.serializer.SerializeCreatures(chunk, creatures);
 
@@ -361,7 +361,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var skills = this.deserializer.DeserializeSecondarySkills(chunk);
             var removed = skills.GetSkillInSlot(skills.SlotCount - 1)!;
             var before = chunk.GetByteAt(HotaOffsets[HeroOffsetName.NumOfSkills]);
-            var levels = SecondarySkill.All
+            var levels = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All
                 .Where(s => s.IsAvailableIn(GameVersion.HornOfTheAbyss))
                 .ToDictionary(s => s, s => s == removed ? SkillLevel.None : skills.GetSkillLevel(s));
             var slots = Enumerable.Range(0, skills.SlotCount - 1).Select(skills.GetSkillInSlot).OfType<SecondarySkill>().ToArray();

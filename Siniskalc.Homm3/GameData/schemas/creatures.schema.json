@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 creatures",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "restorationOfErathia",
+          "armageddonsBlade",
+          "shadowOfDeath",
+          "heroesChronicles",
+          "hornOfTheAbyss"
+        ]
+      },
+      "tier": {
+        "type": "integer"
+      },
+      "faction": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "info": {
+        "type": "object",
+        "properties": {
+          "atk": {
+            "type": "integer"
+          },
+          "def": {
+            "type": "integer"
+          },
+          "minDamage": {
+            "type": "integer"
+          },
+          "maxDamage": {
+            "type": "integer"
+          },
+          "health": {
+            "type": "integer"
+          },
+          "speed": {
+            "type": "integer"
+          },
+          "growth": {
+            "type": "integer"
+          },
+          "aiValue": {
+            "type": "integer"
+          },
+          "fightValue": {
+            "type": "integer"
+          },
+          "gold": {
+            "type": "integer"
+          },
+          "wood": {
+            "type": "integer"
+          },
+          "ore": {
+            "type": "integer"
+          },
+          "mercury": {
+            "type": "integer"
+          },
+          "sulfur": {
+            "type": "integer"
+          },
+          "crystal": {
+            "type": "integer"
+          },
+          "gems": {
+            "type": "integer"
+          },
+          "shots": {
+            "type": "integer"
+          },
+          "special": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "atk",
+          "def",
+          "minDamage",
+          "maxDamage",
+          "health",
+          "speed",
+          "growth",
+          "aiValue",
+          "fightValue",
+          "gold",
+          "wood",
+          "ore",
+          "mercury",
+          "sulfur",
+          "crystal",
+          "gems",
+          "shots",
+          "special"
+        ],
+        "additionalProperties": false
+      },
+      "dwelling": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "fallback": {
+        "type": "boolean"
+      },
+      "baseCreature": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "order",
+      "name",
+      "code",
+      "availableFrom",
+      "tier",
+      "faction",
+      "info",
+      "dwelling",
+      "fallback",
+      "baseCreature"
+    ],
+    "additionalProperties": false
+  }
+}

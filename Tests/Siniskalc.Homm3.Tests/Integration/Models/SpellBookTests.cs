@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;
@@ -17,35 +17,35 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         [Test]
         public void ASpellIsAvailableWhenLearnedGrantedOrAvailableForAnotherReason()
         {
-            var book = new SpellBook(Set(Spell.Haste), Set(Spell.Fly))
-                .WithGrants(new Dictionary<Spell, string> { [Spell.Armageddon] = "Armageddon's Blade" }, false);
+            var book = new SpellBook(Set(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), Set(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")))
+                .WithGrants(new Dictionary<Spell, string> { [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Armageddon")] = "Armageddon's Blade" }, false);
 
-            Assert.That(book.IsAvailable(Spell.Haste), Is.True);
-            Assert.That(book.IsAvailable(Spell.Armageddon), Is.True);
-            Assert.That(book.IsAvailable(Spell.Fly), Is.True);
-            Assert.That(book.IsAvailable(Spell.Slow), Is.False);
-            Assert.That(book.Source(Spell.Armageddon), Is.EqualTo("Armageddon's Blade"));
-            Assert.That(book.Source(Spell.Fly), Is.EqualTo("Unknown source"));
-            Assert.That(book.Source(Spell.Haste), Is.Empty);
-            Assert.That(book.Source(Spell.Slow), Is.Empty);
+            Assert.That(book.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), Is.True);
+            Assert.That(book.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Armageddon")), Is.True);
+            Assert.That(book.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")), Is.True);
+            Assert.That(book.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Slow")), Is.False);
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Armageddon")), Is.EqualTo("Armageddon's Blade"));
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fly")), Is.EqualTo("Unknown source"));
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")), Is.Empty);
+            Assert.That(book.Source(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Slow")), Is.Empty);
         }
 
         [Test]
         public void LearningAndForgettingLeaveTheGrantsAlone()
         {
             var book = new SpellBook(Set(), Set())
-                .WithGrants(new Dictionary<Spell, string> { [Spell.Prayer] = "Tome" }, false)
-                .WithLearned(Spell.Prayer, true)
-                .WithLearned(Spell.Prayer, false);
+                .WithGrants(new Dictionary<Spell, string> { [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer")] = "Tome" }, false)
+                .WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer"), true)
+                .WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer"), false);
 
-            Assert.That(book.IsLearned(Spell.Prayer), Is.False);
-            Assert.That(book.IsAvailable(Spell.Prayer), Is.True);
+            Assert.That(book.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer")), Is.False);
+            Assert.That(book.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer")), Is.True);
         }
 
         [Test]
         public void WithGrantsReturnsTheSameBookWhenNothingChanges()
         {
-            var grants = new Dictionary<Spell, string> { [Spell.Prayer] = "Tome" };
+            var grants = new Dictionary<Spell, string> { [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer")] = "Tome" };
             var book = new SpellBook(Set(), Set()).WithGrants(grants, false);
 
             Assert.That(book.WithGrants(new Dictionary<Spell, string>(grants), false), Is.SameAs(book));

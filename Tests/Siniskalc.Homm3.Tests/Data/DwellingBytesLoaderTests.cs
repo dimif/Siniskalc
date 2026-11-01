@@ -1,3 +1,4 @@
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 
@@ -15,7 +16,7 @@ namespace Siniskalc.Homm3.Tests.Data
 
         private static readonly RecordChunk Mine = new("Mine", new byte[MinesEnd - 10], 10, 0);
 
-        private readonly DwellingBytesLoader loader = new();
+        private readonly DwellingBytesLoader loader = new(TestCatalog.For(GameVersion.HornOfTheAbyss));
 
         private static byte[] Record(int creature = 14, int x = 5, int y = 6, int level = 0, int owner = 0xFF, int type = DwellingLayout.CreatureGeneratorType)
         {

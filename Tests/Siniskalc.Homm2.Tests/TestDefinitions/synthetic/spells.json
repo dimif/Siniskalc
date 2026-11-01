@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": [],
+  "replacements": [
+    {
+      "id": "SetWaterGuardian",
+      "name": "Star Ward",
+      "code": 65,
+      "order": 64,
+      "spellPoints": 15,
+      "type": "Adventure",
+      "level": 4,
+      "group": "Celestial"
+    }
+  ]
+}

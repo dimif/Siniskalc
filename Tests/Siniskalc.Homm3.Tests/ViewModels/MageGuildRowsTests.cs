@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.ViewModels
@@ -13,33 +13,33 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         [Test]
         public void ASlotShowsTheSpellItIsAskedFor()
         {
-            var spell = Spell.Haste;
-            var slot = new MageGuildSpellSlotViewModel(() => spell, [Spell.Haste, Spell.Bless], _ => { });
+            var spell = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste");
+            var slot = new MageGuildSpellSlotViewModel(() => spell, [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")], _ => { });
 
-            Assert.That(slot.Spell, Is.SameAs(Spell.Haste));
-            Assert.That(slot.Choices, Is.EqualTo(new[] { Spell.Haste, Spell.Bless }));
+            Assert.That(slot.Spell, Is.SameAs(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste")));
+            Assert.That(slot.Choices, Is.EqualTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless") }));
 
-            spell = Spell.Bless;
-            Assert.That(slot.Spell, Is.SameAs(Spell.Bless));
+            spell = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless");
+            Assert.That(slot.Spell, Is.SameAs(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")));
         }
 
         [Test]
         public void PickingAnotherSpellReportsItAndPickingTheSameOrNothingDoesNot()
         {
             var picked = new List<Spell>();
-            var slot = new MageGuildSpellSlotViewModel(() => Spell.Haste, [Spell.Haste, Spell.Bless], picked.Add);
+            var slot = new MageGuildSpellSlotViewModel(() => TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), [TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless")], picked.Add);
 
-            slot.Spell = Spell.Bless;
-            slot.Spell = Spell.Haste;
+            slot.Spell = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless");
+            slot.Spell = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste");
             slot.Spell = null!;
 
-            Assert.That(picked, Is.EqualTo(new[] { Spell.Bless }));
+            Assert.That(picked, Is.EqualTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless") }));
         }
 
         [Test]
         public void RefreshTellsEveryBindingOfTheSlot()
         {
-            var slot = new MageGuildSpellSlotViewModel(() => Spell.Haste, [], _ => { });
+            var slot = new MageGuildSpellSlotViewModel(() => TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), [], _ => { });
             var raised = new List<string?>();
             slot.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
@@ -62,7 +62,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public void UpdatingARowChangesItsStateRefreshesItsSlotsAndTellsTheBindings()
         {
             var slotRaised = 0;
-            var slot = new MageGuildSpellSlotViewModel(() => Spell.Haste, [], _ => { });
+            var slot = new MageGuildSpellSlotViewModel(() => TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), [], _ => { });
             slot.PropertyChanged += (_, _) => slotRaised++;
             var row = new MageGuildLevelRowViewModel(1, false, 0, [slot]);
             var raised = new List<string?>();

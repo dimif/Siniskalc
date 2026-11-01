@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "AstralBonus",
+      "name": "Astral power",
+      "code": 37,
+      "order": 37,
+      "attack": 4,
+      "defense": 0,
+      "power": 2,
+      "knowledge": 0
+    }
+  ],
+  "replacements": []
+}

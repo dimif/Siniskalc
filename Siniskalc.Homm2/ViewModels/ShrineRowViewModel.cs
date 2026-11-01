@@ -15,14 +15,14 @@
     {
         private readonly IEditSession<ShrineModel> session;
 
-        public ShrineRowViewModel(IEditSession<ShrineModel> session, IReadOnlyList<string> spellNames)
+        public ShrineRowViewModel(GameCatalog catalog, IEditSession<ShrineModel> session, IReadOnlyList<string> spellNames)
         {
             this.session = session;
             this.SpellField = new ChoiceFieldViewModel(
                 "Spell",
                 spellNames,
                 () => this.session.Current.Spell?.Name ?? string.Empty,
-                name => this.session.Update(shrine => shrine.WithSpell(Spell.All.First(s => s.Name == name))),
+                name => this.session.Update(shrine => shrine.WithSpell(catalog.Spells.First(s => s.Name == name))),
                 () => this.session.Current.SpellCode >= 0,
                 "The spell the hero learns when it visits the shrine (the circle says which level of spell the game gives, but any spell can be put here). Not tried in the game.");
         }

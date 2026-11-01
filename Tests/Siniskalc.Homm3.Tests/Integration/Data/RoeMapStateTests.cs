@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static CastleModel Castle(Raw raw, string name)
         {
             var castles = raw.Game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return new CastleDeserializer(TestCatalog.For(GameVersion.ShadowOfDeath)).Deserialize(castles[castles.FindByName(name)]);
         }
 
         // The date is three 16-bit values (day, week, month) behind the marker 7F ?? 02 ?, and the last such place in the file is the one.
@@ -139,7 +139,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(Hero(after, "Tazar").MovementPoints.Current, Is.EqualTo(0));
             Assert.That(Encoding.Latin1.GetString(before.Bytes), Does.Not.Contain("AVLholr0.def"));
             Assert.That(Encoding.Latin1.GetString(after.Bytes), Does.Contain("AVLholr0.def"));
-            Assert.That(U32(after.Bytes, tazar + 560), Is.EqualTo(Artifact.TheGrail.Code), "the first backpack slot");
+            Assert.That(U32(after.Bytes, tazar + 560), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TheGrail").Code), "the first backpack slot");
             Assert.That(U32(before.Bytes, HeroStart(before, "Tazar") + 560), Is.EqualTo(-1));
         }
 
@@ -151,8 +151,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var carried = tazar.Current.Backpack.All.OfType<BackpackSlot>().Where(s => s.Art != null).ToList();
             var original = game.History.Current.ToBytes();
 
-            Assert.That(carried.Select(s => (s.Slot, s.Art)), Is.EqualTo(new[] { (0, Artifact.TheGrail) }));
-            Assert.That(Artifact.All.Values, Does.Not.Contain(Artifact.TheGrail), "it cannot be worn, so the finders never list it");
+            Assert.That(carried.Select(s => (s.Slot, s.Art)), Is.EqualTo(new[] { (0, TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TheGrail")) }));
+            Assert.That(TestCatalog.For(GameVersion.ShadowOfDeath).WearableArtifacts, Does.Not.Contain(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("TheGrail")), "it cannot be worn, so the finders never list it");
 
             tazar.Update(h => h with { MovedToday = h.MovedToday });
             Assert.That(game.History.Current.ToBytes(), Is.EqualTo(original), "saving an untouched backpack keeps the Grail");
@@ -225,8 +225,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var after = Load("roe_60_crag_hack_visiting_with_horde_arts");
             var crag = Hero(after, "Crag Hack");
 
-            Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc4), Is.EqualTo(Artifact.HeadOfLegion));
-            Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(Artifact.ArmsOfLegion));
+            Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc4), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("HeadOfLegion")));
+            Assert.That(crag.EquippedArtifacts.GetArtifact(ArtifactSlots.Misc5), Is.EqualTo(TestCatalog.For(GameVersion.ShadowOfDeath).Artifacts.ById("ArmsOfLegion")));
             Assert.That(Castle(after, "7_Strong").VisitingHeroId, Is.EqualTo(crag.Id));
 
             var stronghold = Castle(before, "7_Strong");

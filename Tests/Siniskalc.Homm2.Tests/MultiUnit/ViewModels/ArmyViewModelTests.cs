@@ -14,14 +14,14 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
         private static (ArmyViewModel View, Func<IArmy<Creature>> Army) Create(Creature creature)
         {
             var army = new Army<Creature>(5).WithSlot(0, creature, 7);
-            var view = new ArmyViewModel(GameVersion.PriceOfLoyalty, () => army, change => army = change(army));
+            var view = new ArmyViewModel(TestCatalog.Standard, GameVersion.PriceOfLoyalty, () => army, change => army = change(army));
             return (view, () => army);
         }
 
         [Test]
         public void AStackOfABasicCreatureCanBeUpgradedAndKeepsItsSize()
         {
-            var (view, army) = Create(Creature.Pikeman);
+            var (view, army) = Create(TestCatalog.Standard.Creatures["Pikeman"]);
             var slot = view.CreatureSlots[0];
 
             Assert.That(slot.Upgrades, Is.EqualTo(new[] { "Veteran Pikeman" }));
@@ -30,7 +30,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
             slot.UpgradeCommand.Execute(null);
             view.Refresh();
 
-            Assert.That(army().Slots[0]!.Creature, Is.EqualTo(Creature.VeteranPikeman));
+            Assert.That(army().Slots[0]!.Creature, Is.EqualTo(TestCatalog.Standard.Creatures["VeteranPikeman"]));
             Assert.That(army().Slots[0]!.Count, Is.EqualTo(7));
             Assert.That(view.CreatureSlots[0].HasUpgrade, Is.False, "the veteran pikeman has no further form");
         }
@@ -38,7 +38,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
         [Test]
         public void ADragonThatIsUpgradedOnceCanStillBeUpgradedAgain()
         {
-            var (view, _) = Create(Creature.RedDragon);
+            var (view, _) = Create(TestCatalog.Standard.Creatures["RedDragon"]);
 
             Assert.That(view.CreatureSlots[0].Upgrades, Is.EqualTo(new[] { "Black Dragon" }));
         }
@@ -46,7 +46,7 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
         [Test]
         public void AnEmptySlotHasNothingToUpgrade()
         {
-            var (view, _) = Create(Creature.Pikeman);
+            var (view, _) = Create(TestCatalog.Standard.Creatures["Pikeman"]);
 
             Assert.That(view.CreatureSlots[1].HasUpgrade, Is.False);
         }

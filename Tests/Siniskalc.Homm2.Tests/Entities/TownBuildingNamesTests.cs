@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         [TestCase("Necromancer", "Skull Pile", "Storm")]
         public void EachTownCallsItsSecondWellAndItsSpecialBuildingByItsOwnName(string faction, string secondWell, string special)
         {
-            var town = Faction.All.Single(f => f.Name == faction);
+            var town = TestCatalog.Standard.Factions.Single(f => f.Name == faction);
 
             Assert.That(TownBuildingNames.SecondWellOf(town), Is.EqualTo(secondWell));
             Assert.That(TownBuildingNames.SpecialOf(town), Is.EqualTo(special));
@@ -26,8 +26,8 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void ACastleOfNoTownHasGenericNames()
         {
-            Assert.That(TownBuildingNames.SecondWellOf(Faction.Neutral), Is.EqualTo("Second well"));
-            Assert.That(TownBuildingNames.SpecialOf(Faction.Neutral), Is.EqualTo("Special building"));
+            Assert.That(TownBuildingNames.SecondWellOf(TestCatalog.Standard.Factions["Neutral"]), Is.EqualTo("Second well"));
+            Assert.That(TownBuildingNames.SpecialOf(TestCatalog.Standard.Factions["Neutral"]), Is.EqualTo("Special building"));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets the mines of the owner.
         /// </summary>
-        MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
+        MinesListViewModel<MineRowViewModel> Mines { get; }
 
         /// <summary>
         /// Creates the raw bytes of the mine that is picked for the hex editor, or <c>null</c> when there is none or the page has no way to show

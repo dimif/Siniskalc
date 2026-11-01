@@ -14,10 +14,11 @@ namespace Siniskalc.Homm3.ViewModels
         private ArtifactEffectInfo selectedArtifactInfo;
         private Artifact? selectedArtifact;
 
-        protected ArtifactInfoViewModelBase(string title, EffectLineProvider effectLines)
+        protected ArtifactInfoViewModelBase(string title, EffectLineProvider effectLines, EntityCatalog catalog)
             : base(title)
         {
             this.EffectLines = effectLines;
+            this.Catalog = catalog;
             this.ShowArtifactInfoCommand = new DelegateCommand(p => this.ShowArtifactInfoByName(p as string));
             this.ClearArtifactInfoCommand = new DelegateCommand(_ => this.ClearArtifactInfo());
         }
@@ -59,10 +60,11 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets what words the effects of artifacts.
         /// </summary>
         protected EffectLineProvider EffectLines { get; }
+        protected EntityCatalog Catalog { get; }
 
         public void ShowArtifactInfoByName(string? name)
         {
-            this.ShowArtifactInfo(string.IsNullOrWhiteSpace(name) ? null : Artifact.FindByName(name));
+            this.ShowArtifactInfo(string.IsNullOrWhiteSpace(name) ? null : this.Catalog.FindArtifact(name));
         }
 
         public void ClearArtifactInfo()

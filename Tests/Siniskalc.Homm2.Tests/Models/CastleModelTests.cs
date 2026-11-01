@@ -77,33 +77,33 @@ namespace Siniskalc.Homm2.Tests.Models
         [Test]
         public void ASpellOfTheGuildIsChangedByLevelAndPlace()
         {
-            var castle = Xabran().WithMageGuildLevel(2).WithMageGuildSpell(2, 1, Spell.Fireball);
+            var castle = Xabran().WithMageGuildLevel(2).WithMageGuildSpell(2, 1, TestCatalog.Standard.Spells["Fireball"]);
 
-            Assert.That(castle.MageGuildSpell(2, 1), Is.EqualTo(Spell.Fireball));
+            Assert.That(castle.MageGuildSpell(2, 1), Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]));
             Assert.That(castle.WithMageGuildSpell(2, 1, null).MageGuildSpell(2, 1), Is.Null);
-            Assert.That(castle.WithMageGuildSpell(1, 1, Spell.Fireblast).MageGuildSpell(2, 1), Is.EqualTo(Spell.Fireball), "the other levels stay");
+            Assert.That(castle.WithMageGuildSpell(1, 1, TestCatalog.Standard.Spells["Fireblast"]).MageGuildSpell(2, 1), Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]), "the other levels stay");
         }
 
         [Test]
         public void ADwellingThatIsUpgradedLosesItsOwnBitAndTheUpgradesStopWhereTheCreaturesDo()
         {
-            var warlock = (Xabran() with { Faction = Faction.Warlock }).WithDwelling(1, true).WithDwelling(4, true).WithDwellingLevel(4, 2);
+            var warlock = (Xabran() with { Faction = TestCatalog.Standard.Factions["Warlock"] }).WithDwelling(1, true).WithDwelling(4, true).WithDwellingLevel(4, 2);
 
             Assert.That(Enumerable.Range(1, 6).Select(d => warlock.DwellingLevel(d)), Is.EqualTo(new[] { 1, 0, 0, 2, 0, 0 }));
             Assert.That(((uint)warlock.Dwellings & 0x40) == 0 && ((uint)warlock.Dwellings & 0x800) != 0, Is.True);
 
             var downgraded = warlock.WithDwellingLevel(4, 1);
             Assert.That(((uint)downgraded.Dwellings & 0x40) != 0 && ((uint)downgraded.Dwellings & 0x800) == 0, Is.True);
-            Assert.That(CastleModel.MaxDwellingLevel(Faction.Warlock, 6), Is.EqualTo(3), "the dragons upgrade twice");
-            Assert.That(CastleModel.MaxDwellingLevel(Faction.Warlock, 1), Is.EqualTo(1));
-            Assert.That(CastleModel.MaxDwellingLevel(Faction.Barbarian, 6), Is.EqualTo(1), "the Cyclops has no upgrade");
+            Assert.That(CastleModel.MaxDwellingLevel(TestCatalog.Standard.Factions["Warlock"], 6), Is.EqualTo(3), "the dragons upgrade twice");
+            Assert.That(CastleModel.MaxDwellingLevel(TestCatalog.Standard.Factions["Warlock"], 1), Is.EqualTo(1));
+            Assert.That(CastleModel.MaxDwellingLevel(TestCatalog.Standard.Factions["Barbarian"], 6), Is.EqualTo(1), "the Cyclops has no upgrade");
             Assert.That(() => warlock.WithDwellingLevel(3, 2), Throws.InstanceOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
         public void OnlyAWizardHasALibraryAndItAddsOneSpellToEveryLevelOfTheGuild()
         {
-            var wizard = (Xabran() with { Faction = Faction.Wizard }).WithMageGuildLevel(5);
+            var wizard = (Xabran() with { Faction = TestCatalog.Standard.Factions["Wizard"] }).WithMageGuildLevel(5);
 
             var library = wizard.WithLibrary(true);
 
@@ -134,7 +134,7 @@ namespace Siniskalc.Homm2.Tests.Models
             Assert.That((upgraded.CreaturesWaiting(2), upgraded.CreaturesAvailable[1]), Is.EqualTo((7, 7)));
             Assert.That(upgraded.WithDwellingLevel(2, 1).CreaturesWaiting(2), Is.EqualTo(7));
 
-            var dragons = (Xabran() with { Faction = Faction.Warlock }).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
+            var dragons = (Xabran() with { Faction = TestCatalog.Standard.Factions["Warlock"] }).WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 3);
             Assert.That(dragons.WithDwellingLevel(6, 3).CreaturesWaiting(6), Is.EqualTo(3), "the Black Dragon waits the same as the Red");
         }
 
@@ -176,13 +176,13 @@ namespace Siniskalc.Homm2.Tests.Models
         {
             var town = Xabran().WithDwellingLevel(3, 2);
 
-            Assert.That(town.WeeklyGrowth(3), Is.EqualTo(Creature.VeteranPikeman.Info.Growth));
+            Assert.That(town.WeeklyGrowth(3), Is.EqualTo(TestCatalog.Standard.Creatures["VeteranPikeman"].Info.Growth));
         }
 
         [Test]
         public void ACastleOfNoFactionGainsNothing()
         {
-            var town = (Xabran() with { Faction = Faction.Neutral }).WithDwelling(1, true);
+            var town = (Xabran() with { Faction = TestCatalog.Standard.Factions["Neutral"] }).WithDwelling(1, true);
 
             Assert.That(town.WeeklyGrowth(1), Is.Zero);
         }

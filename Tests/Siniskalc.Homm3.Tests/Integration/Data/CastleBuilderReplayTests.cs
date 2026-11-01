@@ -1,4 +1,4 @@
-using static Siniskalc.Homm3.Tests.Data.CastleMasks;
+﻿using static Siniskalc.Homm3.Tests.Data.CastleMasks;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc;
 using Siniskalc.Homm3.Data;
@@ -113,9 +113,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 foreach (var (chunk, saved) in castles)
                 {
                     // Start from a town that has nothing but the village hall, with the hidden bits of the companions cleared.
-                    var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, VisibleBuildings = new HashSet<Building> { Building.VillageHall } };
+                    var model = saved with { Buildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }, VisibleBuildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") } };
                     var empty = TestServices.SerializeCastle(chunk, model);
-                    var order = saved.Buildings.Where(b => b != Building.VillageHall && !CastleBuilder.IsAutomatic(b));
+                    var order = saved.Buildings.Where(b => b != TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") && !CastleBuilder.IsAutomatic(b));
                     foreach (var building in descending ? order.OrderByDescending(b => b.Code) : order.OrderBy(b => b.Code))
                     {
                         model = CastleBuilder.SetBuilt(model, building, true);

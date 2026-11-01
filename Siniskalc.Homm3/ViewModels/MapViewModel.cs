@@ -16,7 +16,7 @@
             : base("Map", game.History, Homm3ChunkKinds.Merchants)
         {
             var document = game.History.Current;
-            this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), game.GameVersion, effectLines, LocationOf(game, i))).ToList();
+            this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), document.Catalog(), effectLines, LocationOf(game, i))).ToList();
             this.Refresh();
         }
 

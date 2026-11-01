@@ -18,7 +18,7 @@ namespace Siniskalc.Homm2.Tests.Data
         private static MapObjectChunk Mine(byte owner, params byte[][] parts) =>
             new("Mine", [owner, (byte)MineKind.GoldMine, 0, 0, 0, 0, 0], 100, new MapPosition(14, 15), 2, 0, parts.Select((bytes, i) => new MapObjectPart(500 + (i * 10), bytes)).ToList());
 
-        private static MineModel Model(MineKind kind, PlayerColor owner) => new(2, kind, new MapPosition(14, 15), owner);
+        private static MineModel Model(MineKind kind, PlayerColor owner) => new(2, kind, new MapPosition(14, 15), owner, TestCatalog.Standard);
 
         [Test]
         public void AnOwnerThatIsNotChangedLeavesTheRecordAndTheFlagsAsTheyAre()
@@ -91,7 +91,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = Mine(0xFF, [MapObjectLayout.NoClass, MapObjectLayout.NoPicture]);
 
-            var written = this.serializer.Serialize(chunk, new MineModel(9, MineKind.Sawmill, new MapPosition(1, 1), PlayerColor.Blue));
+            var written = this.serializer.Serialize(chunk, new MineModel(9, MineKind.Sawmill, new MapPosition(1, 1), PlayerColor.Blue, TestCatalog.Standard));
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written.ToArray()), Is.EqualTo(new[] { (0, (byte)0xFF, (byte)0) }));
         }

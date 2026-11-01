@@ -6,17 +6,18 @@ namespace Siniskalc.Homm3.Data
     using Siniskalc.Homm3.Models;
 
     /// <summary>
-    /// Reads the seven slots of a merchant. A number that is no artifact the editor knows reads as the first one it knows, and the serializer
+    /// Reads the seven slots of a merchant. An unknown artifact number reads as the catalog's fallback artifact, and the serializer
     /// keeps the number while the model still holds it.
     /// </summary>
-    public sealed class MerchantStockDeserializer : IDeserializer<RecordChunk, MerchantStockModel>
+    public sealed class MerchantStockDeserializer(EntityCatalog catalog) : IDeserializer<RecordChunk, MerchantStockModel>
     {
         public MerchantStockModel Deserialize(RecordChunk chunk) => new(
             chunk.Index,
             chunk.Name,
-            Enumerable.Range(0, MerchantLayout.SlotCount).Select(slot => ArtifactOf(chunk.GetUInt32At(MerchantLayout.SlotAt(slot)))).ToList());
+            Enumerable.Range(0, MerchantLayout.SlotCount).Select(slot => this.ArtifactOf(chunk.GetUInt32At(MerchantLayout.SlotAt(slot)))).ToList());
 
-        internal static Artifact? ArtifactOf(uint code) =>
-            code == MerchantLayout.Empty ? null : code <= byte.MaxValue && Artifact.All.TryGetValue((byte)code, out var artifact) ? artifact : Artifact.All.Values.First();
+        // TODO:LOG Trace: an unknown merchant artifact uses the catalog fallback and retains its bytes until edited.
+        private Artifact? ArtifactOf(uint code) =>
+            code == MerchantLayout.Empty ? null : code <= byte.MaxValue && catalog.Artifacts.Find((byte)code) is { Wearable: true } artifact ? artifact : catalog.FallbackArtifact;
     }
 }

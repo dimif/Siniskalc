@@ -16,15 +16,15 @@ namespace Siniskalc.Homm3.ViewModels
     {
         private readonly IEditSession<MerchantStockModel> session;
 
-        public MerchantViewModel(IEditSession<MerchantStockModel> session, GameVersion gameVersion, EffectLineProvider effectLines, string location = "")
+        public MerchantViewModel(IEditSession<MerchantStockModel> session, EntityCatalog catalog, EffectLineProvider effectLines, string location = "")
         {
             this.session = session;
             this.Location = location;
             this.Slots = Enumerable.Range(0, MerchantLayout.SlotCount)
                 .Select(slot => new ArtifactSlotViewModel(
                     $"Slot {slot + 1}",
-                    onChoose => new ArtifactFinderViewModel(gameVersion, effectLines, string.Empty, "Choose", onChoose, null, includeScrolls: false),
-                    name => this.session.Update(stock => stock.WithSlot(slot, name == null ? null : Artifact.FindByName(name)))))
+                    onChoose => new ArtifactFinderViewModel(catalog, effectLines, string.Empty, "Choose", onChoose, null, includeScrolls: false),
+                    name => this.session.Update(stock => stock.WithSlot(slot, name == null ? null : catalog.FindArtifact(name)))))
                 .ToList();
             this.Refresh();
         }

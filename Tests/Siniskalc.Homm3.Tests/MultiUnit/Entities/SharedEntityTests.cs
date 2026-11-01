@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
+﻿namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -30,21 +30,21 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Entities
         [Test]
         public void EveryFactionOfTheGameIsAnIFaction()
         {
-            Assert.That(Faction.All.Cast<IFaction>().Select(f => f.Name), Is.EqualTo(Faction.All.Select(f => f.Name)));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.All.Cast<IFaction>().Select(f => f.Name), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.All.Select(f => f.Name)));
         }
 
         [Test]
         public void AnArtifactTellsWhatItAddsToThePrimarySkills()
         {
-            Assert.That(((IArtifact)Artifact.TitansThunder).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(9, 9, 8, 8)));
-            Assert.That(Artifact.ArmageddonsBlade.PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(3, 3, 3, 6)));
-            Assert.That(Artifact.SeaCaptainsHat.PrimarySkillBonus, Is.EqualTo(PrimarySkillBonus.None));
+            Assert.That(((IArtifact)TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("TitansThunder")).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(9, 9, 8, 8)));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ArmageddonsBlade").PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(3, 3, 3, 6)));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SeaCaptainsHat").PrimarySkillBonus, Is.EqualTo(PrimarySkillBonus.None));
         }
 
         [Test]
         public void EverySecondarySkillOfTheGameIsAnISecondarySkill()
         {
-            Assert.That(SecondarySkill.All.Cast<ISecondarySkill>().Select(s => s.Code), Is.EqualTo(SecondarySkill.All.Select(s => s.Code)));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.Cast<ISecondarySkill>().Select(s => s.Code), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.Select(s => s.Code)));
         }
     }
 }

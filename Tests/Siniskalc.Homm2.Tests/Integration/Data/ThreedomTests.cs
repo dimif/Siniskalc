@@ -53,7 +53,7 @@
             var (before, after) = (Castle(save - 1, Whiteshield).Town, Castle(save, Whiteshield).Town);
 
             Assert.That(after & ~before, Is.EqualTo(building));
-            Assert.That(Castle(save, Whiteshield).Faction, Is.EqualTo(Faction.Wizard));
+            Assert.That(Castle(save, Whiteshield).Faction, Is.EqualTo(TestCatalog.Standard.Factions["Wizard"]));
         }
 
         [Test]

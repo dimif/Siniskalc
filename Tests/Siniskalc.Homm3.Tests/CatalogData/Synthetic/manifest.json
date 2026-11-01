@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "versions": {
+    "restorationOfErathia": "standard",
+    "armageddonsBlade": "standard",
+    "shadowOfDeath": "standard",
+    "heroesChronicles": "standard",
+    "hornOfTheAbyss": "synthetic"
+  },
+  "sets": {
+    "standard": {
+      "parent": null,
+      "directory": "standard"
+    },
+    "hota": {
+      "parent": "standard",
+      "directory": "hota"
+    },
+    "synthetic": {
+      "parent": "hota",
+      "directory": "synthetic"
+    }
+  }
+}

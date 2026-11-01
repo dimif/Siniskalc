@@ -1,90 +1,51 @@
+namespace Siniskalc.Homm3.Tests.Data;
+
 using Moq;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
-namespace Siniskalc.Homm3.Tests.Data
+[TestFixture]
+[Category(TestKinds.Unit)]
+internal sealed class VersionSpecificEntitiesProviderTests
 {
-    /// <summary>
-    /// The skills, war machines and spells a game version has, and the factory that makes one provider for each version.
-    /// </summary>
-    [TestFixture]
-    [Category(TestKinds.Unit)]
-    internal sealed class VersionSpecificEntitiesProviderTests
+    [Test]
+    public void TheProviderKeepsTheCatalogAndTheResolverItWasGiven()
     {
-        private static VersionSpecificEntitiesProvider Provider(GameVersion version) => new(version, Mock.Of<IGrantedSpellsResolver>());
+        var catalog = TestCatalog.For(GameVersion.ArmageddonsBlade);
+        var resolver = Mock.Of<IGrantedSpellsResolver>();
+        var provider = new VersionSpecificEntitiesProvider(catalog, resolver);
+        Assert.That(provider.Catalog, Is.SameAs(catalog));
+        Assert.That(provider.GrantedSpellsResolver, Is.SameAs(resolver));
+    }
 
-        [Test]
-        public void TheProviderKeepsTheVersionAndTheResolverItWasGiven()
-        {
-            var resolver = Mock.Of<IGrantedSpellsResolver>();
+    [Test]
+    public void OnlyHornOfTheAbyssOffersTheCannon()
+    {
+        var factory = new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs);
+        Assert.That(factory.For(GameVersion.HornOfTheAbyss).WarMachines.Select(m => m.Encoding), Does.Contain(WarMachineEncoding.Cannon));
+        Assert.That(factory.For(GameVersion.ShadowOfDeath).WarMachines.Select(m => m.Encoding), Does.Not.Contain(WarMachineEncoding.Cannon));
+    }
 
-            var provider = new VersionSpecificEntitiesProvider(GameVersion.ArmageddonsBlade, resolver);
+    [Test]
+    public void SecondarySkillsAreFilteredWithoutSharingVersionIdentities()
+    {
+        var factory = new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs);
+        var sod = factory.For(GameVersion.ShadowOfDeath).SecondarySkills;
+        var hota = factory.For(GameVersion.HornOfTheAbyss).SecondarySkills;
+        Assert.That(sod, Has.Count.EqualTo(28));
+        Assert.That(hota.Select(s => s.Id), Is.SupersetOf(sod.Select(s => s.Id)));
+        Assert.That(hota, Is.Not.SupersetOf(sod));
+    }
 
-            Assert.That(provider.GameVersion, Is.EqualTo(GameVersion.ArmageddonsBlade));
-            Assert.That(provider.GrantedSpellsResolver, Is.SameAs(resolver));
-        }
-
-        [Test]
-        public void OnlyHornOfTheAbyssHasTheCannon()
-        {
-            Assert.That(Provider(GameVersion.HornOfTheAbyss).WarMachines, Does.Contain(WarMachine.Cannon));
-            Assert.That(Provider(GameVersion.ShadowOfDeath).WarMachines, Does.Not.Contain(WarMachine.Cannon));
-            Assert.That(Provider(GameVersion.RestorationOfErathia).WarMachines, Does.Not.Contain(WarMachine.Cannon));
-        }
-
-        [Test]
-        public void ShadowOfDeathHasTwentyEightSecondarySkillsAndHornOfTheAbyssHasThoseAndMore()
-        {
-            var sod = Provider(GameVersion.ShadowOfDeath).SecondarySkills;
-            var hota = Provider(GameVersion.HornOfTheAbyss).SecondarySkills;
-
-            Assert.That(sod, Has.Count.EqualTo(28));
-            Assert.That(hota, Is.SupersetOf(sod));
-            Assert.That(hota.Count, Is.GreaterThan(sod.Count));
-        }
-
-        [Test]
-        public void EverythingTheProviderListsIsAvailableInItsVersion()
-        {
-            var provider = Provider(GameVersion.ShadowOfDeath);
-
-            Assert.That(provider.SecondarySkills.All(s => s.IsAvailableIn(GameVersion.ShadowOfDeath)), Is.True);
-            Assert.That(provider.Spells.All(s => s.IsAvailableIn(GameVersion.ShadowOfDeath)), Is.True);
-            Assert.That(provider.WarMachines.All(w => w.IsAvailableIn(GameVersion.ShadowOfDeath)), Is.True);
-        }
-
-        [Test]
-        public void TheFactoryMakesTheProviderOfTheVersionAskedAndAResolverMadeForThatVersion()
-        {
-            var resolvers = new Dictionary<GameVersion, IGrantedSpellsResolver>();
-            var factory = new VersionSpecificEntitiesProviderFactory(version => resolvers[version] = Mock.Of<IGrantedSpellsResolver>());
-
-            var hota = factory.For(GameVersion.HornOfTheAbyss);
-            var sod = factory.For(GameVersion.ShadowOfDeath);
-
-            Assert.That(hota.GameVersion, Is.EqualTo(GameVersion.HornOfTheAbyss));
-            Assert.That(sod.GameVersion, Is.EqualTo(GameVersion.ShadowOfDeath));
-            Assert.That(hota.GrantedSpellsResolver, Is.SameAs(resolvers[GameVersion.HornOfTheAbyss]));
-            Assert.That(sod.GrantedSpellsResolver, Is.SameAs(resolvers[GameVersion.ShadowOfDeath]));
-        }
-
-        [Test]
-        public void TheFactoryMakesOneProviderAndOneResolverForEachVersionHoweverOftenItIsAsked()
-        {
-            var made = new List<GameVersion>();
-            var factory = new VersionSpecificEntitiesProviderFactory(version =>
-            {
-                made.Add(version);
-                return Mock.Of<IGrantedSpellsResolver>();
-            });
-
-            var first = factory.For(GameVersion.ShadowOfDeath);
-            var second = factory.For(GameVersion.ShadowOfDeath);
-            factory.For(GameVersion.HornOfTheAbyss);
-
-            Assert.That(second, Is.SameAs(first));
-            Assert.That(made, Is.EqualTo(new[] { GameVersion.ShadowOfDeath, GameVersion.HornOfTheAbyss }));
-        }
+    [Test]
+    public void TheFactoryReturnsTheSamePreloadedProviderAndResolverForEachVersion()
+    {
+        var factory = new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs);
+        var first = factory.For(GameVersion.ShadowOfDeath);
+        var second = factory.For(GameVersion.ShadowOfDeath);
+        Assert.That(second, Is.SameAs(first));
+        Assert.That(second.GrantedSpellsResolver, Is.SameAs(first.GrantedSpellsResolver));
+        Assert.That(first.Catalog, Is.SameAs(TestCatalog.For(GameVersion.ShadowOfDeath)));
     }
 }

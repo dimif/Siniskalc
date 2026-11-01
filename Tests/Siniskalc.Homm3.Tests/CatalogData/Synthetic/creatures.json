@@ -1,0 +1,70 @@
+[
+  {
+    "id": "FixtureScout",
+    "order": 189,
+    "name": "Astral Scout",
+    "code": 201,
+    "availableFrom": "hornOfTheAbyss",
+    "tier": 1,
+    "faction": "FixtureTown",
+    "info": {
+      "atk": 4,
+      "def": 5,
+      "minDamage": 1,
+      "maxDamage": 3,
+      "health": 19,
+      "speed": 4,
+      "growth": 9,
+      "aiValue": 80,
+      "fightValue": 100,
+      "gold": 60,
+      "wood": 0,
+      "ore": 0,
+      "mercury": 0,
+      "sulfur": 0,
+      "crystal": 0,
+      "gems": 0,
+      "shots": 12,
+      "special": [
+        "FixtureBeam"
+      ]
+    },
+    "dwelling": "FixtureNest",
+    "fallback": false,
+    "baseCreature": null
+  },
+  {
+    "id": "FixtureGuard",
+    "order": 190,
+    "name": "Astral Guard",
+    "code": 202,
+    "availableFrom": "hornOfTheAbyss",
+    "tier": 1,
+    "faction": "FixtureTown",
+    "info": {
+      "atk": 6,
+      "def": 5,
+      "minDamage": 2,
+      "maxDamage": 3,
+      "health": 27,
+      "speed": 5,
+      "growth": 9,
+      "aiValue": 115,
+      "fightValue": 115,
+      "gold": 75,
+      "wood": 0,
+      "ore": 0,
+      "mercury": 0,
+      "sulfur": 0,
+      "crystal": 0,
+      "gems": 0,
+      "shots": 12,
+      "special": [
+        "FixtureBeam"
+      ]
+    },
+    "dwelling": "FixtureHighNest",
+    "fallback": false,
+    "baseCreature": "FixtureScout"
+  }
+]

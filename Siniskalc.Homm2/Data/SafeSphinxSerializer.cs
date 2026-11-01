@@ -40,8 +40,9 @@ namespace Siniskalc.Homm2.Data
                 ByteBufferHelper.WriteUInt16(bytes, MapObjectLayout.SphinxArtifact, (ushort)model.ArtifactCode);
             }
 
-            var old = new SphinxDeserializer().Deserialize(chunk);
-            if (!old.Answers.SequenceEqual(model.Answers))
+            var oldAnswers = Enumerable.Range(0, bytes[MapObjectLayout.SphinxAnswerCount])
+                .Select(i => Bytes.ReadText(bytes, MapObjectLayout.SphinxAnswers + (i * MapObjectLayout.SphinxAnswerSize), MapObjectLayout.SphinxAnswerSize));
+            if (!oldAnswers.SequenceEqual(model.Answers))
             {
                 bytes[MapObjectLayout.SphinxAnswerCount] = (byte)model.Answers.Count;
                 bytes.AsSpan(MapObjectLayout.SphinxAnswers, Constants.Sphinx.MaxAnswers * MapObjectLayout.SphinxAnswerSize).Clear();
@@ -52,7 +53,7 @@ namespace Siniskalc.Homm2.Data
                 }
             }
 
-            if (old.Riddle != model.Riddle)
+            if (Bytes.ReadText(bytes, MapObjectLayout.SphinxRiddle, bytes.Length - MapObjectLayout.SphinxRiddle) != model.Riddle)
             {
                 bytes.AsSpan(MapObjectLayout.SphinxRiddle).Clear();
                 Encoding.Latin1.GetBytes(model.Riddle, bytes.AsSpan(MapObjectLayout.SphinxRiddle));

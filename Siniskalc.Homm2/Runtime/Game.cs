@@ -23,6 +23,8 @@
 
         public SaveLayout Layout { get; }
 
+        public GameCatalog Catalog { get; init; } = null!;
+
         /// <summary>
         /// Gets where the places a hero can visit once are on the map.
         /// </summary>

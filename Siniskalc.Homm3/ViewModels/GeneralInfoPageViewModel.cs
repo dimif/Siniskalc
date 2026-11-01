@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core;
@@ -22,8 +21,6 @@
     /// </summary>
     public sealed class GeneralInfoPageViewModel : PageViewModelBase
     {
-        private const int WarMachineCheckBoxCount = 5;
-
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
         private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
@@ -64,7 +61,7 @@
                 experience => this.Update(h => h.WithExperience(experience)),
                 new NumberRange(Constants.Hero.MinExperience, Constants.Hero.MaxExperience, Constants.Hero.ExperienceStep),
                 this.NextLevelNote,
-                Entities.HeroClass.All.Where(c => c.IsAvailableIn(gameVersion)).Select(c => c.Name).ToList(),
+                this.Hero.HeroClass.Catalog.HeroClasses.All.Select(c => c.Name).ToList(),
                 () => this.Hero.HeroClass.Name,
                 this.SetHeroClass,
                 Enum.GetNames<Entities.HeroGender>(),
@@ -94,7 +91,10 @@
             this.SelectAllWarMachinesCommand = new DelegateCommand(_ => this.SelectAllWarMachines());
             this.NextBattle = this.CreateNextBattle();
 
-            this.WarMachinesChecked = new ObservableCollection<bool>(new bool[WarMachineCheckBoxCount]);
+            this.WarMachineChoices = this.Hero.HeroClass.Catalog.WarMachines.All
+                .Select(machine => new ToggleRowViewModel(machine.Name,
+                    () => this.Hero.WarMachines.Contains(machine),
+                    selected => this.UpdateWarMachine(machine.Name, selected))).ToArray().AsReadOnly();
 
             this.RefreshWarMachines();
         }
@@ -141,9 +141,9 @@
         public bool HasBiography => !string.IsNullOrEmpty(this.Hero.Biography);
 
         /// <summary>
-        /// Gets which war machine check boxes are ticked. Order: ballista, ballista (HotA), cannon, ammo cart, first aid tent.
+        /// Gets every representable war machine of this catalog; choices sharing a physical slot exclude one another.
         /// </summary>
-        public ObservableCollection<bool> WarMachinesChecked { get; }
+        public IReadOnlyList<ToggleRowViewModel> WarMachineChoices { get; }
 
         /// <summary>
         /// Gets or sets whether the hero has moved today. Only Horn of the Abyss savefiles have the flag; it does nothing for the others.
@@ -196,14 +196,9 @@
 
         public bool IsHota => this.gameVersion == GameVersion.HornOfTheAbyss;
 
-        /// <summary>
-        /// Gets whether the ballista is shown as a plain check box; in Horn of the Abyss it shares its place with the cannon, so it is a radio button.
-        /// </summary>
-        public bool HasSingleBallista => !this.IsHota;
+        private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(Data.SkillRole.Morale).Code;
 
-        private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Leadership).Code;
-
-        private int LuckSkillBonus => this.Hero.SecondarySkills.GetSkillLevel(SecondarySkill.Luck).Code;
+        private int LuckSkillBonus => this.Hero.SecondarySkills.GetSkillLevel(Data.SkillRole.Luck).Code;
 
         private HeroModel Hero => this.getHero();
 
@@ -261,14 +256,8 @@
             this.Update(h => h with { WarMachines = updated });
         }
 
-        private static WarMachine? GetWarMachine(string name) => name switch
-        {
-            "Ballista" => WarMachine.Ballista,
-            "Cannon" => WarMachine.Cannon,
-            "Ammo_Cart" => WarMachine.AmmoCart,
-            "First_Aid_Tent" => WarMachine.FirstAidTent,
-            _ => null,
-        };
+        private WarMachine? GetWarMachine(string name) => this.Hero.HeroClass.Catalog.WarMachines.FindByName(name)
+            ?? this.Hero.HeroClass.Catalog.WarMachines.FindByName(name.Replace('_', ' '));
 
         private static string Modifiers(params (string Name, int Value)[] parts) =>
             string.Join(", ", parts.Where(p => p.Value != 0).Select(p => $"{p.Name} {FormatSigned(p.Value)}"));
@@ -280,8 +269,8 @@
         private void SelectAllWarMachines()
         {
             // Ballista and cannon share a place; a hero that has the cannon keeps it, any other gets the ballista.
-            var artillery = this.Hero.WarMachines.Contains(WarMachine.Cannon) ? WarMachine.Cannon : WarMachine.Ballista;
-            IReadOnlyList<WarMachine> all = [artillery, WarMachine.AmmoCart, WarMachine.FirstAidTent];
+            IReadOnlyList<WarMachine> all = this.Hero.HeroClass.Catalog.WarMachines.All.GroupBy(w => w.Slot)
+                .Select(g => g.FirstOrDefault(this.Hero.WarMachines.Contains) ?? g.First()).ToList();
             if (!this.Hero.WarMachines.OrderBy(w => w.Slot).SequenceEqual(all.OrderBy(w => w.Slot)))
             {
                 this.Update(h => h with { WarMachines = all });
@@ -303,7 +292,7 @@
 
         private void SetHeroClass(string value)
         {
-            var heroClass = AbstractEnumeration.FromName<Entities.HeroClass>(value);
+            var heroClass = this.Hero.HeroClass.Catalog.HeroClasses.FindByName(value);
             if (heroClass != null && heroClass != this.Hero.HeroClass)
             {
                 this.Update(h => h with { HeroClass = heroClass });
@@ -351,15 +340,8 @@
                     this.BonusRow("Morale", range, h => h.MoraleBonus, (h, value) => h with { MoraleBonus = value }),
                     this.BonusRow("Luck", range, h => h.LuckBonus, (h, value) => h with { LuckBonus = value }),
                 ],
-                [
-                    this.Source(VisitedBuildingEffects.WateringHole, 1, 0, range, "+1 morale until the next battle"),
-                    this.Source(VisitedBuildingEffects.SwanPond, 0, 2, range, "+2 luck until the next battle"),
-                    this.Source(VisitedBuildingEffects.Crypt, -1, 0, range, "-1 morale until the next battle"),
-                    this.Source(VisitedBuildingEffects.Stables, 0, 0, range, "More movement points until the end of the week"),
-                    this.Shown(VisitedBuildingEffects.FaerieRing, "+1 luck until the next battle"),
-                    this.Shown(VisitedBuildingEffects.FountainOfFortune, "A luck that the game draws, until the next battle"),
-                    this.Shown(VisitedBuildingEffects.IdolOfFortune, "+1 morale or +1 luck, depending on the day"),
-                ],
+                this.Hero.HeroClass.Catalog.MapMetadata.VisitEffects
+                    .Select(e => e.Editable ? this.Source(e.Effect, e.Morale, e.Luck, range, e.Description) : this.Shown(e.Effect, e.Description)).ToList(),
                 "What the buildings the hero visited gave. A battle takes most of it away; the stables last until the end of the week. Not tried in the game.");
         }
 
@@ -375,7 +357,7 @@
             () => "next battle only");
 
         private ToggleRowViewModel Source(VisitedBuildingEffects effect, int morale, int luck, NumberRange range, string toolTip) => new(
-            VisitedBuildingNames.Of(effect),
+            this.Hero.HeroClass.Catalog.MapMetadata.EffectName(effect),
             () => this.Hero.VisitEffects.HasFlag(effect),
             on => this.Update(h => h with
             {
@@ -386,7 +368,7 @@
             toolTip: toolTip + (morale == 0 && luck == 0 ? ". Sets what the game remembers." : ". Sets what the game remembers and its morale or luck together.") + " Not tried in the game.");
 
         private ToggleRowViewModel Shown(VisitedBuildingEffects effect, string toolTip) => new(
-            VisitedBuildingNames.Of(effect),
+            this.Hero.HeroClass.Catalog.MapMetadata.EffectName(effect),
             () => this.Hero.VisitEffects.HasFlag(effect),
             _ => { },
             canToggle: () => false,
@@ -394,13 +376,7 @@
 
         private void RefreshWarMachines()
         {
-            var machines = this.Hero.WarMachines;
-            var hasBallista = machines.Contains(WarMachine.Ballista);
-            this.WarMachinesChecked[0] = hasBallista;
-            this.WarMachinesChecked[1] = hasBallista;
-            this.WarMachinesChecked[2] = machines.Contains(WarMachine.Cannon);
-            this.WarMachinesChecked[3] = machines.Contains(WarMachine.AmmoCart);
-            this.WarMachinesChecked[4] = machines.Contains(WarMachine.FirstAidTent);
+            foreach (var choice in this.WarMachineChoices) choice.Refresh();
         }
 
         private void Update(Func<HeroModel, HeroModel> edit)

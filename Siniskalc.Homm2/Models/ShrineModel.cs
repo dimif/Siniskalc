@@ -1,5 +1,6 @@
 namespace Siniskalc.Homm2.Models
 {
+    using System.Linq;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
 
@@ -11,14 +12,14 @@ namespace Siniskalc.Homm2.Models
     /// <param name="Circle">The circle of the shrine, 1 to 3.</param>
     /// <param name="Position">The tile a hero enters the shrine by.</param>
     /// <param name="SpellCode">The number of the spell the tile holds.</param>
-    public sealed record ShrineModel(int Index, int Circle, MapPosition Position, int SpellCode)
+    public sealed record ShrineModel(int Index, int Circle, MapPosition Position, int SpellCode, GameCatalog Catalog)
     {
         /// <summary>
         /// Gets the spell, or <c>null</c> when the tile holds a number that is no spell the editor knows.
         /// </summary>
-        public Spell? Spell => this.SpellCode is >= 0 and <= byte.MaxValue ? Entities.Spell.FromByte((byte)this.SpellCode) : null;
+        public Spell? Spell => this.SpellCode is >= 0 and <= byte.MaxValue ? this.Catalog.Spells.Find((byte)this.SpellCode) : null;
 
-        public string Name => $"Shrine of the {this.Circle switch { 1 => "first", 2 => "second", _ => "third" }} circle at {this.Position.X}, {this.Position.Y}";
+        public string Name => this.Catalog.MapObjects.Single(o => o.Role == this.Circle switch { 1 => MapObjectRole.ShrineFirst, 2 => MapObjectRole.ShrineSecond, _ => MapObjectRole.ShrineThird }).FormatName(this.Position.X, this.Position.Y);
 
         /// <summary>
         /// Returns the shrine teaching another spell.

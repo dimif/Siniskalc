@@ -1,38 +1,15 @@
-﻿namespace Siniskalc.Homm3.Entities
+namespace Siniskalc.Homm3.Entities;
+
+using Siniskalc.Homm3.Data;
+
+public sealed class Faction : CatalogEntity, Siniskalc.Heroes.Entities.IFaction
 {
-    using System.Collections.Generic;
-
-    public sealed class Faction : Homm3Enumeration, Siniskalc.Heroes.Entities.IFaction
+    internal Faction(EntityCatalog catalog, FactionDefinition definition) : base(catalog, definition)
     {
-        public static readonly Faction Neutral = new("Neutral", 99);
-        public static readonly Faction Castle = new("Castle", 0x00);
-        public static readonly Faction Rampart = new("Rampart", 0x01);
-        public static readonly Faction Tower = new("Tower", 0x02);
-        public static readonly Faction Dungeon = new("Dungeon", 0x05);
-        public static readonly Faction Inferno = new("Inferno", 0x03);
-        public static readonly Faction Necropolis = new("Necropolis", 0x04);
-        public static readonly Faction Stronghold = new("Stronghold", 0x06);
-        public static readonly Faction Fortress = new("Fortress", 0x07);
-        public static readonly Faction Conflux = new("Conflux", 0x08, GameVersion.ArmageddonsBlade);
-        public static readonly Faction Cove = new("Cove", 0x09, GameVersion.HornOfTheAbyss);
-        public static readonly Faction Factory = new("Factory", 0x0A, GameVersion.HornOfTheAbyss);
-        public static readonly Faction Bulwark = new("Bulwark", 0x0B, GameVersion.HornOfTheAbyss);
-
-        private Faction(string name, byte code, GameVersion gameVersion)
-            : base(name, code, gameVersion)
-        {
-        }
-
-        private Faction(string name, byte code)
-            : base(name, code)
-        {
-        }
-
-        public static IReadOnlyList<Faction> All => GetAll<Faction>();
-
-        /// <summary>
-        /// Returns the faction of a byte of a savefile; a byte that is no faction reads as <see cref="Neutral"/>.
-        /// </summary>
-        public static Faction FromByte(byte code) => FromCode<Faction>(code) ?? Neutral;
+        this.IsNeutral = definition.IsNeutral;
+        this.CompanionBits = definition.CompanionBits;
     }
+
+    public bool IsNeutral { get; }
+    public CompanionBitPolicy CompanionBits { get; }
 }

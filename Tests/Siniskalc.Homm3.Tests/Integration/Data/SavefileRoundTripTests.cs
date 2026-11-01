@@ -1,4 +1,5 @@
-﻿namespace Siniskalc.Homm3.Tests.Integration.Data
+﻿using Siniskalc.Homm3.Entities;
+namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Homm3.Data;
 

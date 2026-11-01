@@ -16,16 +16,16 @@
     /// </summary>
     public sealed class ArmyViewModel : HeroesArmyViewModelBase<Creature, ArmySlotViewModel>
     {
-        private readonly GameVersion gameVersion;
+        private readonly EntityCatalog catalog;
 
         public ArmyViewModel(
-            GameVersion gameVersion,
+            EntityCatalog catalog,
             Func<IArmy<Creature>> getCreatures,
             Action<Func<IArmy<Creature>, IArmy<Creature>>> update,
             Func<bool>? isReadOnly = null)
             : base(
-                Creature.All.Where(c => c.IsAvailableIn(gameVersion)).ToList(),
-                c => c.GetInfo(gameVersion),
+                catalog.Creatures.All,
+                c => c.Info,
                 Constants.CreatureSlotCount,
                 Constants.Army.MinStackSize,
                 Constants.Army.MaxStackSize,
@@ -34,7 +34,7 @@
                 (i, changed, move, clear) => new ArmySlotViewModel(i, changed, move, clear),
                 isReadOnly)
         {
-            this.gameVersion = gameVersion;
+            this.catalog = catalog;
             this.Refresh();
         }
 
@@ -42,13 +42,13 @@
         protected override bool SummaryHasValues => true;
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => new StackTotals(creature.GetInfo(this.gameVersion), amount).ToFacts();
+        protected override IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => new StackTotals(creature.Info, amount).ToFacts();
 
         /// <inheritdoc/>
         protected override void AfterSlotRead(ArmySlotViewModel slot, StackContent? stack)
         {
-            var creature = stack == null || stack.CreatureName.Length == 0 ? null : AbstractEnumeration.FromName<Creature>(stack.CreatureName);
-            slot.SetInfo(creature?.GetInfo(this.gameVersion));
+            var creature = stack == null || stack.CreatureName.Length == 0 ? null : this.catalog.Creatures.FindByName(stack.CreatureName);
+            slot.SetInfo(creature?.Info);
         }
     }
 }

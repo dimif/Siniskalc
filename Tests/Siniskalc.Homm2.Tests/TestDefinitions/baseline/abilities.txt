@@ -1,0 +1,32 @@
+Ranged|Ranged|0|true
+Flying|Flying|1|false
+DoubleShot|Double shot|2|false
+DoubleAttack|Double attack|3|false
+NoEnemyRetaliation|No enemy retaliation|4|false
+AttacksAllAdjacentEnemies|Attacks all adjacent enemies|5|false
+UnlimitedRetaliations|Unlimited retaliations|6|false
+BreathAttack|Breath attack|7|false
+Dragon|Dragon|8|false
+Undead|Undead|9|false
+Regeneration|Regeneration|10|false
+LifeDrain|Life drain|11|false
+DeathCloud|Death cloud|12|false
+MindSpellsImmunity|Mind spells immunity|13|false
+MagicImmunity|Magic immunity|14|false
+MoraleMinus1|Morale -1|15|false
+Curse|Curse|16|false
+BlindingAttack|Blinding attack (20% chance)|17|false
+ParalyzingAttack|Paralyzing attack|18|false
+PetrifyingAttack|Petrifying attack|19|false
+Elemental|Elemental|20|false
+FireImmunity|Immune to Fireball and Fireblast|21|false
+HalvesEnemyStack|Halves an enemy stack|22|false
+MagicResistance|Magic resistance (25% chance)|23|false
+SpellDamageReduction|Spell damage reduction (50%)|24|false
+ElementalSpellsImmunity|Elemental spells immunity|25|false
+NeutralMorale|Always neutral morale|26|false
+VulnerableToColdSpells|Vulnerable to Cold Ray and Cold Ring (+100% damage)|27|false
+ImmuneToLightningAndMeteorSpells|Immune to Lightning Bolt, Chain Lightning, Elemental Storm and Meteor Shower|28|false
+ImmuneToMeteorShower|Immune to Meteor Shower|29|false
+VulnerableToLightningSpells|Vulnerable to Lightning Bolt, Chain Lightning and Elemental Storm (+100% damage)|30|false
+ImmuneToColdSpells|Immune to Cold Ray and Cold Ring|31|false

@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
@@ -25,10 +25,10 @@ namespace Siniskalc.Homm3.Tests.Models
                 HeroLevel.AtLevel(LevelCalculator.Table, 5),
                 20,
                 new PrimarySkills(3, 4, 1, 2),
-                new SecondarySkills(SecondarySkill.All.ToDictionary(s => s, _ => SkillLevel.None), []),
-                new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10),
+                new SecondarySkills(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.ToDictionary(s => s, _ => SkillLevel.None), []),
+                new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10),
                 grants ?? resolver.Object,
-                HeroClass.Knight,
+                TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight"),
                 new Backpack(new BackpackSlot?[Constants.BackpackSlotCount]),
                 equipped,
                 [],

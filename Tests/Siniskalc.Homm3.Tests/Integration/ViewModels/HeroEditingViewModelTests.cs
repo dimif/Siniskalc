@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -39,7 +39,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             general.UpdateWarMachine("Ammo_Cart", true);
 
             Assert.That(this.hero.HeroModel.PrimarySkills.Attack, Is.EqualTo((byte)42));
-            Assert.That(general.WarMachinesChecked[3], Is.True);
+            Assert.That(general.WarMachineChoices.Single(c => c.Name == "Ammo Cart").IsChecked, Is.True);
             Assert.That(this.game.History.GetPendingChanges().Select(c => c.Change.Description), Is.SupersetOf(new[] { "Attack", "Spell points", "War machines" }));
         }
 

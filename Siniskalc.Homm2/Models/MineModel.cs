@@ -12,11 +12,11 @@
     /// <param name="Kind">What the mine gives.</param>
     /// <param name="Position">The tile of the mine.</param>
     /// <param name="Owner">The player that owns it, or <see cref="PlayerColor.Neutral"/> for nobody.</param>
-    public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, PlayerColor Owner) : IMineModel<PlayerColor>
+    public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, PlayerColor Owner, GameCatalog Catalog) : IMineModel<PlayerColor>
     {
         /// <summary>
         /// Gets the name of the mine with its place, such as "Gold mine at 12, 7" (the map of HoMM2 has one level).
         /// </summary>
-        public string Name => MineKinds.NameAt(this.Kind, this.Position, hasLevels: false);
+        public string Name => $"{this.Catalog.Mines.Find((byte)this.Kind)!.Name} at {this.Position.X}, {this.Position.Y}";
     }
 }

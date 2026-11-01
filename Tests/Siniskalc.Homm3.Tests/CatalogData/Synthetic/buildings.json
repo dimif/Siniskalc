@@ -1,0 +1,62 @@
+[
+  {
+    "id": "FixtureNest",
+    "order": 269,
+    "name": "Astral Nest",
+    "code": 30,
+    "availableFrom": "hornOfTheAbyss",
+    "type": "dwelling1",
+    "faction": "FixtureTown",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FixtureHighNest",
+    "order": 270,
+    "name": "Astral HighNest",
+    "code": 37,
+    "availableFrom": "hornOfTheAbyss",
+    "type": "upgradedDwelling1",
+    "faction": "FixtureTown",
+    "upgrades": "FixtureNest",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FixtureHorde",
+    "order": 271,
+    "name": "Astral Horde",
+    "code": 18,
+    "availableFrom": "hornOfTheAbyss",
+    "type": "horde1",
+    "faction": "FixtureTown",
+    "upgrades": null,
+    "requires": [
+      "FixtureNest"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FixtureHighHorde",
+    "order": 272,
+    "name": "Astral HighHorde",
+    "code": 19,
+    "availableFrom": "hornOfTheAbyss",
+    "type": "upgradedHorde1",
+    "faction": "FixtureTown",
+    "upgrades": "FixtureHorde",
+    "requires": [
+      "FixtureHighNest"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  }
+]

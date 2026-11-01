@@ -16,8 +16,8 @@ namespace Siniskalc.Homm2.Tests.Integration.Models
         {
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes().GetModels();
 
-            Assert.That(heroes.Select(h => h.Faction), Is.EqualTo(heroes.Select(h => Faction.All[Math.Min(h.Id / 9, Faction.All.Count - 1)])));
-            Assert.That((heroes[0].Faction, heroes[9].Faction, heroes[53].Faction), Is.EqualTo((Faction.Knight, Faction.Barbarian, Faction.Necromancer)));
+            Assert.That(heroes.Select(h => h.Faction), Is.EqualTo(heroes.Select(h => TestCatalog.Standard.Factions[Math.Min(h.Id / 9, TestCatalog.Standard.Factions.Count - 1)])));
+            Assert.That((heroes[0].Faction, heroes[9].Faction, heroes[53].Faction), Is.EqualTo((TestCatalog.Standard.Factions["Knight"], TestCatalog.Standard.Factions["Barbarian"], TestCatalog.Standard.Factions["Necromancer"])));
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace Siniskalc.Homm2.Tests.Integration.Models
         {
             // In the game Maximus (attack 15 with the sword) gave it to Sir Gallant (attack 2): they ended on 3 and 14.
             var heroes = TestServices.LoadBrokenAlliance(10).History.Current.Heroes();
-            var maximus = (heroes.GetModel(7) with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(Artifact.UltimateSwordOfDominion);
+            var maximus = (heroes.GetModel(7) with { PrimarySkills = new PrimarySkills(15, 15, 15, 15) }).WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
             var gallant = heroes.GetModel(1);
 
-            var maximusAfter = maximus.WithoutArtifact(Artifact.UltimateSwordOfDominion);
-            var gallantAfter = gallant.WithArtifact(Artifact.UltimateSwordOfDominion);
+            var maximusAfter = maximus.WithoutArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
+            var gallantAfter = gallant.WithArtifact(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
 
             Assert.That(gallantAfter.PrimarySkills.Attack, Is.EqualTo(gallant.PrimarySkills.Attack + 12));
             Assert.That(maximusAfter.PrimarySkills.Attack, Is.EqualTo(maximus.PrimarySkills.Attack - 12));

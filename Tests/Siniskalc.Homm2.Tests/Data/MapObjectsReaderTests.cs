@@ -12,7 +12,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class MapObjectsReaderTests
     {
-        private readonly MapObjectsReader reader = new();
+        private readonly MapObjectsReader reader = new(TestCatalog.Catalogs);
 
         private MapObjectChunks Read(MapSavegame save) => this.reader.Read(save.Bytes, save.Layout);
 

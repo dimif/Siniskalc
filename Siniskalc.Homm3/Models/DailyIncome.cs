@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm3.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
@@ -33,22 +34,7 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public static long HallGold(CastleModel castle)
         {
-            if (castle.HasBuilt(Building.Capitol))
-            {
-                return 4000;
-            }
-
-            if (castle.HasBuilt(Building.CityHall))
-            {
-                return 2000;
-            }
-
-            if (castle.HasBuilt(Building.TownHall))
-            {
-                return 1000;
-            }
-
-            return castle.HasBuilt(Building.VillageHall) ? 500 : 0;
+            return castle.Buildings.Select(b => b.GoldIncome).DefaultIfEmpty(0).Max();
         }
 
         /// <summary>
@@ -64,8 +50,8 @@ namespace Siniskalc.Homm3.Models
             {
                 if (mine.Owner == owner)
                 {
-                    var resource = MineKinds.ResourceOf(mine.Kind);
-                    income = income.With(resource, income[resource] + YieldOf(mine.Kind));
+                    var definition = mine.Catalog.MapMetadata.Mine(mine.Kind);
+                    income = income.With(definition.Resource, income[definition.Resource] + definition.DailyAmount);
                 }
             }
 
@@ -80,11 +66,5 @@ namespace Siniskalc.Homm3.Models
             return income;
         }
 
-        private static long YieldOf(MineKind kind) => kind switch
-        {
-            MineKind.GoldMine => GoldMine,
-            MineKind.Sawmill or MineKind.OreMine => Timber,
-            _ => Mineral,
-        };
     }
 }

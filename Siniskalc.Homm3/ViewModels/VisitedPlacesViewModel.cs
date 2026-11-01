@@ -25,7 +25,7 @@
             this.places = places;
             this.PlacesVisited = new VisitedPlacesCardViewModel(
                 "Visited once per hero",
-                VisitedPlaceKind.All.Where(kind => !kind.IsHotaOnly || gameVersion == GameVersion.HornOfTheAbyss).Select(this.VisitedRow).ToList(),
+                getHero().HeroClass.Catalog.VisitedPlaces.All.Where(kind => kind.IsAvailableIn(gameVersion)).Select(this.VisitedRow).ToList(),
                 []);
         }
 

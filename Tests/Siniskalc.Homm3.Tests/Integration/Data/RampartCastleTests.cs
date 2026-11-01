@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Rampart", save + ".GM1"));
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("Fortune Keep")]);
+            return castles.GetModel(castles.FindByName("Fortune Keep"));
         }
 
         [TestCase("rampart_01_town_hall", "rampart_00_baseline", "Town Hall")]
@@ -64,8 +64,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = FortuneKeep("rampart_30_upg_dragon_cliffs");
 
-            Assert.That(castle.Faction, Is.EqualTo(Faction.Rampart));
-            Assert.That(castle.Buildings, Does.Contain(Building.RampartUpgDragonCliffs).And.Contain(Building.Capitol).And.Contain(Building.MagesGuild5));
+            Assert.That(castle.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")));
+            Assert.That(castle.Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartUpgDragonCliffs")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild5")));
             Assert.That(castle.MageGuildLevel, Is.EqualTo(5));
         }
     }

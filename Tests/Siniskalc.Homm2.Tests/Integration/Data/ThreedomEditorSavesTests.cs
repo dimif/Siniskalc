@@ -75,7 +75,7 @@
             Assert.That(mines.Single(m => m.Position == new Siniskalc.Heroes.Models.MapPosition(44, 6)).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.PlayerColor.Red));
 
             var shrines = Open("T08SHRIN").History.Current.Shrines().GetModels();
-            Assert.That(shrines.Single(s => s.Position == new Siniskalc.Heroes.Models.MapPosition(45, 7)).Spell, Is.EqualTo(Siniskalc.Homm2.Entities.Spell.Fireball));
+            Assert.That(shrines.Single(s => s.Position == new Siniskalc.Heroes.Models.MapPosition(45, 7)).Spell, Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]));
 
             var sphinx = Open("T09SPHNX").History.Current.Sphinxes().GetModel(0);
             Assert.That(sphinx.IsActive, Is.True);

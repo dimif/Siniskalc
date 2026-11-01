@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Data;
 
 namespace Siniskalc.Homm3.Tests.Data
@@ -13,7 +13,7 @@ namespace Siniskalc.Homm3.Tests.Data
     {
         private static readonly uint[] Four = [0x13, 0x14, 0x15, 0x7E];
 
-        private readonly MerchantBytesLoader loader = new();
+        private readonly MerchantBytesLoader loader = new(TestCatalog.For(GameVersion.HornOfTheAbyss));
 
         /// <summary>The count, then <paramref name="count"/> lists whose first slots hold <paramref name="codes"/> and the others are empty, behind <paramref name="lead"/> zero bytes.</summary>
         private static byte[] Savegame(int lead, uint count, uint[] codes, int? lists = null, int trailing = 8)
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ACodeThatIsNoArtifactOrDoesNotFitAByteIsNoTable()
         {
-            var unknown = (uint)Enumerable.Range(0, 256).First(c => !Artifact.All.ContainsKey((byte)c));
+            var unknown = (uint)Enumerable.Range(0, 256).First(c => !TestCatalog.For(GameVersion.HornOfTheAbyss).WearableArtifacts.ToDictionary(a => a.Code).ContainsKey((byte)c));
 
             Assert.That(this.loader.LoadMerchantChunks(Savegame(0, 1, [.. Four, unknown])), Is.Empty);
             Assert.That(this.loader.LoadMerchantChunks(Savegame(0, 1, [.. Four, 0x113u])), Is.Empty);

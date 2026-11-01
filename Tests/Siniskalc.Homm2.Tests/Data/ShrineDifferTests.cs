@@ -12,7 +12,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class ShrineDifferTests
     {
-        private static ShrineModel Shrine() => new(1, 2, new MapPosition(30, 31), Spell.Fireball.Code);
+        private static ShrineModel Shrine() => new(1, 2, new MapPosition(30, 31), TestCatalog.Standard.Spells["Fireball"].Code, TestCatalog.Standard);
 
         [Test]
         public void TwoEqualShrinesHaveNoChanges()
@@ -23,7 +23,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void AnotherSpellInAShrineIsOneChangeNamingBothSpells()
         {
-            var change = new ShrineDiffer().Diff(1, Shrine(), Shrine().WithSpell(Spell.Fireblast)).Single();
+            var change = new ShrineDiffer().Diff(1, Shrine(), Shrine().WithSpell(TestCatalog.Standard.Spells["Fireblast"])).Single();
 
             Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Spell", "Fireball", "Fireblast")));
             Assert.That((change.OwnerName, change.Kind, change.Index), Is.EqualTo((Shrine().Name, Homm2ChunkKinds.Shrines, 1)));

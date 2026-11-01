@@ -100,8 +100,8 @@
 
             var guild = Open("E18GUILD").Document.Castles().GetModel(Open("E18GUILD").Document.Castles().FindByName("Xabran"));
             Assert.That(guild.MageGuildLevel, Is.EqualTo(2));
-            Assert.That(guild.MageGuildSpell(1, 0), Is.EqualTo(Spell.Fireball));
-            Assert.That(guild.MageGuildSpell(2, 0), Is.EqualTo(Spell.ChainLightning));
+            Assert.That(guild.MageGuildSpell(1, 0), Is.EqualTo(TestCatalog.Standard.Spells["Fireball"]));
+            Assert.That(guild.MageGuildSpell(2, 0), Is.EqualTo(TestCatalog.Standard.Spells["ChainLightning"]));
 
             var artifacts = Open("E19ARTS").Document.Heroes().GetModel(7);
             Assert.That(artifacts.Artifacts.IsFull, Is.True);
@@ -110,8 +110,8 @@
             var before = TestServices.LoadBrokenAlliance(24).History.Current.Heroes().GetModel(7);
             var taken = Open("E20TAKE").Document.Heroes().GetModel(7);
             Assert.That(taken.PrimarySkills, Is.EqualTo(before.PrimarySkills with { Defense = before.PrimarySkills.Defense + 12 }));
-            Assert.That(taken.Artifacts.Slots, Has.Member(Artifact.UltimateCloakOfProtection));
-            Assert.That(taken.Artifacts.Slots, Has.No.Member(Artifact.UltimateSwordOfDominion));
+            Assert.That(taken.Artifacts.Slots, Has.Member(TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"]));
+            Assert.That(taken.Artifacts.Slots, Has.No.Member(TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]));
 
             var skills = Open("E21SKILL").Document.Heroes().GetModel(7).SecondarySkills;
             Assert.That(skills.SlotCount, Is.EqualTo(8));
@@ -119,16 +119,16 @@
 
             var gallant = Open("E22BOOK").Document.Heroes().GetModel(1);
             Assert.That(gallant.HasSpellBook, Is.True);
-            Assert.That(gallant.Spells.Contains(Spell.Fireball), Is.False);
-            Assert.That(gallant.Spells.Contains(Spell.Cure), Is.True);
+            Assert.That(gallant.Spells.Contains(TestCatalog.Standard.Spells["Fireball"]), Is.False);
+            Assert.That(gallant.Spells.Contains(TestCatalog.Standard.Spells["Cure"]), Is.True);
 
             var blue = Open("E23LIMIT").Document.Players().GetModel(0).Resources;
             Assert.That(blue, Is.EqualTo(new ResourceSet(Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxOther, Constants.Player.MaxGold)));
 
             var army = Open("E24STACK").Document.Heroes().GetModel(1).Army;
-            Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Peasant, (int)Constants.MaxCreatureCount)));
-            Assert.That(army.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Rogue, 500)));
-            Assert.That(army.Slots[2], Is.EqualTo(new ArmySlot<Creature>(Creature.BlackDragon, 1)));
+            Assert.That(army.Slots[0], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Peasant"], (int)Constants.MaxCreatureCount)));
+            Assert.That(army.Slots[1], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.Standard.Creatures["Rogue"], 500)));
+            Assert.That(army.Slots[2], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.Standard.Creatures["BlackDragon"], 1)));
 
             var stats = Open("E25STATS").Document.Heroes().GetModel(1);
             Assert.That((stats.HeroLevel.Level, stats.HeroLevel.Experience, stats.SpellPoints, stats.MovementPoints.Current), Is.EqualTo((17, 50_000L, 99, stats.MovementPoints.Max)), "the level follows the experience");

@@ -1,3 +1,4 @@
+﻿using Siniskalc.Homm3.Entities;
 using System.Text;
 using Siniskalc.Homm3.Data;
 
@@ -16,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Data
         private const int FullTail = 233;
         private const int MinimumTail = 113;
 
-        private readonly CastleBytesLoader loader = new(Encoding.Latin1);
+        private readonly CastleBytesLoader loader = new(Encoding.Latin1, TestCatalog.For(GameVersion.HornOfTheAbyss));
 
         /// <summary>A savegame of zeros with one castle record at <paramref name="start"/>, then the changes.</summary>
         private static byte[] Savegame(string name, int start = 100, int after = 400, Action<byte[], int, int>? change = null)
@@ -190,18 +191,18 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void ACreatureTypeOfNoneOrUpToTwoHundredIsAGarrison()
+        public void AGarrisonAllowsAnAbsentCreatureAndEveryRepresentableCreatureCode()
         {
             var bytes = Savegame("Stormwatch", change: (b, start, _) =>
             {
                 BitConverter.GetBytes(-1).CopyTo(b, start + CastleLayout.GarrisonTypes);
-                BitConverter.GetBytes(200).CopyTo(b, start + CastleLayout.GarrisonTypes + 4);
+                BitConverter.GetBytes(255).CopyTo(b, start + CastleLayout.GarrisonTypes + 4);
             });
 
             Assert.That(this.loader.LoadCastleChunks(bytes), Has.Count.EqualTo(1));
         }
 
-        [TestCase(201)]
+        [TestCase(256)]
         [TestCase(-2)]
         public void ACreatureTypeOutsideWhatTheGameHasIsNoCastle(int type)
         {

@@ -37,21 +37,18 @@
                                 ToolTip="Give the hero every war machine (the ballista, where the hero could have a ballista or a cannon)">
                             <TextBlock FontWeight="SemiBold" Text="All"/>
                         </Button>
-                        <CheckBox Name="Ballista" Style="{StaticResource TileCheckBox}" IsChecked="{Binding WarMachinesChecked[0], Mode=TwoWay}" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ballista" Visibility="{Binding HasSingleBallista, Converter={StaticResource BoolToVisibility}}">
-                            <TextBlock FontWeight="SemiBold" Text="Ballista"/>
-                        </CheckBox>
-                        <RadioButton Name="BallistaRadio" PreviewMouseLeftButtonDown="RememberArtillery" PreviewKeyDown="RememberArtilleryKey" Click="UntickArtillery" Style="{StaticResource TileRadioButton}" IsChecked="{Binding WarMachinesChecked[1], Mode=TwoWay}" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ballista" Visibility="{Binding IsHota, Converter={StaticResource BoolToVisibility}}">
-                            <TextBlock FontWeight="SemiBold" Text="Ballista"/>
-                        </RadioButton>
-                        <RadioButton Name="Cannon" PreviewMouseLeftButtonDown="RememberArtillery" PreviewKeyDown="RememberArtilleryKey" Click="UntickArtillery" Style="{StaticResource TileRadioButton}" IsChecked="{Binding WarMachinesChecked[2], Mode=TwoWay}" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Cannon" Visibility="{Binding IsHota, Converter={StaticResource BoolToVisibility}}">
-                            <TextBlock FontWeight="SemiBold" Text="Cannon"/>
-                        </RadioButton>
-                        <CheckBox Name="Ammo_Cart" Style="{StaticResource TileCheckBox}" IsChecked="{Binding WarMachinesChecked[3], Mode=TwoWay}" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="Ammo_Cart">
-                            <TextBlock FontWeight="SemiBold" Text="Ammo cart"/>
-                        </CheckBox>
-                        <CheckBox Name="First_Aid_Tent" Style="{StaticResource TileCheckBox}" IsChecked="{Binding WarMachinesChecked[4], Mode=TwoWay}" Checked="AddWarMachine" Unchecked="RemoveWarMachine" Tag="First_Aid_Tent">
-                            <TextBlock FontWeight="SemiBold" Text="First aid tent"/>
-                        </CheckBox>
+                        <ItemsControl ItemsSource="{Binding WarMachineChoices}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Style="{StaticResource TileCheckBox}" IsChecked="{Binding IsChecked, Mode=TwoWay}">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Name}"/>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </WrapPanel>
                 </StackPanel>
             </Border>

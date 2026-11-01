@@ -1,3 +1,4 @@
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Runtime;

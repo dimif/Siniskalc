@@ -14,7 +14,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class SafeCastleSerializerTests
     {
-        private readonly SafeCastleSerializer serializer = new();
+        private readonly SafeCastleSerializer serializer = new(TestCatalog.Standard);
 
         private static CastleChunk Record(Action<byte[]>? prepare = null)
         {
@@ -62,11 +62,11 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void AFactionByteThatIsNoFactionIsKeptWhileTheModelSaysNeutralAndReplacedWhenItSaysAFaction()
         {
-            var chunk = this.Baseline(DifferSamples.Castle() with { Faction = Faction.Neutral }, bytes => bytes[CastleLayout.Faction] = 0x77);
-            var kept = this.Written(chunk, DifferSamples.Castle() with { Faction = Faction.Neutral });
+            var chunk = this.Baseline(DifferSamples.Castle() with { Faction = TestCatalog.Standard.Factions["Neutral"] }, bytes => bytes[CastleLayout.Faction] = 0x77);
+            var kept = this.Written(chunk, DifferSamples.Castle() with { Faction = TestCatalog.Standard.Factions["Neutral"] });
 
             Assert.That(kept[CastleLayout.Faction], Is.EqualTo(0x77));
-            Assert.That(this.Written(chunk, DifferSamples.Castle() with { Faction = Faction.Barbarian })[CastleLayout.Faction], Is.EqualTo(Faction.Barbarian.Code));
+            Assert.That(this.Written(chunk, DifferSamples.Castle() with { Faction = TestCatalog.Standard.Factions["Barbarian"] })[CastleLayout.Faction], Is.EqualTo(TestCatalog.Standard.Factions["Barbarian"].Code));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheDragonsUpgradedTwiceWaitInTheSixthPlaceAndGetTheMarkTheGameShowsThemWith()
         {
-            var warlock = DifferSamples.Castle() with { Faction = Faction.Warlock };
+            var warlock = DifferSamples.Castle() with { Faction = TestCatalog.Standard.Factions["Warlock"] };
             var chunk = this.Baseline(warlock.WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 5));
 
             var written = this.Written(chunk, warlock.WithDwellingLevel(6, 2).WithCreaturesWaiting(6, 5).WithDwellingLevel(6, 3));
@@ -131,7 +131,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = this.Baseline();
 
-            var written = this.Written(chunk, DifferSamples.Castle().WithMageGuildLevel(1).WithMageGuildSpell(1, 0, Spell.Fireball));
+            var written = this.Written(chunk, DifferSamples.Castle().WithMageGuildLevel(1).WithMageGuildSpell(1, 0, TestCatalog.Standard.Spells["Fireball"]));
 
             Assert.That(written[CastleLayout.GuildSpells], Is.EqualTo(0));
             Assert.That(chunk.ToArray()[CastleLayout.GuildSpells], Is.EqualTo(0xFF));
@@ -176,7 +176,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var chunk = this.Baseline();
 
-            var written = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(1, Creature.Archer, 0x0102) });
+            var written = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(1, TestCatalog.Standard.Creatures["Archer"], 0x0102) });
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written), Is.EqualTo(new[]
             {
@@ -194,11 +194,11 @@ namespace Siniskalc.Homm2.Tests.Data
                 bytes[CastleLayout.GarrisonTypes] = 0xC8;
                 BitConverter.GetBytes((ushort)7).CopyTo(bytes, CastleLayout.GarrisonCounts);
             });
-            var stoodIn = DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, Creature.Peasant, 7) };
+            var stoodIn = DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, TestCatalog.Standard.Creatures["Peasant"], 7) };
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), this.Written(chunk, stoodIn)), Is.Empty);
 
-            var replaced = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, Creature.Archer, 7) });
+            var replaced = this.Written(chunk, DifferSamples.Castle() with { Garrison = DifferSamples.Castle().Garrison.WithSlot(0, TestCatalog.Standard.Creatures["Archer"], 7) });
             Assert.That(ByteDiff.Of(chunk.ToArray(), replaced), Is.EqualTo(new[] { (CastleLayout.GarrisonTypes, (byte)0xC8, (byte)1) }));
         }
 

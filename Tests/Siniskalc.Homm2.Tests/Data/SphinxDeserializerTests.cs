@@ -25,7 +25,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void ASphinxIsItsTileItsPlaceInTheTableAndTheRoomItsRiddleHas()
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx());
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx());
 
             Assert.That((sphinx.Index, sphinx.Position, sphinx.RiddleCapacity), Is.EqualTo((4, new MapPosition(5, 6), 99)));
         }
@@ -35,7 +35,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase(7, true)]
         public void TheRiddleIsAnsweredWhenTheFirstByteIsZeroAndNotAnsweredForAnyOtherByte(int flag, bool active)
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx(b => b[MapObjectLayout.SphinxActive] = (byte)flag));
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx(b => b[MapObjectLayout.SphinxActive] = (byte)flag));
 
             Assert.That(sphinx.IsActive, Is.EqualTo(active));
         }
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheSevenRewardsAreFourByteNumbersAndTheArtifactIsTwoBytes()
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx(b =>
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx(b =>
             {
                 for (var i = 0; i < 7; i++)
                 {
@@ -60,7 +60,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void ARewardTooBigForTheModelReadsAsTheNumberTheCastGivesAndIsNotAnError()
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx(b => BitConverter.GetBytes(0xFFFF_FFF0u).CopyTo(b, MapObjectLayout.SphinxReward)));
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx(b => BitConverter.GetBytes(0xFFFF_FFF0u).CopyTo(b, MapObjectLayout.SphinxReward)));
 
             Assert.That(sphinx.Reward[0], Is.EqualTo(-16));
         }
@@ -68,7 +68,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void TheAnswersAreAsManyTextsAsTheCountSaysEachUpToItsFirstZero()
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx(b =>
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx(b =>
             {
                 b[MapObjectLayout.SphinxAnswerCount] = 2;
                 Text(b, MapObjectLayout.SphinxAnswers, "darkness");
@@ -82,7 +82,7 @@ namespace Siniskalc.Homm2.Tests.Data
         [Test]
         public void ARiddleIsReadUpToItsFirstZeroByte()
         {
-            var sphinx = new SphinxDeserializer().Deserialize(Sphinx(b => Text(b, MapObjectLayout.SphinxRiddle, "I Only Creep.\0leftover")));
+            var sphinx = new SphinxDeserializer(TestCatalog.Standard).Deserialize(Sphinx(b => Text(b, MapObjectLayout.SphinxRiddle, "I Only Creep.\0leftover")));
 
             Assert.That(sphinx.Riddle, Is.EqualTo("I Only Creep."));
         }

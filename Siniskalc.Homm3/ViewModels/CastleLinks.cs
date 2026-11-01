@@ -30,22 +30,22 @@ namespace Siniskalc.Homm3.ViewModels
                 openCastle,
                 openHero,
                 castle => [HallOf(castle), FortOf(castle)],
-                castle => castle.HasBuilt(Building.Capitol),
+                castle => castle.HasBuilt(BuildingType.Capitol),
                 castle => castle.Buildings.FirstOrDefault(b => b.IsGrail)?.Name ?? string.Empty);
 
         private static string HallOf(CastleModel castle)
         {
-            return castle.HasBuilt(Building.Capitol) ? "Capitol"
-                : castle.HasBuilt(Building.CityHall) ? "City"
-                : castle.HasBuilt(Building.TownHall) ? "Town"
+            return castle.HasBuilt(BuildingType.Capitol) ? "Capitol"
+                : castle.HasBuilt(BuildingType.CityHall) ? "City"
+                : castle.HasBuilt(BuildingType.TownHall) ? "Town"
                 : "Village";
         }
 
         private static string FortOf(CastleModel castle)
         {
-            return castle.HasBuilt(Building.Castle) ? "Castle"
-                : castle.HasBuilt(Building.Citadel) ? "Citadel"
-                : castle.HasBuilt(Building.Fort) ? "Fort"
+            return castle.HasBuilt(BuildingType.Castle) ? "Castle"
+                : castle.HasBuilt(BuildingType.Citadel) ? "Citadel"
+                : castle.HasBuilt(BuildingType.Fort) ? "Fort"
                 : string.Empty;
         }
     }

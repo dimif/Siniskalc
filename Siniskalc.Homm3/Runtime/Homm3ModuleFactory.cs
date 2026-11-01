@@ -1,6 +1,7 @@
 ﻿namespace Siniskalc.Homm3.Runtime
 {
     using System;
+    using System.Collections.Frozen;
     using System.Text;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -29,7 +30,8 @@
             IFileBackupServiceProvider backup,
             ISavefileBytesPatcher bytesPatcher,
             BanishingTextProvider banishingText,
-            Func<IGameService, IGameService>? decorateGameService = null)
+            Func<IGameService, IGameService>? decorateGameService = null,
+            IGameDefinitionReader? definitions = null)
         {
             this.BytesPatcher = bytesPatcher;
             this.BanishingText = banishingText;
@@ -37,19 +39,25 @@
             var dateLocator = new GameDateLocator();
             var setupLocator = new PlayerControlLocator();
             var mapHeaderLocator = new MapHeaderLocator();
-            this.VersionEntities = new VersionSpecificEntitiesProviderFactory(version => new GrantedSpellsResolver(version));
+            var catalogs = new GameCatalogLoader(definitions ?? new JsonGameDefinitionReader()).Load();
+            this.VersionEntities = new VersionSpecificEntitiesProviderFactory(catalogs);
+            var castleLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new CastleBytesLoader(heroNameEncoding, pair.Value));
+            var mineLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MineBytesLoader(pair.Value));
+            var dwellingLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new DwellingBytesLoader(pair.Value));
+            var merchantLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MerchantBytesLoader(pair.Value));
+            var catalog = this.VersionEntities.For(GameVersion.HornOfTheAbyss).Catalog;
             this.HeroRegions = new HeroRegionProvider(this.VersionEntities);
             this.PlayerRegions = new PlayerRegionProvider();
             this.CastleRegions = new CastleRegionProvider();
 
-            this.CastleDeserializer = new CastleDeserializer();
+            this.CastleDeserializer = new CastleDeserializer(catalog);
             this.CastleSerializer = new SafeCastleSerializer();
             this.PlayerDeserializer = new PlayerDeserializer();
             var pendingChanges = new Homm3PendingChangesFactory();
             this.DocumentFactory = new SaveDocumentFactory(
                 this.VersionEntities,
                 new HeroDiffer(pendingChanges),
-                this.CastleDeserializer,
+                entities => new CastleDeserializer(entities),
                 this.CastleSerializer,
                 new CastleDiffer(pendingChanges),
                 this.PlayerDeserializer,
@@ -60,9 +68,9 @@
                 new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags),
                 new SafeObeliskSerializer<PlayerColor>(ObeliskLayout.Flags),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, pendingChanges.ForObelisks),
-                new RecordKit<RecordChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
-                new RecordKit<RecordChunk, DwellingModel>(new DwellingDeserializer(), new SafeDwellingSerializer(), new DwellingDiffer()),
-                new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(), new SafeMerchantStockSerializer(), new MerchantStockDiffer()),
+                entities => new RecordKit<RecordChunk, MineModel>(new MineDeserializer(new CreatureCodes(entities)), new SafeMineSerializer(new CreatureCodes(entities)), new MineDiffer()),
+                entities => new RecordKit<RecordChunk, DwellingModel>(new DwellingDeserializer(entities), new SafeDwellingSerializer(), new DwellingDiffer()),
+                entities => new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(entities), new SafeMerchantStockSerializer(entities), new MerchantStockDiffer()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(new HeroOwnersDeserializer(), new SafeHeroOwnersSerializer(), new HeroOwnersDiffer()),
                 new RecordKit<RecordChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new PlayerListsReconciler(),
@@ -73,12 +81,12 @@
                 new SavegameParser(
                     new SavegameVersionDetector(),
                     new HeroBytesLoader(heroNameEncoding),
-                    new CastleBytesLoader(heroNameEncoding),
+                    version => castleLoaders[version],
                     new PlayerBytesLoader(),
                     new ObeliskBytesLoader(),
-                    new MineBytesLoader(),
-                    new DwellingBytesLoader(),
-                    new MerchantBytesLoader(),
+                    version => mineLoaders[version],
+                    version => dwellingLoaders[version],
+                    version => merchantLoaders[version],
                     new HeroOwnersBytesLoader(dateLocator),
                     new TurnBytesLoader(setupLocator),
                     new MapPlacesLoader(),

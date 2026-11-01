@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.Entities;
+﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -20,22 +20,22 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         public void CreaturesSwapMovesStacksAndIntoEmptySlots()
         {
             var army = new Army<Creature>(Constants.CreatureSlotCount)
-                .WithSlot(0, Creature.Pikeman, 10)
-                .WithSlot(1, Creature.Archer, 5);
+                .WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10)
+                .WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5);
 
             var swapped = army.Swap(0, 1);
-            Assert.That(swapped.Slots[0], Is.EqualTo(new ArmySlot<Creature>(Creature.Archer, 5)));
-            Assert.That(swapped.Slots[1], Is.EqualTo(new ArmySlot<Creature>(Creature.Pikeman, 10)));
+            Assert.That(swapped.Slots[0], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5)));
+            Assert.That(swapped.Slots[1], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10)));
 
             var moved = army.Swap(1, 2);
             Assert.That(moved.Slots[1], Is.Null);
-            Assert.That(moved.Slots[2], Is.EqualTo(new ArmySlot<Creature>(Creature.Archer, 5)));
+            Assert.That(moved.Slots[2], Is.EqualTo(new ArmySlot<Creature>(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5)));
         }
 
         [Test]
         public void CreaturesWithoutSlotEmptiesIt()
         {
-            var army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, Creature.Pikeman, 10).WithSlot(1, Creature.Archer, 5);
+            var army = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10).WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5);
 
             var cleared = army.WithoutSlot(0);
 
@@ -51,10 +51,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
 
             var swapped = skills.Swap(0, 2);
 
-            Assert.That(swapped.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Luck));
-            Assert.That(swapped.GetSkillInSlot(2), Is.EqualTo(SecondarySkill.Archery));
-            Assert.That(swapped.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.Beginner));
-            Assert.That(swapped.GetSkillLevel(SecondarySkill.Wisdom), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(swapped.GetSkillInSlot(0), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")));
+            Assert.That(swapped.GetSkillInSlot(2), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")));
+            Assert.That(swapped.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")), Is.EqualTo(SkillLevel.Beginner));
+            Assert.That(swapped.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")), Is.EqualTo(SkillLevel.Expert));
         }
 
         [Test]
@@ -65,69 +65,69 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             var cleared = skills.WithoutSlot(0);
 
             Assert.That(cleared.SlotCount, Is.EqualTo(2));
-            Assert.That(cleared.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Wisdom));
-            Assert.That(cleared.GetSkillInSlot(1), Is.EqualTo(SecondarySkill.Luck));
-            Assert.That(cleared.GetSkillLevel(SecondarySkill.Archery), Is.EqualTo(SkillLevel.None));
+            Assert.That(cleared.GetSkillInSlot(0), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")));
+            Assert.That(cleared.GetSkillInSlot(1), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")));
+            Assert.That(cleared.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")), Is.EqualTo(SkillLevel.None));
         }
 
         [Test]
         public void SecondarySkillsWithSkillAppendsAndStopsAtEightSlots()
         {
-            var skills = ThreeSkills().WithSkill(SecondarySkill.Tactics, SkillLevel.Intermediate);
+            var skills = ThreeSkills().WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics"), SkillLevel.Intermediate);
             Assert.That(skills.SlotCount, Is.EqualTo(4));
-            Assert.That(skills.GetSkillInSlot(3), Is.EqualTo(SecondarySkill.Tactics));
+            Assert.That(skills.GetSkillInSlot(3), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics")));
 
-            var levelled = skills.WithSkill(SecondarySkill.Tactics, SkillLevel.Expert);
+            var levelled = skills.WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics"), SkillLevel.Expert);
             Assert.That(levelled.SlotCount, Is.EqualTo(4));
-            Assert.That(levelled.GetSkillLevel(SecondarySkill.Tactics), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(levelled.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics")), Is.EqualTo(SkillLevel.Expert));
 
             var full = skills
-                .WithSkill(SecondarySkill.Scouting, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Learning, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Offense, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Armorer, SkillLevel.Beginner);
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Scouting"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Learning"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Offense"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Armorer"), SkillLevel.Beginner);
             Assert.That(full.SlotCount, Is.EqualTo(Constants.SkillSlots.Max));
 
             // The ninth skill has no slot, but still has its level: the game applies it without showing it.
-            var withExtra = full.WithSkill(SecondarySkill.Sorcery, SkillLevel.Intermediate);
+            var withExtra = full.WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"), SkillLevel.Intermediate);
             Assert.That(withExtra.SlotCount, Is.EqualTo(Constants.SkillSlots.Max));
-            Assert.That(withExtra.GetSlotOf(SecondarySkill.Sorcery), Is.EqualTo(-1));
-            Assert.That(withExtra.GetSkillLevel(SecondarySkill.Sorcery), Is.EqualTo(SkillLevel.Intermediate));
-            Assert.That(withExtra.ExtraSkills, Is.EqualTo(new[] { SecondarySkill.Sorcery }));
+            Assert.That(withExtra.GetSlotOf(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(-1));
+            Assert.That(withExtra.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(SkillLevel.Intermediate));
+            Assert.That(withExtra.ExtraSkills, Is.EqualTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery") }));
         }
 
         [Test]
         public void ExtraSkillsCanBeLevelledRemovedShownAndHidden()
         {
             var full = ThreeSkills()
-                .WithSkill(SecondarySkill.Tactics, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Scouting, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Learning, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Offense, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Armorer, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Sorcery, SkillLevel.Beginner);
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Scouting"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Learning"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Offense"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Armorer"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"), SkillLevel.Beginner);
 
             // Raising an extra skill keeps it extra.
-            var raised = full.WithSkillLevel(SecondarySkill.Sorcery, SkillLevel.Expert);
-            Assert.That(raised.GetSlotOf(SecondarySkill.Sorcery), Is.EqualTo(-1));
-            Assert.That(raised.GetSkillLevel(SecondarySkill.Sorcery), Is.EqualTo(SkillLevel.Expert));
+            var raised = full.WithSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"), SkillLevel.Expert);
+            Assert.That(raised.GetSlotOf(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(-1));
+            Assert.That(raised.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(SkillLevel.Expert));
 
             // It cannot be shown while the slots are full; freeing a slot allows it.
-            Assert.That(raised.WithExtraSkillInSlot(SecondarySkill.Sorcery), Is.SameAs(raised));
-            var shown = raised.WithoutSlot(0).WithExtraSkillInSlot(SecondarySkill.Sorcery);
-            Assert.That(shown.GetSlotOf(SecondarySkill.Sorcery), Is.EqualTo(7));
+            Assert.That(raised.WithExtraSkillInSlot(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.SameAs(raised));
+            var shown = raised.WithoutSlot(0).WithExtraSkillInSlot(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"));
+            Assert.That(shown.GetSlotOf(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(7));
             Assert.That(shown.ExtraSkills, Is.Empty);
 
             // Hiding keeps the level and moves the later skills up.
             var hidden = full.WithSlotAsExtra(1);
             Assert.That(hidden.SlotCount, Is.EqualTo(7));
-            Assert.That(hidden.GetSlotOf(SecondarySkill.Luck), Is.EqualTo(1));
-            Assert.That(hidden.GetSkillLevel(SecondarySkill.Wisdom), Is.EqualTo(SkillLevel.Expert));
-            Assert.That(hidden.ExtraSkills, Is.EquivalentTo(new[] { SecondarySkill.Wisdom, SecondarySkill.Sorcery }));
+            Assert.That(hidden.GetSlotOf(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")), Is.EqualTo(1));
+            Assert.That(hidden.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(hidden.ExtraSkills, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery") }));
 
             // No level removes the skill, wherever it is.
-            Assert.That(raised.WithSkillLevel(SecondarySkill.Sorcery, SkillLevel.None).GetSkillLevel(SecondarySkill.Sorcery), Is.EqualTo(SkillLevel.None));
-            Assert.That(full.WithSkillLevel(SecondarySkill.Archery, SkillLevel.None).GetSlotOf(SecondarySkill.Wisdom), Is.EqualTo(0));
+            Assert.That(raised.WithSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"), SkillLevel.None).GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(SkillLevel.None));
+            Assert.That(full.WithSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery"), SkillLevel.None).GetSlotOf(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")), Is.EqualTo(0));
         }
 
         [Test]
@@ -139,33 +139,33 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             session.Update(h => h with
             {
                 SecondarySkills = h.SecondarySkills
-                    .WithSkill(SecondarySkill.Tactics, SkillLevel.Beginner)
-                    .WithSkill(SecondarySkill.Scouting, SkillLevel.Beginner)
-                    .WithSkill(SecondarySkill.Learning, SkillLevel.Beginner)
-                    .WithSkill(SecondarySkill.Offense, SkillLevel.Beginner)
-                    .WithSkill(SecondarySkill.Armorer, SkillLevel.Beginner)
-                    .WithSkill(SecondarySkill.Sorcery, SkillLevel.Expert),
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics"), SkillLevel.Beginner)
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Scouting"), SkillLevel.Beginner)
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Learning"), SkillLevel.Beginner)
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Offense"), SkillLevel.Beginner)
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Armorer"), SkillLevel.Beginner)
+                    .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery"), SkillLevel.Expert),
             });
 
             var reloaded = TestServices.GameService.LoadGameFromBytes(game.GetBytesToSave(), SavePath);
             var skills = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Christian")).Current.SecondarySkills;
 
             Assert.That(skills.SlotCount, Is.EqualTo(Constants.SkillSlots.Max));
-            Assert.That(skills.ExtraSkills, Is.EqualTo(new[] { SecondarySkill.Sorcery }));
-            Assert.That(skills.GetSkillLevel(SecondarySkill.Sorcery), Is.EqualTo(SkillLevel.Expert));
+            Assert.That(skills.ExtraSkills, Is.EqualTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery") }));
+            Assert.That(skills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Sorcery")), Is.EqualTo(SkillLevel.Expert));
         }
 
         [Test]
         public void SpellBookLearnsAndForgetsWithoutTouchingAvailableSpells()
         {
-            var book = new SpellBook(new HashSet<Spell> { Spell.MagicArrow }, new HashSet<Spell> { Spell.Visions });
+            var book = new SpellBook(new HashSet<Spell> { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow") }, new HashSet<Spell> { TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions") });
 
-            var edited = book.WithLearned(Spell.Visions, true).WithLearned(Spell.MagicArrow, false);
+            var edited = book.WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions"), true).WithLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow"), false);
 
-            Assert.That(edited.IsLearned(Spell.Visions), Is.True);
-            Assert.That(edited.IsLearned(Spell.MagicArrow), Is.False);
-            Assert.That(edited.IsAvailable(Spell.Visions), Is.True);
-            Assert.That(book.IsLearned(Spell.MagicArrow), Is.True);
+            Assert.That(edited.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions")), Is.True);
+            Assert.That(edited.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), Is.False);
+            Assert.That(edited.IsAvailable(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Visions")), Is.True);
+            Assert.That(book.IsLearned(TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow")), Is.True);
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             var game = LoadPrepared();
             var session = game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian"));
             var before = session.Current.SpellBook;
-            var toLearn = Spell.All.First(s => !before.IsLearned(s));
+            var toLearn = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.All.First(s => !before.IsLearned(s));
 
             session.Update(h => h with { SpellBook = h.SpellBook.WithLearned(toLearn, true) });
 
@@ -196,9 +196,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
 
             var skills = session.Current.SecondarySkills;
             Assert.That(skills.SlotCount, Is.EqualTo(2));
-            Assert.That(skills.GetSkillInSlot(0), Is.EqualTo(SecondarySkill.Luck));
-            Assert.That(skills.GetSkillInSlot(1), Is.EqualTo(SecondarySkill.Archery));
-            Assert.That(skills.GetSkillLevel(SecondarySkill.Wisdom), Is.EqualTo(SkillLevel.None));
+            Assert.That(skills.GetSkillInSlot(0), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck")));
+            Assert.That(skills.GetSkillInSlot(1), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery")));
+            Assert.That(skills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom")), Is.EqualTo(SkillLevel.None));
         }
 
         [Test]
@@ -255,13 +255,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
 
             session.Update(h => h with
             {
-                HeroClass = HeroClass.Knight,
+                HeroClass = TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight"),
                 HeroLevel = new HeroLevel { Level = 20, Experience = 81961 },
-                Army = h.Army.Swap(0, 3).WithSlot(6, Creature.Angel, 3),
+                Army = h.Army.Swap(0, 3).WithSlot(6, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 3),
                 SecondarySkills = h.SecondarySkills.Swap(0, 1).WithoutSlot(2),
-                EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
-                Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
-                WarMachines = [WarMachine.Ballista],
+                EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfLevitation")),
+                Backpack = h.Backpack.WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfInhibition")),
+                WarMachines = [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista")],
             });
 
             foreach (var change in game.History.GetPendingChanges())
@@ -289,9 +289,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
         {
             var empty = new SecondarySkills(new Dictionary<SecondarySkill, SkillLevel>(), []);
             return empty
-                .WithSkill(SecondarySkill.Archery, SkillLevel.Beginner)
-                .WithSkill(SecondarySkill.Wisdom, SkillLevel.Expert)
-                .WithSkill(SecondarySkill.Luck, SkillLevel.Intermediate);
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Archery"), SkillLevel.Beginner)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), SkillLevel.Expert)
+                .WithSkill(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Luck"), SkillLevel.Intermediate);
         }
 
         /// <summary>
@@ -303,9 +303,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Models
             game.History.CreateHeroSession(game.History.Current.Heroes().FindByName("Christian")).Update(h => h with
             {
                 Army = new Army<Creature>(Constants.CreatureSlotCount)
-                    .WithSlot(0, Creature.Pikeman, 10)
-                    .WithSlot(1, Creature.Archer, 5)
-                    .WithSlot(2, Creature.Griffin, 3),
+                    .WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman"), 10)
+                    .WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archer"), 5)
+                    .WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Griffin"), 3),
                 SecondarySkills = ThreeSkills(),
             });
 

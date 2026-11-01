@@ -13,7 +13,7 @@ namespace Siniskalc.Homm2.Tests.Data
     [Category(TestKinds.Unit)]
     internal sealed class CastleDeserializerTests
     {
-        private readonly CastleDeserializer deserializer = new();
+        private readonly CastleDeserializer deserializer = new(TestCatalog.Standard);
 
         [Test]
         public void TheTileTheBoatAndTheVisitingHeroAreReadFromTheirBytes()
@@ -73,7 +73,7 @@ namespace Siniskalc.Homm2.Tests.Data
         {
             var castle = this.deserializer.Deserialize(BlankRecords.Castle(b =>
             {
-                b[CastleLayout.Faction] = (byte)Faction.Warlock.Code;
+                b[CastleLayout.Faction] = (byte)TestCatalog.Standard.Factions["Warlock"].Code;
 
                 // Dwelling 1 built (own list), dwelling 2 upgraded (11 in the list of the upgraded, 14 left in its own), dragons upgraded twice.
                 var dwellings = (uint)(Dwellings.Dwelling1 | Dwellings.Dwelling2Upgraded | Dwellings.Dwelling6UpgradedTwice);

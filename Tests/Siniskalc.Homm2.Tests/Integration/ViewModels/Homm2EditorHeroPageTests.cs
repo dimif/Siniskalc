@@ -48,7 +48,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             this.editor.ShowHero(7);
             var page = (HeroViewModel)this.editor.CurrentPage!;
             var history = this.editor.CurrentGame!.History;
-            history.CreateHeroSession(7).Update(h => h.WithArtifact(0, Artifact.DragonSwordOfDominion));
+            history.CreateHeroSession(7).Update(h => h.WithArtifact(0, this.editor.CurrentGame!.Catalog.Artifacts["DragonSwordOfDominion"]));
 
             page.PrimarySkills.Attack.Base = 20;
 
@@ -72,15 +72,15 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             free.SelectedCreature = "Titan";
             free.CreatureAmount = 7;
 
-            Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot<Creature>(Creature.Titan, 7)));
+            Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot<Creature>(this.editor.CurrentGame!.Catalog.Creatures["Titan"], 7)));
             Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "HP", "Damage", "Stack HP", "Stack Damage", "Town", "Level", "Growth" }));
 
             army.Finder.AddAmount = 12;
             army.Finder.Choose(army.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Single(c => c.Name == "Peasant"));
-            Assert.That(model().Slots.OfType<ArmySlot<Creature>>(), Has.Member(new ArmySlot<Creature>(Creature.Peasant, 12)));
+            Assert.That(model().Slots.OfType<ArmySlot<Creature>>(), Has.Member(new ArmySlot<Creature>(this.editor.CurrentGame!.Catalog.Creatures["Peasant"], 12)));
 
             army.MoveSlot(free.SlotNumber, 1);
-            Assert.That(model().Slots[free.SlotNumber + 1]?.Creature, Is.EqualTo(Creature.Titan));
+            Assert.That(model().Slots[free.SlotNumber + 1]?.Creature, Is.EqualTo(this.editor.CurrentGame!.Catalog.Creatures["Titan"]));
 
             army.ClearSlot(free.SlotNumber + 1);
             Assert.That(model().Slots[free.SlotNumber + 1], Is.Null);
@@ -110,7 +110,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(skills.SlotSummary, Is.EqualTo($"{before} of 8 slots used"));
 
             var wisdom = skills.AllSkills.First(r => r.LevelName == SkillLevelNames.None);
-            var skill = SecondarySkill.All.Single(s => s.Name == wisdom.Name);
+            var skill = this.editor.CurrentGame!.Catalog.Skills.Single(s => s.Name == wisdom.Name);
             wisdom.LevelName = SkillLevelNames.Advanced;
             Assert.That(model().GetSkillLevel(skill), Is.EqualTo(SkillLevel.Intermediate));
             Assert.That(model().SlotCount, Is.EqualTo(before + 1), "a new skill is learned last");
@@ -151,16 +151,16 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(spells.HasSpellBook, Is.True, "Maximus bought the book in save 10");
 
             spells.LearnAllCommand.Execute(null);
-            Assert.That(model().Spells.Count, Is.EqualTo(Spell.All.Count));
+            Assert.That(model().Spells.Count, Is.EqualTo(this.editor.CurrentGame!.Catalog.Spells.Count));
 
             spells.Finder.Filter = "fire";
             spells.ForgetAllCommand.Execute(null);
-            Assert.That(model().Spells.Contains(Spell.Fireball), Is.False);
-            Assert.That(model().Spells.Contains(Spell.Cure), Is.True, "only the spells the list shows are forgotten");
+            Assert.That(model().Spells.Contains(this.editor.CurrentGame!.Catalog.Spells["Fireball"]), Is.False);
+            Assert.That(model().Spells.Contains(this.editor.CurrentGame!.Catalog.Spells["Cure"]), Is.True, "only the spells the list shows are forgotten");
 
             spells.HasSpellBook = false;
             Assert.That(model().HasSpellBook, Is.False);
-            Assert.That(model().Spells.Contains(Spell.Cure), Is.True, "the spells stay marked without the book, as in the game");
+            Assert.That(model().Spells.Contains(this.editor.CurrentGame!.Catalog.Spells["Cure"]), Is.True, "the spells stay marked without the book, as in the game");
             spells.HasSpellBook = true;
             Assert.That(model().HasSpellBook, Is.True);
         }
@@ -172,10 +172,10 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
             var before = this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
 
-            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == Artifact.UltimateSwordOfDominion));
+            artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == this.editor.CurrentGame!.Catalog.Artifacts["UltimateSwordOfDominion"]));
 
             var after = this.editor.CurrentGame.History.Current.Heroes().GetModel(7);
-            Assert.That(after.Artifacts.Slots, Has.Member(Artifact.UltimateSwordOfDominion));
+            Assert.That(after.Artifacts.Slots, Has.Member(this.editor.CurrentGame!.Catalog.Artifacts["UltimateSwordOfDominion"]));
             Assert.That(after.PrimarySkills.Attack, Is.EqualTo(before.PrimarySkills.Attack + 12));
             Assert.That(artifacts.Bonuses.Any(b => b.Label == "Attack" && b.Value.StartsWith('+')), Is.True);
             Assert.That(artifacts.Slots.Any(s => s.ArtifactName == "Ultimate Sword of Dominion"), Is.True);
@@ -190,8 +190,8 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var free = artifacts.Slots.First(s => !s.HasArtifact);
             var index = artifacts.Slots.ToList().IndexOf(free);
 
-            ((ArtifactFinderViewModel)free.Finder).Choose(((ArtifactFinderViewModel)free.Finder).Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == Artifact.UltimateCloakOfProtection));
-            Assert.That(model().Artifacts.Slots[index], Is.EqualTo(Artifact.UltimateCloakOfProtection));
+            ((ArtifactFinderViewModel)free.Finder).Choose(((ArtifactFinderViewModel)free.Finder).Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == this.editor.CurrentGame!.Catalog.Artifacts["UltimateCloakOfProtection"]));
+            Assert.That(model().Artifacts.Slots[index], Is.EqualTo(this.editor.CurrentGame!.Catalog.Artifacts["UltimateCloakOfProtection"]));
             var defense = model().PrimarySkills.Defense;
 
             free.ClearCommand.Execute(null);
@@ -207,7 +207,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
             while (artifacts.Slots.Any(s => !s.HasArtifact))
             {
-                artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().First(c => c.Artifact == Artifact.AmmoCart));
+                artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().First(c => c.Artifact == this.editor.CurrentGame!.Catalog.Artifacts["AmmoCart"]));
             }
 
             Assert.That(artifacts.Slots.All(s => s.HasArtifact), Is.True);

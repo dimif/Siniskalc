@@ -19,7 +19,7 @@
         {
             this.slotsToArtifacts = new Dictionary<ArtifactSlots, Artifact>(slotsToArtifacts);
             this.scrollSpells = (scrollSpells ?? new Dictionary<ArtifactSlots, Spell>())
-                .Where(kv => slotsToArtifacts.TryGetValue(kv.Key, out var a) && a == Artifact.SpellScroll)
+                .Where(kv => slotsToArtifacts.TryGetValue(kv.Key, out var a) && a.IsScroll)
                 .ToDictionary(kv => kv.Key, kv => kv.Value);
         }
 
@@ -69,7 +69,7 @@
             };
             var scrollSpells = new Dictionary<ArtifactSlots, Spell>(this.scrollSpells);
             scrollSpells.Remove(slot);
-            if (artifact == Artifact.SpellScroll && spell != null)
+            if (artifact.IsScroll && spell != null)
             {
                 scrollSpells[slot] = spell;
             }

@@ -40,8 +40,6 @@
         Numbers MageGuildSpells)
         : ICastleModel<PlayerColor, Creature, Faction>
     {
-        private static readonly int[] BaseGuildSpells = [3, 3, 2, 2, 1];
-
         /// <inheritdoc/>
         public bool IsUsed => this.Name.Length > 0;
 
@@ -63,10 +61,9 @@
         public int MageGuildLevel => (int)(((uint)this.Dwellings & (uint)Dwellings.MageGuildLevelMask) >> 16);
 
         /// <summary>
-        /// Gets a value indicating whether the castle is a Wizard castle with its Library, which gives each level of the Mage Guild a
-        /// fourth spell.
+        /// Gets a value indicating whether the faction's data-declared library is built, adding one spell to each Mage Guild level.
         /// </summary>
-        public bool HasLibrary => this.Faction == Entities.Faction.Wizard && this.Town.HasFlag(TownBuildings.Special);
+        public bool HasLibrary => this.Faction.HasLibrary && this.Town.HasFlag(TownBuildings.Special);
 
         /// <summary>
         /// Gets the most levels a dwelling can have in a town of the faction: the creatures of that level, one for the dwelling and one more for
@@ -75,7 +72,7 @@
         public static int MaxDwellingLevel(Faction faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
-            return faction == Entities.Faction.Neutral || dwelling == 1 ? 1 : Math.Clamp(Creature.ForFaction(faction).Count(c => c.Tier == dwelling), 1, 3);
+            return faction.IsNeutral || dwelling == 1 ? 1 : Math.Clamp(faction.Creatures.Count(c => c.Tier == dwelling), 1, 3);
         }
 
         /// <summary>
@@ -152,18 +149,18 @@
         }
 
         /// <summary>
-        /// Returns the castle with the Library of a Wizard built or taken down, and the spells each level of its Mage Guild shows changed
-        /// with it. Nothing changes in a castle of another faction.
+        /// Returns the castle with its library built or taken down, changing the Mage Guild counts together.
+        /// Nothing changes for a faction without the library capability.
         /// </summary>
         public CastleModel WithLibrary(bool built)
         {
-            if (this.Faction != Entities.Faction.Wizard)
+            if (!this.Faction.HasLibrary)
             {
                 return this;
             }
 
             var town = this.WithBuilding(TownBuildings.Special, built);
-            return town with { MageGuildSpellCounts = GuildCounts(town.MageGuildLevel, built) };
+            return town with { MageGuildSpellCounts = this.GuildCounts(town.MageGuildLevel, built) };
         }
 
         /// <summary>
@@ -200,15 +197,16 @@
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
             var level = this.DwellingLevel(dwelling);
-            var creatures = this.Faction == Entities.Faction.Neutral ? [] : Creature.ForFaction(this.Faction).Where(c => c.Tier == dwelling).ToList();
+            var creatures = this.Faction.IsNeutral ? [] : this.Faction.Creatures.Where(c => c.Tier == dwelling).ToList();
             if (level == 0 || creatures.Count == 0)
             {
                 return 0;
             }
 
             return creatures[Math.Min(level, creatures.Count) - 1].Info.Growth
-                + (this.Town.HasFlag(TownBuildings.Well) ? Constants.Castle.WellGrowth : 0)
-                + (dwelling == 1 && this.Town.HasFlag(TownBuildings.GrowthBuilding) ? Constants.Castle.SecondWellGrowth : 0);
+                + this.Faction.Catalog.Buildings
+                    .Where(b => this.Town.HasFlag(b.Flag) && (b.Role != BuildingRole.Growth || dwelling == 1))
+                    .Sum(b => b.Growth);
         }
 
         /// <summary>
@@ -231,8 +229,8 @@
 
         /// <summary>
         /// Returns the castle with the Mage Guild at <paramref name="level"/> (0 to 5). The level is a number in the bits 16 to 18 of the
-        /// dwellings, the bit of the buildings tells that there is a guild, and each level that is built shows 3, 3, 2, 2 and 1 spells (one more
-        /// with the Library of a Wizard); the levels that are not built show none.
+        /// dwellings, the bit of the buildings tells that there is a guild, and each built level shows its faction-defined spell count
+        /// (one more with a library); the levels that are not built show none.
         /// </summary>
         public CastleModel WithMageGuildLevel(int level)
         {
@@ -242,7 +240,7 @@
             {
                 Dwellings = (Dwellings)dwellings,
                 Town = level == 0 ? this.Town & ~TownBuildings.MageGuild : this.Town | TownBuildings.MageGuild,
-                MageGuildSpellCounts = GuildCounts(level, this.HasLibrary),
+                MageGuildSpellCounts = this.GuildCounts(level, this.HasLibrary),
             };
         }
 
@@ -259,13 +257,13 @@
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.
         /// </summary>
-        public Spell? MageGuildSpell(int level, int slot) => Spell.FromByte((byte)this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
+        public Spell? MageGuildSpell(int level, int slot) => this.Faction.Catalog.Spells.Find((byte)this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
 
         // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
         private static uint DwellingBits(int dwelling) =>
             (0x08u << (dwelling - 1)) | (dwelling >= 2 ? 0x100u << (dwelling - 1) : 0u) | (dwelling == 6 ? (uint)Dwellings.Dwelling6UpgradedTwice : 0u);
 
-        private static Numbers GuildCounts(int level, bool library) =>
-            new(BaseGuildSpells.Select((count, i) => i < level ? count + (library ? 1 : 0) : 0));
+        private Numbers GuildCounts(int level, bool library) =>
+            new(this.Faction.GuildSpellCounts.Select((count, i) => i < level ? count + (library ? 1 : 0) : 0));
     }
 }

@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 
@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = SavedGames.Get(Path.Combine("TestData", "Hota", "Factory", save + ".GM1"));
             var castles = game.History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName("Fac Castle G")]);
+            return castles.GetModel(castles.FindByName("Fac Castle G"));
         }
 
         [TestCase("factory_08_bank", "factory_07_baseline", "Bank")]
@@ -53,14 +53,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Gantry("factory_22b_upg_catacombs");
 
-            Assert.That(castle.Buildings, Does.Contain(Building.FactoryUpgCatacombs).And.Contain(Building.FactoryUpgGantry));
+            Assert.That(castle.Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FactoryUpgCatacombs")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FactoryUpgGantry")));
             Assert.That(castle.CreaturesAvailable[4], Is.EqualTo(6));
         }
 
         [Test]
         public void TheFactoryHasAManaGeneratorInsteadOfAShipyard()
         {
-            Assert.That(Building.ForFaction(Faction.Factory).Where(b => b.Code == 6), Is.EquivalentTo(new[] { Building.FactoryManaGenerator }));
+            Assert.That(Building.ForFaction(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Factory")).Where(b => b.Code == 6), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FactoryManaGenerator") }));
         }
     }
 }

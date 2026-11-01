@@ -4,17 +4,21 @@ namespace Siniskalc.Homm2.Data
     using Siniskalc.Homm2.Entities;
 
     /// <summary>
-    /// How the savegames of Heroes of Might and Magic II number the creatures: zero-based, in the order of <see cref="Creature"/>.
-    /// A number that is no creature reads as the Peasant.
+    /// Resolves creature codes using the document's catalog and its explicitly declared safe fallback.
     /// </summary>
     public sealed class CreatureCodes : ICreatureCodes<Creature>
     {
-        public static CreatureCodes Instance { get; } = new();
+        private readonly GameCatalog catalog;
+
+        public CreatureCodes(GameCatalog catalog)
+        {
+            this.catalog = catalog;
+        }
 
         /// <inheritdoc/>
-        public Creature Fallback => Creature.Peasant;
+        public Creature Fallback => this.catalog.FallbackCreature;
 
         /// <inheritdoc/>
-        public Creature? Find(uint code) => code > byte.MaxValue ? null : Creature.FromByte((byte)code);
+        public Creature? Find(uint code) => code > byte.MaxValue ? null : this.catalog.Creatures.Find((byte)code);
     }
 }

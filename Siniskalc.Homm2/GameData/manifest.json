@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "versions": {
+    "BaseGame": "standard",
+    "PriceOfLoyalty": "standard",
+    "Unknown": "standard"
+  },
+  "sets": {
+    "standard": {
+      "parent": null
+    }
+  }
+}

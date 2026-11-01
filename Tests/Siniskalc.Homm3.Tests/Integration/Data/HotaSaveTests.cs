@@ -58,7 +58,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var hero = this.Hero("Sir Mullich");
 
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Purple));
-            Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(hero.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)19));
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(71483));
             Assert.That(hero.WarMachines, Is.Empty);
@@ -66,46 +66,46 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(21, 24, 11, 9)));
 
             AssertSecondarySkills(hero,
-                (SecondarySkill.Pathfinding, SkillLevel.Expert),
-                (SecondarySkill.Wisdom, SkillLevel.Expert),
-                (SecondarySkill.EarthMagic, SkillLevel.Expert),
-                (SecondarySkill.Logistics, SkillLevel.Expert),
-                (SecondarySkill.Ballistics, SkillLevel.Expert),
-                (SecondarySkill.Navigation, SkillLevel.Expert),
-                (SecondarySkill.WaterMagic, SkillLevel.Expert),
-                (SecondarySkill.Leadership, SkillLevel.Expert));
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Pathfinding"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("EarthMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Logistics"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Ballistics"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Navigation"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("WaterMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Leadership"), SkillLevel.Expert));
 
             AssertCreatures(hero,
-                (Creature.Archangel, 1u),
-                (Creature.Crusader, 348u),
-                (Creature.Marksman, 750u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 1u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Crusader"), 348u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Marksman"), 750u),
                 null,
-                (Creature.Archangel, 1u),
-                (Creature.Skeleton, 1802u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 1u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Skeleton"), 1802u),
                 null);
 
             AssertEquipped(hero, new Dictionary<ArtifactSlots, Artifact>
             {
-                [ArtifactSlots.Helmet] = Artifact.HelmOfChaos,
-                [ArtifactSlots.Necklace] = Artifact.PendantOfDownfall,
-                [ArtifactSlots.Torso] = Artifact.RibCage,
-                [ArtifactSlots.Ring1] = Artifact.QuietEyeOfTheDragon,
-                [ArtifactSlots.Ring2] = Artifact.QuietEyeOfTheDragon,
-                [ArtifactSlots.Weapon] = Artifact.RedDragonFlameTongue,
-                [ArtifactSlots.Shield] = Artifact.ShieldOfTheYawningDead,
-                [ArtifactSlots.Misc2] = Artifact.StoicWatchman,
-                [ArtifactSlots.Misc3] = Artifact.SpiritOfOppression,
-                [ArtifactSlots.Misc5] = Artifact.EndlessSackOfGold,
+                [ArtifactSlots.Helmet] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos"),
+                [ArtifactSlots.Necklace] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfDownfall"),
+                [ArtifactSlots.Torso] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RibCage"),
+                [ArtifactSlots.Ring1] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("QuietEyeOfTheDragon"),
+                [ArtifactSlots.Ring2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("QuietEyeOfTheDragon"),
+                [ArtifactSlots.Weapon] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RedDragonFlameTongue"),
+                [ArtifactSlots.Shield] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ShieldOfTheYawningDead"),
+                [ArtifactSlots.Misc2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("StoicWatchman"),
+                [ArtifactSlots.Misc3] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SpiritOfOppression"),
+                [ArtifactSlots.Misc5] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("EndlessSackOfGold"),
             });
 
             AssertBackpack(hero,
-                Artifact.RingOfConjuring,
-                Artifact.BreastplateOfPetrifiedWood,
-                Artifact.OgresClubOfHavoc,
-                Artifact.PendantOfHoliness,
-                Artifact.PendantOfLife,
-                Artifact.PendantOfDispassion,
-                Artifact.PendantOfDeath);
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RingOfConjuring"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BreastplateOfPetrifiedWood"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OgresClubOfHavoc"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfHoliness"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfLife"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfDispassion"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("PendantOfDeath"));
 
             AssertSpellBook(hero, [.. MullichSpells]);
         }
@@ -116,67 +116,67 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var hero = this.Hero("Maximus");
 
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Purple));
-            Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(hero.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)32));
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(779943));
-            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.FirstAidTent }));
+            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("FirstAidTent") }));
             Assert.That(hero.SpellBook.HasSpellBook, Is.True);
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(32, 32, 35, 23)));
 
             AssertSecondarySkills(hero,
-                (SecondarySkill.Wisdom, SkillLevel.Expert),
-                (SecondarySkill.EarthMagic, SkillLevel.Expert),
-                (SecondarySkill.Ballistics, SkillLevel.Expert),
-                (SecondarySkill.AirMagic, SkillLevel.Expert),
-                (SecondarySkill.Armorer, SkillLevel.Expert),
-                (SecondarySkill.FireMagic, SkillLevel.Expert),
-                (SecondarySkill.WaterMagic, SkillLevel.Expert),
-                (SecondarySkill.Necromancy, SkillLevel.Expert));
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("EarthMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Ballistics"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("AirMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Armorer"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("FireMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("WaterMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Necromancy"), SkillLevel.Expert));
 
             AssertCreatures(hero,
-                (Creature.Skeleton, 15u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Skeleton"), 15u),
                 null,
-                (Creature.RoyalGriffin, 832u),
-                (Creature.Archangel, 145u),
-                (Creature.Zealot, 411u),
-                (Creature.Champion, 276u),
-                (Creature.GoldDragon, 63u));
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("RoyalGriffin"), 832u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Archangel"), 145u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Zealot"), 411u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Champion"), 276u),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 63u));
 
             AssertEquipped(hero, new Dictionary<ArtifactSlots, Artifact>
             {
-                [ArtifactSlots.Helmet] = Artifact.HelmOfChaos,
-                [ArtifactSlots.Necklace] = Artifact.NecklaceOfSwiftness,
-                [ArtifactSlots.Torso] = Artifact.TitansCuirass,
-                [ArtifactSlots.Ring1] = Artifact.RingOfTheWayfarer,
-                [ArtifactSlots.Ring2] = Artifact.EquestriansGloves,
-                [ArtifactSlots.Weapon] = Artifact.SwordOfJudgement,
-                [ArtifactSlots.Shield] = Artifact.BucklerOfTheGnollKing,
-                [ArtifactSlots.Feet] = Artifact.SandalsOfTheSaint,
-                [ArtifactSlots.Cape] = Artifact.VampiresCowl,
-                [ArtifactSlots.Misc1] = Artifact.HideousMask,
-                [ArtifactSlots.Misc2] = Artifact.RunesOfImminency,
-                [ArtifactSlots.Misc3] = Artifact.CardsOfProphecy,
-                [ArtifactSlots.Misc4] = Artifact.MysticOrbOfSpellPoints,
-                [ArtifactSlots.Misc5] = Artifact.CharmOfSpellPoints,
+                [ArtifactSlots.Helmet] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfChaos"),
+                [ArtifactSlots.Necklace] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("NecklaceOfSwiftness"),
+                [ArtifactSlots.Torso] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("TitansCuirass"),
+                [ArtifactSlots.Ring1] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RingOfTheWayfarer"),
+                [ArtifactSlots.Ring2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("EquestriansGloves"),
+                [ArtifactSlots.Weapon] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SwordOfJudgement"),
+                [ArtifactSlots.Shield] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BucklerOfTheGnollKing"),
+                [ArtifactSlots.Feet] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("SandalsOfTheSaint"),
+                [ArtifactSlots.Cape] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("VampiresCowl"),
+                [ArtifactSlots.Misc1] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HideousMask"),
+                [ArtifactSlots.Misc2] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("RunesOfImminency"),
+                [ArtifactSlots.Misc3] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CardsOfProphecy"),
+                [ArtifactSlots.Misc4] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("MysticOrbOfSpellPoints"),
+                [ArtifactSlots.Misc5] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CharmOfSpellPoints"),
             });
 
             AssertBackpack(hero,
-                Artifact.ShamansPuppet,
-                Artifact.AmuletOfTheUndertaker,
-                Artifact.BootsOfLevitation,
-                Artifact.CapeOfConjuring,
-                Artifact.GreaterKnollsFlail,
-                Artifact.BadgeOfCourage,
-                Artifact.BowOfElvenCherrywood,
-                Artifact.HourglassOfTheEvilHour,
-                Artifact.HelmOfTheAlabasterUnicorn,
-                Artifact.OrbOfFirmament,
-                Artifact.OrbOfInhibition,
-                Artifact.BootsOfPolarity,
-                Artifact.OrbOfTempestousFire,
-                Artifact.AdmiralsHat);
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ShamansPuppet"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AmuletOfTheUndertaker"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfLevitation"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("CapeOfConjuring"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("GreaterKnollsFlail"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BadgeOfCourage"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BowOfElvenCherrywood"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HourglassOfTheEvilHour"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfTheAlabasterUnicorn"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfFirmament"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfInhibition"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfPolarity"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfTempestousFire"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("AdmiralsHat"));
 
-            AssertSpellBook(hero, [.. MullichSpells, Spell.Teleport]);
+            AssertSpellBook(hero, [.. MullichSpells, TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Teleport")]);
         }
 
         [Test]
@@ -185,28 +185,28 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var hero = this.Hero("Christian");
 
             Assert.That(hero.Owner, Is.EqualTo(PlayerColor.Purple));
-            Assert.That(hero.HeroClass, Is.EqualTo(HeroClass.Knight));
+            Assert.That(hero.HeroClass, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight")));
             Assert.That(hero.HeroLevel.Level, Is.EqualTo((short)14));
             Assert.That(hero.HeroLevel.Experience, Is.EqualTo(32273));
-            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.Ballista }));
+            Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista") }));
             Assert.That(hero.SpellBook.HasSpellBook, Is.True);
             Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(24, 21, 19, 17)));
 
             AssertSecondarySkills(hero,
-                (SecondarySkill.Wisdom, SkillLevel.Expert),
-                (SecondarySkill.EarthMagic, SkillLevel.Expert),
-                (SecondarySkill.Offense, SkillLevel.Expert),
-                (SecondarySkill.Ballistics, SkillLevel.Expert),
-                (SecondarySkill.Navigation, SkillLevel.Expert),
-                (SecondarySkill.Leadership, SkillLevel.Beginner),
-                (SecondarySkill.Tactics, SkillLevel.Intermediate),
-                (SecondarySkill.WaterMagic, SkillLevel.Beginner));
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Wisdom"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("EarthMagic"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Offense"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Ballistics"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Navigation"), SkillLevel.Expert),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Leadership"), SkillLevel.Beginner),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Tactics"), SkillLevel.Intermediate),
+                (TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("WaterMagic"), SkillLevel.Beginner));
 
-            AssertCreatures(hero, (Creature.GoldDragon, 1u), null, null, null, null, null, null);
+            AssertCreatures(hero, (TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 1u), null, null, null, null, null, null);
 
             AssertEquipped(hero, new Dictionary<ArtifactSlots, Artifact>
             {
-                [ArtifactSlots.Necklace] = Artifact.NecklaceOfDragonteeth,
+                [ArtifactSlots.Necklace] = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("NecklaceOfDragonteeth"),
             });
 
             AssertBackpack(hero);
@@ -223,9 +223,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             christian.Update(h => h with
             {
                 PrimarySkills = new PrimarySkills(50, 40, 30, 20),
-                EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, Artifact.BootsOfLevitation),
-                Backpack = h.Backpack.WithSlot(0, Artifact.OrbOfInhibition),
-                WarMachines = [WarMachine.Ballista, WarMachine.AmmoCart],
+                EquippedArtifacts = h.EquippedArtifacts.WithEquipped(ArtifactSlots.Feet, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfLevitation")),
+                Backpack = h.Backpack.WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfInhibition")),
+                WarMachines = [TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart")],
             });
 
             var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, $"{Guid.NewGuid():N}.GM1");
@@ -243,10 +243,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 var hero = reloaded.History.CreateHeroSession(reloaded.History.Current.Heroes().FindByName("Christian")).Current;
 
                 Assert.That(hero.PrimarySkills, Is.EqualTo(new PrimarySkills(50, 40, 30, 20)));
-                Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(Artifact.BootsOfLevitation));
-                Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Necklace), Is.EqualTo(Artifact.NecklaceOfDragonteeth));
-                Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(Artifact.OrbOfInhibition));
-                Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { WarMachine.Ballista, WarMachine.AmmoCart }));
+                Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Feet), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("BootsOfLevitation")));
+                Assert.That(hero.EquippedArtifacts.GetArtifact(ArtifactSlots.Necklace), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("NecklaceOfDragonteeth")));
+                Assert.That(hero.Backpack.All[0]?.Art, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfInhibition")));
+                Assert.That(hero.WarMachines, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("Ballista"), TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.ById("AmmoCart") }));
                 Assert.That(reloaded.History.Current.Heroes(), Has.Count.EqualTo(this.chunks.Count));
             }
             finally
@@ -258,15 +258,15 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static readonly Spell[] MullichSpells =
         [
             // Adventure
-            Spell.SummonBoat, Spell.ViewEarth, Spell.ScuttleBoat,
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("SummonBoat"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ViewEarth"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ScuttleBoat"),
 
             // Combat
-            Spell.Haste, Spell.ProtectionFromFire, Spell.Bless, Spell.Cure, Spell.Dispel, Spell.ProtectionFromWater,
-            Spell.MagicArrow, Spell.Shield, Spell.Slow, Spell.DisruptingRay, Spell.Fortune, Spell.Precision, Spell.Blind,
-            Spell.FireWall, Spell.IceBolt, Spell.RemoveObstacle, Spell.QuickSand, Spell.DestroyUndead, Spell.Hypnotize,
-            Spell.Fireball, Spell.LandMine, Spell.Misfortune, Spell.Forgetfulness, Spell.FrostRing, Spell.ForceField,
-            Spell.ChainLightning, Spell.Counterstrike, Spell.Berserk, Spell.Frenzy, Spell.Clone, Spell.Prayer,
-            Spell.MeteorShower, Spell.Resurrection, Spell.MagicMirror, Spell.SummonWaterElemental, Spell.Implosion,
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Haste"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ProtectionFromFire"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Bless"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Cure"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Dispel"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ProtectionFromWater"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicArrow"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Shield"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Slow"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("DisruptingRay"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fortune"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Precision"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Blind"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("FireWall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("IceBolt"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("RemoveObstacle"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("QuickSand"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("DestroyUndead"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Hypnotize"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Fireball"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("LandMine"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Misfortune"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Forgetfulness"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("FrostRing"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ForceField"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("ChainLightning"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Counterstrike"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Berserk"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Frenzy"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Clone"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Prayer"),
+            TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MeteorShower"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Resurrection"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("MagicMirror"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("SummonWaterElemental"), TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.ById("Implosion"),
         ];
 
         private HeroModel Hero(string name)
@@ -286,7 +286,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             }
 
             var slotted = expected.Select(e => e.Skill).ToHashSet();
-            var unslottedWithLevel = SecondarySkill.All.Where(s => !slotted.Contains(s) && skills.GetSkillLevel(s) != SkillLevel.None);
+            var unslottedWithLevel = TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.All.Where(s => !slotted.Contains(s) && skills.GetSkillLevel(s) != SkillLevel.None);
             Assert.That(unslottedWithLevel, Is.Empty);
         }
 
@@ -312,7 +312,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
 
         private static void AssertSpellBook(HeroModel hero, Spell[] expected)
         {
-            var learned = Spell.All.Where(hero.SpellBook.IsLearned);
+            var learned = TestCatalog.For(GameVersion.HornOfTheAbyss).Spells.All.Where(hero.SpellBook.IsLearned);
             Assert.That(learned, Is.EquivalentTo(expected));
         }
     }

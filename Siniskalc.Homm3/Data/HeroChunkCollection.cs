@@ -20,17 +20,19 @@ namespace Siniskalc.Homm3.Data
         /// <param name="deserializer">Reads a hero from a chunk; made for <paramref name="offsets"/>.</param>
         /// <param name="serializer">Writes a hero to a chunk; made for <paramref name="offsets"/>.</param>
         /// <param name="differ">Tells what differs between two versions of a hero.</param>
-        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, HeroOffsets offsets, IHeroDeserializer deserializer, ISerializer<HeroChunk, HeroModel> serializer, IDiffer<HeroModel> differ)
+        public HeroChunkCollection(IEnumerable<HeroChunk> chunks, HeroOffsets offsets, IHeroDeserializer deserializer, ISerializer<HeroChunk, HeroModel> serializer, IDiffer<HeroModel> differ, EntityCatalog catalog)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
             this.Offsets = offsets;
             this.differ = differ;
+            this.Catalog = catalog;
         }
 
         /// <summary>
         /// Gets where the hero fields are in a chunk, for the savefile's game version.
         /// </summary>
         public HeroOffsets Offsets { get; }
+        public EntityCatalog Catalog { get; }
 
         /// <summary>
         /// Gets whether the savefile's game version has the "asleep" flag of a hero found (Shadow of Death and Horn of the Abyss).
@@ -38,7 +40,7 @@ namespace Siniskalc.Homm3.Data
         public bool SupportsAsleep => this.Offsets.AsleepOffset != null;
 
         /// <inheritdoc/>
-        public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.Deserializer, this.Serializer, this.differ);
+        public override HeroChunkCollection WithChunk(int index, HeroChunk chunk) => new(this.Replace(index, chunk), this.Offsets, this.Deserializer, this.Serializer, this.differ, this.Catalog);
 
         /// <summary>
         /// Returns who owns each hero, in the order of the collection. Reads the owner byte only.

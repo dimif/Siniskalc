@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Pathfinding",
+      "name": "Pathfinding",
+      "code": 0,
+      "order": 0,
+      "role": "ordinary"
+    },
+    {
+      "id": "Archery",
+      "name": "Archery",
+      "code": 1,
+      "order": 1,
+      "role": "ordinary"
+    },
+    {
+      "id": "Logistics",
+      "name": "Logistics",
+      "code": 2,
+      "order": 2,
+      "role": "ordinary"
+    },
+    {
+      "id": "Scouting",
+      "name": "Scouting",
+      "code": 3,
+      "order": 3,
+      "role": "ordinary"
+    },
+    {
+      "id": "Diplomacy",
+      "name": "Diplomacy",
+      "code": 4,
+      "order": 4,
+      "role": "ordinary"
+    },
+    {
+      "id": "Navigation",
+      "name": "Navigation",
+      "code": 5,
+      "order": 5,
+      "role": "ordinary"
+    },
+    {
+      "id": "Leadership",
+      "name": "Leadership",
+      "code": 6,
+      "order": 6,
+      "role": "ordinary"
+    },
+    {
+      "id": "Wisdom",
+      "name": "Wisdom",
+      "code": 7,
+      "order": 7,
+      "role": "ordinary"
+    },
+    {
+      "id": "Mysticism",
+      "name": "Mysticism",
+      "code": 8,
+      "order": 8,
+      "role": "ordinary"
+    },
+    {
+      "id": "Luck",
+      "name": "Luck",
+      "code": 9,
+      "order": 9,
+      "role": "ordinary"
+    },
+    {
+      "id": "Ballistics",
+      "name": "Ballistics",
+      "code": 10,
+      "order": 10,
+      "role": "ordinary"
+    },
+    {
+      "id": "EagleEye",
+      "name": "Eagle Eye",
+      "code": 11,
+      "order": 11,
+      "role": "ordinary"
+    },
+    {
+      "id": "Necromancy",
+      "name": "Necromancy",
+      "code": 12,
+      "order": 12,
+      "role": "ordinary"
+    },
+    {
+      "id": "Estates",
+      "name": "Estates",
+      "code": 13,
+      "order": 13,
+      "role": "ordinary"
+    }
+  ],
+  "replacements": []
+}

@@ -1,4 +1,5 @@
-﻿namespace Siniskalc.Homm3.Tests
+﻿using Siniskalc.Homm3.Entities;
+namespace Siniskalc.Homm3.Tests
 {
     /// <summary>
     /// Makes the application the windows need: one, with the styles of the shell and of the game merged in, as the exe does.

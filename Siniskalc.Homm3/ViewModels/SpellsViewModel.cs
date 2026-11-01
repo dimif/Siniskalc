@@ -18,8 +18,8 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Func<SpellBook> getSpellBook;
         private readonly Action<Func<SpellBook, SpellBook>> update;
 
-        public SpellsViewModel(GameVersion gameVersion, Func<SpellBook> getSpellBook, Action<Func<SpellBook, SpellBook>> update)
-            : base(learned => CreateRows(gameVersion, learned))
+        public SpellsViewModel(EntityCatalog catalog, Func<SpellBook> getSpellBook, Action<Func<SpellBook, SpellBook>> update)
+            : base(learned => CreateRows(catalog, learned))
         {
             this.getSpellBook = getSpellBook;
             this.update = update;
@@ -62,10 +62,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Lists spells by school, and inside a school by level.
         /// </summary>
-        private static IReadOnlyList<SpellRowViewModel> CreateRows(GameVersion gameVersion, Action<SpellRowViewModel, bool> learned) => Spell.All
-            .Where(s => s.IsAvailableIn(gameVersion))
+        private static IReadOnlyList<SpellRowViewModel> CreateRows(EntityCatalog catalog, Action<SpellRowViewModel, bool> learned) => catalog.Spells.All
             .Select(s => new SpellRowViewModel(s, learned))
-            .OrderBy(r => r.Spell.School).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
+            .OrderBy(r => r.Spell.School.Order).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
             .ToList();
     }
 }

@@ -51,7 +51,7 @@
 
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
-            foreach (var kind in VisitedPlaceKind.All.Where(k => original.PlaceVisits.Of(k) != current.PlaceVisits.Of(k)))
+            foreach (var kind in original.HeroClass.Catalog.VisitedPlaces.All.Where(k => original.PlaceVisits.Of(k) != current.PlaceVisits.Of(k)))
             {
                 changes.Add(
                     ChangeAreas.General,
@@ -114,7 +114,7 @@
                 {
                     changes.Add(
                         ChangeAreas.General,
-                        $"Visited building: {VisitedBuildingNames.Of(effect)}",
+                        $"Visited building: {original.HeroClass.Catalog.MapMetadata.EffectName(effect)}",
                         ChangeText.YesNo(original.VisitEffects.HasFlag(effect)),
                         ChangeText.YesNo(current.VisitEffects.HasFlag(effect)),
                         h => h with { VisitEffects = (h.VisitEffects & ~effect) | (original.VisitEffects & effect) });
@@ -133,7 +133,7 @@
             changes.AddPrimarySkills(original.PrimarySkills, current.PrimarySkills, h => h.PrimarySkills, (h, skills) => h with { PrimarySkills = skills });
 
         private static void DiffSecondarySkills(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
-            changes.AddSecondarySkills(SecondarySkill.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
+            changes.AddSecondarySkills(original.HeroClass.Catalog.SecondarySkills.All, original.SecondarySkills, current.SecondarySkills, (h, skills) => h with { SecondarySkills = skills });
 
         private static void DiffCreatures(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes) =>
             changes.AddArmy(ChangeAreas.Creatures, original.Army, current.Army, h => h.Army, (h, army) => h with { Army = army });

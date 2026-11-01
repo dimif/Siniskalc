@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
@@ -96,7 +96,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheGuardOfAMineIsEditedLikeAnArmyAndWrittenBack()
         {
             var game = Load("mines_00_game_begin");
-            var pikeman = Creature.Pikeman;
+            var pikeman = TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman");
 
             game.History.CreateMineSession(FirstLab).Update(m => m with { Guard = m.Guard.WithSlot(0, pikeman, 12) });
 

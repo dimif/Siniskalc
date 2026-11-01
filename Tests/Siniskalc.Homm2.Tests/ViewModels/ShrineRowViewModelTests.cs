@@ -17,7 +17,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
     {
         private static readonly string[] SpellNames = ["Cure", "Fireball", "Haste"];
 
-        private static ShrineModel Shrine(int circle = 2, int spellCode = 6) => new(3, circle, new MapPosition(12, 34), spellCode);
+        private static ShrineModel Shrine(int circle = 2, int spellCode = 6) => new(3, circle, new MapPosition(12, 34), spellCode, TestCatalog.Standard);
 
         private static Mock<IEditSession<ShrineModel>> Session(ShrineModel shrine)
         {
@@ -32,7 +32,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void TheRowShowsTheCirclePositionAndSpellOfTheShrine()
         {
-            var row = new ShrineRowViewModel(Session(Shrine()).Object, SpellNames);
+            var row = new ShrineRowViewModel(TestCatalog.Standard, Session(Shrine()).Object, SpellNames);
 
             Assert.That((row.Index, row.CircleNumber, row.Circle, row.SpellName, row.X, row.Y), Is.EqualTo((3, 2, "Second circle", "Cure", 12, 34)));
             Assert.That(row.PositionText, Is.EqualTo("at 12, 34"));
@@ -44,27 +44,27 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [TestCase(3, "Third circle")]
         public void EachCircleHasItsName(int circle, string name)
         {
-            Assert.That(new ShrineRowViewModel(Session(Shrine(circle)).Object, SpellNames).Circle, Is.EqualTo(name));
+            Assert.That(new ShrineRowViewModel(TestCatalog.Standard, Session(Shrine(circle)).Object, SpellNames).Circle, Is.EqualTo(name));
         }
 
         [Test]
         public void ThePickedSpellIsWrittenToTheShrineByItsName()
         {
             var session = Session(Shrine());
-            var row = new ShrineRowViewModel(session.Object, SpellNames);
+            var row = new ShrineRowViewModel(TestCatalog.Standard, session.Object, SpellNames);
 
             Assert.That(row.SpellField.Choices, Is.EqualTo(SpellNames));
             Assert.That(row.SpellField.Selected, Is.EqualTo("Cure"));
 
             row.SpellField.Selected = "Fireball";
 
-            Assert.That(session.Object.Current.SpellCode, Is.EqualTo(Spell.Fireball.Code));
+            Assert.That(session.Object.Current.SpellCode, Is.EqualTo(TestCatalog.Standard.Spells["Fireball"].Code));
         }
 
         [Test]
         public void AShrineWithAHeroOnItCannotBeEditedAndSaysSo()
         {
-            var row = new ShrineRowViewModel(Session(Shrine(spellCode: -1)).Object, SpellNames);
+            var row = new ShrineRowViewModel(TestCatalog.Standard, Session(Shrine(spellCode: -1)).Object, SpellNames);
 
             Assert.That(row.SpellField.IsEnabled, Is.False);
             Assert.That(row.Note, Does.Contain("hero stands on the shrine"));
@@ -74,8 +74,8 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         [Test]
         public void AShrineWithASpellTheEditorDoesNotKnowSaysWhichNumberItHolds()
         {
-            var unknown = Enumerable.Range(0, 256).First(c => Spell.FromByte((byte)c) == null);
-            var row = new ShrineRowViewModel(Session(Shrine(spellCode: unknown)).Object, SpellNames);
+            var unknown = Enumerable.Range(0, 256).First(c => TestCatalog.Standard.Spells.Find((byte)c) == null);
+            var row = new ShrineRowViewModel(TestCatalog.Standard, Session(Shrine(spellCode: unknown)).Object, SpellNames);
 
             Assert.That(row.SpellField.IsEnabled, Is.True);
             Assert.That(row.Note, Does.Contain($"spell number {unknown}"));
@@ -86,12 +86,12 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         public void RefreshShowsTheSpellTheSessionNowHoldsAndTellsTheBindings()
         {
             var session = Session(Shrine());
-            var row = new ShrineRowViewModel(session.Object, SpellNames);
+            var row = new ShrineRowViewModel(TestCatalog.Standard, session.Object, SpellNames);
             var raised = new List<string?>();
             row.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
             var fieldRaised = new List<string?>();
             row.SpellField.PropertyChanged += (_, e) => fieldRaised.Add(e.PropertyName);
-            session.Object.Update(s => s.WithSpell(Spell.Haste));
+            session.Object.Update(s => s.WithSpell(TestCatalog.Standard.Spells["Haste"]));
 
             row.Refresh();
 

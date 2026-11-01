@@ -1,4 +1,4 @@
-using static Siniskalc.Homm3.Tests.Data.CastleMasks;
+﻿using static Siniskalc.Homm3.Tests.Data.CastleMasks;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -32,9 +32,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                         var unbuilt = CastleBuilder.Unbuild(saved, building);
                         var removed = saved.Buildings.Except(unbuilt.Buildings).ToList();
 
-                        var model = saved with { Buildings = new HashSet<Building> { Building.VillageHall }, VisibleBuildings = new HashSet<Building> { Building.VillageHall } };
+                        var model = saved with { Buildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") }, VisibleBuildings = new HashSet<Building> { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") } };
                         var empty = TestServices.SerializeCastle(chunk, model);
-                        foreach (var kept in saved.Buildings.Except(removed).Where(b => b != Building.VillageHall && !CastleBuilder.IsAutomatic(b)))
+                        foreach (var kept in saved.Buildings.Except(removed).Where(b => b != TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall") && !CastleBuilder.IsAutomatic(b)))
                         {
                             model = CastleBuilder.SetBuilt(model, kept, true);
                         }
@@ -59,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var path = CastleSamples.Folder(folder).Single(p => Path.GetFileNameWithoutExtension(p) == save);
             var castles = SavedGames.Get(path).History.Current.Castles();
-            return TestServices.CastleDeserializer.Deserialize(castles[castles.FindByName(name)]);
+            return castles.GetModel(castles.FindByName(name));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var before = Castle("Bulwark", "bulwark_13_mage_guild_4", "Still Water");
 
-            var built = CastleBuilder.Build(before, Building.RampartCentaurStables);
+            var built = CastleBuilder.Build(before, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("RampartCentaurStables"));
 
             Assert.That(built.CreaturesAvailable[0], Is.EqualTo(14));
             Assert.That(built.CreaturesAvailable, Is.EqualTo(Castle("Bulwark", "bulwark_14_centaur_stables__colliery", "Still Water").CreaturesAvailable));
@@ -79,12 +79,12 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var before = Castle("Bulwark", "bulwark_24_nothing__fair", "Jotunngard");
             var after = Castle("Bulwark", "bulwark_25_mystic_pond__upg_colliery", "Jotunngard");
 
-            var upgraded = CastleBuilder.Build(before, Building.BulwarkUpgColliery);
+            var upgraded = CastleBuilder.Build(before, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("BulwarkUpgColliery"));
 
             Assert.That(upgraded.CreaturesAvailable, Is.EqualTo(after.CreaturesAvailable));
             Assert.That(upgraded.VisibleBuildings, Is.EquivalentTo(after.VisibleBuildings));
 
-            var back = CastleBuilder.Unbuild(upgraded, Building.BulwarkUpgColliery);
+            var back = CastleBuilder.Unbuild(upgraded, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("BulwarkUpgColliery"));
             Assert.That(back.CreaturesAvailable, Is.EqualTo(before.CreaturesAvailable));
         }
 
@@ -93,7 +93,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var castle = Castle("Bulwark", "bulwark_24_nothing__fair", "Jotunngard");
 
-            var removed = CastleBuilder.Unbuild(castle, Building.BulwarkFrosthome);
+            var removed = CastleBuilder.Unbuild(castle, TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("BulwarkFrosthome"));
 
             Assert.That(removed.CreaturesAvailable[6], Is.EqualTo(0));
             Assert.That(removed.CreaturesAvailable[5], Is.EqualTo(castle.CreaturesAvailable[5]));

@@ -137,7 +137,7 @@ namespace Siniskalc.Homm2.Data
             Slots("Skill order", HeroLayout.SkillOrder, Constants.Hero.SecondarySkillCount, 1, ByteRegionKind.Skills, "Skill", "The place in which the skill was learned (1 for the first), 0 for none"),
             Field("Skill count", HeroLayout.SkillCount, 1, ByteRegionKind.Skills),
             Slots("Spell book", HeroLayout.Spells, HeroLayout.SpellsLength, 1, ByteRegionKind.Spells, "Spell", "1 when the hero knows the spell, by the number of the spell (the first byte is not used)"),
-            Slots("Artifacts", HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount, 1, ByteRegionKind.Artifacts, "Slot", "The artifact of each slot; FF for an empty slot (81 is the Magic Book)"),
+            Slots("Artifacts", HeroLayout.Artifacts, Constants.Hero.ArtifactSlotCount, 1, ByteRegionKind.Artifacts, "Slot", "The catalog artifact code of each slot; FF for an empty slot"),
         ];
 
         private static IReadOnlyList<ByteRegion> PlayerFields() =>
@@ -159,7 +159,7 @@ namespace Siniskalc.Homm2.Data
         [
             Field("Castle number", CastleLayout.Index, 1, ByteRegionKind.Identity),
             Field("Owner", CastleLayout.Owner, 1, ByteRegionKind.Identity, "Colour of the player; FF for nobody"),
-            Field("Faction", CastleLayout.Faction, 1, ByteRegionKind.Identity, "0 Knight to 5 Necromancer"),
+            Field("Faction", CastleLayout.Faction, 1, ByteRegionKind.Identity, "The faction code from the document's entity catalog"),
             Field("Pos X", CastleLayout.X, 1, ByteRegionKind.Position),
             Field("Pos Y", CastleLayout.Y, 1, ByteRegionKind.Position),
             Named("Shipyard", CastleLayout.Boat, ByteRegionKind.Position, "Where a ship appears; FF when the castle is not on the coast", ("X", 1), ("Y", 1)),

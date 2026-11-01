@@ -125,7 +125,7 @@
         /// <summary>
         /// Gets the mines of the map that the player owns, for the Mines tab.
         /// </summary>
-        public MinesListViewModel<MineRowViewModel<MineModel, PlayerColor>> Mines { get; }
+        public MinesListViewModel<MineRowViewModel> Mines { get; }
 
         /// <summary>
         /// Gets the obelisks of the map and which of them this player has visited.

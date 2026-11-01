@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "versions": {
+    "Unknown": "standard",
+    "BaseGame": "standard",
+    "PriceOfLoyalty": "synthetic"
+  },
+  "sets": {
+    "standard": {
+      "parent": null
+    },
+    "synthetic": {
+      "parent": "standard"
+    }
+  }
+}

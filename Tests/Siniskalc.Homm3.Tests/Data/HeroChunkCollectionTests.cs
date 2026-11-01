@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
@@ -22,14 +22,14 @@ namespace Siniskalc.Homm3.Tests.Data
             var reader = new Mock<IHeroDeserializer>();
             reader.Setup(d => d.DeserializeHeroId(It.IsAny<HeroChunk>())).Returns((HeroChunk c) => c.GetByteAt(0));
             reader.Setup(d => d.DeserializeOwner(It.IsAny<HeroChunk>())).Returns((HeroChunk c) => c.GetByteAt(0) < 10 ? PlayerColor.Red : PlayerColor.Blue);
-            reader.Setup(d => d.DeserializeClass(It.IsAny<HeroChunk>())).Returns(HeroClass.Knight);
+            reader.Setup(d => d.DeserializeClass(It.IsAny<HeroChunk>())).Returns(TestCatalog.For(GameVersion.HornOfTheAbyss).HeroClasses.ById("Knight"));
             reader.Setup(d => d.DeserializeLevel(It.IsAny<HeroChunk>())).Returns((HeroChunk c) => HeroLevel.AtLevel(LevelCalculator.Table, c.GetByteAt(0)));
             return new HeroChunkCollection(
                 [Hero("Orrin", 3), Hero("Gem", 12), Hero("Ash", 7)],
                 offsets ?? new HeroOffsets(GameVersion.ShadowOfDeath),
                 reader.Object,
                 Mock.Of<ISerializer<HeroChunk, HeroModel>>(),
-                Mock.Of<IDiffer<HeroModel>>());
+                Mock.Of<IDiffer<HeroModel>>(), TestCatalog.For((offsets ?? new HeroOffsets(GameVersion.ShadowOfDeath)).GameVersion));
         }
 
         [Test]

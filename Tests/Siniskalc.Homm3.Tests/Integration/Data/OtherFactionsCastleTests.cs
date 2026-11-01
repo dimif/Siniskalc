@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Tests.Data;
+﻿using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -20,14 +20,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static readonly (string Name, Faction Faction)[] Castles =
         [
-            ("Corona", Faction.Tower),
-            ("Enkindle", Faction.Inferno),
-            ("Grave Raven", Faction.Necropolis),
-            ("Castigare", Faction.Dungeon),
-            ("Kruber", Faction.Stronghold),
-            ("Deadfall", Faction.Fortress),
-            ("Wazzar", Faction.Conflux),
-            ("Highcastle", Faction.Castle),
+            ("Corona", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")),
+            ("Enkindle", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Inferno")),
+            ("Grave Raven", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Necropolis")),
+            ("Castigare", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Dungeon")),
+            ("Kruber", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Stronghold")),
+            ("Deadfall", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Fortress")),
+            ("Wazzar", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Conflux")),
+            ("Highcastle", TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")),
         ];
 
         private static CastleModel Castle(string save, string name)
@@ -36,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var castles = game.History.Current.Castles();
             var index = castles.FindByName(name);
             Assert.That(index, Is.GreaterThanOrEqualTo(0), name);
-            return TestServices.CastleDeserializer.Deserialize(castles[index]);
+            return castles.GetModel(index);
         }
 
         // Bits 19 and 25 are set by the game itself once a horde building and the upgrade of its dwelling both exist.
@@ -110,22 +110,22 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
                 Assert.That(castle.Faction, Is.EqualTo(faction), name);
                 Assert.That(castle.Owner, Is.EqualTo(PlayerColor.Red), name);
                 Assert.That(castle.MageGuildLevel, Is.EqualTo(0), name);
-                Assert.That(castle.Buildings, Does.Contain(Building.VillageHall), name);
+                Assert.That(castle.Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")), name);
             }
         }
 
         [Test]
         public void TheUpgradedHordeBuildingsAppearWithTheUpgradeOfTheirDwellings()
         {
-            Assert.That(Castle("other_factions_34_upg_dwelling_2", "Corona").Buildings, Does.Contain(Building.TowerUpgSculptorsWings));
-            Assert.That(Castle("other_factions_32_additional_2", "Castigare").Buildings, Does.Not.Contain(Building.DungeonUpgMushroomRings));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Castigare").Buildings, Does.Contain(Building.DungeonUpgMushroomRings));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Enkindle").Buildings, Does.Contain(Building.InfernoUpgBirthingPool));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Grave Raven").Buildings, Does.Contain(Building.NecropolisUpgUnearthedGraves));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Kruber").Buildings, Does.Contain(Building.StrongholdUpgMessHall));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Deadfall").Buildings, Does.Contain(Building.FortressUpgCageOfWarlords));
-            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Wazzar").Buildings, Does.Contain(Building.ConfluxUpgGardenOfLife));
-            Assert.That(Castle("other_factions_35_upg_dwelling_3", "Highcastle").Buildings, Does.Contain(Building.CastleUpgGriffinBastion));
+            Assert.That(Castle("other_factions_34_upg_dwelling_2", "Corona").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerUpgSculptorsWings")));
+            Assert.That(Castle("other_factions_32_additional_2", "Castigare").Buildings, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("DungeonUpgMushroomRings")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Castigare").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("DungeonUpgMushroomRings")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Enkindle").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("InfernoUpgBirthingPool")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Grave Raven").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisUpgUnearthedGraves")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Kruber").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("StrongholdUpgMessHall")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Deadfall").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("FortressUpgCageOfWarlords")));
+            Assert.That(Castle("other_factions_33_upg_dwelling_1", "Wazzar").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("ConfluxUpgGardenOfLife")));
+            Assert.That(Castle("other_factions_35_upg_dwelling_3", "Highcastle").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleUpgGriffinBastion")));
         }
 
         [Test]
@@ -133,22 +133,22 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var (name, _) in Castles)
             {
-                Assert.That(Castle("other_factions_42_city_hall", name).Buildings.Contains(Building.Shipyard), Is.EqualTo(name == "Highcastle"), name);
+                Assert.That(Castle("other_factions_42_city_hall", name).Buildings.Contains(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard")), Is.EqualTo(name == "Highcastle"), name);
             }
 
-            Assert.That(Castle("other_factions_26_special_4", "Highcastle").Buildings, Does.Contain(Building.Shipyard).And.Not.Contain(Building.CastleLighthouse));
-            Assert.That(Building.CastleLighthouse.Prerequisites, Is.EquivalentTo(new[] { Building.Shipyard }));
+            Assert.That(Castle("other_factions_26_special_4", "Highcastle").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleLighthouse")));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleLighthouse").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Shipyard") }));
         }
 
         [Test]
         public void TheCastleNeedsItsStablesBeforeItsLevelSixDwelling()
         {
-            Assert.That(Building.CastleTrainingGrounds.Prerequisites, Is.EquivalentTo(new[] { Building.CastleStables }));
-            Assert.That(Building.CastleStables.Prerequisites, Is.EquivalentTo(new[] { Building.CastleBarracks }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleTrainingGrounds").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleStables") }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleStables").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleBarracks") }));
 
             // Every other faction had its level 6 dwelling in this save; the Castle could not.
-            Assert.That(Castle("other_factions_19_dwelling_6_before_stables", "Highcastle").Buildings, Does.Not.Contain(Building.CastleStables).And.Not.Contain(Building.CastleTrainingGrounds));
-            Assert.That(Castle("other_factions_38_upg_dwelling_6", "Highcastle").Buildings, Does.Contain(Building.CastleStables).And.Contain(Building.CastleTrainingGrounds));
+            Assert.That(Castle("other_factions_19_dwelling_6_before_stables", "Highcastle").Buildings, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleStables")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleTrainingGrounds")));
+            Assert.That(Castle("other_factions_38_upg_dwelling_6", "Highcastle").Buildings, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleStables")).And.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleTrainingGrounds")));
         }
 
         [Test]
@@ -171,16 +171,16 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheDungeonAndNecropolisBuildingsAreAloneInTheirSave()
         {
             // dung_necro holds three Necropolis castles and two Dungeon castles with nothing built but a fort, the dwelling and one more building, placed with the map editor.
-            Assert.That(Castle("other_factions_editor_dung_necro", "Nothing").Faction, Is.EqualTo(Faction.Necropolis));
-            Assert.That(Castle("other_factions_editor_dung_necro", "Nothing").Buildings, Is.EquivalentTo(new[] { Building.Fort, Building.VillageHall, Building.NecropolisCursedTemple }));
+            Assert.That(Castle("other_factions_editor_dung_necro", "Nothing").Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Necropolis")));
+            Assert.That(Castle("other_factions_editor_dung_necro", "Nothing").Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisCursedTemple") }));
             Assert.That(Added(Castle("other_factions_editor_dung_necro", "Graves"), Castle("other_factions_editor_dung_necro", "Nothing")), Is.EquivalentTo(new[] { "Unearthed Graves" }));
             Assert.That(Added(Castle("other_factions_editor_dung_necro", "Transf"), Castle("other_factions_editor_dung_necro", "Nothing")), Is.EquivalentTo(new[] { "Skeleton Transformer" }));
-            Assert.That(Castle("other_factions_editor_dung_necro", "NoRing").Faction, Is.EqualTo(Faction.Dungeon));
+            Assert.That(Castle("other_factions_editor_dung_necro", "NoRing").Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Dungeon")));
             Assert.That(Added(Castle("other_factions_editor_dung_necro", "WithRing"), Castle("other_factions_editor_dung_necro", "NoRing")), Is.EquivalentTo(new[] { "Mushroom Rings" }));
 
             // The castles of dung_necro were built in the map editor, which ignores prerequisites; in the game the Unearthed Graves need the Skeleton Transformer.
-            Assert.That(Building.NecropolisUnearthedGraves.Prerequisites, Is.EquivalentTo(new[] { Building.NecropolisCursedTemple, Building.NecropolisSkeletonTransformer }));
-            Assert.That(Building.NecropolisSkeletonTransformer.Prerequisites, Is.EquivalentTo(new[] { Building.NecropolisCursedTemple }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisUnearthedGraves").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisCursedTemple"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisSkeletonTransformer") }));
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisSkeletonTransformer").Prerequisites, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("NecropolisCursedTemple") }));
         }
 
         [Test]

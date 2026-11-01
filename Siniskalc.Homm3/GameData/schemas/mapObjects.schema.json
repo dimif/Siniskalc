@@ -1,0 +1,91 @@
+{
+  "type": "object",
+  "properties": {
+    "merchantName": {
+      "type": "string"
+    },
+    "dwellingName": {
+      "type": "string"
+    },
+    "mines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "string"
+          },
+          "dailyAmount": {
+            "type": "integer"
+          },
+          "fallback": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "resource",
+          "dailyAmount",
+          "fallback"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "visitEffects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "effect": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "morale": {
+            "type": "integer"
+          },
+          "luck": {
+            "type": "integer"
+          },
+          "editable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "effect",
+          "order",
+          "name",
+          "description",
+          "morale",
+          "luck",
+          "editable"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "merchantName",
+    "dwellingName",
+    "mines",
+    "visitEffects"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 supported map-object metadata"
+}

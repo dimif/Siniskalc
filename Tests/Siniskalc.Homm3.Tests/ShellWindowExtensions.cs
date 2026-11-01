@@ -1,4 +1,5 @@
-﻿namespace Siniskalc.Homm3.Tests
+﻿using Siniskalc.Homm3.Entities;
+namespace Siniskalc.Homm3.Tests
 {
     using System.Windows;
     using System.Windows.Controls;

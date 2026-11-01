@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.ViewModels;
+﻿using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Tests.Models;
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         [Test]
         public void TheFinderListsEveryCreatureOfTheVersionUntilNarrowed()
         {
-            Assert.That(this.Finder.Items.Count, Is.EqualTo(Creature.All.Count(c => c.IsAvailableIn(this.session.GameVersion))));
+            Assert.That(this.Finder.Items.Count, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All.Count(c => c.IsAvailableIn(this.session.GameVersion))));
             Assert.That(this.Finder.Summary, Does.Contain("creatures"));
         }
 
@@ -76,7 +76,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void TheRowsShowTheStatsOfTheCreatureForTheGameVersion()
         {
             var angel = this.Choice("Angel");
-            var info = Creature.Angel.GetInfo(this.session.GameVersion);
+            var info = TestCatalog.For(this.session.GameVersion).Creatures.ById("Angel").Info;
 
             Assert.That(angel.Attack, Is.EqualTo(info.Atk));
             Assert.That(angel.Health, Is.EqualTo(info.Health));
@@ -90,7 +90,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void ASlotShowsTheTotalsOfTheWholeStackAndTheyFollowTheAmount()
         {
             var slot = this.Creatures.CreatureSlots[0];
-            var info = Creature.Pikeman.GetInfo(this.session.GameVersion);
+            var info = TestCatalog.For(this.session.GameVersion).Creatures.ById("Pikeman").Info;
             Assert.That(slot.SelectedCreature, Is.EqualTo("Pikeman"));
 
             slot.CreatureAmount = 10;
@@ -122,7 +122,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
 
             Assert.That(empty.SelectedCreature, Is.EqualTo("Angel"));
             Assert.That(empty.CreatureAmount, Is.EqualTo(3));
-            Assert.That(this.session.Current.Army.Slots[1]?.Creature, Is.EqualTo(Creature.Angel));
+            Assert.That(this.session.Current.Army.Slots[1]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel")));
 
             this.session.Update(_ => this.session.Original);
 

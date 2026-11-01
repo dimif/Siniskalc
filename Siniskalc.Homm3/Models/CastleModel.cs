@@ -105,6 +105,8 @@
         /// </summary>
         public bool HasBuilt(Building building) => this.Buildings.Contains(building);
 
+        public bool HasBuilt(BuildingType type) => this.Buildings.Any(b => b.Type == type);
+
         /// <summary>
         /// Returns the castle with <paramref name="garrison"/> as its own creatures. A garrisoned hero's army takes the place of the castle's in
         /// the game, so the slots of the castle cannot be set while a hero is garrisoned.

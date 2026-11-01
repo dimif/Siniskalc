@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.Models;
@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     internal sealed class MineRowViewModelTests
     {
         private static MineModel Mine(IArmy<Creature>? guard = null) =>
-            new(2, MineKind.GoldMine, PlayerColor.Blue, new MapPosition(14, 15, MapPosition.Underground), guard ?? new Army<Creature>(Constants.CreatureSlotCount));
+            new(2, MineKind.GoldMine, PlayerColor.Blue, new MapPosition(14, 15, MapPosition.Underground), guard ?? new Army<Creature>(Constants.CreatureSlotCount), TestCatalog.Hota);
 
         private static Mock<IEditSession<MineModel>> Session(MineModel mine)
         {
@@ -58,17 +58,17 @@ namespace Siniskalc.Homm3.Tests.ViewModels
             var row = new MineRowViewModel(session.Object);
             Assert.That(row.Summary, Is.EqualTo("Unguarded"));
 
-            row.UpdateGuard(guard => guard.WithSlot(0, Creature.Centaur, 5).WithSlot(3, Creature.Angel, 1));
+            row.UpdateGuard(guard => guard.WithSlot(0, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Centaur"), 5).WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 1));
 
             Assert.That(row.Summary, Is.EqualTo($"2 of {Constants.CreatureSlotCount} slots"));
             Assert.That(row.Guard.Filled.Count(), Is.EqualTo(2));
-            Assert.That(session.Object.Current.Guard.Slots[3]?.Creature, Is.SameAs(Creature.Angel));
+            Assert.That(session.Object.Current.Guard.Slots[3]?.Creature, Is.SameAs(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel")));
         }
 
         [Test]
         public void TheGuardIsThatOfTheMineOfTheSession()
         {
-            var guard = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(1, Creature.GoldDragon, 2);
+            var guard = new Army<Creature>(Constants.CreatureSlotCount).WithSlot(1, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("GoldDragon"), 2);
 
             var row = new MineRowViewModel(Session(Mine(guard)).Object);
 

@@ -1,4 +1,4 @@
-using Siniskalc.Homm3.Entities;
+﻿using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
@@ -11,7 +11,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
     [Category(TestKinds.MultiUnit)]
     internal sealed class ArtifactInfoViewModelBaseTests
     {
-        private sealed class InfoPage() : ArtifactInfoViewModelBase("Info", TestServices.EffectLines)
+        private sealed class InfoPage() : ArtifactInfoViewModelBase("Info", TestServices.EffectLines, TestCatalog.Hota)
         {
             public void Show(Artifact? artifact) => this.ShowArtifactInfo(artifact);
         }
@@ -32,10 +32,10 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var page = new InfoPage();
 
-            page.Show(Artifact.ThunderHelmet);
+            page.Show(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ThunderHelmet"));
 
             Assert.That((page.Power, page.Knowledge), Is.EqualTo(((short)-2, (short)10)));
-            Assert.That(page.ClassAndCost, Is.EqualTo($"{Artifact.ThunderHelmet.Class} · {10000:N0} gold"));
+            Assert.That(page.ClassAndCost, Is.EqualTo($"{TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ThunderHelmet").Class} · {10000:N0} gold"));
             Assert.That(page.SelectedEffectLines, Is.Not.Empty);
             Assert.That(page.HasSelectedInfo, Is.True);
         }
@@ -45,7 +45,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var page = new InfoPage();
 
-            page.Show(Artifact.OrbOfFirmament);
+            page.Show(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("OrbOfFirmament"));
 
             Assert.That(page.ClassAndCost, Is.Empty);
             Assert.That(page.Effects, Is.EqualTo("All Air Spell Damage +50%"));
@@ -57,7 +57,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var page = new InfoPage();
 
-            page.ShowArtifactInfoCommand.Execute(Artifact.HelmOfTheAlabasterUnicorn.Name);
+            page.ShowArtifactInfoCommand.Execute(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfTheAlabasterUnicorn").Name);
             Assert.That(page.Knowledge, Is.EqualTo((short)1));
 
             page.ClearArtifactInfoCommand.Execute(null);
@@ -70,7 +70,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void ANameThatIsEmptyClearsTheInfo(string? name)
         {
             var page = new InfoPage();
-            page.Show(Artifact.HelmOfTheAlabasterUnicorn);
+            page.Show(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfTheAlabasterUnicorn"));
 
             page.ShowArtifactInfoByName(name);
 
@@ -81,7 +81,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void ANameThatIsNoArtifactClearsTheInfo()
         {
             var page = new InfoPage();
-            page.Show(Artifact.HelmOfTheAlabasterUnicorn);
+            page.Show(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("HelmOfTheAlabasterUnicorn"));
 
             page.ShowArtifactInfoByName("No such artifact");
 
@@ -95,7 +95,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             var raised = new List<string?>();
             page.PropertyChanged += (_, e) => raised.Add(e.PropertyName);
 
-            page.Show(Artifact.ThunderHelmet);
+            page.Show(TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ThunderHelmet"));
 
             Assert.That(raised, Is.EquivalentTo(new[] { "Attack", "Defense", "Power", "Knowledge", "Morale", "Luck", "Effects", "SelectedEffectLines", "ClassAndCost", "HasSelectedInfo" }));
         }

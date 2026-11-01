@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Astrolabe",
+      "name": "Astrolabe",
+      "code": 103,
+      "order": 103,
+      "availableFrom": "PriceOfLoyalty",
+      "role": "ordinary",
+      "effects": [
+        "AstralBonus"
+      ]
+    }
+  ],
+  "replacements": []
+}

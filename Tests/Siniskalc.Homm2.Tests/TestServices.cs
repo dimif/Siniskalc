@@ -20,9 +20,9 @@ namespace Siniskalc.Homm2.Tests
 
         public static BanishingTextProvider BanishingText { get; } = new();
 
-        public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer();
+        public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer(TestCatalog.Standard, new CreatureCodes(TestCatalog.Standard));
 
-        public static ISerializer<HeroChunk, HeroModel> HeroSerializer { get; } = new SafeHeroSerializer();
+        public static ISerializer<HeroChunk, HeroModel> HeroSerializer { get; } = new SafeHeroSerializer(TestCatalog.Standard);
 
         public static IDeserializer<PlayerChunk, PlayerModel> PlayerDeserializer { get; } = new PlayerDeserializer();
 
@@ -32,15 +32,15 @@ namespace Siniskalc.Homm2.Tests
 
         public static ISerializer<PlayerChunk, PlayerLists> PlayerListsSerializer { get; } = new SafePlayerListsSerializer();
 
-        public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer();
+        public static ICastleDeserializer CastleDeserializer { get; } = new CastleDeserializer(TestCatalog.Standard);
 
-        public static ISerializer<CastleChunk, CastleModel> CastleSerializer { get; } = new SafeCastleSerializer();
+        public static ISerializer<CastleChunk, CastleModel> CastleSerializer { get; } = new SafeCastleSerializer(TestCatalog.Standard);
 
-        public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(), new SafeMineSerializer());
+        public static MapObjectDeserializerAndSerializer<MineModel> Mines { get; } = new(new MineDeserializer(TestCatalog.Standard), new SafeMineSerializer());
 
-        public static MapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(), new SafeShrineSerializer());
+        public static MapObjectDeserializerAndSerializer<ShrineModel> Shrines { get; } = new(new ShrineDeserializer(TestCatalog.Standard), new SafeShrineSerializer());
 
-        public static MapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(), new SafeSphinxSerializer());
+        public static MapObjectDeserializerAndSerializer<SphinxModel> Sphinxes { get; } = new(new SphinxDeserializer(TestCatalog.Standard), new SafeSphinxSerializer());
 
         private static readonly Homm2PendingChangesFactory PendingChanges = new();
 
@@ -51,7 +51,7 @@ namespace Siniskalc.Homm2.Tests
             new SaveDocumentFactory(
                 HeroDeserializer,
                 HeroSerializer,
-                new HeroDiffer(PendingChanges),
+                new HeroDiffer(PendingChanges, TestCatalog.Standard),
                 PlayerDeserializer,
                 PlayerSerializer,
                 PlayerListsDeserializer,
@@ -59,19 +59,19 @@ namespace Siniskalc.Homm2.Tests
                 new PlayerDiffer(PendingChanges),
                 CastleDeserializer,
                 CastleSerializer,
-                new CastleDiffer(PendingChanges),
+                new CastleDiffer(PendingChanges, TestCatalog.Standard),
                 new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags),
                 new SafeObeliskSerializer<PlayerColor>(ObeliskLayout.Flags),
                 new ObeliskDiffer<PlayerColor>(PlayerColor.All, PendingChanges.ForObelisks),
-                new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(), new SafeMineSerializer(), new MineDiffer()),
-                new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(), new SafeShrineSerializer(), new ShrineDiffer()),
-                new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(), new SafeSphinxSerializer(), new SphinxDiffer()),
+                new RecordKit<MapObjectChunk, MineModel>(new MineDeserializer(TestCatalog.Standard), new SafeMineSerializer(), new MineDiffer()),
+                new RecordKit<MapObjectChunk, ShrineModel>(new ShrineDeserializer(TestCatalog.Standard), new SafeShrineSerializer(), new ShrineDiffer()),
+                new RecordKit<MapObjectChunk, SphinxModel>(new SphinxDeserializer(TestCatalog.Standard), new SafeSphinxSerializer(), new SphinxDiffer()),
                 new RecordKit<MapObjectChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
                 new RecordKit<MapObjectChunk, BuiltTodayModel>(new BuiltTodayDeserializer(), new SafeBuiltTodaySerializer(), new BuiltTodayDiffer()),
                 new PlayerListsReconciler(),
                 new SavefileBytesPatcher()),
-            new MapPlacesReader(),
-            new MapObjectsReader());
+            new MapPlacesReader(TestCatalog.Catalogs),
+            new MapObjectsReader(TestCatalog.Catalogs), TestCatalog.Catalogs);
 
         /// <summary>
         /// Loads the savegame at <paramref name="path"/>.

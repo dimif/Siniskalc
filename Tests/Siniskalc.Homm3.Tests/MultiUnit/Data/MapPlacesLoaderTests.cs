@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
@@ -57,34 +57,34 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         {
             var cell = Cell(MerchantType, 2, 5);
 
-            Assert.That(this.loader.Load(Savegame([cell], withDefinitions: false)), Is.SameAs(MapPlaces.None));
-            Assert.That(this.loader.Load(Savegame([cell], objects: [])), Is.SameAs(MapPlaces.None));
-            Assert.That(this.loader.Load([]), Is.SameAs(MapPlaces.None));
+            Assert.That(this.loader.Load(Savegame([cell], withDefinitions: false), TestCatalog.Hota), Is.SameAs(MapPlaces.None));
+            Assert.That(this.loader.Load(Savegame([cell], objects: []), TestCatalog.Hota), Is.SameAs(MapPlaces.None));
+            Assert.That(this.loader.Load([], TestCatalog.For(GameVersion.HornOfTheAbyss)), Is.SameAs(MapPlaces.None));
         }
 
         [Test]
         public void AMerchantCellGivesTheNumberAndTheTileOfItsPlaceInTheList()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 2, 5)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 2, 5)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (5, Tiles[2]) }));
-            Assert.That(places.Of(VisitedPlaceKind.LearningStone), Is.Empty);
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")), Is.Empty);
         }
 
         [Test]
         public void ACellOfAKindGivesItsPlaceAndTheOtherKindsHaveNone()
         {
-            var places = this.loader.Load(Savegame([Cell(LearningStoneType, 3, 1), Cell(MerchantType, 1, 0)]));
+            var places = this.loader.Load(Savegame([Cell(LearningStoneType, 3, 1), Cell(MerchantType, 1, 0)]), TestCatalog.Hota);
 
-            Assert.That(places.Of(VisitedPlaceKind.LearningStone), Is.EqualTo(new[] { (1, Tiles[3]) }));
-            Assert.That(places.Of(VisitedPlaceKind.MarlettoTower), Is.Empty);
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")), Is.EqualTo(new[] { (1, Tiles[3]) }));
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("MarlettoTower")), Is.Empty);
             Assert.That(places.Merchants, Is.EqualTo(new[] { (0, Tiles[1]) }));
         }
 
         [Test]
         public void ThePlacesComeInTheOrderOfTheirNumbers()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 3, 9), Cell(MerchantType, 1, 2), Cell(MerchantType, 2, 4)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 3, 9), Cell(MerchantType, 1, 2), Cell(MerchantType, 2, 4)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants.Select(m => m.Number), Is.EqualTo(new[] { 2, 4, 9 }));
         }
@@ -92,7 +92,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [Test]
         public void APlaceOfTheListIsTakenOnceByItsFirstCell()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 2, 7), Cell(MerchantType, 2, 3)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 2, 7), Cell(MerchantType, 2, 3)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (7, Tiles[2]) }));
         }
@@ -100,7 +100,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [Test]
         public void ANumberIsTakenOnceAndTheFirstPlaceKeepsIt()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 4), Cell(MerchantType, 2, 4)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 4), Cell(MerchantType, 2, 4)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (4, Tiles[1]) }));
         }
@@ -113,7 +113,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 Cell(MerchantType, Tiles.Length, 2),
                 Cell(MerchantType, 1, 32),
                 Cell(MerchantType, 2, 31),
-            ]));
+            ]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (31, Tiles[2]) }));
         }
@@ -121,7 +121,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [Test]
         public void ACellWithAnythingInTheHighBytesOfItsTypeIsNotACellOfThatType()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, head: 1), Cell(MerchantType, 2, 2)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, head: 1), Cell(MerchantType, 2, 2)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (2, Tiles[2]) }));
         }
@@ -130,7 +130,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [TestCase(0, 1)]
         public void ACellWhoseTypeHasAnythingInItsThirdOrFourthByteIsNotACellOfThatType(byte head2, byte head3)
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, head2: head2, head3: head3), Cell(MerchantType, 2, 2)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, head2: head2, head3: head3), Cell(MerchantType, 2, 2)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (2, Tiles[2]) }));
         }
@@ -138,7 +138,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [Test]
         public void AMerchantCellMustHaveZerosAfterItsNumberLikeAKindWithoutFlags()
         {
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, 1), Cell(MerchantType, 2, 2)]));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 1, 1, 1), Cell(MerchantType, 2, 2)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (2, Tiles[2]) }));
         }
@@ -148,7 +148,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         {
             var tiles = Enumerable.Range(0, 300).Select(i => new MapPosition(i % 200, i / 200, 0)).ToList();
 
-            var places = this.loader.Load(Savegame([Cell(MerchantType, 280, 3)], tiles));
+            var places = this.loader.Load(Savegame([Cell(MerchantType, 280, 3)], tiles), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.EqualTo(new[] { (3, tiles[280]) }));
         }
@@ -158,7 +158,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         {
             var bytes = Encoding.ASCII.GetBytes(".def").Concat(Savegame([Cell(MerchantType, 2, 5)])).ToArray();
 
-            Assert.That(this.loader.Load(bytes).Merchants, Is.EqualTo(new[] { (5, Tiles[2]) }));
+            Assert.That(this.loader.Load(bytes, TestCatalog.For(GameVersion.HornOfTheAbyss)).Merchants, Is.EqualTo(new[] { (5, Tiles[2]) }));
         }
 
         [TestCase(1, 0, 0)]
@@ -166,26 +166,26 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         [TestCase(0, 0, 1)]
         public void ACellOfAKindWithoutFlagsMustHaveZerosAfterItsNumber(byte tail1, byte tail2, byte tail3)
         {
-            var places = this.loader.Load(Savegame([Cell(LearningStoneType, 1, 1, tail1, tail2, tail3), Cell(LearningStoneType, 2, 2)]));
+            var places = this.loader.Load(Savegame([Cell(LearningStoneType, 1, 1, tail1, tail2, tail3), Cell(LearningStoneType, 2, 2)]), TestCatalog.Hota);
 
-            Assert.That(places.Of(VisitedPlaceKind.LearningStone), Is.EqualTo(new[] { (2, Tiles[2]) }));
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")), Is.EqualTo(new[] { (2, Tiles[2]) }));
         }
 
         [Test]
         public void ACellOfAKindWithFlagsMayHaveAnythingAfterItsNumberAndTheNumberIsMasked()
         {
-            var places = this.loader.Load(Savegame([Cell(102, 1, 0x25, 1, 2, 3)]));
+            var places = this.loader.Load(Savegame([Cell(102, 1, 0x25, 1, 2, 3)]), TestCatalog.Hota);
 
-            Assert.That(places.Of(VisitedPlaceKind.TreeOfKnowledge), Is.EqualTo(new[] { (5, Tiles[1]) }));
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("TreeOfKnowledge")), Is.EqualTo(new[] { (5, Tiles[1]) }));
         }
 
         [Test]
         public void ACellOfOtherTypeIsIgnored()
         {
-            var places = this.loader.Load(Savegame([Cell(99, 1, 1), Cell(MerchantType + 1, 2, 2)]));
+            var places = this.loader.Load(Savegame([Cell(99, 1, 1), Cell(MerchantType + 1, 2, 2)]), TestCatalog.Hota);
 
             Assert.That(places.Merchants, Is.Empty);
-            Assert.That(VisitedPlaceKind.All.Select(k => places.Of(k)), Is.All.Empty);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.All.Select(k => places.Of(k)), Is.All.Empty);
         }
     }
 }

@@ -45,9 +45,9 @@
 
             var bikko = document.Heroes().GetModel(16);
             Assert.That(bikko.Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(bikko.Faction, Is.EqualTo(Faction.Barbarian));
+            Assert.That(bikko.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Barbarian"]));
             Assert.That((bikko.Position.X, bikko.Position.Y), Is.EqualTo((17, 12)));
-            Assert.That(bikko.Army.Slots.Take(2).Select(s => s!.Creature), Is.EqualTo(new[] { Creature.Goblin, Creature.Orc }));
+            Assert.That(bikko.Army.Slots.Take(2).Select(s => s!.Creature), Is.EqualTo(new[] { TestCatalog.Standard.Creatures["Goblin"], TestCatalog.Standard.Creatures["Orc"] }));
 
             var blue = document.Players().GetModel(0);
             Assert.That(blue.Resources, Is.EqualTo(ResourceSet.None));
@@ -57,7 +57,7 @@
             var xabran = document.Castles().GetModel(2);
             Assert.That(xabran.Name, Is.EqualTo("Xabran"));
             Assert.That(xabran.Owner, Is.EqualTo(PlayerColor.Blue));
-            Assert.That(xabran.Faction, Is.EqualTo(Faction.Barbarian));
+            Assert.That(xabran.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Barbarian"]));
             Assert.That((xabran.Position.X, xabran.Position.Y), Is.EqualTo((17, 12)));
             Assert.That(document.Castles().UsedIndexes(), Is.EqualTo(new[] { 0, 1, 2, 3, 4 }));
         }

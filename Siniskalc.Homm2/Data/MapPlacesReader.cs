@@ -17,15 +17,12 @@ namespace Siniskalc.Homm2.Data
     {
         private static readonly ILogger<MapPlacesReader> Logger = LogFactory.For<MapPlacesReader>();
 
-        private static readonly (PlaceKind Kind, byte Value)[] Values =
-        [
-            (PlaceKind.Gazebo, 0x8A),
-            (PlaceKind.Fort, 0xBE),
-            (PlaceKind.WitchDoctorHut, 0xC5),
-            (PlaceKind.MercenaryCamp, 0xC9),
-            (PlaceKind.StandingStones, 0xC2),
-            (PlaceKind.Xanadu, 0xD6),
-        ];
+        private readonly GameCatalogs catalogs;
+
+        public MapPlacesReader(GameCatalogs catalogs)
+        {
+            this.catalogs = catalogs;
+        }
 
         /// <inheritdoc/>
         public MapPlaces Read(byte[] bytes, SaveLayout layout)
@@ -40,8 +37,10 @@ namespace Siniskalc.Homm2.Data
             var objects = MapTileTable.ObjectBytes(bytes, layout, tiles);
             var size = layout.Width;
             var result = new Dictionary<PlaceKind, IReadOnlyList<MapPosition>>();
-            foreach (var (kind, value) in Values)
+            foreach (var place in this.catalogs.For(layout.Version).Places)
             {
+                var (kind, value) = (place.Kind, place.Code);
+
                 // The standing stones are two tiles wide: the place is the left one, so a tile with the same byte on its left is the other half.
                 result[kind] = MapTileTable.Find(objects, size, value, kind == PlaceKind.StandingStones ? tile => tile % size == 0 || objects[tile - 1] != value : null);
             }

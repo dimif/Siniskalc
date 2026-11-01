@@ -34,9 +34,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 .Returns(new PlayerModel(PlayerColor.Red, ResourceSet.None, new TavernHeroes(0, 1), 0));
 
             this.factory = new SaveDocumentFactory(
-                new VersionSpecificEntitiesProviderFactory(version => new GrantedSpellsResolver(version)),
+                new VersionSpecificEntitiesProviderFactory(TestCatalog.Catalogs),
                 Mock.Of<IDiffer<HeroModel>>(),
-                Mock.Of<ICastleDeserializer>(),
+                _ => Mock.Of<ICastleDeserializer>(),
                 Mock.Of<ISerializer<CastleChunk, CastleModel>>(),
                 Mock.Of<ICastleDiffer>(),
                 this.playerDeserializer.Object,
@@ -47,9 +47,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 Mock.Of<IDeserializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<ISerializer<ObeliskChunk, ObeliskVisits<PlayerColor>>>(),
                 Mock.Of<IDiffer<ObeliskVisits<PlayerColor>>>(),
-                new RecordKit<RecordChunk, MineModel>(Mock.Of<IDeserializer<RecordChunk, MineModel>>(), Mock.Of<ISerializer<RecordChunk, MineModel>>(), Mock.Of<IDiffer<MineModel>>()),
-                new RecordKit<RecordChunk, DwellingModel>(Mock.Of<IDeserializer<RecordChunk, DwellingModel>>(), Mock.Of<ISerializer<RecordChunk, DwellingModel>>(), Mock.Of<IDiffer<DwellingModel>>()),
-                new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
+                _ => new RecordKit<RecordChunk, MineModel>(Mock.Of<IDeserializer<RecordChunk, MineModel>>(), Mock.Of<ISerializer<RecordChunk, MineModel>>(), Mock.Of<IDiffer<MineModel>>()),
+                _ => new RecordKit<RecordChunk, DwellingModel>(Mock.Of<IDeserializer<RecordChunk, DwellingModel>>(), Mock.Of<ISerializer<RecordChunk, DwellingModel>>(), Mock.Of<IDiffer<DwellingModel>>()),
+                _ => new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(Mock.Of<IDeserializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<ISerializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<IDiffer<HeroOwnersModel>>()),
                 new RecordKit<RecordChunk, TurnModel>(Mock.Of<IDeserializer<RecordChunk, TurnModel>>(), Mock.Of<ISerializer<RecordChunk, TurnModel>>(), Mock.Of<IDiffer<TurnModel>>()),
                 Mock.Of<IDocumentReconciler>(),
@@ -129,12 +129,12 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
         {
             var offsets = new HeroOffsets(GameVersion.HornOfTheAbyss);
             var bytes = new byte[1200];
-            bytes[offsets[HeroOffsetName.Skills] + SecondarySkill.Interference.Code] = SkillLevel.Intermediate.Code;
+            bytes[offsets[HeroOffsetName.Skills] + TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Interference").Code] = SkillLevel.Intermediate.Code;
             var document = this.factory.Create([], [new HeroChunk("Orrin", bytes, 100)], offsets);
 
             var skills = document.Heroes().GetModel(0).SecondarySkills;
 
-            Assert.That(skills.GetSkillLevel(SecondarySkill.Interference), Is.EqualTo(SkillLevel.Intermediate));
+            Assert.That(skills.GetSkillLevel(TestCatalog.For(GameVersion.HornOfTheAbyss).SecondarySkills.ById("Interference")), Is.EqualTo(SkillLevel.Intermediate));
         }
 
         private Func<int, string> HeroNameGivenToThePlayerDiffer(params HeroChunk[] heroes)

@@ -25,6 +25,12 @@
 
   <ItemGroup>
     <None Include="..\.globalconfig" Link=".globalconfig" />
+    <None Remove="GameData\**\*.json" />
+    <Content Include="GameData\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>GameData\Homm3\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
   </ItemGroup>
 
 </Project>

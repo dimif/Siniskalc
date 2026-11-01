@@ -12,11 +12,11 @@ namespace Siniskalc.Homm3.Models
     /// <param name="Owner">The player that owns the mine, or <see cref="PlayerColor.Neutral"/>.</param>
     /// <param name="Position">The tile the record gives (see <c>MineLayout</c>): not the tile where the mine is entered.</param>
     /// <param name="Guard">The creatures that guard the mine. Shaped like a hero's army: slots 1 to 7, empty slots absent.</param>
-    public sealed record MineModel(int Index, MineKind Kind, PlayerColor Owner, MapPosition Position, IArmy<Creature> Guard) : IMineModel<PlayerColor>
+    public sealed record MineModel(int Index, MineKind Kind, PlayerColor Owner, MapPosition Position, IArmy<Creature> Guard, EntityCatalog Catalog) : IMineModel<PlayerColor>
     {
         /// <summary>
         /// Gets the name of the mine with its place, such as "Gold mine at 12, 7, Underground", as the pending changes name it.
         /// </summary>
-        public string Name => MineKinds.NameAt(this.Kind, this.Position, hasLevels: true);
+        public string Name => this.Catalog.MapMetadata.MineNameAt(this.Kind, this.Position);
     }
 }

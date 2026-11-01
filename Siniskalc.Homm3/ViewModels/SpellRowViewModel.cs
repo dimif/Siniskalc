@@ -22,13 +22,6 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string School => this.Group;
 
-        private static string SchoolOf(Spell spell) => spell.School switch
-        {
-            SpellSchool.Wind => "Air magic",
-            SpellSchool.Water => "Water magic",
-            SpellSchool.Fire => "Fire magic",
-            SpellSchool.Earth => "Earth magic",
-            _ => "All schools",
-        };
+        private static string SchoolOf(Spell spell) => spell.School.Description;
     }
 }

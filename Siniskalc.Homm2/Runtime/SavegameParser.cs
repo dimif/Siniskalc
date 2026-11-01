@@ -1,9 +1,11 @@
 namespace Siniskalc.Homm2.Runtime
 {
+    using System;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Entities;
 
     /// <summary>
     /// Builds a game from the bytes of a savegame of Heroes of Might and Magic II, the base game's or the Price of Loyalty's.
@@ -18,8 +20,10 @@ namespace Siniskalc.Homm2.Runtime
         private readonly ISaveDocumentFactory documentFactory;
         private readonly IMapPlacesReader placesReader;
         private readonly IMapObjectsReader objectsReader;
+        private readonly GameCatalogs catalogs;
+        private readonly Func<GameVersion, ISaveDocumentFactory>? documentFactoryForVersion;
 
-        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader)
+        public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader, GameCatalogs catalogs, Func<GameVersion, ISaveDocumentFactory>? documentFactoryForVersion = null)
         {
             this.locator = locator;
             this.loader = loader;
@@ -27,6 +31,8 @@ namespace Siniskalc.Homm2.Runtime
             this.documentFactory = documentFactory;
             this.placesReader = placesReader;
             this.objectsReader = objectsReader;
+            this.catalogs = catalogs;
+            this.documentFactoryForVersion = documentFactoryForVersion;
         }
 
         /// <inheritdoc/>
@@ -42,14 +48,14 @@ namespace Siniskalc.Homm2.Runtime
             var heroes = this.loader.LoadHeroChunks(bytes, layout);
             var players = this.loader.LoadPlayerChunks(bytes, layout);
             var castles = this.loader.LoadCastleChunks(bytes, layout);
-            var document = this.documentFactory.Create(
+            var document = (this.documentFactoryForVersion?.Invoke(layout.Version) ?? this.documentFactory).Create(
                 bytes,
                 heroes,
                 players,
                 castles,
                 this.loader.LoadObeliskChunks(bytes, layout),
                 this.objectsReader.Read(bytes, layout));
-            var game = new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Places = this.placesReader.Read(bytes, layout) };
+            var game = new Game(file, bytes, layout, new SaveDocumentHistory(document), this.headerReader.Read(bytes, layout), name) { Catalog = this.catalogs.For(layout.Version), Places = this.placesReader.Read(bytes, layout) };
             Logger.LogInformation(
                 "Opened {File} as Heroes II {Version}: {Heroes} heroes, {Castles} castles, {Players} players",
                 LogPaths.Label(file, name),

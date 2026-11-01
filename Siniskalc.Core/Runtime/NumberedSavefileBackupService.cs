@@ -30,7 +30,7 @@
             }
 
             var next = HighestCopy(filePath) + 1;
-            Logger.LogTrace("Backing up {File} as copy number {Count}", Path.GetFileName(filePath), next);
+            Logger.LogTrace("Backing up {File} as copy number {Index}", Path.GetFileName(filePath), next);
             while (true)
             {
                 var target = PathOfCopy(filePath, next);

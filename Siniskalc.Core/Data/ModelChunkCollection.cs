@@ -43,7 +43,7 @@ namespace Siniskalc.Core.Data
             this.diff = diff;
             this.models = new Lazy<IReadOnlyList<TModel>>(() =>
             {
-                Logger.LogDebug("Reading the models of {Count} {Kind} chunks", this.Count, typeof(TChunk).Name);
+                Logger.LogDebug("Reading the models of {Count} {Chunk} chunks", this.Count, typeof(TChunk).Name);
                 return this.Select(chunk => this.Deserializer.Deserialize(chunk)).ToList();
             });
         }

@@ -43,7 +43,7 @@ namespace Siniskalc.Homm2.Data
 
             if (bytes.Length < layout.MinimumLength || !HasTables(bytes, layout))
             {
-                Logger.LogWarning("Refused a file with the header of a Heroes II savegame ({Length} bytes, map size {Size}): its tables are not where they are expected", bytes.Length, header.Size);
+                Logger.LogDebug("No tables of a Heroes II savegame in a file with the header of a Heroes II savegame ({Length} bytes, map size {Size}): its tables are not where they are expected", bytes.Length, header.Size);
                 return null;
             }
 

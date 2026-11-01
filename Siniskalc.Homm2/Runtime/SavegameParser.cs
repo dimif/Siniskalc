@@ -41,7 +41,6 @@ namespace Siniskalc.Homm2.Runtime
             var layout = this.locator.Locate(bytes);
             if (layout is null)
             {
-                Logger.LogWarning("Refused {File} ({Length} bytes) as an unsupported Heroes II savegame", LogPaths.Label(file, name), bytes.Length);
                 throw new UnsupportedSavefileException("This is not a Heroes of Might and Magic II savegame, or it comes from a version of the game this editor does not know.");
             }
 

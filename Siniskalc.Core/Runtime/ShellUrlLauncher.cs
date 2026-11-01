@@ -35,7 +35,7 @@
             try
             {
                 this.start(uri.AbsoluteUri);
-                Logger.LogDebug("Opened the address {Url}", uri.AbsoluteUri);
+                Logger.LogInformation("Opened the address {Url}", uri.AbsoluteUri);
                 return true;
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@
             try
             {
                 this.start(Path.GetFullPath(folder));
-                Logger.LogDebug("Opened the folder {Folder}", folder);
+                Logger.LogInformation("Opened the folder {Folder}", folder);
                 return true;
             }
             catch (Exception ex)

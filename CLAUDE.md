@@ -88,7 +88,7 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 - **Use the cheapest agent or model that can do a step.** A mechanical step (renames, moving a type, updating usings and docs, adding a test that follows a pattern, applying a decided fix) goes to a cheaper model; keep the stronger one for design, for reading an unknown savefile layout and for anything that decides what is written to a savefile.
   An agent that thinks a step needs a stronger model says so in its report instead of guessing.
 - Do not push unless asked.
-- Log through `LogFactory.For<T>()`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log).
+- Log through `LogFactory.For<T>()`, following `docs/LOGGING.md` (where to log, levels, message templates, what never to log, what is spam). The `logging-reviewer` agent (`.github/agents/logging-reviewer.agent.md`, `.claude/agents/logging-reviewer.md`) checks code against it.
   Where the editor skips, keeps or falls back on something it did not expect, log it there; a `// TODO:LOG <level>: what to log` marker is for a class that has no logger yet and is replaced by the call (see `docs/ERROR_MODEL.md`).
 
 ## Tests

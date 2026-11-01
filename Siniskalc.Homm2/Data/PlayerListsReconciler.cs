@@ -86,6 +86,7 @@ namespace Siniskalc.Homm2.Data
             }
 
             var updated = after;
+            var changed = 0;
             for (var index = 0; index < players.Count; index++)
             {
                 var chunk = players[index];
@@ -93,10 +94,12 @@ namespace Siniskalc.Homm2.Data
                 written = models.TryGetValue(index, out var model) ? players.Serializer.Serialize(written, model) : written;
                 if (!ReferenceEquals(written, chunk))
                 {
-                    Logger.LogDebug("Putting the lists of {Player} in step with the owners", players.GetName(index));
+                    changed++;
                     updated = updated.WithChunk(Homm2ChunkKinds.Player, index, written);
                 }
             }
+
+            Logger.LogDebug("Put the lists of {Players} players in step with the owners", changed);
 
             return updated;
         }

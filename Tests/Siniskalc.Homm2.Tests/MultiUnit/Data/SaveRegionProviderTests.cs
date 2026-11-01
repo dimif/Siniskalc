@@ -1,8 +1,7 @@
-namespace Siniskalc.Homm2.Tests.MultiUnit.Data
+﻿namespace Siniskalc.Homm2.Tests.MultiUnit.Data
 {
     using Moq;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;

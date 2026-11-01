@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Siniskalc.Core.Data;
-using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -36,6 +35,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         public GameVersion GameVersion { get; init; } = GameVersion.HornOfTheAbyss;
 
         public bool SupportsAsleep { get; init; } = true;
+
+        public bool SupportsMovedToday { get; init; } = true;
 
         public int GarrisonCastleIndex { get; set; } = -1;
 

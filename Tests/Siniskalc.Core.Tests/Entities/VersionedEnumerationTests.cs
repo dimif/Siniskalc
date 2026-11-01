@@ -34,6 +34,13 @@ namespace Siniskalc.Core.Tests.Entities
             Assert.That(AbstractEnumeration.FromName<Thing>("old"), Is.SameAs(Thing.Old));
         }
 
+        [Test]
+        public void OnlyTheEntriesOfTheVersionAreListed()
+        {
+            Assert.That(AbstractEnumeration.GetAll<Thing>().AvailableIn(Release.First), Is.EqualTo(new[] { Thing.Old }));
+            Assert.That(AbstractEnumeration.GetAll<Thing>().AvailableIn(Release.Second), Is.EquivalentTo(new[] { Thing.Old, Thing.New }));
+        }
+
         private sealed class Thing : VersionedEnumeration<Release>
         {
             public static readonly Thing Old = new("Old", 1, Release.First);

@@ -13,8 +13,10 @@
     {
         private static readonly ILogger<SavefileBytesPatcher> Logger = LogFactory.For<SavefileBytesPatcher>();
 
+        /// <inheritdoc/>
         public byte[] Patch(byte[] originalSave, IEnumerable<BytesChunk> chunks)
         {
+            Logger.LogTrace("Patching the {Length} bytes of the savefile", originalSave.Length);
             var result = (byte[])originalSave.Clone();
 
             var count = 0;
@@ -31,8 +33,14 @@
         /// <summary>
         /// Writes over <paramref name="target"/> only the chunk bytes that differ from <paramref name="originalSave"/>.
         /// </summary>
+        /// <param name="originalSave">The bytes of the savefile as it was loaded; not modified.</param>
+        /// <param name="target">The bytes to write the changes over, of the same length as <paramref name="originalSave"/>; not modified.</param>
+        /// <param name="chunks">The chunks whose changes are written.</param>
+        /// <returns>The patched copy of <paramref name="target"/>.</returns>
+        /// <exception cref="ArgumentException"><paramref name="target"/> has another length than <paramref name="originalSave"/>, or a chunk lies outside the savefile or overlaps another.</exception>
         public byte[] PatchChanges(byte[] originalSave, byte[] target, IEnumerable<BytesChunk> chunks)
         {
+            Logger.LogTrace("Patching the changes into {Length} bytes", target.Length);
             if (target.Length != originalSave.Length)
             {
                 throw new ArgumentException("The target must have the same length as the original savefile.", nameof(target));

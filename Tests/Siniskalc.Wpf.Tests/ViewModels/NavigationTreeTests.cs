@@ -1,6 +1,5 @@
-namespace Siniskalc.Wpf.Tests.ViewModels
+﻿namespace Siniskalc.Wpf.Tests.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;

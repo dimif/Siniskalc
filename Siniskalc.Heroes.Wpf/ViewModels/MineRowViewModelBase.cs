@@ -40,9 +40,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasLevel { get; }
 
-        public string Kind => MineKinds.NameOf(this.kind());
+        public virtual string Kind => MineKinds.NameOf(this.kind());
 
-        public string ResourceName => MineKinds.ResourceOf(this.kind()).ToString();
+        public virtual string ResourceName => MineKinds.ResourceOf(this.kind()).ToString();
 
         public int X => this.position().X;
 

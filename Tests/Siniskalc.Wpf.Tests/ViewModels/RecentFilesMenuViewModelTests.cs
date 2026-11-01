@@ -1,5 +1,4 @@
-using System.Linq;
-using Moq;
+﻿using Moq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
 

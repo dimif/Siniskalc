@@ -15,6 +15,7 @@ namespace Siniskalc.Core.Data
         /// <param name="original">The document as it was loaded or last saved, which says where a thing that comes back goes.</param>
         /// <param name="before">The document before the edit.</param>
         /// <param name="after">The document with the edit.</param>
+        /// <returns><paramref name="after"/>, or a new document made from it with the following records put in step.</returns>
         /// <exception cref="System.InvalidOperationException">The edit breaks a rule of the game; the history is left as it was.</exception>
         SaveDocument Reconcile(SaveDocument original, SaveDocument before, SaveDocument after);
     }

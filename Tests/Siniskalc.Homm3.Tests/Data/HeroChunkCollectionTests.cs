@@ -65,5 +65,12 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(Heroes(new HeroOffsets(GameVersion.ShadowOfDeath)).SupportsAsleep, Is.True);
             Assert.That(Heroes(new HeroOffsets(GameVersion.RestorationOfErathia)).SupportsAsleep, Is.False);
         }
+
+        [Test]
+        public void AHeroCanHaveMovedTodayOnlyInTheVersionsThatHaveTheFlag()
+        {
+            Assert.That(Heroes(new HeroOffsets(GameVersion.HornOfTheAbyss)).SupportsMovedToday, Is.True);
+            Assert.That(Heroes(new HeroOffsets(GameVersion.ShadowOfDeath)).SupportsMovedToday, Is.False);
+        }
     }
 }

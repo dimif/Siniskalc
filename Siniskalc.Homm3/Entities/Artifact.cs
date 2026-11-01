@@ -10,7 +10,8 @@ public sealed class Artifact : CatalogEntity, IArtifact
 {
     private readonly string? combinesInto;
 
-    internal Artifact(EntityCatalog catalog, ArtifactDefinition definition) : base(catalog, definition)
+    internal Artifact(EntityCatalog catalog, ArtifactDefinition definition)
+        : base(catalog, definition)
     {
         this.Slot = definition.Slot;
         this.BlockedSlots = definition.BlockedSlots;
@@ -29,17 +30,30 @@ public sealed class Artifact : CatalogEntity, IArtifact
     }
 
     public PrimarySkillBonus PrimarySkillBonus => new(this.EffectInfo.Atk, this.EffectInfo.Def, this.EffectInfo.Pow, this.EffectInfo.Kno);
+
     public ArtifactSlots Slot { get; }
+
     public ArtifactSlots BlockedSlots { get; }
+
     public ArtifactEffectInfo EffectInfo { get; }
+
     public string Description { get; }
+
     public bool IsCombination { get; }
+
     public ArtifactClass Class { get; }
+
     public int Cost { get; }
+
     public ArtifactRole Role { get; }
+
     public bool Wearable { get; }
+
     public bool CanBeInBackpack { get; }
+
     public bool IsScroll => this.Role == ArtifactRole.Scroll;
+
     public Artifact? CombinesInto => this.combinesInto is null ? null : this.Catalog.Artifacts.ById(this.combinesInto);
+
     public IReadOnlyCollection<Spell> GrantedSpells(GameVersion version) => this.EffectInfo.GrantedSpells(version);
 }

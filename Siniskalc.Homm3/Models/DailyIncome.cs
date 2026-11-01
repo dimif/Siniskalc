@@ -65,6 +65,5 @@ namespace Siniskalc.Homm3.Models
 
             return income;
         }
-
     }
 }

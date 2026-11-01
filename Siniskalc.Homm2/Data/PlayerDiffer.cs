@@ -30,8 +30,8 @@
             var changes = new ChangeSink<PlayerModel>((change, revert) => this.pendingChanges.ForPlayer(name, playerIndex, change, revert));
 
             changes.AddResources(original.Resources, current.Resources, p => p.Resources, (p, resources) => p with { Resources = resources });
-            changes.AddDaysLeft(original.DaysLeft, current.DaysLeft, (p, days) => p with { DaysLeft = days });
             changes.AddTavern(original.Tavern, current.Tavern, heroName, p => p.Tavern, (p, tavern) => p with { Tavern = tavern });
+            changes.AddDaysLeft(original.DaysLeft, current.DaysLeft, (p, days) => p with { DaysLeft = days });
 
             return changes.All;
         }

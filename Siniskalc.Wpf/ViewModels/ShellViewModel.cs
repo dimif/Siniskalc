@@ -78,7 +78,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// and the game and version of the savegame, such as "Siniskalc - Heroes of Might and Magic III (Shadow of Death)".
         /// </summary>
         public string Title => this.editor.Savegame is { } savegame
-            ? $"{this.applicationName} - {this.currentModule.Name}{(savegame.VersionName.Length > 0 ? $" ({savegame.VersionName})" : string.Empty)}"
+            ? $"{this.applicationName} - {this.currentModule.Name}{(savegame.VersionName.Length > 0 ? $" ({savegame.VersionName})" : string.Empty)}{(this.HasFile ? $" - {System.IO.Path.GetFullPath(this.File!)}" : string.Empty)}"
             : $"{this.applicationName} - {NoGameSubtitle}";
 
         /// <summary>

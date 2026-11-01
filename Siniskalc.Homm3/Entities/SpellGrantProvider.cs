@@ -1,8 +1,8 @@
 namespace Siniskalc.Homm3.Entities;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using Siniskalc.Homm3.Data;
 
 /// <summary>A validated, bounded spell-grant behaviour, resolved against its immutable catalog.</summary>
@@ -23,11 +23,16 @@ public sealed class SpellGrantProvider
     }
 
     public string Description { get; }
+
     public IReadOnlyCollection<Spell> Resolve(GameVersion version) => this.spells.Where(s => s.IsAvailableIn(version)).ToArray().AsReadOnly();
 
     public static SpellGrantProvider Of(params Spell[] spells)
     {
-        if (spells.Length == 0) throw new ArgumentException("A named grant requires at least one spell.", nameof(spells));
+        if (spells.Length == 0)
+        {
+            throw new ArgumentException("A named grant requires at least one spell.", nameof(spells));
+        }
+
         return new SpellGrantProvider(spells[0].Catalog, new SpellGrantDefinition
         {
             Kind = SpellGrantKind.Named, Spells = spells.Select(s => s.Id).ToArray(), School = null, Level = null,

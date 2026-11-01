@@ -40,7 +40,7 @@ namespace Siniskalc.Homm3.Data
                         var start = at + (i * MineLayout.RecordSize);
                         if (IsMine(bytes, start))
                         {
-                            chunks.Add(Chunk(bytes, start, chunks.Count));
+                            chunks.Add(this.Chunk(bytes, start, chunks.Count));
                         }
                     }
 

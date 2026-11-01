@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>Catalog-scoped indexes; neither callers nor retained input arrays can mutate them.</summary>
-public sealed class EntityCollection<T> where T : CatalogEntity
+public sealed class EntityCollection<T>
+    where T : CatalogEntity
 {
     private readonly FrozenDictionary<string, T> byId;
     private readonly FrozenDictionary<byte, T> byCode;
@@ -20,7 +21,10 @@ public sealed class EntityCollection<T> where T : CatalogEntity
     }
 
     public IReadOnlyList<T> All { get; }
+
     public T ById(string id) => this.byId[id];
+
     public T? Find(byte code) => this.byCode.GetValueOrDefault(code);
+
     public T? FindByName(string name) => this.All.FirstOrDefault(e => string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase));
 }

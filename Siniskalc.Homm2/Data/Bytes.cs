@@ -139,7 +139,8 @@
             return stored < Constants.Hero.SpellCount ? stored + 1 : 0;
         }
 
-        public static byte GuildSpellByte(int number, byte existing) => GuildSpellNumber(existing) == number ? existing : number is >= 1 and <= Constants.Hero.SpellCount ? (byte)(number - 1) : Empty;
+        public static byte GuildSpellByte(Spell? spell, byte existing, GameCatalog catalog) =>
+            catalog.Spells.Find((byte)GuildSpellNumber(existing)) == spell ? existing : spell is null ? Empty : (byte)(spell.Code - 1);
 
         /// <summary>
         /// Reads a coordinate that is 32 bits in the savegame; one the model cannot hold (2^31 or more) reads as the largest it can.

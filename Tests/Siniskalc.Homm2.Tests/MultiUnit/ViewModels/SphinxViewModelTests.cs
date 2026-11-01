@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;

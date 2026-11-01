@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             Logger.LogDebug("Read {Count} dwellings from offset {Offset:X} after the last mine", length < DwellingLayout.MinimumRun ? 0 : length, at);
-            return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
+            return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => this.Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 
         private RecordChunk Chunk(byte[] bytes, int start, int index)

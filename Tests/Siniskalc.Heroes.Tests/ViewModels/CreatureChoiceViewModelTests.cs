@@ -56,8 +56,8 @@ namespace Siniskalc.Heroes.Tests.ViewModels
         {
             var info = default(CreatureInfo);
 
-            Assert.That(new CreatureChoiceViewModel(new FakeCreature("Rogue", 1, false, null), info).Faction, Is.EqualTo("Neutral"));
-            Assert.That(new CreatureChoiceViewModel(new FakeCreature("Rogue", 1, false, null), info).FactionOrder, Is.EqualTo(int.MaxValue));
+            Assert.That(new CreatureChoiceViewModel(new FakeCreature("Rogue", 1, false, new FakeFaction("Neutral", 99)), info).Faction, Is.EqualTo("Neutral"));
+            Assert.That(new CreatureChoiceViewModel(new FakeCreature("Rogue", 1, false, new FakeFaction("Neutral", 99)), info).FactionOrder, Is.EqualTo(99));
             Assert.That(new CreatureChoiceViewModel(new FakeCreature("Peasant", 1, false), info).FactionOrder, Is.EqualTo(3));
         }
 
@@ -70,7 +70,7 @@ namespace Siniskalc.Heroes.Tests.ViewModels
 
         private sealed record FakeFaction(string Name, byte Code) : IFaction;
 
-        private sealed record FakeCreature(string Name, int Tier, bool IsUpgrade, IFaction? Faction) : ICreature
+        private sealed record FakeCreature(string Name, int Tier, bool IsUpgrade, IFaction Faction) : ICreature
         {
             public FakeCreature(string name, int tier, bool isUpgrade)
                 : this(name, tier, isUpgrade, new FakeFaction("Knight", 3))

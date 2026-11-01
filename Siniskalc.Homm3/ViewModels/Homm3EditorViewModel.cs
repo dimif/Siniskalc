@@ -31,7 +31,7 @@ namespace Siniskalc.Homm3.ViewModels
 
         private MapViewModel? map;
 
-        public Homm3EditorViewModel(IGameService gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
+        public Homm3EditorViewModel(ISavegameService<Game> gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.effectLines = effectLines;

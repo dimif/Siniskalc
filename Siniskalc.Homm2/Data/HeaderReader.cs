@@ -8,7 +8,6 @@
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Reads the header of a savegame. Nothing in it is written back: the date and the map are only shown.
@@ -23,22 +22,31 @@
         /// <inheritdoc/>
         public SaveMetadata<PlayerColor> Read(byte[] bytes, SaveLayout layout)
         {
+            Logger.LogDebug("Reading the header of {Length} bytes, the date at {Offset:X}", bytes.Length, layout.DateStart);
+
             var date = new GameDate(
                 bytes[layout.DateStart + (2 * HeaderLayout.DateStep)],
                 bytes[layout.DateStart + HeaderLayout.DateStep],
                 bytes[layout.DateStart]);
+            Logger.LogTrace("Read the date {Date}", date);
+
+            Logger.LogTrace("Reading the map name at {Offset:X} and its description at {Description:X}", layout.MapNameStart, layout.MapDescriptionStart);
             var map = new MapHeader(
                 Bytes.ReadText(bytes, layout.MapNameStart, HeaderLayout.MapNameLength),
                 Bytes.ReadText(bytes, layout.MapDescriptionStart, HeaderLayout.MapDescriptionMaxLength),
-                this.ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
+                ReadDifficulty(BitConverter.ToUInt16(bytes, layout.MapDifficultyStart)),
                 layout.Width);
-            var setup = new GameSetup<PlayerColor>(this.ReadControls(bytes, layout), this.ReadDifficulty(bytes[layout.DifficultyStart]));
+            Logger.LogTrace("Read the map {Name}, {Size} tiles wide, with the difficulty {Difficulty}", map.Name, map.Size, map.Difficulty);
+
+            var setup = new GameSetup<PlayerColor>(ReadControls(bytes, layout), ReadDifficulty(bytes[layout.DifficultyStart]));
+            Logger.LogTrace("Read the game setup, played at {Difficulty}", setup.Difficulty);
             return new SaveMetadata<PlayerColor>(date, map, setup);
         }
 
         // The game plays the humans the mask marks, in the order of the records. Whose turn it is is the turn record (Game.CurrentPlayer).
-        private List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
+        private static List<PlayerType> ReadControls(byte[] bytes, SaveLayout layout)
         {
+            Logger.LogTrace("Reading who controls each colour, the in-game flags at {Flags:X} and the human mask at {Mask:X}", layout.ColorsInGameStart, layout.HumanMaskStart);
             var colors = PlayerRecordOrder.ColorsOf(bytes, layout);
             var controls = Enumerable.Repeat(PlayerType.NotInGame, Constants.Table.PlayerCount).ToList();
             for (var record = 0; record < Constants.Table.PlayerCount; record++)
@@ -47,19 +55,23 @@
                 {
                     controls[colors[record]] = bytes[layout.HumanMaskStart + record] != 0 ? PlayerType.Human : PlayerType.Computer;
                 }
+
+                Logger.LogTrace("Record {Slot} is colour {Colour} and is {Control}", record, colors[record], controls[colors[record]]);
             }
 
             return controls;
         }
 
-        private GameDifficulty ReadDifficulty(int code)
+        private static GameDifficulty ReadDifficulty(int code)
         {
             if (code >= Difficulties.Length)
             {
                 Logger.LogTrace("Difficulty {Code} is no level, read as the first one", code);
             }
 
-            return code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
+            var difficulty = code < Difficulties.Length ? Difficulties[code] : Difficulties[0];
+            Logger.LogTrace("Difficulty code {Code} read as {Difficulty}", code, difficulty);
+            return difficulty;
         }
     }
 }

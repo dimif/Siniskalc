@@ -60,7 +60,6 @@ Only do the steps you are told to do, one at a time, in the order given.
 ## Git
 
 - Commit only your own work, with explicit paths (never `git add -A`, and be careful with `git add -u`: other people's edits may be in the tree). Several small commits with a clear subject each are better than one large one; split a file that holds two logical changes.
-- No "Claude" in a commit message and no `Co-Authored-By` trailer.
 - Never push. Never rewrite history.
 
 ## Cost

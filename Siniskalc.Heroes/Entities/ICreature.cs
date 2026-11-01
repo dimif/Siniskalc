@@ -14,9 +14,9 @@ namespace Siniskalc.Heroes.Entities
         int Tier { get; }
 
         /// <summary>
-        /// Gets the town the creature is recruited in, or <c>null</c> for a neutral creature.
+        /// Gets the town the creature is recruited in, or the neutral faction for a neutral creature; never <c>null</c>.
         /// </summary>
-        IFaction? Faction { get; }
+        IFaction Faction { get; }
 
         /// <summary>
         /// Gets a value indicating whether the creature is the upgraded form of another one.

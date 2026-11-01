@@ -83,7 +83,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Menu x:Name="menu" Grid.Row="0">
             <MenuItem Header="_File">
@@ -249,11 +248,5 @@
                 </DockPanel>
             </Border>
         </Grid>
-
-        <StatusBar Grid.Row="3">
-            <StatusBarItem>
-                <TextBlock Name="status">Ready</TextBlock>
-            </StatusBarItem>
-        </StatusBar>
     </Grid>
 </Window>

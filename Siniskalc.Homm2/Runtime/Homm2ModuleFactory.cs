@@ -30,7 +30,7 @@
             var locator = new SaveLayoutLocator();
             var pendingChanges = new Homm2PendingChangesFactory();
             var factories = Enum.GetValues<GameVersion>().ToDictionary(version => version, version => CreateDocumentFactory(this.Catalogs.For(version)));
-            this.GameService = new GameService(
+            this.GameService = new SavegameService<Game>(
                 new SavegameParser(
                     locator,
                     new BytesLoader(),
@@ -79,7 +79,7 @@
         /// </summary>
         public IGameModule<Homm2EditorViewModel> Module { get; }
 
-        public IGameService GameService { get; }
+        public ISavegameService<Game> GameService { get; }
 
         public ISaveRegionProvider SaveRegionProvider { get; }
 

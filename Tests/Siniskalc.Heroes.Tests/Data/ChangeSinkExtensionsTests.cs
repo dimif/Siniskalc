@@ -1,11 +1,10 @@
-namespace Siniskalc.Heroes.Tests.Data
+﻿namespace Siniskalc.Heroes.Tests.Data
 {
     using System.Collections.Generic;
     using System.Linq;
     using Moq;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
-    using Siniskalc.Core.Models;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -125,6 +124,58 @@ namespace Siniskalc.Heroes.Tests.Data
 
             Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Owner", "Red", "Blue") }));
             Assert.That(reverts[0](Blank() with { Owner = TestColor.Blue }).Owner, Is.EqualTo(TestColor.Red));
+        }
+
+        [Test]
+        public void TheNextBattleBonusesListOnlyWhatChangedWithASignAndRevertEachOnItsOwn()
+        {
+            var sink = NewSink(out var reverts);
+            var luckPutBack = new List<int>();
+
+            sink.AddNextBattleBonuses(1, -2, 0, 3, (t, morale) => t with { SpellPoints = morale }, (t, luck) =>
+            {
+                luckPutBack.Add(luck);
+                return t;
+            });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Morale, next battle", "+1", "-2"), ("General", "Luck, next battle", "0", "+3") }));
+            Assert.That(reverts[0](Blank() with { SpellPoints = -2 }).SpellPoints, Is.EqualTo(1));
+            reverts[1](Blank());
+            Assert.That(luckPutBack, Is.EqualTo(new[] { 0 }));
+        }
+
+        [Test]
+        public void UnchangedNextBattleBonusesListNothing()
+        {
+            var sink = NewSink(out _);
+
+            sink.AddNextBattleBonuses(1, 1, -1, -1, (t, _) => t, (t, _) => t);
+
+            Assert.That(sink.All, Is.Empty);
+        }
+
+        [Test]
+        public void PlaceVisitsAreOneChangeForEachKindThatDiffersWithTheNumberOfPlacesAndRevertEachOnItsOwn()
+        {
+            var sink = NewSink(out var reverts);
+            var putBack = new List<(string Kind, uint Mask)>();
+            var before = new Dictionary<string, uint> { ["Forts"] = 0b110, ["Gazebos"] = 0b1, ["Xanadu"] = 0 };
+            var after = new Dictionary<string, uint> { ["Forts"] = 0b110, ["Gazebos"] = 0b1011, ["Xanadu"] = 0b10 };
+
+            sink.AddPlaceVisits(
+                before.Keys,
+                kind => kind,
+                kind => before[kind],
+                kind => after[kind],
+                (t, kind, mask) =>
+                {
+                    putBack.Add((kind, mask));
+                    return t;
+                });
+
+            Assert.That(Texts(sink), Is.EqualTo(new[] { ("General", "Visited: gazebos", "1", "3"), ("General", "Visited: xanadu", "0", "1") }));
+            reverts[1](Blank());
+            Assert.That(putBack, Is.EqualTo(new[] { ("Xanadu", 0u) }));
         }
 
         [Test]

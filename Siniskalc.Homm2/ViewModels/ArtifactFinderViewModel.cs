@@ -4,6 +4,7 @@ namespace Siniskalc.Homm2.ViewModels
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Wpf.ViewModels;
 

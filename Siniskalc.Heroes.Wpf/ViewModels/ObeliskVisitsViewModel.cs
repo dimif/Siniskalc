@@ -1,6 +1,5 @@
-namespace Siniskalc.Heroes.Wpf.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
-    using System;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Data;
@@ -20,7 +19,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly SaveDocumentHistory history;
         private readonly ChunkKind kind;
         private readonly TColor color;
-        private ObeliskEditSession<TColor>? session;
+        private EditSession<ObeliskChunk, ObeliskVisits<TColor>>? session;
 
         /// <param name="history">The history of the savefile, where the edits go.</param>
         /// <param name="kind">The kind of chunk the game keeps its obelisks in.</param>
@@ -45,7 +44,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private ObeliskVisits<TColor>? Visits => ((ObeliskChunkCollection<TColor>)this.history.Current.GetCollection(this.kind)).GetModel();
 
         /// <inheritdoc/>
-        protected override void Prepare() => this.session = this.Visits == null ? null : this.session ?? new ObeliskEditSession<TColor>(this.history, this.kind, 0);
+        protected override void Prepare() => this.session = this.Visits == null ? null : this.session ?? new EditSession<ObeliskChunk, ObeliskVisits<TColor>>(this.history, this.kind, 0);
 
         /// <inheritdoc/>
         protected override MapPosition? PositionOf(int index) => this.Visits!.PositionOf(index);

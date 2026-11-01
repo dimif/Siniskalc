@@ -25,7 +25,7 @@
             var maximus = Hero(1, Maximus);
 
             Assert.That(maximus.Name, Is.EqualTo("Maximus"));
-            Assert.That(maximus.Id, Is.EqualTo(Maximus));
+            Assert.That(maximus.PortraitId, Is.EqualTo(Maximus));
             Assert.That(maximus.Faction, Is.EqualTo(TestCatalog.Standard.Factions["Knight"]));
             Assert.That(maximus.Owner, Is.EqualTo(PlayerColor.Blue));
             Assert.That((maximus.Position.X, maximus.Position.Y), Is.EqualTo((28, 27)));
@@ -156,7 +156,7 @@
             var heroes = TestServices.LoadBrokenAlliance(1).History.Current.Heroes().GetModels();
 
             Assert.That(heroes, Has.Count.EqualTo(54));
-            Assert.That(heroes.Select(h => h.Id), Is.EqualTo(Enumerable.Range(0, 54)));
+            Assert.That(heroes.Select(h => h.PortraitId), Is.EqualTo(Enumerable.Range(0, 54)));
             Assert.That(heroes[0].Name, Is.EqualTo("Lord Kilburn"));
             Assert.That(heroes[51].Name, Is.EqualTo("Roxana"));
             Assert.That(heroes.Select(h => h.Faction).Distinct(), Is.EqualTo(TestCatalog.Standard.Factions.Where(f => !f.IsNeutral)));

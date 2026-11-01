@@ -11,7 +11,6 @@
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The pages of a player: the resources and what they earn each day, the heroes and the tavern, and the towns.

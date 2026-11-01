@@ -67,7 +67,7 @@
                 if (before != after)
                 {
                     var level = (slot / Constants.Castle.MageGuildSlotsPerLevel) + 1;
-                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", this.SpellText(before), this.SpellText(after), c => c with { MageGuildSpells = c.MageGuildSpells.With(index, before) });
+                    changes.Add(ChangeAreas.MageGuild, $"Level {level}, spell {(slot % Constants.Castle.MageGuildSlotsPerLevel) + 1}", SpellText(before), SpellText(after), c => c with { MageGuildSpells = c.MageGuildSpells.With(index, before) });
                 }
             }
 
@@ -81,6 +81,6 @@
         private static string MageGuildText(CastleModel castle) =>
             castle.MageGuildLevel == 0 ? "none" : $"level {castle.MageGuildLevel}, spells shown {string.Join("/", castle.MageGuildSpellCounts)}";
 
-        private string SpellText(int number) => number == 0 ? "none" : this.catalog.Spells.Find((byte)number)?.Name ?? $"Unknown spell {number}";
+        private static string SpellText(Spell? spell) => spell?.Name ?? "none";
     }
 }

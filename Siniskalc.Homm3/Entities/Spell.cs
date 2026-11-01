@@ -5,7 +5,8 @@ using Siniskalc.Homm3.Data;
 
 public sealed class Spell : CatalogEntity, ISpell
 {
-    internal Spell(EntityCatalog catalog, SpellDefinition definition) : base(catalog, definition)
+    internal Spell(EntityCatalog catalog, SpellDefinition definition)
+        : base(catalog, definition)
     {
         this.School = catalog.SpellSchools.ById(definition.School);
         this.Level = definition.Level;
@@ -14,8 +15,12 @@ public sealed class Spell : CatalogEntity, ISpell
     }
 
     public SpellSchool School { get; }
+
     public int Level { get; }
+
     public SpellType Type { get; }
+
     public bool HeroOnly { get; }
+
     public bool CanBeInMageGuild => !this.HeroOnly;
 }

@@ -10,7 +10,7 @@ namespace Siniskalc.Wpf.ViewModels
     /// <summary>
     /// What the file commands of the editor do: open, reload, save, save as, export and load the bytes of a savegame, and decide whether
     /// the editor may close. It asks the user for files and tells them when something fails, so the window only has to call it.
-    /// Every method that can end with something to show returns the text for the status bar, or <c>null</c> when nothing was done
+    /// Every method that can end with something to show returns the path it worked on, or <c>null</c> when nothing was done
     /// (the user cancelled, or it failed and the user was told).
     /// </summary>
     public sealed class SavegameFileCommands

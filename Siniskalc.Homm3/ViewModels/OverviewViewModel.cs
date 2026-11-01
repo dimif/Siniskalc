@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -44,7 +43,7 @@ namespace Siniskalc.Homm3.ViewModels
         protected override string GiveTurnToolTip => GiveTheTurnToolTip;
 
         /// <inheritdoc/>
-        protected override string ComputerTurnToolTip => "A computer player cannot be given the turn";
+        protected override string ComputerTurnToolTip => "Computer player: cannot be given the turn";
 
         /// <summary>
         /// Builds the cards again from the savefile as it is edited now.

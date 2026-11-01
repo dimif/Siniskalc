@@ -10,7 +10,7 @@ namespace Siniskalc.Homm3.Runtime
 
     /// <summary>
     /// A loaded savefile. Edits go through <see cref="AbstractSavegame.History"/>; <see cref="AbstractSavegame.Bytes"/> holds the loaded bytes.
-    /// Loading and saving files is the job of <see cref="GameService"/>.
+    /// Loading and saving files is the job of <see cref="SavegameService{Game}"/>.
     /// </summary>
     public sealed class Game : HeroesSavegameBase<PlayerColor>
     {
@@ -38,8 +38,6 @@ namespace Siniskalc.Homm3.Runtime
             GameVersion.HornOfTheAbyss => "Horn of the Abyss",
             _ => "Unknown version",
         };
-
-        public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 
         /// <summary>
         /// Gets the colour whose turn it is (it can be changed), or <c>null</c> when it cannot be found or names no human.

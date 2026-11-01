@@ -5,7 +5,6 @@
     using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -51,15 +50,12 @@
 
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
-            foreach (var kind in original.HeroClass.Catalog.VisitedPlaces.All.Where(k => original.PlaceVisits.Of(k) != current.PlaceVisits.Of(k)))
-            {
-                changes.Add(
-                    ChangeAreas.General,
-                    $"Visited: {kind.Name.ToLowerInvariant()}",
-                    System.Numerics.BitOperations.PopCount(original.PlaceVisits.Of(kind)).ToString(),
-                    System.Numerics.BitOperations.PopCount(current.PlaceVisits.Of(kind)).ToString(),
-                    h => h with { PlaceVisits = h.PlaceVisits.With(kind, original.PlaceVisits.Of(kind)) });
-            }
+            changes.AddPlaceVisits(
+                original.HeroClass.Catalog.VisitedPlaces.All,
+                kind => kind.Name,
+                kind => original.PlaceVisits.Of(kind),
+                kind => current.PlaceVisits.Of(kind),
+                (h, kind, mask) => h with { PlaceVisits = h.PlaceVisits.With(kind, mask) });
         }
 
         private static void DiffGeneral(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
@@ -98,15 +94,13 @@
             }
 
             // What visited buildings gave until the next battle: the bytes of morale and luck and the bit of each building, each put back on its own.
-            if (original.MoraleBonus != current.MoraleBonus)
-            {
-                changes.Add(ChangeAreas.General, "Morale, next battle", Signed(original.MoraleBonus), Signed(current.MoraleBonus), h => h with { MoraleBonus = original.MoraleBonus });
-            }
-
-            if (original.LuckBonus != current.LuckBonus)
-            {
-                changes.Add(ChangeAreas.General, "Luck, next battle", Signed(original.LuckBonus), Signed(current.LuckBonus), h => h with { LuckBonus = original.LuckBonus });
-            }
+            changes.AddNextBattleBonuses(
+                original.MoraleBonus,
+                current.MoraleBonus,
+                original.LuckBonus,
+                current.LuckBonus,
+                (h, morale) => h with { MoraleBonus = morale },
+                (h, luck) => h with { LuckBonus = luck });
 
             foreach (var effect in System.Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None))
             {
@@ -227,7 +221,5 @@
         }
 
         private static string FormatGender(HeroGender? gender) => gender?.ToString() ?? "unknown";
-
-        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

@@ -2,6 +2,7 @@ namespace Siniskalc.Core.Runtime
 {
     using System;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// The one place that holds the <see cref="UserSettings"/> of the user and writes them to their file. Everything that keeps a
@@ -9,10 +10,16 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     public sealed class SettingsStore : ISettingsStore
     {
+        private static readonly ILogger<SettingsStore> Logger = LogFactory.For<SettingsStore>();
+
         private readonly string path;
         private readonly UserSettings settings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsStore"/> class and reads the settings from their file.
+        /// </summary>
         /// <param name="path">Where the settings are kept.</param>
+        /// <exception cref="SettingsException">The file exists but cannot be read or understood.</exception>
         public SettingsStore(string path)
         {
             this.path = path;
@@ -32,6 +39,7 @@ namespace Siniskalc.Core.Runtime
             get => this.settings.BackupOnSave;
             set
             {
+                Logger.LogDebug("Backup on save set to {BackupOnSave}", value);
                 this.settings.BackupOnSave = value;
                 this.Save();
             }
@@ -45,12 +53,18 @@ namespace Siniskalc.Core.Runtime
             get => this.settings.AdvancedMode;
             set
             {
+                Logger.LogDebug("Advanced mode set to {AdvancedMode}", value);
                 this.settings.AdvancedMode = value;
                 this.Save();
             }
         }
 
-        public void Save() => this.settings.Save(this.path);
+        /// <inheritdoc/>
+        public void Save()
+        {
+            Logger.LogTrace("Saving the settings to {Path}", this.path);
+            this.settings.Save(this.path);
+        }
 
         /// <summary>
         /// Makes sure the settings file is there: when the user has none yet, writes the default settings file the application ships, so the
@@ -61,6 +75,7 @@ namespace Siniskalc.Core.Runtime
         {
             if (File.Exists(this.path))
             {
+                Logger.LogTrace("The settings file {Path} is there", this.path);
                 return;
             }
 
@@ -68,6 +83,7 @@ namespace Siniskalc.Core.Runtime
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(this.path) ?? string.Empty);
                 File.WriteAllText(this.path, DefaultSettings.Json);
+                Logger.LogInformation("Wrote the default settings to {Path}", this.path);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {

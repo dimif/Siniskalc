@@ -6,6 +6,7 @@ using Siniskalc.Homm3.Entities;
 public sealed record CatalogManifest
 {
     public required int SchemaVersion { get; init; }
+
     public required Dictionary<GameVersion, string> Versions { get; init; }
 
     public required Dictionary<string, StandardSetDefinition> Sets { get; init; }

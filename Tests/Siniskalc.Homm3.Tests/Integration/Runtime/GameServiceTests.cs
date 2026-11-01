@@ -66,7 +66,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Runtime
         public void ABackupThatFailsStopsTheSaveAndLeavesTheGameUnsaved()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(FailingBackup()));
+            var service = new SavegameService<Game>(NoParser(), TestServices.SavefileCodec, BackupsOf(FailingBackup()));
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());
@@ -81,7 +81,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Runtime
         {
             var game = TestServices.GameService.LoadGameFromFile(Save);
             var backup = new Mock<IFileBackupService>(MockBehavior.Strict);
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+            var service = new SavegameService<Game>(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
             var path = Path.Combine(this.folder, "new.GM1");
 
             service.SaveGame(game, path);
@@ -95,7 +95,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Runtime
         {
             var game = this.EditedGame(out var path);
             var backup = new Mock<IFileBackupService>();
-            var service = new GameService(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
+            var service = new SavegameService<Game>(NoParser(), TestServices.SavefileCodec, BackupsOf(backup.Object));
 
             service.SaveGame(game, path);
 
@@ -106,7 +106,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Runtime
         public void AWriteThatFailsLeavesTheGameUnsavedAndTheFileAsItWas()
         {
             var game = this.EditedGame(out var path);
-            var service = new GameService(NoParser(), FailingCodec(), BackupsOf(new DisabledFileBackupService()));
+            var service = new SavegameService<Game>(NoParser(), FailingCodec(), BackupsOf(new DisabledFileBackupService()));
             var before = File.ReadAllBytes(path);
 
             Assert.That(() => service.SaveGame(game, path), Throws.TypeOf<IOException>());
@@ -125,7 +125,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Runtime
             return game;
         }
 
-        private static ISavegameParser NoParser() => new Mock<ISavegameParser>(MockBehavior.Strict).Object;
+        private static ISavegameParser<Game> NoParser() => new Mock<ISavegameParser<Game>>(MockBehavior.Strict).Object;
 
         private static IFileBackupServiceProvider BackupsOf(IFileBackupService service)
         {

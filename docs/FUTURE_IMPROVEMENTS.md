@@ -18,7 +18,7 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **A defeated hero and the tavern:** a defeated hero goes back to the free pool and another player can hire it (found in `TestData/Hota/HeroOwners`); nothing seen keeps it out of the same player's tavern, and 12 draws per week are too few to tell. Hero 3 holds `0x41` in the table of hero owners in every save, unexplained. Probe: several week changes with defeated heroes away from their players.
 - **HoMM2 tree:** a player's countdown is in the node subtitle and is not refreshed after an edit (HoMM3 shows it as a note and refreshes it); the Map node exists only when the map has a shrine or a sphinx, so the Bytes tab of the map records cannot be reached on a map with neither.
 - **Weekly growth in HoMM3** shows the base growth only; the castle, horde-building and Grail bonuses are not documented.
-- **Housekeeping:** both games now use `SaveMetadata<TColor>` / `HeroesSavegameBase<TColor>` (completed 2026-10-23, integrated with current turn editing 2026-10-31). Historical issues: commit `ba3468b` has a `Co-Authored-By` trailer and a few commits (`d3ae097`, `15994da`, `54e4acf`, `2811099`, `9520538` to `0552fb1` for two test lines) do not build or pass on their own; `GzipSavefileCodecTests.WritingASmallerSavefileLeavesNothingOfTheLargerOne` failed twice in full runs and passed alone.
+- **Housekeeping:** both games now use `SaveMetadata<TColor>` / `HeroesSavegameBase<TColor>` (completed 2026-10-23, integrated with current turn editing 2026-10-31). Historical issues: a few commits (`d3ae097`, `15994da`, `54e4acf`, `2811099`, `9520538` to `0552fb1` for two test lines) do not build or pass on their own; `GzipSavefileCodecTests.WritingASmallerSavefileLeavesNothingOfTheLargerOne` failed twice in full runs and passed alone.
 - **Open design decision:** whether the lists of heroes and castles in a player's record stay in the HoMM2 model, or a document-level step keeps them in step (options A, B, C in `docs/SHARING_REVIEW.md`, M9a); test in the game first.
 
 ## Project structure
@@ -33,7 +33,7 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **Names behind a provider.** Names of creatures, spells and artifacts are string literals in the entity tables.
   Before a third game, one injected name provider (like `EffectLineProvider`) so a creature is named once and the UI can be localized.
 - **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`, `IHeroPage`), but each game's view model is its own.
-  The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills page waits for the entity sharing described in `docs/SHARING_REVIEW.md`.
+  The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills model is not shared, see "Secondary skills (M3)" below.
 - **View models free of WPF.** The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite for Avalonia.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
@@ -41,6 +41,11 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **Editable store for game entities** Entities (heroes, castles, creatures) are hardcoded in the editor.
   A store of entities that can be edited and saved would let the editor support mods and future games.
 - **Log viewer** A log viewer in the UI for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
+- **Async file I/O (2026-11-01).** Only the two "export bytes" paths are async (`SavegameFileCommands.ExportBytesAsync`, `HexEditor.ExportBytesAsync`, both `File.WriteAllBytesAsync`); everything else is sync (settings, `RawSavefileCodec`, `GzipSavefileCodec`, `NumberedSavefileBackupService`, `SavegameService`), and the whole stack below the UI (loaders, (de)serializers, models, view models) is sync.
+  - **Keep sync:** `UserSettings` and `SettingsStore` (a few hundred bytes, read once during composition in `AppServices`, written rarely; `*Async` is no faster on small files and would force async factories or a blocking `GetAwaiter().GetResult()` at startup).
+  - **Worth doing if it is measured to matter:** opening, reloading and saving a savefile from the UI (`SavegameFileCommands.Open`, `OpenRecent`, `Save`, `SaveAs`, which go through `Run(...)`) read, decompress, parse, back up and write on the UI thread, so a big save or a slow or network drive freezes the window. Time a load and a save on the biggest `TestData` saves first; if they take milliseconds, leave it.
+  - **How:** do not make `ISerializer`, `IDeserializer`, the codecs or the loaders async (it would spread through every interface and test, and the parsing is CPU work that async does not help). Run the whole open or save step with `Task.Run` from the commands in `SavegameFileCommands`, show a busy state, and apply the result to the shell view model on the UI thread. Disable the commands while one runs, so a second save cannot start over the first.
+  - **Consistency:** until then, export being async while open and save are not is only a difference in the commands, not a rule; do not read it as a decision to make I/O async.
 
 ## User features
 
@@ -80,3 +85,33 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
    - The other bytes banishing changes are not decoded: the hero chunk of the player (owner `FF`, army emptied), a counter and an 8-byte record near the end of the save, and header bytes near 1313, 1356 and 12492.
      Until they are, a banished player (0) is read-only and no one can be banished or revived by the editor.
    - The list of the indices of a player's towns that starts at byte 25 is not read.
+11. **HoMM3 daily income, what it leaves out** (2026-11-01). `DailyIncome` counts only the mines and the best town hall of each town, so the amounts are "at least" values (the save does not store the income). To include the rest:
+   - **Equipped artifacts** (easy): Endless Purse/Bag/Sack of Gold (+500/+750/+1000 gold) and Cornucopia (+5 of each precious resource) are already in the `Artifact` table. `DailyIncome.Of` needs the player's heroes (through a hero collection class, not chunks) and must count equipped slots only, not the backpack.
+   - **Estates skill** (easy): gold per day by skill level, on the heroes of the player. Check the values in a save first.
+   - **Resource silo** (easy once a faction-to-resource table exists): `Building.ResourceSilo` is already known; the resource it gives depends on the faction.
+   - **Grail building** (unclear): its daily effect was never checked in a save (see the note in `CastleModel`), and most faction-specific effects are not income. Needs a before/after save pair before it is added.
+   - Verify each value with a pair of saves (before/after equipping or building) and add tests that name the save. Then change the wording from "at least" to "estimated".
+   - HoMM3 only: HoMM2 stores its income in the player record.
+
+## Other sharing left apart (2026-10-31)
+
+- **The turn model** (`TurnModel<TColor>`, `TurnDiffer<TColor>`, one `CurrentPlayer`): HoMM2's model holds the record number and the colour, which a view model works out (`Game.RecordOf`). Moving the record into the deserializer and serializer would reverse the 2026-10-24 decision, change what is written and read an unknown record as Neutral. Do it with a save that has an odd turn record, to check what `chunk.Tag` carries.
+- **Visited places models** (`VisitedPlaces` against `PlaceVisits`, and the two `MapPlaces`): the row builder and the change wording are shared; the models differ in shape (fixed fields against a number per kind) and sharing them would remove little. HoMM3 still guesses the HotA-only places from `HeroOffset > 1000` in three places (`HeroDeserializer`, `SafeHeroSerializer`, `VisitedPlacesViewModel`); a version tier on `VisitedPlaceKind` would replace it.
+- **The Mage Guild views** and the **pending-changes factory, player differ, player edit session and player page base**: see `docs/SHARING_REVIEW.md` (2026-10-31, streamlining pass).
+
+## Secondary skills (M3): not shared, and why (2026-10-31)
+
+Both games already implement `ISecondarySkills<TSkill, TSkills>` and share `SecondarySkillsViewModelBase`; what is left is the model and the serializer, which differ in what they can hold.
+
+- **HoMM3** (`Siniskalc.Homm3/Models/SecondarySkills.cs`): a level for every skill plus the skill slots in order. A skill with a level and no slot is an "extra", which the game still applies; the editor keeps it and can show or hide it.
+- **HoMM2** (`Siniskalc.Homm2/Models/SecondarySkills.cs`, read by `Bytes.SecondarySkills`): the savefile has a table of levels and a table of the order the skills were learned in. The model lists the skills that have a level, those with an order first (in that order), then those with none by skill number, **at most eight** (`Constants.Hero.MaxSecondarySkills`). There are no extras.
+- `SafeHeroSerializer.WriteSecondarySkills` leaves both tables alone while the model equals what they read as. When the model differs it **clears both tables and writes the model's entries again**, with the order 1 to n and the skill count.
+
+What a shared model would change, and what to decide first:
+
+1. **A ninth skill in a HoMM2 savefile.** The reader cuts the list at eight, so a hero whose level table holds more would lose the rest as soon as its skills are edited (the writer clears the tables). No save seen has more than eight; it is not known whether the game can produce one. A model with extras would keep them.
+2. **A skill with a level and no order byte** is read as learned after the ordered ones and gets an order number when the skills are written. A shared model with extras would show it as an extra, and the writer would not give it an order number unless it was moved into a slot.
+3. **The UI of HoMM2 would gain** the show and hide of extra skills.
+4. Both serializers change, so each needs a round trip of every save of that game (unchanged model: identical bytes) and a test with a level byte but no order byte.
+
+Do it when one of the points above matters (a save with more than eight skills, or a second game with extras); until then the two models stay apart.

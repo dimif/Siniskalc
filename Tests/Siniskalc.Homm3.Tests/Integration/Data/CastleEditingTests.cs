@@ -1,4 +1,3 @@
-﻿using Siniskalc;
 using Siniskalc.Homm3.Tests.Data;
 using Siniskalc.Core.Data;
 using Siniskalc.Heroes.Models;

@@ -149,7 +149,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 PlayerPalette.Of(color),
                 isCurrent,
                 isHuman && !isCurrent ? new DelegateCommand(_ => this.GiveTurn(color), _ => this.CanGiveTurn) : null,
-                isCurrent ? "It is this player's turn" : isHuman ? this.GiveTurnToolTip : this.ComputerTurnToolTip);
+                isCurrent ? "It is this player's turn" : isHuman ? this.GiveTurnToolTip : this.ComputerTurnToolTip,
+                isHuman);
         }
 
         /// <summary>

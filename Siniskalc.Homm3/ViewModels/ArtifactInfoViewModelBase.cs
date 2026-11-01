@@ -60,6 +60,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// Gets what words the effects of artifacts.
         /// </summary>
         protected EffectLineProvider EffectLines { get; }
+
         protected EntityCatalog Catalog { get; }
 
         public void ShowArtifactInfoByName(string? name)

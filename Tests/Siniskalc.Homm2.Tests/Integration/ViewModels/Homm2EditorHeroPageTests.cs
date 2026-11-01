@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Integration.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -6,9 +6,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// Tests the page of a hero in the editor: skills, army, spells and artifacts, on a Broken Alliance savegame loaded into the editor.
@@ -214,6 +212,6 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(() => artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().First()), Throws.Nothing);
         }
 
-        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).Id;
+        private int HeroWithRoom() => this.editor.CurrentGame!.History.Current.Heroes().GetModels().First(h => h.Owner != null && h.Army.Slots.Any(s => s == null)).PortraitId;
     }
 }

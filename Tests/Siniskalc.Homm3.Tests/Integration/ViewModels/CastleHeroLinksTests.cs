@@ -1,9 +1,7 @@
-using Siniskalc.Homm3.Data;
+﻿using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
-using Siniskalc.Wpf.ViewModels;
-using Siniskalc.Homm3.Tests.ViewModels;
 
 using Siniskalc.Homm3.Tests.Data;
 

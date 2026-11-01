@@ -335,7 +335,7 @@
 
             var document = this.Game.History.Current;
             var castles = document.Castles();
-            var others = document.Heroes().GetModels().Where(h => h.Id != hero.Id && !h.Owner.IsNeutral).ToList();
+            var others = document.Heroes().GetModels().Where((h, index) => index != this.HeroId && !h.Owner.IsNeutral).ToList();
             var mines = document.Mines();
             var castleDestinations = castles.UsedIndexes()
                 .Select(castles.GetModel)
@@ -343,7 +343,7 @@
                 .Select(c =>
                 {
                     var entrance = c.Position with { Y = c.Position.Y + 1 };
-                    var occupied = (c.VisitingHeroId is { } visiting && visiting != hero.Id) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
+                    var occupied = (c.VisitingHeroId is { } visiting && visiting != this.HeroId) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
                     return new MapDestination(c.Name, "Castle", entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
                 });
             var mineDestinations = Enumerable.Range(0, mines.Count)
@@ -377,25 +377,14 @@
             on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
             toolTip: toolTip + ". Not tried in the game.");
 
-        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip)
-        {
+        private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip) =>
             // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
-            var places = game.Places.Of(kind)
-                .Select((position, index) => new ToggleRowViewModel(
-                    $"At {MapLevelText.Place(position.X, position.Y)}",
-                    () => (this.session.Current.Visited.Of(kind) & (1u << (index + 1))) != 0,
-                    visited => this.session.Update(h => h with { Visited = h.Visited.With(kind, visited ? h.Visited.Of(kind) | (1u << (index + 1)) : h.Visited.Of(kind) & ~(1u << (index + 1))) }),
-                    toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))
-                .ToList();
-            var allOnMap = places.Aggregate(0u, (mask, _) => (mask << 1) | 1u) << 1;
-            return new(
+            VisitedPlaceRows.Create(
                 name,
-                () => System.Numerics.BitOperations.PopCount(this.session.Current.Visited.Of(kind)),
-                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, 0) }),
-                () => this.session.Update(h => h with { Visited = h.Visited.With(kind, h.Visited.Of(kind) | allOnMap) }),
                 toolTip,
-                places);
-        }
+                game.Places.Of(kind).Select((position, index) => (index + 1, position)),
+                () => this.session.Current.Visited.Of(kind),
+                edit => this.session.Update(h => h with { Visited = h.Visited.With(kind, edit(h.Visited.Of(kind))) }));
 
         private AmountRowViewModel Row(string name, long minimum, long maximum, long step, Func<HeroModel, long> get, Func<HeroModel, long, HeroModel> set, Func<string>? note = null) => new(
             name,

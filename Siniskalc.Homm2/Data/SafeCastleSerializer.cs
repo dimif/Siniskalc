@@ -44,7 +44,7 @@
 
             for (var slot = 0; slot < Bytes.GuildSpellSlots; slot++)
             {
-                bytes[CastleLayout.GuildSpells + slot] = Bytes.GuildSpellByte(model.MageGuildSpells[slot], bytes[CastleLayout.GuildSpells + slot]);
+                bytes[CastleLayout.GuildSpells + slot] = Bytes.GuildSpellByte(model.MageGuildSpells[slot], bytes[CastleLayout.GuildSpells + slot], this.catalog);
             }
 
             for (var level = 0; level < Constants.Castle.MageGuildLevels; level++)

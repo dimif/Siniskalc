@@ -1,10 +1,8 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
@@ -43,25 +41,25 @@ namespace Siniskalc.Homm2.Data
             changes.AddMovement(original.MovementPoints, current.MovementPoints, (h, movement) => h with { MovementPoints = movement });
             changes.AddHeroLevel(original.HeroLevel, current.HeroLevel, (h, level) => h with { HeroLevel = level });
 
-            if (original.NextBattle.Morale != current.NextBattle.Morale)
-            {
-                changes.Add(ChangeAreas.General, "Morale, next battle", original.NextBattle.Morale.ToString("+0;-0;0"), current.NextBattle.Morale.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Morale = original.NextBattle.Morale } });
-            }
-
-            if (original.NextBattle.Luck != current.NextBattle.Luck)
-            {
-                changes.Add(ChangeAreas.General, "Luck, next battle", original.NextBattle.Luck.ToString("+0;-0;0"), current.NextBattle.Luck.ToString("+0;-0;0"), h => h with { NextBattle = h.NextBattle with { Luck = original.NextBattle.Luck } });
-            }
+            changes.AddNextBattleBonuses(
+                original.NextBattle.Morale,
+                current.NextBattle.Morale,
+                original.NextBattle.Luck,
+                current.NextBattle.Luck,
+                (h, morale) => h with { NextBattle = h.NextBattle with { Morale = morale } },
+                (h, luck) => h with { NextBattle = h.NextBattle with { Luck = luck } });
 
             if (original.Effects != current.Effects)
             {
                 changes.Add(ChangeAreas.General, "Remembered effects", original.Effects.ToString(), current.Effects.ToString(), h => h with { Effects = original.Effects });
             }
 
-            if (original.Visited != current.Visited)
-            {
-                changes.Add(ChangeAreas.General, "Places visited", original.Visited.Count.ToString(), current.Visited.Count.ToString(), h => h with { Visited = original.Visited });
-            }
+            changes.AddPlaceVisits(
+                this.catalog.Places,
+                place => place.Name,
+                place => original.Visited.Of(place.Kind),
+                place => current.Visited.Of(place.Kind),
+                (h, place, mask) => h with { Visited = h.Visited.With(place.Kind, mask) });
 
             DiffPrimarySkills(original, current, changes);
             this.DiffSecondarySkills(original, current, changes);

@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm2.Tests.Data
+﻿namespace Siniskalc.Homm2.Tests.Data
 {
     using System.Text;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// What the bytes of a sphinx of the map read as, on records made by hand.

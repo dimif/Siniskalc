@@ -1,8 +1,6 @@
-namespace Siniskalc.Homm2.Tests.Integration.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
-    using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Data;
-    using Siniskalc.Homm2.Models;
 
     /// <summary>
     /// Tests where the creatures that wait in a dwelling are written in the savegame.

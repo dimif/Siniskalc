@@ -23,7 +23,7 @@
     /// <param name="Town">The buildings that are not dwellings.</param>
     /// <param name="Dwellings">The dwellings and the level of the Mage Guild.</param>
     /// <param name="MageGuildSpellCounts">How many of the four spells of each level the guild shows.</param>
-    /// <param name="MageGuildSpells">The spell numbers (1 to 65, 0 for none) of the Mage Guild: four for each of the five levels, the first level first.</param>
+    /// <param name="MageGuildSpells">The spells of the Mage Guild, <c>null</c> for a place with none: four for each of the five levels, the first level first.</param>
     public sealed record CastleModel(
         string Name,
         Faction Faction,
@@ -37,7 +37,7 @@
         TownBuildings Town,
         Dwellings Dwellings,
         Numbers MageGuildSpellCounts,
-        Numbers MageGuildSpells)
+        MageGuildSlots MageGuildSpells)
         : ICastleModel<PlayerColor, Creature, Faction>
     {
         /// <inheritdoc/>
@@ -251,13 +251,13 @@
         {
             RangeGuard.ThrowIfOutOfRange(level, 1, Constants.Castle.MageGuildLevels, nameof(level));
             RangeGuard.ThrowIfOutOfRange(slot, 0, Constants.Castle.MageGuildSlotsPerLevel - 1, nameof(slot));
-            return this with { MageGuildSpells = this.MageGuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell?.Code ?? 0) };
+            return this with { MageGuildSpells = this.MageGuildSpells.With(((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot, spell) };
         }
 
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.
         /// </summary>
-        public Spell? MageGuildSpell(int level, int slot) => this.Faction.Catalog.Spells.Find((byte)this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot]);
+        public Spell? MageGuildSpell(int level, int slot) => this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot];
 
         // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.
         private static uint DwellingBits(int dwelling) =>

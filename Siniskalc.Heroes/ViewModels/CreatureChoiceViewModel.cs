@@ -25,12 +25,12 @@ namespace Siniskalc.Heroes.ViewModels
         /// <summary>
         /// Gets the town the creature belongs to, or "Neutral"; the list is grouped by it.
         /// </summary>
-        public string Faction => this.Creature.Faction?.Name ?? "Neutral";
+        public string Faction => this.Creature.Faction.Name;
 
         /// <summary>
         /// Gets the town the creature belongs to as a number to order the list by: neutral creatures come last.
         /// </summary>
-        public int FactionOrder => this.Creature.Faction?.Code ?? int.MaxValue;
+        public int FactionOrder => this.Creature.Faction.Code;
 
         /// <summary>
         /// Gets the creature level among those of its town.

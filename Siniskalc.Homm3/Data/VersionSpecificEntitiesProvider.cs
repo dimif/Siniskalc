@@ -14,10 +14,16 @@ public sealed class VersionSpecificEntitiesProvider
     }
 
     public EntityCatalog Catalog { get; }
+
     public GameVersion GameVersion => this.Catalog.Version;
+
     public IGrantedSpellsResolver GrantedSpellsResolver { get; }
+
     public CreatureCodes CreatureCodes { get; }
+
     public IReadOnlyList<SecondarySkill> SecondarySkills => this.Catalog.SecondarySkills.All;
+
     public IReadOnlyList<WarMachine> WarMachines => this.Catalog.WarMachines.All;
+
     public IReadOnlyList<Spell> Spells => this.Catalog.Spells.All;
 }

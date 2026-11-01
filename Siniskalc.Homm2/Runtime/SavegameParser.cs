@@ -10,7 +10,7 @@ namespace Siniskalc.Homm2.Runtime
     /// <summary>
     /// Builds a game from the bytes of a savegame of Heroes of Might and Magic II, the base game's or the Price of Loyalty's.
     /// </summary>
-    public sealed class SavegameParser : ISavegameParser
+    public sealed class SavegameParser : ISavegameParser<Game>
     {
         private static readonly ILogger<SavegameParser> Logger = LogFactory.For<SavegameParser>();
 

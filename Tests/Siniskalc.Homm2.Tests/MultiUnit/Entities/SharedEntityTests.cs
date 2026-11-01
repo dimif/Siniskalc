@@ -35,6 +35,17 @@
         }
 
         [Test]
+        public void EveryCreatureExposesItsCatalogFactionOrTheSameCatalogsNeutralFactionToSharedPickers()
+        {
+            foreach (var creature in TestCatalog.Standard.Creatures)
+            {
+                var shared = (ICreature)creature;
+                Assert.That(shared.Faction, Is.SameAs(creature.Faction ?? TestCatalog.Standard.NeutralFaction));
+                Assert.That(new CreatureChoiceViewModel(shared, creature.Info).Faction, Is.EqualTo(shared.Faction.Name));
+            }
+        }
+
+        [Test]
         public void AnArtifactTellsWhatItAddsToThePrimarySkills()
         {
             Assert.That(((IArtifact)TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]).PrimarySkillBonus, Is.EqualTo(new PrimarySkillBonus(12, 0, 0, 0)));

@@ -80,7 +80,9 @@ The minimum level is Information as shipped (Debug while a debugger is attached)
 - **Text.** Starts with a capital, no trailing period, no line breaks. Past tense for something that happened
   (`Opened savegame {File}`), present tense for a state (`No dwelling found for {Colour}`).
 - **Property names** are PascalCase and come from this vocabulary, so a search finds them across the code:
-  `File`, `Game`, `Version`, `Chunk`, `Offset`, `Length`, `Count`, `HeroId`, `Colour`, `Slot`, `Page`, `Code`, `StandIn`.
+  `File`, `Game`, `Version`, `Chunk`, `Offset`, `Length`, `Count`, `HeroId`, `Colour`, `Slot`, `Page`, `Code`, `StandIn`,
+  `Kind` (a chunk kind), `Index` (the place of a record among its kind), `Name`, `Local` (whether a change came from the target's own update),
+  `Path` (the settings file or the log folder, where the path is the problem), `Folder`, `Url`, `Backup`, `BackupOnSave`, `AdvancedMode`.
   Add to the list here before inventing a new one.
 - **Hex.** Offsets and raw byte values are formatted as hex, as the hex editor shows them: `{Offset:X}`, `{Code:X2}`.
 - **Exceptions** go in the exception argument, never as `ex.Message` inside the template:

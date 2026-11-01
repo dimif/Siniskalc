@@ -31,25 +31,45 @@ public sealed class EntityCatalog
     }
 
     public GameVersion Version { get; }
+
     public MapMetadata MapMetadata { get; }
+
     public EntityCollection<Faction> Factions { get; }
+
     public EntityCollection<CreatureAbility> Abilities { get; }
+
     public EntityCollection<Building> Buildings { get; }
+
     public EntityCollection<Creature> Creatures { get; }
+
     public EntityCollection<SpellSchool> SpellSchools { get; }
+
     public EntityCollection<Spell> Spells { get; }
+
     public EntityCollection<HeroClass> HeroClasses { get; }
+
     public EntityCollection<SecondarySkill> SecondarySkills { get; }
+
     public EntityCollection<WarMachine> WarMachines { get; }
+
     public EntityCollection<Artifact> Artifacts { get; }
+
     public EntityCollection<VisitedPlaceKind> VisitedPlaces { get; }
+
     public Faction NeutralFaction { get; }
+
     public Creature FallbackCreature { get; }
+
     public HeroClass FallbackHeroClass { get; }
+
     public Artifact Scroll { get; }
+
     public Artifact SpellBook { get; }
+
     public Artifact FallbackArtifact { get; }
+
     public IReadOnlyList<Artifact> WearableArtifacts => this.Artifacts.All.Where(a => a.Wearable).ToArray().AsReadOnly();
+
     public IReadOnlyList<Artifact> BackpackArtifacts => this.Artifacts.All.Where(a => a.CanBeInBackpack).ToArray().AsReadOnly();
 
     public Artifact? FindArtifact(string name) => this.Artifacts.FindByName(name)

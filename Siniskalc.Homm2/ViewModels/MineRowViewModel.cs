@@ -15,8 +15,8 @@ namespace Siniskalc.Homm2.ViewModels
             this.catalog = catalog;
         }
 
-        public new string Kind => this.catalog.Mines.Find((byte)this.Session.Current.Kind)!.Name;
+        public override string Kind => this.catalog.Mines.Find((byte)this.Session.Current.Kind)!.Name;
 
-        public new string ResourceName => this.catalog.Mines.Find((byte)this.Session.Current.Kind)!.Resource.ToString();
+        public override string ResourceName => this.catalog.Mines.Find((byte)this.Session.Current.Kind)!.Resource.ToString();
     }
 }

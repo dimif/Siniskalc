@@ -61,7 +61,10 @@
         {
             var masks = new uint[Constants.Catalog.PlaceCapacity];
             foreach (var kind in this.entities.Catalog.VisitedPlaces.All)
+            {
                 masks[kind.Index] = this.HasPlaces(chunk, kind) ? chunk.GetUInt32At(VisitedPlaceOffsets.For(kind.Slot)) : 0u;
+            }
+
             return new PlaceVisits(masks);
         }
 

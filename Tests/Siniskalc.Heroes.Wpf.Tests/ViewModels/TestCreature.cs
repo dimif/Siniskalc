@@ -22,10 +22,17 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
         public int Tier => 1;
 
-        public IFaction? Faction => null;
+        public IFaction Faction { get; } = new TestFaction();
 
         public bool IsUpgrade => this.BaseCreatureCode != null;
 
         public byte? BaseCreatureCode { get; }
+
+        private sealed record TestFaction : IFaction
+        {
+            public string Name => "Neutral";
+
+            public byte Code => 99;
+        }
     }
 }

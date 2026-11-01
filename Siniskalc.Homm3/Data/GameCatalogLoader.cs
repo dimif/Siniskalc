@@ -22,18 +22,44 @@ public sealed class GameCatalogLoader
         var mapMetadata = this.reader.Read<MapMetadataDefinition>(Root + "mapObjects.json");
         Require(manifest.SchemaVersion == 1, "manifest.json", "schemaVersion must be 1.");
         Require(manifest.Versions is not null && manifest.Sets is not null, "manifest.json", "versions and sets must not be null.");
+        foreach (var (version, setId) in manifest.Versions!)
+        {
+            Require(
+                Enum.IsDefined(version) && version != GameVersion.Unknown && !string.IsNullOrWhiteSpace(setId),
+                "manifest.json", $"Version '{version}' must name a supported standard set.");
+        }
+
+        foreach (var (id, set) in manifest.Sets!)
+        {
+            Require(
+                !string.IsNullOrWhiteSpace(id) && set is not null && !string.IsNullOrWhiteSpace(set.Directory),
+                "manifest.json", $"Set '{id}' must have an identity and directory.");
+            Require(
+                !System.IO.Path.IsPathRooted(set!.Directory)
+                && !set.Directory.Split('\\', '/').Any(part => part is "." or ".."),
+                "manifest.json", $"Set '{id}' must use a directory within this game's data.");
+            Require(
+                set.Parent is null || !string.IsNullOrWhiteSpace(set.Parent),
+                "manifest.json", $"Set '{id}' has an empty parent.");
+        }
+
         var sets = new Dictionary<string, CatalogDefinitions>(StringComparer.Ordinal);
         var visiting = new HashSet<string>();
         CatalogDefinitions Resolve(string id)
         {
-            if (sets.TryGetValue(id, out var existing)) return existing;
+            if (sets.TryGetValue(id, out var existing))
+            {
+                return existing;
+            }
+
             Require(manifest.Sets!.ContainsKey(id), "manifest.json", $"Unknown standard set '{id}'.");
             Require(visiting.Add(id), "manifest.json", $"Parent cycle at set '{id}'.");
             var set = manifest.Sets[id];
             Require(set is not null && !string.IsNullOrWhiteSpace(set.Directory), "manifest.json", $"Set '{id}' must have a directory.");
             var parent = set!.Parent is null ? null : Resolve(set.Parent);
             var sources = parent?.SourcePaths.ToDictionary(p => p.Key, p => p.Value, StringComparer.Ordinal) ?? new Dictionary<string, string>(StringComparer.Ordinal);
-            T[] Read<T>(string file, T[]? inherited) where T : EntityDefinition
+            T[] Read<T>(string file, T[]? inherited)
+                where T : EntityDefinition
             {
                 var path = set.Directory + "\\" + file + ".json";
                 var entries = this.reader.Read<T[]>(Root + path);
@@ -75,7 +101,10 @@ public sealed class GameCatalogLoader
 
         Require(manifest.Versions!.Count == catalogs.Count && !manifest.Versions.ContainsKey(GameVersion.Unknown), "manifest.json", "Only the five supported standard versions may be mapped.");
         foreach (var set in manifest.Sets!.Keys)
+        {
             CatalogValidator.Validate(Resolve(set), GameVersion.HornOfTheAbyss, manifest.Sets[set].Directory);
+        }
+
         // Unknown is a detection state, not another editable set. Its historical empty picker availability is retained.
         catalogs.Add(GameVersion.Unknown, new EntityCatalog(GameVersion.Unknown, Resolve(manifest.Versions[GameVersion.RestorationOfErathia])));
         return catalogs.ToFrozenDictionary();
@@ -83,6 +112,9 @@ public sealed class GameCatalogLoader
 
     internal static void Require(bool condition, string path, string message)
     {
-        if (!condition) throw new GameDefinitionException(Root + path, "HoMM3: " + message);
+        if (!condition)
+        {
+            throw new GameDefinitionException(Root + path, "HoMM3: " + message);
+        }
     }
 }

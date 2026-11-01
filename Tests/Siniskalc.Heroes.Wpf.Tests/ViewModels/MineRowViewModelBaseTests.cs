@@ -39,6 +39,14 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That((row.Index, row.Kind, row.ResourceName, row.OwnerSort, row.IsOwned), Is.EqualTo((3, "Gold mine", "Gold", "Red", true)));
         }
 
+        [Test]
+        public void AGameCanSupplyItsCatalogNamesThroughTheSharedRowContract()
+        {
+            MineRowViewModelBase row = new CatalogRow();
+
+            Assert.That((row.Kind, row.ResourceName), Is.EqualTo(("Crystal grotto", "Crystal")));
+        }
+
         private static MineRowViewModelBase Row(MapPosition position, bool hasLevels) => new TestRow(position, hasLevels);
 
         private sealed class TestRow : MineRowViewModelBase
@@ -47,6 +55,18 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
                 : base(3, () => MineKind.GoldMine, () => position, () => true, new ChoiceFieldViewModel("Owner", ["Neutral", "Red"], () => "Red", _ => { }), hasLevels)
             {
             }
+        }
+
+        private sealed class CatalogRow : MineRowViewModelBase
+        {
+            public CatalogRow()
+                : base(0, () => MineKind.GoldMine, () => new MapPosition(0, 0), () => false, new ChoiceFieldViewModel("Owner", ["Neutral"], () => "Neutral", _ => { }), false)
+            {
+            }
+
+            public override string Kind => "Crystal grotto";
+
+            public override string ResourceName => "Crystal";
         }
     }
 }

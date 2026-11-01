@@ -1,6 +1,5 @@
 ﻿using Moq;
 using Siniskalc.Core.Data;
-using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;

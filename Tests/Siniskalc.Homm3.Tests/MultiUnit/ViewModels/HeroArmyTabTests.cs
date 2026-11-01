@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Siniskalc.Core.Entities;
 using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Homm3.Data;

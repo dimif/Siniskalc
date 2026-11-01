@@ -1,4 +1,4 @@
-﻿using Siniskalc.Core.Models;
+using Siniskalc.Core.Models;
 using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;

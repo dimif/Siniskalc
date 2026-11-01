@@ -40,10 +40,10 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         {
             var document = TestServices.Load(Saves.Path("MapDifficultySize", "map_difficulty_size_07_map_hard_extra_large")).History.Current;
             var heroes = document.Heroes();
-            var index = heroes.GetModels().Select((hero, index) => (hero, index)).First(entry => entry.hero.Id != entry.index).index;
+            var index = heroes.GetModels().Select((hero, index) => (hero, index)).First(entry => entry.hero.PortraitId != entry.index).index;
             var hero = heroes.GetSummaries()[index];
 
-            Assert.That(heroes.GetModel(index).Id, Is.EqualTo(55));
+            Assert.That(heroes.GetModel(index).PortraitId, Is.EqualTo(55));
             Assert.That(index, Is.EqualTo(8));
             Assert.That(hero.HeroId, Is.EqualTo(index));
             Assert.That(hero.Index, Is.EqualTo(index));

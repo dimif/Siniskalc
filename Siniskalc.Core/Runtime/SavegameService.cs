@@ -9,7 +9,7 @@
     /// <see cref="ISavegameParser{TGame}"/>.
     /// </summary>
     /// <typeparam name="TGame">What the game calls an open savefile.</typeparam>
-    public abstract class SavegameService<TGame> : ISavegameService<TGame>
+    public class SavegameService<TGame> : ISavegameService<TGame>
         where TGame : ISavegame
     {
         private static readonly ILogger Logger = LogFactory.For(typeof(SavegameService<>));
@@ -30,7 +30,7 @@
         /// <param name="backups">
         /// The save file backups provider.
         /// </param>
-        protected SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
+        public SavegameService(ISavegameParser<TGame> parser, ISavefileCodec codec, IFileBackupServiceProvider backups)
         {
             this.parser = parser;
             this.codec = codec;

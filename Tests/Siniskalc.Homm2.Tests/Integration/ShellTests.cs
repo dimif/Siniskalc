@@ -44,7 +44,7 @@
 
             this.shell.LoadGame(path);
 
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (The Succession Wars)"));
+            Assert.That(this.shell.Title, Is.EqualTo($"Siniskalc - Heroes of Might and Magic II (The Succession Wars) - {Path.GetFullPath(path)}"));
             Assert.That(this.shell.CurrentModule, Is.SameAs(this.services.Module));
             Assert.That(this.shell.Editor, Is.InstanceOf<Homm2EditorViewModel>());
             Assert.That(this.shell.IsGameLoaded, Is.True);
@@ -73,7 +73,7 @@
             Assert.That(() => this.shell.LoadGame(broken), Throws.InstanceOf<UnsupportedSavefileException>());
 
             Assert.That(this.shell.File, Is.EqualTo(Saves.BrokenAllianceSave(1)));
-            Assert.That(this.shell.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (The Succession Wars)"));
+            Assert.That(this.shell.Title, Is.EqualTo($"Siniskalc - Heroes of Might and Magic II (The Succession Wars) - {Path.GetFullPath(Saves.BrokenAllianceSave(1))}"));
         }
 
         [Test]
@@ -139,7 +139,7 @@
                     Pump();
                     window.UpdateLayout();
 
-                    Assert.That(window.Title, Is.EqualTo("Siniskalc - Heroes of Might and Magic II (The Succession Wars)"));
+                    Assert.That(window.Title, Is.EqualTo($"Siniskalc - Heroes of Might and Magic II (The Succession Wars) - {Path.GetFullPath(Saves.BrokenAllianceSave(24))}"));
                     Assert.That(Find<Homm2EditorView>(window), Is.Not.Null);
                     Assert.That(Find<Homm2EditorView>(window)!.DataContext, Is.SameAs(this.shell.Editor));
 
@@ -152,7 +152,7 @@
 
                     // Every page, on every tab (the hex tab too), binds without errors.
                     this.shell.IsAdvancedMode = true;
-                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue).Id;
+                    var hero = editor.CurrentGame.History.Current.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue).PortraitId;
                     var castle = editor.CurrentGame.History.Current.Castles().GetModels().First(c => c.IsUsed && c.Owner == PlayerColor.Blue).Index;
                     var pages = new (Action Show, Func<TabbedPageViewModelBase> Page, int Tabs)[]
                     {

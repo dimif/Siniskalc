@@ -23,10 +23,14 @@ public sealed class MapMetadata
     }
 
     public IReadOnlyList<VisitEffectDefinition> VisitEffects { get; }
+
     public string MerchantName { get; }
+
     public string DwellingName { get; }
-    // TODO:LOG Trace: an unknown mine kind uses the catalog's explicit fallback metadata.
+
     public MineDefinition Mine(MineKind kind) => this.mines.GetValueOrDefault(kind) ?? this.fallback;
+
     public string MineNameAt(MineKind kind, MapPosition position) => $"{this.Mine(kind).Name} at {MapLevelText.Place(position, hasLevels: true)}";
+
     public string EffectName(VisitedBuildingEffects effect) => this.VisitEffects.Single(e => e.Effect == effect).Name;
 }

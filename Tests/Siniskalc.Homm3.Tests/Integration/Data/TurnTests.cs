@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Tests.Integration.Data
+﻿namespace Siniskalc.Homm3.Tests.Integration.Data
 {
     using Moq;
     using Siniskalc.Core.Data;
@@ -6,7 +6,6 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     using Siniskalc.Heroes.Models;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
-    using Siniskalc.Homm3.Models;
     using Siniskalc.Homm3.Runtime;
 
     /// <summary>

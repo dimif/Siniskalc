@@ -67,6 +67,20 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
+        public void VisitedPlacesAreListedOneKindAtATimeLikeInHomm3()
+        {
+            var history = this.game.History;
+            var original = history.Current.Heroes().GetModel(Maximus).Visited;
+
+            history.CreateHeroSession(Maximus).Update(h => h with { Visited = h.Visited.With(PlaceKind.Fort, original.Of(PlaceKind.Fort) ^ 0b10) });
+
+            var change = history.GetPendingChanges().Single();
+            Assert.That(change.Change.Description, Is.EqualTo("Visited: forts"));
+            change.Revert(history);
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+        }
+
+        [Test]
         public void RevertingTheOwnerOfAHeroPutsTheHeroAndTheListsOfThePlayersBackInOneStep()
         {
             var history = this.game.History;
@@ -76,7 +90,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
             history.CreateHeroSession(Maximus).Update(h => h.WithOwner(newOwner));
             Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
-            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(Maximus));
 
             history.GetPendingChanges().Single(c => c.Change.Description == "Owner").Revert(history);
 
@@ -86,7 +100,22 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             history.Undo();
 
             Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Owner"));
-            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(hero.Id));
+            Assert.That(history.Current.Players().GetLists(newOwner.Code).HeroIds, Does.Contain(Maximus));
+        }
+
+        [Test]
+        public void TheListsOfAPlayerNameAHeroByItsTableIndexAndNotByItsScenarioPortraitByte()
+        {
+            var history = TestServices.Load(Saves.Path("MapDifficultySize", "map_difficulty_size_07_map_hard_extra_large")).History;
+            var heroes = history.Current.Heroes().GetModels();
+            var index = Enumerable.Range(0, heroes.Count).First(i => heroes[i].PortraitId != i && !heroes[i].Owner.IsNeutral);
+            var newOwner = heroes[index].Owner == PlayerColor.Blue ? PlayerColor.Green : PlayerColor.Blue;
+
+            history.CreateHeroSession(index).Update(h => h.WithOwner(newOwner));
+
+            var lists = history.Current.Players().GetLists(newOwner.Code);
+            Assert.That(lists.HeroIds, Does.Contain(index));
+            Assert.That(history.Current.Players().GetLists(heroes[index].Owner.Code).HeroIds, Does.Not.Contain(index));
         }
     }
 }

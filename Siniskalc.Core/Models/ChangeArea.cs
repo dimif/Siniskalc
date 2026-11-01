@@ -6,7 +6,10 @@
     /// <param name="DisplayName">The words for the area, e.g. "Primary skills".</param>
     public sealed record ChangeArea(string DisplayName)
     {
-        /// <inheritdoc/>
+        /// <summary>
+        /// Returns the words for the area.
+        /// </summary>
+        /// <returns><see cref="DisplayName"/>.</returns>
         public override string ToString() => this.DisplayName;
     }
 }

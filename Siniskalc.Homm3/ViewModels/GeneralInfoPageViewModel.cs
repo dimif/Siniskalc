@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows.Input;
-    using Siniskalc.Core;
     using Siniskalc.Core.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
@@ -27,9 +26,10 @@
         private readonly GameVersion gameVersion;
         private readonly bool hasUnderground;
         private readonly Func<bool> canSleep;
+        private readonly Func<bool> canMoveToday;
         private bool isRefreshing;
 
-        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<MapDestination>>? destinationsToSendTo = null)
+        public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<MapDestination>>? destinationsToSendTo = null, Func<bool>? canMoveToday = null)
             : base("General Info")
         {
             this.getHero = getHero;
@@ -38,6 +38,7 @@
             this.gameVersion = gameVersion;
             this.hasUnderground = hasUnderground;
             this.canSleep = canSleep ?? (() => false);
+            this.canMoveToday = canMoveToday ?? (() => false);
 
             this.PrimarySkills = new PrimarySkillsCardViewModel(
                 () => this.Hero.PrimarySkills,
@@ -92,7 +93,8 @@
             this.NextBattle = this.CreateNextBattle();
 
             this.WarMachineChoices = this.Hero.HeroClass.Catalog.WarMachines.All
-                .Select(machine => new ToggleRowViewModel(machine.Name,
+                .Select(machine => new ToggleRowViewModel(
+                    machine.Name,
                     () => this.Hero.WarMachines.Contains(machine),
                     selected => this.UpdateWarMachine(machine.Name, selected))).ToArray().AsReadOnly();
 
@@ -158,6 +160,11 @@
         /// Gets whether the savefile's game version stores that a hero was put to sleep. The check box is only shown when it does.
         /// </summary>
         public bool CanSleep => this.canSleep();
+
+        /// <summary>
+        /// Gets whether the savefile has the "moved today" flag of a hero.
+        /// </summary>
+        public bool CanMoveToday => this.canMoveToday();
 
         /// <summary>
         /// Gets or sets whether the hero is asleep. A hero that moves wakes up, so this is mostly for waking one that would not move.
@@ -236,7 +243,7 @@
                 return;
             }
 
-            var warMachine = GetWarMachine(warMachineName);
+            var warMachine = this.GetWarMachine(warMachineName);
             if (warMachine == null)
             {
                 return;
@@ -376,7 +383,10 @@
 
         private void RefreshWarMachines()
         {
-            foreach (var choice in this.WarMachineChoices) choice.Refresh();
+            foreach (var choice in this.WarMachineChoices)
+            {
+                choice.Refresh();
+            }
         }
 
         private void Update(Func<HeroModel, HeroModel> edit)

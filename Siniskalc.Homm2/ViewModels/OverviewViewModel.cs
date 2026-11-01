@@ -2,9 +2,7 @@
 {
     using System;
     using System.Linq;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -37,7 +35,7 @@
         public override string VersionName => this.game.VersionName;
 
         /// <inheritdoc/>
-        protected override string ComputerTurnToolTip => "A computer player: it plays after the humans, and cannot be given the turn";
+        protected override string ComputerTurnToolTip => "Computer player: cannot be given the turn";
 
         /// <summary>
         /// Reads the players again from the current document.

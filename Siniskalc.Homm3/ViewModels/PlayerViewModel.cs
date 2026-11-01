@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,6 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// ViewModel that wraps a player for UI binding. Like <see cref="HeroViewModel"/>, it reads from a

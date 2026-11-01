@@ -1,5 +1,10 @@
 # What can move into Siniskalc.Heroes: review of `Entities` and `Models`
 
+**2026-10-31 (streamlining pass of the multi-version architecture):** what changed, and what was looked at and left apart.
+- *Done:* `SavegameService<TGame>` is concrete and both games use it with `ISavegameService<Game>` and `ISavegameParser<Game>` (their own `GameService`, `IGameService` and `ISavegameParser` are gone; the `GameService` property of the module factories and `TestServices` keeps its name); `ObeliskEditSession<TColor>` is gone (`EditSession<ObeliskChunk, ObeliskVisits<TColor>>`); `VersionedEnumerationExtensions.AvailableIn` replaces the repeated `All.Where(x => x.IsAvailableIn(version))` filters; `ChangeSinkExtensions.AddNextBattleBonuses` and `AddPlaceVisits` (see `docs/SHARING_REVIEW_UI.md`); `ICreature.Faction` is never `null` (a neutral creature has the Neutral faction in both games); `IHeroModel` has no `Id` and HoMM2's `HeroModel.Id` is `PortraitId`, the scenario portrait byte, which is not a reference id.
+- *Bug fixed:* HoMM2's send-to compared a castle's visiting hero (a table index) with the portrait byte, and `PlayerListsReconciler` put the portrait byte in the players' lists, which hold table indexes (checked on `map_difficulty_size_07`).
+- *Looked at and left apart, with the reason:* a generic pending-changes factory (the chunk types are each game's, it would need seven type parameters; the wrappers are intended, see `CLAUDE.md`); a shared `PlayerDiffer` (`with` on a generic record is not possible; the lines it would share are three calls); a shared `PlayerEditSession` (the game classes would stay as aliases); a shared player page base (the pages refresh differently); the turn model `TurnModel<TColor>` (it would reverse the 2026-10-24 decision, change what the serializer writes and word an unknown record as "Neutral" instead of "record N"; needs a save with an odd turn record first); the HoMM2 Mage Guild and secondary skills views and models (below and in `docs/FUTURE_IMPROVEMENTS.md`).
+
 **2026-10-31 (metadata adoption follow-up):** both games retain `HeroesSavegameBase<PlayerColor>` and shared metadata after integration with the latest feature branch. Both override `CurrentPlayer` from their editable turn records. HoMM3's test-only `PlayerControls` and `MapDifficulty` pass-throughs are gone; consumers use the shared `GetControl` and nullable `Map.Difficulty`. HoMM3 still owns its version, `IsHota` and map places.
 
 A review, component by component, of `Siniskalc.Homm2` and `Siniskalc.Homm3` (`Entities` and `Models`), for what could be one abstraction in `Siniskalc.Heroes` (or `Siniskalc.Core` when it knows no game at all).
@@ -8,9 +13,11 @@ The work was done in the order at the end; **"Status after the work"** below say
 
 **Later (2026-10-19):** `PlayerColors<TColor>`, `Factions<TFaction>`, `PlayerColorInfo` and `FactionInfo` are gone. HoMM2's `Color` and `Faction` and HoMM3's `PlayerColor` are `AbstractEnumeration` classes that implement `IPlayerColor` / `IFaction` (so E2 below went the way of its "Option"), colours have a `Neutral` member instead of a `null` owner, and `ICastleModel<TColor, TCreature, TFaction>` is the shared view of a castle.
 
-**2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `ObeliskEditSession<TColor>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`.
+**2026-10-20:** `ObeliskVisits<TColor>`, `ObeliskChunk`, `ObeliskChunkCollection<TColor>`, `ObeliskDiffer<TColor>` and `EditSession<ObeliskChunk, ObeliskVisits<TColor>>` are in `Siniskalc.Heroes` (both games used the same code); `ChangeSinkExtensions.AddPrimarySkills` replaced the four identical blocks of the hero differs; `IHeroPage` joins `IPlayerPage` and `ICastlePage`.
 
 **2026-10-23:** the obelisk byte conversion is shared too: `ObeliskDeserializer<TColor>` and `SafeObeliskSerializer<TColor>` take an `ObeliskFlagsLayout`. HoMM2 supplies flags at zero and gets the count from the map positions; HoMM3 supplies its stored count and flags offsets. Reading and writing remain independent, and the serializer changes only the flags covered by the chunk's count and the model.
+
+**2026-10-31:** M12 (Mage Guild), the model part: HoMM2's `CastleModel.MageGuildSpells` holds `Spell`s (`MageGuildSlots`, `null` for none) instead of the numbers of the savefile; the deserializer decodes them and `SafeCastleSerializer` writes the number of the spell, leaving a byte that is no spell alone while the slot holds none. The view models are **not** shared: HoMM2 has four fixed boxes a level with a "None" choice, enabled by the count of spells shown, HoMM3 a list as long as the level holds, so the two views and their bindings differ. M3 (secondary skills) is documented in `docs/FUTURE_IMPROVEMENTS.md` and left apart.
 
 **2026-10-22:** `IPendingChangesFactory` has no `ForMapObject` any more (HoMM3's threw). The differs of the objects of the map are each game's own and make their pending changes with `ChunkPendingChange.For` through a `ChangeSink`, in both games (HoMM2's `MineDiffer`, `ShrineDiffer`, `SphinxDiffer`, `TurnDiffer` and `BuiltTodayDiffer`, HoMM3's mine, dwelling and merchant differs); HoMM2's mine owner change is the shared `AddOwner`. The texts of the changes are the same as before.
 
@@ -115,7 +122,7 @@ The order I would do them in is at the end.
 ### E1. Enumeration base and game version: GENERIC (Core)
 
 **Now.** `Homm2Enumeration` and `Homm3Enumeration` are the same class line by line.
-Each derives from `AbstractEnumeration`, takes a `GameVersion` of its own game, defaults it to the first real version (`BaseGame`, `RestorationOfErathia`), and exposes `GameVersion` and `IsAvailableIn(GameVersion)` by casting `AvailableFrom` (an `int` in Core) to the enum.
+Each derives from `AbstractEnumeration`, takes a `GameVersion` of its own game, defaults it to the first real version (`BaseGame`, `RestorationOfErathia`), and exposes `GameVersion` and `IsAvailableIn(GameVersion)` by casting `AvailableFrom` (an `int` in Core) to the enum; `AvailableIn(version)` (an extension in Core) lists the entries of a version.
 The two `GameVersion` enums are `Unknown` plus an ordered list of releases: they are the game's, and differ (`BaseGame`, `PriceOfLoyalty` against five HoMM3 releases).
 `GameVersionExtensions.HasGameSetup` is HoMM3's.
 

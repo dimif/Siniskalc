@@ -47,6 +47,6 @@ namespace Siniskalc.Homm2.Tests.Data
             TownBuildings.Castle,
             Dwellings.None,
             Numbers.Of(0, 0, 0, 0, 0),
-            new Numbers(new int[20]));
+            new MageGuildSlots(new Spell?[20]));
     }
 }

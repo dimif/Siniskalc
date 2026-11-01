@@ -55,7 +55,7 @@
             this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl, LogPaths.Resolve(this.Settings.Settings, AppInfo.Name));
 
             var definitionReader = definitions ?? new JsonGameDefinitionReader();
-            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, definitionReader);
+            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, definitions: definitionReader);
             this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText, definitionReader);
 
             Logger.LogInformation(
@@ -105,7 +105,7 @@
         /// </summary>
         public IGameModule<Homm2EditorViewModel> Homm2 => this.homm2.Module;
 
-        public IGameService GameService => this.homm3.GameService;
+        public ISavegameService<Game> GameService => this.homm3.GameService;
 
         public ISavefileCodec SavefileCodec => this.homm3.SavefileCodec;
 
@@ -135,7 +135,7 @@
 
         public ISpellPointsCalculatorFactory SpellPoints => this.homm3.SpellPoints;
 
-        public H2Runtime.IGameService Homm2GameService => this.homm2.GameService;
+        public ISavegameService<H2Runtime.Game> Homm2GameService => this.homm2.GameService;
 
         public ISaveRegionProvider Homm2SaveRegionProvider => this.homm2.SaveRegionProvider;
 

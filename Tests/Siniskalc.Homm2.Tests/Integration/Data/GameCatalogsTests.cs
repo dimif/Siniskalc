@@ -186,6 +186,64 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Assert.That(() => new GameCatalogs(reader), Throws.TypeOf<GameDefinitionException>().With.Message.Contains("cycle"));
         }
 
+        [Test]
+        public void ASpellOmittedFromTheCatalogIsPreservedUntilItsMageGuildSlotIsChanged()
+        {
+            var definitions = new DefinitionMutationReader();
+            definitions.Replace<DefinitionFile<SpellDefinition>>("spells", file => file with
+            {
+                Entries = file.Entries.Where(spell => spell.Id != "Fireball").ToArray(),
+            });
+            var catalog = new GameCatalogs(definitions).For(GameVersion.BaseGame);
+            var empty = new CastleChunk("Xabran", new byte[CastleLayout.RecordSize], 0);
+            var baseline = new SafeCastleSerializer(TestCatalog.Standard).Serialize(empty, global::Siniskalc.Homm2.Tests.Data.DifferSamples.Castle()).ToArray();
+            baseline[CastleLayout.GuildSpells] = 0;
+            var chunk = new CastleChunk("Xabran", baseline, 0);
+            var model = new CastleDeserializer(catalog).Deserialize(chunk);
+            var writer = new SafeCastleSerializer(catalog);
+
+            Assert.That(model.MageGuildSpell(1, 0), Is.Null);
+            Assert.That(writer.Serialize(chunk, model).ToArray(), Is.EqualTo(baseline));
+            Assert.That(
+                writer.Serialize(chunk, model.WithMageGuildSpell(1, 0, catalog.Spells["Bless"])).ToArray()[CastleLayout.GuildSpells],
+                Is.EqualTo(catalog.Spells["Bless"].Code - 1));
+        }
+
+        [Test]
+        public void TheSharedPlaceVisitDifferNamesAndCountsEachChangedKindFromTheCatalog()
+        {
+            var definitions = new DefinitionMutationReader();
+            definitions.Replace<DefinitionFile<PlaceDefinition>>("places", file => file with
+            {
+                Entries = file.Entries.Select(place => place.Kind == PlaceKind.Fort ? place with { Name = "Astral forts" } : place).ToArray(),
+            });
+            var catalog = new GameCatalogs(definitions).For(GameVersion.BaseGame);
+            var original = global::Siniskalc.Homm2.Tests.Data.DifferSamples.Hero();
+            var current = original with { Visited = original.Visited.With(PlaceKind.Fort, 2).With(PlaceKind.Gazebo, 4) };
+            var changes = new HeroDiffer(new Homm2PendingChangesFactory(), catalog).Diff(0, original, current);
+
+            Assert.That(changes.Select(change => change.Change.Description), Is.EquivalentTo(new[] { "Visited: astral forts", "Visited: gazebos" }));
+            Assert.That(changes.Select(change => change.Change.After), Is.All.EqualTo("1"));
+        }
+
+        [Test]
+        public void SharedMineRowsDispatchTheirNamesAndResourcesToTheDocumentCatalog()
+        {
+            var definitions = new DefinitionMutationReader();
+            definitions.Replace<DefinitionFile<MineDefinition>>("mines", file => file with
+            {
+                Entries = file.Entries.Select(mine => mine.Id == "Sawmill" ? mine with { Name = "Astral timber yard", Resource = Siniskalc.Heroes.Entities.Resource.Crystal } : mine).ToArray(),
+            });
+            var catalog = new GameCatalogs(definitions).For(GameVersion.BaseGame);
+            var model = new Siniskalc.Homm2.Models.MineModel(0, Siniskalc.Heroes.Entities.MineKind.Sawmill, new Siniskalc.Heroes.Models.MapPosition(1, 2), PlayerColor.Blue, catalog);
+            var session = new Moq.Mock<IEditSession<Siniskalc.Homm2.Models.MineModel>>();
+            session.SetupGet(edit => edit.Current).Returns(model);
+            Siniskalc.Heroes.Wpf.ViewModels.MineRowViewModelBase row = new Siniskalc.Homm2.ViewModels.MineRowViewModel(session.Object, catalog, string.Empty);
+
+            Assert.That(row.Kind, Is.EqualTo("Astral timber yard"));
+            Assert.That(row.ResourceName, Is.EqualTo("Crystal"));
+        }
+
         private static void Refuses<T>(string domain, Func<DefinitionFile<T>, DefinitionFile<T>> mutate, string diagnostic)
             where T : EntityDefinition
         {

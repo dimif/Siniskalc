@@ -1,10 +1,9 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Moq;
 using Siniskalc.Core.Runtime;
-using Siniskalc.Wpf.ViewModels;
 using Siniskalc.Wpf.Views;
 
 namespace Siniskalc.Homm3.Tests.Integration.Views

@@ -1,11 +1,8 @@
-namespace Siniskalc.Homm2.Tests.Integration.ViewModels
+﻿namespace Siniskalc.Homm2.Tests.Integration.ViewModels
 {
-    using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
-    using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
@@ -225,7 +222,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var document = this.editor.CurrentGame!.History.Current;
             var hero = document.Heroes().GetModels().First(h => h.Owner == PlayerColor.Blue);
 
-            this.editor.CurrentGame.History.CreateHeroSession(hero.Id).Update(h => h with { Owner = PlayerColor.Green });
+            this.editor.CurrentGame.History.CreateHeroSession(hero.PortraitId).Update(h => h with { Owner = PlayerColor.Green });
 
             var owner = Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Player && n.Index == PlayerColor.Green.Code);
             Assert.That(Titles(owner, "Heroes"), Does.Contain(hero.Name));

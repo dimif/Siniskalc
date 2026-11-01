@@ -2,7 +2,8 @@ namespace Siniskalc.Homm2.Data
 {
     /// <summary>
     /// Where things are in the header of a savegame of the base game, from its start. A Price of Loyalty savegame has 4 more bytes in
-    /// front of the width (<see cref="Marker"/>) and the tables that follow the header are 5 bytes further (<see cref="ExpansionShift"/>).
+    /// front of the width (<see cref="Marker"/>), so the fields before the date are 4 bytes further (<see cref="MarkerLength"/>), and the
+    /// date and the tables of players, heroes and castles are 5 bytes further (<see cref="ExpansionShift"/>).
     /// </summary>
     public static class HeaderLayout
     {
@@ -12,22 +13,34 @@ namespace Siniskalc.Homm2.Data
         public const uint Marker = 0xFFFFFFFF;
 
         /// <summary>
-        /// How many bytes the Price of Loyalty adds in front of the header of the base game.
+        /// How many bytes the Price of Loyalty adds in front of the header of the base game (the length of <see cref="Marker"/>).
         /// </summary>
         public const int MarkerLength = 4;
 
         /// <summary>
-        /// How many bytes later the date and the tables of players, heroes and castles are in a Price of Loyalty savegame.
+        /// How many bytes later the date and the tables of players, heroes and castles are in a Price of Loyalty savegame (the marker
+        /// and one byte more).
         /// </summary>
         public const int ExpansionShift = 5;
 
         /// <summary>
-        /// The number the map format starts its header with, after the width and the height (it is the same number as in a map file).
+        /// The value of the map format field (<see cref="MapFormatField"/>) in every savegame; it is the same number as in a map file.
         /// </summary>
         public const uint MapFormat = 0x5C;
 
+        /// <summary>
+        /// Where the width of the map in tiles is: a 32-bit number.
+        /// </summary>
         public const int Width = 0;
+
+        /// <summary>
+        /// Where the height of the map in tiles is: a 32-bit number, equal to the width.
+        /// </summary>
         public const int Height = 4;
+
+        /// <summary>
+        /// Where the map format is, after the width and the height: a 32-bit number that is <see cref="MapFormat"/>.
+        /// </summary>
         public const int MapFormatField = 8;
 
         /// <summary>
@@ -48,7 +61,7 @@ namespace Siniskalc.Homm2.Data
         public const int ColorsInGame = 0x10;
 
         /// <summary>
-        /// Who plays each colour: a byte for each colour (Blue first). 0x0A is the computer; a human has his number among the humans, from 0
+        /// Who plays each colour: a byte for each colour (Blue first). 0x0A is the computer; a human has their number among the humans, from 0
         /// (the colour of the human in a game of one, the colour itself in a game where every colour is human). Found in saves of one, four
         /// and six humans (<c>TestData/Homm2/HumanCpu</c>).
         /// </summary>
@@ -79,28 +92,45 @@ namespace Siniskalc.Homm2.Data
 
         /// <summary>
         /// The number, among the humans, of the player whose turn it is (in a hot seat game of six humans it is the colour). It is the
-        /// <see cref="Controls"/> byte of that colour.
+        /// <see cref="Controls"/> value of that colour. Unlike the other fields it is not placed from the start of the file: it is a
+        /// fixed distance in front of the date (<see cref="Date"/> minus this offset), which is how the Price of Loyalty shift is applied.
         /// </summary>
         public const int CurrentHuman = 0x2AD;
 
         /// <summary>
-        /// The name of the map: 16 bytes, zero terminated.
+        /// Where the name of the map is: text, zero terminated.
         /// </summary>
         public const int MapName = 0x42;
+
+        /// <summary>
+        /// The most bytes the name of the map has.
+        /// </summary>
         public const int MapNameLength = 16;
 
         /// <summary>
-        /// The description of the map: a zero terminated text.
+        /// Where the description of the map is: text, zero terminated.
         /// </summary>
         public const int MapDescription = 0x7E;
+
+        /// <summary>
+        /// The most bytes the description of the map has.
+        /// </summary>
         public const int MapDescriptionMaxLength = 0x100;
 
         /// <summary>
-        /// The day, the week and the month: a byte each, 2 bytes apart (the byte between is 0), with the day of the week first. The last byte is the one in front of the table of players.
+        /// Where the date is: the day, the week and the month, in that order, a byte each, <see cref="DateStep"/> bytes apart (the byte
+        /// between is 0). The last byte is the one in front of the table of players.
         /// </summary>
         public const int Date = 0x2BB;
+
+        /// <summary>
+        /// The distance between the bytes of the day, the week and the month.
+        /// </summary>
         public const int DateStep = 2;
 
+        /// <summary>
+        /// Where the record of the first player (Blue) begins.
+        /// </summary>
         public const int PlayerTable = 0x2C0;
 
         /// <summary>
@@ -109,7 +139,7 @@ namespace Siniskalc.Homm2.Data
         public const int HeroTable = 0x79C;
 
         /// <summary>
-        /// How far the table of castles is after the end of the table of heroes.
+        /// How many bytes there are between the end of the table of heroes and the start of the table of castles.
         /// </summary>
         public const int CastleTableGap = 0x36;
     }

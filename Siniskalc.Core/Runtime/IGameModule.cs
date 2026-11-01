@@ -34,17 +34,21 @@
         /// </summary>
         /// <param name="filePath">The path of the file; only its name and extension are looked at.</param>
         /// <param name="head">The first bytes of the file, as many as it has up to <see cref="HeadLength"/>.</param>
+        /// <returns><see langword="true"/> if the file looks like a savefile of this game; otherwise <see langword="false"/>.</returns>
         bool IsOwnSavefile(string filePath, ReadOnlySpan<byte> head);
 
         /// <summary>
         /// Makes the editor of the game, with nothing loaded.
         /// </summary>
+        /// <returns>A new editor.</returns>
         TEditor CreateEditor();
 
         /// <summary>
         /// Tells whether the game can list a savegame with this file name (the name with its extension, no folder): <c>null</c> when it can,
         /// else what is wrong, in a sentence for the user. Used before the game is saved to a new file. Any name is fine by default.
         /// </summary>
+        /// <param name="fileName">The file name with its extension, without a folder.</param>
+        /// <returns><see langword="null"/> if the name is fine; otherwise a sentence for the user saying what is wrong.</returns>
         string? ValidateSavegameName(string fileName) => null;
     }
 }

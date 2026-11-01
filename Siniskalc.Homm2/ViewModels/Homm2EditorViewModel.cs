@@ -28,7 +28,7 @@ namespace Siniskalc.Homm2.ViewModels
         private MapViewModel? map;
         private NeutralViewModel? neutral;
 
-        public Homm2EditorViewModel(IGameService gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
+        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.byteEditTargets = byteEditTargets;

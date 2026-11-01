@@ -27,11 +27,6 @@
         string Name { get; }
 
         /// <summary>
-        /// Gets the unique identifier associated with hero.
-        /// </summary>
-        int Id { get; }
-
-        /// <summary>
         /// Gets the player that owns the hero, or the colour <c>Neutral</c> when no player does.
         /// </summary>
         TColor Owner { get; }

@@ -16,7 +16,9 @@ public abstract class CatalogEntity : Homm3Enumeration
     }
 
     public EntityCatalog Catalog { get; }
+
     public string Id { get; }
+
     public int Order { get; }
 
     public override bool Equals(AbstractEnumeration? other) =>

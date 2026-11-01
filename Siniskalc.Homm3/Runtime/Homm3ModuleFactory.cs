@@ -30,7 +30,7 @@
             IFileBackupServiceProvider backup,
             ISavefileBytesPatcher bytesPatcher,
             BanishingTextProvider banishingText,
-            Func<IGameService, IGameService>? decorateGameService = null,
+            Func<ISavegameService<Game>, ISavegameService<Game>>? decorateGameService = null,
             IGameDefinitionReader? definitions = null)
         {
             this.BytesPatcher = bytesPatcher;
@@ -77,7 +77,7 @@
                 this.BytesPatcher);
 
             this.SavefileCodec = new GzipSavefileCodec();
-            IGameService gameService = new GameService(
+            ISavegameService<Game> gameService = new SavegameService<Game>(
                 new SavegameParser(
                     new SavegameVersionDetector(),
                     new HeroBytesLoader(heroNameEncoding),
@@ -110,7 +110,7 @@
         /// </summary>
         public IGameModule<Homm3EditorViewModel> Module { get; }
 
-        public IGameService GameService { get; }
+        public ISavegameService<Game> GameService { get; }
 
         public ISavefileCodec SavefileCodec { get; }
 

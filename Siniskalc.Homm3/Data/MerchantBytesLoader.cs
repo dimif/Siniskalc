@@ -22,7 +22,7 @@ namespace Siniskalc.Homm3.Data
                 if (count is >= 1 and <= MerchantLayout.MaxMerchants && at + (count * MerchantLayout.ListSize) <= bytes.Length && this.LooksLikeTheLists(bytes, at, (int)count))
                 {
                     return Enumerable.Range(0, (int)count)
-                        .Select(i => new RecordChunk(NameOf(i, (int)count), bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
+                        .Select(i => new RecordChunk(this.NameOf(i, (int)count), bytes.AsSpan(at + (i * MerchantLayout.ListSize), MerchantLayout.ListSize).ToArray(), at + (i * MerchantLayout.ListSize), i))
                         .ToList();
                 }
             }

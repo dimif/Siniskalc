@@ -63,6 +63,9 @@ internal sealed class GameCatalogLoaderTests
     [TestCase("undeclaredReplacement", "creatures.json")]
     [TestCase("missingVersion", "manifest.json")]
     [TestCase("parentCycle", "manifest.json")]
+    [TestCase("nullVersion", "manifest.json")]
+    [TestCase("emptyDirectory", "manifest.json")]
+    [TestCase("outsideDirectory", "manifest.json")]
     public void InvalidDefinitionsFailActivationWithTheSourceFileAndCause(string error, string file)
     {
         var exception = Assert.Throws<GameDefinitionException>(() => new GameCatalogLoader(new ChangingReader((path, value) =>
@@ -71,6 +74,9 @@ internal sealed class GameCatalogLoaderTests
             {
                 if (error == "parentCycle") manifest.Sets["standard"] = manifest.Sets["standard"] with { Parent = "hota" };
                 if (error == "missingVersion") manifest.Versions.Remove(GameVersion.ShadowOfDeath);
+                if (error == "nullVersion") manifest.Versions[GameVersion.ShadowOfDeath] = null!;
+                if (error == "emptyDirectory") manifest.Sets["standard"] = manifest.Sets["standard"] with { Directory = "" };
+                if (error == "outsideDirectory") manifest.Sets["standard"] = manifest.Sets["standard"] with { Directory = @"..\Homm2" };
             }
 
             if (path.Contains(@"\standard\", StringComparison.Ordinal))

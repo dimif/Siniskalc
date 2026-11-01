@@ -2,6 +2,7 @@ namespace Siniskalc.Homm2.Tests
 {
     using Siniskalc.Heroes.Data;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
@@ -44,7 +45,7 @@ namespace Siniskalc.Homm2.Tests
 
         private static readonly Homm2PendingChangesFactory PendingChanges = new();
 
-        public static ISavegameParser Parser { get; } = new SavegameParser(
+        public static ISavegameParser<Game> Parser { get; } = new SavegameParser(
             Locator,
             new BytesLoader(),
             new HeaderReader(),

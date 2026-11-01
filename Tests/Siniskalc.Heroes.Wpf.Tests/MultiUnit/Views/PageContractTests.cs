@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
+﻿namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
     using System.ComponentModel;
     using System.Windows;
@@ -7,10 +7,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
     using Moq;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
-    using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Wpf.Views;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// The blocks of the pages bind to what <see cref="IPlayerPage"/> and <see cref="ICastlePage"/> say a page has: a game whose page

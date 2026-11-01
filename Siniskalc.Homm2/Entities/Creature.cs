@@ -26,10 +26,14 @@ namespace Siniskalc.Homm2.Entities
 
         public byte? BaseCreatureCode { get; }
 
+        /// <summary>
+        /// Gets the dwelling flag of its castle that recruits the creature: the dwelling of a creature, the upgraded dwelling of an upgraded
+        /// creature, or <c>null</c> for a neutral creature that no castle recruits.
+        /// </summary>
         public Dwellings? Dwelling { get; }
 
         bool ICreature.IsUpgrade => this.BaseCreatureCode is not null;
 
-        IFaction? ICreature.Faction => this.Faction;
+        IFaction ICreature.Faction => this.Faction ?? this.Catalog.NeutralFaction;
     }
 }

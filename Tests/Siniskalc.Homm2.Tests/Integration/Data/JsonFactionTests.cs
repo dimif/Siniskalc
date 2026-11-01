@@ -54,12 +54,19 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             var spell = heroPage.SpellsEditor.Finder.Items.Cast<SpellRowViewModel>().Single(s => s.Name == "Star Ward");
             Assert.That(spell.Magic, Is.EqualTo("Celestial"));
             spell.IsLearned = true;
+            castlePage.GuildLevelField.Selected = "Level 4";
+            Assert.That(castlePage.GuildLevels[3].Spells[0].Choices, Does.Contain("Star Ward"));
+            castlePage.GuildLevels[3].Spells[0].Selected = "Star Ward";
 
             var expected = (byte[])bytes.Clone();
             var at = layout.CastleStart(castleIndex);
-            ByteBufferHelper.WriteUInt16(expected, at + CastleLayout.TownBuildings, (ushort)(TownBuildings.Castle | TownBuildings.Special));
-            ByteBufferHelper.WriteUInt32(expected, at + CastleLayout.Dwellings, (uint)(Dwellings.Dwelling1 | Dwellings.Dwelling6Upgraded) | (1u << 16));
+            ByteBufferHelper.WriteUInt16(expected, at + CastleLayout.TownBuildings, (ushort)(TownBuildings.Castle | TownBuildings.Special | TownBuildings.MageGuild));
+            ByteBufferHelper.WriteUInt32(expected, at + CastleLayout.Dwellings, (uint)(Dwellings.Dwelling1 | Dwellings.Dwelling6Upgraded) | (4u << 16));
             expected[at + CastleLayout.GuildSpellCounts] = 4;
+            expected[at + CastleLayout.GuildSpellCounts + 1] = 4;
+            expected[at + CastleLayout.GuildSpellCounts + 2] = 3;
+            expected[at + CastleLayout.GuildSpellCounts + 3] = 3;
+            expected[at + CastleLayout.GuildSpells + 12] = 64;
             expected[at + CastleLayout.GarrisonTypes] = 72;
             ByteBufferHelper.WriteUInt16(expected, at + CastleLayout.GarrisonCounts, 11);
             var heroAt = layout.HeroStart(0);

@@ -30,16 +30,16 @@ A feature audit of both games found these gaps; the cheap ones are closed (see `
 - **A second savefile format of a game we have** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the format is not.
   Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules (entities, models, reducers, pages) and the format (locator, chunks, (de)serializers) when the first of them is started; the editor view models and pages already work with models and the collection classes, never with chunks.
 - **A third game** (HoMM1 first, as the test that the page interfaces are right): see "Adding a game" in the architecture document.
-- **Names behind a provider.** Names of creatures, spells and artifacts are string literals in the entity tables.
-  Before a third game, one injected name provider (like `EffectLineProvider`) so a creature is named once and the UI can be localized.
+- **Localized entity names.** Names and data-authored descriptions now live in each game's standard JSON catalog, loaded through an injected reader.
+  Selecting a language and resolving localized catalog text remain future work; generated wording still belongs to injected text providers.
 - **Shared page view models.** The pages of the two games look and work the same and bind to the same interfaces (`IPlayerPage`, `ICastlePage`, `IHeroPage`), but each game's view model is its own.
   The tabs of the two heroes still hold content only their game has (HoMM3: backpack, war machines, hero class); the secondary skills model is not shared, see "Secondary skills (M3)" below.
 - **View models free of WPF.** The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite for Avalonia.
 - **Cross platform support.** The core logic is already platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI.
 - **State store for hero edits.** The hero edits are reducers on immutable models.
   A single store holding the document and applying reducers would replace the per-view-model `Update` callbacks and the `Refresh()` calls that follow `History.Changed`.
-- **Editable store for game entities** Entities (heroes, castles, creatures) are hardcoded in the editor.
-  A store of entities that can be edited and saved would let the editor support mods and future games.
+- **Entity editing UI and custom profiles** are deferred. Standard definitions for supported versions now load from JSON at startup, with typed catalogs throughout both games and JSON-only extensions within known mechanics and format capacities.
+  There is no profile selector, user override directory, hot reload or in-app editor. See `docs/GAME_DEFINITIONS.md`.
 - **Log viewer** A log viewer in the UI for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
 - **Async file I/O (2026-11-01).** Only the two "export bytes" paths are async (`SavegameFileCommands.ExportBytesAsync`, `HexEditor.ExportBytesAsync`, both `File.WriteAllBytesAsync`); everything else is sync (settings, `RawSavefileCodec`, `GzipSavefileCodec`, `NumberedSavefileBackupService`, `SavegameService`), and the whole stack below the UI (loaders, (de)serializers, models, view models) is sync.
   - **Keep sync:** `UserSettings` and `SettingsStore` (a few hundred bytes, read once during composition in `AppServices`, written rarely; `*Async` is no faster on small files and would force async factories or a blocking `GetAwaiter().GetResult()` at startup).

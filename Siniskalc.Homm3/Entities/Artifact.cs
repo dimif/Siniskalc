@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +24,25 @@ public sealed class Artifact : CatalogEntity, IArtifact
         this.Wearable = definition.Wearable;
         this.CanBeInBackpack = definition.Backpack;
         var e = definition.EffectInfo;
-        this.EffectInfo = new ArtifactEffectInfo(e.Atk, e.Def, e.Pow, e.Kno, e.Luck, e.Morale, e.LandMovement, e.WaterMovement,
-            e.SpellGrants.Select(g => new SpellGrantProvider(catalog, g)).ToArray().AsReadOnly(), e.GrantsSpellBook,
-            e.Gold, e.Ore, e.Wood, e.Crystal, e.Gems, e.Mercury, e.Sulfur, e.Other);
+        this.EffectInfo = new ArtifactEffectInfo(
+            e.Atk,
+            e.Def,
+            e.Pow,
+            e.Kno,
+            e.Luck,
+            e.Morale,
+            e.LandMovement,
+            e.WaterMovement,
+            e.SpellGrants.Select(g => new SpellGrantProvider(catalog, g)).ToArray().AsReadOnly(),
+            e.GrantsSpellBook,
+            e.Gold,
+            e.Ore,
+            e.Wood,
+            e.Crystal,
+            e.Gems,
+            e.Mercury,
+            e.Sulfur,
+            e.Other);
     }
 
     public PrimarySkillBonus PrimarySkillBonus => new(this.EffectInfo.Atk, this.EffectInfo.Def, this.EffectInfo.Pow, this.EffectInfo.Kno);

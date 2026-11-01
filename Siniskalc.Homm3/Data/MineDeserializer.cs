@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System;
     using Microsoft.Extensions.Logging;
@@ -31,7 +31,8 @@ namespace Siniskalc.Homm3.Data
                 kind,
                 PlayerColor.FromByte(chunk.GetByteAt(MineLayout.Owner)),
                 new MapPosition(chunk.GetByteAt(MineLayout.X), chunk.GetByteAt(MineLayout.Y), chunk.GetByteAt(MineLayout.Level)),
-                ArmyReader.Read(chunk, MineLayout.Guard, creatureCodes), creatureCodes.Catalog);
+                ArmyReader.Read(chunk, MineLayout.Guard, creatureCodes),
+                creatureCodes.Catalog);
         }
     }
 }

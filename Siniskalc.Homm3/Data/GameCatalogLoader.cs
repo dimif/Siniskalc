@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using System;
 using System.Collections.Frozen;
@@ -26,21 +26,25 @@ public sealed class GameCatalogLoader
         {
             Require(
                 Enum.IsDefined(version) && version != GameVersion.Unknown && !string.IsNullOrWhiteSpace(setId),
-                "manifest.json", $"Version '{version}' must name a supported standard set.");
+                "manifest.json",
+                $"Version '{version}' must name a supported standard set.");
         }
 
         foreach (var (id, set) in manifest.Sets!)
         {
             Require(
                 !string.IsNullOrWhiteSpace(id) && set is not null && !string.IsNullOrWhiteSpace(set.Directory),
-                "manifest.json", $"Set '{id}' must have an identity and directory.");
+                "manifest.json",
+                $"Set '{id}' must have an identity and directory.");
             Require(
                 !System.IO.Path.IsPathRooted(set!.Directory)
                 && !set.Directory.Split('\\', '/').Any(part => part is "." or ".."),
-                "manifest.json", $"Set '{id}' must use a directory within this game's data.");
+                "manifest.json",
+                $"Set '{id}' must use a directory within this game's data.");
             Require(
                 set.Parent is null || !string.IsNullOrWhiteSpace(set.Parent),
-                "manifest.json", $"Set '{id}' has an empty parent.");
+                "manifest.json",
+                $"Set '{id}' has an empty parent.");
         }
 
         var sets = new Dictionary<string, CatalogDefinitions>(StringComparer.Ordinal);
@@ -79,12 +83,19 @@ public sealed class GameCatalogLoader
             }
 
             var result = new CatalogDefinitions(
-                Read("factions", parent?.Factions), Read("abilities", parent?.Abilities),
-                Read("buildings", parent?.Buildings), Read("creatures", parent?.Creatures),
-                Read("spellSchools", parent?.SpellSchools), Read("spells", parent?.Spells),
-                Read("heroClasses", parent?.HeroClasses), Read("secondarySkills", parent?.SecondarySkills),
-                Read("warMachines", parent?.WarMachines), Read("artifacts", parent?.Artifacts),
-                Read("visitedPlaces", parent?.VisitedPlaces), mapMetadata) { SourcePaths = sources };
+                Read("factions", parent?.Factions),
+                Read("abilities", parent?.Abilities),
+                Read("buildings", parent?.Buildings),
+                Read("creatures", parent?.Creatures),
+                Read("spellSchools", parent?.SpellSchools),
+                Read("spells", parent?.Spells),
+                Read("heroClasses", parent?.HeroClasses),
+                Read("secondarySkills", parent?.SecondarySkills),
+                Read("warMachines", parent?.WarMachines),
+                Read("artifacts", parent?.Artifacts),
+                Read("visitedPlaces", parent?.VisitedPlaces),
+                mapMetadata)
+            { SourcePaths = sources };
             visiting.Remove(id);
             sets.Add(id, result);
             return result;

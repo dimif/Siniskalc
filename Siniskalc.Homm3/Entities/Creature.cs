@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +18,24 @@ public sealed class Creature : CatalogEntity, ICreature
         this.dwelling = definition.Dwelling;
         this.baseCreature = definition.BaseCreature;
         var s = definition.Info;
-        this.Info = new CreatureInfo(s.Atk, s.Def, s.MinDamage, s.MaxDamage, s.Health, s.Speed, s.Growth,
-            s.AiValue, s.FightValue, s.Gold, s.Wood, s.Ore, s.Mercury, s.Sulfur, s.Crystal, s.Gems, s.Shots,
+        this.Info = new CreatureInfo(
+            s.Atk,
+            s.Def,
+            s.MinDamage,
+            s.MaxDamage,
+            s.Health,
+            s.Speed,
+            s.Growth,
+            s.AiValue,
+            s.FightValue,
+            s.Gold,
+            s.Wood,
+            s.Ore,
+            s.Mercury,
+            s.Sulfur,
+            s.Crystal,
+            s.Gems,
+            s.Shots,
             s.Special.Select(id => (ICreatureAbility)catalog.Abilities.ById(id)).ToArray().AsReadOnly());
     }
 

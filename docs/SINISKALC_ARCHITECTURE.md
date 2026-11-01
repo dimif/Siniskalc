@@ -17,8 +17,8 @@ A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `Lis
 
 **`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
 It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
-A game implements them with its own types, and is free to repeat itself: the classes (`SecondarySkill`, both games' `Faction`, HoMM2's `Color`, HoMM3's `PlayerColor`) are `AbstractEnumeration`s that implement the interface and are used as such in the models, the `Data` layer and the view models; only `SkillLevel` is still an enum, with a small catalog (`SkillLevels.Of(level)`).
-A colour has a `Neutral` member (code 255, which is the byte of a savefile for what no player owns), and each game's `Faction` has one too (code 99); they are left out of HoMM2's `All`, and `FromByte` reads a byte that is none of them as `Neutral`, so the owner and the faction of a castle (and the owner of a hero or mine) are never `null`. `OwnerNames<TColor>` names the owners and `ByteEnumerations` reads and writes the byte (leaving one the editor does not understand alone).
+A game implements them with its own types, and is free to repeat itself: factions and secondary skills come from the game's immutable JSON catalog, while HoMM2's `Color` and HoMM3's `PlayerColor` remain fixed `AbstractEnumeration`s. Models, readers and view models use those typed entities, not JSON records; `SkillLevel` remains an enum with a small catalog (`SkillLevels.Of(level)`).
+A colour has a `Neutral` member (code 255, which is the byte of a savefile for what no player owns), and each game's catalog defines a neutral faction (normally code 99). Neutral choices are excluded where a picker requires a playable faction. An unknown colour or faction reads as neutral, so owners and creature factions are never `null`. `OwnerNames<TColor>` names the owners and `ByteEnumerations` handles fixed colour bytes; faction readers and safe serializers use the catalog, preserving unrecognised bytes while the model still holds the stand-in.
 A level a hero has not learned is `null`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
@@ -100,6 +100,7 @@ After editing JSON, restart the editor; reopening a savefile is not enough.
 There are no custom profiles, user overrides, live reload or in-app entity editor.
 Invalid or missing standard definitions prevent startup with `GameDefinitionException`; correct or restore the named file and restart.
 This does not change the separate rule that an unknown value inside a savefile loads safely and its original bytes are preserved.
+See [GAME_DEFINITIONS.md](GAME_DEFINITIONS.md) for the actual per-game file formats, inheritance, extension examples and contributor checks.
 
 ## Adding a game
 

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using System;
 using System.Collections.Generic;
@@ -148,7 +148,8 @@ public static class CatalogValidator
                     var target = buildings[prerequisite];
                     Check(
                         target.Faction == faction.Id || (target.Faction is null && !target.Except.Contains(faction.Id)),
-                        "buildings", $"{b.Id}: prerequisite '{prerequisite}' is unavailable to faction '{faction.Id}'.");
+                        "buildings",
+                        $"{b.Id}: prerequisite '{prerequisite}' is unavailable to faction '{faction.Id}'.");
                     Available(b, target, "buildings", "requires");
                 }
             }
@@ -191,7 +192,8 @@ public static class CatalogValidator
             Check(s.Health > 0 && s.Speed > 0 && s.Growth >= 0 && s.MinDamage >= 0 && s.MaxDamage >= s.MinDamage && s.Gold >= 0 && s.Shots >= 0, "creatures", $"{c.Id}.info contains invalid stats.");
             Check(
                 s.Atk >= 0 && s.Def >= 0 && s.AiValue >= 0 && s.FightValue >= 0 && s.Wood >= 0 && s.Ore >= 0 && s.Mercury >= 0 && s.Sulfur >= 0 && s.Crystal >= 0 && s.Gems >= 0,
-                "creatures", $"{c.Id}.info contains a negative statistic or resource cost.");
+                "creatures",
+                $"{c.Id}.info contains a negative statistic or resource cost.");
             foreach (var ability in s.Special!)
             {
                 Reference(abilities, ability, "creatures", c.Id + ".info.special");
@@ -213,7 +215,9 @@ public static class CatalogValidator
                 Available(c, b, "creatures", "dwelling");
                 Check(
                     b.Faction == c.Faction && (b.Type == BuildingType.Dwelling1 + c.Tier - 1 || b.Type == BuildingType.UpgradedDwelling1 + c.Tier - 1
-                    || b.Type is >= BuildingType.Special1 and <= BuildingType.Special4), "creatures", $"{c.Id}.dwelling does not match faction/tier or a supported additional dwelling slot.");
+                    || b.Type is >= BuildingType.Special1 and <= BuildingType.Special4),
+                    "creatures",
+                    $"{c.Id}.dwelling does not match faction/tier or a supported additional dwelling slot.");
             }
         }
 
@@ -246,11 +250,13 @@ public static class CatalogValidator
         {
             Check(
                 Enum.IsDefined(m.Encoding) && Enum.IsDefined(m.Slot) && m.Slot == m.Encoding switch
-            {
-                WarMachineEncoding.AmmoCart => WarMachineSlot.AmmoCart,
-                WarMachineEncoding.FirstAidTent => WarMachineSlot.FirstAidTent,
-                _ => WarMachineSlot.Artillery,
-            }, "warMachines", $"{m.Id}: unsupported encoding/slot.");
+                {
+                    WarMachineEncoding.AmmoCart => WarMachineSlot.AmmoCart,
+                    WarMachineEncoding.FirstAidTent => WarMachineSlot.FirstAidTent,
+                    _ => WarMachineSlot.Artillery,
+                },
+                "warMachines",
+                $"{m.Id}: unsupported encoding/slot.");
         }
 
         const ArtifactSlots allSlots = ArtifactSlots.Helmet | ArtifactSlots.Necklace | ArtifactSlots.Torso | ArtifactSlots.Feet | ArtifactSlots.Weapon | ArtifactSlots.Shield | ArtifactSlots.Cape | ArtifactSlots.Rings | ArtifactSlots.Misc;
@@ -273,12 +279,14 @@ public static class CatalogValidator
                 Check(g is not null && Enum.IsDefined(g.Kind) && g.Description is not null && g.Spells is not null, "artifacts", $"{a.Id}.spellGrants: unsupported/null grant.");
                 Check(
                     g!.Kind switch
-                {
-                    SpellGrantKind.Named => g.Spells!.Length > 0 && g.School is null && g.Level is null,
-                    SpellGrantKind.School => g.School is not null && g.Spells!.Length == 0 && g.Level is null,
-                    SpellGrantKind.Level => g.Level is >= 1 and <= Building.MageGuildLevelCount && g.School is null && g.Spells!.Length == 0,
-                    _ => false,
-                }, "artifacts", $"{a.Id}.spellGrants: incompatible parameters.");
+                    {
+                        SpellGrantKind.Named => g.Spells!.Length > 0 && g.School is null && g.Level is null,
+                        SpellGrantKind.School => g.School is not null && g.Spells!.Length == 0 && g.Level is null,
+                        SpellGrantKind.Level => g.Level is >= 1 and <= Building.MageGuildLevelCount && g.School is null && g.Spells!.Length == 0,
+                        _ => false,
+                    },
+                    "artifacts",
+                    $"{a.Id}.spellGrants: incompatible parameters.");
                 foreach (var id in g.Spells!)
                 {
                     Reference(spells, id, "artifacts", a.Id + ".spellGrants.spells");
@@ -296,12 +304,14 @@ public static class CatalogValidator
         Check(
             metadata is not null && metadata.Mines is not null && metadata.VisitEffects is not null
             && !string.IsNullOrWhiteSpace(metadata.MerchantName) && !string.IsNullOrWhiteSpace(metadata.DwellingName),
-            "mapObjects", "Metadata, mines, effects and names must not be null or empty.");
+            "mapObjects",
+            "Metadata, mines, effects and names must not be null or empty.");
         Check(metadata!.Mines!.All(m => m is not null) && metadata.VisitEffects!.All(e => e is not null), "mapObjects", "Mine/effect entries must not be null.");
         Check(
             metadata.Mines!.Select(m => m.Kind).Distinct().Count() == metadata.Mines!.Length
             && metadata.Mines.Select(m => m.Kind).Order().SequenceEqual(Enum.GetValues<Siniskalc.Heroes.Entities.MineKind>().Order()),
-            "mapObjects", "Each supported mine storage kind must occur exactly once.");
+            "mapObjects",
+            "Each supported mine storage kind must occur exactly once.");
         One(metadata.Mines.Where(m => m.Fallback), "mapObjects", "unknown mine fallback");
         foreach (var m in metadata.Mines)
         {
@@ -311,7 +321,8 @@ public static class CatalogValidator
         Check(
             metadata.VisitEffects!.Select(e => e.Effect).Distinct().Count() == metadata.VisitEffects!.Length
             && metadata.VisitEffects.Select(e => e.Effect).Order().SequenceEqual(Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None).Order()),
-            "mapObjects", "Each supported visit-effect storage flag must occur exactly once.");
+            "mapObjects",
+            "Each supported visit-effect storage flag must occur exactly once.");
         Check(metadata.VisitEffects.Select(e => e.Order).Distinct().Count() == metadata.VisitEffects.Length, "mapObjects", "Visit-effect display orders must be unique.");
         foreach (var e in metadata.VisitEffects)
         {
@@ -319,7 +330,8 @@ public static class CatalogValidator
                 !string.IsNullOrWhiteSpace(e.Name) && !string.IsNullOrWhiteSpace(e.Description)
                 && e.Order >= 0 && e.Morale is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck
                 && e.Luck is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck,
-                "mapObjects", $"{e.Effect}: invalid name, description or morale/luck parameters.");
+                "mapObjects",
+                $"{e.Effect}: invalid name, description or morale/luck parameters.");
         }
     }
 }

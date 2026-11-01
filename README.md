@@ -90,6 +90,7 @@ Entity definitions can add content using the editor's existing mechanics and the
 They cannot add new binary formats, enlarge fixed savefile tables or implement new game mechanics.
 There are no custom profiles or live reload.
 See [Standard game definitions](docs/SINISKALC_ARCHITECTURE.md#standard-game-definitions) for the architecture and boundaries.
+See [Editing game definitions](docs/GAME_DEFINITIONS.md) for file formats, version inheritance and adding a faction.
 
 ## Building
 

@@ -1,7 +1,18 @@
 # Siniskalc user guide
 
-Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death, Horn of the Abyss, and *maybe* even Heroes Chronicles, for heroes and towns only.
+Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss) and Heroes of Might and Magic II (The Succession Wars and The Price of Loyalty).
+Heroes Chronicles support is speculative and limited to heroes and towns.
+HoMM2 editing has savefile regression coverage but has not yet been verified in the game.
 It needs Windows; there is nothing to install, unzip a release and run `Siniskalc.exe`.
+Keep both shipped `GameData` folders beside the executable.
+
+## Standard game definitions
+
+The editor loads entity definitions from `GameData\Homm2` and `GameData\Homm3` once at startup.
+Editing these files requires restarting the editor; **File > Reload** reloads only the savegame.
+Missing or invalid definitions stop startup with the file and cause; correct or restore the named file rather than expecting built-in fallback data.
+There are no custom profiles or live reload.
+See [Editing game definitions](GAME_DEFINITIONS.md) for the formats, supported effects and limits of JSON-only changes.
 
 ## Before you start: back up your saves
 

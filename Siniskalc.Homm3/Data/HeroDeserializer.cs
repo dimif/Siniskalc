@@ -182,7 +182,7 @@
             var code = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Class]);
             if (this.entities.Catalog.HeroClasses.Find(code) is null)
             {
-                Logger.LogTrace("Class byte {Code:X2} read as Knight and kept until the class is changed", code);
+                Logger.LogTrace("Class byte {Code:X2} read as {StandIn} and kept until the class is changed", code, this.entities.Catalog.FallbackHeroClass.Name);
             }
 
             return this.entities.Catalog.HeroClasses.Find(code) ?? this.entities.Catalog.FallbackHeroClass;

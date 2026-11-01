@@ -57,6 +57,8 @@
         /// </summary>
         private static void SerializeMageGuildSpells(CastleChunk chunk, byte[] bytes, CastleModel castle)
         {
+            using var subject = Logger.BeginSubject("Castle", castle.Name);
+            var skippedLevels = 0;
             for (var level = 1; level <= CastleLayout.SpellLevelCount && level <= castle.MageGuildSpells.Count; level++)
             {
                 var slots = new List<int>();
@@ -73,8 +75,8 @@
                 var spells = castle.MageGuildSpells[level - 1];
                 if (spells.Count != slots.Count)
                 {
-                    using var subject = Logger.BeginSubject("Castle", castle.Name);
-                    Logger.LogWarning("The spells of Mage Guild level {Level} were not written: the model lists {Count} of them and the savefile has {Slots} slots that hold a known spell", level, spells.Count, slots.Count);
+                    skippedLevels++;
+                    Logger.LogTrace("The spells of Mage Guild level {Level} were not written: the model lists {Count} of them and the savefile has {Slots} slots that hold a known spell", level, spells.Count, slots.Count);
                     continue;
                 }
 
@@ -82,6 +84,11 @@
                 {
                     BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(slots[i], 4), spells[i].Code);
                 }
+            }
+
+            if (skippedLevels > 0)
+            {
+                Logger.LogWarning("Skipped writing {Count} Mage Guild levels because their spell lists did not match the known savefile slots", skippedLevels);
             }
         }
 
@@ -167,7 +174,7 @@
             if (skipped > 0)
             {
                 using var subject = Logger.BeginSubject("Castle", castle.Name);
-                Logger.LogWarning("{Count} buildings have a code that does not fit the 64-bit masks and were not written", skipped);
+                Logger.LogWarning("Skipped {Count} buildings whose codes do not fit the 64-bit masks", skipped);
             }
 
             foreach (var (trigger, bit) in CastleLayout.CompanionBits(castle.Faction))

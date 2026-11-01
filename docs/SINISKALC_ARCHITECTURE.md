@@ -89,6 +89,8 @@ Both games organize adventure-map metadata as `standard\mines.json`, `visitableP
 HoMM2's spell categories live in `spellTypes.json`; they remain distinct from the combat/adventure spell kind.
 References use stable entity IDs rather than localized names or positions in a list.
 Common flags and ordinary roles can be omitted. Artifact modifiers are sparse attribute/amount lists, not separate effect identities or objects full of zeroes.
+Array position supplies the catalog's default order, not a forced order for every finder or page.
+The `Neutral` faction, HoMM3's `all` spell school and the `Ranged` ability are recognized by stable IDs rather than authored classification flags.
 Unknown required entities use code 0 as editor business logic; no JSON record chooses a fallback.
 HoMM3 ships one standard directory for every version, using short version identifiers and per-creature `versionInfo` statistics where the versions differ.
 Save codes remain format-specific; in particular a castle building's bit is interpreted in the context of its faction, not as a globally unique entity code.

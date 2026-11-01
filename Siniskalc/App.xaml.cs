@@ -153,9 +153,9 @@ namespace Siniskalc
                     MessageBox.Show(message, "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.LogError("The unexpected error window itself failed; the plain message box is the last resort");
+                Logger.LogError(ex, "The unexpected error window itself failed; the plain message box is the last resort");
                 MessageBox.Show(message, "Unexpected error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally

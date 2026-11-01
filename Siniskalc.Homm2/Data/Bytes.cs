@@ -85,7 +85,7 @@
             var artifact = catalog.Artifacts.Find(code);
             if (artifact is null)
             {
-                Logger.LogTrace("Artifact code {Code:X2} is unknown, read as the catalog fallback {Fallback}", code, catalog.FallbackArtifact.Name);
+                Logger.LogTrace("Artifact code {Code:X2} is unknown, read as {StandIn} and kept until changed", code, catalog.FallbackArtifact.Name);
             }
 
             return artifact ?? catalog.FallbackArtifact;

@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- Logging review of the JSON migration: decoder messages name the actual catalog stand-in, unknown castle factions are traced, and skipped Mage Guild levels produce one warning per castle rather than one per level.
 - **Consistent definition organization:** HoMM2 spell categories are in `spellTypes.json`. Both games keep `mines.json`, `visitablePlaces.json`, `visitEffects.json` and `mapObjects.json` under their standard set, with descriptions named consistently and game-specific storage fields preserved.
 - HoMM3's Catapult is no longer an artifact definition; editable war machines remain in their separate catalog. HoMM2's similarly named actual artifacts are unchanged.
 - **Simpler game definitions:** artifact effects are sparse attribute/amount lists in both games; default artifact and spell flags and ordinary roles can be omitted. Fallbacks use code 0 and the well-known `Neutral` faction is recognized by ID, not authored flags; `Ranged` is a standalone ability. Array position controls display order without an `order` property. HoMM3 visitable definitions are named `visitablePlaces`; all shipped entities now live in `standard`, with version-specific creature stats kept on the record. JSON versions use `roe`, `ab`, `sod`, `chronicles`, `hota` (HoMM3) and `sw`, `pol` (HoMM2).

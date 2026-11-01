@@ -1,13 +1,14 @@
 # Siniskalc
 
 ## What
-A Windows desktop savegame editor for **Heroes of Might and Magic III** (HoMM2 and other titles planned).
-It edits savegames (`.GM1`, `.CGM`, and the other save extensions the game writes).
+A Windows desktop savegame editor for **Heroes of Might and Magic III**, with **Heroes of Might and Magic II** support in development.
+It edits HoMM3 savegames (`.GM1`, `.CGM`, and the other save extensions the game writes) and HoMM2 saves (`.GM1` for The Succession Wars and `.GX1` for The Price of Loyalty).
 With it you open a save, browse the game by player, hero and town, change what you want, and the editor writes it back.
 
-Currently supports Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss (HotA).
+HoMM3 supports Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss (HotA).
 Do note that Heroes Chronicles support is entirely speculative and extracted from the work of Erki Suurjaak on h3sed, as I do not own a copy of the game.
 Only its heroes and towns are read: there are no players, date or game setup.
+HoMM2 supports The Succession Wars and The Price of Loyalty; its editing is covered by savefile tests but has not yet been verified in the game.
 
 Siniskalc allows you to edit the following entities in a savegame:
 * **Players**: resources, tavern, heroes, towns, visited obelisks.
@@ -33,6 +34,7 @@ Players, map creators and tinkerers in general.
 ### Download and run
 
 Download the latest zip from the Releases section of the repository, unzip it anywhere and run `Siniskalc.exe`.
+Keep the shipped `GameData` folders beside the executable; they contain the entity definitions required at startup.
 No installation needed, but it requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (x64).
 
 ## Features
@@ -98,7 +100,7 @@ Requires the .NET 8 SDK on Windows.
 
 ```
 dotnet build Siniskalc.sln
-dotnet test
+dotnet test Siniskalc.sln --artifacts-path .artifacts
 ```
 
 ## Contributing

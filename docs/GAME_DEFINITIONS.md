@@ -11,14 +11,18 @@ There are no custom profiles, override folders, live reload or in-app definition
 
 ## What belongs here
 
-Definitions supply creatures, abilities, artifacts and supported effects, factions, castle buildings, supported map-object metadata, spells, hero classes or hero/faction mappings, secondary skills, spell schools or groups, and war machines where the game has them.
+Definitions supply creatures, abilities, artifacts and supported effects, factions, castle buildings, supported map-object metadata, spells, hero classes or hero/faction mappings, secondary skills, spell schools or spell types, and war machines where the game has them.
 Savegame instances (a particular hero, town or mine) still come from the savefile.
 Player colours and genuinely fixed encoding enums remain code.
 HoMM3 war machines are separate from artifacts: Catapult is not an artifact definition, and the editable Ballista, Ammo Cart, First Aid Tent and Cannon live in `warMachines.json`.
 HoMM2's Ammo Cart and Ballista of Quickness remain artifacts, as they are in that game.
 
 An entity's `id` is a stable, case-sensitive reference, not its name, list position or save code.
-Keep existing IDs when changing wording. JSON array order controls presentation; there is no `order` property. `code` is a format-specific binary value.
+Some fixed map-metadata records use an encoding enum (`kind` or `effect`) instead of an entity ID.
+Keep existing IDs when changing wording.
+JSON array order supplies the catalog's default order; there is no `order` property.
+Pages and finders may still sort or group by name, level or another displayed value.
+`code` is a format-specific binary value.
 Do not reuse codes where a domain requires uniqueness.
 HoMM3 building codes are contextual to a faction, not globally unique.
 Do not infer mechanics from the display name: role and policy fields express the supported behaviour.
@@ -32,7 +36,7 @@ The `Ranged` ability stands alone in the ability list; no ability has an authore
 
 Definitions are data, not scripts. They can choose existing effect implementations, their parameters, names and descriptions.
 They cannot introduce new binary layouts, enlarge fixed tables or masks, create a new effect implementation, or make the game executable understand new content.
-For example, HoMM2 still has 54 hero records, 14 secondary skill slots, 65 spell codes and five guild levels with four slots per level.
+For example, HoMM2 still has 54 hero records, a table for 14 secondary skills with at most eight learned skills, spell codes 1 through 65 and five guild levels with four slots per level.
 HoMM3 spell and skill codes must fit their existing bitsets, and each faction's buildings must fit its existing mask.
 The loaders reject unrepresentable or ambiguous definitions rather than silently truncating them.
 
@@ -63,6 +67,7 @@ Each domain has an envelope:
 
 ```json
 {
+  "schemaVersion": 1,
   "entries": [],
   "replacements": []
 }
@@ -108,15 +113,18 @@ Set entries give both a directory and an optional parent:
 ```
 
 These are entries in the manifest's `sets` object, not a standalone manifest.
-The directory contains `factions`, `abilities`, `buildings`, `creatures`, `spellSchools`, `spells`, `heroClasses`, `secondarySkills`, `warMachines`, `artifacts` and `visitablePlaces` JSON files.
+The directory contains `factions`, `abilities`, `buildings`, `creatures`, `spellSchools`, `spells`, `heroClasses`, `secondarySkills`, `warMachines`, `artifacts`, `visitablePlaces`, `mines`, `visitEffects` and `mapObjects` JSON files.
 Map metadata lives in the selected set alongside the other definitions, not at the game data root.
 The `schemas` directory contains the per-file JSON schemas.
 
-Each domain file is an array. A child array adds records; `"replaces": true` on a record replaces the entire inherited record with that ID.
+Each entity domain file is an array.
+A child entity array adds records; `"replaces": true` on a record replaces the entire inherited record with that ID.
 An empty child array inherits the domain unchanged. Duplicate local IDs and replacements of nonexistent IDs are errors.
 Replacements retain the inherited position, and additions append in array order. Shipped definitions need no child set.
 `availableFrom` controls availability in the supported versions; manifests still explicitly select the standard set.
-There is no shipped `hota` data directory. Creature stat differences are in an optional `versionInfo` object on the creature: for example, `"versionInfo": { "hota": { ...complete stats... } }`.
+There is no shipped `hota` data directory.
+Creature stat differences are in an optional `versionInfo` object on the creature.
+Its keys are version identifiers such as `hota`, and each value is a complete stats object, not a partial patch.
 The creature's `info` remains its normal stats, so the Faerie Dragon keeps its original AI value in older versions and its changed value in HotA.
 Version overrides select exact supported versions; they do not imply that every later mod inherits them.
 Code lookup retains definitions needed for historical reading even when they are not offered in a version's pickers.
@@ -160,6 +168,10 @@ The files share responsibilities and camelCase naming, not an artificial common 
 HoMM2 retains its `schemaVersion`/`entries`/`replacements` envelopes and its `kind`, `flag` and visit `behaviour` fields.
 HoMM3 retains arrays and its own storage slots, object types and editable flags; `mapObjects.json` holds its merchant and dwelling labels, while HoMM2 has per-role name formats for shrines and sphinxes.
 HoMM3's mine and visit-effect arrays describe complete fixed sets of supported encodings: a nonempty child array replaces the whole metadata domain, and an empty child array inherits it. Each set supplies its own map-object labels.
+Unlike those arrays, HoMM3's `mapObjects.json` is an object containing `merchantName` and `dwellingName`.
+HoMM3's `objectType`, `slot` and `numberMask` visit fields currently describe its existing decoder.
+`numberMask` extracts an instance number from a byte containing flags: 255 uses the whole byte, while 31 uses its lowest five bits for Trees of Knowledge.
+They do not define new savefile layouts or visitor mechanics.
 These differences reflect what each game stores and what the editor can currently read, rather than imposing unused fields on the other game.
 
 ## Artifact effects
@@ -185,7 +197,8 @@ Empty modifier/grant lists, false `grantsSpellBook` and empty `other` can be omi
 
 ## Errors and contributor checks
 
-The shared reader rejects unknown properties, duplicate JSON properties, numeric enum values, null roots and paths outside the game definition root.
+The shared reader rejects unknown properties, duplicate JSON properties, numeric enum values, null roots and paths outside its configured root (the application directory by default).
+The game loaders select paths below their game's `GameData` directory.
 The game loaders check schema versions, explicit version mappings, inheritance cycles, required files, IDs, codes, references, roles, effect parameters and format capacities before exposing catalogs.
 Invalid or missing standard data stops application startup with `GameDefinitionException`; the message identifies the file and cause.
 Correct or restore the named file and restart. There is no hardcoded fallback catalog.

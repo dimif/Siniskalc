@@ -79,7 +79,7 @@
                 return faction;
             }
 
-            Logger.LogTrace("Hero id {Id} has no faction mapping and reads as the code-zero faction {StandIn}", id, this.heroFallback.Name);
+            Logger.LogTrace("Hero id {HeroId} has no faction mapping and reads as the code-zero faction {StandIn}", id, this.heroFallback.Name);
             return this.heroFallback;
         }
     }

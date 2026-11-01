@@ -50,7 +50,15 @@
 
         public Faction DeserializeFaction(CastleChunk chunk)
         {
-            return this.catalog.Factions.Find(chunk.GetByteAt(CastleLayout.Faction)) ?? this.catalog.NeutralFaction;
+            var code = chunk.GetByteAt(CastleLayout.Faction);
+            var faction = this.catalog.Factions.Find(code);
+            if (faction is null && code != Constants.ByteOff)
+            {
+                using var subject = Logger.BeginSubject("Castle", chunk.Name);
+                Logger.LogTrace("Faction byte {Code:X2} read as {StandIn} and kept until the faction is changed", code, this.catalog.NeutralFaction.Name);
+            }
+
+            return faction ?? this.catalog.NeutralFaction;
         }
 
         public PlayerColor DeserializeOwner(CastleChunk chunk)

@@ -7,6 +7,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class ObeliskVisitsCard : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObeliskVisitsCard"/> class.
+        /// </summary>
         public ObeliskVisitsCard()
         {
             this.InitializeComponent();

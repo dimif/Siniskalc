@@ -15,6 +15,13 @@
     {
         private string filter = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractFinderViewModel"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="noun">The noun.</param>
+        /// <param name="columns">The columns.</param>
+        /// <param name="items">The items.</param>
         protected AbstractFinderViewModel(string title, string noun, IReadOnlyList<FinderColumn> columns, ListCollectionView items)
         {
             this.Title = title;
@@ -35,6 +42,9 @@
         /// </summary>
         public string Noun { get; }
 
+        /// <summary>
+        /// Gets the columns of the list, which the header of the list shows and sorts by.
+        /// </summary>
         public IReadOnlyList<FinderColumn> Columns { get; }
 
         /// <summary>
@@ -157,10 +167,25 @@
         /// </summary>
         public abstract void ChooseRowSecondary(object? row);
 
+        /// <summary>
+        /// Returns whether the action can be run on a row.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the action can be run on <paramref name="row"/>.</returns>
         protected abstract bool CanChooseRow(object row);
 
+        /// <summary>
+        /// Returns whether the second action can be run on a row.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the second action can be run on <paramref name="row"/>.</returns>
         protected abstract bool CanChooseRowSecondary(object row);
 
+        /// <summary>
+        /// Returns whether a row passes the search text and the filters, so the list shows it.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the list shows <paramref name="row"/>.</returns>
         protected abstract bool MatchesRow(object row);
 
         /// <summary>
@@ -199,6 +224,9 @@
             return words.All(word => fields.Any(f => f != null && f.Contains(word, StringComparison.OrdinalIgnoreCase)));
         }
 
+        /// <summary>
+        /// Applies the search text and the filters to the list again and updates the summary.
+        /// </summary>
         protected void RefreshList()
         {
             this.Items.Refresh();

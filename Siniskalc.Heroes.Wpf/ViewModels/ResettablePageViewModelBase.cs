@@ -13,6 +13,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     {
         private readonly IHistoryEvents history;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResettablePageViewModelBase"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="history">The history.</param>
         protected ResettablePageViewModelBase(string title, IHistoryEvents history)
             : base(title)
         {
@@ -24,6 +29,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <inheritdoc/>
         public ICommand ResetCommand { get; }
 
+        /// <inheritdoc/>
         public void Dispose() => this.history.Changed -= this.OnHistoryChangedCore;
 
         /// <summary>

@@ -24,16 +24,34 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.IsHuman = isHuman;
         }
 
+        /// <summary>
+        /// Gets the name of the player, which is the name of the colour.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the colour of the player as a hex string.
+        /// </summary>
         public string ColorHex { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether it is the turn of the player.
+        /// </summary>
         public bool IsCurrent { get; }
 
+        /// <summary>
+        /// Gets the command that gives the turn to the player, or <see langword="null"/> when the player cannot be given it.
+        /// </summary>
         public ICommand? Command { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the item.
+        /// </summary>
         public string ToolTip { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the player is a human.
+        /// </summary>
         public bool IsHuman { get; }
     }
 }

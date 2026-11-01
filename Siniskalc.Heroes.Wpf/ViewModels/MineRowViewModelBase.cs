@@ -33,6 +33,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.HasLevel = hasLevels;
         }
 
+        /// <summary>
+        /// Gets the number of the mine among the mines of the savefile.
+        /// </summary>
         public int Index { get; }
 
         /// <summary>
@@ -40,12 +43,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasLevel { get; }
 
+        /// <summary>
+        /// Gets the name of the kind of the mine, such as a sawmill.
+        /// </summary>
         public virtual string Kind => MineKinds.NameOf(this.kind());
 
+        /// <summary>
+        /// Gets the name of the resource the mine produces.
+        /// </summary>
         public virtual string ResourceName => MineKinds.ResourceOf(this.kind()).ToString();
 
+        /// <summary>
+        /// Gets the column of the mine on the map.
+        /// </summary>
         public int X => this.position().X;
 
+        /// <summary>
+        /// Gets the row of the mine on the map.
+        /// </summary>
         public int Y => this.position().Y;
 
         /// <summary>
@@ -68,6 +83,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.position(), this.HasLevel);
 
+        /// <summary>
+        /// Gets the text the list sorts the owner column by.
+        /// </summary>
         public string OwnerSort => this.OwnerField.Selected;
 
         /// <summary>
@@ -75,6 +93,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool IsOwned => this.isOwned();
 
+        /// <summary>
+        /// Gets the field where the user picks the owner of the mine.
+        /// </summary>
         public ChoiceFieldViewModel OwnerField { get; }
 
         /// <summary>
@@ -82,6 +103,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public virtual string Summary => string.Empty;
 
+        /// <summary>
+        /// Shows the row again. Call after the mine changed elsewhere.
+        /// </summary>
         public virtual void Refresh()
         {
             this.OwnerField.Refresh();

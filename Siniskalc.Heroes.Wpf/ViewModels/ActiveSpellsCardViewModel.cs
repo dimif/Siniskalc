@@ -16,6 +16,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.Spells = spells;
         }
 
+        /// <summary>
+        /// Gets the spells that can be active on the hero, each with its switch.
+        /// </summary>
         public IReadOnlyList<ToggleRowViewModel> Spells { get; }
 
         /// <summary>

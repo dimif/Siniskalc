@@ -38,8 +38,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 : string.Join(" · ", ResourceSet.All.Where(r => r != Resource.Gold).Select(r => $"{resources[r]:N0} {r.ToString().ToLowerInvariant()}"));
         }
 
+        /// <summary>
+        /// Gets the name of the player, which is the name of the colour.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the colour of the player as a hex string.
+        /// </summary>
         public string ColorHex { get; }
 
         /// <summary>
@@ -47,8 +53,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string BanishingText { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the card has a note about the player being banished.
+        /// </summary>
         public bool HasBanishing => this.BanishingText.Length > 0;
 
+        /// <summary>
+        /// Gets a value indicating whether the player was banished from the game.
+        /// </summary>
         public bool IsBanished { get; }
 
         /// <summary>
@@ -56,8 +68,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string ControlText { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the savefile has a record of the resources of the player.
+        /// </summary>
         public bool HasResources { get; }
 
+        /// <summary>
+        /// Gets the gold of the player, as text.
+        /// </summary>
         public string Gold { get; }
 
         /// <summary>
@@ -65,12 +83,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string OtherResources { get; }
 
+        /// <summary>
+        /// Gets the links to the heroes of the player.
+        /// </summary>
         public IReadOnlyList<ILink> Heroes { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the player has any hero.
+        /// </summary>
         public bool HasHeroes => this.Heroes.Count > 0;
 
+        /// <summary>
+        /// Gets the links to the castles of the player.
+        /// </summary>
         public IReadOnlyList<CastleLinkViewModel> Castles { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the player has any castle.
+        /// </summary>
         public bool HasCastles => this.Castles.Count > 0;
 
         /// <summary>

@@ -10,6 +10,9 @@
     /// </summary>
     public partial class MapPointCard : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPointCard"/> class.
+        /// </summary>
         public MapPointCard()
         {
             this.InitializeComponent();

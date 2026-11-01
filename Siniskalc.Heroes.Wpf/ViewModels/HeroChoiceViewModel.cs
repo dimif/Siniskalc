@@ -10,6 +10,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public const int NoneKey = -1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroChoiceViewModel"/> class.
+        /// </summary>
+        /// <param name="heroId">The hero id.</param>
+        /// <param name="name">The name.</param>
         public HeroChoiceViewModel(int? heroId, string name)
         {
             this.HeroId = heroId;
@@ -26,8 +31,15 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public int Key => this.HeroId ?? NoneKey;
 
+        /// <summary>
+        /// Gets the name of the hero as the list of choices shows it.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Returns the name of the hero, which is what a list of choices shows.
+        /// </summary>
+        /// <returns><see cref="Name"/>.</returns>
         public override string ToString() => this.Name;
     }
 }

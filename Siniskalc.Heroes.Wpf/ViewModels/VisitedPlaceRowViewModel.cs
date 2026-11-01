@@ -17,6 +17,15 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly int onMap;
         private bool isExpanded;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VisitedPlaceRowViewModel"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="visited">The visited.</param>
+        /// <param name="forget">The forget.</param>
+        /// <param name="remember">The remember.</param>
+        /// <param name="toolTip">The tool tip.</param>
+        /// <param name="places">The places.</param>
         public VisitedPlaceRowViewModel(string name, Func<int> visited, Action forget, Action remember, string toolTip, IReadOnlyList<ToggleRowViewModel> places)
         {
             this.Name = name;
@@ -28,8 +37,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.RememberCommand = new DelegateCommand(_ => remember(), _ => this.Places.Any(p => !p.IsChecked));
         }
 
+        /// <summary>
+        /// Gets the name of the kind of place.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the row.
+        /// </summary>
         public string ToolTip { get; }
 
         /// <summary>
@@ -37,8 +52,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<ToggleRowViewModel> Places { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the hero has visited any place of the kind.
+        /// </summary>
         public bool HasPlaces => this.Places.Count > 0;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the row shows the places it holds.
+        /// </summary>
         public bool IsExpanded
         {
             get => this.isExpanded;
@@ -69,6 +90,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public ICommand RememberCommand { get; }
 
+        /// <summary>
+        /// Shows the row again. Call after the visited places changed.
+        /// </summary>
         public void Refresh()
         {
             this.RaisePropertyChanged(nameof(this.Text));

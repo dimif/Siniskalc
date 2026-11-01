@@ -44,6 +44,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.UpgradeCommand = new DelegateCommand(this.Upgrade, _ => this.HasUpgrade);
         }
 
+        /// <summary>
+        /// Gets the place of the slot, from 0.
+        /// </summary>
         public int SlotNumber { get; }
 
         /// <summary>
@@ -83,10 +86,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public int DisplayNumber => this.SlotNumber + 1;
 
+        /// <summary>
+        /// Gets the command that swaps the stack with the one before it.
+        /// </summary>
         public ICommand MoveUpCommand { get; }
 
+        /// <summary>
+        /// Gets the command that swaps the stack with the one after it.
+        /// </summary>
         public ICommand MoveDownCommand { get; }
 
+        /// <summary>
+        /// Gets the command that empties the slot.
+        /// </summary>
         public ICommand ClearCommand { get; }
 
         /// <summary>
@@ -100,8 +112,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<string> Upgrades => this.upgrades;
 
+        /// <summary>
+        /// Gets a value indicating whether the creature of the slot can be upgraded.
+        /// </summary>
         public bool HasUpgrade => this.HasCreature && this.upgrades.Count > 0;
 
+        /// <summary>
+        /// Gets a value indicating whether the creature of the slot can be upgraded to more than one creature, so the user has to choose.
+        /// </summary>
         public bool HasSeveralUpgrades => this.upgrades.Count > 1;
 
         /// <summary>
@@ -109,13 +127,22 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string UpgradeText => this.HasSeveralUpgrades ? "Upgrade ▾" : "Upgrade";
 
+        /// <summary>
+        /// Gets the tooltip of the upgrade button, which says why it cannot be used when that is so.
+        /// </summary>
         public string UpgradeToolTip => !this.HasCreature ? "Pick a creature first"
             : this.upgrades.Count == 0 ? "This creature cannot be upgraded further"
             : this.upgrades.Count == 1 ? $"Change the stack into {this.upgrades[0]}, keeping its size"
             : "Choose which creature to change the stack into, keeping its size";
 
+        /// <summary>
+        /// Gets a value indicating whether the slot holds a creature.
+        /// </summary>
         public bool HasCreature => !string.IsNullOrEmpty(this.selectedCreature);
 
+        /// <summary>
+        /// Gets or sets the name of the creature in the slot, or nothing for an empty slot. Setting it reports the change.
+        /// </summary>
         public string? SelectedCreature
         {
             get => this.selectedCreature;
@@ -133,6 +160,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the stack. Setting it reports the change.
+        /// </summary>
         public int CreatureAmount
         {
             get => this.creatureAmount;

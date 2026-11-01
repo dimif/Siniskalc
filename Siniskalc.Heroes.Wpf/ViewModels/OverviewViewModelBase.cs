@@ -25,6 +25,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly IGameInfo<TColor> game;
         private readonly BanishingTextProvider banishingText;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverviewViewModelBase"/> class.
+        /// </summary>
+        /// <param name="savegame">The savegame.</param>
+        /// <param name="game">The game.</param>
+        /// <param name="banishingText">The banishing text.</param>
         protected OverviewViewModelBase(AbstractSavegame savegame, IGameInfo<TColor> game, BanishingTextProvider banishingText)
         {
             this.savegame = savegame;

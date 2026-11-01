@@ -40,6 +40,9 @@
             this.HideCommand = new DelegateCommand(_ => onHide(index), _ => this.IsFilled);
         }
 
+        /// <summary>
+        /// Gets the place of the slot, from 0.
+        /// </summary>
         public int Index { get; }
 
         /// <summary>
@@ -47,14 +50,29 @@
         /// </summary>
         public int DisplayNumber => this.Index + 1;
 
+        /// <summary>
+        /// Gets the command that moves the skill of the slot up the hero screen.
+        /// </summary>
         public ICommand MoveUpCommand { get; }
 
+        /// <summary>
+        /// Gets the command that moves the skill of the slot down the hero screen.
+        /// </summary>
         public ICommand MoveDownCommand { get; }
 
+        /// <summary>
+        /// Gets the command that removes the skill of the slot.
+        /// </summary>
         public ICommand ClearCommand { get; }
 
+        /// <summary>
+        /// Gets the command that takes the skill off the hero screen but keeps its level.
+        /// </summary>
         public ICommand HideCommand { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the slot holds a skill.
+        /// </summary>
         public bool IsFilled => !string.IsNullOrEmpty(this.skillName);
 
         /// <summary>

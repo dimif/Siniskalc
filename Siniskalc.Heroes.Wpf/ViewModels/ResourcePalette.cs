@@ -7,6 +7,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public static class ResourcePalette
     {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
         public const string Unknown = "#8A93A6";
 
         private static readonly IReadOnlyDictionary<string, string> Colors = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)

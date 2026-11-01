@@ -12,9 +12,15 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class CreatureSlotPicker : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="PopupWidth"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty PopupWidthProperty =
             DependencyProperty.Register(nameof(PopupWidth), typeof(double), typeof(CreatureSlotPicker), new PropertyMetadata(1000.0));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreatureSlotPicker"/> class.
+        /// </summary>
         public CreatureSlotPicker()
         {
             this.InitializeComponent();

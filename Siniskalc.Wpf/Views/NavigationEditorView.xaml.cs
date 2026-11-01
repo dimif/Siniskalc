@@ -17,6 +17,9 @@ namespace Siniskalc.Wpf.Views
     {
         private readonly Dictionary<object, Page> pages = [];
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavigationEditorView"/> class.
+        /// </summary>
         public NavigationEditorView()
         {
             this.InitializeComponent();

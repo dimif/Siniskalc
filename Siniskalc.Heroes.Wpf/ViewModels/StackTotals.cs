@@ -13,6 +13,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly CreatureInfo info;
         private readonly int amount;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StackTotals"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="amount">The amount.</param>
         public StackTotals(CreatureInfo info, int amount)
         {
             this.info = info;

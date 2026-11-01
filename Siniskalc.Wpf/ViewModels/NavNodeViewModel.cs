@@ -23,6 +23,16 @@ namespace Siniskalc.Wpf.ViewModels
         private IReadOnlyList<NavBadge> badges = NoBadges;
         private IReadOnlyList<string> notes = NoNotes;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavNodeViewModel"/> class.
+        /// </summary>
+        /// <param name="title">The text of the node.</param>
+        /// <param name="subtitle">The smaller text under it.</param>
+        /// <param name="colorHex">The colour of the node as a hex string.</param>
+        /// <param name="kind">What the node stands for.</param>
+        /// <param name="index">The number of the hero, castle, player or other thing the node is about; -1 when it is none.</param>
+        /// <param name="tab">The tab of the page to show when the node is picked.</param>
+        /// <param name="onSelected">Called with the node when the user picks it.</param>
         public NavNodeViewModel(string title, string subtitle, string colorHex, NavNodeKind kind, int index = -1, int tab = 0, Action<NavNodeViewModel>? onSelected = null)
         {
             this.Title = title;
@@ -34,6 +44,9 @@ namespace Siniskalc.Wpf.ViewModels
             this.onSelected = onSelected;
         }
 
+        /// <summary>
+        /// Gets the text of the node.
+        /// </summary>
         public string Title { get; }
 
         /// <summary>
@@ -46,6 +59,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string ColorHex { get; }
 
+        /// <summary>
+        /// Gets what the node stands for, which tells the tree how to draw it and what page it opens.
+        /// </summary>
         public NavNodeKind Kind { get; }
 
         /// <summary>
@@ -58,10 +74,19 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public int Tab { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the node is a hero.
+        /// </summary>
         public bool IsHero => this.Kind == NavNodeKind.Hero;
 
+        /// <summary>
+        /// Gets a value indicating whether the node is a castle.
+        /// </summary>
         public bool IsCastle => this.Kind == NavNodeKind.Castle;
 
+        /// <summary>
+        /// Gets the nodes under this one.
+        /// </summary>
         public ObservableCollection<NavNodeViewModel> Children { get; } = [];
 
         /// <summary>
@@ -109,6 +134,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string NotesText => string.Concat(this.notes.Select(n => $" · {n}"));
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the node is the selected one in the tree.
+        /// </summary>
         public bool IsSelected
         {
             get => this.isSelected;
@@ -129,6 +157,9 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the node shows its children.
+        /// </summary>
         public bool IsExpanded
         {
             get => this.isExpanded;

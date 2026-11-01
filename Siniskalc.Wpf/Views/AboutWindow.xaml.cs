@@ -8,6 +8,10 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public partial class AboutWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AboutWindow"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public AboutWindow(AboutViewModel viewModel)
         {
             this.InitializeComponent();

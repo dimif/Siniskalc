@@ -11,22 +11,49 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class ListCard : ContentControl
     {
+        /// <summary>
+        /// Identifies the <see cref="Heading"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register(nameof(Heading), typeof(string), typeof(ListCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="Summary"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SummaryProperty = DependencyProperty.Register(nameof(Summary), typeof(string), typeof(ListCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="Note"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty NoteProperty = DependencyProperty.Register(nameof(Note), typeof(string), typeof(ListCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="CardWidth"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty CardWidthProperty = DependencyProperty.Register(nameof(CardWidth), typeof(double), typeof(ListCard), new PropertyMetadata(672.0));
 
+        /// <summary>
+        /// Identifies the <see cref="ListMaxHeight"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ListMaxHeightProperty = DependencyProperty.Register(nameof(ListMaxHeight), typeof(double), typeof(ListCard), new PropertyMetadata(double.PositiveInfinity));
 
+        /// <summary>
+        /// Identifies the <see cref="Toolbar"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ToolbarProperty = DependencyProperty.Register(nameof(Toolbar), typeof(object), typeof(ListCard));
 
+        /// <summary>
+        /// Identifies the <see cref="ItemsSource"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IEnumerable), typeof(ListCard));
 
+        /// <summary>
+        /// Identifies the <see cref="ItemTemplate"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(ListCard));
 
+        /// <summary>
+        /// Identifies the <see cref="SelectedItem"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(
             nameof(SelectedItem), typeof(object), typeof(ListCard), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
@@ -85,12 +112,18 @@ namespace Siniskalc.Heroes.Wpf.Views
             set => this.SetValue(ToolbarProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the items the card lists.
+        /// </summary>
         public IEnumerable? ItemsSource
         {
             get => (IEnumerable?)this.GetValue(ItemsSourceProperty);
             set => this.SetValue(ItemsSourceProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the template that shows an item.
+        /// </summary>
         public DataTemplate? ItemTemplate
         {
             get => (DataTemplate?)this.GetValue(ItemTemplateProperty);

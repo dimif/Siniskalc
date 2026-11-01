@@ -28,6 +28,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.ClearCommand = new DelegateCommand(_ => this.Pick(null, onPicked), _ => this.HasArtifact);
         }
 
+        /// <summary>
+        /// Gets the name of the place the artifact goes, such as a body slot.
+        /// </summary>
         public string Label { get; }
 
         /// <summary>
@@ -35,6 +38,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string? ArtifactName => this.artifactName;
 
+        /// <summary>
+        /// Gets a value indicating whether the place holds an artifact.
+        /// </summary>
         public bool HasArtifact => !string.IsNullOrEmpty(this.artifactName);
 
         /// <summary>
@@ -63,8 +69,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public AbstractFinderViewModel Finder => this.finder.Value;
 
+        /// <summary>
+        /// Gets the command that opens the list to pick an artifact from.
+        /// </summary>
         public ICommand OpenCommand { get; }
 
+        /// <summary>
+        /// Gets the command that takes the artifact out of the place.
+        /// </summary>
         public ICommand ClearCommand { get; }
 
         /// <summary>

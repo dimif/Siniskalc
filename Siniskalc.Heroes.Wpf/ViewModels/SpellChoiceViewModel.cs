@@ -28,6 +28,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.onLearnedChanged = onLearnedChanged;
         }
 
+        /// <summary>
+        /// Gets the name of the spell.
+        /// </summary>
         public string Name { get; }
 
         /// <summary>
@@ -40,6 +43,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public int Level { get; }
 
+        /// <summary>
+        /// Gets the kind of the spell, such as its school, as the list of choices shows it.
+        /// </summary>
         public string Kind { get; }
 
         /// <summary>

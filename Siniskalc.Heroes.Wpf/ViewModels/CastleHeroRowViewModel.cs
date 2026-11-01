@@ -18,6 +18,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.OpenCommand = open;
         }
 
+        /// <summary>
+        /// Gets how the hero is tied to the castle, such as visiting or garrisoned.
+        /// </summary>
         public string Role { get; }
 
         /// <summary>
@@ -25,6 +28,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string RoleText => this.Role.ToLowerInvariant();
 
+        /// <summary>
+        /// Gets the name of the hero.
+        /// </summary>
         public string Name { get; }
 
         /// <summary>
@@ -32,6 +38,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string Detail => this.Role;
 
+        /// <summary>
+        /// Gets the command that opens the page of the hero.
+        /// </summary>
         public ICommand OpenCommand { get; }
     }
 }

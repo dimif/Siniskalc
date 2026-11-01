@@ -16,6 +16,14 @@
         private Action<TRow>? onChooseSecondary;
         private Func<TRow, bool>? canChooseSecondary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FinderViewModel"/> class.
+        /// </summary>
+        /// <param name="rows">The rows.</param>
+        /// <param name="groupPath">The group path.</param>
+        /// <param name="title">The title.</param>
+        /// <param name="noun">The noun.</param>
+        /// <param name="columns">The columns.</param>
         protected FinderViewModel(IReadOnlyList<TRow> rows, string? groupPath, string title, string noun, IReadOnlyList<FinderColumn> columns)
             : base(title, noun, columns, CreateItems(rows, groupPath))
         {
@@ -53,10 +61,13 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override bool CanChooseRowSecondary(object row) => row is TRow typed && (this.canChooseSecondary == null || this.canChooseSecondary(typed));
 
+        /// <inheritdoc/>
         protected override bool CanChooseRow(object row) => row is TRow typed && (this.canChoose == null || this.canChoose(typed));
 
+        /// <inheritdoc/>
         protected override bool MatchesRow(object row) => row is TRow typed && this.Matches(typed);
 
         /// <summary>

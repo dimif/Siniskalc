@@ -9,13 +9,22 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class MovementAndSpellPointsCard : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="ExtraContent"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ExtraContentProperty = DependencyProperty.Register(nameof(ExtraContent), typeof(object), typeof(MovementAndSpellPointsCard), new PropertyMetadata(null, OnExtraContentChanged));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MovementAndSpellPointsCard"/> class.
+        /// </summary>
         public MovementAndSpellPointsCard()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Gets or sets the content a game adds to the card.
+        /// </summary>
         public object? ExtraContent
         {
             get => this.GetValue(ExtraContentProperty);

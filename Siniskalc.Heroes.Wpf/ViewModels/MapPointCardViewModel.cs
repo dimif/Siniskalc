@@ -80,6 +80,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.CanRemove = remove != null;
         }
 
+        /// <summary>
+        /// Gets the heading of the card.
+        /// </summary>
         public string Heading { get; }
 
         /// <summary>
@@ -92,14 +95,23 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasSendTo => this.SendTo != null;
 
+        /// <summary>
+        /// Gets the least and greatest value of the column and the row, for the steppers.
+        /// </summary>
         public NumberRange Coordinates { get; }
 
+        /// <summary>
+        /// Gets or sets the column of the point on the map.
+        /// </summary>
         public int X
         {
             get => this.getX();
             set => SetIfChanged(this.X, (int)RangeGuard.Clamp<long>(value, this.Coordinates.Minimum, this.Coordinates.Maximum), this.setX);
         }
 
+        /// <summary>
+        /// Gets or sets the row of the point on the map.
+        /// </summary>
         public int Y
         {
             get => this.getY();
@@ -111,6 +123,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasLevel => this.getLevel != null;
 
+        /// <summary>
+        /// Gets or sets the level of the map the point is on (0 is the surface).
+        /// </summary>
         public int Level
         {
             get => this.getLevel?.Invoke() ?? MapPosition.Above;
@@ -123,6 +138,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the levels of the map the point can be on; empty when the map has just one.
+        /// </summary>
         public IReadOnlyList<MapLevelChoice> LevelChoices => this.levelChoices?.Invoke() ?? [];
 
         /// <summary>
@@ -130,6 +148,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasFacing => this.getFacing != null;
 
+        /// <summary>
+        /// Gets or sets the direction the object faces.
+        /// </summary>
         public FacingDirection Facing
         {
             get => this.getFacing?.Invoke() ?? FacingDirection.North;
@@ -142,10 +163,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the directions the object can face.
+        /// </summary>
         public Array FacingChoices => Enum.GetValues(typeof(FacingDirection));
 
+        /// <summary>
+        /// Gets the command that turns the object a step to the left.
+        /// </summary>
         public ICommand RotateLeftCommand { get; }
 
+        /// <summary>
+        /// Gets the command that turns the object a step to the right.
+        /// </summary>
         public ICommand RotateRightCommand { get; }
 
         /// <summary>
@@ -153,8 +183,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool CanRemove { get; }
 
+        /// <summary>
+        /// Gets the command that removes the object from the map.
+        /// </summary>
         public ICommand RemoveCommand { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the button that removes the object.
+        /// </summary>
         public string RemoveToolTip { get; }
 
         /// <summary>

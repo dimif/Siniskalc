@@ -14,12 +14,24 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     internal static class HexPalette
     {
+        /// <summary>
+        /// Converts the kind of a region to the brush of its colour.
+        /// </summary>
         public static readonly IValueConverter KindToBrush = new KindToBrushConverter();
 
+        /// <summary>
+        /// Converts a value to its text, or to nothing for an empty one.
+        /// </summary>
         public static readonly IValueConverter TextOrNull = new TextOrNullConverter();
 
+        /// <summary>
+        /// The colour of the text of a byte that was edited.
+        /// </summary>
         public static readonly Brush ChangedForeground = Freeze(Color.FromRgb(0x9C, 0x2B, 0x00));
 
+        /// <summary>
+        /// The colour of the line that marks an edited byte.
+        /// </summary>
         public static readonly Brush ChangedLine = Freeze(Color.FromRgb(0xE8, 0x59, 0x0C));
 
         /// <summary>
@@ -27,6 +39,9 @@ namespace Siniskalc.Wpf.Views
         /// </summary>
         public static readonly Brush SelectedBackground = Freeze(Color.FromRgb(0x1F, 0x5F, 0xBF));
 
+        /// <summary>
+        /// The colour of the text of the selected byte.
+        /// </summary>
         public static readonly Brush SelectedForeground = Freeze(Color.FromRgb(0xFF, 0xFF, 0xFF));
 
         private static readonly Dictionary<ByteRegionKind, (string Label, Color Light, Color Dark)> Kinds = new()
@@ -56,6 +71,11 @@ namespace Siniskalc.Wpf.Views
         /// </summary>
         public static Brush GetBrush(ByteRegionKind kind, int shade) => BrushesByKey[$"{kind}{shade}"];
 
+        /// <summary>
+        /// Returns the label the legend shows for a kind of region.
+        /// </summary>
+        /// <param name="kind">The kind of region.</param>
+        /// <returns>The label.</returns>
         public static string GetLabel(ByteRegionKind kind) => Kinds[kind].Label;
 
         // The two shades of a hue are chosen by how bright they look, not by their lightness: a blue of the same lightness as a yellow is much
@@ -119,11 +139,13 @@ namespace Siniskalc.Wpf.Views
 
         private sealed class KindToBrushConverter : IValueConverter
         {
+            /// <inheritdoc/>
             public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 return value is string key && BrushesByKey.TryGetValue(key, out var brush) ? brush : null;
             }
 
+            /// <inheritdoc/>
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 throw new NotSupportedException();
@@ -132,11 +154,13 @@ namespace Siniskalc.Wpf.Views
 
         private sealed class TextOrNullConverter : IValueConverter
         {
+            /// <inheritdoc/>
             public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 return value is string text && text.Length > 0 ? text : null;
             }
 
+            /// <inheritdoc/>
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
             {
                 throw new NotSupportedException();

@@ -18,6 +18,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly Func<bool>? isReadOnly;
         private bool isRefreshing;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArmyViewModelBase{TSlot}"/> class.
+        /// </summary>
+        /// <param name="availableCreatures">The names of the creatures a slot can hold.</param>
+        /// <param name="isReadOnly">Says whether the army cannot be edited now; it can always be edited when omitted.</param>
         protected ArmyViewModelBase(IReadOnlyList<string> availableCreatures, Func<bool>? isReadOnly = null)
             : base("Creatures")
         {
@@ -160,8 +165,17 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected abstract void PutStack(int index, string? creatureName, int amount);
 
+        /// <summary>
+        /// Empties a slot (from 0) of the model.
+        /// </summary>
+        /// <param name="index">The slot.</param>
         protected abstract void ClearStack(int index);
 
+        /// <summary>
+        /// Swaps the stacks of two slots (from 0) of the model.
+        /// </summary>
+        /// <param name="first">The first slot.</param>
+        /// <param name="second">The second slot.</param>
         protected abstract void SwapStacks(int first, int second);
 
         /// <summary>

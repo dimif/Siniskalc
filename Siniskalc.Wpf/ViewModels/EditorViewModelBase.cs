@@ -25,6 +25,12 @@ namespace Siniskalc.Wpf.ViewModels
         private string navigationFilter = string.Empty;
         private string structureKey = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorViewModelBase"/> class.
+        /// </summary>
+        /// <param name="gameService">The game service.</param>
+        /// <param name="saveRegions">The save regions.</param>
+        /// <param name="navigationBuilder">The navigation builder.</param>
         protected EditorViewModelBase(ISavegameService<TGame> gameService, ISaveRegionProvider saveRegions, INavigationBuilder<TGame> navigationBuilder)
         {
             this.gameService = gameService;
@@ -206,6 +212,10 @@ namespace Siniskalc.Wpf.ViewModels
         {
         }
 
+        /// <summary>
+        /// Makes <paramref name="page"/> the page the editor shows.
+        /// </summary>
+        /// <param name="page">The view model of the page, or <see langword="null"/> for none.</param>
         protected void SetCurrentPage(object? page)
         {
             if (!ReferenceEquals(this.currentPage, page))

@@ -8,6 +8,7 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public sealed class WpfMessageService : IMessageService
     {
+        /// <inheritdoc/>
         public void ShowError(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Error);
 
         /// <inheritdoc/>
@@ -27,8 +28,10 @@ namespace Siniskalc.Wpf.Views
             window.ShowDialog();
         }
 
+        /// <inheritdoc/>
         public void ShowWarning(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Warning);
 
+        /// <inheritdoc/>
         public void ShowInformation(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Information);
 
         /// <inheritdoc/>

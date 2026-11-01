@@ -34,6 +34,9 @@
         private ByteRegionMap map = new([], 0);
         private bool isSelecting;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HexViewer"/> class.
+        /// </summary>
         public HexViewer()
         {
             this.InitializeComponent();

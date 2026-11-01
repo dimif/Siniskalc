@@ -23,6 +23,12 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SavegameFileCommands"/> class.
+        /// </summary>
+        /// <param name="recentFiles">The recent files.</param>
+        /// <param name="dialogs">The dialogs.</param>
+        /// <param name="messages">The messages.</param>
         public SavegameFileCommands(IRecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;

@@ -16,6 +16,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly int maxSlots;
         private bool isRefreshing;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondarySkillsViewModelBase"/> class.
+        /// </summary>
+        /// <param name="skillNames">The names of every skill the game has.</param>
+        /// <param name="maxSlots">The number of skills a hero can show on the hero screen.</param>
         protected SecondarySkillsViewModelBase(IReadOnlyList<string> skillNames, int maxSlots)
             : base("Secondary Skills")
         {
@@ -65,8 +70,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<string> SkillNames { get; }
 
+        /// <summary>
+        /// Gets the levels a slot can have, which are all but None.
+        /// </summary>
         public IReadOnlyList<string> SlotLevelNames => SkillLevelNames.WithoutNone;
 
+        /// <summary>
+        /// Gets the levels a row of the list of every skill can have, None included.
+        /// </summary>
         public IReadOnlyList<string> RowLevelNames => SkillLevelNames.WithNone;
 
         /// <summary>
@@ -84,6 +95,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public virtual string AllSkillsNote => string.Empty;
 
+        /// <summary>
+        /// Gets a value indicating whether the hero has a level in skills that the hero screen does not show.
+        /// </summary>
         public bool HasExtraSkills => this.ExtraCount > 0;
 
         /// <summary>
@@ -194,6 +208,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected abstract void AddSkill(string skillName);
 
+        /// <summary>
+        /// Gives the skill in a slot a level.
+        /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="levelName">The level, as <see cref="SkillLevelNames"/> names it.</param>
         protected abstract void SetLevelInSlot(int slot, string levelName);
 
         /// <summary>
@@ -201,8 +220,17 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected abstract void SetLevelOf(string skillName, string levelName);
 
+        /// <summary>
+        /// Swaps the skills of two slots, with their levels.
+        /// </summary>
+        /// <param name="first">The first slot, from 0.</param>
+        /// <param name="second">The second slot, from 0.</param>
         protected abstract void SwapSlots(int first, int second);
 
+        /// <summary>
+        /// Removes the skill of a slot; the later skills move up a slot.
+        /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
         protected abstract void RemoveSlot(int slot);
 
         /// <summary>

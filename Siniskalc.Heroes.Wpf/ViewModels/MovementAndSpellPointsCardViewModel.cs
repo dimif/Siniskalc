@@ -66,10 +66,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 _ => this.CurrentSpellPoints != this.SpellPoints.Maximum);
         }
 
+        /// <summary>
+        /// Gets the least and greatest movement points, for the stepper.
+        /// </summary>
         public NumberRange Movement { get; }
 
+        /// <summary>
+        /// Gets the least and greatest spell points, for the stepper.
+        /// </summary>
         public NumberRange SpellPoints { get; }
 
+        /// <summary>
+        /// Gets or sets the movement points the hero has left.
+        /// </summary>
         public long CurrentMovement
         {
             get => this.getMovement();
@@ -88,6 +97,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public long MaxMovement => this.getMaxMovement();
 
+        /// <summary>
+        /// Gets the text that tells the most movement points the hero can have now.
+        /// </summary>
         public string MaxMovementText => $"Maximum {this.MaxMovement}";
 
         /// <summary>
@@ -105,6 +117,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public ICommand MaxMovementCommand { get; }
 
+        /// <summary>
+        /// Gets or sets the spell points the hero has left.
+        /// </summary>
         public int CurrentSpellPoints
         {
             get => this.getSpellPoints();
@@ -128,6 +143,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public int MostSpellPoints => this.getMaxSpellPoints == null ? (int)this.SpellPoints.Maximum : (int)Math.Min(this.getMaxSpellPoints(), this.SpellPoints.Maximum);
 
+        /// <summary>
+        /// Gets the text that tells the most spell points the hero can have, or nothing when the game does not give one.
+        /// </summary>
         public string MaxSpellPointsText => this.HasSpellPointsMaximum ? $"Maximum {this.MostSpellPoints}" : string.Empty;
 
         /// <summary>

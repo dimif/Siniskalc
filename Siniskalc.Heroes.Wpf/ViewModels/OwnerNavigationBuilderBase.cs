@@ -23,6 +23,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     {
         private readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> kinds;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwnerNavigationBuilderBase"/> class.
+        /// </summary>
+        /// <param name="kinds">The kinds.</param>
         protected OwnerNavigationBuilderBase(IReadOnlyDictionary<NavNodeKind, ChunkKind> kinds)
         {
             this.kinds = kinds;

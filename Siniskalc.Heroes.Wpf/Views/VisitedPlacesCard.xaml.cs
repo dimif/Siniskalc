@@ -7,6 +7,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class VisitedPlacesCard : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VisitedPlacesCard"/> class.
+        /// </summary>
         public VisitedPlacesCard()
         {
             this.InitializeComponent();

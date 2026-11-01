@@ -8,12 +8,24 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class HeadedCard : ContentControl
     {
+        /// <summary>
+        /// Identifies the <see cref="Heading"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register(nameof(Heading), typeof(string), typeof(HeadedCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="Summary"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SummaryProperty = DependencyProperty.Register(nameof(Summary), typeof(string), typeof(HeadedCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="CardWidth"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty CardWidthProperty = DependencyProperty.Register(nameof(CardWidth), typeof(double), typeof(HeadedCard), new PropertyMetadata(330.0));
 
+        /// <summary>
+        /// Gets or sets the heading of the card.
+        /// </summary>
         public string Heading
         {
             get => (string)this.GetValue(HeadingProperty);
@@ -29,6 +41,9 @@ namespace Siniskalc.Heroes.Wpf.Views
             set => this.SetValue(SummaryProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the width of the card.
+        /// </summary>
         public double CardWidth
         {
             get => (double)this.GetValue(CardWidthProperty);

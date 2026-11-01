@@ -26,10 +26,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.HideCommand = new DelegateCommand(_ => onHide(name), _ => this.IsInSlot);
         }
 
+        /// <summary>
+        /// Gets the name of the skill.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the command that puts the skill on the hero screen.
+        /// </summary>
         public ICommand ShowCommand { get; }
 
+        /// <summary>
+        /// Gets the command that takes the skill off the hero screen but keeps its level.
+        /// </summary>
         public ICommand HideCommand { get; }
 
         /// <summary>
@@ -47,8 +56,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the hero has a level in the skill.
+        /// </summary>
         public bool HasSkill => this.levelName != SkillLevelNames.None;
 
+        /// <summary>
+        /// Gets a value indicating whether the hero screen shows the skill.
+        /// </summary>
         public bool IsInSlot => this.slot >= 0;
 
         /// <summary>

@@ -45,8 +45,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
                 _ => current()[resource] < maximum);
         }
 
+        /// <summary>
+        /// Gets the resource the row is about.
+        /// </summary>
         public Resource Resource { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the resource is gold, which has its own presets.
+        /// </summary>
         public bool IsGold => this.Resource == Resource.Gold;
 
         /// <summary>
@@ -54,6 +60,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string AddPresetLabel { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the button that adds the preset amount.
+        /// </summary>
         public string AddPresetToolTip { get; }
 
         /// <summary>

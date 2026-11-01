@@ -30,14 +30,29 @@ namespace Siniskalc.Wpf.ViewModels
             this.ToolTip = toolTip;
         }
 
+        /// <summary>
+        /// Gets the label shown next to the field.
+        /// </summary>
         public string Label { get; }
 
+        /// <summary>
+        /// Gets the values the user can pick from.
+        /// </summary>
         public IReadOnlyList<string> Choices { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the field.
+        /// </summary>
         public string ToolTip { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the user can change the field now.
+        /// </summary>
         public bool IsEnabled => this.isEnabled?.Invoke() ?? true;
 
+        /// <summary>
+        /// Gets or sets the choice that is selected.
+        /// </summary>
         public string Selected
         {
             get => this.get();
@@ -50,6 +65,9 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Shows the field again. Call after the value changed elsewhere.
+        /// </summary>
         public void Refresh() => this.RaiseAllPropertiesChanged();
     }
 }

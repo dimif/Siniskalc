@@ -31,8 +31,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.Heroes = heroes ?? [];
         }
 
+        /// <summary>
+        /// Gets the name of the castle.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the line under the name, such as the faction of the castle.
+        /// </summary>
         public string Detail { get; }
 
         /// <summary>
@@ -50,6 +56,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string GrailText { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the castle has the grail, so the link shows the mark.
+        /// </summary>
         public bool HasGrail => this.GrailText.Length > 0;
 
         /// <summary>
@@ -57,6 +66,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; }
 
+        /// <summary>
+        /// Gets the command that opens the page of the castle.
+        /// </summary>
         public ICommand OpenCommand { get; }
 
         /// <summary>

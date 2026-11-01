@@ -57,6 +57,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected virtual string ObjectsSummary => string.Empty;
 
+        /// <inheritdoc/>
         public void Dispose() => this.history.Changed -= this.OnHistoryChanged;
 
         /// <summary>

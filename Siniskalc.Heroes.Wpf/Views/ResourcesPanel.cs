@@ -9,6 +9,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class ResourcesPanel : ContentControl
     {
+        /// <summary>
+        /// Identifies the <see cref="Note"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty NoteProperty = DependencyProperty.Register(nameof(Note), typeof(string), typeof(ResourcesPanel), new PropertyMetadata(string.Empty));
 
         /// <summary>

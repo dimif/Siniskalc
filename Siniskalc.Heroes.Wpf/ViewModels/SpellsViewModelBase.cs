@@ -31,8 +31,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public abstract AbstractFinderViewModel Finder { get; }
 
+        /// <summary>
+        /// Gets the command that gives the hero every spell.
+        /// </summary>
         public ICommand LearnAllCommand { get; }
 
+        /// <summary>
+        /// Gets the command that takes every spell away from the hero.
+        /// </summary>
         public ICommand ForgetAllCommand { get; }
 
         /// <summary>
@@ -60,6 +66,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public virtual string SpellBookNote => "Without a spell book the hero cannot cast the learned spells.";
 
+        /// <summary>
+        /// Gets a row for each spell the game has.
+        /// </summary>
         protected IReadOnlyList<TRow> Rows { get; }
 
         /// <summary>
@@ -105,8 +114,16 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.SetLearned(rows, learned);
         }
 
+        /// <summary>
+        /// Returns whether the hero has a spell book.
+        /// </summary>
+        /// <returns><see langword="true"/> if the hero has one.</returns>
         protected abstract bool ReadHasSpellBook();
 
+        /// <summary>
+        /// Gives the hero a spell book or takes it away.
+        /// </summary>
+        /// <param name="value">Whether the hero has one.</param>
         protected abstract void WriteHasSpellBook(bool value);
 
         /// <summary>

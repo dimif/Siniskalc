@@ -42,6 +42,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public ObservableCollection<NavNodeViewModel> Nodes { get; } = [];
 
+        /// <summary>
+        /// Gets the node of the overview page, or <see langword="null"/> until the tree is built.
+        /// </summary>
         public NavNodeViewModel? Overview { get; private set; }
 
         /// <summary>
@@ -64,8 +67,18 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public NavNodeViewModel? NeutralNode => this.neutralNodes.GetValueOrDefault(-1);
 
+        /// <summary>
+        /// Returns the node of a hero.
+        /// </summary>
+        /// <param name="heroIndex">The number of the hero.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? HeroNode(int heroIndex) => this.heroNodes.GetValueOrDefault(heroIndex);
 
+        /// <summary>
+        /// Returns the node of a player.
+        /// </summary>
+        /// <param name="playerIndex">The number of the player.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? PlayerNode(int playerIndex) => this.playerNodes.GetValueOrDefault(playerIndex);
 
         /// <summary>
@@ -73,6 +86,11 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public NavNodeViewModel? PlayerTabNode(int playerIndex, int tab) => this.playerTabNodes.GetValueOrDefault((playerIndex, tab)) ?? this.PlayerNode(playerIndex);
 
+        /// <summary>
+        /// Returns the node of a castle.
+        /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? CastleNode(int castleIndex) => this.castleNodes.GetValueOrDefault(castleIndex);
 
         /// <summary>
@@ -81,8 +99,18 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public NavNodeViewModel? NeutralTabNode(int tab, int owner = -1) => this.neutralTabNodes.GetValueOrDefault((owner, tab)) ?? this.neutralNodes.GetValueOrDefault(owner);
 
+        /// <summary>
+        /// Returns the node of a mine.
+        /// </summary>
+        /// <param name="mineIndex">The number of the mine.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? MineNode(int mineIndex) => this.mineNodes.GetValueOrDefault(mineIndex);
 
+        /// <summary>
+        /// Returns the node of a dwelling.
+        /// </summary>
+        /// <param name="dwellingIndex">The number of the dwelling.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? DwellingNode(int dwellingIndex) => this.dwellingNodes.GetValueOrDefault(dwellingIndex);
 
         /// <summary>

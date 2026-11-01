@@ -5,7 +5,6 @@
       "id": "Starling",
       "name": "Starling",
       "code": 66,
-      "order": 66,
       "faction": "Observatory",
       "tier": 1,
       "stats": {
@@ -24,14 +23,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "AstralGuard",
       "name": "Astral Guard",
       "code": 67,
-      "order": 67,
       "faction": "Observatory",
       "tier": 2,
       "stats": {
@@ -50,14 +47,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "AstralArcher",
       "name": "Astral Archer",
       "code": 68,
-      "order": 68,
       "faction": "Observatory",
       "tier": 3,
       "stats": {
@@ -76,14 +71,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "StarRider",
       "name": "Star Rider",
       "code": 69,
-      "order": 69,
       "faction": "Observatory",
       "tier": 4,
       "stats": {
@@ -102,14 +95,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "SkyGuardian",
       "name": "Sky Guardian",
       "code": 70,
-      "order": 70,
       "faction": "Observatory",
       "tier": 5,
       "stats": {
@@ -128,14 +119,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "Stargazer",
       "name": "Stargazer",
       "code": 71,
-      "order": 71,
       "faction": "Observatory",
       "tier": 6,
       "stats": {
@@ -154,14 +143,12 @@
         "Luminous"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "AstralSeer",
       "name": "Astral Seer",
       "code": 72,
-      "order": 72,
       "faction": "Observatory",
       "tier": 6,
       "stats": {
@@ -180,8 +167,7 @@
         "Luminous"
       ],
       "baseCreature": "Stargazer",
-      "dwelling": "Dwelling6Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling6Upgraded"
     }
   ],
   "replacements": []

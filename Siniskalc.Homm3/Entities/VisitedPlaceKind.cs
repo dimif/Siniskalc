@@ -1,15 +1,15 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using Siniskalc.Homm3.Data;
 
 public sealed class VisitedPlaceKind : CatalogEntity
 {
-    internal VisitedPlaceKind(EntityCatalog catalog, VisitedPlaceDefinition definition)
+    internal VisitedPlaceKind(EntityCatalog catalog, VisitablePlaceDefinition definition)
         : base(catalog, definition)
     {
         this.ObjectType = definition.ObjectType;
         this.Slot = definition.Slot;
-        this.ToolTip = definition.ToolTip;
+        this.ToolTip = definition.Description;
         this.NumberMask = definition.NumberMask;
     }
 

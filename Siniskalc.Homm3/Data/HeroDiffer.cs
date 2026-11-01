@@ -51,7 +51,7 @@
         private static void DiffPlaceVisits(HeroModel original, HeroModel current, ChangeSink<HeroModel> changes)
         {
             changes.AddPlaceVisits(
-                original.HeroClass.Catalog.VisitedPlaces.All,
+                original.HeroClass.Catalog.VisitablePlaces.All,
                 kind => kind.Name,
                 kind => original.PlaceVisits.Of(kind),
                 kind => current.PlaceVisits.Of(kind),

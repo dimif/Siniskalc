@@ -60,7 +60,7 @@
         public PlaceVisits DeserializePlaceVisits(HeroChunk chunk)
         {
             var masks = new uint[Constants.Catalog.PlaceCapacity];
-            foreach (var kind in this.entities.Catalog.VisitedPlaces.All)
+            foreach (var kind in this.entities.Catalog.VisitablePlaces.All)
             {
                 masks[kind.Index] = this.HasPlaces(chunk, kind) ? chunk.GetUInt32At(VisitedPlaceOffsets.For(kind.Slot)) : 0u;
             }

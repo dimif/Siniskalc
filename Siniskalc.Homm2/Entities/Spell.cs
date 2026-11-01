@@ -11,7 +11,7 @@ namespace Siniskalc.Homm2.Entities
             this.SpellPoints = definition.SpellPoints;
             this.Type = definition.Type;
             this.Level = definition.Level;
-            this.Group = catalog.Groups[definition.Group];
+            this.Group = catalog.SpellTypes[definition.Group];
         }
 
         public int SpellPoints { get; }

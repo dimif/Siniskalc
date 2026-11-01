@@ -1,11 +1,9 @@
 [
   {
     "id": "fixtureSky",
-    "order": 5,
     "name": "fixtureSky",
     "code": 5,
-    "availableFrom": "hornOfTheAbyss",
-    "description": "The astral sky",
-    "universal": false
+    "availableFrom": "hota",
+    "description": "The astral sky"
   }
 ]

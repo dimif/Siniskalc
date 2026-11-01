@@ -1,47 +1,37 @@
 [
   {
     "id": "water",
-    "order": 0,
     "name": "Water",
     "code": 0,
-    "availableFrom": "restorationOfErathia",
-    "description": "Water magic",
-    "universal": false
+    "availableFrom": "roe",
+    "description": "Water magic"
   },
   {
     "id": "earth",
-    "order": 1,
     "name": "Earth",
     "code": 1,
-    "availableFrom": "restorationOfErathia",
-    "description": "Earth magic",
-    "universal": false
+    "availableFrom": "roe",
+    "description": "Earth magic"
   },
   {
     "id": "fire",
-    "order": 2,
     "name": "Fire",
     "code": 2,
-    "availableFrom": "restorationOfErathia",
-    "description": "Fire magic",
-    "universal": false
+    "availableFrom": "roe",
+    "description": "Fire magic"
   },
   {
     "id": "wind",
-    "order": 3,
     "name": "Air",
     "code": 3,
-    "availableFrom": "restorationOfErathia",
-    "description": "Air magic",
-    "universal": false
+    "availableFrom": "roe",
+    "description": "Air magic"
   },
   {
     "id": "all",
-    "order": 4,
     "name": "All",
     "code": 4,
-    "availableFrom": "restorationOfErathia",
-    "description": "All schools",
-    "universal": true
+    "availableFrom": "roe",
+    "description": "All schools"
   }
 ]

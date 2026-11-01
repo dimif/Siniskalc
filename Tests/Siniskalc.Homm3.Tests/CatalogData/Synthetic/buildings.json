@@ -1,10 +1,9 @@
 [
   {
     "id": "FixtureNest",
-    "order": 269,
     "name": "Astral Nest",
     "code": 30,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "type": "dwelling1",
     "faction": "FixtureTown",
     "upgrades": null,
@@ -15,10 +14,9 @@
   },
   {
     "id": "FixtureHighNest",
-    "order": 270,
     "name": "Astral HighNest",
     "code": 37,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "type": "upgradedDwelling1",
     "faction": "FixtureTown",
     "upgrades": "FixtureNest",
@@ -29,10 +27,9 @@
   },
   {
     "id": "FixtureHorde",
-    "order": 271,
     "name": "Astral Horde",
     "code": 18,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "type": "horde1",
     "faction": "FixtureTown",
     "upgrades": null,
@@ -45,10 +42,9 @@
   },
   {
     "id": "FixtureHighHorde",
-    "order": 272,
     "name": "Astral HighHorde",
     "code": 19,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "type": "upgradedHorde1",
     "faction": "FixtureTown",
     "upgrades": "FixtureHorde",

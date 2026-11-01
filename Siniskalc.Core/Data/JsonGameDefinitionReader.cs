@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Data
+﻿namespace Siniskalc.Core.Data
 {
     using System;
     using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Siniskalc.Core.Data
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
-            Converters = { new JsonStringEnumConverter(allowIntegerValues: false) },
+            Converters = { new DefinitionEnumConverter() },
         };
 
         public JsonGameDefinitionReader(string? root = null)
@@ -52,6 +52,17 @@ namespace Siniskalc.Core.Data
             {
                 throw new GameDefinitionException(relativePath, ex.Message, ex);
             }
+        }
+
+        private sealed class DefinitionEnumConverter : JsonConverterFactory
+        {
+            private readonly JsonStringEnumConverter converter = new(allowIntegerValues: false);
+
+            public override bool CanConvert(Type typeToConvert) =>
+                !Attribute.IsDefined(typeToConvert, typeof(JsonConverterAttribute)) && this.converter.CanConvert(typeToConvert);
+
+            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+                this.converter.CreateConverter(typeToConvert, options);
         }
 
         private static void CheckProperties(JsonElement element, string location)

@@ -1,0 +1,44 @@
+[
+  {
+    "kind": "sawmill",
+    "name": "Sawmill",
+    "resource": "wood",
+    "dailyAmount": 2
+  },
+  {
+    "kind": "alchemistLab",
+    "name": "Alchemist's lab",
+    "resource": "mercury",
+    "dailyAmount": 1
+  },
+  {
+    "kind": "oreMine",
+    "name": "Ore mine",
+    "resource": "ore",
+    "dailyAmount": 2
+  },
+  {
+    "kind": "sulfurMine",
+    "name": "Sulfur mine",
+    "resource": "sulfur",
+    "dailyAmount": 1
+  },
+  {
+    "kind": "crystalMine",
+    "name": "Crystal mine",
+    "resource": "crystal",
+    "dailyAmount": 1
+  },
+  {
+    "kind": "gemMine",
+    "name": "Gem mine",
+    "resource": "gems",
+    "dailyAmount": 1
+  },
+  {
+    "kind": "goldMine",
+    "name": "Gold mine",
+    "resource": "gold",
+    "dailyAmount": 1000
+  }
+]

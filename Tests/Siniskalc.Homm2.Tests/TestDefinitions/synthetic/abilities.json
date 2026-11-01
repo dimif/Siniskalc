@@ -4,9 +4,7 @@
     {
       "id": "Luminous",
       "name": "Luminous (presentation only)",
-      "code": 32,
-      "order": 32,
-      "isRanged": false
+      "code": 32
     }
   ],
   "replacements": []

@@ -1,242 +1,185 @@
 [
   {
     "id": "Pathfinding",
-    "order": 0,
     "name": "Pathfinding",
     "code": 0,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Archery",
-    "order": 1,
     "name": "Archery",
     "code": 1,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Logistics",
-    "order": 2,
     "name": "Logistics",
     "code": 2,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Scouting",
-    "order": 3,
     "name": "Scouting",
     "code": 3,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Diplomacy",
-    "order": 4,
     "name": "Diplomacy",
     "code": 4,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Navigation",
-    "order": 5,
     "name": "Navigation",
     "code": 5,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Leadership",
-    "order": 6,
     "name": "Leadership",
     "code": 6,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "role": "morale"
   },
   {
     "id": "Wisdom",
-    "order": 7,
     "name": "Wisdom",
     "code": 7,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Mysticism",
-    "order": 8,
     "name": "Mysticism",
     "code": 8,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Luck",
-    "order": 9,
     "name": "Luck",
     "code": 9,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "role": "luck"
   },
   {
     "id": "Ballistics",
-    "order": 10,
     "name": "Ballistics",
     "code": 10,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "EagleEye",
-    "order": 11,
     "name": "Eagle Eye",
     "code": 11,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Necromancy",
-    "order": 12,
     "name": "Necromancy",
     "code": 12,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Estates",
-    "order": 13,
     "name": "Estates",
     "code": 13,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "FireMagic",
-    "order": 14,
     "name": "Fire Magic",
     "code": 14,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "AirMagic",
-    "order": 15,
     "name": "Air Magic",
     "code": 15,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "WaterMagic",
-    "order": 16,
     "name": "Water Magic",
     "code": 16,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "EarthMagic",
-    "order": 17,
     "name": "Earth Magic",
     "code": 17,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Scholar",
-    "order": 18,
     "name": "Scholar",
     "code": 18,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Tactics",
-    "order": 19,
     "name": "Tactics",
     "code": 19,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Artillery",
-    "order": 20,
     "name": "Artillery",
     "code": 20,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Learning",
-    "order": 21,
     "name": "Learning",
     "code": 21,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Offense",
-    "order": 22,
     "name": "Offense",
     "code": 22,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Armorer",
-    "order": 23,
     "name": "Armorer",
     "code": 23,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Intelligence",
-    "order": 24,
     "name": "Intelligence",
     "code": 24,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "role": "spellPointMultiplier"
   },
   {
     "id": "Sorcery",
-    "order": 25,
     "name": "Sorcery",
     "code": 25,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Resistance",
-    "order": 26,
     "name": "Resistance",
     "code": 26,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "FirstAid",
-    "order": 27,
     "name": "First Aid",
     "code": 27,
-    "availableFrom": "restorationOfErathia",
-    "role": "none"
+    "availableFrom": "roe"
   },
   {
     "id": "Interference",
-    "order": 28,
     "name": "Interference",
     "code": 28,
-    "availableFrom": "hornOfTheAbyss",
-    "role": "none"
+    "availableFrom": "hota"
   },
   {
     "id": "Runes",
-    "order": 29,
     "name": "Runes",
     "code": 29,
-    "availableFrom": "hornOfTheAbyss",
-    "role": "none"
+    "availableFrom": "hota"
   }
 ]

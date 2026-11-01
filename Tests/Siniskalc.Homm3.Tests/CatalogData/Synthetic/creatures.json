@@ -1,10 +1,9 @@
 [
   {
     "id": "FixtureScout",
-    "order": 189,
     "name": "Astral Scout",
     "code": 201,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "FixtureTown",
     "info": {
@@ -30,15 +29,13 @@
       ]
     },
     "dwelling": "FixtureNest",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "FixtureGuard",
-    "order": 190,
     "name": "Astral Guard",
     "code": 202,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "FixtureTown",
     "info": {
@@ -64,7 +61,6 @@
       ]
     },
     "dwelling": "FixtureHighNest",
-    "fallback": false,
     "baseCreature": "FixtureScout"
   }
 ]

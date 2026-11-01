@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using Siniskalc.Heroes.Entities;
 
@@ -10,5 +10,5 @@ public sealed record SpellDefinition : EntityDefinition
 
     public required SpellType Type { get; init; }
 
-    public required bool HeroOnly { get; init; }
+    public bool HeroOnly { get; init; }
 }

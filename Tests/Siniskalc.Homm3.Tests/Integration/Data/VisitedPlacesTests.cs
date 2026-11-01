@@ -36,7 +36,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [TestCase("25_tazar_library_of_enlightenment_1", "26_tazar_library_of_enlightenment_2", "LibraryOfEnlightenment", 1u, 3u)]
         public void AHeroVisitingAPlaceSetsTheBitOfItsNumberInTheNumberOfItsKind(string first, string second, string kindName, uint afterFirst, uint afterSecond)
         {
-            var kind = TestCatalog.Hota.VisitedPlaces.ById(kindName);
+            var kind = TestCatalog.Hota.VisitablePlaces.ById(kindName);
 
             Assert.That(Mask(Load(first), "Tazar", kind), Is.EqualTo(afterFirst));
             Assert.That(Mask(Load(second), "Tazar", kind), Is.EqualTo(afterSecond));
@@ -46,9 +46,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void TheHeroesOfTheSameMapRememberTheirOwnVisitsAndOrrinGetsTheBitsATurnAfterTazar()
         {
-            Assert.That(Mask(Load("04_tazar_school_of_war_2"), "Tazar", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
-            Assert.That(Mask(Load("04_tazar_school_of_war_2"), "Orrin", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar")), Is.EqualTo(2u));
-            Assert.That(Mask(Load("05_tazar_school_of_magic_1"), "Orrin", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
+            Assert.That(Mask(Load("04_tazar_school_of_war_2"), "Tazar", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
+            Assert.That(Mask(Load("04_tazar_school_of_war_2"), "Orrin", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar")), Is.EqualTo(2u));
+            Assert.That(Mask(Load("05_tazar_school_of_magic_1"), "Orrin", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
         }
 
         [Test]
@@ -56,23 +56,23 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var places = Load("04_tazar_school_of_war_2").Places;
 
-            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfMagic")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Is.EqualTo(new[] { (0, 17, 26), (1, 17, 28) }));
-            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")).Select(p => p.Number), Does.Contain(0).And.Contain(1));
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfMagic")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Is.EqualTo(new[] { (0, 17, 26), (1, 17, 28) }));
+            Assert.That(places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("LearningStone")).Select(p => p.Number), Does.Contain(0).And.Contain(1));
         }
 
         [Test]
         public void TheTreesOfKnowledgeAreFoundWhateverFlagsTheirCellsHold()
         {
             // The cell of a tree has 0 or 1 for its number before a visit and 0x60 or 0x61 after, and a payment after it instead of zeros.
-            Assert.That(Load("00_baseline").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("TreeOfKnowledge")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Is.EqualTo(new[] { (0, 2, 20), (1, 2, 23) }));
-            Assert.That(Load("26_tazar_library_of_enlightenment_2").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("TreeOfKnowledge")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Does.Contain((0, 2, 20)));
+            Assert.That(Load("00_baseline").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("TreeOfKnowledge")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Is.EqualTo(new[] { (0, 2, 20), (1, 2, 23) }));
+            Assert.That(Load("26_tazar_library_of_enlightenment_2").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("TreeOfKnowledge")).Select(p => (p.Number, p.Position.X, p.Position.Y)), Does.Contain((0, 2, 20)));
         }
 
         [Test]
         public void ATreeAHeroStandsOnIsNumberedWithoutTheFlagsTheHeroReads()
         {
             // Tazar stands next to the tree at 2, 23 and reads 0x21 for its number; the number of the tree is 1.
-            var trees = Load("23_tazar_tree_of_knowledge_1").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("TreeOfKnowledge"));
+            var trees = Load("23_tazar_tree_of_knowledge_1").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("TreeOfKnowledge"));
 
             Assert.That(trees.Select(p => p.Number), Has.All.LessThan(2));
             Assert.That(trees.Select(p => p.Number), Does.Contain(1));
@@ -82,7 +82,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void APlaceAHeroStandsOnIsFoundFromTheRecordOfTheHero()
         {
             // In this save Tazar stands on the first school of war and Orrin on the second: the map holds neither, the heroes name both.
-            var places = Load("04_tazar_school_of_war_2").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar"));
+            var places = Load("04_tazar_school_of_war_2").Places.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar"));
 
             Assert.That(places.Select(p => p.Number), Is.EqualTo(new[] { 0, 1 }));
             Assert.That(places[0].Position.X, Is.EqualTo(21));
@@ -96,7 +96,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var index = heroes.FindByName("Tazar");
             var chunk = heroes[index];
 
-            game.History.CreateHeroSession(index).Update(h => h with { PlaceVisits = h.PlaceVisits.With(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar"), 2) });
+            game.History.CreateHeroSession(index).Update(h => h with { PlaceVisits = h.PlaceVisits.With(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar"), 2) });
 
             var written = game.GetBytesToSave();
             Assert.That(BitConverter.ToUInt32(written, chunk.StartIndex + VisitedPlaceOffsets.For(VisitSlot.PaidAttackOrDefense)), Is.EqualTo(2u));
@@ -105,7 +105,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That((change.Change.Before, change.Change.After), Is.EqualTo(("2", "1")));
 
             change.Revert(game.History);
-            Assert.That(Mask(game, "Tazar", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
+            Assert.That(Mask(game, "Tazar", TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("SchoolOfWar")), Is.EqualTo(3u));
         }
 
         [Test]

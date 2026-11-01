@@ -9,7 +9,6 @@
         internal Faction(GameCatalog catalog, FactionDefinition definition)
             : base(catalog, definition)
         {
-            this.IsNeutral = definition.Neutral;
             this.HasLibrary = definition.Library;
             this.GrowthBuildingName = definition.GrowthBuildingName;
             this.SpecialBuildingName = definition.SpecialBuildingName;
@@ -17,7 +16,7 @@
             this.GuildSpellCounts = System.Array.AsReadOnly((int[])definition.GuildSpellCounts.Clone());
         }
 
-        public bool IsNeutral { get; }
+        public bool IsNeutral => this.Id == "Neutral";
 
         public bool HasLibrary { get; }
 

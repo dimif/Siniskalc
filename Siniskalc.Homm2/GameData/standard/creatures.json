@@ -5,7 +5,6 @@
       "id": "Peasant",
       "name": "Peasant",
       "code": 0,
-      "order": 0,
       "faction": "Knight",
       "tier": 1,
       "stats": {
@@ -22,14 +21,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": true
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Archer",
       "name": "Archer",
       "code": 1,
-      "order": 1,
       "faction": "Knight",
       "tier": 2,
       "stats": {
@@ -49,14 +46,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "Ranger",
       "name": "Ranger",
       "code": 2,
-      "order": 2,
       "faction": "Knight",
       "tier": 2,
       "stats": {
@@ -77,14 +72,12 @@
         "DoubleShot"
       ],
       "baseCreature": "Archer",
-      "dwelling": "Dwelling2Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling2Upgraded"
     },
     {
       "id": "Pikeman",
       "name": "Pikeman",
       "code": 3,
-      "order": 3,
       "faction": "Knight",
       "tier": 3,
       "stats": {
@@ -101,14 +94,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "VeteranPikeman",
       "name": "Veteran Pikeman",
       "code": 4,
-      "order": 4,
       "faction": "Knight",
       "tier": 3,
       "stats": {
@@ -125,14 +116,12 @@
       },
       "abilities": [],
       "baseCreature": "Pikeman",
-      "dwelling": "Dwelling3Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling3Upgraded"
     },
     {
       "id": "Swordsman",
       "name": "Swordsman",
       "code": 5,
-      "order": 5,
       "faction": "Knight",
       "tier": 4,
       "stats": {
@@ -149,14 +138,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "MasterSwordsman",
       "name": "Master Swordsman",
       "code": 6,
-      "order": 6,
       "faction": "Knight",
       "tier": 4,
       "stats": {
@@ -173,14 +160,12 @@
       },
       "abilities": [],
       "baseCreature": "Swordsman",
-      "dwelling": "Dwelling4Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling4Upgraded"
     },
     {
       "id": "Cavalry",
       "name": "Cavalry",
       "code": 7,
-      "order": 7,
       "faction": "Knight",
       "tier": 5,
       "stats": {
@@ -197,14 +182,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "Champion",
       "name": "Champion",
       "code": 8,
-      "order": 8,
       "faction": "Knight",
       "tier": 5,
       "stats": {
@@ -221,14 +204,12 @@
       },
       "abilities": [],
       "baseCreature": "Cavalry",
-      "dwelling": "Dwelling5Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling5Upgraded"
     },
     {
       "id": "Paladin",
       "name": "Paladin",
       "code": 9,
-      "order": 9,
       "faction": "Knight",
       "tier": 6,
       "stats": {
@@ -247,14 +228,12 @@
         "DoubleAttack"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "Crusader",
       "name": "Crusader",
       "code": 10,
-      "order": 10,
       "faction": "Knight",
       "tier": 6,
       "stats": {
@@ -273,14 +252,12 @@
         "DoubleAttack"
       ],
       "baseCreature": "Paladin",
-      "dwelling": "Dwelling6Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling6Upgraded"
     },
     {
       "id": "Goblin",
       "name": "Goblin",
       "code": 11,
-      "order": 11,
       "faction": "Barbarian",
       "tier": 1,
       "stats": {
@@ -297,14 +274,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Orc",
       "name": "Orc",
       "code": 12,
-      "order": 12,
       "faction": "Barbarian",
       "tier": 2,
       "stats": {
@@ -324,14 +299,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "OrcChief",
       "name": "Orc Chief",
       "code": 13,
-      "order": 13,
       "faction": "Barbarian",
       "tier": 2,
       "stats": {
@@ -351,14 +324,12 @@
         "Ranged"
       ],
       "baseCreature": "Orc",
-      "dwelling": "Dwelling2Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling2Upgraded"
     },
     {
       "id": "Wolf",
       "name": "Wolf",
       "code": 14,
-      "order": 14,
       "faction": "Barbarian",
       "tier": 3,
       "stats": {
@@ -377,14 +348,12 @@
         "DoubleAttack"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "Ogre",
       "name": "Ogre",
       "code": 15,
-      "order": 15,
       "faction": "Barbarian",
       "tier": 4,
       "stats": {
@@ -401,14 +370,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "OgreLord",
       "name": "Ogre Lord",
       "code": 16,
-      "order": 16,
       "faction": "Barbarian",
       "tier": 4,
       "stats": {
@@ -425,14 +392,12 @@
       },
       "abilities": [],
       "baseCreature": "Ogre",
-      "dwelling": "Dwelling4Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling4Upgraded"
     },
     {
       "id": "Troll",
       "name": "Troll",
       "code": 17,
-      "order": 17,
       "faction": "Barbarian",
       "tier": 5,
       "stats": {
@@ -453,14 +418,12 @@
         "Regeneration"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "WarTroll",
       "name": "War Troll",
       "code": 18,
-      "order": 18,
       "faction": "Barbarian",
       "tier": 5,
       "stats": {
@@ -481,14 +444,12 @@
         "Regeneration"
       ],
       "baseCreature": "Troll",
-      "dwelling": "Dwelling5Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling5Upgraded"
     },
     {
       "id": "Cyclops",
       "name": "Cyclops",
       "code": 19,
-      "order": 19,
       "faction": "Barbarian",
       "tier": 6,
       "stats": {
@@ -508,14 +469,12 @@
         "ParalyzingAttack"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "Sprite",
       "name": "Sprite",
       "code": 20,
-      "order": 20,
       "faction": "Sorceress",
       "tier": 1,
       "stats": {
@@ -534,14 +493,12 @@
         "Flying"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Dwarf",
       "name": "Dwarf",
       "code": 21,
-      "order": 21,
       "faction": "Sorceress",
       "tier": 2,
       "stats": {
@@ -560,14 +517,12 @@
         "MagicResistance"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "BattleDwarf",
       "name": "Battle Dwarf",
       "code": 22,
-      "order": 22,
       "faction": "Sorceress",
       "tier": 2,
       "stats": {
@@ -586,14 +541,12 @@
         "MagicResistance"
       ],
       "baseCreature": "Dwarf",
-      "dwelling": "Dwelling2Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling2Upgraded"
     },
     {
       "id": "Elf",
       "name": "Elf",
       "code": 23,
-      "order": 23,
       "faction": "Sorceress",
       "tier": 3,
       "stats": {
@@ -613,14 +566,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "GrandElf",
       "name": "Grand Elf",
       "code": 24,
-      "order": 24,
       "faction": "Sorceress",
       "tier": 3,
       "stats": {
@@ -641,14 +592,12 @@
         "DoubleShot"
       ],
       "baseCreature": "Elf",
-      "dwelling": "Dwelling3Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling3Upgraded"
     },
     {
       "id": "Druid",
       "name": "Druid",
       "code": 25,
-      "order": 25,
       "faction": "Sorceress",
       "tier": 4,
       "stats": {
@@ -668,14 +617,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "GreaterDruid",
       "name": "Greater Druid",
       "code": 26,
-      "order": 26,
       "faction": "Sorceress",
       "tier": 4,
       "stats": {
@@ -695,14 +642,12 @@
         "Ranged"
       ],
       "baseCreature": "Druid",
-      "dwelling": "Dwelling4Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling4Upgraded"
     },
     {
       "id": "Unicorn",
       "name": "Unicorn",
       "code": 27,
-      "order": 27,
       "faction": "Sorceress",
       "tier": 5,
       "stats": {
@@ -721,14 +666,12 @@
         "BlindingAttack"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "Phoenix",
       "name": "Phoenix",
       "code": 28,
-      "order": 28,
       "faction": "Sorceress",
       "tier": 6,
       "stats": {
@@ -749,14 +692,12 @@
         "ElementalSpellsImmunity"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "Centaur",
       "name": "Centaur",
       "code": 29,
-      "order": 29,
       "faction": "Warlock",
       "tier": 1,
       "stats": {
@@ -776,14 +717,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Gargoyle",
       "name": "Gargoyle",
       "code": 30,
-      "order": 30,
       "faction": "Warlock",
       "tier": 2,
       "stats": {
@@ -802,14 +741,12 @@
         "Flying"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "Griffin",
       "name": "Griffin",
       "code": 31,
-      "order": 31,
       "faction": "Warlock",
       "tier": 3,
       "stats": {
@@ -829,14 +766,12 @@
         "UnlimitedRetaliations"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "Minotaur",
       "name": "Minotaur",
       "code": 32,
-      "order": 32,
       "faction": "Warlock",
       "tier": 4,
       "stats": {
@@ -853,14 +788,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "MinotaurKing",
       "name": "Minotaur King",
       "code": 33,
-      "order": 33,
       "faction": "Warlock",
       "tier": 4,
       "stats": {
@@ -877,14 +810,12 @@
       },
       "abilities": [],
       "baseCreature": "Minotaur",
-      "dwelling": "Dwelling4Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling4Upgraded"
     },
     {
       "id": "Hydra",
       "name": "Hydra",
       "code": 34,
-      "order": 34,
       "faction": "Warlock",
       "tier": 5,
       "stats": {
@@ -904,14 +835,12 @@
         "AttacksAllAdjacentEnemies"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "GreenDragon",
       "name": "Green Dragon",
       "code": 35,
-      "order": 35,
       "faction": "Warlock",
       "tier": 6,
       "stats": {
@@ -933,14 +862,12 @@
         "Dragon"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "RedDragon",
       "name": "Red Dragon",
       "code": 36,
-      "order": 36,
       "faction": "Warlock",
       "tier": 6,
       "stats": {
@@ -962,14 +889,12 @@
         "Dragon"
       ],
       "baseCreature": "GreenDragon",
-      "dwelling": "Dwelling6Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling6Upgraded"
     },
     {
       "id": "BlackDragon",
       "name": "Black Dragon",
       "code": 37,
-      "order": 37,
       "faction": "Warlock",
       "tier": 6,
       "stats": {
@@ -992,14 +917,12 @@
         "MagicImmunity"
       ],
       "baseCreature": "RedDragon",
-      "dwelling": "Dwelling6UpgradedTwice",
-      "fallback": false
+      "dwelling": "Dwelling6UpgradedTwice"
     },
     {
       "id": "Halfling",
       "name": "Halfling",
       "code": 38,
-      "order": 38,
       "faction": "Wizard",
       "tier": 1,
       "stats": {
@@ -1019,14 +942,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Boar",
       "name": "Boar",
       "code": 39,
-      "order": 39,
       "faction": "Wizard",
       "tier": 2,
       "stats": {
@@ -1043,14 +964,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "IronGolem",
       "name": "Iron Golem",
       "code": 40,
-      "order": 40,
       "faction": "Wizard",
       "tier": 3,
       "stats": {
@@ -1069,14 +988,12 @@
         "SpellDamageReduction"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "SteelGolem",
       "name": "Steel Golem",
       "code": 41,
-      "order": 41,
       "faction": "Wizard",
       "tier": 3,
       "stats": {
@@ -1095,14 +1012,12 @@
         "SpellDamageReduction"
       ],
       "baseCreature": "IronGolem",
-      "dwelling": "Dwelling3Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling3Upgraded"
     },
     {
       "id": "Roc",
       "name": "Roc",
       "code": 42,
-      "order": 42,
       "faction": "Wizard",
       "tier": 4,
       "stats": {
@@ -1121,14 +1036,12 @@
         "Flying"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "Mage",
       "name": "Mage",
       "code": 43,
-      "order": 43,
       "faction": "Wizard",
       "tier": 5,
       "stats": {
@@ -1148,14 +1061,12 @@
         "Ranged"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "Archmage",
       "name": "Archmage",
       "code": 44,
-      "order": 44,
       "faction": "Wizard",
       "tier": 5,
       "stats": {
@@ -1175,14 +1086,12 @@
         "Ranged"
       ],
       "baseCreature": "Mage",
-      "dwelling": "Dwelling5Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling5Upgraded"
     },
     {
       "id": "Giant",
       "name": "Giant",
       "code": 45,
-      "order": 45,
       "faction": "Wizard",
       "tier": 6,
       "stats": {
@@ -1202,14 +1111,12 @@
         "MindSpellsImmunity"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "Titan",
       "name": "Titan",
       "code": 46,
-      "order": 46,
       "faction": "Wizard",
       "tier": 6,
       "stats": {
@@ -1231,14 +1138,12 @@
         "MindSpellsImmunity"
       ],
       "baseCreature": "Giant",
-      "dwelling": "Dwelling6Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling6Upgraded"
     },
     {
       "id": "Skeleton",
       "name": "Skeleton",
       "code": 47,
-      "order": 47,
       "faction": "Necromancer",
       "tier": 1,
       "stats": {
@@ -1257,14 +1162,12 @@
         "Undead"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling1",
-      "fallback": false
+      "dwelling": "Dwelling1"
     },
     {
       "id": "Zombie",
       "name": "Zombie",
       "code": 48,
-      "order": 48,
       "faction": "Necromancer",
       "tier": 2,
       "stats": {
@@ -1283,14 +1186,12 @@
         "Undead"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling2",
-      "fallback": false
+      "dwelling": "Dwelling2"
     },
     {
       "id": "MutantZombie",
       "name": "Mutant Zombie",
       "code": 49,
-      "order": 49,
       "faction": "Necromancer",
       "tier": 2,
       "stats": {
@@ -1309,14 +1210,12 @@
         "Undead"
       ],
       "baseCreature": "Zombie",
-      "dwelling": "Dwelling2Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling2Upgraded"
     },
     {
       "id": "Mummy",
       "name": "Mummy",
       "code": 50,
-      "order": 50,
       "faction": "Necromancer",
       "tier": 3,
       "stats": {
@@ -1336,14 +1235,12 @@
         "Curse"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling3",
-      "fallback": false
+      "dwelling": "Dwelling3"
     },
     {
       "id": "RoyalMummy",
       "name": "Royal Mummy",
       "code": 51,
-      "order": 51,
       "faction": "Necromancer",
       "tier": 3,
       "stats": {
@@ -1363,14 +1260,12 @@
         "Curse"
       ],
       "baseCreature": "Mummy",
-      "dwelling": "Dwelling3Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling3Upgraded"
     },
     {
       "id": "Vampire",
       "name": "Vampire",
       "code": 52,
-      "order": 52,
       "faction": "Necromancer",
       "tier": 4,
       "stats": {
@@ -1390,14 +1285,12 @@
         "Undead"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling4",
-      "fallback": false
+      "dwelling": "Dwelling4"
     },
     {
       "id": "VampireLord",
       "name": "Vampire Lord",
       "code": 53,
-      "order": 53,
       "faction": "Necromancer",
       "tier": 4,
       "stats": {
@@ -1418,14 +1311,12 @@
         "LifeDrain"
       ],
       "baseCreature": "Vampire",
-      "dwelling": "Dwelling4Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling4Upgraded"
     },
     {
       "id": "Lich",
       "name": "Lich",
       "code": 54,
-      "order": 54,
       "faction": "Necromancer",
       "tier": 5,
       "stats": {
@@ -1447,14 +1338,12 @@
         "DeathCloud"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling5",
-      "fallback": false
+      "dwelling": "Dwelling5"
     },
     {
       "id": "PowerLich",
       "name": "Power Lich",
       "code": 55,
-      "order": 55,
       "faction": "Necromancer",
       "tier": 5,
       "stats": {
@@ -1476,14 +1365,12 @@
         "DeathCloud"
       ],
       "baseCreature": "Lich",
-      "dwelling": "Dwelling5Upgraded",
-      "fallback": false
+      "dwelling": "Dwelling5Upgraded"
     },
     {
       "id": "BoneDragon",
       "name": "Bone Dragon",
       "code": 56,
-      "order": 56,
       "faction": "Necromancer",
       "tier": 6,
       "stats": {
@@ -1505,14 +1392,12 @@
         "MoraleMinus1"
       ],
       "baseCreature": null,
-      "dwelling": "Dwelling6",
-      "fallback": false
+      "dwelling": "Dwelling6"
     },
     {
       "id": "Rogue",
       "name": "Rogue",
       "code": 57,
-      "order": 57,
       "faction": null,
       "tier": 1,
       "stats": {
@@ -1529,14 +1414,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "Nomad",
       "name": "Nomad",
       "code": 58,
-      "order": 58,
       "faction": null,
       "tier": 2,
       "stats": {
@@ -1553,14 +1436,12 @@
       },
       "abilities": [],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "Ghost",
       "name": "Ghost",
       "code": 59,
-      "order": 59,
       "faction": null,
       "tier": 3,
       "stats": {
@@ -1580,14 +1461,12 @@
         "Undead"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "Genie",
       "name": "Genie",
       "code": 60,
-      "order": 60,
       "faction": null,
       "tier": 6,
       "stats": {
@@ -1608,14 +1487,12 @@
         "HalvesEnemyStack"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "Medusa",
       "name": "Medusa",
       "code": 61,
-      "order": 61,
       "faction": null,
       "tier": 4,
       "stats": {
@@ -1634,14 +1511,12 @@
         "PetrifyingAttack"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "EarthElemental",
       "name": "Earth Elemental",
       "code": 62,
-      "order": 62,
       "faction": null,
       "tier": 4,
       "stats": {
@@ -1663,14 +1538,12 @@
         "ImmuneToLightningAndMeteorSpells"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "AirElemental",
       "name": "Air Elemental",
       "code": 63,
-      "order": 63,
       "faction": null,
       "tier": 4,
       "stats": {
@@ -1693,14 +1566,12 @@
         "VulnerableToLightningSpells"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "FireElemental",
       "name": "Fire Elemental",
       "code": 64,
-      "order": 64,
       "faction": null,
       "tier": 4,
       "stats": {
@@ -1723,14 +1594,12 @@
         "FireImmunity"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     },
     {
       "id": "WaterElemental",
       "name": "Water Elemental",
       "code": 65,
-      "order": 65,
       "faction": null,
       "tier": 4,
       "stats": {
@@ -1752,8 +1621,7 @@
         "ImmuneToColdSpells"
       ],
       "baseCreature": null,
-      "dwelling": null,
-      "fallback": false
+      "dwelling": null
     }
   ],
   "replacements": []

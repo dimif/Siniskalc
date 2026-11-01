@@ -15,31 +15,31 @@
     "versions": {
       "type": "object",
       "required": [
-        "restorationOfErathia",
-        "armageddonsBlade",
-        "shadowOfDeath",
-        "heroesChronicles",
-        "hornOfTheAbyss"
+        "roe",
+        "ab",
+        "sod",
+        "chronicles",
+        "hota"
       ],
       "additionalProperties": false,
       "properties": {
-        "restorationOfErathia": {
+        "roe": {
           "type": "string",
           "minLength": 1
         },
-        "armageddonsBlade": {
+        "ab": {
           "type": "string",
           "minLength": 1
         },
-        "shadowOfDeath": {
+        "sod": {
           "type": "string",
           "minLength": 1
         },
-        "heroesChronicles": {
+        "chronicles": {
           "type": "string",
           "minLength": 1
         },
-        "hornOfTheAbyss": {
+        "hota": {
           "type": "string",
           "minLength": 1
         }

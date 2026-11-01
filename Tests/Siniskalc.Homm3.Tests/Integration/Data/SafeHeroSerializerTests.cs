@@ -116,7 +116,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void ACreatureTheEditorDoesNotKnowReadsAsTheFirstCreatureAndKeepsItsNumberUntilTheModelChanges()
+        public void ACreatureTheEditorDoesNotKnowReadsAsTheCodeZeroCreatureAndKeepsItsNumberUntilTheModelChanges()
         {
             var bytes = ReadDump("hero_maximus_hota.bin");
             var slotAt = HotaOffsets[HeroOffsetName.Creatures];
@@ -125,7 +125,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var chunk = new HeroChunk("Maximus", bytes, 0);
             var creatures = this.deserializer.DeserializeCreatures(chunk);
 
-            Assert.That(creatures.Slots[0]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All[0]));
+            Assert.That(creatures.Slots[0]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.Find(0)));
             Assert.That(this.serializer.SerializeCreatures(chunk, creatures).GetByteAt(slotAt), Is.EqualTo(250));
             Assert.That(this.serializer.SerializeCreatures(chunk, creatures.WithoutSlot(0)).GetUInt32At(slotAt), Is.EqualTo(Constants.BlankId));
         }

@@ -1,9 +1,8 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 public enum ArtifactRole
 {
     None,
     Scroll,
     SpellBook,
-    Fallback,
 }

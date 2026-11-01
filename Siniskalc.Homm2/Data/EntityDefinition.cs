@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     public record EntityDefinition
     {
@@ -7,7 +7,5 @@ namespace Siniskalc.Homm2.Data
         public required string Name { get; init; }
 
         public required byte Code { get; init; }
-
-        public required int Order { get; init; }
     }
 }

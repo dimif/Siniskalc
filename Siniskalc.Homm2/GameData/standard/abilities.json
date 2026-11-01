@@ -4,226 +4,162 @@
     {
       "id": "Ranged",
       "name": "Ranged",
-      "code": 0,
-      "order": 0,
-      "isRanged": true
+      "code": 0
     },
     {
       "id": "Flying",
       "name": "Flying",
-      "code": 1,
-      "order": 1,
-      "isRanged": false
+      "code": 1
     },
     {
       "id": "DoubleShot",
       "name": "Double shot",
-      "code": 2,
-      "order": 2,
-      "isRanged": false
+      "code": 2
     },
     {
       "id": "DoubleAttack",
       "name": "Double attack",
-      "code": 3,
-      "order": 3,
-      "isRanged": false
+      "code": 3
     },
     {
       "id": "NoEnemyRetaliation",
       "name": "No enemy retaliation",
-      "code": 4,
-      "order": 4,
-      "isRanged": false
+      "code": 4
     },
     {
       "id": "AttacksAllAdjacentEnemies",
       "name": "Attacks all adjacent enemies",
-      "code": 5,
-      "order": 5,
-      "isRanged": false
+      "code": 5
     },
     {
       "id": "UnlimitedRetaliations",
       "name": "Unlimited retaliations",
-      "code": 6,
-      "order": 6,
-      "isRanged": false
+      "code": 6
     },
     {
       "id": "BreathAttack",
       "name": "Breath attack",
-      "code": 7,
-      "order": 7,
-      "isRanged": false
+      "code": 7
     },
     {
       "id": "Dragon",
       "name": "Dragon",
-      "code": 8,
-      "order": 8,
-      "isRanged": false
+      "code": 8
     },
     {
       "id": "Undead",
       "name": "Undead",
-      "code": 9,
-      "order": 9,
-      "isRanged": false
+      "code": 9
     },
     {
       "id": "Regeneration",
       "name": "Regeneration",
-      "code": 10,
-      "order": 10,
-      "isRanged": false
+      "code": 10
     },
     {
       "id": "LifeDrain",
       "name": "Life drain",
-      "code": 11,
-      "order": 11,
-      "isRanged": false
+      "code": 11
     },
     {
       "id": "DeathCloud",
       "name": "Death cloud",
-      "code": 12,
-      "order": 12,
-      "isRanged": false
+      "code": 12
     },
     {
       "id": "MindSpellsImmunity",
       "name": "Mind spells immunity",
-      "code": 13,
-      "order": 13,
-      "isRanged": false
+      "code": 13
     },
     {
       "id": "MagicImmunity",
       "name": "Magic immunity",
-      "code": 14,
-      "order": 14,
-      "isRanged": false
+      "code": 14
     },
     {
       "id": "MoraleMinus1",
       "name": "Morale -1",
-      "code": 15,
-      "order": 15,
-      "isRanged": false
+      "code": 15
     },
     {
       "id": "Curse",
       "name": "Curse",
-      "code": 16,
-      "order": 16,
-      "isRanged": false
+      "code": 16
     },
     {
       "id": "BlindingAttack",
       "name": "Blinding attack (20% chance)",
-      "code": 17,
-      "order": 17,
-      "isRanged": false
+      "code": 17
     },
     {
       "id": "ParalyzingAttack",
       "name": "Paralyzing attack",
-      "code": 18,
-      "order": 18,
-      "isRanged": false
+      "code": 18
     },
     {
       "id": "PetrifyingAttack",
       "name": "Petrifying attack",
-      "code": 19,
-      "order": 19,
-      "isRanged": false
+      "code": 19
     },
     {
       "id": "Elemental",
       "name": "Elemental",
-      "code": 20,
-      "order": 20,
-      "isRanged": false
+      "code": 20
     },
     {
       "id": "FireImmunity",
       "name": "Immune to Fireball and Fireblast",
-      "code": 21,
-      "order": 21,
-      "isRanged": false
+      "code": 21
     },
     {
       "id": "HalvesEnemyStack",
       "name": "Halves an enemy stack",
-      "code": 22,
-      "order": 22,
-      "isRanged": false
+      "code": 22
     },
     {
       "id": "MagicResistance",
       "name": "Magic resistance (25% chance)",
-      "code": 23,
-      "order": 23,
-      "isRanged": false
+      "code": 23
     },
     {
       "id": "SpellDamageReduction",
       "name": "Spell damage reduction (50%)",
-      "code": 24,
-      "order": 24,
-      "isRanged": false
+      "code": 24
     },
     {
       "id": "ElementalSpellsImmunity",
       "name": "Elemental spells immunity",
-      "code": 25,
-      "order": 25,
-      "isRanged": false
+      "code": 25
     },
     {
       "id": "NeutralMorale",
       "name": "Always neutral morale",
-      "code": 26,
-      "order": 26,
-      "isRanged": false
+      "code": 26
     },
     {
       "id": "VulnerableToColdSpells",
       "name": "Vulnerable to Cold Ray and Cold Ring (+100% damage)",
-      "code": 27,
-      "order": 27,
-      "isRanged": false
+      "code": 27
     },
     {
       "id": "ImmuneToLightningAndMeteorSpells",
       "name": "Immune to Lightning Bolt, Chain Lightning, Elemental Storm and Meteor Shower",
-      "code": 28,
-      "order": 28,
-      "isRanged": false
+      "code": 28
     },
     {
       "id": "ImmuneToMeteorShower",
       "name": "Immune to Meteor Shower",
-      "code": 29,
-      "order": 29,
-      "isRanged": false
+      "code": 29
     },
     {
       "id": "VulnerableToLightningSpells",
       "name": "Vulnerable to Lightning Bolt, Chain Lightning and Elemental Storm (+100% damage)",
-      "code": 30,
-      "order": 30,
-      "isRanged": false
+      "code": 30
     },
     {
       "id": "ImmuneToColdSpells",
       "name": "Immune to Cold Ray and Cold Ring",
-      "code": 31,
-      "order": 31,
-      "isRanged": false
+      "code": 31
     }
   ],
   "replacements": []

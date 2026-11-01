@@ -43,10 +43,10 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void ACodeThatIsNoArtifactReadsAsTheFirstArtifactAndIsNotEmpty()
+        public void ACodeThatIsNoArtifactReadsAsTheCodeZeroArtifactAndIsNotEmpty()
         {
             var unknown = (uint)Enumerable.Range(0, 256).First(c => !TestCatalog.For(GameVersion.HornOfTheAbyss).WearableArtifacts.ToDictionary(a => a.Code).ContainsKey((byte)c));
-            var first = TestCatalog.For(GameVersion.HornOfTheAbyss).WearableArtifacts.First();
+            var first = TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.Find(0);
 
             var model = new MerchantStockDeserializer(TestCatalog.For(GameVersion.HornOfTheAbyss)).Deserialize(List(unknown, 0x100, 0x17E, 0xFFFFFFFE));
 

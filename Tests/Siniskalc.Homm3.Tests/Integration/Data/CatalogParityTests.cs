@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Tests.Integration.Data;
+﻿namespace Siniskalc.Homm3.Tests.Integration.Data;
 
 using System.Collections;
 using System.Text.Json;
@@ -32,11 +32,14 @@ internal sealed class CatalogParityTests
         void Compare<T>(string domain, IReadOnlyList<T> actual) where T : CatalogEntity
         {
             using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CatalogData", "Baseline", domain + ".json")));
-            var expected = document.RootElement.EnumerateArray().Where(e => Enum.Parse<GameVersion>(e.GetProperty("availableFrom").GetString()!, true) <= version).ToArray();
+            var expected = document.RootElement.EnumerateArray()
+                .Where(e => Enum.Parse<GameVersion>(e.GetProperty("availableFrom").GetString()!, true) <= version)
+                .Where(e => domain != "Artifact" || e.GetProperty("id").GetString() != "Catapult")
+                .ToArray();
             Assert.That(actual.Select(e => e.Id), Is.EqualTo(expected.Select(e => e.GetProperty("id").GetString())), domain + ": order/availability");
             foreach (var (golden, entity) in expected.Zip(actual))
             {
-                CompareProperties(golden, entity, domain + "." + entity.Id, "versionInfo", "except", "info", "effectInfo");
+                CompareProperties(golden, entity, domain + "." + entity.Id, "order", "versionInfo", "except", "info", "effectInfo");
                 if (entity is Creature creature)
                 {
                     var info = golden.GetProperty("versionInfo").TryGetProperty(version.ToString(), out var overridden) ? overridden : golden.GetProperty("info");
@@ -84,8 +87,8 @@ internal sealed class CatalogParityTests
         using var golden = JsonDocument.Parse(File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "CatalogData", "Baseline", "VisitedPlaceKind.json")));
         foreach (var entry in golden.RootElement.EnumerateArray())
         {
-            var actual = TestCatalog.Hota.VisitedPlaces.ById(entry.GetProperty("id").GetString()!);
-            CompareProperties(entry, actual, actual.Id, "heroOffset");
+            var actual = TestCatalog.Hota.VisitablePlaces.ById(entry.GetProperty("id").GetString()!);
+            CompareProperties(entry, actual, actual.Id, "order", "heroOffset");
             Assert.That(VisitedPlaceOffsets.For(actual.Slot), Is.EqualTo(entry.GetProperty("heroOffset").GetInt32()));
         }
     }

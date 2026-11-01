@@ -8,10 +8,6 @@
       "id": {
         "type": "string"
       },
-      "order": {
-        "type": "integer",
-        "minimum": 0
-      },
       "name": {
         "type": "string"
       },
@@ -23,11 +19,11 @@
       "availableFrom": {
         "type": "string",
         "enum": [
-          "restorationOfErathia",
-          "armageddonsBlade",
-          "shadowOfDeath",
-          "heroesChronicles",
-          "hornOfTheAbyss"
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
         ]
       },
       "slot": {
@@ -39,30 +35,6 @@
       "effectInfo": {
         "type": "object",
         "properties": {
-          "atk": {
-            "type": "integer"
-          },
-          "def": {
-            "type": "integer"
-          },
-          "pow": {
-            "type": "integer"
-          },
-          "kno": {
-            "type": "integer"
-          },
-          "luck": {
-            "type": "integer"
-          },
-          "morale": {
-            "type": "integer"
-          },
-          "landMovement": {
-            "type": "integer"
-          },
-          "waterMovement": {
-            "type": "integer"
-          },
           "spellGrants": {
             "type": "array",
             "items": {
@@ -106,51 +78,48 @@
           "grantsSpellBook": {
             "type": "boolean"
           },
-          "gold": {
-            "type": "integer"
-          },
-          "ore": {
-            "type": "integer"
-          },
-          "wood": {
-            "type": "integer"
-          },
-          "crystal": {
-            "type": "integer"
-          },
-          "gems": {
-            "type": "integer"
-          },
-          "mercury": {
-            "type": "integer"
-          },
-          "sulfur": {
-            "type": "integer"
-          },
           "other": {
             "type": "string"
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "attribute": {
+                  "type": "string",
+                  "enum": [
+                    "attack",
+                    "defense",
+                    "spellPower",
+                    "knowledge",
+                    "luck",
+                    "morale",
+                    "landMovement",
+                    "waterMovement",
+                    "gold",
+                    "ore",
+                    "wood",
+                    "crystal",
+                    "gems",
+                    "mercury",
+                    "sulfur"
+                  ]
+                },
+                "amount": {
+                  "type": "integer",
+                  "minimum": -32768,
+                  "maximum": 32767
+                }
+              },
+              "required": [
+                "attribute",
+                "amount"
+              ],
+              "additionalProperties": false
+            }
           }
         },
-        "required": [
-          "atk",
-          "def",
-          "pow",
-          "kno",
-          "luck",
-          "morale",
-          "landMovement",
-          "waterMovement",
-          "spellGrants",
-          "grantsSpellBook",
-          "gold",
-          "ore",
-          "wood",
-          "crystal",
-          "gems",
-          "mercury",
-          "sulfur",
-          "other"
-        ],
         "additionalProperties": false
       },
       "description": {
@@ -181,17 +150,18 @@
       "role": {
         "type": "string",
         "enum": [
-          "fallback",
           "none",
           "scroll",
           "spellBook"
         ]
       },
       "wearable": {
-        "type": "boolean"
+        "type": "boolean",
+        "default": true
       },
       "backpack": {
-        "type": "boolean"
+        "type": "boolean",
+        "default": true
       },
       "replaces": {
         "type": "boolean"
@@ -199,7 +169,6 @@
     },
     "required": [
       "id",
-      "order",
       "name",
       "code",
       "availableFrom",
@@ -210,10 +179,7 @@
       "isCombination",
       "class",
       "cost",
-      "combinesInto",
-      "role",
-      "wearable",
-      "backpack"
+      "combinesInto"
     ],
     "additionalProperties": false
   }

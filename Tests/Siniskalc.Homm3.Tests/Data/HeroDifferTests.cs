@@ -102,12 +102,12 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ThePlacesAHeroVisitedAreListedAsTheNumberOfVisitsOfEachKind()
         {
             var original = HeroModels.Christian();
-            var current = original with { PlaceVisits = original.PlaceVisits.With(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone"), 0b1011) };
+            var current = original with { PlaceVisits = original.PlaceVisits.With(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("LearningStone"), 0b1011) };
 
             var change = this.Diff(original, current).Single();
 
             Assert.That(Words(change), Is.EqualTo(("Visited: learning stones", "0", "3")));
-            Assert.That(this.fake.HeroReverts["Visited: learning stones"](current).PlaceVisits.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitedPlaces.ById("LearningStone")), Is.Zero);
+            Assert.That(this.fake.HeroReverts["Visited: learning stones"](current).PlaceVisits.Of(TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("LearningStone")), Is.Zero);
         }
 
         [Test]

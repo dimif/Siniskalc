@@ -5,15 +5,12 @@
       "id": "Observatory",
       "name": "Observatory",
       "code": 6,
-      "order": 7,
-      "neutral": false,
       "library": true,
       "growthBuildingName": "Astral Garden",
       "specialBuildingName": "Star Library",
       "heroIds": [
         0
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -29,8 +26,6 @@
       "id": "Knight",
       "name": "Knight",
       "code": 0,
-      "order": 0,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Farm",
       "specialBuildingName": "Fortifications",
@@ -44,7 +39,6 @@
         7,
         8
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -52,7 +46,7 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     }
   ]
 }

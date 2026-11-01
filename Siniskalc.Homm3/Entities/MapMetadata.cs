@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using System.Collections.Frozen;
 using System.Collections.Generic;
@@ -13,11 +13,11 @@ public sealed class MapMetadata
     private readonly FrozenDictionary<MineKind, MineDefinition> mines;
     private readonly MineDefinition fallback;
 
-    internal MapMetadata(MapMetadataDefinition definition)
+    internal MapMetadata(MapMetadataDefinition definition, MineDefinition[] mines, VisitEffectDefinition[] visitEffects)
     {
-        this.mines = definition.Mines.ToFrozenDictionary(m => m.Kind);
-        this.fallback = definition.Mines.Single(m => m.Fallback);
-        this.VisitEffects = definition.VisitEffects.OrderBy(e => e.Order).ToArray().AsReadOnly();
+        this.mines = mines.ToFrozenDictionary(m => m.Kind);
+        this.fallback = mines.Single(m => (int)m.Kind == 0);
+        this.VisitEffects = visitEffects.ToArray().AsReadOnly();
         this.MerchantName = definition.MerchantName;
         this.DwellingName = definition.DwellingName;
     }

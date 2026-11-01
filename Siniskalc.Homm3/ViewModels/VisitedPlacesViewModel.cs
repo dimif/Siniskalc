@@ -23,7 +23,7 @@
             this.places = places;
             this.PlacesVisited = new VisitedPlacesCardViewModel(
                 "Visited once per hero",
-                getHero().HeroClass.Catalog.VisitedPlaces.All.Where(kind => kind.IsAvailableIn(gameVersion)).Select(this.VisitedRow).ToList(),
+                getHero().HeroClass.Catalog.VisitablePlaces.All.Where(kind => kind.IsAvailableIn(gameVersion)).Select(this.VisitedRow).ToList(),
                 []);
         }
 

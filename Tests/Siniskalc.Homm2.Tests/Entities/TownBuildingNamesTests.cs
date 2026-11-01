@@ -26,7 +26,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void ACastleOfNoTownHasGenericNames()
         {
-            Assert.That(TownBuildingNames.SecondWellOf(TestCatalog.Standard.Factions["Neutral"]), Is.EqualTo("Second well"));
+            Assert.That(TownBuildingNames.SecondWellOf(TestCatalog.Standard.Factions["Neutral"]), Is.EqualTo("Creature growth building"));
             Assert.That(TownBuildingNames.SpecialOf(TestCatalog.Standard.Factions["Neutral"]), Is.EqualTo("Special building"));
         }
     }

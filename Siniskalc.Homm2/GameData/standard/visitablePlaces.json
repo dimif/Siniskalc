@@ -5,7 +5,6 @@
       "id": "Gazebo",
       "name": "Gazebos",
       "code": 138,
-      "order": 0,
       "kind": "Gazebo",
       "description": "A thousand experience points, once per hero"
     },
@@ -13,7 +12,6 @@
       "id": "Fort",
       "name": "Forts",
       "code": 190,
-      "order": 1,
       "kind": "Fort",
       "description": "A point of defense, once per hero"
     },
@@ -21,7 +19,6 @@
       "id": "WitchDoctorHut",
       "name": "Witch doctor's huts",
       "code": 197,
-      "order": 2,
       "kind": "WitchDoctorHut",
       "description": "A point of knowledge or a skill, once per hero"
     },
@@ -29,7 +26,6 @@
       "id": "MercenaryCamp",
       "name": "Mercenary camps",
       "code": 201,
-      "order": 3,
       "kind": "MercenaryCamp",
       "description": "A point of attack, once per hero"
     },
@@ -37,7 +33,6 @@
       "id": "StandingStones",
       "name": "Standing stones",
       "code": 194,
-      "order": 4,
       "kind": "StandingStones",
       "description": "A point of spell power, once per hero"
     },
@@ -45,7 +40,6 @@
       "id": "Xanadu",
       "name": "Xanadu",
       "code": 214,
-      "order": 5,
       "kind": "Xanadu",
       "description": "A point of every primary skill, once per hero"
     }

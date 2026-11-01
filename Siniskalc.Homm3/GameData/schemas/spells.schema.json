@@ -8,10 +8,6 @@
       "id": {
         "type": "string"
       },
-      "order": {
-        "type": "integer",
-        "minimum": 0
-      },
       "name": {
         "type": "string"
       },
@@ -23,11 +19,11 @@
       "availableFrom": {
         "type": "string",
         "enum": [
-          "restorationOfErathia",
-          "armageddonsBlade",
-          "shadowOfDeath",
-          "heroesChronicles",
-          "hornOfTheAbyss"
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
         ]
       },
       "school": {
@@ -47,7 +43,8 @@
         ]
       },
       "heroOnly": {
-        "type": "boolean"
+        "type": "boolean",
+        "default": false
       },
       "replaces": {
         "type": "boolean"
@@ -55,14 +52,12 @@
     },
     "required": [
       "id",
-      "order",
       "name",
       "code",
       "availableFrom",
       "school",
       "level",
-      "type",
-      "heroOnly"
+      "type"
     ],
     "additionalProperties": false
   }

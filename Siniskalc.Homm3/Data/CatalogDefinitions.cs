@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using System.Collections.Generic;
 
@@ -13,7 +13,9 @@ public sealed record CatalogDefinitions(
     SkillDefinition[] SecondarySkills,
     WarMachineDefinition[] WarMachines,
     ArtifactDefinition[] Artifacts,
-    VisitedPlaceDefinition[] VisitedPlaces,
+    VisitablePlaceDefinition[] VisitablePlaces,
+    MineDefinition[] Mines,
+    VisitEffectDefinition[] VisitEffects,
     MapMetadataDefinition MapMetadata)
 {
     public IReadOnlyDictionary<string, string> SourcePaths { get; init; } = new Dictionary<string, string>();

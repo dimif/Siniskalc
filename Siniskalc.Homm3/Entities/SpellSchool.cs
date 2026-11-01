@@ -8,10 +8,9 @@ public sealed class SpellSchool : CatalogEntity
         : base(catalog, definition)
     {
         this.Description = definition.Description;
-        this.Universal = definition.Universal;
     }
 
     public string Description { get; }
 
-    public bool Universal { get; }
+    public bool Universal => this.Id == "all";
 }

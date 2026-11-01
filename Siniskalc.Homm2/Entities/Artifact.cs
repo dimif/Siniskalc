@@ -12,16 +12,22 @@
         {
             this.IsSpellBook = definition.Role == ArtifactRole.SpellBook;
             this.IsScroll = definition.Role == ArtifactRole.Scroll;
-            this.Effects = System.Array.AsReadOnly(definition.Effects.Select(id => catalog.Effects[id]).ToArray());
-            this.PrimarySkillBonus = this.Effects.Aggregate(PrimarySkillBonus.None, (sum, effect) => sum + effect.Bonus);
+            this.Effects = System.Array.AsReadOnly(definition.EffectInfo.Modifiers.ToArray());
+            this.PrimarySkillBonus = new(
+                this.Amount(ArtifactAttribute.Attack),
+                this.Amount(ArtifactAttribute.Defense),
+                this.Amount(ArtifactAttribute.SpellPower),
+                this.Amount(ArtifactAttribute.Knowledge));
         }
 
         public bool IsSpellBook { get; }
 
         public bool IsScroll { get; }
 
-        public System.Collections.Generic.IReadOnlyList<ArtifactEffect> Effects { get; }
+        public System.Collections.Generic.IReadOnlyList<AttributeEffect> Effects { get; }
 
         public PrimarySkillBonus PrimarySkillBonus { get; }
+
+        private int Amount(ArtifactAttribute attribute) => this.Effects.FirstOrDefault(effect => effect.Attribute == attribute)?.Amount ?? 0;
     }
 }

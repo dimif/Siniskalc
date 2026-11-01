@@ -14,7 +14,7 @@ namespace Siniskalc.Homm2.Entities
 
         internal EntityCatalog(IEnumerable<T> values)
         {
-            this.values = System.Array.AsReadOnly(values.OrderBy(v => v.Order).ToArray());
+            this.values = System.Array.AsReadOnly(values.ToArray());
             this.ids = new ReadOnlyDictionary<string, T>(this.values.ToDictionary(v => v.Id));
             this.codes = new ReadOnlyDictionary<byte, T>(this.values.ToDictionary(v => v.Code));
         }

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using Siniskalc.Homm3.Entities;
 
@@ -20,9 +20,9 @@ public sealed record ArtifactDefinition : EntityDefinition
 
     public required string? CombinesInto { get; init; }
 
-    public required ArtifactRole Role { get; init; }
+    public ArtifactRole Role { get; init; }
 
-    public required bool Wearable { get; init; }
+    public bool Wearable { get; init; } = true;
 
-    public required bool Backpack { get; init; }
+    public bool Backpack { get; init; } = true;
 }

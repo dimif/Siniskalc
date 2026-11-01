@@ -1,6 +1,6 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 public sealed record SkillDefinition : EntityDefinition
 {
-    public required SkillRole Role { get; init; }
+    public SkillRole Role { get; init; }
 }

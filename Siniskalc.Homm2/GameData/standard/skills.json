@@ -4,100 +4,72 @@
     {
       "id": "Pathfinding",
       "name": "Pathfinding",
-      "code": 0,
-      "order": 0,
-      "role": "ordinary"
+      "code": 0
     },
     {
       "id": "Archery",
       "name": "Archery",
-      "code": 1,
-      "order": 1,
-      "role": "ordinary"
+      "code": 1
     },
     {
       "id": "Logistics",
       "name": "Logistics",
-      "code": 2,
-      "order": 2,
-      "role": "ordinary"
+      "code": 2
     },
     {
       "id": "Scouting",
       "name": "Scouting",
-      "code": 3,
-      "order": 3,
-      "role": "ordinary"
+      "code": 3
     },
     {
       "id": "Diplomacy",
       "name": "Diplomacy",
-      "code": 4,
-      "order": 4,
-      "role": "ordinary"
+      "code": 4
     },
     {
       "id": "Navigation",
       "name": "Navigation",
-      "code": 5,
-      "order": 5,
-      "role": "ordinary"
+      "code": 5
     },
     {
       "id": "Leadership",
       "name": "Leadership",
-      "code": 6,
-      "order": 6,
-      "role": "ordinary"
+      "code": 6
     },
     {
       "id": "Wisdom",
       "name": "Wisdom",
-      "code": 7,
-      "order": 7,
-      "role": "ordinary"
+      "code": 7
     },
     {
       "id": "Mysticism",
       "name": "Mysticism",
-      "code": 8,
-      "order": 8,
-      "role": "ordinary"
+      "code": 8
     },
     {
       "id": "Luck",
       "name": "Luck",
-      "code": 9,
-      "order": 9,
-      "role": "ordinary"
+      "code": 9
     },
     {
       "id": "Ballistics",
       "name": "Ballistics",
-      "code": 10,
-      "order": 10,
-      "role": "ordinary"
+      "code": 10
     },
     {
       "id": "EagleEye",
       "name": "Eagle Eye",
-      "code": 11,
-      "order": 11,
-      "role": "ordinary"
+      "code": 11
     },
     {
       "id": "Necromancy",
       "name": "Necromancy",
-      "code": 12,
-      "order": 12,
-      "role": "ordinary"
+      "code": 12
     },
     {
       "id": "Estates",
       "name": "Estates",
-      "code": 13,
-      "order": 13,
-      "role": "ordinary"
+      "code": 13
     }
   ],
   "replacements": []

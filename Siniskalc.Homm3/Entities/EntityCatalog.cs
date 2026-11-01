@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ public sealed class EntityCatalog
     internal EntityCatalog(GameVersion version, CatalogDefinitions definitions)
     {
         this.Version = version;
-        this.MapMetadata = new MapMetadata(definitions.MapMetadata);
+        this.MapMetadata = new MapMetadata(definitions.MapMetadata, definitions.Mines, definitions.VisitEffects);
         this.Factions = new(definitions.Factions.Select(d => new Faction(this, d)), version);
         this.Abilities = new(definitions.Abilities.Select(d => new CreatureAbility(this, d)), version);
         this.SpellSchools = new(definitions.SpellSchools.Select(d => new SpellSchool(this, d)), version);
@@ -21,13 +21,13 @@ public sealed class EntityCatalog
         this.SecondarySkills = new(definitions.SecondarySkills.Select(d => new SecondarySkill(this, d)), version);
         this.WarMachines = new(definitions.WarMachines.Select(d => new WarMachine(this, d)), version);
         this.Artifacts = new(definitions.Artifacts.Select(d => new Artifact(this, d)), version);
-        this.VisitedPlaces = new(definitions.VisitedPlaces.Select(d => new VisitedPlaceKind(this, d)), version);
-        this.NeutralFaction = this.Factions.ById(definitions.Factions.Single(d => d.IsNeutral).Id);
-        this.FallbackCreature = this.Creatures.ById(definitions.Creatures.Single(d => d.Fallback).Id);
-        this.FallbackHeroClass = this.HeroClasses.ById(definitions.HeroClasses.Single(d => d.Fallback).Id);
+        this.VisitablePlaces = new(definitions.VisitablePlaces.Select(d => new VisitedPlaceKind(this, d)), version);
+        this.NeutralFaction = this.Factions.ById("Neutral");
+        this.FallbackCreature = this.Creatures.Find(0)!;
+        this.FallbackHeroClass = this.HeroClasses.Find(0)!;
         this.Scroll = this.Artifacts.ById(definitions.Artifacts.Single(d => d.Role == ArtifactRole.Scroll).Id);
         this.SpellBook = this.Artifacts.ById(definitions.Artifacts.Single(d => d.Role == ArtifactRole.SpellBook).Id);
-        this.FallbackArtifact = this.Artifacts.ById(definitions.Artifacts.Single(d => d.Role == ArtifactRole.Fallback).Id);
+        this.FallbackArtifact = this.Artifacts.Find(0)!;
     }
 
     public GameVersion Version { get; }
@@ -54,7 +54,7 @@ public sealed class EntityCatalog
 
     public EntityCollection<Artifact> Artifacts { get; }
 
-    public EntityCollection<VisitedPlaceKind> VisitedPlaces { get; }
+    public EntityCollection<VisitedPlaceKind> VisitablePlaces { get; }
 
     public Faction NeutralFaction { get; }
 

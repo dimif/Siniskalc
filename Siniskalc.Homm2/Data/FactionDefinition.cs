@@ -1,9 +1,7 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     public sealed record FactionDefinition : EntityDefinition
     {
-        public required bool Neutral { get; init; }
-
         public required bool Library { get; init; }
 
         public required string GrowthBuildingName { get; init; }
@@ -13,8 +11,6 @@ namespace Siniskalc.Homm2.Data
         public required string SpecialBuildingDescription { get; init; }
 
         public required int[] HeroIds { get; init; }
-
-        public required bool HeroFallback { get; init; }
 
         public required int[] GuildSpellCounts { get; init; }
     }

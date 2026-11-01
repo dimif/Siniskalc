@@ -1,4 +1,6 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
+
+using Siniskalc.Homm3.Entities;
 
 public sealed record CreatureDefinition : EntityDefinition
 {
@@ -12,5 +14,5 @@ public sealed record CreatureDefinition : EntityDefinition
 
     public required string? Dwelling { get; init; }
 
-    public required bool Fallback { get; init; }
+    public System.Collections.Generic.Dictionary<GameVersion, CreatureStatsDefinition> VersionInfo { get; init; } = [];
 }

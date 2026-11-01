@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             var places = new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>();
-            foreach (var kind in catalog.VisitedPlaces.All.Where(k => k.ObjectType != null))
+            foreach (var kind in catalog.VisitablePlaces.All.Where(k => k.ObjectType != null))
             {
                 places[kind] = Find(bytes, firstDefinition, objects, kind.ObjectType!.Value, kind.NumberMask, kind.CellHasFlags);
             }

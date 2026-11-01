@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Entities
+﻿namespace Siniskalc.Homm2.Tests.Entities
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;
@@ -32,9 +32,9 @@ namespace Siniskalc.Homm2.Tests.Entities
         [Test]
         public void TheMindSpellsAndTheElementalSpellsAreTheOnesTheRulesNameAndNoOthers()
         {
-            Assert.That(TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.Groups["Mind"]), Is.EquivalentTo(new[] { TestCatalog.Standard.Spells["Blind"], TestCatalog.Standard.Spells["Paralyze"], TestCatalog.Standard.Spells["Berserker"], TestCatalog.Standard.Spells["Hypnotize"] }));
+            Assert.That(TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.SpellTypes["Mind"]), Is.EquivalentTo(new[] { TestCatalog.Standard.Spells["Blind"], TestCatalog.Standard.Spells["Paralyze"], TestCatalog.Standard.Spells["Berserker"], TestCatalog.Standard.Spells["Hypnotize"] }));
             Assert.That(
-                TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.Groups["Elemental"]),
+                TestCatalog.Standard.Spells.Where(s => s.Group == TestCatalog.Standard.SpellTypes["Elemental"]),
                 Is.EquivalentTo(new[] { TestCatalog.Standard.Spells["LightningBolt"], TestCatalog.Standard.Spells["ChainLightning"], TestCatalog.Standard.Spells["ColdRay"], TestCatalog.Standard.Spells["ColdRing"], TestCatalog.Standard.Spells["Fireball"], TestCatalog.Standard.Spells["Fireblast"], TestCatalog.Standard.Spells["ElementalStorm"] }));
         }
 

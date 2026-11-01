@@ -11,14 +11,11 @@ namespace Siniskalc.Homm2.Entities
         {
             this.Catalog = catalog;
             this.Id = definition.Id;
-            this.Order = definition.Order;
         }
 
         public GameCatalog Catalog { get; }
 
         public string Id { get; }
-
-        public int Order { get; }
 
         public override bool Equals(AbstractEnumeration? other) => ReferenceEquals(this, other);
 

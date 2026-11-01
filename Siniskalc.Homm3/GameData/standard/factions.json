@@ -1,119 +1,93 @@
 [
   {
     "id": "Neutral",
-    "order": 0,
     "name": "Neutral",
     "code": 99,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": true,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Castle",
-    "order": 1,
     "name": "Castle",
     "code": 0,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Rampart",
-    "order": 2,
     "name": "Rampart",
     "code": 1,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "halls"
   },
   {
     "id": "Tower",
-    "order": 3,
     "name": "Tower",
     "code": 2,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Dungeon",
-    "order": 4,
     "name": "Dungeon",
     "code": 5,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Inferno",
-    "order": 5,
     "name": "Inferno",
     "code": 3,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Necropolis",
-    "order": 6,
     "name": "Necropolis",
     "code": 4,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "halls"
   },
   {
     "id": "Stronghold",
-    "order": 7,
     "name": "Stronghold",
     "code": 6,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "fort"
   },
   {
     "id": "Fortress",
-    "order": 8,
     "name": "Fortress",
     "code": 7,
-    "availableFrom": "restorationOfErathia",
-    "isNeutral": false,
+    "availableFrom": "roe",
     "companionBits": "none"
   },
   {
     "id": "Conflux",
-    "order": 9,
     "name": "Conflux",
     "code": 8,
-    "availableFrom": "armageddonsBlade",
-    "isNeutral": false,
+    "availableFrom": "ab",
     "companionBits": "fortAndHalls"
   },
   {
     "id": "Cove",
-    "order": 10,
     "name": "Cove",
     "code": 9,
-    "availableFrom": "hornOfTheAbyss",
-    "isNeutral": false,
+    "availableFrom": "hota",
     "companionBits": "none"
   },
   {
     "id": "Factory",
-    "order": 11,
     "name": "Factory",
     "code": 10,
-    "availableFrom": "hornOfTheAbyss",
-    "isNeutral": false,
+    "availableFrom": "hota",
     "companionBits": "fort"
   },
   {
     "id": "Bulwark",
-    "order": 12,
     "name": "Bulwark",
     "code": 11,
-    "availableFrom": "hornOfTheAbyss",
-    "isNeutral": false,
+    "availableFrom": "hota",
     "companionBits": "fort"
   }
 ]

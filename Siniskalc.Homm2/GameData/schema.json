@@ -20,16 +20,13 @@
       "$ref": "#/$defs/ArtifactFile"
     },
     {
-      "$ref": "#/$defs/EffectFile"
-    },
-    {
       "$ref": "#/$defs/CreatureFile"
     },
     {
       "$ref": "#/$defs/SpellFile"
     },
     {
-      "$ref": "#/$defs/GroupFile"
+      "$ref": "#/$defs/SpellTypeFile"
     },
     {
       "$ref": "#/$defs/BuildingFile"
@@ -66,13 +63,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "neutral": {
-          "type": "boolean"
-        },
         "library": {
           "type": "boolean"
         },
@@ -87,9 +77,6 @@
           "items": {
             "type": "integer"
           }
-        },
-        "heroFallback": {
-          "type": "boolean"
         },
         "guildSpellCounts": {
           "type": "array",
@@ -109,13 +96,10 @@
         "id",
         "name",
         "code",
-        "order",
-        "neutral",
         "library",
         "growthBuildingName",
         "specialBuildingName",
         "heroIds",
-        "heroFallback",
         "guildSpellCounts",
         "specialBuildingDescription"
       ]
@@ -163,21 +147,12 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
-        },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "isRanged": {
-          "type": "boolean"
         }
       },
       "required": [
         "id",
         "name",
-        "code",
-        "order",
-        "isRanged"
+        "code"
       ]
     },
     "AbilityFile": {
@@ -223,25 +198,12 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
-        },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "role": {
-          "type": "string",
-          "enum": [
-            "Ordinary",
-            "ordinary"
-          ]
         }
       },
       "required": [
         "id",
         "name",
-        "code",
-        "order",
-        "role"
+        "code"
       ]
     },
     "SkillFile": {
@@ -288,19 +250,12 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "availableFrom": {
           "type": "string",
           "enum": [
-            "Unknown",
-            "BaseGame",
-            "PriceOfLoyalty",
             "unknown",
-            "baseGame",
-            "priceOfLoyalty"
+            "sw",
+            "pol"
           ]
         },
         "role": {
@@ -309,28 +264,50 @@
             "Ordinary",
             "SpellBook",
             "Scroll",
-            "Fallback",
             "ordinary",
             "spellBook",
-            "scroll",
-            "fallback"
+            "scroll"
           ]
         },
-        "effects": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "effectInfo": {
+          "type": "object",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attribute": {
+                    "type": "string",
+                    "enum": [
+                      "attack",
+                      "defense",
+                      "spellPower",
+                      "knowledge"
+                    ]
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "minimum": -32768,
+                    "maximum": 32767
+                  }
+                },
+                "required": [
+                  "attribute",
+                  "amount"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "required": [
         "id",
         "name",
         "code",
-        "order",
-        "availableFrom",
-        "role",
-        "effects"
+        "availableFrom"
       ]
     },
     "ArtifactFile": {
@@ -359,78 +336,6 @@
         "replacements"
       ]
     },
-    "Effect": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1,
-          "pattern": "^[A-Za-z0-9_-]+$"
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "code": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 255
-        },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "attack": {
-          "type": "integer"
-        },
-        "defense": {
-          "type": "integer"
-        },
-        "power": {
-          "type": "integer"
-        },
-        "knowledge": {
-          "type": "integer"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "code",
-        "order",
-        "attack",
-        "defense",
-        "power",
-        "knowledge"
-      ]
-    },
-    "EffectFile": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "schemaVersion": {
-          "const": 1
-        },
-        "entries": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Effect"
-          }
-        },
-        "replacements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/Effect"
-          }
-        }
-      },
-      "required": [
-        "schemaVersion",
-        "entries",
-        "replacements"
-      ]
-    },
     "Creature": {
       "type": "object",
       "additionalProperties": false,
@@ -448,10 +353,6 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
-        },
-        "order": {
-          "type": "integer",
-          "minimum": 0
         },
         "faction": {
           "anyOf": [
@@ -528,23 +429,18 @@
               "type": "null"
             }
           ]
-        },
-        "fallback": {
-          "type": "boolean"
         }
       },
       "required": [
         "id",
         "name",
         "code",
-        "order",
         "faction",
         "tier",
         "stats",
         "abilities",
         "baseCreature",
-        "dwelling",
-        "fallback"
+        "dwelling"
       ]
     },
     "CreatureFile": {
@@ -688,10 +584,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "spellPoints": {
           "type": "integer"
         },
@@ -713,7 +605,6 @@
         "id",
         "name",
         "code",
-        "order",
         "spellPoints",
         "type",
         "level",
@@ -746,7 +637,7 @@
         "replacements"
       ]
     },
-    "Group": {
+    "SpellType": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -764,10 +655,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "hidden": {
           "type": "boolean"
         }
@@ -776,11 +663,10 @@
         "id",
         "name",
         "code",
-        "order",
         "hidden"
       ]
     },
-    "GroupFile": {
+    "SpellTypeFile": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -790,13 +676,13 @@
         "entries": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/Group"
+            "$ref": "#/$defs/SpellType"
           }
         },
         "replacements": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/Group"
+            "$ref": "#/$defs/SpellType"
           }
         }
       },
@@ -823,10 +709,6 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 255
-        },
-        "order": {
-          "type": "integer",
-          "minimum": 0
         },
         "flag": {
           "type": "string",
@@ -889,10 +771,8 @@
         "id",
         "name",
         "code",
-        "order",
         "flag",
         "description",
-        "role",
         "growth"
       ]
     },
@@ -940,10 +820,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "kind": {
           "type": "string",
           "enum": [
@@ -969,7 +845,6 @@
         "id",
         "name",
         "code",
-        "order",
         "kind",
         "description"
       ]
@@ -1018,10 +893,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "kind": {
           "type": "string",
           "enum": [
@@ -1051,7 +922,6 @@
         "id",
         "name",
         "code",
-        "order",
         "kind",
         "resource"
       ]
@@ -1100,10 +970,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "flag": {
           "type": "string",
           "enum": [
@@ -1150,7 +1016,6 @@
         "id",
         "name",
         "code",
-        "order",
         "flag",
         "behaviour",
         "description",
@@ -1202,10 +1067,6 @@
           "minimum": 0,
           "maximum": 255
         },
-        "order": {
-          "type": "integer",
-          "minimum": 0
-        },
         "role": {
           "type": "string",
           "enum": [
@@ -1231,8 +1092,6 @@
         "id",
         "name",
         "code",
-        "order",
-        "role",
         "nameFormat"
       ]
     },
@@ -1273,23 +1132,23 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "Unknown": {
+            "unknown": {
               "type": "string",
               "minLength": 1
             },
-            "BaseGame": {
+            "sw": {
               "type": "string",
               "minLength": 1
             },
-            "PriceOfLoyalty": {
+            "pol": {
               "type": "string",
               "minLength": 1
             }
           },
           "required": [
-            "Unknown",
-            "BaseGame",
-            "PriceOfLoyalty"
+            "unknown",
+            "sw",
+            "pol"
           ]
         },
         "sets": {

@@ -85,7 +85,12 @@ Every document and its collaborators retain that catalog snapshot throughout loa
 There is no mutable global current catalog and neither game can change the other's definitions.
 
 JSON holds creature and ability data, artifacts and their supported effects, factions, castle buildings, supported map-object definitions, spells, hero/faction mappings, secondary skills, spell groupings and war machines where applicable.
+Both games organize adventure-map metadata as `standard\mines.json`, `visitablePlaces.json`, `visitEffects.json` and `mapObjects.json`, with the same responsibilities but game-specific records and storage policies.
+HoMM2's spell categories live in `spellTypes.json`; they remain distinct from the combat/adventure spell kind.
 References use stable entity IDs rather than localized names or positions in a list.
+Common flags and ordinary roles can be omitted. Artifact modifiers are sparse attribute/amount lists, not separate effect identities or objects full of zeroes.
+Unknown required entities use code 0 as editor business logic; no JSON record chooses a fallback.
+HoMM3 ships one standard directory for every version, using short version identifiers and per-creature `versionInfo` statistics where the versions differ.
 Save codes remain format-specific; in particular a castle building's bit is interpreted in the context of its faction, not as a globally unique entity code.
 Readers, independent safe serializers, reducers, finders and pages use the same typed catalog, not JSON documents.
 

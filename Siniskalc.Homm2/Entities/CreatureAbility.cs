@@ -8,7 +8,7 @@
         internal CreatureAbility(GameCatalog catalog, AbilityDefinition definition)
             : base(catalog, definition)
         {
-            this.IsRanged = definition.IsRanged;
+            this.IsRanged = definition.Id == "Ranged";
         }
 
         public bool IsRanged { get; }

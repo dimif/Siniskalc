@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System;
     using System.Collections.Generic;
@@ -49,15 +49,14 @@ namespace Siniskalc.Homm2.Data
                     Read("abilities", parent?.Abilities),
                     Read("skills", parent?.Skills),
                     Read("artifacts", parent?.Artifacts),
-                    Read("effects", parent?.Effects),
                     Read("creatures", parent?.Creatures),
                     Read("spells", parent?.Spells),
-                    Read("groups", parent?.Groups),
+                    Read("spellTypes", parent?.SpellTypes),
                     Read("buildings", parent?.Buildings),
-                    Read("places", parent?.Places),
+                    Read("visitablePlaces", parent?.Places),
                     Read("mines", parent?.Mines),
-                    Read("visit-effects", parent?.VisitEffects),
-                    Read("map-objects", parent?.MapObjects));
+                    Read("visitEffects", parent?.VisitEffects),
+                    Read("mapObjects", parent?.MapObjects));
                 Validate(data, set, versions);
                 sets.Add(set, data);
                 resolving.Remove(set);
@@ -95,14 +94,12 @@ namespace Siniskalc.Homm2.Data
                     {
                         Require(!string.IsNullOrWhiteSpace(entry.Id) && entry.Id.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_'), path, entry.Id + ".id", "A stable nonempty identifier is required.");
                         Require(!string.IsNullOrWhiteSpace(entry.Name), path, entry.Id + ".name", "A display name is required.");
-                        Require(entry.Order >= 0, path, entry.Id + ".order", "Order cannot be negative.");
                     }
 
                     Require(entries.Select(e => e.Id).Distinct(StringComparer.Ordinal).Count() == entries.Length, path, "id", "Duplicate IDs.");
                     Require(entries.Select(e => e.Code).Distinct().Count() == entries.Length, path, "code", "Duplicate save codes.");
-                    Require(entries.Select(e => e.Order).Distinct().Count() == entries.Length, path, "order", "Duplicate ordering.");
                     Require(entries.Select(e => e.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count() == entries.Length, path, "name", "Ambiguous display names.");
-                    return entries.OrderBy(e => e.Order).ToArray();
+                    return entries;
                 }
             }
         }
@@ -123,8 +120,8 @@ namespace Siniskalc.Homm2.Data
             void Reference<T>(string? id, T[] values, string domain, string property)
                 where T : EntityDefinition => Check(id is not null && values.Any(v => v.Id == id), domain, property, $"Unknown reference '{id}'.");
 
-            Check(d.Factions.Count(f => f.Neutral) == 1, "factions", "neutral", "Exactly one neutral faction is required.");
-            Check(d.Factions.Count(f => f.HeroFallback) == 1 && !d.Factions.Single(f => f.HeroFallback).Neutral, "factions", "heroFallback", "Exactly one non-neutral hero fallback is required.");
+            Check(d.Factions.Any(f => f.Id == "Neutral"), "factions", "Neutral", "The well-known Neutral faction is required.");
+            Check(d.Factions.Any(f => f.Code == 0 && f.Id != "Neutral"), "factions", "code", "A non-neutral faction with code 0 is required.");
             var heroes = new HashSet<int>();
             foreach (var f in d.Factions)
             {
@@ -138,7 +135,7 @@ namespace Siniskalc.Homm2.Data
             }
 
             Check(heroes.Count > 0, "factions", "heroIds", "At least one hero faction mapping is required.");
-            Check(d.Creatures.Count(c => c.Fallback) == 1, "creatures", "fallback", "Exactly one fallback creature is required.");
+            Check(d.Creatures.Any(c => c.Code == 0), "creatures", "code", "A creature with code 0 is required.");
             foreach (var c in d.Creatures)
             {
                 Check(c.Code != Constants.Empty && c.Tier is >= 1 and <= 6 && c.Stats is not null && c.Abilities is not null, "creatures", c.Id, "Creature code, tier, stats and abilities must fit the format.");
@@ -169,7 +166,7 @@ namespace Siniskalc.Homm2.Data
                     Check(seen.Add(baseId), "creatures", c.Id + ".baseCreature", "Upgrade cycle.");
                     var parent = d.Creatures.Single(v => v.Id == baseId);
                     Check(parent.Faction == c.Faction && parent.Tier == c.Tier, "creatures", c.Id + ".baseCreature", "An upgrade must keep its faction and tier.");
-                    Check(parent.Order < current.Order, "creatures", c.Id + ".order", "An upgrade must be ordered after its base creature.");
+                    Check(Array.IndexOf(d.Creatures, parent) < Array.IndexOf(d.Creatures, current), "creatures", c.Id, "An upgrade must be ordered after its base creature.");
                     upgrades++;
                     current = parent;
                 }
@@ -193,27 +190,20 @@ namespace Siniskalc.Homm2.Data
             foreach (var spell in d.Spells)
             {
                 Check(spell.Code is >= 1 and <= Constants.Hero.SpellCount && spell.Level is >= 1 and <= 5 && spell.SpellPoints >= 0 && Enum.IsDefined(spell.Type), "spells", spell.Id, "Spell code, level, cost or type is outside the supported format.");
-                Reference(spell.Group, d.Groups, "spells", spell.Id + ".group");
+                Reference(spell.Group, d.SpellTypes, "spells", spell.Id + ".group");
             }
 
-            Check(d.Groups.Count(g => g.Hidden) == 1, "groups", "hidden", "Exactly one no-group role is required.");
-            Check(d.Skills.All(s => s.Code < Constants.Hero.SecondarySkillCount && s.Role == SkillRole.Ordinary), "skills", "code/role", "Skills must fit their fixed table and use supported roles.");
-            Check(d.Artifacts.Count(a => a.Role == ArtifactRole.SpellBook) == 1 && d.Artifacts.Count(a => a.Role == ArtifactRole.Fallback) == 1 && d.Artifacts.Count(a => a.Role == ArtifactRole.Scroll) == 1, "artifacts", "role", "Exactly one spell book, fallback and scroll is required.");
-            Check(d.Artifacts.Where(a => a.Role is ArtifactRole.SpellBook or ArtifactRole.Fallback).All(a => a.AvailableFrom == GameVersion.BaseGame), "artifacts", "role", "The spell book and safe fallback must exist in the base game.");
+            Check(d.SpellTypes.Count(g => g.Hidden) == 1, "spellTypes", "hidden", "Exactly one no-group role is required.");
+            Check(d.Skills.All(s => s.Code < Constants.Hero.SecondarySkillCount), "skills", "code", "Skills must fit their fixed table.");
+            Check(d.Artifacts.Count(a => a.Role == ArtifactRole.SpellBook) == 1 && d.Artifacts.Count(a => a.Role == ArtifactRole.Scroll) == 1, "artifacts", "role", "Exactly one spell book and scroll is required.");
+            Check(d.Artifacts.Any(a => a.Code == 0 && a.AvailableFrom == GameVersion.BaseGame), "artifacts", "code", "An artifact with code 0 must exist in the base game.");
+            Check(d.Artifacts.Where(a => a.Role == ArtifactRole.SpellBook).All(a => a.AvailableFrom == GameVersion.BaseGame), "artifacts", "role", "The spell book must exist in the base game.");
             foreach (var a in d.Artifacts)
             {
-                Check(a.Code != Constants.Empty && Enum.IsDefined(a.Role) && a.AvailableFrom is GameVersion.BaseGame or GameVersion.PriceOfLoyalty && a.Effects is not null, "artifacts", a.Id, "Unsupported artifact role, version or code.");
-                foreach (var effect in a.Effects!)
-                {
-                    Reference(effect, d.Effects, "artifacts", a.Id + ".effects");
-                }
-
-                Check(a.Effects.Distinct().Count() == a.Effects.Length, "artifacts", a.Id + ".effects", "Duplicate effect reference.");
-            }
-
-            foreach (var e in d.Effects)
-            {
-                Check(new[] { e.Attack, e.Defense, e.Power, e.Knowledge }.All(n => n is >= -255 and <= 255), "effects", e.Id, "A primary-skill modifier must fit -255 to 255.");
+                Check(a.Code != Constants.Empty && Enum.IsDefined(a.Role) && a.AvailableFrom is GameVersion.BaseGame or GameVersion.PriceOfLoyalty && a.EffectInfo is not null && a.EffectInfo.Modifiers is not null, "artifacts", a.Id, "Unsupported artifact role, version, code or effects.");
+                var modifiers = a.EffectInfo!.Modifiers!;
+                Check(modifiers.All(e => e is not null && e.Attribute is ArtifactAttribute.Attack or ArtifactAttribute.Defense or ArtifactAttribute.SpellPower or ArtifactAttribute.Knowledge && e.Amount is >= -255 and <= 255), "artifacts", a.Id + ".effectInfo.modifiers", "Only primary-skill modifiers from -255 to 255 are currently implemented for HoMM2.");
+                Check(modifiers.Select(e => e.Attribute).Distinct().Count() == modifiers.Length, "artifacts", a.Id + ".effectInfo.modifiers", "An attribute must occur at most once.");
             }
 
             Check(d.Buildings.Select(b => b.Flag).Distinct().Count() == d.Buildings.Length, "buildings", "flag", "Building flags are ambiguous.");
@@ -226,30 +216,30 @@ namespace Siniskalc.Homm2.Data
 
             Check(d.Buildings.Count(b => b.Role == BuildingRole.Growth) == 1 && d.Buildings.Count(b => b.Role == BuildingRole.Special) == 1, "buildings", "role", "Exactly one growth-building and one faction-special-building role are required.");
 
-            Check(d.Places.Select(p => p.Kind).Distinct().Count() == d.Places.Length && d.Places.Length == Enum.GetValues<PlaceKind>().Length, "places", "kind", "Every supported visit encoding must have exactly one metadata record.");
-            Check(d.Places.All(p => Enum.IsDefined(p.Kind) && !string.IsNullOrWhiteSpace(p.Description)), "places", "kind/description", "Unknown place behaviour or missing description.");
+            Check(d.Places.Select(p => p.Kind).Distinct().Count() == d.Places.Length && d.Places.Length == Enum.GetValues<PlaceKind>().Length, "visitablePlaces", "kind", "Every supported visit encoding must have exactly one metadata record.");
+            Check(d.Places.All(p => Enum.IsDefined(p.Kind) && !string.IsNullOrWhiteSpace(p.Description)), "visitablePlaces", "kind/description", "Unknown place behaviour or missing description.");
             Check(d.Mines.Length == Enum.GetValues<MineKind>().Length && d.Mines.Select(m => m.Kind).Distinct().Count() == d.Mines.Length, "mines", "kind", "Every supported mine encoding must have exactly one definition.");
             Check(d.Mines.All(m => Enum.IsDefined(m.Kind) && Enum.IsDefined(m.Resource) && m.Code == (byte)m.Kind), "mines", "kind/resource", "Unknown mine kind, resource or mismatched encoding.");
-            Check(d.VisitEffects.Select(e => e.Flag).Distinct().Count() == d.VisitEffects.Length, "visit-effects", "flag", "Duplicate visit effect flags.");
+            Check(d.VisitEffects.Select(e => e.Flag).Distinct().Count() == d.VisitEffects.Length, "visitEffects", "flag", "Duplicate visit effect flags.");
             foreach (var e in d.VisitEffects)
             {
-                Check(Enum.IsDefined(e.Flag) && e.Flag != HeroEffects.None && Enum.IsDefined(e.Behaviour) && !string.IsNullOrWhiteSpace(e.Description), "visit-effects", e.Id, "Unknown behaviour, flag or missing description.");
-                Check(e.Morale >= Constants.Hero.MinBattleBonus && e.Morale <= Constants.Hero.MaxBattleBonus && e.Luck >= Constants.Hero.MinBattleBonus && e.Luck <= Constants.Hero.MaxBattleBonus, "visit-effects", e.Id, "Battle bonuses are outside the supported range.");
-                Check(e.Behaviour == VisitBehaviour.NextBattle || (e.Morale == 0 && e.Luck == 0), "visit-effects", e.Id, "Only nextBattle effects can add a battle bonus.");
+                Check(Enum.IsDefined(e.Flag) && e.Flag != HeroEffects.None && Enum.IsDefined(e.Behaviour) && !string.IsNullOrWhiteSpace(e.Description), "visitEffects", e.Id, "Unknown behaviour, flag or missing description.");
+                Check(e.Morale >= Constants.Hero.MinBattleBonus && e.Morale <= Constants.Hero.MaxBattleBonus && e.Luck >= Constants.Hero.MinBattleBonus && e.Luck <= Constants.Hero.MaxBattleBonus, "visitEffects", e.Id, "Battle bonuses are outside the supported range.");
+                Check(e.Behaviour == VisitBehaviour.NextBattle || (e.Morale == 0 && e.Luck == 0), "visitEffects", e.Id, "Only nextBattle effects can add a battle bonus.");
             }
 
             var roles = Enum.GetValues<MapObjectRole>();
-            Check(d.MapObjects.Length == roles.Length && roles.All(role => d.MapObjects.Count(o => o.Role == role) == 1), "map-objects", "role", "Every supported map-object presentation role must occur exactly once.");
+            Check(d.MapObjects.Length == roles.Length && roles.All(role => d.MapObjects.Count(o => o.Role == role) == 1), "mapObjects", "role", "Every supported map-object presentation role must occur exactly once.");
             foreach (var o in d.MapObjects)
             {
-                Check(!string.IsNullOrWhiteSpace(o.NameFormat), "map-objects", o.Id + ".nameFormat", "A name format is required.");
+                Check(!string.IsNullOrWhiteSpace(o.NameFormat), "mapObjects", o.Id + ".nameFormat", "A name format is required.");
                 try
                 {
                     _ = string.Format(System.Globalization.CultureInfo.InvariantCulture, o.NameFormat, 1, 2);
                 }
                 catch (FormatException)
                 {
-                    Check(false, "map-objects", o.Id + ".nameFormat", "Only the supported coordinate/index placeholders {0} and {1} are allowed.");
+                    Check(false, "mapObjects", o.Id + ".nameFormat", "Only the supported coordinate/index placeholders {0} and {1} are allowed.");
                 }
             }
         }

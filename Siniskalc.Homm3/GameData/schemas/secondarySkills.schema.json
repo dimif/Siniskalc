@@ -8,10 +8,6 @@
       "id": {
         "type": "string"
       },
-      "order": {
-        "type": "integer",
-        "minimum": 0
-      },
       "name": {
         "type": "string"
       },
@@ -23,11 +19,11 @@
       "availableFrom": {
         "type": "string",
         "enum": [
-          "restorationOfErathia",
-          "armageddonsBlade",
-          "shadowOfDeath",
-          "heroesChronicles",
-          "hornOfTheAbyss"
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
         ]
       },
       "role": {
@@ -45,11 +41,9 @@
     },
     "required": [
       "id",
-      "order",
       "name",
       "code",
-      "availableFrom",
-      "role"
+      "availableFrom"
     ],
     "additionalProperties": false
   }

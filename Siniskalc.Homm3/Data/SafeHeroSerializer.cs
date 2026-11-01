@@ -62,7 +62,7 @@
         {
             return Edit(chunk, buffer =>
             {
-                foreach (var kind in this.entities.Catalog.VisitedPlaces.All)
+                foreach (var kind in this.entities.Catalog.VisitablePlaces.All)
                 {
                     // A kind the savegame has no room for, or that does not exist in this version, is left alone.
                     var offset = VisitedPlaceOffsets.For(kind.Slot);

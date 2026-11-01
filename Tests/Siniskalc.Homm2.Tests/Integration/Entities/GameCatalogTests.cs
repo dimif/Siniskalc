@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Integration.Entities
+﻿namespace Siniskalc.Homm2.Tests.Integration.Entities
 {
     using Siniskalc.Homm2.Entities;
 
@@ -47,7 +47,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Entities
             Matches("factions", TestCatalog.Standard.Factions.Select(f => $"{f.Id}|{f.Name}|{f.Code}"));
 
         [Test]
-        public void EveryHeroKeepsItsOriginalFactionAndOutOfTableFallback()
+        public void EveryHeroKeepsItsOriginalFactionAndAnUnknownHeroUsesTheCodeZeroFaction()
         {
             string[] factions = ["Knight", "Barbarian", "Sorceress", "Warlock", "Wizard", "Necromancer"];
             foreach (var id in Enumerable.Range(0, 54))
@@ -55,8 +55,8 @@ namespace Siniskalc.Homm2.Tests.Integration.Entities
                 Assert.That(TestCatalog.Standard.FactionForHero(id).Id, Is.EqualTo(factions[id / 9]), $"Hero {id}");
             }
 
-            Assert.That(TestCatalog.Standard.FactionForHero(54).Id, Is.EqualTo("Necromancer"));
-            Assert.That(TestCatalog.Standard.FactionForHero(int.MaxValue).Id, Is.EqualTo("Necromancer"));
+            Assert.That(TestCatalog.Standard.FactionForHero(54).Id, Is.EqualTo("Knight"));
+            Assert.That(TestCatalog.Standard.FactionForHero(int.MaxValue).Id, Is.EqualTo("Knight"));
         }
 
         [Test]

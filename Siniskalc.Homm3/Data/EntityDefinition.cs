@@ -7,8 +7,6 @@ public abstract record EntityDefinition
 {
     public required string Id { get; init; }
 
-    public required int Order { get; init; }
-
     public required string Name { get; init; }
 
     public required byte Code { get; init; }

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     /// <summary>Validated construction input, never exposed by the runtime catalog.</summary>
     internal sealed record CatalogDefinitions(
@@ -6,10 +6,9 @@ namespace Siniskalc.Homm2.Data
         AbilityDefinition[] Abilities,
         SkillDefinition[] Skills,
         ArtifactDefinition[] Artifacts,
-        EffectDefinition[] Effects,
         CreatureDefinition[] Creatures,
         SpellDefinition[] Spells,
-        GroupDefinition[] Groups,
+        SpellTypeDefinition[] SpellTypes,
         BuildingDefinition[] Buildings,
         PlaceDefinition[] Places,
         MineDefinition[] Mines,

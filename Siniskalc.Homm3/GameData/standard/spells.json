@@ -1,637 +1,522 @@
 [
   {
     "id": "SummonBoat",
-    "order": 0,
     "name": "Summon Boat",
     "code": 0,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 1,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "ScuttleBoat",
-    "order": 1,
     "name": "Scuttle Boat",
     "code": 1,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 2,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "Visions",
-    "order": 2,
     "name": "Visions",
     "code": 2,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "all",
     "level": 2,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "ViewEarth",
-    "order": 3,
     "name": "View Earth",
     "code": 3,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 1,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "Disguise",
-    "order": 4,
     "name": "Disguise",
     "code": 4,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "ViewAir",
-    "order": 5,
     "name": "View Air",
     "code": 5,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 1,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "Fly",
-    "order": 6,
     "name": "Fly",
     "code": 6,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 5,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "WaterWalk",
-    "order": 7,
     "name": "Water Walk",
     "code": 7,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 4,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "DimensionDoor",
-    "order": 8,
     "name": "Dimension Door",
     "code": 8,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 5,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "TownPortal",
-    "order": 9,
     "name": "Town Portal",
     "code": 9,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 4,
-    "type": "adventure",
-    "heroOnly": false
+    "type": "adventure"
   },
   {
     "id": "QuickSand",
-    "order": 10,
     "name": "Quick Sand",
     "code": 10,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "LandMine",
-    "order": 11,
     "name": "Land Mine",
     "code": 11,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ForceField",
-    "order": 12,
     "name": "Force Field",
     "code": 12,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "FireWall",
-    "order": 13,
     "name": "Fire Wall",
     "code": 13,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Earthquake",
-    "order": 14,
     "name": "Earthquake",
     "code": 14,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "MagicArrow",
-    "order": 15,
     "name": "Magic Arrow",
     "code": 15,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "all",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "IceBolt",
-    "order": 16,
     "name": "Ice Bolt",
     "code": 16,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "LightningBolt",
-    "order": 17,
     "name": "Lightning Bolt",
     "code": 17,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Implosion",
-    "order": 18,
     "name": "Implosion",
     "code": 18,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ChainLightning",
-    "order": 19,
     "name": "Chain Lightning",
     "code": 19,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "FrostRing",
-    "order": 20,
     "name": "Frost Ring",
     "code": 20,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Fireball",
-    "order": 21,
     "name": "Fireball",
     "code": 21,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Inferno",
-    "order": 22,
     "name": "Inferno",
     "code": 22,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "MeteorShower",
-    "order": 23,
     "name": "Meteor Shower",
     "code": 23,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "DeathRipple",
-    "order": 24,
     "name": "Death Ripple",
     "code": 24,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "DestroyUndead",
-    "order": 25,
     "name": "Destroy Undead",
     "code": 25,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Armageddon",
-    "order": 26,
     "name": "Armageddon",
     "code": 26,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Shield",
-    "order": 27,
     "name": "Shield",
     "code": 27,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "AirShield",
-    "order": 28,
     "name": "Air Shield",
     "code": 28,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "FireShield",
-    "order": 29,
     "name": "Fire Shield",
     "code": 29,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ProtectionFromAir",
-    "order": 30,
     "name": "Protection from Air",
     "code": 30,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ProtectionFromFire",
-    "order": 31,
     "name": "Protection from Fire",
     "code": 31,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ProtectionFromWater",
-    "order": 32,
     "name": "Protection from Water",
     "code": 32,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "ProtectionFromEarth",
-    "order": 33,
     "name": "Protection from Earth",
     "code": 33,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "AntiMagic",
-    "order": 34,
     "name": "Anti Magic",
     "code": 34,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Dispel",
-    "order": 35,
     "name": "Dispel",
     "code": 35,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "MagicMirror",
-    "order": 36,
     "name": "Magic Mirror",
     "code": 36,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Cure",
-    "order": 37,
     "name": "Cure",
     "code": 37,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Resurrection",
-    "order": 38,
     "name": "Resurrection",
     "code": 38,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "AnimateDead",
-    "order": 39,
     "name": "Animate Dead",
     "code": 39,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Sacrifice",
-    "order": 40,
     "name": "Sacrifice",
     "code": 40,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Bless",
-    "order": 41,
     "name": "Bless",
     "code": 41,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Curse",
-    "order": 42,
     "name": "Curse",
     "code": 42,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Bloodlust",
-    "order": 43,
     "name": "Bloodlust",
     "code": 43,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Precision",
-    "order": 44,
     "name": "Precision",
     "code": 44,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Weakness",
-    "order": 45,
     "name": "Weakness",
     "code": 45,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "StoneSkin",
-    "order": 46,
     "name": "Stone Skin",
     "code": 46,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "DisruptingRay",
-    "order": 47,
     "name": "Disrupting Ray",
     "code": 47,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Prayer",
-    "order": 48,
     "name": "Prayer",
     "code": 48,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Mirth",
-    "order": 49,
     "name": "Mirth",
     "code": 49,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Sorrow",
-    "order": 50,
     "name": "Sorrow",
     "code": 50,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Fortune",
-    "order": 51,
     "name": "Fortune",
     "code": 51,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Misfortune",
-    "order": 52,
     "name": "Misfortune",
     "code": 52,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Haste",
-    "order": 53,
     "name": "Haste",
     "code": 53,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Slow",
-    "order": 54,
     "name": "Slow",
     "code": 54,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 1,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Slayer",
-    "order": 55,
     "name": "Slayer",
     "code": 55,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Frenzy",
-    "order": 56,
     "name": "Frenzy",
     "code": 56,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "TitansLightningBolt",
-    "order": 57,
     "name": "Titan's Lightning Bolt",
     "code": 57,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 5,
     "type": "combat",
@@ -639,134 +524,110 @@
   },
   {
     "id": "Counterstrike",
-    "order": 58,
     "name": "Counterstrike",
     "code": 58,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Berserk",
-    "order": 59,
     "name": "Berserk",
     "code": 59,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Hypnotize",
-    "order": 60,
     "name": "Hypnotize",
     "code": 60,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Forgetfulness",
-    "order": 61,
     "name": "Forgetfulness",
     "code": 61,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Blind",
-    "order": 62,
     "name": "Blind",
     "code": 62,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Teleport",
-    "order": 63,
     "name": "Teleport",
     "code": 63,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 3,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "RemoveObstacle",
-    "order": 64,
     "name": "Remove Obstacle",
     "code": 64,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 2,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "Clone",
-    "order": 65,
     "name": "Clone",
     "code": 65,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 4,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "SummonFireElemental",
-    "order": 66,
     "name": "Summon Fire Elemental",
     "code": 66,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "fire",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "SummonEarthElemental",
-    "order": 67,
     "name": "Summon Earth Elemental",
     "code": 67,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "earth",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "SummonWaterElemental",
-    "order": 68,
     "name": "Summon Water Elemental",
     "code": 68,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "water",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   },
   {
     "id": "SummonAirElemental",
-    "order": 69,
     "name": "Summon Air Elemental",
     "code": 69,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "school": "wind",
     "level": 5,
-    "type": "combat",
-    "heroOnly": false
+    "type": "combat"
   }
 ]

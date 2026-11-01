@@ -1,10 +1,9 @@
 [
   {
     "id": "FixtureLauncher",
-    "order": 4,
     "name": "Astral Launcher",
     "code": 200,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "slot": "artillery",
     "encoding": "ballista"
   }

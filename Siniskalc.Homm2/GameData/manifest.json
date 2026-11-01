@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "versions": {
-    "BaseGame": "standard",
-    "PriceOfLoyalty": "standard",
-    "Unknown": "standard"
+    "sw": "standard",
+    "pol": "standard",
+    "unknown": "standard"
   },
   "sets": {
     "standard": {

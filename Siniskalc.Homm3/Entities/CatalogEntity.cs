@@ -12,14 +12,11 @@ public abstract class CatalogEntity : Homm3Enumeration
     {
         this.Catalog = catalog;
         this.Id = definition.Id;
-        this.Order = definition.Order;
     }
 
     public EntityCatalog Catalog { get; }
 
     public string Id { get; }
-
-    public int Order { get; }
 
     public override bool Equals(AbstractEnumeration? other) =>
         other is CatalogEntity entity && this.GetType() == entity.GetType()

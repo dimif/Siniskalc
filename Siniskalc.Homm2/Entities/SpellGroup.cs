@@ -4,7 +4,7 @@ namespace Siniskalc.Homm2.Entities
 
     public sealed class SpellGroup : CatalogEntity
     {
-        internal SpellGroup(GameCatalog catalog, GroupDefinition definition)
+        internal SpellGroup(GameCatalog catalog, SpellTypeDefinition definition)
             : base(catalog, definition)
         {
             this.Hidden = definition.Hidden;

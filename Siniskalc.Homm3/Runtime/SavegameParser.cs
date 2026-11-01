@@ -116,7 +116,7 @@
             var heroes = document.Heroes();
             for (var i = 0; i < heroes.Count; i++)
             {
-                var kind = document.Catalog().VisitedPlaces.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
+                var kind = document.Catalog().VisitablePlaces.All.FirstOrDefault(k => k.ObjectType == (int)heroes[i].GetUInt32At(11));
                 if (kind != null && heroes[i].GetByteAt(15) == 1 && heroes.GetModel(i).Position is { X: >= 0 } position)
                 {
                     yield return (kind, heroes[i].GetByteAt(16) & kind.NumberMask, position);

@@ -5,8 +5,6 @@
       "id": "Knight",
       "name": "Knight",
       "code": 0,
-      "order": 0,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Farm",
       "specialBuildingName": "Fortifications",
@@ -21,7 +19,6 @@
         7,
         8
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -29,14 +26,12 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     },
     {
       "id": "Barbarian",
       "name": "Barbarian",
       "code": 1,
-      "order": 1,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Garbage Heap",
       "specialBuildingName": "Coliseum",
@@ -51,7 +46,6 @@
         16,
         17
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -59,14 +53,12 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     },
     {
       "id": "Sorceress",
       "name": "Sorceress",
       "code": 2,
-      "order": 2,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Crystal Garden",
       "specialBuildingName": "Rainbow",
@@ -81,7 +73,6 @@
         25,
         26
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -89,14 +80,12 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     },
     {
       "id": "Warlock",
       "name": "Warlock",
       "code": 3,
-      "order": 3,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Waterfall",
       "specialBuildingName": "Dungeon",
@@ -111,7 +100,6 @@
         34,
         35
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -119,14 +107,12 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     },
     {
       "id": "Wizard",
       "name": "Wizard",
       "code": 4,
-      "order": 4,
-      "neutral": false,
       "library": true,
       "growthBuildingName": "Orchard",
       "specialBuildingName": "Library",
@@ -141,7 +127,6 @@
         43,
         44
       ],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -155,8 +140,6 @@
       "id": "Necromancer",
       "name": "Necromancer",
       "code": 5,
-      "order": 5,
-      "neutral": false,
       "library": false,
       "growthBuildingName": "Skull Pile",
       "specialBuildingName": "Storm",
@@ -171,7 +154,6 @@
         52,
         53
       ],
-      "heroFallback": true,
       "guildSpellCounts": [
         3,
         3,
@@ -179,19 +161,16 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     },
     {
       "id": "Neutral",
       "name": "Neutral",
       "code": 99,
-      "order": 6,
-      "neutral": true,
       "library": false,
-      "growthBuildingName": "Second well",
+      "growthBuildingName": "Creature growth building",
       "specialBuildingName": "Special building",
       "heroIds": [],
-      "heroFallback": false,
       "guildSpellCounts": [
         3,
         3,
@@ -199,7 +178,7 @@
         2,
         1
       ],
-      "specialBuildingDescription": "The special building of the faction. Found in the savegames of Threedom; not tried in the game."
+      "specialBuildingDescription": "The special building of the faction."
     }
   ],
   "replacements": []

@@ -1,11 +1,9 @@
 [
   {
     "id": "FixtureTown",
-    "order": 13,
     "name": "Astral Town",
     "code": 12,
-    "availableFrom": "hornOfTheAbyss",
-    "isNeutral": false,
+    "availableFrom": "hota",
     "companionBits": "fort"
   }
 ]

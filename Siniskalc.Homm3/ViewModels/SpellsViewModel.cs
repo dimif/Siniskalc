@@ -63,9 +63,10 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Lists spells by school, and inside a school by level.
         /// </summary>
-        private static IReadOnlyList<SpellRowViewModel> CreateRows(EntityCatalog catalog, Action<SpellRowViewModel, bool> learned) => catalog.Spells.All
-            .Select(s => new SpellRowViewModel(s, learned))
-            .OrderBy(r => r.Spell.School.Order).ThenBy(r => r.Spell.Level).ThenBy(r => r.Name)
+        private static IReadOnlyList<SpellRowViewModel> CreateRows(EntityCatalog catalog, Action<SpellRowViewModel, bool> learned) => catalog.SpellSchools.All
+            .SelectMany(school => catalog.Spells.All.Where(spell => spell.School == school)
+                .OrderBy(spell => spell.Level).ThenBy(spell => spell.Name))
+            .Select(spell => new SpellRowViewModel(spell, learned))
             .ToList();
     }
 }

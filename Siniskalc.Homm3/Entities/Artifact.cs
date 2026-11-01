@@ -25,23 +25,23 @@ public sealed class Artifact : CatalogEntity, IArtifact
         this.CanBeInBackpack = definition.Backpack;
         var e = definition.EffectInfo;
         this.EffectInfo = new ArtifactEffectInfo(
-            e.Atk,
-            e.Def,
-            e.Pow,
-            e.Kno,
-            e.Luck,
-            e.Morale,
-            e.LandMovement,
-            e.WaterMovement,
+            e.Amount(ArtifactAttribute.Attack),
+            e.Amount(ArtifactAttribute.Defense),
+            e.Amount(ArtifactAttribute.SpellPower),
+            e.Amount(ArtifactAttribute.Knowledge),
+            e.Amount(ArtifactAttribute.Luck),
+            e.Amount(ArtifactAttribute.Morale),
+            e.Amount(ArtifactAttribute.LandMovement),
+            e.Amount(ArtifactAttribute.WaterMovement),
             e.SpellGrants.Select(g => new SpellGrantProvider(catalog, g)).ToArray().AsReadOnly(),
             e.GrantsSpellBook,
-            e.Gold,
-            e.Ore,
-            e.Wood,
-            e.Crystal,
-            e.Gems,
-            e.Mercury,
-            e.Sulfur,
+            e.Amount(ArtifactAttribute.Gold),
+            e.Amount(ArtifactAttribute.Ore),
+            e.Amount(ArtifactAttribute.Wood),
+            e.Amount(ArtifactAttribute.Crystal),
+            e.Amount(ArtifactAttribute.Gems),
+            e.Amount(ArtifactAttribute.Mercury),
+            e.Amount(ArtifactAttribute.Sulfur),
             e.Other);
     }
 

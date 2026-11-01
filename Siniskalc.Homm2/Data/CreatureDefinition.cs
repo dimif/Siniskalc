@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Homm2.Entities;
 
@@ -15,7 +15,5 @@ namespace Siniskalc.Homm2.Data
         public required string? BaseCreature { get; init; }
 
         public required Dwellings? Dwelling { get; init; }
-
-        public required bool Fallback { get; init; }
     }
 }

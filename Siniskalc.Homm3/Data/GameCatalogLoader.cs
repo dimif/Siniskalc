@@ -19,7 +19,6 @@ public sealed class GameCatalogLoader
     public IReadOnlyDictionary<GameVersion, EntityCatalog> Load()
     {
         var manifest = this.reader.Read<CatalogManifest>(Root + "manifest.json");
-        var mapMetadata = this.reader.Read<MapMetadataDefinition>(Root + "mapObjects.json");
         Require(manifest.SchemaVersion == 1, "manifest.json", "schemaVersion must be 1.");
         Require(manifest.Versions is not null && manifest.Sets is not null, "manifest.json", "versions and sets must not be null.");
         foreach (var (version, setId) in manifest.Versions!)
@@ -82,6 +81,20 @@ public sealed class GameCatalogLoader
                 return result.Values.ToArray();
             }
 
+            T[] ReadMetadata<T>(string file, T[]? inherited)
+            {
+                var path = set.Directory + "\\" + file + ".json";
+                var entries = this.reader.Read<T[]>(Root + path);
+                Require(entries is not null, path, "The metadata array must not be null.");
+                if (entries!.Length == 0 && inherited is not null)
+                {
+                    return inherited;
+                }
+
+                sources[file] = path;
+                return entries;
+            }
+
             var result = new CatalogDefinitions(
                 Read("factions", parent?.Factions),
                 Read("abilities", parent?.Abilities),
@@ -93,8 +106,10 @@ public sealed class GameCatalogLoader
                 Read("secondarySkills", parent?.SecondarySkills),
                 Read("warMachines", parent?.WarMachines),
                 Read("artifacts", parent?.Artifacts),
-                Read("visitedPlaces", parent?.VisitedPlaces),
-                mapMetadata)
+                Read("visitablePlaces", parent?.VisitablePlaces),
+                ReadMetadata("mines", parent?.Mines),
+                ReadMetadata("visitEffects", parent?.VisitEffects),
+                this.reader.Read<MapMetadataDefinition>(Root + set.Directory + "\\mapObjects.json"))
             { SourcePaths = sources };
             visiting.Remove(id);
             sets.Add(id, result);

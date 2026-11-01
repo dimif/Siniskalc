@@ -124,14 +124,14 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
-        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowReadsAsTheFirstCreatureAndKeepsItsNumberUntilTheModelChanges()
+        public void AGarrisonSlotWithACreatureTheEditorDoesNotKnowReadsAsTheCodeZeroCreatureAndKeepsItsNumberUntilTheModelChanges()
         {
             var unknown = WithUnknownCreature(StillWater());
             var model = TestServices.CastleDeserializer.Deserialize(unknown);
 
             var written = TestServices.SerializeCastle(unknown, model);
 
-            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.All[0]));
+            Assert.That(model.Garrison.Slots[3]?.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.Find(0)));
             Assert.That(written.ToArray(), Is.EqualTo(unknown.ToArray()));
             Assert.That(TestServices.SerializeCastle(unknown, model with { Garrison = model.Garrison.WithSlot(3, TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel"), 2) }).GetInt32At(CastleLayout.GarrisonTypes + (3 * 4)), Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Angel").Code));
         }

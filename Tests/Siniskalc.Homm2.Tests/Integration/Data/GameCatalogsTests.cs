@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Tests.Integration.Data
+﻿namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -22,6 +22,20 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
+        public void SpellTypesLoadFromTheRenamedFileAndKeepTheirSpellReferences()
+        {
+            var reader = new DefinitionMutationReader();
+            reader.Replace<DefinitionFile<SpellTypeDefinition>>("spellTypes", file => file with
+            {
+                Entries = file.Entries.Select(t => t.Id == "Mind" ? t with { Name = "Mental magic" } : t).ToArray(),
+            });
+            var catalog = new GameCatalogs(reader).For(GameVersion.BaseGame);
+
+            Assert.That(catalog.SpellTypes["Mind"].Name, Is.EqualTo("Mental magic"));
+            Assert.That(catalog.Spells["Blind"].Group, Is.SameAs(catalog.SpellTypes["Mind"]));
+        }
+
+        [Test]
         public void SeparateStartupSnapshotsNeverCompareTheirEntitiesAsEqual()
         {
             var first = new GameCatalogs(new JsonGameDefinitionReader()).For(GameVersion.BaseGame);
@@ -39,7 +53,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
             Assert.That(catalog.Creatures, Is.Not.InstanceOf<IList<Creature>>());
             Assert.That(() => ((IList<Siniskalc.Heroes.Entities.ICreatureAbility>)catalog.Creatures["Archer"].Info.Special!).Clear(), Throws.TypeOf<NotSupportedException>());
-            Assert.That(() => ((IList<ArtifactEffect>)catalog.Artifacts[0].Effects).Clear(), Throws.TypeOf<NotSupportedException>());
+            Assert.That(() => ((IList<Siniskalc.Heroes.Models.AttributeEffect>)catalog.Artifacts[0].Effects).Clear(), Throws.TypeOf<NotSupportedException>());
             Assert.That(() => ((IList<int>)catalog.Factions[0].GuildSpellCounts).Clear(), Throws.TypeOf<NotSupportedException>());
         }
 
@@ -88,8 +102,16 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Refuses<CreatureDefinition>("creatures", f => f with { Entries = [f.Entries[0] with { Code = f.Entries[1].Code }, .. f.Entries.Skip(1)] }, "Duplicate save codes");
 
         [Test]
-        public void DuplicateOrderingIsRejectedBeforeActivation() =>
-            Refuses<SpellDefinition>("spells", f => f with { Entries = [f.Entries[0] with { Order = f.Entries[1].Order }, .. f.Entries.Skip(1)] }, "Duplicate ordering");
+        public void FactionsFollowTheirJsonArrayOrderRegardlessOfTheirSaveCodes()
+        {
+            var reader = new DefinitionMutationReader();
+            reader.Replace<DefinitionFile<FactionDefinition>>("factions", file => file with { Entries = file.Entries.AsEnumerable().Reverse().ToArray() });
+            var catalog = new GameCatalogs(reader).For(GameVersion.BaseGame);
+
+            Assert.That(catalog.Factions.Select(f => f.Id), Is.EqualTo(TestCatalog.Standard.Factions.Select(f => f.Id).Reverse()));
+            Assert.That(catalog.Factions.Find(0)!.Id, Is.EqualTo("Knight"));
+            Assert.That(catalog.NeutralFaction.Id, Is.EqualTo("Neutral"));
+        }
 
         [Test]
         public void AnExplicitNullDisplayNameIsRejectedBeforeActivation() =>
@@ -104,8 +126,8 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Refuses<CreatureDefinition>("creatures", f => f with { Entries = [f.Entries[0] with { Abilities = ["Missing"] }, .. f.Entries.Skip(1)] }, "Peasant.abilities");
 
         [Test]
-        public void AnUnknownEffectReferenceIsRejectedBeforeActivation() =>
-            Refuses<ArtifactDefinition>("artifacts", f => f with { Entries = [f.Entries[0] with { Effects = ["Missing"] }, .. f.Entries.Skip(1)] }, "UltimateBookOfKnowledge.effects");
+        public void AnUnknownEffectAttributeIsRejectedBeforeActivation() =>
+            Refuses<ArtifactDefinition>("artifacts", f => f with { Entries = [f.Entries[0] with { EffectInfo = new() { Modifiers = [new() { Attribute = (Siniskalc.Heroes.Entities.ArtifactAttribute)999, Amount = 1 }] } }, .. f.Entries.Skip(1)] }, "UltimateBookOfKnowledge.effectInfo.modifiers");
 
         [Test]
         public void CreatureUpgradeCyclesAreRejectedBeforeActivation() =>
@@ -113,7 +135,21 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
         [Test]
         public void TheEmptyArmyCodeCannotBeAssignedToACreature() =>
-            Refuses<CreatureDefinition>("creatures", f => f with { Entries = [f.Entries[0] with { Code = 255 }, .. f.Entries.Skip(1)] }, "Peasant");
+            Refuses<CreatureDefinition>("creatures", f => f with { Entries = [f.Entries[0] with { Code = 255 }, .. f.Entries.Skip(1)] }, "code");
+
+        [Test]
+        public void DuplicateArtifactAttributesAreRejectedBeforeActivation() =>
+            Refuses<ArtifactDefinition>("artifacts", f => f with
+            {
+                Entries = [f.Entries[0] with { EffectInfo = new() { Modifiers = [f.Entries[0].EffectInfo.Modifiers[0], f.Entries[0].EffectInfo.Modifiers[0]] } }, .. f.Entries.Skip(1)],
+            }, "at most once");
+
+        [Test]
+        public void UnimplementedArtifactAttributesAreNotSilentlyAccepted() =>
+            Refuses<ArtifactDefinition>("artifacts", f => f with
+            {
+                Entries = [f.Entries[0] with { EffectInfo = new() { Modifiers = [new() { Attribute = Siniskalc.Heroes.Entities.ArtifactAttribute.Morale, Amount = 1 }] } }, .. f.Entries.Skip(1)],
+            }, "currently implemented");
 
         [Test]
         public void ASpellCannotEnlargeTheFixedSpellBitset() =>
@@ -141,7 +177,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
         [Test]
         public void EverySupportedMapObjectRoleMustHaveMetadata() =>
-            Refuses<MapObjectDefinition>("map-objects", f => f with { Entries = f.Entries.Skip(1).ToArray() }, "role");
+            Refuses<MapObjectDefinition>("mapObjects", f => f with { Entries = f.Entries.Skip(1).ToArray() }, "role");
 
         [Test]
         public void DefinitionErrorsIdentifyTheGameVersionFileEntityAndProperty()
@@ -157,12 +193,12 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         }
 
         [Test]
-        public void TheNeutralRoleCannotBeMissing() =>
-            Refuses<FactionDefinition>("factions", f => f with { Entries = f.Entries.Where(e => !e.Neutral).ToArray() }, "neutral");
+        public void TheWellKnownNeutralFactionCannotBeMissing() =>
+            Refuses<FactionDefinition>("factions", f => f with { Entries = f.Entries.Where(e => e.Id != "Neutral").ToArray() }, "Neutral");
 
         [Test]
-        public void TheFallbackCreatureRoleCannotBeAmbiguous() =>
-            Refuses<CreatureDefinition>("creatures", f => f with { Entries = [f.Entries[0], f.Entries[1] with { Fallback = true }, .. f.Entries.Skip(2)] }, "fallback");
+        public void TheCodeZeroCreatureMustBePresent() =>
+            Refuses<CreatureDefinition>("creatures", f => f with { Entries = f.Entries.Where(c => c.Code != 0).ToArray() }, "code");
 
         [Test]
         public void AnUnknownArtifactBehaviourIsRejectedBeforeActivation() =>
@@ -213,7 +249,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         public void TheSharedPlaceVisitDifferNamesAndCountsEachChangedKindFromTheCatalog()
         {
             var definitions = new DefinitionMutationReader();
-            definitions.Replace<DefinitionFile<PlaceDefinition>>("places", file => file with
+            definitions.Replace<DefinitionFile<PlaceDefinition>>("visitablePlaces", file => file with
             {
                 Entries = file.Entries.Select(place => place.Kind == PlaceKind.Fort ? place with { Name = "Astral forts" } : place).ToArray(),
             });

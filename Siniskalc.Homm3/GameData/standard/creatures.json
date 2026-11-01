@@ -1,10 +1,9 @@
 [
   {
     "id": "Peasant",
-    "order": 0,
     "name": "Peasant",
     "code": 139,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Neutral",
     "info": {
@@ -28,15 +27,13 @@
       "special": []
     },
     "dwelling": null,
-    "fallback": true,
     "baseCreature": null
   },
   {
     "id": "Boar",
-    "order": 1,
     "name": "Boar",
     "code": 140,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Neutral",
     "info": {
@@ -60,15 +57,13 @@
       "special": []
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Rogue",
-    "order": 2,
     "name": "Rogue",
     "code": 143,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Neutral",
     "info": {
@@ -94,15 +89,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Leprechaun",
-    "order": 3,
     "name": "Leprechaun",
     "code": 169,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Neutral",
     "info": {
@@ -129,15 +122,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Mummy",
-    "order": 4,
     "name": "Mummy",
     "code": 141,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Neutral",
     "info": {
@@ -164,15 +155,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Nomad",
-    "order": 5,
     "name": "Nomad",
     "code": 142,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Neutral",
     "info": {
@@ -198,15 +187,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Sharpshooter",
-    "order": 6,
     "name": "Sharpshooter",
     "code": 137,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Neutral",
     "info": {
@@ -233,15 +220,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Satyr",
-    "order": 7,
     "name": "Satyr",
     "code": 167,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Neutral",
     "info": {
@@ -267,15 +252,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "SteelGolem",
-    "order": 8,
     "name": "Steel Golem",
     "code": 170,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Neutral",
     "info": {
@@ -302,15 +285,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Troll",
-    "order": 9,
     "name": "Troll",
     "code": 144,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Neutral",
     "info": {
@@ -336,15 +317,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GoldGolem",
-    "order": 10,
     "name": "Gold Golem",
     "code": 116,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Neutral",
     "info": {
@@ -371,15 +350,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Fangarm",
-    "order": 11,
     "name": "Fangarm",
     "code": 168,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Neutral",
     "info": {
@@ -408,15 +385,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "DiamondGolem",
-    "order": 12,
     "name": "Diamond Golem",
     "code": 117,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Neutral",
     "info": {
@@ -443,15 +418,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Enchanter",
-    "order": 13,
     "name": "Enchanter",
     "code": 136,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 6,
     "faction": "Neutral",
     "info": {
@@ -479,15 +452,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "FaerieDragon",
-    "order": 14,
     "name": "Faerie Dragon",
     "code": 134,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Neutral",
     "info": {
@@ -516,15 +487,40 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 20,
+        "def": 20,
+        "minDamage": 20,
+        "maxDamage": 30,
+        "health": 500,
+        "speed": 15,
+        "growth": 1,
+        "aiValue": 30501,
+        "fightValue": 16317,
+        "gold": 10000,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 8,
+        "shots": 0,
+        "special": [
+          "Dragon",
+          "Flying",
+          "Spellcaster",
+          "NaturalMagicMirror"
+        ]
+      }
+    }
   },
   {
     "id": "RustDragon",
-    "order": 15,
     "name": "Rust Dragon",
     "code": 135,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Neutral",
     "info": {
@@ -553,15 +549,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "CrystalDragon",
-    "order": 16,
     "name": "Crystal Dragon",
     "code": 133,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Neutral",
     "info": {
@@ -589,15 +583,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "AzureDragon",
-    "order": 17,
     "name": "Azure Dragon",
     "code": 132,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Neutral",
     "info": {
@@ -628,15 +620,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Pikeman",
-    "order": 18,
     "name": "Pikeman",
     "code": 0,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Castle",
     "info": {
@@ -662,15 +652,13 @@
       ]
     },
     "dwelling": "CastleGuardhouse",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Halberdier",
-    "order": 19,
     "name": "Halberdier",
     "code": 1,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Castle",
     "info": {
@@ -696,15 +684,13 @@
       ]
     },
     "dwelling": "CastleUpgGuardhouse",
-    "fallback": false,
     "baseCreature": "Pikeman"
   },
   {
     "id": "Archer",
-    "order": 20,
     "name": "Archer",
     "code": 2,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Castle",
     "info": {
@@ -730,15 +716,13 @@
       ]
     },
     "dwelling": "CastleArchersTower",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Marksman",
-    "order": 21,
     "name": "Marksman",
     "code": 3,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Castle",
     "info": {
@@ -765,15 +749,13 @@
       ]
     },
     "dwelling": "CastleUpgArchersTower",
-    "fallback": false,
     "baseCreature": "Archer"
   },
   {
     "id": "Griffin",
-    "order": 22,
     "name": "Griffin",
     "code": 4,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Castle",
     "info": {
@@ -800,15 +782,13 @@
       ]
     },
     "dwelling": "CastleGriffinTower",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "RoyalGriffin",
-    "order": 23,
     "name": "Royal Griffin",
     "code": 5,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Castle",
     "info": {
@@ -835,15 +815,13 @@
       ]
     },
     "dwelling": "CastleUpgGriffinTower",
-    "fallback": false,
     "baseCreature": "Griffin"
   },
   {
     "id": "Swordsman",
-    "order": 24,
     "name": "Swordsman",
     "code": 6,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Castle",
     "info": {
@@ -867,15 +845,13 @@
       "special": []
     },
     "dwelling": "CastleBarracks",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Crusader",
-    "order": 25,
     "name": "Crusader",
     "code": 7,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Castle",
     "info": {
@@ -901,15 +877,13 @@
       ]
     },
     "dwelling": "CastleUpgBarracks",
-    "fallback": false,
     "baseCreature": "Swordsman"
   },
   {
     "id": "Monk",
-    "order": 26,
     "name": "Monk",
     "code": 8,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Castle",
     "info": {
@@ -935,15 +909,37 @@
       ]
     },
     "dwelling": "CastleMonastery",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 12,
+        "def": 7,
+        "minDamage": 10,
+        "maxDamage": 12,
+        "health": 30,
+        "speed": 5,
+        "growth": 3,
+        "aiValue": 582,
+        "fightValue": 485,
+        "gold": 400,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 12,
+        "special": [
+          "Ranged"
+        ]
+      }
+    }
   },
   {
     "id": "Zealot",
-    "order": 27,
     "name": "Zealot",
     "code": 9,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Castle",
     "info": {
@@ -970,15 +966,13 @@
       ]
     },
     "dwelling": "CastleUpgMonastery",
-    "fallback": false,
     "baseCreature": "Monk"
   },
   {
     "id": "Cavalier",
-    "order": 28,
     "name": "Cavalier",
     "code": 10,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Castle",
     "info": {
@@ -1004,15 +998,13 @@
       ]
     },
     "dwelling": "CastleTrainingGrounds",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Champion",
-    "order": 29,
     "name": "Champion",
     "code": 11,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Castle",
     "info": {
@@ -1038,15 +1030,13 @@
       ]
     },
     "dwelling": "CastleUpgTrainingGrounds",
-    "fallback": false,
     "baseCreature": "Cavalier"
   },
   {
     "id": "Angel",
-    "order": 30,
     "name": "Angel",
     "code": 12,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Castle",
     "info": {
@@ -1074,15 +1064,13 @@
       ]
     },
     "dwelling": "CastlePortalOfGlory",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Archangel",
-    "order": 31,
     "name": "Archangel",
     "code": 13,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Castle",
     "info": {
@@ -1111,15 +1099,13 @@
       ]
     },
     "dwelling": "CastleUpgPortalOfGlory",
-    "fallback": false,
     "baseCreature": "Angel"
   },
   {
     "id": "Centaur",
-    "order": 32,
     "name": "Centaur",
     "code": 14,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Rampart",
     "info": {
@@ -1143,15 +1129,13 @@
       "special": []
     },
     "dwelling": "RampartCentaurStables",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "CentaurCaptain",
-    "order": 33,
     "name": "Centaur Captain",
     "code": 15,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Rampart",
     "info": {
@@ -1175,15 +1159,13 @@
       "special": []
     },
     "dwelling": "RampartUpgCentaurStables",
-    "fallback": false,
     "baseCreature": "Centaur"
   },
   {
     "id": "Dwarf",
-    "order": 34,
     "name": "Dwarf",
     "code": 16,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Rampart",
     "info": {
@@ -1209,15 +1191,13 @@
       ]
     },
     "dwelling": "RampartDwarfCottage",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "BattleDwarf",
-    "order": 35,
     "name": "Battle Dwarf",
     "code": 17,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Rampart",
     "info": {
@@ -1243,15 +1223,13 @@
       ]
     },
     "dwelling": "RampartUpgDwarfCottage",
-    "fallback": false,
     "baseCreature": "Dwarf"
   },
   {
     "id": "WoodElf",
-    "order": 36,
     "name": "Wood Elf",
     "code": 18,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Rampart",
     "info": {
@@ -1277,15 +1255,13 @@
       ]
     },
     "dwelling": "RampartHomestead",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GrandElf",
-    "order": 37,
     "name": "Grand Elf",
     "code": 19,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Rampart",
     "info": {
@@ -1312,15 +1288,13 @@
       ]
     },
     "dwelling": "RampartUpgHomestead",
-    "fallback": false,
     "baseCreature": "WoodElf"
   },
   {
     "id": "Pegasus",
-    "order": 38,
     "name": "Pegasus",
     "code": 20,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Rampart",
     "info": {
@@ -1347,15 +1321,13 @@
       ]
     },
     "dwelling": "RampartEnchantedSpring",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "SilverPegasus",
-    "order": 39,
     "name": "Silver Pegasus",
     "code": 21,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Rampart",
     "info": {
@@ -1382,15 +1354,13 @@
       ]
     },
     "dwelling": "RampartUpgEnchantedSpring",
-    "fallback": false,
     "baseCreature": "Pegasus"
   },
   {
     "id": "DendroidGuard",
-    "order": 40,
     "name": "Dendroid Guard",
     "code": 22,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Rampart",
     "info": {
@@ -1416,15 +1386,13 @@
       ]
     },
     "dwelling": "RampartDendroidArches",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "DendroidSoldier",
-    "order": 41,
     "name": "Dendroid Soldier",
     "code": 23,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Rampart",
     "info": {
@@ -1450,15 +1418,13 @@
       ]
     },
     "dwelling": "RampartUpgDendroidArches",
-    "fallback": false,
     "baseCreature": "DendroidGuard"
   },
   {
     "id": "Unicorn",
-    "order": 42,
     "name": "Unicorn",
     "code": 24,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Rampart",
     "info": {
@@ -1485,15 +1451,13 @@
       ]
     },
     "dwelling": "RampartUnicornGlade",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "WarUnicorn",
-    "order": 43,
     "name": "War Unicorn",
     "code": 25,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Rampart",
     "info": {
@@ -1520,15 +1484,13 @@
       ]
     },
     "dwelling": "RampartUpgUnicornGlade",
-    "fallback": false,
     "baseCreature": "Unicorn"
   },
   {
     "id": "GreenDragon",
-    "order": 44,
     "name": "Green Dragon",
     "code": 26,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Rampart",
     "info": {
@@ -1557,15 +1519,13 @@
       ]
     },
     "dwelling": "RampartDragonCliffs",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GoldDragon",
-    "order": 45,
     "name": "Gold Dragon",
     "code": 27,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Rampart",
     "info": {
@@ -1594,15 +1554,13 @@
       ]
     },
     "dwelling": "RampartUpgDragonCliffs",
-    "fallback": false,
     "baseCreature": "GreenDragon"
   },
   {
     "id": "Gremlin",
-    "order": 46,
     "name": "Gremlin",
     "code": 28,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Tower",
     "info": {
@@ -1626,15 +1584,13 @@
       "special": []
     },
     "dwelling": "TowerWorkshop",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MasterGremlin",
-    "order": 47,
     "name": "Master Gremlin",
     "code": 29,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Tower",
     "info": {
@@ -1660,15 +1616,13 @@
       ]
     },
     "dwelling": "TowerUpgWorkshop",
-    "fallback": false,
     "baseCreature": "Gremlin"
   },
   {
     "id": "StoneGargoyle",
-    "order": 48,
     "name": "Stone Gargoyle",
     "code": 30,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Tower",
     "info": {
@@ -1695,15 +1649,38 @@
       ]
     },
     "dwelling": "TowerParapet",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 6,
+        "def": 6,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 16,
+        "speed": 6,
+        "growth": 9,
+        "aiValue": 165,
+        "fightValue": 150,
+        "gold": 130,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Bloodless",
+          "Flying"
+        ]
+      }
+    }
   },
   {
     "id": "ObsidianGargoyle",
-    "order": 49,
     "name": "Obsidian Gargoyle",
     "code": 31,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Tower",
     "info": {
@@ -1730,15 +1707,38 @@
       ]
     },
     "dwelling": "TowerUpgParapet",
-    "fallback": false,
-    "baseCreature": "StoneGargoyle"
+    "baseCreature": "StoneGargoyle",
+    "versionInfo": {
+      "hota": {
+        "atk": 7,
+        "def": 7,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 16,
+        "speed": 9,
+        "growth": 9,
+        "aiValue": 201,
+        "fightValue": 155,
+        "gold": 160,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Bloodless",
+          "Flying"
+        ]
+      }
+    }
   },
   {
     "id": "StoneGolem",
-    "order": 50,
     "name": "Stone Golem",
     "code": 32,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Tower",
     "info": {
@@ -1765,15 +1765,13 @@
       ]
     },
     "dwelling": "TowerGolemFactory",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "IronGolem",
-    "order": 51,
     "name": "Iron Golem",
     "code": 33,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Tower",
     "info": {
@@ -1800,15 +1798,13 @@
       ]
     },
     "dwelling": "TowerUpgGolemFactory",
-    "fallback": false,
     "baseCreature": "StoneGolem"
   },
   {
     "id": "Mage",
-    "order": 52,
     "name": "Mage",
     "code": 34,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Tower",
     "info": {
@@ -1837,15 +1833,13 @@
       ]
     },
     "dwelling": "TowerMageTower",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "ArchMage",
-    "order": 53,
     "name": "Arch Mage",
     "code": 35,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Tower",
     "info": {
@@ -1874,15 +1868,13 @@
       ]
     },
     "dwelling": "TowerUpgMageTower",
-    "fallback": false,
     "baseCreature": "Mage"
   },
   {
     "id": "Genie",
-    "order": 54,
     "name": "Genie",
     "code": 36,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Tower",
     "info": {
@@ -1909,15 +1901,13 @@
       ]
     },
     "dwelling": "TowerAltarOfWishes",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MasterGenie",
-    "order": 55,
     "name": "Master Genie",
     "code": 37,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Tower",
     "info": {
@@ -1945,15 +1935,13 @@
       ]
     },
     "dwelling": "TowerUpgAltarOfWishes",
-    "fallback": false,
     "baseCreature": "Genie"
   },
   {
     "id": "Naga",
-    "order": 56,
     "name": "Naga",
     "code": 38,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Tower",
     "info": {
@@ -1979,15 +1967,37 @@
       ]
     },
     "dwelling": "TowerGoldenPavilion",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 16,
+        "def": 13,
+        "minDamage": 20,
+        "maxDamage": 20,
+        "health": 110,
+        "speed": 5,
+        "growth": 2,
+        "aiValue": 1814,
+        "fightValue": 2016,
+        "gold": 1100,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "NoEnemyRetaliation"
+        ]
+      }
+    }
   },
   {
     "id": "NagaQueen",
-    "order": 57,
     "name": "Naga Queen",
     "code": 39,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Tower",
     "info": {
@@ -2013,15 +2023,37 @@
       ]
     },
     "dwelling": "TowerUpgGoldenPavilion",
-    "fallback": false,
-    "baseCreature": "Naga"
+    "baseCreature": "Naga",
+    "versionInfo": {
+      "hota": {
+        "atk": 16,
+        "def": 13,
+        "minDamage": 30,
+        "maxDamage": 30,
+        "health": 110,
+        "speed": 7,
+        "growth": 2,
+        "aiValue": 2840,
+        "fightValue": 2485,
+        "gold": 1600,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "NoEnemyRetaliation"
+        ]
+      }
+    }
   },
   {
     "id": "Giant",
-    "order": 58,
     "name": "Giant",
     "code": 40,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Tower",
     "info": {
@@ -2047,15 +2079,13 @@
       ]
     },
     "dwelling": "TowerCloudTemple",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Titan",
-    "order": 59,
     "name": "Titan",
     "code": 41,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Tower",
     "info": {
@@ -2084,15 +2114,13 @@
       ]
     },
     "dwelling": "TowerUpgCloudTemple",
-    "fallback": false,
     "baseCreature": "Giant"
   },
   {
     "id": "Imp",
-    "order": 60,
     "name": "Imp",
     "code": 42,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Inferno",
     "info": {
@@ -2116,15 +2144,13 @@
       "special": []
     },
     "dwelling": "InfernoImpCrucible",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Familiar",
-    "order": 61,
     "name": "Familiar",
     "code": 43,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Inferno",
     "info": {
@@ -2150,15 +2176,13 @@
       ]
     },
     "dwelling": "InfernoUpgImpCrucible",
-    "fallback": false,
     "baseCreature": "Imp"
   },
   {
     "id": "Gog",
-    "order": 62,
     "name": "Gog",
     "code": 44,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Inferno",
     "info": {
@@ -2184,15 +2208,13 @@
       ]
     },
     "dwelling": "InfernoHallOfSins",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Magog",
-    "order": 63,
     "name": "Magog",
     "code": 45,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Inferno",
     "info": {
@@ -2219,15 +2241,13 @@
       ]
     },
     "dwelling": "InfernoUpgHallOfSins",
-    "fallback": false,
     "baseCreature": "Gog"
   },
   {
     "id": "HellHound",
-    "order": 64,
     "name": "Hell Hound",
     "code": 46,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Inferno",
     "info": {
@@ -2251,15 +2271,13 @@
       "special": []
     },
     "dwelling": "InfernoKennels",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Cerberus",
-    "order": 65,
     "name": "Cerberus",
     "code": 47,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Inferno",
     "info": {
@@ -2286,15 +2304,13 @@
       ]
     },
     "dwelling": "InfernoUpgKennels",
-    "fallback": false,
     "baseCreature": "HellHound"
   },
   {
     "id": "Demon",
-    "order": 66,
     "name": "Demon",
     "code": 48,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Inferno",
     "info": {
@@ -2318,15 +2334,13 @@
       "special": []
     },
     "dwelling": "InfernoDemonGate",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "HornedDemon",
-    "order": 67,
     "name": "Horned Demon",
     "code": 49,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Inferno",
     "info": {
@@ -2350,15 +2364,13 @@
       "special": []
     },
     "dwelling": "InfernoUpgDemonGate",
-    "fallback": false,
     "baseCreature": "Demon"
   },
   {
     "id": "PitFiend",
-    "order": 68,
     "name": "Pit Fiend",
     "code": 50,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Inferno",
     "info": {
@@ -2382,15 +2394,13 @@
       "special": []
     },
     "dwelling": "InfernoHellHole",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "PitLord",
-    "order": 69,
     "name": "Pit Lord",
     "code": 51,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Inferno",
     "info": {
@@ -2416,15 +2426,13 @@
       ]
     },
     "dwelling": "InfernoUpgHellHole",
-    "fallback": false,
     "baseCreature": "PitFiend"
   },
   {
     "id": "Efreet",
-    "order": 70,
     "name": "Efreet",
     "code": 52,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Inferno",
     "info": {
@@ -2452,15 +2460,13 @@
       ]
     },
     "dwelling": "InfernoFireLake",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "EfreetSultan",
-    "order": 71,
     "name": "Efreet Sultan",
     "code": 53,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Inferno",
     "info": {
@@ -2489,15 +2495,40 @@
       ]
     },
     "dwelling": "InfernoUpgFireLake",
-    "fallback": false,
-    "baseCreature": "Efreet"
+    "baseCreature": "Efreet",
+    "versionInfo": {
+      "hota": {
+        "atk": 16,
+        "def": 14,
+        "minDamage": 16,
+        "maxDamage": 24,
+        "health": 90,
+        "speed": 13,
+        "growth": 2,
+        "aiValue": 2343,
+        "fightValue": 1802,
+        "gold": 1100,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Flying",
+          "NaturalFireShield",
+          "FireImmunity",
+          "HatesGenies"
+        ]
+      }
+    }
   },
   {
     "id": "Devil",
-    "order": 72,
     "name": "Devil",
     "code": 54,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Inferno",
     "info": {
@@ -2526,15 +2557,13 @@
       ]
     },
     "dwelling": "InfernoForsakenPalace",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "ArchDevil",
-    "order": 73,
     "name": "Arch Devil",
     "code": 55,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Inferno",
     "info": {
@@ -2563,15 +2592,40 @@
       ]
     },
     "dwelling": "InfernoUpgForsakenPalace",
-    "fallback": false,
-    "baseCreature": "Devil"
+    "baseCreature": "Devil",
+    "versionInfo": {
+      "hota": {
+        "atk": 26,
+        "def": 28,
+        "minDamage": 30,
+        "maxDamage": 40,
+        "health": 200,
+        "speed": 17,
+        "growth": 1,
+        "aiValue": 7115,
+        "fightValue": 5243,
+        "gold": 4500,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 2,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Teleporting",
+          "NoEnemyRetaliation",
+          "LuckMinus2",
+          "HatesAngels"
+        ]
+      }
+    }
   },
   {
     "id": "Skeleton",
-    "order": 74,
     "name": "Skeleton",
     "code": 56,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Necropolis",
     "info": {
@@ -2597,15 +2651,13 @@
       ]
     },
     "dwelling": "NecropolisCursedTemple",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "SkeletonWarrior",
-    "order": 75,
     "name": "Skeleton Warrior",
     "code": 57,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Necropolis",
     "info": {
@@ -2631,15 +2683,13 @@
       ]
     },
     "dwelling": "NecropolisUpgCursedTemple",
-    "fallback": false,
     "baseCreature": "Skeleton"
   },
   {
     "id": "WalkingDead",
-    "order": 76,
     "name": "Walking Dead",
     "code": 58,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Necropolis",
     "info": {
@@ -2665,15 +2715,13 @@
       ]
     },
     "dwelling": "NecropolisGraveyard",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Zombie",
-    "order": 77,
     "name": "Zombie",
     "code": 59,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Necropolis",
     "info": {
@@ -2700,15 +2748,13 @@
       ]
     },
     "dwelling": "NecropolisUpgGraveyard",
-    "fallback": false,
     "baseCreature": "WalkingDead"
   },
   {
     "id": "Wight",
-    "order": 78,
     "name": "Wight",
     "code": 60,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Necropolis",
     "info": {
@@ -2736,15 +2782,13 @@
       ]
     },
     "dwelling": "NecropolisTombOfSouls",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Wraith",
-    "order": 79,
     "name": "Wraith",
     "code": 61,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Necropolis",
     "info": {
@@ -2773,15 +2817,13 @@
       ]
     },
     "dwelling": "NecropolisUpgTombOfSouls",
-    "fallback": false,
     "baseCreature": "Wight"
   },
   {
     "id": "Vampire",
-    "order": 80,
     "name": "Vampire",
     "code": 62,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Necropolis",
     "info": {
@@ -2809,15 +2851,13 @@
       ]
     },
     "dwelling": "NecropolisEstate",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "VampireLord",
-    "order": 81,
     "name": "Vampire Lord",
     "code": 63,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Necropolis",
     "info": {
@@ -2846,15 +2886,13 @@
       ]
     },
     "dwelling": "NecropolisUpgEstate",
-    "fallback": false,
     "baseCreature": "Vampire"
   },
   {
     "id": "Lich",
-    "order": 82,
     "name": "Lich",
     "code": 64,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Necropolis",
     "info": {
@@ -2882,15 +2920,13 @@
       ]
     },
     "dwelling": "NecropolisMausoleum",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "PowerLich",
-    "order": 83,
     "name": "Power Lich",
     "code": 65,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Necropolis",
     "info": {
@@ -2918,15 +2954,13 @@
       ]
     },
     "dwelling": "NecropolisUpgMausoleum",
-    "fallback": false,
     "baseCreature": "Lich"
   },
   {
     "id": "BlackKnight",
-    "order": 84,
     "name": "Black Knight",
     "code": 66,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Necropolis",
     "info": {
@@ -2953,15 +2987,13 @@
       ]
     },
     "dwelling": "NecropolisHallOfDarkness",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "DreadKnight",
-    "order": 85,
     "name": "Dread Knight",
     "code": 67,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Necropolis",
     "info": {
@@ -2989,15 +3021,13 @@
       ]
     },
     "dwelling": "NecropolisUpgHallOfDarkness",
-    "fallback": false,
     "baseCreature": "BlackKnight"
   },
   {
     "id": "BoneDragon",
-    "order": 86,
     "name": "Bone Dragon",
     "code": 68,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Necropolis",
     "info": {
@@ -3026,15 +3056,13 @@
       ]
     },
     "dwelling": "NecropolisDragonVault",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GhostDragon",
-    "order": 87,
     "name": "Ghost Dragon",
     "code": 69,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Necropolis",
     "info": {
@@ -3064,15 +3092,41 @@
       ]
     },
     "dwelling": "NecropolisUpgDragonVault",
-    "fallback": false,
-    "baseCreature": "BoneDragon"
+    "baseCreature": "BoneDragon",
+    "versionInfo": {
+      "hota": {
+        "atk": 19,
+        "def": 17,
+        "minDamage": 25,
+        "maxDamage": 50,
+        "health": 200,
+        "speed": 14,
+        "growth": 1,
+        "aiValue": 4919,
+        "fightValue": 3346,
+        "gold": 3000,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 1,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Dragon",
+          "Undead",
+          "Flying",
+          "MoraleMinus1",
+          "Aging"
+        ]
+      }
+    }
   },
   {
     "id": "Troglodyte",
-    "order": 88,
     "name": "Troglodyte",
     "code": 70,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Dungeon",
     "info": {
@@ -3098,15 +3152,13 @@
       ]
     },
     "dwelling": "DungeonWarren",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "InfernalTroglodyte",
-    "order": 89,
     "name": "Infernal Troglodyte",
     "code": 71,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Dungeon",
     "info": {
@@ -3132,15 +3184,13 @@
       ]
     },
     "dwelling": "DungeonUpgWarren",
-    "fallback": false,
     "baseCreature": "Troglodyte"
   },
   {
     "id": "Harpy",
-    "order": 90,
     "name": "Harpy",
     "code": 72,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Dungeon",
     "info": {
@@ -3167,15 +3217,13 @@
       ]
     },
     "dwelling": "DungeonHarpyLoft",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "HarpyHag",
-    "order": 91,
     "name": "Harpy Hag",
     "code": 73,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Dungeon",
     "info": {
@@ -3203,15 +3251,13 @@
       ]
     },
     "dwelling": "DungeonUpgHarpyLoft",
-    "fallback": false,
     "baseCreature": "Harpy"
   },
   {
     "id": "Beholder",
-    "order": 92,
     "name": "Beholder",
     "code": 74,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Dungeon",
     "info": {
@@ -3238,15 +3284,13 @@
       ]
     },
     "dwelling": "DungeonPillarOfEyes",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "EvilEye",
-    "order": 93,
     "name": "Evil Eye",
     "code": 75,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Dungeon",
     "info": {
@@ -3273,15 +3317,13 @@
       ]
     },
     "dwelling": "DungeonUpgPillarOfEyes",
-    "fallback": false,
     "baseCreature": "Beholder"
   },
   {
     "id": "Medusa",
-    "order": 94,
     "name": "Medusa",
     "code": 76,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Dungeon",
     "info": {
@@ -3309,15 +3351,13 @@
       ]
     },
     "dwelling": "DungeonChapelOfStilledVoices",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MedusaQueen",
-    "order": 95,
     "name": "Medusa Queen",
     "code": 77,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Dungeon",
     "info": {
@@ -3345,15 +3385,13 @@
       ]
     },
     "dwelling": "DungeonUpgChapelOfStilledVoices",
-    "fallback": false,
     "baseCreature": "Medusa"
   },
   {
     "id": "Minotaur",
-    "order": 96,
     "name": "Minotaur",
     "code": 78,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Dungeon",
     "info": {
@@ -3379,15 +3417,13 @@
       ]
     },
     "dwelling": "DungeonLabyrinth",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MinotaurKing",
-    "order": 97,
     "name": "Minotaur King",
     "code": 79,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Dungeon",
     "info": {
@@ -3413,15 +3449,13 @@
       ]
     },
     "dwelling": "DungeonUpgLabyrinth",
-    "fallback": false,
     "baseCreature": "Minotaur"
   },
   {
     "id": "Manticore",
-    "order": 98,
     "name": "Manticore",
     "code": 80,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Dungeon",
     "info": {
@@ -3447,15 +3481,13 @@
       ]
     },
     "dwelling": "DungeonManticoreLair",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Scorpicore",
-    "order": 99,
     "name": "Scorpicore",
     "code": 81,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Dungeon",
     "info": {
@@ -3482,15 +3514,38 @@
       ]
     },
     "dwelling": "DungeonUpgManticoreLair",
-    "fallback": false,
-    "baseCreature": "Manticore"
+    "baseCreature": "Manticore",
+    "versionInfo": {
+      "hota": {
+        "atk": 16,
+        "def": 14,
+        "minDamage": 14,
+        "maxDamage": 20,
+        "health": 80,
+        "speed": 11,
+        "growth": 2,
+        "aiValue": 1685,
+        "fightValue": 1248,
+        "gold": 1050,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Flying",
+          "ParalyzingVenom"
+        ]
+      }
+    }
   },
   {
     "id": "RedDragon",
-    "order": 100,
     "name": "Red Dragon",
     "code": 82,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Dungeon",
     "info": {
@@ -3519,15 +3574,40 @@
       ]
     },
     "dwelling": "DungeonDragonCave",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 19,
+        "def": 19,
+        "minDamage": 40,
+        "maxDamage": 50,
+        "health": 180,
+        "speed": 11,
+        "growth": 1,
+        "aiValue": 5003,
+        "fightValue": 3762,
+        "gold": 2500,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 1,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Dragon",
+          "Flying",
+          "BreathAttack",
+          "SpellsImmunityLevels1To3"
+        ]
+      }
+    }
   },
   {
     "id": "BlackDragon",
-    "order": 101,
     "name": "Black Dragon",
     "code": 83,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Dungeon",
     "info": {
@@ -3557,15 +3637,13 @@
       ]
     },
     "dwelling": "DungeonUpgDragonCave",
-    "fallback": false,
     "baseCreature": "RedDragon"
   },
   {
     "id": "Goblin",
-    "order": 102,
     "name": "Goblin",
     "code": 84,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Stronghold",
     "info": {
@@ -3589,15 +3667,13 @@
       "special": []
     },
     "dwelling": "StrongholdGoblinBarracks",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Hobgoblin",
-    "order": 103,
     "name": "Hobgoblin",
     "code": 85,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Stronghold",
     "info": {
@@ -3621,15 +3697,13 @@
       "special": []
     },
     "dwelling": "StrongholdUpgGoblinBarracks",
-    "fallback": false,
     "baseCreature": "Goblin"
   },
   {
     "id": "WolfRider",
-    "order": 104,
     "name": "Wolf Rider",
     "code": 86,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Stronghold",
     "info": {
@@ -3653,15 +3727,13 @@
       "special": []
     },
     "dwelling": "StrongholdWolfPen",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "WolfRaider",
-    "order": 105,
     "name": "Wolf Raider",
     "code": 87,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Stronghold",
     "info": {
@@ -3687,15 +3759,13 @@
       ]
     },
     "dwelling": "StrongholdUpgWolfPen",
-    "fallback": false,
     "baseCreature": "WolfRider"
   },
   {
     "id": "Orc",
-    "order": 106,
     "name": "Orc",
     "code": 88,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Stronghold",
     "info": {
@@ -3721,15 +3791,13 @@
       ]
     },
     "dwelling": "StrongholdOrcTower",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "OrcChieftain",
-    "order": 107,
     "name": "Orc Chieftain",
     "code": 89,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Stronghold",
     "info": {
@@ -3755,15 +3823,13 @@
       ]
     },
     "dwelling": "StrongholdUpgOrcTower",
-    "fallback": false,
     "baseCreature": "Orc"
   },
   {
     "id": "Ogre",
-    "order": 108,
     "name": "Ogre",
     "code": 90,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Stronghold",
     "info": {
@@ -3787,15 +3853,13 @@
       "special": []
     },
     "dwelling": "StrongholdOgreFort",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "OgreMage",
-    "order": 109,
     "name": "Ogre Mage",
     "code": 91,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Stronghold",
     "info": {
@@ -3821,15 +3885,13 @@
       ]
     },
     "dwelling": "StrongholdUpgOgreFort",
-    "fallback": false,
     "baseCreature": "Ogre"
   },
   {
     "id": "Roc",
-    "order": 110,
     "name": "Roc",
     "code": 92,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Stronghold",
     "info": {
@@ -3855,15 +3917,13 @@
       ]
     },
     "dwelling": "StrongholdCliffNest",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Thunderbird",
-    "order": 111,
     "name": "Thunderbird",
     "code": 93,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Stronghold",
     "info": {
@@ -3890,15 +3950,13 @@
       ]
     },
     "dwelling": "StrongholdUpgCliffNest",
-    "fallback": false,
     "baseCreature": "Roc"
   },
   {
     "id": "Cyclops",
-    "order": 112,
     "name": "Cyclops",
     "code": 94,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Stronghold",
     "info": {
@@ -3925,15 +3983,13 @@
       ]
     },
     "dwelling": "StrongholdCyclopsCave",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "CyclopsKing",
-    "order": 113,
     "name": "Cyclops King",
     "code": 95,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Stronghold",
     "info": {
@@ -3960,15 +4016,38 @@
       ]
     },
     "dwelling": "StrongholdUpgCyclopsCave",
-    "fallback": false,
-    "baseCreature": "Cyclops"
+    "baseCreature": "Cyclops",
+    "versionInfo": {
+      "hota": {
+        "atk": 17,
+        "def": 13,
+        "minDamage": 16,
+        "maxDamage": 20,
+        "health": 70,
+        "speed": 8,
+        "growth": 2,
+        "aiValue": 1544,
+        "fightValue": 1110,
+        "gold": 1100,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 24,
+        "special": [
+          "Ranged",
+          "CanAttackSiegeWalls"
+        ]
+      }
+    }
   },
   {
     "id": "Behemoth",
-    "order": 114,
     "name": "Behemoth",
     "code": 96,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Stronghold",
     "info": {
@@ -3994,15 +4073,13 @@
       ]
     },
     "dwelling": "StrongholdBehemothLair",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "AncientBehemoth",
-    "order": 115,
     "name": "Ancient Behemoth",
     "code": 97,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Stronghold",
     "info": {
@@ -4028,15 +4105,13 @@
       ]
     },
     "dwelling": "StrongholdUpgBehemothLair",
-    "fallback": false,
     "baseCreature": "Behemoth"
   },
   {
     "id": "Gnoll",
-    "order": 116,
     "name": "Gnoll",
     "code": 98,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Fortress",
     "info": {
@@ -4060,15 +4135,13 @@
       "special": []
     },
     "dwelling": "FortressGnollHut",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GnollMarauder",
-    "order": 117,
     "name": "Gnoll Marauder",
     "code": 99,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 1,
     "faction": "Fortress",
     "info": {
@@ -4092,15 +4165,13 @@
       "special": []
     },
     "dwelling": "FortressUpgGnollHut",
-    "fallback": false,
     "baseCreature": "Gnoll"
   },
   {
     "id": "Lizardman",
-    "order": 118,
     "name": "Lizardman",
     "code": 100,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Fortress",
     "info": {
@@ -4126,15 +4197,37 @@
       ]
     },
     "dwelling": "FortressLizardDen",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 5,
+        "def": 6,
+        "minDamage": 2,
+        "maxDamage": 3,
+        "health": 14,
+        "speed": 4,
+        "growth": 9,
+        "aiValue": 151,
+        "fightValue": 137,
+        "gold": 110,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 12,
+        "special": [
+          "Ranged"
+        ]
+      }
+    }
   },
   {
     "id": "LizardWarrior",
-    "order": 119,
     "name": "Lizard Warrior",
     "code": 101,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 2,
     "faction": "Fortress",
     "info": {
@@ -4160,15 +4253,37 @@
       ]
     },
     "dwelling": "FortressUpgLizardDen",
-    "fallback": false,
-    "baseCreature": "Lizardman"
+    "baseCreature": "Lizardman",
+    "versionInfo": {
+      "hota": {
+        "atk": 6,
+        "def": 8,
+        "minDamage": 2,
+        "maxDamage": 5,
+        "health": 15,
+        "speed": 5,
+        "growth": 9,
+        "aiValue": 209,
+        "fightValue": 174,
+        "gold": 140,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 24,
+        "special": [
+          "Ranged"
+        ]
+      }
+    }
   },
   {
     "id": "Basilisk",
-    "order": 120,
     "name": "Basilisk",
     "code": 102,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Fortress",
     "info": {
@@ -4194,15 +4309,13 @@
       ]
     },
     "dwelling": "FortressSerpentFlyHive",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GreaterBasilisk",
-    "order": 121,
     "name": "Greater Basilisk",
     "code": 103,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 3,
     "faction": "Fortress",
     "info": {
@@ -4228,15 +4341,13 @@
       ]
     },
     "dwelling": "FortressUpgSerpentFlyHive",
-    "fallback": false,
     "baseCreature": "Basilisk"
   },
   {
     "id": "SerpentFly",
-    "order": 122,
     "name": "Serpent Fly",
     "code": 104,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Fortress",
     "info": {
@@ -4263,15 +4374,13 @@
       ]
     },
     "dwelling": "FortressBasiliskPit",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "DragonFly",
-    "order": 123,
     "name": "Dragon Fly",
     "code": 105,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 4,
     "faction": "Fortress",
     "info": {
@@ -4299,15 +4408,13 @@
       ]
     },
     "dwelling": "FortressUpgBasiliskPit",
-    "fallback": false,
     "baseCreature": "SerpentFly"
   },
   {
     "id": "Gorgon",
-    "order": 124,
     "name": "Gorgon",
     "code": 106,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Fortress",
     "info": {
@@ -4331,15 +4438,13 @@
       "special": []
     },
     "dwelling": "FortressGorgonLair",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MightyGorgon",
-    "order": 125,
     "name": "Mighty Gorgon",
     "code": 107,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 5,
     "faction": "Fortress",
     "info": {
@@ -4365,15 +4470,13 @@
       ]
     },
     "dwelling": "FortressUpgGorgonLair",
-    "fallback": false,
     "baseCreature": "Gorgon"
   },
   {
     "id": "Wyvern",
-    "order": 126,
     "name": "Wyvern",
     "code": 108,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Fortress",
     "info": {
@@ -4399,15 +4502,13 @@
       ]
     },
     "dwelling": "FortressWyvernNest",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "WyvernMonarch",
-    "order": 127,
     "name": "Wyvern Monarch",
     "code": 109,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 6,
     "faction": "Fortress",
     "info": {
@@ -4434,15 +4535,13 @@
       ]
     },
     "dwelling": "FortressUpgWyvernNest",
-    "fallback": false,
     "baseCreature": "Wyvern"
   },
   {
     "id": "Hydra",
-    "order": 128,
     "name": "Hydra",
     "code": 110,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Fortress",
     "info": {
@@ -4469,15 +4568,13 @@
       ]
     },
     "dwelling": "FortressHydraPond",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "ChaosHydra",
-    "order": 129,
     "name": "Chaos Hydra",
     "code": 111,
-    "availableFrom": "restorationOfErathia",
+    "availableFrom": "roe",
     "tier": 7,
     "faction": "Fortress",
     "info": {
@@ -4504,15 +4601,13 @@
       ]
     },
     "dwelling": "FortressUpgHydraPond",
-    "fallback": false,
     "baseCreature": "Hydra"
   },
   {
     "id": "Pixie",
-    "order": 130,
     "name": "Pixie",
     "code": 118,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 1,
     "faction": "Conflux",
     "info": {
@@ -4538,15 +4633,13 @@
       ]
     },
     "dwelling": "ConfluxMagicLantern",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Sprite",
-    "order": 131,
     "name": "Sprite",
     "code": 119,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 1,
     "faction": "Conflux",
     "info": {
@@ -4573,15 +4666,13 @@
       ]
     },
     "dwelling": "ConfluxUpgMagicLantern",
-    "fallback": false,
     "baseCreature": "Pixie"
   },
   {
     "id": "AirElemental",
-    "order": 132,
     "name": "Air Elemental",
     "code": 112,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 2,
     "faction": "Conflux",
     "info": {
@@ -4610,15 +4701,13 @@
       ]
     },
     "dwelling": "ConfluxAltarOfAir",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "StormElemental",
-    "order": 133,
     "name": "Storm Elemental",
     "code": 127,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 2,
     "faction": "Conflux",
     "info": {
@@ -4649,15 +4738,13 @@
       ]
     },
     "dwelling": "ConfluxUpgAltarOfAir",
-    "fallback": false,
     "baseCreature": "AirElemental"
   },
   {
     "id": "WaterElemental",
-    "order": 134,
     "name": "Water Elemental",
     "code": 115,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 3,
     "faction": "Conflux",
     "info": {
@@ -4686,15 +4773,13 @@
       ]
     },
     "dwelling": "ConfluxAltarOfWater",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "IceElemental",
-    "order": 135,
     "name": "Ice Elemental",
     "code": 123,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 3,
     "faction": "Conflux",
     "info": {
@@ -4725,15 +4810,13 @@
       ]
     },
     "dwelling": "ConfluxUpgAltarOfWater",
-    "fallback": false,
     "baseCreature": "WaterElemental"
   },
   {
     "id": "FireElemental",
-    "order": 136,
     "name": "Fire Elemental",
     "code": 114,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 4,
     "faction": "Conflux",
     "info": {
@@ -4762,15 +4845,13 @@
       ]
     },
     "dwelling": "ConfluxAltarOfFire",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "EnergyElemental",
-    "order": 137,
     "name": "Energy Elemental",
     "code": 129,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 4,
     "faction": "Conflux",
     "info": {
@@ -4801,15 +4882,13 @@
       ]
     },
     "dwelling": "ConfluxUpgAltarOfFire",
-    "fallback": false,
     "baseCreature": "FireElemental"
   },
   {
     "id": "EarthElemental",
-    "order": 138,
     "name": "Earth Elemental",
     "code": 113,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 5,
     "faction": "Conflux",
     "info": {
@@ -4838,15 +4917,13 @@
       ]
     },
     "dwelling": "ConfluxAltarOfEarth",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "MagmaElemental",
-    "order": 139,
     "name": "Magma Elemental",
     "code": 125,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 5,
     "faction": "Conflux",
     "info": {
@@ -4876,15 +4953,13 @@
       ]
     },
     "dwelling": "ConfluxUpgAltarOfEarth",
-    "fallback": false,
     "baseCreature": "EarthElemental"
   },
   {
     "id": "PsychicElemental",
-    "order": 140,
     "name": "Psychic Elemental",
     "code": 120,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 6,
     "faction": "Conflux",
     "info": {
@@ -4913,15 +4988,40 @@
       ]
     },
     "dwelling": "ConfluxAltarOfThought",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 15,
+        "def": 13,
+        "minDamage": 10,
+        "maxDamage": 20,
+        "health": 75,
+        "speed": 7,
+        "growth": 2,
+        "aiValue": 1669,
+        "fightValue": 1431,
+        "gold": 950,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Elemental",
+          "NoEnemyRetaliation",
+          "AttacksAllAdjacentEnemies",
+          "Minus50PercentDamageToCreaturesWithMindSpellsImmunity"
+        ]
+      }
+    }
   },
   {
     "id": "MagicElemental",
-    "order": 141,
     "name": "Magic Elemental",
     "code": 121,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 6,
     "faction": "Conflux",
     "info": {
@@ -4951,15 +5051,41 @@
       ]
     },
     "dwelling": "ConfluxUpgAltarOfThought",
-    "fallback": false,
-    "baseCreature": "PsychicElemental"
+    "baseCreature": "PsychicElemental",
+    "versionInfo": {
+      "hota": {
+        "atk": 15,
+        "def": 13,
+        "minDamage": 15,
+        "maxDamage": 25,
+        "health": 80,
+        "speed": 9,
+        "growth": 2,
+        "aiValue": 2012,
+        "fightValue": 1724,
+        "gold": 1200,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Elemental",
+          "NoEnemyRetaliation",
+          "AttacksAllAdjacentEnemies",
+          "MagicImmunity",
+          "Minus50PercentDamageToCreaturesWithMagicImmunity"
+        ]
+      }
+    }
   },
   {
     "id": "Firebird",
-    "order": 142,
     "name": "Firebird",
     "code": 130,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Conflux",
     "info": {
@@ -4987,15 +5113,39 @@
       ]
     },
     "dwelling": "ConfluxPyre",
-    "fallback": false,
-    "baseCreature": null
+    "baseCreature": null,
+    "versionInfo": {
+      "hota": {
+        "atk": 18,
+        "def": 18,
+        "minDamage": 30,
+        "maxDamage": 40,
+        "health": 150,
+        "speed": 15,
+        "growth": 1,
+        "aiValue": 4336,
+        "fightValue": 3097,
+        "gold": 2000,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 0,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Flying",
+          "BreathAttack",
+          "FireResistance50Percent"
+        ]
+      }
+    }
   },
   {
     "id": "Phoenix",
-    "order": 143,
     "name": "Phoenix",
     "code": 131,
-    "availableFrom": "armageddonsBlade",
+    "availableFrom": "ab",
     "tier": 7,
     "faction": "Conflux",
     "info": {
@@ -5024,15 +5174,40 @@
       ]
     },
     "dwelling": "ConfluxUpgPyre",
-    "fallback": false,
-    "baseCreature": "Firebird"
+    "baseCreature": "Firebird",
+    "versionInfo": {
+      "hota": {
+        "atk": 21,
+        "def": 18,
+        "minDamage": 30,
+        "maxDamage": 40,
+        "health": 200,
+        "speed": 21,
+        "growth": 1,
+        "aiValue": 6721,
+        "fightValue": 4929,
+        "gold": 3000,
+        "wood": 0,
+        "ore": 0,
+        "mercury": 1,
+        "sulfur": 0,
+        "crystal": 0,
+        "gems": 0,
+        "shots": 0,
+        "special": [
+          "Flying",
+          "BreathAttack",
+          "FireImmunity",
+          "Rebirth"
+        ]
+      }
+    }
   },
   {
     "id": "Nymph",
-    "order": 144,
     "name": "Nymph",
     "code": 153,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Cove",
     "info": {
@@ -5059,15 +5234,13 @@
       ]
     },
     "dwelling": "CoveNymphWaterfall",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Oceanid",
-    "order": 145,
     "name": "Oceanid",
     "code": 154,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Cove",
     "info": {
@@ -5094,15 +5267,13 @@
       ]
     },
     "dwelling": "CoveUpgNymphWaterfall",
-    "fallback": false,
     "baseCreature": "Nymph"
   },
   {
     "id": "CrewMate",
-    "order": 146,
     "name": "Crew Mate",
     "code": 155,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Cove",
     "info": {
@@ -5126,15 +5297,13 @@
       "special": []
     },
     "dwelling": "CoveShack",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Seaman",
-    "order": 147,
     "name": "Seaman",
     "code": 156,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Cove",
     "info": {
@@ -5158,15 +5327,13 @@
       "special": []
     },
     "dwelling": "CoveUpgShack",
-    "fallback": false,
     "baseCreature": "CrewMate"
   },
   {
     "id": "Pirate",
-    "order": 148,
     "name": "Pirate",
     "code": 157,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Cove",
     "info": {
@@ -5193,15 +5360,13 @@
       ]
     },
     "dwelling": "CoveFrigate",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Corsair",
-    "order": 149,
     "name": "Corsair",
     "code": 158,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Cove",
     "info": {
@@ -5229,15 +5394,13 @@
       ]
     },
     "dwelling": "CoveUpgFrigate",
-    "fallback": false,
     "baseCreature": "Pirate"
   },
   {
     "id": "SeaDog",
-    "order": 150,
     "name": "Sea Dog",
     "code": 151,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Cove",
     "info": {
@@ -5266,15 +5429,13 @@
       ]
     },
     "dwelling": null,
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Stormbird",
-    "order": 151,
     "name": "Stormbird",
     "code": 159,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Cove",
     "info": {
@@ -5300,15 +5461,13 @@
       ]
     },
     "dwelling": "CoveNest",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Ayssid",
-    "order": 152,
     "name": "Ayssid",
     "code": 160,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Cove",
     "info": {
@@ -5335,15 +5494,13 @@
       ]
     },
     "dwelling": "CoveUpgNest",
-    "fallback": false,
     "baseCreature": "Stormbird"
   },
   {
     "id": "SeaWitch",
-    "order": 153,
     "name": "Sea Witch",
     "code": 161,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Cove",
     "info": {
@@ -5370,15 +5527,13 @@
       ]
     },
     "dwelling": "CoveToweroftheSeas",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Sorceress",
-    "order": 154,
     "name": "Sorceress",
     "code": 162,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Cove",
     "info": {
@@ -5405,15 +5560,13 @@
       ]
     },
     "dwelling": "CoveUpgToweroftheSeas",
-    "fallback": false,
     "baseCreature": "SeaWitch"
   },
   {
     "id": "Nix",
-    "order": 155,
     "name": "Nix",
     "code": 163,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Cove",
     "info": {
@@ -5439,15 +5592,13 @@
       ]
     },
     "dwelling": "CoveNixFort",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "NixWarrior",
-    "order": 156,
     "name": "Nix Warrior",
     "code": 164,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Cove",
     "info": {
@@ -5473,15 +5624,13 @@
       ]
     },
     "dwelling": "CoveUpgNixFort",
-    "fallback": false,
     "baseCreature": "Nix"
   },
   {
     "id": "SeaSerpent",
-    "order": 157,
     "name": "Sea Serpent",
     "code": 165,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Cove",
     "info": {
@@ -5507,15 +5656,13 @@
       ]
     },
     "dwelling": "CoveMaelstrom",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Haspid",
-    "order": 158,
     "name": "Haspid",
     "code": 166,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Cove",
     "info": {
@@ -5542,15 +5689,13 @@
       ]
     },
     "dwelling": "CoveUpgMaelstrom",
-    "fallback": false,
     "baseCreature": "SeaSerpent"
   },
   {
     "id": "Halfling",
-    "order": 159,
     "name": "Halfling",
     "code": 255,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Factory",
     "info": {
@@ -5577,15 +5722,13 @@
       ]
     },
     "dwelling": "FactoryHalflingAdobe",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "HalflingGrenadier",
-    "order": 160,
     "name": "Halfling Grenadier",
     "code": 171,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Factory",
     "info": {
@@ -5613,15 +5756,13 @@
       ]
     },
     "dwelling": "FactoryUpgHalflingAdobe",
-    "fallback": false,
     "baseCreature": "Halfling"
   },
   {
     "id": "Mechanic",
-    "order": 161,
     "name": "Mechanic",
     "code": 172,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Factory",
     "info": {
@@ -5648,15 +5789,13 @@
       ]
     },
     "dwelling": "FactoryFoundry",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Engineer",
-    "order": 162,
     "name": "Engineer",
     "code": 173,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Factory",
     "info": {
@@ -5683,15 +5822,13 @@
       ]
     },
     "dwelling": "FactoryUpgFoundry",
-    "fallback": false,
     "baseCreature": "Mechanic"
   },
   {
     "id": "Armadillo",
-    "order": 163,
     "name": "Armadillo",
     "code": 174,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Factory",
     "info": {
@@ -5715,15 +5852,13 @@
       "special": []
     },
     "dwelling": "FactoryRanch",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "BellwetherArmadillo",
-    "order": 164,
     "name": "Bellwether Armadillo",
     "code": 175,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Factory",
     "info": {
@@ -5747,15 +5882,13 @@
       "special": []
     },
     "dwelling": "FactoryUpgRanch",
-    "fallback": false,
     "baseCreature": "Armadillo"
   },
   {
     "id": "Automaton",
-    "order": 165,
     "name": "Automaton",
     "code": 176,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Factory",
     "info": {
@@ -5782,15 +5915,13 @@
       ]
     },
     "dwelling": "FactoryManufactory",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "SentinelAutomaton",
-    "order": 166,
     "name": "Sentinel Automaton",
     "code": 177,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Factory",
     "info": {
@@ -5818,15 +5949,13 @@
       ]
     },
     "dwelling": "FactoryUpgManufactory",
-    "fallback": false,
     "baseCreature": "Automaton"
   },
   {
     "id": "Sandworm",
-    "order": 167,
     "name": "Sandworm",
     "code": 178,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Factory",
     "info": {
@@ -5853,15 +5982,13 @@
       ]
     },
     "dwelling": "FactoryCatacombs",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "OlgoiKhorkhoi",
-    "order": 168,
     "name": "Olgoi-Khorkhoi",
     "code": 179,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Factory",
     "info": {
@@ -5889,15 +6016,13 @@
       ]
     },
     "dwelling": "FactoryUpgCatacombs",
-    "fallback": false,
     "baseCreature": "Sandworm"
   },
   {
     "id": "Gunslinger",
-    "order": 169,
     "name": "Gunslinger",
     "code": 180,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Factory",
     "info": {
@@ -5924,15 +6049,13 @@
       ]
     },
     "dwelling": "FactoryWatchtower",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "BountyHunter",
-    "order": 170,
     "name": "Bounty Hunter",
     "code": 181,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Factory",
     "info": {
@@ -5959,15 +6082,13 @@
       ]
     },
     "dwelling": "FactoryUpgWatchtower",
-    "fallback": false,
     "baseCreature": "Gunslinger"
   },
   {
     "id": "Couatl",
-    "order": 171,
     "name": "Couatl",
     "code": 182,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Factory",
     "info": {
@@ -5994,15 +6115,13 @@
       ]
     },
     "dwelling": "FactorySerpentarium",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "CrimsonCouatl",
-    "order": 172,
     "name": "Crimson Couatl",
     "code": 183,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Factory",
     "info": {
@@ -6029,15 +6148,13 @@
       ]
     },
     "dwelling": "FactoryUpgSerpentarium",
-    "fallback": false,
     "baseCreature": "Couatl"
   },
   {
     "id": "Gantry",
-    "order": 173,
     "name": "Gantry",
     "code": 184,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Factory",
     "info": {
@@ -6064,15 +6181,13 @@
       ]
     },
     "dwelling": "FactoryGantry",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Juggernaut",
-    "order": 174,
     "name": "Juggernaut",
     "code": 185,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Factory",
     "info": {
@@ -6099,15 +6214,13 @@
       ]
     },
     "dwelling": "FactoryUpgGantry",
-    "fallback": false,
     "baseCreature": "Gantry"
   },
   {
     "id": "Kobold",
-    "order": 175,
     "name": "Kobold",
     "code": 186,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Bulwark",
     "info": {
@@ -6133,15 +6246,13 @@
       ]
     },
     "dwelling": "BulwarkColliery",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "KoboldForeman",
-    "order": 176,
     "name": "Kobold Foreman",
     "code": 187,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 1,
     "faction": "Bulwark",
     "info": {
@@ -6167,15 +6278,13 @@
       ]
     },
     "dwelling": "BulwarkUpgColliery",
-    "fallback": false,
     "baseCreature": "Kobold"
   },
   {
     "id": "MountainRam",
-    "order": 177,
     "name": "Mountain Ram",
     "code": 188,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Bulwark",
     "info": {
@@ -6199,15 +6308,13 @@
       "special": []
     },
     "dwelling": "BulwarkFrigidSpur",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "Argali",
-    "order": 178,
     "name": "Argali",
     "code": 189,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 2,
     "faction": "Bulwark",
     "info": {
@@ -6234,15 +6341,13 @@
       ]
     },
     "dwelling": "BulwarkUpgFrigidSpur",
-    "fallback": false,
     "baseCreature": "MountainRam"
   },
   {
     "id": "SnowElf",
-    "order": 179,
     "name": "Snow Elf",
     "code": 190,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Bulwark",
     "info": {
@@ -6269,15 +6374,13 @@
       ]
     },
     "dwelling": "BulwarkHalloftheBold",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "SteelElf",
-    "order": 180,
     "name": "Steel Elf",
     "code": 191,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 3,
     "faction": "Bulwark",
     "info": {
@@ -6305,15 +6408,13 @@
       ]
     },
     "dwelling": "BulwarkUpgHalloftheBold",
-    "fallback": false,
     "baseCreature": "SnowElf"
   },
   {
     "id": "Yeti",
-    "order": 181,
     "name": "Yeti",
     "code": 192,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Bulwark",
     "info": {
@@ -6339,15 +6440,13 @@
       ]
     },
     "dwelling": "BulwarkMountainEmbassy",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "YetiRunemaster",
-    "order": 182,
     "name": "Yeti Runemaster",
     "code": 193,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 4,
     "faction": "Bulwark",
     "info": {
@@ -6374,15 +6473,13 @@
       ]
     },
     "dwelling": "BulwarkUpgMountainEmbassy",
-    "fallback": false,
     "baseCreature": "Yeti"
   },
   {
     "id": "Shaman",
-    "order": 183,
     "name": "Shaman",
     "code": 194,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Bulwark",
     "info": {
@@ -6409,15 +6506,13 @@
       ]
     },
     "dwelling": "BulwarkShamanFane",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "GreatShaman",
-    "order": 184,
     "name": "Great Shaman",
     "code": 195,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 5,
     "faction": "Bulwark",
     "info": {
@@ -6445,15 +6540,13 @@
       ]
     },
     "dwelling": "BulwarkUpgShamanFane",
-    "fallback": false,
     "baseCreature": "Shaman"
   },
   {
     "id": "Mammoth",
-    "order": 185,
     "name": "Mammoth",
     "code": 196,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Bulwark",
     "info": {
@@ -6477,15 +6570,13 @@
       "special": []
     },
     "dwelling": "BulwarkMammothStalls",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "WarMammoth",
-    "order": 186,
     "name": "War Mammoth",
     "code": 197,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 6,
     "faction": "Bulwark",
     "info": {
@@ -6511,15 +6602,13 @@
       ]
     },
     "dwelling": "BulwarkUpgMammothStalls",
-    "fallback": false,
     "baseCreature": "Mammoth"
   },
   {
     "id": "Jotunn",
-    "order": 187,
     "name": "Jotunn",
     "code": 198,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Bulwark",
     "info": {
@@ -6546,15 +6635,13 @@
       ]
     },
     "dwelling": "BulwarkFrosthome",
-    "fallback": false,
     "baseCreature": null
   },
   {
     "id": "JotunnWarlord",
-    "order": 188,
     "name": "Jotunn Warlord",
     "code": 199,
-    "availableFrom": "hornOfTheAbyss",
+    "availableFrom": "hota",
     "tier": 7,
     "faction": "Bulwark",
     "info": {
@@ -6581,7 +6668,6 @@
       ]
     },
     "dwelling": "BulwarkUpgFrosthome",
-    "fallback": false,
     "baseCreature": "Jotunn"
   }
 ]

@@ -17,7 +17,7 @@ public sealed class Creature : CatalogEntity, ICreature
         this.Tier = definition.Tier;
         this.dwelling = definition.Dwelling;
         this.baseCreature = definition.BaseCreature;
-        var s = definition.Info;
+        var s = definition.VersionInfo.GetValueOrDefault(catalog.Version) ?? definition.Info;
         this.Info = new CreatureInfo(
             s.Atk,
             s.Def,

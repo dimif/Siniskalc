@@ -14,7 +14,7 @@ public sealed class EntityCollection<T>
 
     internal EntityCollection(IEnumerable<T> values, GameVersion version, bool contextualCodes = false)
     {
-        var items = values.OrderBy(e => e.Order).ToArray();
+        var items = values.ToArray();
         this.byId = items.ToFrozenDictionary(e => e.Id, StringComparer.Ordinal);
         this.byCode = contextualCodes ? FrozenDictionary<byte, T>.Empty : items.ToFrozenDictionary(e => e.Code);
         this.All = items.Where(e => e.IsAvailableIn(version)).ToArray().AsReadOnly();

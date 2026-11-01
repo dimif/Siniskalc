@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Siniskalc.Heroes.Entities;
 using Siniskalc.Homm3.Entities;
 
 /// <summary>Validates representability and references before publishing any runtime entity.</summary>
@@ -13,8 +14,8 @@ public static class CatalogValidator
         void Check(bool condition, string domain, string message)
         {
             var id = message.Split('.', ':', ' ')[0];
-            var path = domain == "mapObjects" ? "mapObjects.json"
-                : data.SourcePaths.TryGetValue(domain + ":" + id, out var source) ? source : directory + "\\" + domain + ".json";
+            var path = data.SourcePaths.TryGetValue(domain + ":" + id, out var source) || data.SourcePaths.TryGetValue(domain, out source)
+                ? source : directory + "\\" + domain + ".json";
             GameCatalogLoader.Require(condition, path, $"{version}: {message}");
         }
 
@@ -24,7 +25,6 @@ public static class CatalogValidator
             Check(records.Length > 0, domain, "The domain must not be empty.");
             var ids = new Dictionary<string, T>(StringComparer.Ordinal);
             var codes = new HashSet<byte>();
-            var orders = new HashSet<int>();
             var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var d in records)
             {
@@ -33,7 +33,6 @@ public static class CatalogValidator
                 Check(Enum.IsDefined(d.AvailableFrom) && d.AvailableFrom != GameVersion.Unknown, domain, $"{d.Id}.availableFrom is not a supported version.");
                 Check(ids.TryAdd(d.Id, d), domain, $"{d.Id}: duplicate id.");
                 Check(contextualCodes || codes.Add(d.Code), domain, $"{d.Id}.code duplicates {d.Code}.");
-                Check(d.Order >= 0 && orders.Add(d.Order), domain, $"{d.Id}.order must be nonnegative and unique.");
             }
 
             return ids;
@@ -49,31 +48,31 @@ public static class CatalogValidator
         var skills = Index(data.SecondarySkills, "secondarySkills");
         Index(data.WarMachines, "warMachines");
         var artifacts = Index(data.Artifacts, "artifacts");
-        Index(data.VisitedPlaces, "visitedPlaces");
-        Check(data.VisitedPlaces.Select(p => p.Slot).Distinct().Count() == data.VisitedPlaces.Length, "visitedPlaces", "Visit storage slots must be unique.");
-        foreach (var p in data.VisitedPlaces)
+        Index(data.VisitablePlaces, "visitablePlaces");
+        Check(data.VisitablePlaces.Select(p => p.Slot).Distinct().Count() == data.VisitablePlaces.Length, "visitablePlaces", "Visit storage slots must be unique.");
+        foreach (var p in data.VisitablePlaces)
         {
-            Check(Enum.IsDefined(p.Slot) && p.ToolTip is not null && p.NumberMask > 0 && p.ObjectType is null or >= 0, "visitedPlaces", $"{p.Id}: invalid slot, tooltip, mask or objectType.");
+            Check(Enum.IsDefined(p.Slot) && p.Description is not null && p.NumberMask > 0 && p.ObjectType is null or >= 0, "visitablePlaces", $"{p.Id}: invalid slot, description, mask or objectType.");
         }
 
         void Reference<T>(Dictionary<string, T> index, string? id, string domain, string property)
             => Check(id is not null && index.ContainsKey(id), domain, $"{property}: unknown reference '{id}'.");
         void One<T>(IEnumerable<T> values, string domain, string role) => Check(values.Count() == 1, domain, $"Exactly one {role} role is required.");
-        One(data.Factions.Where(d => d.IsNeutral), "factions", "neutral");
-        One(data.Creatures.Where(d => d.Fallback), "creatures", "fallback");
-        One(data.HeroClasses.Where(d => d.Fallback), "heroClasses", "fallback");
+        One(data.Factions.Where(d => d.Id == "Neutral"), "factions", "Neutral faction");
+        One(data.Creatures.Where(d => d.Code == 0), "creatures", "code 0");
+        One(data.HeroClasses.Where(d => d.Code == 0), "heroClasses", "code 0");
         One(data.Artifacts.Where(d => d.Role == ArtifactRole.Scroll), "artifacts", "scroll");
         One(data.Artifacts.Where(d => d.Role == ArtifactRole.SpellBook), "artifacts", "spellBook");
-        One(data.Artifacts.Where(d => d.Role == ArtifactRole.Fallback), "artifacts", "fallback");
-        One(data.SpellSchools.Where(d => d.Universal), "spellSchools", "universal");
+        One(data.Artifacts.Where(d => d.Code == 0), "artifacts", "code 0");
+        One(data.SpellSchools.Where(d => d.Id == "all"), "spellSchools", "well-known all school");
         foreach (var (entity, domain) in new (EntityDefinition, string)[]
         {
-            (data.Factions.Single(f => f.IsNeutral), "factions"),
-            (data.Creatures.Single(c => c.Fallback), "creatures"),
-            (data.HeroClasses.Single(c => c.Fallback), "heroClasses"),
+            (data.Factions.Single(f => f.Id == "Neutral"), "factions"),
+            (data.Creatures.Single(c => c.Code == 0), "creatures"),
+            (data.HeroClasses.Single(c => c.Code == 0), "heroClasses"),
             (data.Artifacts.Single(a => a.Role == ArtifactRole.Scroll), "artifacts"),
             (data.Artifacts.Single(a => a.Role == ArtifactRole.SpellBook), "artifacts"),
-            (data.SpellSchools.Single(s => s.Universal), "spellSchools"),
+            (data.SpellSchools.Single(s => s.Id == "all"), "spellSchools"),
         })
             Check(entity.AvailableFrom == GameVersion.RestorationOfErathia, domain, $"{entity.Id}: a reserved role must be available in every supported version.");
         foreach (var school in data.SpellSchools)
@@ -92,7 +91,7 @@ public static class CatalogValidator
         foreach (var faction in data.Factions)
         {
             Check(Enum.IsDefined(faction.CompanionBits), "factions", $"{faction.Id}.companionBits is unsupported.");
-            Check(faction.IsNeutral || faction.Code < byte.MaxValue, "factions", $"{faction.Id}.code uses the reserved absent byte.");
+            Check(faction.Id == "Neutral" || faction.Code < byte.MaxValue, "factions", $"{faction.Id}.code uses the reserved absent byte.");
             var applicable = data.Buildings.Where(b => b.Faction == faction.Id || (b.Faction is null && b.Except is not null && !b.Except.Contains(faction.Id))).ToArray();
             Check(applicable.Select(b => b.Code).Distinct().Count() == applicable.Length, "buildings", $"{faction.Id}: ambiguous building codes.");
             Check(applicable.Select(b => b.Type).Distinct().Count() == applicable.Length, "buildings", $"{faction.Id}: ambiguous building types.");
@@ -188,15 +187,24 @@ public static class CatalogValidator
             Reference(factions, c.Faction, "creatures", c.Id + ".faction");
             Check(c.Tier is >= 1 and <= Building.DwellingLevelCount, "creatures", $"{c.Id}: tier is not representable.");
             Check(c.Info is not null && c.Info.Special is not null, "creatures", $"{c.Id}.info/special must not be null.");
-            var s = c.Info!;
-            Check(s.Health > 0 && s.Speed > 0 && s.Growth >= 0 && s.MinDamage >= 0 && s.MaxDamage >= s.MinDamage && s.Gold >= 0 && s.Shots >= 0, "creatures", $"{c.Id}.info contains invalid stats.");
-            Check(
-                s.Atk >= 0 && s.Def >= 0 && s.AiValue >= 0 && s.FightValue >= 0 && s.Wood >= 0 && s.Ore >= 0 && s.Mercury >= 0 && s.Sulfur >= 0 && s.Crystal >= 0 && s.Gems >= 0,
-                "creatures",
-                $"{c.Id}.info contains a negative statistic or resource cost.");
-            foreach (var ability in s.Special!)
+            Check(c.VersionInfo is not null && c.VersionInfo.All(pair => Enum.IsDefined(pair.Key) && pair.Key != GameVersion.Unknown && pair.Key >= c.AvailableFrom && pair.Value is not null), "creatures", $"{c.Id}.versionInfo must name supported versions and non-null statistics.");
+            foreach (var stats in c.VersionInfo!.Values.Prepend(c.Info!))
             {
-                Reference(abilities, ability, "creatures", c.Id + ".info.special");
+                Check(stats.Special is not null, "creatures", $"{c.Id}.info/versionInfo.special must not be null.");
+                Check(stats.Health > 0 && stats.Speed > 0 && stats.Growth >= 0 && stats.MinDamage >= 0 && stats.MaxDamage >= stats.MinDamage && stats.Gold >= 0 && stats.Shots >= 0, "creatures", $"{c.Id}.info/versionInfo contains invalid stats.");
+                Check(
+                    stats.Atk >= 0 && stats.Def >= 0 && stats.AiValue >= 0 && stats.FightValue >= 0 && stats.Wood >= 0 && stats.Ore >= 0 && stats.Mercury >= 0 && stats.Sulfur >= 0 && stats.Crystal >= 0 && stats.Gems >= 0,
+                    "creatures",
+                    $"{c.Id}.info/versionInfo contains a negative statistic or resource cost.");
+                foreach (var ability in stats.Special!)
+                {
+                    Reference(abilities, ability, "creatures", c.Id + ".info/versionInfo.special");
+                }
+            }
+
+            var selected = c.VersionInfo.GetValueOrDefault(version) ?? c.Info!;
+            foreach (var ability in selected.Special)
+            {
                 Available(c, abilities[ability], "creatures", "info.special");
             }
 
@@ -266,13 +274,14 @@ public static class CatalogValidator
             Check((a.Slot & ~allSlots) == 0 && (a.BlockedSlots & ~allSlots) == 0 && (!a.Wearable || a.Slot != ArtifactSlots.None), "artifacts", $"{a.Id}: invalid equipment slots.");
             Check(a.Role != ArtifactRole.SpellBook || (a.Code == Constants.ByteOn && !a.Wearable && !a.Backpack && a.Slot == ArtifactSlots.None), "artifacts", $"{a.Id}: the spellBook role uses the dedicated zero book encoding, not an equipment/backpack slot.");
             Check(a.Role != ArtifactRole.Scroll || (a.Wearable && a.Backpack), "artifacts", $"{a.Id}: the scroll role must be available in equipment and backpack.");
-            Check(a.Role != ArtifactRole.Fallback || (a.Wearable && a.Backpack && a.AvailableFrom == GameVersion.RestorationOfErathia), "artifacts", $"{a.Id}: the fallback role must be wearable, storable and available in every version.");
             if (a.CombinesInto is not null)
             {
                 Reference(artifacts, a.CombinesInto, "artifacts", a.Id + ".combinesInto");
             }
 
             var e = a.EffectInfo!;
+            Check(e.Modifiers is not null && e.Modifiers.All(modifier => modifier is not null && Enum.IsDefined(modifier.Attribute)), "artifacts", $"{a.Id}.effectInfo.modifiers contains an unsupported/null attribute.");
+            Check(e.Modifiers!.Select(modifier => modifier.Attribute).Distinct().Count() == e.Modifiers!.Length, "artifacts", $"{a.Id}.effectInfo.modifiers: an attribute must occur at most once.");
             Check(e.SpellGrants is not null && e.Other is not null, "artifacts", $"{a.Id}.effectInfo: spellGrants/other must not be null.");
             foreach (var g in e.SpellGrants!)
             {
@@ -302,35 +311,36 @@ public static class CatalogValidator
         Acyclic(artifacts, a => a.CombinesInto is null ? [] : new[] { a.CombinesInto }, "artifacts");
         var metadata = data.MapMetadata;
         Check(
-            metadata is not null && metadata.Mines is not null && metadata.VisitEffects is not null
-            && !string.IsNullOrWhiteSpace(metadata.MerchantName) && !string.IsNullOrWhiteSpace(metadata.DwellingName),
+            metadata is not null && !string.IsNullOrWhiteSpace(metadata.MerchantName) && !string.IsNullOrWhiteSpace(metadata.DwellingName),
             "mapObjects",
-            "Metadata, mines, effects and names must not be null or empty.");
-        Check(metadata!.Mines!.All(m => m is not null) && metadata.VisitEffects!.All(e => e is not null), "mapObjects", "Mine/effect entries must not be null.");
+            "Map-object names must not be null or empty.");
+        Check(data.Mines is not null && data.Mines.All(m => m is not null), "mines", "Mine entries must not be null.");
+        Check(data.VisitEffects is not null && data.VisitEffects.All(e => e is not null), "visitEffects", "Visit-effect entries must not be null.");
+        var mines = data.Mines!;
+        var visitEffects = data.VisitEffects!;
         Check(
-            metadata.Mines!.Select(m => m.Kind).Distinct().Count() == metadata.Mines!.Length
-            && metadata.Mines.Select(m => m.Kind).Order().SequenceEqual(Enum.GetValues<Siniskalc.Heroes.Entities.MineKind>().Order()),
-            "mapObjects",
+            mines.Select(m => m.Kind).Distinct().Count() == mines.Length
+            && mines.Select(m => m.Kind).Order().SequenceEqual(Enum.GetValues<Siniskalc.Heroes.Entities.MineKind>().Order()),
+            "mines",
             "Each supported mine storage kind must occur exactly once.");
-        One(metadata.Mines.Where(m => m.Fallback), "mapObjects", "unknown mine fallback");
-        foreach (var m in metadata.Mines)
+        One(mines.Where(m => (int)m.Kind == 0), "mines", "code 0 mine");
+        foreach (var m in mines)
         {
-            Check(!string.IsNullOrWhiteSpace(m.Name) && Enum.IsDefined(m.Resource) && m.DailyAmount >= 0, "mapObjects", $"{m.Kind}: invalid name, resource or income.");
+            Check(!string.IsNullOrWhiteSpace(m.Name) && Enum.IsDefined(m.Resource) && m.DailyAmount >= 0, "mines", $"{m.Kind}: invalid name, resource or income.");
         }
 
         Check(
-            metadata.VisitEffects!.Select(e => e.Effect).Distinct().Count() == metadata.VisitEffects!.Length
-            && metadata.VisitEffects.Select(e => e.Effect).Order().SequenceEqual(Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None).Order()),
-            "mapObjects",
+            visitEffects.Select(e => e.Effect).Distinct().Count() == visitEffects.Length
+            && visitEffects.Select(e => e.Effect).Order().SequenceEqual(Enum.GetValues<VisitedBuildingEffects>().Where(e => e != VisitedBuildingEffects.None).Order()),
+            "visitEffects",
             "Each supported visit-effect storage flag must occur exactly once.");
-        Check(metadata.VisitEffects.Select(e => e.Order).Distinct().Count() == metadata.VisitEffects.Length, "mapObjects", "Visit-effect display orders must be unique.");
-        foreach (var e in metadata.VisitEffects)
+        foreach (var e in visitEffects)
         {
             Check(
                 !string.IsNullOrWhiteSpace(e.Name) && !string.IsNullOrWhiteSpace(e.Description)
-                && e.Order >= 0 && e.Morale is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck
+                && e.Morale is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck
                 && e.Luck is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck,
-                "mapObjects",
+                "visitEffects",
                 $"{e.Effect}: invalid name, description or morale/luck parameters.");
         }
     }

@@ -1,7 +1,7 @@
 # Siniskalc user guide
 
-Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death, Horn of the Abyss, and *maybe* even Heroes Chronicles, for heroes and towns only.
-It needs Windows; there is nothing to install, unzip a release and run `Siniskalc.exe`.
+Siniskalc edits savegames of Heroes of Might and Magic III: Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss. Heroes Chronicles is experimental and untested; only heroes and towns are read, not players, the game setup or the date.
+It needs Windows and the .NET 8 Desktop Runtime (x64). There is no installer: unzip a release and run `Siniskalc.exe`; install the runtime first if it is not already on your PC.
 
 ## Before you start: back up your saves
 
@@ -77,7 +77,8 @@ Nothing that was edited is lost.
 ## Things you may notice
 
 - Heroes, creatures or towns the editor does not know (from a mod or a newer version of the game) should still load.
-  They will show up as the first entity in the game list (e.g. a hero class the editor does not know shows as Knight, the first hero class) and the file keeps its original byte until you change that field yourself.
+  What you see depends on the field: an unknown hero class is shown as Knight, while an unknown creature may appear as an empty slot and an unrecognized owner may appear as no owner. Where the editor can safely preserve the unknown value, it leaves its original bytes alone until you change that field.
+- Tavern heroes can be edited on a player's page, but this has not been verified in the game. Back up the save before changing them.
 
 ## Troubleshooting and reporting a problem
 

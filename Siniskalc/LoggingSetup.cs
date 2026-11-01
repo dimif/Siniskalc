@@ -33,6 +33,7 @@ namespace Siniskalc
         /// <summary>
         /// Gets the text of the Serilog configuration the application ships.
         /// </summary>
+        /// <exception cref="InvalidOperationException">The configuration is not part of the application.</exception>
         public static string DefaultConfiguration
         {
             get
@@ -50,6 +51,7 @@ namespace Siniskalc
         /// <param name="settings">What the user set.</param>
         /// <param name="applicationName">The name of the application, for the default folder.</param>
         /// <param name="configPath">Where the Serilog configuration of the user is kept; it is written there when it is missing.</param>
+        /// <returns>The factory of the loggers; disposing it flushes the log file.</returns>
         /// <exception cref="LoggingException">The folder the user chose cannot be used, or the Serilog configuration cannot be read or built.</exception>
         public static ILoggerFactory Create(UserSettings settings, string applicationName, string configPath)
         {

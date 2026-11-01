@@ -35,6 +35,8 @@
         /// <summary>
         /// Returns whether the entry is in <paramref name="version"/> of the game.
         /// </summary>
+        /// <param name="version">The version of the game.</param>
+        /// <returns><see langword="true"/> if the entry first appears in <paramref name="version"/> or an earlier one.</returns>
         public bool IsAvailableIn(TVersion version) => this.IsAvailableIn(Convert.ToInt32(version));
     }
 }

@@ -57,9 +57,21 @@
         /// </summary>
         public int AvailableFrom { get; }
 
+        /// <summary>
+        /// Returns whether two values are the same entity: of the same type and with the same code. Two <see langword="null"/>s are equal.
+        /// </summary>
+        /// <param name="left">The first value.</param>
+        /// <param name="right">The second value.</param>
+        /// <returns><see langword="true"/> if both are <see langword="null"/>, or both are the same entity; otherwise <see langword="false"/>.</returns>
         public static bool operator ==(AbstractEnumeration? left, AbstractEnumeration? right)
             => left is null ? right is null : left.Equals(right);
 
+        /// <summary>
+        /// Returns whether two values are different entities.
+        /// </summary>
+        /// <param name="left">The first value.</param>
+        /// <param name="right">The second value.</param>
+        /// <returns>The opposite of the <c>==</c> operator.</returns>
         public static bool operator !=(AbstractEnumeration? left, AbstractEnumeration? right) => !(left == right);
 
         /// <summary>
@@ -110,22 +122,44 @@
         /// Gets whether this value exists in savefiles written by the given tier.
         /// Expansions only add values, so anything introduced in or before <paramref name="tier"/> is available.
         /// </summary>
+        /// <param name="tier">The tier of the savefile, as a number that grows with every expansion.</param>
+        /// <returns><see langword="true"/> if <see cref="AvailableFrom"/> is not greater than <paramref name="tier"/>.</returns>
         public bool IsAvailableIn(int tier) => this.AvailableFrom <= tier;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns the name of the entity.
+        /// </summary>
+        /// <returns><see cref="Name"/>.</returns>
         public override string ToString() => this.Name;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns whether <paramref name="other"/> is the same entity: of exactly the same type and with the same code.
+        /// </summary>
+        /// <param name="other">The value to compare with.</param>
+        /// <returns><see langword="true"/> if <paramref name="other"/> is not <see langword="null"/> and is the same entity; otherwise <see langword="false"/>.</returns>
         public virtual bool Equals(AbstractEnumeration? other)
             => other is not null && this.GetType() == other.GetType() && this.Code == other.Code;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns whether <paramref name="obj"/> is the same entity.
+        /// </summary>
+        /// <param name="obj">The object to compare with.</param>
+        /// <returns><see langword="true"/> if <paramref name="obj"/> is an <see cref="AbstractEnumeration"/> that is the same entity.</returns>
         public override bool Equals(object? obj) => this.Equals(obj as AbstractEnumeration);
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Returns a hash code made from the type and the code, so equal entities have equal hash codes.
+        /// </summary>
+        /// <returns>The hash code.</returns>
         public override int GetHashCode() => HashCode.Combine(this.GetType(), this.Code);
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Compares this entity with another by code.
+        /// </summary>
+        /// <param name="obj">An <see cref="AbstractEnumeration"/> to compare with.</param>
+        /// <returns>A negative number if this code is lower, 0 if equal, a positive number if higher.</returns>
+        /// <exception cref="NullReferenceException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+        /// <exception cref="InvalidCastException"><paramref name="obj"/> is not an <see cref="AbstractEnumeration"/>.</exception>
         public int CompareTo(object? obj) => this.Code.CompareTo(((AbstractEnumeration)obj!).Code);
 
         /// <summary>

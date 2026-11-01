@@ -22,8 +22,8 @@ Siniskalc/
   Models/         Immutable views of what is in a save: heroes, players, castles, game setup
   Runtime/        Loading and holding the open game
   ViewModels/     MVVM view models and the navigation tree
-  Views/          XAML pages (one page per kind of edit)
-  Resources/      Icons (the styles that only heroes need are in Views/Generic.xaml)
+  Views/          XAML pages (one page per kind of edit; shared styles are in Generic.xaml)
+  Resources/      Icons and other application resources
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota) and hero dumps used by the tests.

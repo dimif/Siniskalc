@@ -19,12 +19,10 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 ## User features
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today.
-2. **Castle creatures growth**: we think we have found the growth table is found, but it isn't read.
-3. **Editing of the date, and whose turn it is**
-4. **Resource generators (mines etc.)**: as we're starting to understand tile structure, we could extract all the buildings from the save and make the owner editeable.
+2. **Castle creature growth over time**: the editor reads and lets users change the creatures currently waiting in built dwellings; building a dwelling also initializes its stock from the creature's base growth. It does not calculate the weekly growth added by the game.
+3. **Editing the date and current player**: both are shown on the overview when the save contains them, but are currently read-only.
+4. **Resource generators (mines etc.)**: map objects and their owners are not yet modeled for editing; investigate the tile/object data before adding support.
 5. **Teams**: the team table of the header is found (Shadow of Death and Restoration of Erathia; not in Horn of the Abyss) but not read.
    Reading it would let the obelisk card mark a whole team at once.
-6. **Dug tiles and the visited-object table**: readable, but the meaning of the number and of the table is unclear.
-   The Grail flag beside the date (`7F xx 02 yy`) is the same.
-7. **A defeated hero and the tavern**: what keeps a defeated hero from coming back is not yet known.
-   The tavern has table about 250 bytes before the date that changes when a hero is defeated, so it's probably that one.
+6. **Dug tiles and visited-object data**: the dug-tile list and a possible visited-object table have been identified in savefile research, but neither is modeled by the editor and the table's meaning is unclear. The meaning of the Grail-related marker near the date (`7F xx 02 yy`) also needs confirmation.
+7. **Hero availability after fleeing or defeat**: the savefile data that prevents a defeated hero from returning is still unknown. A nearby table changes when a hero flees or is defeated, but its relationship to that behavior has not been confirmed; see [the knowledge base](KNOWLEDGE_BASE.md#heroes).

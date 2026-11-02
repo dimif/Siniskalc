@@ -21,7 +21,7 @@ public sealed class SpellSchool : CatalogEntity
     public string Description { get; }
 
     /// <summary>
-    /// Gets whether this is the entry that stands for every school.
+    /// Gets whether this is the universal spell school.
     /// </summary>
     public bool Universal => this.Id == "all";
 }

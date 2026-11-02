@@ -10,32 +10,32 @@
     public sealed class PlayerColor : Homm2Enumeration, IPlayerColor
     {
         /// <summary>
-        /// Blue, record 0.
+        /// Blue, number 0.
         /// </summary>
         public static readonly PlayerColor Blue = new("Blue", 0);
 
         /// <summary>
-        /// Green, record 1.
+        /// Green, number 1.
         /// </summary>
         public static readonly PlayerColor Green = new("Green", 1);
 
         /// <summary>
-        /// Red, record 2.
+        /// Red, number 2.
         /// </summary>
         public static readonly PlayerColor Red = new("Red", 2);
 
         /// <summary>
-        /// Yellow, record 3.
+        /// Yellow, number 3.
         /// </summary>
         public static readonly PlayerColor Yellow = new("Yellow", 3);
 
         /// <summary>
-        /// Orange, record 4.
+        /// Orange, number 4.
         /// </summary>
         public static readonly PlayerColor Orange = new("Orange", 4);
 
         /// <summary>
-        /// Purple, record 5.
+        /// Purple, number 5.
         /// </summary>
         public static readonly PlayerColor Purple = new("Purple", 5);
 

@@ -2,9 +2,11 @@ namespace Siniskalc
 {
     using System;
     using System.IO;
+    using System.Text;
     using System.Windows;
     using System.Windows.Threading;
     using Microsoft.Extensions.Logging;
+    using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Wpf.Views;
 
@@ -86,7 +88,7 @@ namespace Siniskalc
             {
                 try
                 {
-                    return new AppServices();
+                    return AppCompositionRoot.Start(UserSettings.PathFor(AppInfo.Name), Encoding.Latin1, new JsonGameDefinitionReader());
                 }
                 catch (GameDefinitionException ex)
                 {

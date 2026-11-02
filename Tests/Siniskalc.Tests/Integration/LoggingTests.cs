@@ -1,7 +1,10 @@
 namespace Siniskalc.Tests.Integration
 {
+    using System.Text;
     using System.Text.Json;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
+    using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
 
     [TestFixture]
@@ -30,12 +33,12 @@ namespace Siniskalc.Tests.Integration
             var logs = Path.Combine(this.folder, "mylogs");
             var settingsPath = this.WriteSettings(new { LogFolder = logs });
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             var file = Directory.GetFiles(logs, "siniskalc-*.log").Single();
             var text = File.ReadAllText(file);
-            Assert.That(text, Does.Contain("[INF] Siniskalc.AppServices: Started Siniskalc"));
+            Assert.That(text, Does.Contain("[INF] Siniskalc.AppCompositionRoot: Started Siniskalc"));
         }
 
         [Test]
@@ -44,7 +47,7 @@ namespace Siniskalc.Tests.Integration
             var logs = Path.Combine(this.folder, "quiet");
             var settingsPath = this.WriteSettings(new { LogFolder = logs, LogLevel = "Error" });
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             Assert.That(Directory.GetFiles(logs).SelectMany(File.ReadAllLines), Is.Empty);
@@ -56,7 +59,7 @@ namespace Siniskalc.Tests.Integration
             var logs = Path.Combine(this.folder, "subject");
             var settingsPath = this.WriteSettings(new { LogFolder = logs, LogLevel = "Trace" });
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             var logger = LogFactory.For(typeof(LoggingTests));
             using (logger.BeginSubject("Hero", "Sandro"))
             {
@@ -77,7 +80,7 @@ namespace Siniskalc.Tests.Integration
             var logs = Path.Combine(this.folder, "first");
             var settingsPath = this.WriteSettings(new { LogFolder = logs });
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             var written = JsonDocument.Parse(File.ReadAllText(Path.Combine(this.folder, "serilog.json"))).RootElement.GetProperty("Serilog");
@@ -94,7 +97,9 @@ namespace Siniskalc.Tests.Integration
         {
             var settingsPath = Path.Combine(this.folder, "settings.json");
 
-            new AppServices(settingsPath: settingsPath, loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
+            var settings = new SettingsStore(settingsPath);
+            settings.EnsureCreated();
+            AppCompositionRoot.Compose(settings, NullLoggerFactory.Instance, Encoding.Latin1, new JsonGameDefinitionReader());
 
             Assert.That(File.ReadAllText(settingsPath), Is.EqualTo(DefaultSettings.Json));
         }
@@ -110,7 +115,7 @@ namespace Siniskalc.Tests.Integration
                     "formatter": { "type": "Serilog.Templates.ExpressionTemplate, Serilog.Expressions", "template": "TEMPLATE {@l:u3} {@m}\n" } } } ] } }
                 """);
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             var file = Directory.GetFiles(logs).Single();
@@ -128,7 +133,7 @@ namespace Siniskalc.Tests.Integration
                     "path": "{LogFolder}/warnings-.log", "shared": true } } ] } }
                 """);
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             Assert.That(Directory.GetFiles(logs).SelectMany(File.ReadAllLines), Is.Empty);
@@ -144,7 +149,7 @@ namespace Siniskalc.Tests.Integration
                     "path": "{LogFolder}/replaced-.log", "shared": true } } ] } }
                 """);
 
-            var services = new AppServices(settingsPath: settingsPath);
+            var services = Start(settingsPath);
             services.LoggerFactory.Dispose();
 
             Assert.That(File.ReadAllText(Directory.GetFiles(logs).Single()), Does.Contain("Started Siniskalc"));
@@ -156,7 +161,7 @@ namespace Siniskalc.Tests.Integration
             var settingsPath = this.WriteSettings(new { LogFolder = Path.Combine(this.folder, "logs") });
             this.WriteSerilogConfiguration("{ this is not json");
 
-            var failure = Assert.Throws<LoggingException>(() => new AppServices(settingsPath: settingsPath));
+            var failure = Assert.Throws<LoggingException>(() => Start(settingsPath));
 
             Assert.That(failure!.Path, Is.EqualTo(Path.Combine(this.folder, "serilog.json")));
             Assert.That(failure.Message, Does.Contain("serilog.json"));
@@ -168,7 +173,7 @@ namespace Siniskalc.Tests.Integration
             var settingsPath = this.WriteSettings(new { LogFolder = Path.Combine(this.folder, "logs") });
             this.WriteSerilogConfiguration("""{ "Serilog": { "WriteTo": [ { "Name": "NoSuchSink" } ] } }""");
 
-            var failure = Assert.Throws<LoggingException>(() => new AppServices(settingsPath: settingsPath));
+            var failure = Assert.Throws<LoggingException>(() => Start(settingsPath));
 
             Assert.That(failure!.Path, Is.EqualTo(Path.Combine(this.folder, "serilog.json")));
         }
@@ -181,7 +186,7 @@ namespace Siniskalc.Tests.Integration
             File.WriteAllText(blocked, string.Empty);
             var settingsPath = this.WriteSettings(new { LogFolder = blocked });
 
-            var failure = Assert.Throws<LoggingException>(() => new AppServices(settingsPath: settingsPath));
+            var failure = Assert.Throws<LoggingException>(() => Start(settingsPath));
 
             Assert.That(failure!.Message, Does.Contain(blocked));
         }
@@ -192,10 +197,12 @@ namespace Siniskalc.Tests.Integration
             var settingsPath = Path.Combine(this.folder, "settings.json");
             File.WriteAllText(settingsPath, "{ not json");
 
-            var failure = Assert.Throws<SettingsException>(() => new AppServices(settingsPath: settingsPath));
+            var failure = Assert.Throws<SettingsException>(() => Start(settingsPath));
 
             Assert.That(failure!.Path, Is.EqualTo(settingsPath));
         }
+
+        private static AppServices Start(string settingsPath) => AppCompositionRoot.Start(settingsPath, Encoding.Latin1, new JsonGameDefinitionReader());
 
         private void WriteSerilogConfiguration(string json) => File.WriteAllText(Path.Combine(this.folder, "serilog.json"), json);
 

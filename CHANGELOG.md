@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- Internals (no change in behaviour, 2026-11-02): `AppCompositionRoot` builds the components and `AppServices` only holds them; no constructor on the way has an optional parameter that defaults to the real thing (`IGameDefinitionReader`, the game-service decorator, the encoding, the settings path and the logger factory are passed in, by `App` or by the test).
 - Logging review of the JSON migration: decoder messages name the actual catalog stand-in, unknown castle factions are traced, and skipped Mage Guild levels produce one warning per castle rather than one per level.
 - **Consistent definition organization:** HoMM2 spell categories are in `spellTypes.json`. Both games keep `mines.json`, `visitablePlaces.json`, `visitEffects.json` and `mapObjects.json` under their standard set, with descriptions named consistently and game-specific storage fields preserved.
 - HoMM3's Catapult is no longer an artifact definition; editable war machines remain in their separate catalog. HoMM2's similarly named actual artifacts are unchanged.

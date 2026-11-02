@@ -11,13 +11,13 @@ namespace Siniskalc.Homm3.Tests.Runtime
     [Category(TestKinds.Unit)]
     internal sealed class Homm3ModuleFactoryTests
     {
-        private static Homm3ModuleFactory Factory(Func<ISavegameService<Game>, ISavegameService<Game>>? decorate = null) =>
-            new(Encoding.Latin1, Mock.Of<IFileBackupServiceProvider>(), Mock.Of<ISavefileBytesPatcher>(), new BanishingTextProvider(), decorate);
+        private static Homm3ModuleFactory Factory(Func<ISavegameService<Game>, ISavegameService<Game>> decorate) =>
+            new(Encoding.Latin1, Mock.Of<IFileBackupServiceProvider>(), Mock.Of<ISavefileBytesPatcher>(), new BanishingTextProvider(), decorate, new JsonGameDefinitionReader());
 
         [Test]
-        public void WithoutADecoratorTheGameServiceIsTheOneTheFactoryBuilt()
+        public void ADecoratorThatReturnsTheServiceLeavesTheGameServiceAsTheFactoryBuiltIt()
         {
-            Assert.That(Factory().GameService, Is.InstanceOf<SavegameService<Game>>());
+            Assert.That(Factory(service => service).GameService, Is.InstanceOf<SavegameService<Game>>());
         }
 
         [Test]

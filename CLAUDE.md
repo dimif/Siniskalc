@@ -22,7 +22,7 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   Add a type to the game's project (`Siniskalc.Homm3` or `Siniskalc.Homm2`) when it needs a layout, rule or entity of that game. The exe `Siniskalc` is only the host that builds the components and starts the window.
 - **A type carries no game prefix**: the namespace says the game (`Siniskalc.Homm2.Models.HeroModel`, not `Homm2HeroModel`).
   The exceptions are the wrappers of generic Core types (`Homm3Enumeration`, `Homm2EditSessions`, `Homm2PendingChangesFactory`, `Homm2SaveDocuments`, `Homm2ChunkKinds`) and the entry points the exe and the shell name side by side (`Homm2Module`/`Homm3Module`, `Homm2EditorViewModel`/`Homm3EditorViewModel`, `Homm2EditorView`/`Homm3EditorView`).
-  Code that sees both games (`AppServices`) uses namespace aliases.
+  Code that sees both games (`AppCompositionRoot`, `AppServices`) uses namespace aliases.
 - Each project has a test project with the same shape (`Siniskalc.Core.Tests`, `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests`, `Siniskalc.Homm3.Tests`, `Siniskalc.Homm2.Tests`, and `Siniskalc.Tests` for the exe); a test goes with the project of the class it tests.
   **A game's test project references only that game's project** and the test library `Siniskalc.Tests.Homm.Common` (never the other game or the exe `Siniskalc`; the `...LayeringTests` of each game check it). That library has no test and no game: it holds what the test projects of both games would otherwise copy (`TestKinds`, `ByteDiff`, the fake of the pending changes, the WPF test application, the cache of loaded savegames) and builds what it needs from the game's module factory (`Homm3ModuleFactory`, `Homm2ModuleFactory`) and the shared components. A test that needs the whole application (both games, `AppServices`) goes in `Siniskalc.Tests`.
 - **A control that is styled by a resource dictionary is tested by what it shows**, not only by its bindings: a template that did not apply leaves the control empty and raises no binding error (`PageRenderingTests`, `PageContractTests`).
@@ -51,13 +51,14 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
 ## Dependencies
 
 - A class that uses another component (a loader, locator, provider, parser, service, view-model collaborator) gets it through its constructor, preferably as an interface, and never creates it or calls it as a static method.
-  `AppServices` is the composition root: it builds each component once and is the only place that does.
+  `AppCompositionRoot` is the composition root: it builds each component once and is the only place that does. `AppServices` only holds what it is given; it builds nothing.
+  **No dependency is optional for the sake of tests**: a parameter is required, a unit test passes a mock and a test that needs the real thing passes the real thing; never `x ?? new Real()`.
   Tests build the same graph with `TestServices`, or give the unit under test fakes.
-  What depends on the game version of a savefile (`VersionSpecificEntitiesProvider`, the hero reader and writer and the hero chunk collection) is made per savefile: the provider by `IVersionSpecificEntitiesProviderFactory`, the rest by `SaveDocumentFactory`, which is the one place besides `AppServices` that builds such objects.
+  What depends on the game version of a savefile (`VersionSpecificEntitiesProvider`, the hero reader and writer and the hero chunk collection) is made per savefile: the provider by `IVersionSpecificEntitiesProviderFactory`, the rest by `SaveDocumentFactory`, which is the one place besides `AppCompositionRoot` that builds such objects.
 - Static classes are for helpers, fixed data and pure functions of immutable models (`RangeGuard`, `Constants`, layouts, extension methods, `CastleBuilder` and `LevelCalculator`, which are reducers and tables).
   Behaviour that has collaborators, state or may be swapped (loaders, locators, providers, serializers, differs) is an injected instance, not a static class.
 - **The one exception is logging**: a class gets its logger from the static `LogFactory`, in a `private static readonly ILogger<T> Logger = LogFactory.For<T>();` field (`For(typeof(T))` in a static class), and does not take it through its constructor.
-  `AppServices` installs the real factory once; until then, and in the tests, loggers write nowhere.
+  `AppCompositionRoot` installs the real factory once; until then, and in the tests, loggers write nowhere.
 
 ## Values and limits
 

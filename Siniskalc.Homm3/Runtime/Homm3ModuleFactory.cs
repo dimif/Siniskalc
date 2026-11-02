@@ -22,16 +22,17 @@
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
         /// <param name="decorateGameService">
-        /// Wraps the service that loads and saves games, for the editor and everything else the factory builds with it; <c>null</c> (the
-        /// application) uses the service as it is. The tests use it to serve a savefile they have already parsed.
+        /// Wraps the service that loads and saves games, for the editor and everything else the factory builds with it; the application
+        /// returns the service as it is. The tests use it to serve a savefile they have already parsed.
         /// </param>
+        /// <param name="definitions">Reads the game definitions the catalogs are built from.</param>
         public Homm3ModuleFactory(
             Encoding heroNameEncoding,
             IFileBackupServiceProvider backup,
             ISavefileBytesPatcher bytesPatcher,
             BanishingTextProvider banishingText,
-            Func<ISavegameService<Game>, ISavegameService<Game>>? decorateGameService = null,
-            IGameDefinitionReader? definitions = null)
+            Func<ISavegameService<Game>, ISavegameService<Game>> decorateGameService,
+            IGameDefinitionReader definitions)
         {
             this.BytesPatcher = bytesPatcher;
             this.BanishingText = banishingText;
@@ -39,7 +40,7 @@
             var dateLocator = new GameDateLocator();
             var setupLocator = new PlayerControlLocator();
             var mapHeaderLocator = new MapHeaderLocator();
-            var catalogs = new GameCatalogLoader(definitions ?? new JsonGameDefinitionReader()).Load();
+            var catalogs = new GameCatalogLoader(definitions).Load();
             this.VersionEntities = new VersionSpecificEntitiesProviderFactory(catalogs);
             var castleLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new CastleBytesLoader(heroNameEncoding, pair.Value));
             var mineLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MineBytesLoader(pair.Value));
@@ -96,7 +97,7 @@
                     this.DocumentFactory),
                 this.SavefileCodec,
                 backup);
-            this.GameService = decorateGameService?.Invoke(gameService) ?? gameService;
+            this.GameService = decorateGameService(gameService);
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
             this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider());
             this.EffectLines = new EffectLineProvider();

@@ -22,7 +22,7 @@ namespace Siniskalc
     /// the application ships as <c>Siniskalc/serilog.json</c> is copied to the folder of the settings the first time) and hands it out as the
     /// <see cref="ILoggerFactory"/> the rest of the editor knows. The settings of the user replace two things in it: the minimum level
     /// (<see cref="UserSettings.LogLevel"/>) and the log folder (<see cref="UserSettings.LogFolder"/>, which fills <c>{LogFolder}</c> in the path).
-    /// This and <see cref="AppServices"/> are the only code that names Serilog.
+    /// This and <see cref="AppCompositionRoot"/> are the only code that names Serilog.
     /// </summary>
     internal static class LoggingSetup
     {

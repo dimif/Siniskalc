@@ -8,7 +8,7 @@ Failures that the user must see are in `ERROR_MODEL.md`; this file is about what
 | Question | Answer |
 |---|---|
 | Where do I get a logger? | `private static readonly ILogger<T> Logger = LogFactory.For<T>();` (`ILogger Logger = LogFactory.For(typeof(T))` in a static or generic class). Not through the constructor, and never `Serilog.Log`. Only the exe (`LoggingSetup`) names Serilog or `ILoggerFactory`. |
-| Who installs the real logger? | `AppServices` (the composition root) calls `LogFactory.Install` once with the factory `LoggingSetup` builds in the exe; until then, and in the tests, loggers write nowhere. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
+| Who installs the real logger? | `AppCompositionRoot` calls `LogFactory.Install` once with the factory `LoggingSetup` builds in the exe; until then, and in the tests, loggers write nowhere. Core, Heroes, Homm2, Homm3 and the Wpf projects know no Serilog. |
 | Where is the file? | `<LocalApplicationData>/Siniskalc/logs/siniskalc-<date>.log` (`LogPaths`), unless `LogFolder` is set in `settings.json`. Settings... (Logging) changes the folder and the level, and Help > Show logs opens the folder. The file is shared, so two copies of the editor can log to it. |
 | How do I write a message? | A constant template with named placeholders, never `$"..."`: `Logger.LogWarning("Skipped the backup of {File}", name)`. `CA2254` enforces it. |
 | Which level? | Warning = surprising but handled. Error = the user saw an operation fail. See the table below. |
@@ -191,5 +191,5 @@ EventLog), and name no WPF type outside the exe. The only WPF line is flushing t
 - A `// TODO:LOG <level>: ...` marker is replaced by the real call, at the level it names, and the marker is deleted.
 - New "unexpected, carried on" code gets the call directly. Do not add new `TODO:LOG` markers: every class can have a logger.
 - Logging is not unit-tested: the code has no conditional logging, only calls at different levels. The tests that touch it check the
-  infrastructure (`LogFactoryTests`, `LoggingTests`: the log file, the subject, the start-up errors). Tests that build `AppServices` pass
+  infrastructure (`LogFactoryTests`, `LoggingTests`: the log file, the subject, the start-up errors). Tests that compose `AppServices` pass
   `NullLoggerFactory.Instance`, and a test that installs a real factory calls `LogFactory.Reset()` afterwards.

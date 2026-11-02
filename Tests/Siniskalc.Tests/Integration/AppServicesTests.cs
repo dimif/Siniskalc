@@ -1,5 +1,7 @@
 namespace Siniskalc.Tests.Integration
 {
+    using System.Text;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.ViewModels;
@@ -23,7 +25,7 @@ namespace Siniskalc.Tests.Integration
         {
             this.folder = Path.Combine(Path.GetTempPath(), "siniskalc-app-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(this.folder);
-            this.services = new AppServices(settingsPath: Path.Combine(this.folder, "settings.json"), loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance);
+            this.services = this.Compose("settings.json", new JsonGameDefinitionReader());
             this.shell = this.services.CreateShellViewModel();
         }
 
@@ -75,10 +77,7 @@ namespace Siniskalc.Tests.Integration
         public void BothGamesReadTheirDefinitionsAtStartupAndNeverWhenOpeningASavegame()
         {
             var reader = new StartupDefinitionReader();
-            var application = new AppServices(
-                settingsPath: Path.Combine(this.folder, "catalog-settings.json"),
-                loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
-                definitions: reader);
+            var application = this.Compose("catalog-settings.json", reader);
 
             Assert.That(reader.Paths, Has.Some.Contains("Homm2"));
             Assert.That(reader.Paths, Has.Some.Contains("Homm3"));
@@ -98,11 +97,15 @@ namespace Siniskalc.Tests.Integration
             var reader = new StartupDefinitionReader { StartupFinished = true };
 
             Assert.That(
-                () => new AppServices(
-                    settingsPath: Path.Combine(this.folder, "missing-settings.json"),
-                    loggerFactory: Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
-                    definitions: reader),
+                () => this.Compose("missing-settings.json", reader),
                 Throws.TypeOf<GameDefinitionException>());
+        }
+
+        private AppServices Compose(string settingsFile, IGameDefinitionReader definitions)
+        {
+            var settings = new SettingsStore(Path.Combine(this.folder, settingsFile));
+            settings.EnsureCreated();
+            return AppCompositionRoot.Compose(settings, NullLoggerFactory.Instance, Encoding.Latin1, definitions);
         }
 
         private sealed class StartupDefinitionReader : IGameDefinitionReader

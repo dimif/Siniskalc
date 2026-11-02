@@ -40,7 +40,8 @@ namespace Siniskalc.Homm3.Tests
             {
                 plainGameService = service;
                 return new CachingGameService(service, SavedGames.Cache);
-            });
+            },
+            new JsonGameDefinitionReader());
 
         private static readonly AboutInfo About = new(ApplicationName, "test", "A savegame editor.", "https://example.invalid", "https://example.invalid", "MIT", []);
 

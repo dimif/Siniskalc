@@ -22,10 +22,11 @@
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, IGameDefinitionReader? definitions = null)
+        /// <param name="definitions">Reads the game definitions the catalogs are built from.</param>
+        public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, IGameDefinitionReader definitions)
         {
             this.banishingText = banishingText;
-            this.Catalogs = new GameCatalogs(definitions ?? new JsonGameDefinitionReader());
+            this.Catalogs = new GameCatalogs(definitions);
 
             var locator = new SaveLayoutLocator();
             var pendingChanges = new Homm2PendingChangesFactory();

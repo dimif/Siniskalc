@@ -1,9 +1,5 @@
 ﻿namespace Siniskalc
 {
-    using System.Diagnostics;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Text;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Runtime;
@@ -19,51 +15,64 @@
     using H2Runtime = Siniskalc.Homm2.Runtime;
 
     /// <summary>
-    /// The composition root: builds each component once and hands it to the ones that use it. What the games share is built here;
-    /// what only a game uses is built by the factory of that game. Nothing else creates a component that another class depends on.
+    /// The components of the application, built by <see cref="AppCompositionRoot"/> and handed in. It creates none of them: it holds them and
+    /// makes the view models that are made on demand.
     /// </summary>
     public sealed class AppServices
     {
-        private static readonly ILogger<AppServices> Logger = LogFactory.For<AppServices>();
-
         private readonly Homm3ModuleFactory homm3;
         private readonly H2Runtime.Homm2ModuleFactory homm2;
 
-        /// <param name="heroNameEncoding">How hero names are written in the savefile.</param>
-        /// <param name="settingsPath">Where the settings of the user are kept; tests give a file of their own.</param>
-        /// <param name="loggerFactory">Makes the loggers; the application leaves it out and gets the log file of the user, tests give a silent one.</param>
-        /// <param name="definitions">Reads the shipped game definitions; tests can supply definitions of their own.</param>
-        /// <exception cref="SettingsException">The settings file exists but cannot be read.</exception>
-        /// <exception cref="LoggingException">The log folder the user chose cannot be used, or the Serilog configuration cannot be read or built.</exception>
-        public AppServices(Encoding? heroNameEncoding = null, string? settingsPath = null, ILoggerFactory? loggerFactory = null, IGameDefinitionReader? definitions = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppServices"/> class.
+        /// </summary>
+        /// <param name="loggerFactory">The factory of the loggers.</param>
+        /// <param name="settings">The store of the settings of the user.</param>
+        /// <param name="recentFiles">The list of the savegames opened last.</param>
+        /// <param name="recentFilesMenu">The view model of the menu of the recent files.</param>
+        /// <param name="backup">The provider of the service that backs a savefile up before it is replaced.</param>
+        /// <param name="bytesPatcher">What writes the chunks of a savefile over its bytes.</param>
+        /// <param name="banishingText">The provider of the text shown for a banished creature.</param>
+        /// <param name="urlLauncher">What opens web addresses and folders for the user.</param>
+        /// <param name="messages">The service that shows messages to the user.</param>
+        /// <param name="fileDialogs">The service that shows the dialogs to pick files and folders.</param>
+        /// <param name="fileCommands">The commands to open and save a savegame, shared by the games.</param>
+        /// <param name="about">What the About window shows.</param>
+        /// <param name="help">The links and folders of the Help menu.</param>
+        /// <param name="homm3">The factory of the components of Heroes of Might and Magic III.</param>
+        /// <param name="homm2">The factory of the components of Heroes of Might and Magic II.</param>
+        public AppServices(
+            ILoggerFactory loggerFactory,
+            SettingsStore settings,
+            RecentFilesStore recentFiles,
+            RecentFilesMenuViewModel recentFilesMenu,
+            IFileBackupServiceProvider backup,
+            ISavefileBytesPatcher bytesPatcher,
+            BanishingTextProvider banishingText,
+            IUrlLauncher urlLauncher,
+            IMessageService messages,
+            IFileDialogs fileDialogs,
+            SavegameFileCommands fileCommands,
+            AboutInfo about,
+            HelpLinks help,
+            Homm3ModuleFactory homm3,
+            H2Runtime.Homm2ModuleFactory homm2)
         {
-            this.BytesPatcher = new SavefileBytesPatcher();
-            var settingsFile = settingsPath ?? UserSettings.PathFor(AppInfo.Name);
-            this.Settings = new SettingsStore(settingsFile);
-            this.Settings.EnsureCreated();
-            this.LoggerFactory = loggerFactory ?? LoggingSetup.Create(this.Settings.Settings, AppInfo.Name, LogPaths.SerilogConfigPathFor(settingsFile));
-            LogFactory.Install(this.LoggerFactory);
-            this.RecentFiles = new RecentFilesStore(this.Settings);
-            this.RecentFilesMenu = new RecentFilesMenuViewModel(this.RecentFiles);
-            this.Backup = new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService());
-            this.BanishingText = new BanishingTextProvider();
-            this.UrlLauncher = new ShellUrlLauncher(StartWithShell);
-            this.Messages = new WpfMessageService();
-            this.FileDialogs = new WpfFileDialogs();
-            this.FileCommands = new SavegameFileCommands(this.RecentFiles, this.FileDialogs, this.Messages);
-            this.About = CreateAboutInfo();
-            this.Help = new HelpLinks(AppInfo.UserGuideUrl, AppInfo.IssuesUrl, LogPaths.Resolve(this.Settings.Settings, AppInfo.Name));
-
-            var definitionReader = definitions ?? new JsonGameDefinitionReader();
-            this.homm3 = new Homm3ModuleFactory(heroNameEncoding ?? Encoding.Latin1, this.Backup, this.BytesPatcher, this.BanishingText, definitions: definitionReader);
-            this.homm2 = new H2Runtime.Homm2ModuleFactory(this.Backup, this.BytesPatcher, this.BanishingText, definitionReader);
-
-            Logger.LogInformation(
-                "Started {App} {Version} on {Os} with {Runtime}",
-                this.About.Name,
-                this.About.Version,
-                RuntimeInformation.OSDescription,
-                RuntimeInformation.FrameworkDescription);
+            this.LoggerFactory = loggerFactory;
+            this.Settings = settings;
+            this.RecentFiles = recentFiles;
+            this.RecentFilesMenu = recentFilesMenu;
+            this.Backup = backup;
+            this.BytesPatcher = bytesPatcher;
+            this.BanishingText = banishingText;
+            this.UrlLauncher = urlLauncher;
+            this.Messages = messages;
+            this.FileDialogs = fileDialogs;
+            this.FileCommands = fileCommands;
+            this.About = about;
+            this.Help = help;
+            this.homm3 = homm3;
+            this.homm2 = homm2;
         }
 
         /// <summary>
@@ -160,28 +169,5 @@
         /// Makes the shell of the application, with every game it can edit.
         /// </summary>
         public ShellViewModel CreateShellViewModel() => new([this.Homm3, this.Homm2], this.Settings, AppInfo.Name);
-
-        private static AboutInfo CreateAboutInfo()
-        {
-            var version = typeof(AppServices).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
-            var plus = version.IndexOf('+');
-            return new AboutInfo(
-                AppInfo.Name,
-                plus < 0 ? version : version[..plus],
-                "A savegame editor for Heroes of Might and Magic II & III.",
-                AppInfo.RepositoryUrl,
-                AppInfo.ReleasesUrl,
-                "Copyright (c) 2026 Dimitri Fadda. Released under the MIT License.",
-                [
-                    "Heroes of Might and Magic is a trademark of Ubisoft. This project is not affiliated with or endorsed by Ubisoft.",
-                    "The menu and toolbar icons are from the Microsoft Visual Studio Image Library and are not covered by the MIT License. See the README for the third-party notices.",
-                    "Always keep a backup of your savegames.",
-                ]);
-        }
-
-        private static void StartWithShell(string url)
-        {
-            using var process = Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
     }
 }

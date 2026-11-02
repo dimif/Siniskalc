@@ -38,7 +38,7 @@ It supplies what is specific to the game: where things sit in a savefile, how th
 **`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`), and `ViewModels` and `Views` (the overview, the player, hero and castle pages and the navigation builder). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
 
 **`Siniskalc`** is the exe, the host that starts the window.
-It holds `App` and `AppServices`, the composition root that builds all the components once and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), from the module factory that each game provides (`Homm3ModuleFactory`, `Homm2ModuleFactory`: the wiring of that game, built from what the games share), and `AppInfo` (the name and the web addresses).
+It holds `App`, `AppCompositionRoot` (the composition root: it builds all the components once from what it is given, with no optional parameter) and `AppServices` (the holder of the finished components; it builds none), and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), from the module factory that each game provides (`Homm3ModuleFactory`, `Homm2ModuleFactory`: the wiring of that game, built from what the games share), and `AppInfo` (the name and the web addresses).
 A game's data templates are merged in `App.xaml`.
 
 ```
@@ -55,7 +55,7 @@ Siniskalc.Homm3/
   Views/          XAML pages (one page per kind of edit)
   Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
 Siniskalc.Homm2/  The same folders for HoMM2
-Siniskalc/        The exe: App and AppServices (the composition root); each game has its module factory in its own Runtime folder
+Siniskalc/        The exe: App, AppCompositionRoot (the composition root) and AppServices (what it builds); each game has its module factory in its own Runtime folder
 SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code, used by Siniskalc.Homm3 only (see "Savegame format" in the README).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota, Homm2) and hero dumps used by the tests.
@@ -69,7 +69,7 @@ A type carries no game prefix (`Siniskalc.Homm2.Models.HeroModel`): the namespac
 
 Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests` (the blocks, rendered), and `Siniskalc.Homm3.Tests` and `Siniskalc.Homm2.Tests` (the real savegames, and the pages of each game opened in a window: `PageRenderingTests`).
 A game's tests reference only that game's project, so they build the game from its module factory and never see the other game or the exe (`Homm3LayeringTests`, `Homm2LayeringTests`).
-`Siniskalc.Tests` mirrors the exe: it references both games and tests the application as a whole (`AppServices`, the shell with both games), with a few savegames of each game.
+`Siniskalc.Tests` mirrors the exe: it references both games and tests the application as a whole (`AppCompositionRoot`, `AppServices`, the shell with both games), with a few savegames of each game.
 
 ## Standard game definitions
 
@@ -78,7 +78,7 @@ The standard entity data belongs to each game, not to Core or the shared Heroes 
 Files are resolved relative to the application, never the current working directory.
 The game's project copies its definitions to build and publish output; the files must be distributed with the executable.
 
-`AppServices` supplies one `IGameDefinitionReader` (`JsonGameDefinitionReader`) to the game module factories.
+`App` gives `AppCompositionRoot` one `IGameDefinitionReader` (`JsonGameDefinitionReader`), which it supplies to the game module factories; the factories have no default.
 At startup they read and validate their standard definitions and build typed, immutable catalogs.
 Opening a savefile selects its version's already loaded data; it does not read the definitions again.
 Every document and its collaborators retain that catalog snapshot throughout loading, editing, pending changes, undo/redo and saving.
@@ -117,7 +117,7 @@ A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references
 2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
 3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
 4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.
-5. Its `Generic.xaml`, which merges `PageStyles.xaml` and gives the data template of its editor, and its line in `AppServices`.
+5. Its `Generic.xaml`, which merges `PageStyles.xaml` and gives the data template of its editor, and its line in `AppCompositionRoot`.
 
 What a second savefile format of the same game (fheroes2 for HoMM2, VCMI for HoMM3) would share is the entities, models and pages; splitting the game's project into the rules and the format is left until the first of them is started.
 
@@ -157,7 +157,7 @@ HeroViewModel(session, ..., EffectLineProvider)
   EquippedArtifactsViewModel -> one ArtifactSlotViewModel(label, createFinder, onPicked) per slot
   BackpackViewModel          -> one BackpackSlotViewModel per slot -> ArtifactSlotViewModel(label, createFinder, onPicked)
   ArtifactSlotViewModel asks the factory it was given for its finder when the popup is first shown; the owner decides what the finder offers.
-EffectLineProvider       built once in AppServices, passed down by constructor (labels in one place for localization)
+EffectLineProvider       built once by the Homm3 module factory, passed down by constructor (labels in one place for localization)
 ```
 
 Facts the savefiles settled (TestData/Hota/Arts): every tome also gives Visions and Magic Arrow (spells of no school); Angelic Alliance gives no spell; Titan's Thunder gives Titan's Lightning Bolt and a spell book.
@@ -189,7 +189,7 @@ What is thrown, who catches it and what the user is told: see [ERROR_MODEL.md](E
 
 ## Logging
 
-A class gets its logger from the static `LogFactory` in `Siniskalc.Core` (`private static readonly ILogger<T> Logger = LogFactory.For<T>();`); the loggers write nowhere until `AppServices` calls `LogFactory.Install`, and
+A class gets its logger from the static `LogFactory` in `Siniskalc.Core` (`private static readonly ILogger<T> Logger = LogFactory.For<T>();`); the loggers write nowhere until `AppCompositionRoot` calls `LogFactory.Install`, and
 the forwarding logger looks the installed factory up on each use, so a logger created early is never stuck on the silent one.
 Only the exe names Serilog: `LoggingSetup` reads `serilog.json` (sinks, template, path, rolling interval, days kept), replaces `{LogFolder}` in the path and the minimum level with what the user set in `settings.json`
 (`LogFolder`, `LogLevel`, both optional), and returns the `ILoggerFactory`; `App.OnExit` disposes it to flush the file.
@@ -234,7 +234,7 @@ The Hex cards below a mine or a dwelling (`OwnedMinesCards`, `OwnedDwellingsCard
 `SettingsStore` loads `UserSettings` (`%APPDATA%\Siniskalc\settings.json`) once and is the only thing that writes the file, so the recent files, `BackupOnSave` (default on), `AdvancedMode` (default off) and the two logging choices never overwrite each other.
 `EnsureCreated` writes the file the first time, from `Siniskalc.Core/Resources/settings.default.json`.
 A setting missing from the file keeps its default.
-`AppServices` builds one store and hands it to `RecentFilesStore`, `FileBackupServiceProvider` and `ShellViewModel`; tests give `AppServices` a settings file of their own.
+`AppCompositionRoot` builds one store and hands it to `RecentFilesStore`, `FileBackupServiceProvider` and `ShellViewModel`; tests build the store on a settings file of their own and pass it in.
 
 `SavegameService.SaveGame` asks `IFileBackupServiceProvider` for the backup service and calls `Backup(path)` on it before it writes, when the file exists; a backup that fails stops the save and the exception reaches `SavegameFileCommands.Run`, which shows it.
 `NumberedSavefileBackupService` copies the file to `name.bak`, or `name.bak<N>` with N one above the highest copy in the folder, never overwrites a copy, has no settings and throws when the file is missing. The provider serves it while `BackupOnSave` is on and `DisabledFileBackupService` (does nothing) while it is off.

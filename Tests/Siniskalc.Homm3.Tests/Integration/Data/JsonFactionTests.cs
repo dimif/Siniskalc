@@ -25,7 +25,7 @@ internal sealed class JsonFactionTests
     public void AJsonOnlyFactionTraversesDiscoveryModelsRenderingEditingSerializationAndHistory()
     {
         var reader = new FixtureReader();
-        var services = new Homm3ModuleFactory(Encoding.Latin1, Mock.Of<IFileBackupServiceProvider>(), new SavefileBytesPatcher(), new BanishingTextProvider(), definitions: reader);
+        var services = new Homm3ModuleFactory(Encoding.Latin1, Mock.Of<IFileBackupServiceProvider>(), new SavefileBytesPatcher(), new BanishingTextProvider(), service => service, reader);
         reader.Closed = true;
         var catalog = services.VersionEntities.For(GameVersion.HornOfTheAbyss).Catalog;
         var faction = catalog.Factions.ById("FixtureTown");

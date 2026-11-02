@@ -24,7 +24,8 @@
             this.factory = new Homm2ModuleFactory(
                 new FileBackupServiceProvider(this.Settings, new NumberedSavefileBackupService(), new DisabledFileBackupService()),
                 new SavefileBytesPatcher(),
-                new BanishingTextProvider());
+                new BanishingTextProvider(),
+                new JsonGameDefinitionReader());
         }
 
         public SettingsStore Settings { get; }

@@ -9,6 +9,8 @@ namespace Siniskalc.Heroes.Models
         /// Returns the size as the map editor names it, e.g. "Small (36 x 36)", just the squares ("40 x 40") when it is not a standard
         /// size, or nothing when <paramref name="size"/> is not a size.
         /// </summary>
+        /// <param name="size">The width of the map in tiles.</param>
+        /// <returns>The text.</returns>
         public static string Describe(int size) => size switch
         {
             36 => "Small (36 x 36)",

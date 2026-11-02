@@ -28,11 +28,16 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns whether <paramref name="heroId"/> is in one of the places.
         /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
+        /// <returns><see langword="true"/> if the hero is in the tavern.</returns>
         public bool Contains(int heroId) => this.First == heroId || this.Second == heroId;
 
         /// <summary>
         /// Returns the tavern with <paramref name="heroId"/> (or nobody) in the place at <paramref name="place"/>, 0 for the first.
         /// </summary>
+        /// <param name="place">The place, from 0.</param>
+        /// <param name="heroId">The number of the hero, or <see langword="null"/> for nobody.</param>
+        /// <returns>The new tavern; this one is not changed.</returns>
         public TavernHeroes With(int place, int? heroId)
         {
             RangeGuard.ThrowIfNotIndex(place, Places, nameof(place));

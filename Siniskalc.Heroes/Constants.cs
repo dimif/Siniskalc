@@ -10,8 +10,14 @@ namespace Siniskalc.Heroes
         /// </summary>
         public static class Hero
         {
+            /// <summary>
+            /// The least hero number.
+            /// </summary>
             public const int MinId = 0;
 
+            /// <summary>
+            /// The greatest hero number; 255 means no hero.
+            /// </summary>
             public const int MaxId = 254;
 
             /// <summary>
@@ -73,6 +79,9 @@ namespace Siniskalc.Heroes
         /// </summary>
         public static class Tavern
         {
+            /// <summary>
+            /// The number of places in the tavern of a player.
+            /// </summary>
             public const int Places = 2;
         }
     }

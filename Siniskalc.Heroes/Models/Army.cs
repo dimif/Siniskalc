@@ -16,6 +16,10 @@ namespace Siniskalc.Heroes.Models
     {
         private readonly ArmySlot<TCreature>?[] slots;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Army{TCreature}"/> class.
+        /// </summary>
+        /// <param name="slots">The slots, in order; a <see langword="null"/> one is empty. They are copied.</param>
         public Army(IEnumerable<ArmySlot<TCreature>?> slots)
         {
             this.slots = slots.ToArray();
@@ -60,10 +64,26 @@ namespace Siniskalc.Heroes.Models
             return new Army<TCreature>(copy);
         }
 
+        /// <summary>
+        /// Returns whether another army has the same stacks in the same slots.
+        /// </summary>
+        /// <param name="other">The army to compare with.</param>
+        /// <returns><see langword="true"/> if every slot holds the same stack or is empty in both.</returns>
+        /// <param name="obj">The object to compare with.</param>
         public bool Equals(Army<TCreature>? other) => other is not null && this.slots.AsSpan().SequenceEqual(other.slots);
 
+        /// <summary>
+        /// Returns whether another army has the same stacks in the same slots.
+        /// </summary>
+        /// <param name="other">The army to compare with.</param>
+        /// <returns><see langword="true"/> if every slot holds the same stack or is empty in both.</returns>
+        /// <param name="obj">The object to compare with.</param>
         public override bool Equals(object? obj) => this.Equals(obj as Army<TCreature>);
 
+        /// <summary>
+        /// Returns a hash code made from the stacks in their slots, so equal armies have equal hash codes.
+        /// </summary>
+        /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
             var hash = default(HashCode);
@@ -75,6 +95,10 @@ namespace Siniskalc.Heroes.Models
             return hash.ToHashCode();
         }
 
+        /// <summary>
+        /// Returns the stacks separated by commas, with "empty" for an empty slot.
+        /// </summary>
+        /// <returns>The text.</returns>
         public override string ToString() => string.Join(", ", this.slots.Select(s => s?.ToString() ?? "empty"));
     }
 }

@@ -16,6 +16,7 @@ namespace Siniskalc.Heroes.Models
         /// <param name="players">The colours with player data.</param>
         /// <param name="heroOwners">The owners of the heroes.</param>
         /// <param name="castleOwners">The owners of the used castles.</param>
+        /// <returns>The colours.</returns>
         public static IReadOnlyList<TColor> Of<TColor>(IEnumerable<TColor> players, IEnumerable<TColor> heroOwners, IEnumerable<TColor> castleOwners)
             where TColor : class, IPlayerColor =>
             players.Concat(heroOwners).Concat(castleOwners).Distinct().OrderBy(color => color.Code).ToList();

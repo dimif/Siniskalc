@@ -11,6 +11,7 @@ namespace Siniskalc.Heroes.Models
         /// <param name="colorName">The name of the colour of the player.</param>
         /// <param name="plural">What the list holds, in the plural, such as "heroes" or "castles".</param>
         /// <param name="limit">The most the list can hold.</param>
+        /// <returns>The notice.</returns>
         public static string For(string colorName, string plural, int limit) =>
             $"{colorName} has the most {plural} a player can have ({limit}).";
     }

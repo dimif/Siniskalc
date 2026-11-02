@@ -18,6 +18,10 @@ namespace Siniskalc.Heroes.Data
         /// <summary>
         /// Reads the army that the tables of <paramref name="layout"/> hold. A type the editor has no creature for is logged at Trace.
         /// </summary>
+        /// <param name="chunk">The chunk that holds the army.</param>
+        /// <param name="layout">Where the creature types and counts are in the chunk.</param>
+        /// <param name="codes">Turns the code of a creature into the creature.</param>
+        /// <returns>The army.</returns>
         public static IArmy<TCreature> Read<TCreature>(BytesChunk chunk, ArmyLayout layout, ICreatureCodes<TCreature> codes)
             where TCreature : class, IGameEntity
         {

@@ -10,6 +10,13 @@ namespace Siniskalc.Heroes.Data
     /// </summary>
     public sealed class ObeliskChunk : BytesChunk
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObeliskChunk"/> class.
+        /// </summary>
+        /// <param name="name">The name of the chunk.</param>
+        /// <param name="bytes">The visited flags, one byte for each obelisk. They are copied.</param>
+        /// <param name="startIndex">The offset of the first flag in the savefile.</param>
+        /// <param name="positions">Where each obelisk is on the map, or <see langword="null"/> for none known.</param>
         public ObeliskChunk(string name, byte[] bytes, int startIndex, IReadOnlyList<MapPosition?>? positions = null)
             : base(name, bytes, startIndex)
         {

@@ -13,6 +13,8 @@ namespace Siniskalc.Heroes.ViewModels
         /// <summary>
         /// Returns a line for each skill the bonus changes, such as "Attack" and "+6".
         /// </summary>
+        /// <param name="bonus">What the artifacts add.</param>
+        /// <returns>The lines.</returns>
         public static IReadOnlyList<FactRow> Facts(PrimarySkillBonus bonus) =>
             new[] { ("Attack", bonus.Attack), ("Defense", bonus.Defense), ("Spell power", bonus.SpellPower), ("Knowledge", bonus.Knowledge) }
                 .Where(skill => skill.Item2 != 0)
@@ -22,6 +24,8 @@ namespace Siniskalc.Heroes.ViewModels
         /// <summary>
         /// Returns the bonus in one line, such as "Attack +6, Defense +6", or nothing when it changes no skill.
         /// </summary>
+        /// <param name="bonus">What the artifacts add.</param>
+        /// <returns>The text.</returns>
         public static string Describe(PrimarySkillBonus bonus) => string.Join(", ", Facts(bonus).Select(fact => $"{fact.Label} {fact.Value}"));
     }
 }

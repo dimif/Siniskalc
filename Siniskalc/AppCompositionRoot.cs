@@ -1,4 +1,4 @@
-namespace Siniskalc
+﻿namespace Siniskalc
 {
     using System.Diagnostics;
     using System.Reflection;

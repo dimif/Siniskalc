@@ -73,17 +73,6 @@
             }
         }
 
-        private sealed class DefinitionEnumConverter : JsonConverterFactory
-        {
-            private readonly JsonStringEnumConverter converter = new(allowIntegerValues: false);
-
-            public override bool CanConvert(Type typeToConvert) =>
-                !Attribute.IsDefined(typeToConvert, typeof(JsonConverterAttribute)) && this.converter.CanConvert(typeToConvert);
-
-            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
-                this.converter.CreateConverter(typeToConvert, options);
-        }
-
         private static void CheckProperties(JsonElement element, string location)
         {
             if (element.ValueKind == JsonValueKind.Object)
@@ -107,6 +96,17 @@
                     CheckProperties(item, $"{location}[{index++}]");
                 }
             }
+        }
+
+        private sealed class DefinitionEnumConverter : JsonConverterFactory
+        {
+            private readonly JsonStringEnumConverter converter = new(allowIntegerValues: false);
+
+            public override bool CanConvert(Type typeToConvert) =>
+                !Attribute.IsDefined(typeToConvert, typeof(JsonConverterAttribute)) && this.converter.CanConvert(typeToConvert);
+
+            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) =>
+                this.converter.CreateConverter(typeToConvert, options);
         }
     }
 }

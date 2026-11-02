@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data;
+﻿namespace Siniskalc.Homm3.Data;
 
 using Siniskalc.Homm3.Entities;
 

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.ViewModels
+﻿namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Linq;

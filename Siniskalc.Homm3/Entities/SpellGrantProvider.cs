@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Entities;
+﻿namespace Siniskalc.Homm3.Entities;
 
 using System;
 using System.Collections.Generic;
@@ -31,13 +31,6 @@ public sealed class SpellGrantProvider
     /// Gets the text that says what the artifact grants.
     /// </summary>
     public string Description { get; }
-
-    /// <summary>
-    /// Gets the spells the grant gives.
-    /// </summary>
-    /// <param name="version">The version of the game.</param>
-    /// <returns>The spells that exist in the version.</returns>
-    public IReadOnlyCollection<Spell> Resolve(GameVersion version) => this.spells.Where(s => s.IsAvailableIn(version)).ToArray().AsReadOnly();
 
     /// <summary>
     /// Makes a grant of named spells.
@@ -78,4 +71,11 @@ public sealed class SpellGrantProvider
     {
         Kind = SpellGrantKind.Level, Spells = [], School = null, Level = level, Description = $"all level {level} spells",
     });
+
+    /// <summary>
+    /// Gets the spells the grant gives.
+    /// </summary>
+    /// <param name="version">The version of the game.</param>
+    /// <returns>The spells that exist in the version.</returns>
+    public IReadOnlyCollection<Spell> Resolve(GameVersion version) => this.spells.Where(s => s.IsAvailableIn(version)).ToArray().AsReadOnly();
 }

@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Runtime
+﻿namespace Siniskalc.Core.Runtime
 {
     using System;
     using Microsoft.Extensions.Logging;

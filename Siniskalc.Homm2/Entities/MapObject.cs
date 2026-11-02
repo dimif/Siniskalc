@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Entities
+﻿namespace Siniskalc.Homm2.Entities
 {
     using System.Globalization;
     using Siniskalc.Homm2.Data;

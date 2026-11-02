@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Runtime
+﻿namespace Siniskalc.Homm2.Runtime
 {
     using System;
     using Microsoft.Extensions.Logging;

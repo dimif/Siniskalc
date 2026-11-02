@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Data
+﻿namespace Siniskalc.Heroes.Data
 {
     using System.Linq;
     using Siniskalc.Core.Data;

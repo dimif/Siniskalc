@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Views
+﻿namespace Siniskalc.Homm2.Views
 {
     using System.Windows.Controls;
     using Siniskalc.Homm2.ViewModels;

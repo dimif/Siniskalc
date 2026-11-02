@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Runtime
+﻿namespace Siniskalc.Homm3.Runtime
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;

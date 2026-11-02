@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Data
+﻿namespace Siniskalc.Core.Data
 {
     using System.Collections.Generic;
     using Microsoft.Extensions.Logging;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Views
+﻿namespace Siniskalc.Heroes.Wpf.Views
 {
     using System.Collections;
     using System.Windows;

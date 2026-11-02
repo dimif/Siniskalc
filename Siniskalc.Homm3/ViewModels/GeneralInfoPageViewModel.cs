@@ -291,13 +291,13 @@
             this.Update(h => h with { WarMachines = updated });
         }
 
-        private WarMachine? GetWarMachine(string name) => this.Hero.HeroClass.Catalog.WarMachines.FindByName(name)
-            ?? this.Hero.HeroClass.Catalog.WarMachines.FindByName(name.Replace('_', ' '));
-
         private static string Modifiers(params (string Name, int Value)[] parts) =>
             string.Join(", ", parts.Where(p => p.Value != 0).Select(p => $"{p.Name} {FormatSigned(p.Value)}"));
 
         private static string FormatSigned(int value) => value.ToString("+0;-0;+0", System.Globalization.CultureInfo.InvariantCulture);
+
+        private WarMachine? GetWarMachine(string name) => this.Hero.HeroClass.Catalog.WarMachines.FindByName(name)
+            ?? this.Hero.HeroClass.Catalog.WarMachines.FindByName(name.Replace('_', ' '));
 
         private int Clamp(int value) => Math.Clamp(value, -Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck);
 

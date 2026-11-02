@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Views
+﻿namespace Siniskalc.Homm3.Views
 {
     using System.Windows.Controls;
 

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     /// <summary>
     /// The numbers of the tabs of the Neutral page, as <see cref="Siniskalc.Wpf.ViewModels.NavNodeViewModel.Tab"/> says them. Nobody has
@@ -10,14 +10,17 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// The index of the heroes tab.
         /// </summary>
         public const int Heroes = 0;
+
         /// <summary>
         /// The index of the towns tab.
         /// </summary>
         public const int Towns = 1;
+
         /// <summary>
         /// The index of the mines tab.
         /// </summary>
         public const int Mines = 2;
+
         /// <summary>
         /// The index of the dwellings tab.
         /// </summary>

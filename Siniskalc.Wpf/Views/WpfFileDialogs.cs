@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using Microsoft.Win32;
 

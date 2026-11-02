@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using Siniskalc.Core.Data;
     using Siniskalc.Homm2.Models;

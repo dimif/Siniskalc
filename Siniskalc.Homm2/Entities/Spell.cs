@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Entities
+﻿namespace Siniskalc.Homm2.Entities
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Homm2.Data;

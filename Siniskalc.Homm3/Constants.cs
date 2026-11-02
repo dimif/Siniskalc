@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3
+﻿namespace Siniskalc.Homm3
 {
     /// <summary>
     /// Known constants used in Heroes 3 savefiles, and the limits of the values the editor lets you set.
@@ -7,24 +7,6 @@ namespace Siniskalc.Homm3
     /// </summary>
     public static class Constants
     {
-        public static class Catalog
-        {
-            /// <summary>
-            /// The number of spell codes a savefile has room for; a spell of the catalog has a code below it.
-            /// </summary>
-            public const int SpellCapacity = 70;
-
-            /// <summary>
-            /// The number of secondary skill codes a savefile has room for; a skill of the catalog has a code below it.
-            /// </summary>
-            public const int SkillCapacity = 30;
-
-            /// <summary>
-            /// The number of kinds of places a hero can visit that the catalog and the savefile have room for.
-            /// </summary>
-            public const int PlaceCapacity = 12;
-        }
-
         /// <summary>
         /// The byte 0, which the savefile holds where something is present: the code of the spell book and the flag of a hero that has it.
         /// </summary>
@@ -54,6 +36,24 @@ namespace Siniskalc.Homm3
         /// The size in the savefile of a slot of the backpack.
         /// </summary>
         public const int BackpackSlotSize = 8;
+
+        public static class Catalog
+        {
+            /// <summary>
+            /// The number of spell codes a savefile has room for; a spell of the catalog has a code below it.
+            /// </summary>
+            public const int SpellCapacity = 70;
+
+            /// <summary>
+            /// The number of secondary skill codes a savefile has room for; a skill of the catalog has a code below it.
+            /// </summary>
+            public const int SkillCapacity = 30;
+
+            /// <summary>
+            /// The number of kinds of places a hero can visit that the catalog and the savefile have room for.
+            /// </summary>
+            public const int PlaceCapacity = 12;
+        }
 
         /// <summary>
         /// Limits of the values of a hero.
@@ -105,7 +105,6 @@ namespace Siniskalc.Homm3
             /// </summary>
             public const long MaxPrimarySkill = 99;
 
-            // The savefile holds a skill with what the artifacts add, in a byte.
             /// <summary>
             /// The greatest value of a primary skill that the savefile holds.
             /// </summary>
@@ -210,6 +209,9 @@ namespace Siniskalc.Homm3
             public const int MaxStackSize = 99_999;
         }
 
+        /// <summary>
+        /// Limits of the backpack of a hero.
+        /// </summary>
         public static class Backpack
         {
             /// <summary>

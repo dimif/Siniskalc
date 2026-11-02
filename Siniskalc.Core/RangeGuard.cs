@@ -1,4 +1,4 @@
-namespace Siniskalc.Core
+﻿namespace Siniskalc.Core
 {
     using System;
     using System.Numerics;

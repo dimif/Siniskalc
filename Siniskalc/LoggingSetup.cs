@@ -1,4 +1,4 @@
-namespace Siniskalc
+﻿namespace Siniskalc
 {
     using System;
     using System.Collections.Generic;

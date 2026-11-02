@@ -161,40 +161,6 @@
             return new Numbers(counts);
         }
 
-        /// <summary>
-        /// Reads the spells the guild holds or would hold on each level: as many as its stored count, but at least five on level 1
-        /// down to one on level 5, which a guild gets when it is built (the count is 0 until then). A slot that holds no spell the editor knows
-        /// (-1 for a level the faction cannot build, or a code that is no spell) is left out, and a chunk that ends before the lists
-        /// (a savefile cut short) has none.
-        /// </summary>
-        private IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
-        {
-            using var subject = Logger.BeginSubject("Castle", chunk.Name);
-            var levels = new IReadOnlyList<Spell>[CastleLayout.SpellLevelCount];
-            for (var level = 1; level <= levels.Length; level++)
-            {
-                var spells = new List<Spell>();
-                for (var slot = 0; slot < MageGuildSpellSlots.Count(chunk, level); slot++)
-                {
-                    var offset = MageGuildSpellSlots.Offset(chunk, level, slot);
-                    var code = offset < 0 ? -1 : chunk.GetInt32At(offset);
-                    var spell = code is >= 0 and <= byte.MaxValue ? this.catalog.Spells.Find((byte)code) : null;
-                    if (spell != null)
-                    {
-                        spells.Add(spell);
-                    }
-                    else if (code != -1)
-                    {
-                        Logger.LogTrace("Spell code {Code:X2} in Mage Guild level {Level} slot {Slot} is unknown, the slot is left out and its bytes are kept", code, level, slot);
-                    }
-                }
-
-                levels[level - 1] = spells;
-            }
-
-            return levels;
-        }
-
         // The savefile has a count for the dwelling and one for its upgrade of each level, and keeps the count in the one that is built.
         private static Numbers DeserializeCreaturesAvailable(CastleChunk chunk, Faction faction, IReadOnlySet<Building> built)
         {
@@ -228,6 +194,40 @@
             }
 
             return buildings;
+        }
+
+        /// <summary>
+        /// Reads the spells the guild holds or would hold on each level: as many as its stored count, but at least five on level 1
+        /// down to one on level 5, which a guild gets when it is built (the count is 0 until then). A slot that holds no spell the editor knows
+        /// (-1 for a level the faction cannot build, or a code that is no spell) is left out, and a chunk that ends before the lists
+        /// (a savefile cut short) has none.
+        /// </summary>
+        private IReadOnlyList<Spell>[] DeserializeMageGuildSpells(CastleChunk chunk)
+        {
+            using var subject = Logger.BeginSubject("Castle", chunk.Name);
+            var levels = new IReadOnlyList<Spell>[CastleLayout.SpellLevelCount];
+            for (var level = 1; level <= levels.Length; level++)
+            {
+                var spells = new List<Spell>();
+                for (var slot = 0; slot < MageGuildSpellSlots.Count(chunk, level); slot++)
+                {
+                    var offset = MageGuildSpellSlots.Offset(chunk, level, slot);
+                    var code = offset < 0 ? -1 : chunk.GetInt32At(offset);
+                    var spell = code is >= 0 and <= byte.MaxValue ? this.catalog.Spells.Find((byte)code) : null;
+                    if (spell != null)
+                    {
+                        spells.Add(spell);
+                    }
+                    else if (code != -1)
+                    {
+                        Logger.LogTrace("Spell code {Code:X2} in Mage Guild level {Level} slot {Slot} is unknown, the slot is left out and its bytes are kept", code, level, slot);
+                    }
+                }
+
+                levels[level - 1] = spells;
+            }
+
+            return levels;
         }
     }
 }

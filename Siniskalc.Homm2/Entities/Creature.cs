@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Entities
+﻿namespace Siniskalc.Homm2.Entities
 {
     using System.Linq;
     using Siniskalc.Heroes.Entities;

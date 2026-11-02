@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Runtime
+﻿namespace Siniskalc.Heroes.Runtime
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;

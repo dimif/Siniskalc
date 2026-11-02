@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Entities
+﻿namespace Siniskalc.Core.Entities
 {
     using System;
     using System.Collections.Generic;

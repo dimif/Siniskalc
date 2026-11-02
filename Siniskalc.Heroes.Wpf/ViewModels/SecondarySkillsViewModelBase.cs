@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -40,16 +40,6 @@ namespace Siniskalc.Homm3.Data
             return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => this.Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
         }
 
-        private RecordChunk Chunk(byte[] bytes, int start, int index)
-        {
-            var creature = catalog.Creatures.Find(bytes[start + DwellingLayout.Creature]);
-            return new RecordChunk(
-                $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} {catalog.MapMetadata.DwellingName} {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
-                bytes.AsSpan(start, DwellingLayout.RecordSize).ToArray(),
-                start,
-                index);
-        }
-
         private static bool LooksLikeARecord(byte[] bytes, int start)
         {
             var owner = bytes[start + DwellingLayout.Owner];
@@ -58,6 +48,16 @@ namespace Siniskalc.Homm3.Data
                 && bytes[start + DwellingLayout.Level] <= 1
                 && bytes[start + DwellingLayout.X] <= Constants.Map.MaxCoordinate
                 && bytes[start + DwellingLayout.Y] <= Constants.Map.MaxCoordinate;
+        }
+
+        private RecordChunk Chunk(byte[] bytes, int start, int index)
+        {
+            var creature = catalog.Creatures.Find(bytes[start + DwellingLayout.Creature]);
+            return new RecordChunk(
+                $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} {catalog.MapMetadata.DwellingName} {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
+                bytes.AsSpan(start, DwellingLayout.RecordSize).ToArray(),
+                start,
+                index);
         }
     }
 }

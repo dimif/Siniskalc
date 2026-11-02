@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System.ComponentModel;
     using Siniskalc.Core.Runtime;

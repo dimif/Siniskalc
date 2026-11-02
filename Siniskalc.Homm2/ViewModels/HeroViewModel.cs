@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Windows.Input;
     using Siniskalc.Core.Data;
-    using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -407,8 +406,10 @@
             on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
             toolTip: toolTip + ". Not tried in the game.");
 
+        /// <remarks>
+        /// The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
+        /// </remarks>
         private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip) =>
-            // The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
             VisitedPlaceRows.Create(
                 name,
                 toolTip,

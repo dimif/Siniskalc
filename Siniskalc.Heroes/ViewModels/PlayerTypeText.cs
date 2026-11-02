@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.ViewModels
+﻿namespace Siniskalc.Heroes.ViewModels
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Runtime;

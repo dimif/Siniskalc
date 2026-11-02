@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.ViewModels
+﻿namespace Siniskalc.Homm2.ViewModels
 {
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Entities;

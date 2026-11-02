@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Models
+﻿namespace Siniskalc.Heroes.Models
 {
     using System.Collections.Generic;
     using Siniskalc.Heroes.Entities;

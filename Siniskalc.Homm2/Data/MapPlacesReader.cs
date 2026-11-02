@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm2.Data
+﻿namespace Siniskalc.Homm2.Data
 {
     using System.Collections.Generic;
     using Microsoft.Extensions.Logging;

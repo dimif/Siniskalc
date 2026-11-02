@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Data
+﻿namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -55,16 +55,6 @@ namespace Siniskalc.Homm3.Data
             return chunks;
         }
 
-        private RecordChunk Chunk(byte[] bytes, int start, int index)
-        {
-            var kind = (MineKind)bytes[start + MineLayout.Kind];
-            return new RecordChunk(
-                catalog.MapMetadata.MineNameAt(kind, new MapPosition(bytes[start + MineLayout.X], bytes[start + MineLayout.Y], bytes[start + MineLayout.Level])),
-                bytes.AsSpan(start, MineLayout.RecordSize).ToArray(),
-                start,
-                index);
-        }
-
         private static bool IsMine(byte[] bytes, int start) =>
             bytes[start + MineLayout.Kind] <= MineLayout.LastMineKind
             && (bytes[start + MineLayout.X] != 0 || bytes[start + MineLayout.Y] != 0);
@@ -93,6 +83,16 @@ namespace Siniskalc.Homm3.Data
             }
 
             return true;
+        }
+
+        private RecordChunk Chunk(byte[] bytes, int start, int index)
+        {
+            var kind = (MineKind)bytes[start + MineLayout.Kind];
+            return new RecordChunk(
+                catalog.MapMetadata.MineNameAt(kind, new MapPosition(bytes[start + MineLayout.X], bytes[start + MineLayout.Y], bytes[start + MineLayout.Level])),
+                bytes.AsSpan(start, MineLayout.RecordSize).ToArray(),
+                start,
+                index);
         }
     }
 }

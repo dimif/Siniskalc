@@ -1,4 +1,4 @@
-namespace Siniskalc.Homm3.Models
+﻿namespace Siniskalc.Homm3.Models
 {
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;

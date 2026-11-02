@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Data
+﻿namespace Siniskalc.Heroes.Data
 {
     using System;
     using System.Collections.Generic;

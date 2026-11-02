@@ -318,8 +318,6 @@
             }
         }
 
-        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
-
         /// <summary>
         /// Adds a change for each resource whose amount differs, each put back on its own.
         /// </summary>
@@ -396,6 +394,8 @@
 
             sink.Add(ChangeAreas.General, "Days left without a castle", DaysText(before), DaysText(after), model => withDaysLeft(model, before));
         }
+
+        private static string Signed(int value) => value.ToString("+0;-0;0", System.Globalization.CultureInfo.InvariantCulture);
 
         private static string DaysText(int? days) => days?.ToString() ?? "not counting";
 

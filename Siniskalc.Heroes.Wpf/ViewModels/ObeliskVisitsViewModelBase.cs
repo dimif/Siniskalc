@@ -112,6 +112,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns where obelisk <paramref name="index"/> is, or null when the savegame does not tell.
         /// </summary>
+        /// <returns>The position, or <see langword="null"/>.</returns>
+        /// <param name="index">The obelisk, from 0.</param>
         protected abstract MapPosition? PositionOf(int index);
 
         /// <summary>
@@ -131,6 +133,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Marks every obelisk as visited by the player, or none of them.
         /// </summary>
+        /// <param name="visited">Whether every obelisk has been visited.</param>
         protected abstract void SetAll(bool visited);
 
         private static SortableListViewModel<ObeliskRowViewModel> NewList(IReadOnlyList<ObeliskRowViewModel> rows) => new(

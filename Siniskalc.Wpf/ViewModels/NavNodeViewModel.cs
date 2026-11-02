@@ -215,6 +215,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// Shows the node if its title matches <paramref name="filter"/>, or if any node below it does.
         /// A node that matches by its own title shows everything below it.
         /// </summary>
+        /// <param name="parentMatches"><see langword="true"/> when a node above this one matched by its own title, so this one shows too.</param>
+        /// <param name="filter">The text to look for in the titles.</param>
         public void ApplyFilter(string filter, bool parentMatches = false)
         {
             var matches = parentMatches || string.IsNullOrWhiteSpace(filter) || this.Title.Contains(filter.Trim(), StringComparison.OrdinalIgnoreCase);

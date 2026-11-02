@@ -13,6 +13,7 @@ namespace Siniskalc.Wpf.Views
         /// <summary>
         /// Hides <paramref name="element"/> until it is loaded in a window, then shows it while advanced mode is on.
         /// </summary>
+        /// <param name="element">The element to show only while the advanced mode is on.</param>
         public static void Apply(FrameworkElement element)
         {
             element.Visibility = Visibility.Collapsed;

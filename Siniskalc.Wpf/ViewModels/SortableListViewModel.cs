@@ -49,6 +49,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Sorts by a column; the second time in a row, in the other direction.
         /// </summary>
+        /// <param name="name">The name of the column.</param>
         public void SortBy(string name)
         {
             this.descending = this.column == name && !this.descending;

@@ -113,6 +113,10 @@
         /// <summary>
         /// Shows the slot without reporting a change.
         /// </summary>
+        /// <param name="skillName">The name of the skill, or <see langword="null"/> for a free slot.</param>
+        /// <param name="levelName">The name of the level.</param>
+        /// <param name="canMoveUp">Whether there is a slot above to swap with.</param>
+        /// <param name="canMoveDown">Whether there is a slot below to swap with.</param>
         public void Show(string? skillName, string levelName, bool canMoveUp, bool canMoveDown)
         {
             this.skillName = skillName;

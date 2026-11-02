@@ -41,6 +41,7 @@
         /// <summary>
         /// Runs the action on <paramref name="row"/>, when it can be run.
         /// </summary>
+        /// <param name="row">The row, or <see langword="null"/> for no row.</param>
         public void Choose(TRow? row)
         {
             if (row != null && this.onChoose != null && (this.canChoose == null || this.canChoose(row)))
@@ -73,6 +74,8 @@
         /// <summary>
         /// Tells whether a row shows under the search text.
         /// </summary>
+        /// <param name="row">The row.</param>
+        /// <returns><see langword="true"/> if the row matches the search text.</returns>
         protected abstract bool Matches(TRow row);
 
         /// <summary>

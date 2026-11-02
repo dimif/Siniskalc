@@ -43,11 +43,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Adds a week of growth to one dwelling, as the dwelling says it gains it.
         /// </summary>
+        /// <param name="dwelling">The dwelling.</param>
         public static void AddWeek(IStockedDwelling dwelling) => dwelling.Stock += dwelling.WeeklyGrowthAmount;
 
         /// <summary>
         /// Returns the command that adds a week of growth to one dwelling, available while the dwelling is built.
         /// </summary>
+        /// <param name="dwelling">The dwelling.</param>
+        /// <returns>The command.</returns>
         public static ICommand AddWeekCommandOf(IStockedDwelling dwelling) => new DelegateCommand(_ => AddWeek(dwelling), _ => dwelling.CanStock);
 
         private static void Each(Func<IReadOnlyList<IStockedDwelling>> dwellings, Action<IStockedDwelling> act)

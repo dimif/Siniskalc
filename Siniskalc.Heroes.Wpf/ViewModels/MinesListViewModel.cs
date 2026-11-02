@@ -73,6 +73,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Picks the mine with the given place among the mines of the savegame, if the list has it.
         /// </summary>
+        /// <param name="mineIndex">The place of the mine among the mines of the savegame.</param>
         public void PickMine(int mineIndex) => this.SelectedMine = this.Rows.FirstOrDefault(m => m.Index == mineIndex);
 
         /// <summary>

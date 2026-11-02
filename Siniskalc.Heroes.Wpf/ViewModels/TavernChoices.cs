@@ -19,6 +19,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="tavern">The tavern as the savefile has it.</param>
         /// <param name="place">The place, 0 for the first.</param>
         /// <param name="heroes">Every hero of the savefile.</param>
+        /// <returns>The choices.</returns>
         public static IReadOnlyList<HeroChoiceViewModel> For<TColor>(TavernHeroes tavern, int place, IEnumerable<HeroSummary<TColor>> heroes)
             where TColor : class, IPlayerColor
         {

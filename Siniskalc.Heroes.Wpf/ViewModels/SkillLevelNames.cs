@@ -42,6 +42,8 @@
         /// <summary>
         /// Returns the name of a level: "None" for none, "Basic", "Advanced" and "Expert" for beginner to expert.
         /// </summary>
+        /// <param name="level">The level.</param>
+        /// <returns>The name.</returns>
         public static string FromLevel(SkillLevel level) => level.Code switch
         {
             1 => Basic,
@@ -53,6 +55,8 @@
         /// <summary>
         /// Returns the level a name stands for; none for "None" or a name that is no level.
         /// </summary>
+        /// <param name="name">The name of the level.</param>
+        /// <returns>The level.</returns>
         public static SkillLevel ToLevel(string name) => name switch
         {
             Basic => SkillLevel.Beginner,
@@ -64,6 +68,8 @@
         /// <summary>
         /// Returns 0 for none (or a name that is no level), and 1 to 3 for basic to expert.
         /// </summary>
+        /// <param name="name">The name of the level.</param>
+        /// <returns>The number of the level.</returns>
         public static int ToNumber(string name) => ToLevel(name).Code;
     }
 }

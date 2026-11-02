@@ -84,6 +84,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Gets the node of the player's resources (tab 0), heroes (1) or towns (2), or the player's node when it has no such group.
         /// </summary>
+        /// <param name="playerIndex">The number of the player.</param>
+        /// <param name="tab">The tab of the player's page.</param>
+        /// <returns>The node, or <see langword="null"/> if the player has none.</returns>
         public NavNodeViewModel? PlayerTabNode(int playerIndex, int tab) => this.playerTabNodes.GetValueOrDefault((playerIndex, tab)) ?? this.PlayerNode(playerIndex);
 
         /// <summary>
@@ -97,6 +100,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group. A colour
         /// that has no page of its own has a neutral-style page too, told apart by <paramref name="owner"/> (-1 for what nobody owns).
         /// </summary>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? NeutralTabNode(int tab, int owner = -1) => this.neutralTabNodes.GetValueOrDefault((owner, tab)) ?? this.neutralNodes.GetValueOrDefault(owner);
 
         /// <summary>
@@ -134,6 +138,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Makes <paramref name="node"/> the root of the tree.
         /// </summary>
+        /// <param name="node">The node of the game.</param>
         public void SetOverview(NavNodeViewModel node)
         {
             this.Overview = node;
@@ -144,6 +149,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// Remembers <paramref name="node"/> by what it stands for, so the editor can find it again: a hero, a castle, a player or a
         /// tab of a player's page, a mine or a dwelling.
         /// </summary>
+        /// <param name="node">The node to remember.</param>
         public void Register(NavNodeViewModel node)
         {
             switch (node.Kind)
@@ -182,6 +188,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Narrows the tree to the nodes matching <paramref name="text"/>.
         /// </summary>
+        /// <param name="text">The text to look for in the titles; empty to show every node.</param>
         public void ApplyFilter(string text)
         {
             this.filter = text ?? string.Empty;
@@ -205,6 +212,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Selects <paramref name="node"/> and makes sure it is on screen: the nodes above it may be collapsed.
         /// </summary>
+        /// <param name="node">The node to show, or <see langword="null"/> for none.</param>
         public void Reveal(NavNodeViewModel? node)
         {
             if (node == null)
@@ -223,6 +231,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Marks the nodes of the heroes, players and castles that have <paramref name="changes"/>, and the nodes above them.
         /// </summary>
+        /// <param name="changes">The pending changes.</param>
         public void MarkChanges(IEnumerable<PendingChange> changes)
         {
             var changed = changes.Select(c => (c.Kind, c.Index)).ToHashSet();

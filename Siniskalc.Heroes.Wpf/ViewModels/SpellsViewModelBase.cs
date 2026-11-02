@@ -97,6 +97,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Called by a row when the user ticks or unticks it.
         /// </summary>
+        /// <param name="row">The row.</param>
+        /// <param name="learned">Whether it is now ticked.</param>
         protected void OnLearnedChanged(TRow row, bool learned)
         {
             if (this.isRefreshing)
@@ -129,11 +131,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Takes the hero's state of a spell into its row.
         /// </summary>
+        /// <param name="row">The row.</param>
         protected abstract void ShowRow(TRow row);
 
         /// <summary>
         /// Makes the hero learn or forget the spells of the rows.
         /// </summary>
+        /// <param name="rows">The rows.</param>
+        /// <param name="learned">Whether the hero learns the spells or forgets them.</param>
         protected abstract void SetLearned(IReadOnlyList<TRow> rows, bool learned);
 
         /// <summary>

@@ -69,6 +69,9 @@ namespace Siniskalc.Wpf.Views
         /// <summary>
         /// Gets the brush for a region kind. <paramref name="shade"/> is 0 or 1; neighbouring regions alternate.
         /// </summary>
+        /// <param name="kind">The kind of region.</param>
+        /// <returns>The brush.</returns>
+        /// <param name="shade">0 or 1; neighbouring regions alternate.</param>
         public static Brush GetBrush(ByteRegionKind kind, int shade) => BrushesByKey[$"{kind}{shade}"];
 
         /// <summary>

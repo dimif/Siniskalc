@@ -83,6 +83,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Sets the artifact the slot holds to <paramref name="name"/>, as the model says it is. Changes <see cref="ArtifactName"/>,
         /// <see cref="HasArtifact"/> and <see cref="DisplayText"/>, but does not report it as a pick by the user.
         /// </summary>
+        /// <param name="name">The name of the artifact the place holds, or nothing for none.</param>
         public void UpdateFromModel(string? name)
         {
             if (this.artifactName == name)

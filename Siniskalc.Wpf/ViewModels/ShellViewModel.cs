@@ -197,16 +197,17 @@ namespace Siniskalc.Wpf.ViewModels
         public string SaveFilter => $"{this.currentModule.Name} savegames |{this.currentModule.SavePattern}";
 
         /// <summary>
-        /// Gets the file dialog filter for saving the game that is shown.
-        /// </summary>
-        /// <summary>
         /// Tells why the game of the current module cannot list a savegame called like <paramref name="path"/>, or <c>null</c> when it can.
         /// </summary>
+        /// <param name="path">The path the game would be saved to; only its file name is looked at.</param>
+        /// <returns><see langword="null"/> if the game can list a savegame with that name; otherwise a sentence for the user saying what is wrong.</returns>
         public string? ValidateSavegameName(string path) => this.currentModule.ValidateSavegameName(System.IO.Path.GetFileName(path));
 
         /// <summary>
         /// Returns the game whose savegame the file is, or <c>null</c> when none recognises it or it cannot be read.
         /// </summary>
+        /// <param name="filePath">The path of the file.</param>
+        /// <returns>The module of the game, or <see langword="null"/>.</returns>
         public IGameModule<IObservableGameEditor>? Recognize(string filePath)
         {
             try
@@ -228,6 +229,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// Loads a savegame from a file with the editor of the game it belongs to. A file that no game recognises is given to the editor
         /// that is shown, which tells why it cannot be opened. What is open stays as it was when the load fails.
         /// </summary>
+        /// <param name="filePath">The path of the savefile.</param>
         public void LoadGame(string filePath)
         {
             var target = this.EditorOf(this.Recognize(filePath) ?? this.currentModule);
@@ -238,6 +240,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Loads a savegame from the bytes of a file as the game wrote them, before any compression, with the editor that is shown.
         /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="sourceName">What to call the game, as it has no file.</param>
         public void LoadGameFromBytes(byte[] bytes, string? sourceName = null) => this.editor.LoadGameFromBytes(bytes, sourceName);
 
         /// <summary>
@@ -248,11 +252,13 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Saves the game over its file, or to the path given.
         /// </summary>
+        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
         public void SaveGame() => this.editor.SaveGame();
 
         /// <summary>
         /// Saves the game over its file, or to the path given.
         /// </summary>
+        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
         public void SaveGame(string filePath) => this.editor.SaveGame(filePath);
 
         /// <summary>

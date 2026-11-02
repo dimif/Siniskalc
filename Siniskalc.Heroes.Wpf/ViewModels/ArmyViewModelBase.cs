@@ -70,6 +70,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Changes the heading of the army card.
         /// </summary>
+        /// <param name="title">The new heading.</param>
         public void SetTitle(string title)
         {
             if (this.Title != title)
@@ -112,6 +113,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Swaps the stack in a slot with the one next to it. <paramref name="direction"/> is -1 for left, 1 for right.
         /// An empty neighbour just receives the stack.
         /// </summary>
+        /// <param name="index">The slot, from 0.</param>
+        /// <param name="direction">-1 for left, 1 for right.</param>
         public void MoveSlot(int index, int direction)
         {
             var target = index + direction;
@@ -126,6 +129,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Empties a slot.
         /// </summary>
+        /// <param name="index">The slot, from 0.</param>
         public void ClearSlot(int index)
         {
             if (this.isRefreshing || index < 0 || index >= this.CreatureSlots.Count)
@@ -139,6 +143,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Makes the slots. The game's view model calls this once, from its constructor, before <see cref="Refresh"/>.
         /// </summary>
+        /// <param name="count">The number of slots.</param>
+        /// <param name="create">Makes the slot at a place, given what it calls when its creature changes, moves or is cleared.</param>
         protected void CreateSlots(int count, Func<int, Action<int, string?, int>, Action<int, int>, Action<int>, TSlot> create)
         {
             foreach (var i in Enumerable.Range(0, count))
@@ -152,17 +158,24 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Makes the finder in the popup of a slot, which calls <paramref name="onPicked"/> with the name of the creature the user picks.
         /// </summary>
+        /// <returns>The finder.</returns>
+        /// <param name="onPicked">Called with the name of the creature the user picks.</param>
         protected abstract AbstractFinderViewModel CreatePickerFinder(Action<string> onPicked);
 
         /// <summary>
         /// Reads what is in a slot (from 0) of the model, or <c>null</c> when it is empty.
         /// </summary>
+        /// <param name="index">The slot, from 0.</param>
+        /// <returns>The content of the slot, or <see langword="null"/> if it is empty.</returns>
         protected abstract StackContent? ReadStack(int index);
 
         /// <summary>
         /// Puts a stack of <paramref name="amount"/> of the creature called <paramref name="creatureName"/> in a slot (from 0), or empties it
         /// when there is no such creature.
         /// </summary>
+        /// <param name="index">The slot, from 0.</param>
+        /// <param name="creatureName">The name of the creature, or nothing to empty the slot.</param>
+        /// <param name="amount">The size of the stack.</param>
         protected abstract void PutStack(int index, string? creatureName, int amount);
 
         /// <summary>
@@ -181,11 +194,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Tells what the whole army is worth; nothing when the game has no such thing.
         /// </summary>
+        /// <returns>The text, or nothing.</returns>
         protected virtual string Summarize() => string.Empty;
 
         /// <summary>
         /// Lets the game's slot take what it shows besides the facts, after the slot was read.
         /// </summary>
+        /// <param name="slot">The slot that was read.</param>
+        /// <param name="stack">What the slot holds, or <see langword="null"/> if it is empty.</param>
         protected virtual void AfterSlotRead(TSlot slot, StackContent? stack)
         {
         }
@@ -193,6 +209,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the first empty slot, from 0, or -1 when the army is full.
         /// </summary>
+        /// <returns>The place of the slot, or -1.</returns>
         protected int FirstFreeSlot()
         {
             for (var i = 0; i < this.CreatureSlots.Count; i++)

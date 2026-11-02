@@ -26,6 +26,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns the number of the tab of the Neutral page that holds what the tab <paramref name="ownerTab"/> of a player's page holds.
         /// </summary>
+        /// <returns>The number of the tab.</returns>
+        /// <param name="ownerTab">The tab of a player's page (see <see cref="OwnerTabs"/>).</param>
         public static int Of(int ownerTab) => ownerTab - OwnerTabs.Heroes;
     }
 }

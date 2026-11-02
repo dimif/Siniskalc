@@ -79,6 +79,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Shows the skill without reporting a change.
         /// </summary>
+        /// <param name="levelName">The name of the hero's level in the skill.</param>
+        /// <param name="slot">The slot the hero screen shows the skill in, or -1.</param>
+        /// <param name="canShow">Whether there is a free slot to put the skill in.</param>
         public void Show(string levelName, int slot, bool canShow)
         {
             this.levelName = levelName;

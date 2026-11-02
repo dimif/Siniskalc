@@ -94,6 +94,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Shows the spell without reporting a change.
         /// </summary>
+        /// <param name="isLearned">Whether the hero knows the spell.</param>
+        /// <param name="isAvailable">Whether the hero can cast the spell now.</param>
+        /// <param name="source">What gives the spell, such as an artifact; empty for none.</param>
         public void Show(bool isLearned, bool isAvailable, string source = "")
         {
             this.isLearned = isLearned;

@@ -112,6 +112,7 @@
         /// Shows <paramref name="newTarget"/> and takes ownership of it: the target is disposed when another one is
         /// bound or <see cref="Unbind"/> is called. Any target bound before is disposed.
         /// </summary>
+        /// <param name="newTarget">The bytes to show and edit.</param>
         public void Bind(IByteEditTarget newTarget)
         {
             this.Unbind();

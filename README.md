@@ -1,52 +1,38 @@
 # Siniskalc
 
 ## What
-A Windows desktop savegame editor for **Heroes of Might and Magic III**, with **Heroes of Might and Magic II** support in development.
-It edits HoMM3 savegames (`.GM1`, `.CGM`, and the other save extensions the game writes) and HoMM2 saves (`.GM1` for The Succession Wars and `.GX1` for The Price of Loyalty).
-With it you open a save, browse the game by player, hero and town, change what you want, and the editor writes it back.
 
-HoMM3 supports Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss (HotA).
-Do note that Heroes Chronicles support is entirely speculative and extracted from the work of Erki Suurjaak on h3sed, as I do not own a copy of the game.
-Only its heroes and towns are read: there are no players, date or game setup.
-HoMM2 supports The Succession Wars and The Price of Loyalty; its editing is covered by savefile tests but has not yet been verified in the game.
+A Windows desktop savegame editor for **Heroes of Might and Magic III** and **Heroes of Might and Magic II**.
+For HoMM3 it supports the following versions/expansions: 
+  - Base, AKA: Restoration of Erathia
+  - Armageddon's Blade
+  - Shadow of Death 
+  - and Horn of the Abyss (HotA) (v1.8.1)
+  - Heroes Chronicles. *Do note that this is entirely speculative and extracted from the work of Erki Suurjaak on h3sed, as I do not own a copy of the game, and only for a limited subset of entities (heroes and towns).*
 
-Siniskalc allows you to edit the following entities in a savegame:
-* **Players**: resources, tavern, heroes, towns, visited obelisks.
-* **Heroes**: player control, class, gender, level, experience, primary and secondary skills, spell points, movement points, position on the map and facing direction, spell book, creatures, artifacts, backpack.
-* **Towns**: faction, owner, position, built and buildable structures, garrison creatures, dwellings, spells in mage guild.
+For HoMM2:
+  - Base, AKA: The Succession Wars
+  - The Price of Loyalty.
 
-As of writing (Oct 2026), the tool has been tested with Horn of The Abyss version 1.8.1 and Shadow of Death from gog.com
+All the common file types used by the 2 titles are supported, for single player and hotseat sessions: `.GM1`, `.GM*`, `.GX1`, `.GX*`etc.
 
-## Why
-Heroes of Might and Magic III is one of the greatest games of all time, and still very popular and alive well in its 3rd decade, and under active development from fans.
-I couldn't find an editor that supported all of the features I wanted, nor as a user, nor as a developer, so I wrote another one.
-Siniskalc offers features to make further development easier and to even allow edits beyond the scope of the tool, with an HEX view of the entire file and of modelled entities, and the ability to export and import the entire savegame as a binary file.
-
-## Who is this for
-Players, map creators and tinkerers in general.
-
-## How
->**Always keep a backup of your savegames.** This is a hobby tool that patches bytes of a file format nobody documented officially.
-> While it does take precautions to avoid damaging your saves (for example by only patching the bytes that have changed, and keeping a backup of the save before each save), it is likely still possible to break a save if you make invalid changes.
-> The original save file is not modified until you click **Save**; and the editor keeps a copy of the save file before it is replaced (same folder, `.bak` extension; later saves add a counter: `.bak1`, `.bak2`, ... and never overwrite an earlier copy). 
-> This can be turned off under **Settings... > Saving > Back up on save**.
-
-### Download and run
-
-Download the latest zip from the Releases section of the repository, unzip it anywhere and run `Siniskalc.exe`.
-Keep the shipped `GameData` folders beside the executable; they contain the entity definitions required at startup.
-No installation needed, but it requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (x64).
+Saves have been tested with Horn of The Abyss version 1.8.1, HoMM3 Complete and HoMM2 Complete from gog.com
 
 ## Features
 
+Siniskalc allows you to many of the entities modelled in HoMM2 and HoMM3 savegame. They are all modelled in an easy-to-navigate UI that tracks all the pending changes.
+
 The left-hand tree shows the **game**, then one node per **player**, each with a *Heroes* group and a *Towns* group.
+A non extensive list of entities extracted from the save files:
 
 **Game overview**
 * Map and game setup information read from the save (difficulty, game date, player control, and so on).
+* Whose turn it is (hotseat games only).
 
 **Players**
 * Edit the seven resources: wood, mercury, ore, sulfur, crystal, gems and gold.
 * Tavern heroes, and which obelisks each colour has visited.
+* Banish countdown (how many turns before players that have lost their last castle are kicked from the game).
 
 **Heroes**
 * Primary skills (attack, defense, spell power, knowledge), with the bonus from equipped artifacts shown.
@@ -56,12 +42,15 @@ The left-hand tree shows the **game**, then one node per **player**, each with a
 * Army: creature type and count for each of the seven slots.
 * War machines: ballista, ammo cart, first aid tent and, in HotA, the cannon.
 * Equipped artifacts and the backpack, with effect descriptions.
-* Biography.
+* Visited buildings.
 
 **Towns**
 * Faction, owner, position, mage guild level, garrison creatures.
 * Built and buildable structures, with their requirements.
 * Creatures waiting in the dwellings, upgraded or not.
+
+**Map objects**
+* Mines, dwellings.
 
 **Editing**
 * Pending-changes list showing every byte-level change before saving, undo, and revert all.
@@ -74,25 +63,58 @@ Read the [user guide](docs/USER_GUIDE.md); it is also behind **Help > User guide
 
 See [FUTURE_IMPROVEMENTS.md](docs/FUTURE_IMPROVEMENTS.md) for what is planned.
 
-## How it works
+## Download and run
+
+Download the latest zip from the Releases section of the repository, unzip it anywhere and run `Siniskalc.exe`.
+Keep the shipped `GameData` folders beside the executable; they contain the entity definitions required at startup.
+No installation needed, but it requires the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (x64).
+
+## Warning
+
+>**Always keep a backup of your savegames.** This is a hobbist tool that patches bytes of reverse-engineerd file formats.
+> While it does take precautions to avoid damaging your saves (for example by only patching the bytes that have changed, and keeping a backup of the save before each save), do not blindly trust it.
+
+> The original save file is not modified until you click **Save**; and the editor keeps a copy of the save file before it is replaced (same folder, `.bak` extension; later saves add a counter: `.bak1`, `.bak2`, ... and never overwrite an earlier copy). 
+
+> This can be turned off under **Settings... > Saving > Back up on save**.
+
+### Game entity definitions
+
+Siniskalc makes modelling of additional in-game entities not known by the editor possible: standard game entities are supplied as JSON in `GameData\Homm2` and `GameData\Homm3` beside the application (Keep these folders with the executable when distributing or moving it!). 
+
+Definitions are loaded once at startup: after editing them, **restart the editor** to apply changes. Missing or invalid definitions stop startup with an error identifying the file; restore or correct it rather than expecting a hardcoded fallback.
+
+Adding entities, such as a faction with its creature, should in theory require only amending the JSON files. Do note that you must know the matching byte codes for the entities, which you should be able to use Sinikalc's built in HEX viewer to ascertain.
+
+See [Standard game definitions](docs/SINISKALC_ARCHITECTURE.md#standard-game-definitions) for the architecture and boundaries.
+See [Editing game definitions](docs/GAME_DEFINITIONS.md) for file formats, version inheritance and adding a faction.
+
+## Troubleshooting
+
+* **Logs**: the editor writes a daily log file, `siniskalc-<date>.log`, to `%LOCALAPPDATA%\Siniskalc\logs` (the last 7 days are kept). **Help > Show logs** opens the folder. **Settings... > Logging** changes the folder and the level; choose Debug or Trace for more detail before reproducing a problem.
+* **Settings**: `settings.json` and `serilog.json` (logging configuration) are in `%APPDATA%\Siniskalc`. If the editor reports that one of them cannot be read at startup, it offers to put it aside as `.bad` and write a fresh default.
+* **Startup error naming a file in `GameData`**: the entity definitions are missing or invalid. Keep the `GameData` folders beside `Siniskalc.exe`, or restore the file named in the message.
+* **Won't start at all**: check that the [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (x64) is installed.
+* **A save that fails to load or looks wrong**: your save is not modified until you click **Save**, and a `.bak` copy is kept beside it. When reporting it, attach the log file and, if you can, the savegame in an [issue](https://github.com/dimif/Siniskalc/issues).
+
+## Who is this for
+
+Players, map creators and tinkerers in general.
+
+## Why
+
+I am very fond of Heroes of Might and Magic III and II; III in particular is widely regarded as of the greatest games of all time, and is still very popular its 3rd decade, and under active development from fans.
+
+I couldn't find an editor that supported all of the features I wanted, nor as a user, nor as a developer, so I wrote one.
+
+Siniskalc offers features to make further development easier and to even allow edits beyond the scope of the tool, with an HEX view of the entire file and of modelled entities, and the ability to export and import the entire savegame as a binary file.
+
+## Contributor info: How it works
 
 The editing model is layered: a save is split into chunks (heroes, players, castles, ...), each deserialised into an immutable model.
 Edits go through an *edit session* that records pending changes against the original bytes, and only those bytes are patched on save, so unknown parts of the file are left untouched.
 
 See `CLAUDE.md` for the repo rules and `docs/SINISKALC_ARCHITECTURE.md` for how the view models, models and edit sessions fit together.
-
-### Game entity definitions
-
-Standard game entities are supplied as JSON in `GameData\Homm2` and `GameData\Homm3` beside the application.
-Keep these folders with the executable when distributing or moving it.
-Definitions are loaded once at startup: after editing them, **restart the editor** to apply changes.
-Missing or invalid definitions stop startup with an error identifying the file; restore or correct it rather than expecting a hardcoded fallback.
-
-Entity definitions can add content using the editor's existing mechanics and the selected save format's available codes and storage.
-They cannot add new binary formats, enlarge fixed savefile tables or implement new game mechanics.
-There are no custom profiles or live reload.
-See [Standard game definitions](docs/SINISKALC_ARCHITECTURE.md#standard-game-definitions) for the architecture and boundaries.
-See [Editing game definitions](docs/GAME_DEFINITIONS.md) for file formats, version inheritance and adding a faction.
 
 ## Building
 

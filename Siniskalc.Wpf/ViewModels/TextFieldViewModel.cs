@@ -28,10 +28,19 @@ namespace Siniskalc.Wpf.ViewModels
             this.ToolTip = toolTip;
         }
 
+        /// <summary>
+        /// Gets the label shown next to the field.
+        /// </summary>
         public string Label { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the field.
+        /// </summary>
         public string ToolTip { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the field takes several lines.
+        /// </summary>
         public bool IsMultiline { get; }
 
         /// <summary>
@@ -44,6 +53,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string Counter => this.MaxLength > 0 ? $"{this.Text.Length} of {this.MaxLength}" : string.Empty;
 
+        /// <summary>
+        /// Gets or sets the text of the field.
+        /// </summary>
         public string Text
         {
             get => this.get();
@@ -56,6 +68,9 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Shows the field again. Call after the text changed elsewhere.
+        /// </summary>
         public void Refresh() => this.RaiseAllPropertiesChanged();
     }
 }

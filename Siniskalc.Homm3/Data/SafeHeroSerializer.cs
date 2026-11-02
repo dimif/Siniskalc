@@ -24,12 +24,18 @@
         private readonly HeroOffsets heroOffsets;
         private readonly VersionSpecificEntitiesProvider entities;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafeHeroSerializer"/> class.
+        /// </summary>
+        /// <param name="heroOffsets">The hero offsets.</param>
+        /// <param name="entities">The entities.</param>
         public SafeHeroSerializer(HeroOffsets heroOffsets, VersionSpecificEntitiesProvider entities)
         {
             this.heroOffsets = heroOffsets;
             this.entities = entities;
         }
 
+        /// <inheritdoc/>
         public HeroChunk Serialize(HeroChunk original, HeroModel hero)
         {
             var chunk = this.SerializePrimarySkills(original, hero.PrimarySkills);
@@ -58,6 +64,12 @@
             return chunk;
         }
 
+        /// <summary>
+        /// Writes the places the hero has visited into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="visits">The visits.</param>
+        /// <returns>The chunk with the places the hero has visited written; the chunk given is not changed.</returns>
         public HeroChunk SerializePlaceVisits(HeroChunk chunk, PlaceVisits visits)
         {
             return Edit(chunk, buffer =>
@@ -75,11 +87,23 @@
             });
         }
 
+        /// <summary>
+        /// Writes the army of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="creatures">The army.</param>
+        /// <returns>The chunk with the army of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeCreatures(HeroChunk chunk, IArmy<Creature> creatures)
         {
             return Edit(chunk, buffer => ArmyWriter.Write(buffer, this.heroOffsets.Army, creatures, this.entities.CreatureCodes, nameof(creatures)));
         }
 
+        /// <summary>
+        /// Writes the movement points of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="movementPoints">The movement points.</param>
+        /// <returns>The chunk with the movement points of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeMovementPoints(HeroChunk chunk, MovementPoints movementPoints)
         {
             return Edit(chunk, buffer =>
@@ -92,6 +116,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the secondary skills of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="secondarySkills">The skills.</param>
+        /// <returns>The chunk with the secondary skills of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeSecondarySkills(HeroChunk chunk, SecondarySkills secondarySkills)
         {
             return Edit(chunk, buffer =>
@@ -142,6 +172,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes where the hero is going into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="destination">The destination, or <see cref="MapPosition.None"/> for none.</param>
+        /// <returns>The chunk with where the hero is going written; the chunk given is not changed.</returns>
         public HeroChunk SerializeDestination(HeroChunk chunk, MapPosition destination)
         {
             return Edit(chunk, buffer =>
@@ -170,6 +206,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the class of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="heroClass">The class.</param>
+        /// <returns>The chunk with the class of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeClass(HeroChunk chunk, HeroClass heroClass)
         {
             return Edit(chunk, buffer =>
@@ -185,6 +227,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the level and the experience of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="level">The level and the experience.</param>
+        /// <returns>The chunk with the level and the experience of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeLevel(HeroChunk chunk, HeroLevel level)
         {
             return Edit(chunk, buffer =>
@@ -196,6 +244,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes where the hero is on the map into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="position">The position.</param>
+        /// <returns>The chunk with where the hero is on the map written; the chunk given is not changed.</returns>
         public HeroChunk SerializePosition(HeroChunk chunk, HeroPosition position)
         {
             return Edit(chunk, buffer =>
@@ -218,6 +272,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the primary skills of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="primarySkills">The skills.</param>
+        /// <returns>The chunk with the primary skills of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializePrimarySkills(HeroChunk chunk, PrimarySkills primarySkills)
         {
             return Edit(chunk, buffer =>
@@ -229,6 +289,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the war machines of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="warMachines">The war machines the hero has.</param>
+        /// <returns>The chunk with the war machines of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeWarMachines(HeroChunk chunk, IReadOnlyList<WarMachine> warMachines)
         {
             return Edit(chunk, buffer =>
@@ -255,6 +321,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the spell points of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="spellPoints">The spell points.</param>
+        /// <returns>The chunk with the spell points of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeSpellPoints(HeroChunk chunk, int spellPoints)
         {
             RangeGuard.ThrowIfOutOfRange<long>(spellPoints, 0, ushort.MaxValue, nameof(spellPoints));
@@ -262,6 +334,12 @@
                 ByteBufferHelper.WriteUInt16(buffer, this.heroOffsets[HeroOffsetName.CurrentSpellPoints], (ushort)spellPoints));
         }
 
+        /// <summary>
+        /// Writes the backpack of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="backpack">The backpack.</param>
+        /// <returns>The chunk with the backpack of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeBackpack(HeroChunk chunk, Backpack backpack)
         {
             return Edit(chunk, buffer =>
@@ -296,6 +374,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the artifacts the hero wears into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="equippedArtifacts">The artifacts, by slot.</param>
+        /// <returns>The chunk with the artifacts the hero wears written; the chunk given is not changed.</returns>
         public HeroChunk SerializeEquippedArtifacts(HeroChunk chunk, EquippedArtifacts equippedArtifacts)
         {
             var slotsToArtifacts = equippedArtifacts
@@ -331,6 +415,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the player the hero serves into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="owner">The colour of the player.</param>
+        /// <returns>The chunk with the player the hero serves written; the chunk given is not changed.</returns>
         public HeroChunk SerializeOwner(HeroChunk chunk, PlayerColor owner)
         {
             return Edit(chunk, buffer =>
@@ -340,6 +430,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the adventure spells that are active on the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="active">The active spells.</param>
+        /// <returns>The chunk with the adventure spells that are active on the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeActiveSpells(HeroChunk chunk, ActiveAdventureSpells active)
         {
             return Edit(chunk, buffer =>
@@ -365,6 +461,10 @@
         /// Writes the morale and the luck that visited buildings gave the hero until its next battle, each a signed byte. A byte is only
         /// written when it reads as something else.
         /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="morale">The morale the visits give.</param>
+        /// <param name="luck">The luck the visits give.</param>
+        /// <returns>The chunk with the bonus written; the chunk given is not changed.</returns>
         public HeroChunk SerializeVisitBonus(HeroChunk chunk, int morale, int luck)
         {
             RangeGuard.ThrowIfOutOfRange(morale, sbyte.MinValue, sbyte.MaxValue, nameof(morale));
@@ -385,6 +485,9 @@
         /// Sets or clears the bit of each visited building the editor knows (<see cref="HeroOffsets.VisitEffectBits"/>). The other bits of
         /// those bytes are not known and are left as they are.
         /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="effects">The effects the hero remembers.</param>
+        /// <returns>The chunk with the effects written; the chunk given is not changed.</returns>
         public HeroChunk SerializeVisitEffects(HeroChunk chunk, VisitedBuildingEffects effects)
         {
             return Edit(chunk, buffer =>
@@ -400,6 +503,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes whether the hero is asleep into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="isAsleep">Whether the hero is asleep.</param>
+        /// <returns>The chunk with whether the hero is asleep written; the chunk given is not changed.</returns>
         public HeroChunk SerializeIsAsleep(HeroChunk chunk, bool isAsleep)
         {
             // A flag that has any non-zero value counts as set, and is left alone while the hero stays asleep.
@@ -417,6 +526,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes whether the hero has moved today into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="movedToday">Whether the hero has moved.</param>
+        /// <returns>The chunk with whether the hero has moved today written; the chunk given is not changed.</returns>
         public HeroChunk SerializeMovedToday(HeroChunk chunk, bool movedToday)
         {
             // A flag that has any non-zero value counts as set, and is left alone while the hero stays "moved".
@@ -435,6 +550,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the gender of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="gender">The gender, or <see langword="null"/> to leave it as it is.</param>
+        /// <returns>The chunk with the gender of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeGender(HeroChunk chunk, HeroGender? gender)
         {
             // A gender byte this editor does not know is kept as it is.
@@ -447,6 +568,12 @@
             return chunk.WithHeaderByte(offset, (byte)gender.Value);
         }
 
+        /// <summary>
+        /// Writes whether the hero has the spell book into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="hasSpellBook">Whether the hero has the spell book.</param>
+        /// <returns>The chunk with whether the hero has the spell book written; the chunk given is not changed.</returns>
         public HeroChunk SerializeHasSpellBook(HeroChunk chunk, bool hasSpellBook)
         {
             return Edit(chunk, buffer =>
@@ -461,6 +588,12 @@
             });
         }
 
+        /// <summary>
+        /// Writes the spells of the spell book of the hero into the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="spellBook">The spell book.</param>
+        /// <returns>The chunk with the spells of the spell book of the hero written; the chunk given is not changed.</returns>
         public HeroChunk SerializeSpellBook(HeroChunk chunk, SpellBook spellBook)
         {
             return Edit(chunk, buffer =>

@@ -35,6 +35,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Returns whether the name, the kind, the place or the faction of the place contains <paramref name="text"/>, in any case. Any place
         /// matches an empty text.
         /// </summary>
+        /// <returns><see langword="true"/> if the place matches.</returns>
+        /// <param name="text">The text to look for.</param>
         public bool Matches(string text) =>
             text.Length == 0 || new[] { this.Name, this.Kind, this.PlaceText, this.Detail }.Any(t => t.Contains(text, StringComparison.CurrentCultureIgnoreCase));
     }

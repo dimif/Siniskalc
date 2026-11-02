@@ -10,6 +10,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns the pill of the player, such as "No towns: 6 days left" or "Banished", or nothing for a player who owns a town.
         /// </summary>
+        /// <param name="player">The player.</param>
+        /// <returns>The text, or nothing.</returns>
         public string Pill<TColor>(PlayerModelBase<TColor> player) => player switch
         {
             { IsBanished: true } => "Banished",
@@ -20,6 +22,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns the short text beside the player in the navigation tree, such as "6 days left" or "banished", or nothing for a player who owns a town.
         /// </summary>
+        /// <param name="player">The player.</param>
+        /// <returns>The text, or nothing.</returns>
         public string Nav<TColor>(PlayerModelBase<TColor> player) => player switch
         {
             { IsBanished: true } => "banished",

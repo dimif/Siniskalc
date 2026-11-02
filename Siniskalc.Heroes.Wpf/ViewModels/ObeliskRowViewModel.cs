@@ -34,8 +34,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.setVisited = setVisited;
         }
 
+        /// <summary>
+        /// Gets the number of the obelisk, from 1.
+        /// </summary>
         public int Number { get; }
 
+        /// <summary>
+        /// Gets the text of the row, such as "Obelisk 3".
+        /// </summary>
         public string Label => $"Obelisk {this.Number}";
 
         /// <summary>
@@ -63,8 +69,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string Coordinates => this.Position is { } at ? MapLevelText.Coordinates(at, this.hasLevels) : string.Empty;
 
+        /// <summary>
+        /// Gets a value indicating whether the row can tell where the obelisk is.
+        /// </summary>
         public bool HasCoordinates => this.Coordinates.Length > 0;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the player has visited the obelisk.
+        /// </summary>
         public bool IsVisited
         {
             get => this.getVisited();
@@ -86,6 +98,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             set => this.IsVisited = value == "Yes";
         }
 
+        /// <summary>
+        /// Shows the row again. Call after the visits changed elsewhere.
+        /// </summary>
         public void Refresh() => this.RaiseAllPropertiesChanged();
     }
 }

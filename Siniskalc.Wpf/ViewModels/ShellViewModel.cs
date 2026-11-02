@@ -129,10 +129,19 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the command that puts one pending change back; its parameter is the change.
+        /// </summary>
         public ICommand RevertChangeCommand { get; }
 
+        /// <summary>
+        /// Gets the command that puts every edit back to the loaded values.
+        /// </summary>
         public ICommand RevertAllCommand { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether a savegame is open in the current editor.
+        /// </summary>
         public bool IsGameLoaded => this.editor.Savegame != null;
 
         /// <summary>
@@ -145,12 +154,24 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string? File => this.editor.Savegame?.FileName;
 
+        /// <summary>
+        /// Gets a value indicating whether the open savegame is tied to a file.
+        /// </summary>
         public bool HasFile => !string.IsNullOrWhiteSpace(this.File);
 
+        /// <summary>
+        /// Gets a value indicating whether the savegame can be read again, which it can when it has a file.
+        /// </summary>
         public bool CanReload => this.HasFile;
 
+        /// <summary>
+        /// Gets a value indicating whether there is an edit to undo.
+        /// </summary>
         public bool CanUndo => this.editor.CanUndo;
 
+        /// <summary>
+        /// Gets a value indicating whether there is an undone edit to redo.
+        /// </summary>
         public bool CanRedo => this.editor.CanRedo;
 
         /// <summary>
@@ -158,6 +179,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public ObservableCollection<PendingChange> PendingChanges => this.editor.PendingChanges;
 
+        /// <summary>
+        /// Gets a value indicating whether anything has been edited since the savefile was loaded or saved.
+        /// </summary>
         public bool HasPendingChanges => this.editor.HasPendingChanges;
 
         /// <summary>
@@ -167,19 +191,23 @@ namespace Siniskalc.Wpf.ViewModels
             ? $"{this.modules[0].Name} savegames |{this.modules[0].OpenPattern}"
             : "Savegames |" + string.Join(";", this.modules.Select(m => m.OpenPattern)) + "|" + string.Join("|", this.modules.Select(m => $"{m.Name} savegames |{m.OpenPattern}"));
 
+        /// <summary>
+        /// Gets the file filter of the Save As dialog for the game being edited.
+        /// </summary>
         public string SaveFilter => $"{this.currentModule.Name} savegames |{this.currentModule.SavePattern}";
 
         /// <summary>
-        /// Gets the file dialog filter for saving the game that is shown.
-        /// </summary>
-        /// <summary>
         /// Tells why the game of the current module cannot list a savegame called like <paramref name="path"/>, or <c>null</c> when it can.
         /// </summary>
+        /// <param name="path">The path the game would be saved to; only its file name is looked at.</param>
+        /// <returns><see langword="null"/> if the game can list a savegame with that name; otherwise a sentence for the user saying what is wrong.</returns>
         public string? ValidateSavegameName(string path) => this.currentModule.ValidateSavegameName(System.IO.Path.GetFileName(path));
 
         /// <summary>
         /// Returns the game whose savegame the file is, or <c>null</c> when none recognises it or it cannot be read.
         /// </summary>
+        /// <param name="filePath">The path of the file.</param>
+        /// <returns>The module of the game, or <see langword="null"/>.</returns>
         public IGameModule<IObservableGameEditor>? Recognize(string filePath)
         {
             try
@@ -201,6 +229,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// Loads a savegame from a file with the editor of the game it belongs to. A file that no game recognises is given to the editor
         /// that is shown, which tells why it cannot be opened. What is open stays as it was when the load fails.
         /// </summary>
+        /// <param name="filePath">The path of the savefile.</param>
         public void LoadGame(string filePath)
         {
             var target = this.EditorOf(this.Recognize(filePath) ?? this.currentModule);
@@ -211,24 +240,58 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Loads a savegame from the bytes of a file as the game wrote them, before any compression, with the editor that is shown.
         /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="sourceName">What to call the game, as it has no file.</param>
         public void LoadGameFromBytes(byte[] bytes, string? sourceName = null) => this.editor.LoadGameFromBytes(bytes, sourceName);
 
+        /// <summary>
+        /// Reads the game again from its file, discarding unsaved edits.
+        /// </summary>
         public void ReloadGame() => this.editor.ReloadGame();
 
+        /// <summary>
+        /// Saves the game over its file, or to the path given.
+        /// </summary>
+        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
         public void SaveGame() => this.editor.SaveGame();
 
+        /// <summary>
+        /// Saves the game over its file, or to the path given.
+        /// </summary>
+        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
         public void SaveGame(string filePath) => this.editor.SaveGame(filePath);
 
+        /// <summary>
+        /// Returns the bytes the savefile would have, with every edit applied.
+        /// </summary>
+        /// <returns>The bytes of the savefile as it would be saved.</returns>
         public byte[] GetBytesToSave() => this.editor.GetBytesToSave();
 
+        /// <summary>
+        /// Takes the bytes of the whole savefile as they would be saved, with its known regions, for the hex view.
+        /// </summary>
+        /// <returns>The dump of the savefile.</returns>
         public SaveHexDump CreateSaveHexDump() => this.editor.CreateSaveHexDump();
 
+        /// <summary>
+        /// Goes back to the state before the last edit.
+        /// </summary>
         public void Undo() => this.editor.Undo();
 
+        /// <summary>
+        /// Goes forward again to the edit that was undone last.
+        /// </summary>
         public void Redo() => this.editor.Redo();
 
+        /// <summary>
+        /// Puts one pending change back to its loaded value.
+        /// </summary>
+        /// <param name="change">The change to put back; nothing happens when it is <see langword="null"/>.</param>
         public void RevertChange(PendingChange? change) => this.editor.RevertChange(change);
 
+        /// <summary>
+        /// Puts every edit back to the loaded values.
+        /// </summary>
         public void RevertAll() => this.editor.RevertAll();
 
         private IObservableGameEditor EditorOf(IGameModule<IObservableGameEditor> module)

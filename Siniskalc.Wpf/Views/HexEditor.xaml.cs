@@ -60,6 +60,9 @@
         private int selectionAnchor = -1;
         private bool hasPendingSync;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HexEditor"/> class.
+        /// </summary>
         public HexEditor()
         {
             this.InitializeComponent();
@@ -91,14 +94,25 @@
             set { this.SetValue(KnownFieldsHeightProperty, value); }
         }
 
+        /// <summary>
+        /// Gets the name of the savefile an element belongs to.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <returns>The name of the file, or <see langword="null"/>.</returns>
         public static string? GetSourceFile(DependencyObject element) => (string?)element.GetValue(SourceFileProperty);
 
+        /// <summary>
+        /// Sets the name of the savefile an element belongs to.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="value">The name of the file, or <see langword="null"/>.</param>
         public static void SetSourceFile(DependencyObject element, string? value) => element.SetValue(SourceFileProperty, value);
 
         /// <summary>
         /// Shows <paramref name="newTarget"/> and takes ownership of it: the target is disposed when another one is
         /// bound or <see cref="Unbind"/> is called. Any target bound before is disposed.
         /// </summary>
+        /// <param name="newTarget">The bytes to show and edit.</param>
         public void Bind(IByteEditTarget newTarget)
         {
             this.Unbind();

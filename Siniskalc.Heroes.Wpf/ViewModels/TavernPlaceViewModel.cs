@@ -34,6 +34,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the text that says where the tavern is.
+        /// </summary>
         public string Label { get; }
 
         /// <summary>

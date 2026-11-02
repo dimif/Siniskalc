@@ -27,12 +27,17 @@ namespace Siniskalc.Homm3.Models
         /// Gets whether the game builds <paramref name="building"/> by itself once what it needs exists: the upgraded horde
         /// buildings, whose bits are 19 and 25.
         /// </summary>
+        /// <param name="building">The building.</param>
+        /// <returns><see langword="true"/> if the game builds it.</returns>
         public static bool IsAutomatic(Building building) => building.Automatic;
 
         /// <summary>
         /// Returns the buildings that <paramref name="building"/> requires (<see cref="Building.Requires"/>) and the castle has
         /// not built. This is information only: the buildings may be built and removed in any order.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The buildings that are missing.</returns>
         public static IReadOnlyList<Building> UnmetRequirements(CastleModel castle, Building building)
         {
             return building.Requires.Where(r => !castle.HasBuilt(r)).ToList();
@@ -42,6 +47,9 @@ namespace Siniskalc.Homm3.Models
         /// Returns why <paramref name="building"/> cannot be built in the castle now, or <see cref="CastleBuildFailureReason.None"/> if it can. The only rule is that an
         /// upgrade needs the building it upgrades; the other prerequisites are not enforced.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The reason, or none when it can be built.</returns>
         public static CastleBuildFailureReason GetBuildFailureReason(CastleModel castle, Building building)
         {
             if (castle.Faction.IsNeutral || !building.IsAvailableFor(castle.Faction))
@@ -71,6 +79,9 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns why <paramref name="building"/> cannot be removed from the castle now, or <see cref="CastleBuildFailureReason.None"/> if it can.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The reason, or none when it can be taken down.</returns>
         public static CastleBuildFailureReason GetUnbuildFailureReason(CastleModel castle, Building building)
         {
             if (!castle.HasBuilt(building))
@@ -95,6 +106,9 @@ namespace Siniskalc.Homm3.Models
         /// Returns the built buildings that are upgrades on top of <paramref name="building"/> and so keep it from being removed. Buildings
         /// that merely require it (<see cref="Building.Requires"/>) do not, and neither do the ones the game builds by itself.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The buildings.</returns>
         public static IReadOnlyList<Building> UpgradesBuiltOn(CastleModel castle, Building building)
         {
             return castle.Buildings.Where(b => b != building && !IsAutomatic(b) && b.Upgrades == building).ToList();
@@ -103,6 +117,9 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Builds <paramref name="building"/>. Throws <see cref="GameRuleException"/> if the game would not allow it.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel Build(CastleModel castle, Building building)
         {
             var reason = GetBuildFailureReason(castle, building);
@@ -112,6 +129,9 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Removes <paramref name="building"/>. Throws <see cref="GameRuleException"/> if another building needs it.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel Unbuild(CastleModel castle, Building building)
         {
             var reason = GetUnbuildFailureReason(castle, building);
@@ -122,6 +142,9 @@ namespace Siniskalc.Homm3.Models
         /// Returns why the map permission of <paramref name="building"/> cannot be changed, or <see cref="CastleBuildFailureReason.None"/> if it can. The permission only
         /// matters for a building that is not built, and the game decides the upgraded horde buildings by itself.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The reason, or none when the permission can be changed.</returns>
         public static CastleBuildFailureReason GetSetAllowedFailureReason(CastleModel castle, Building building)
         {
             if (castle.Faction.IsNeutral || !building.IsAvailableFor(castle.Faction))
@@ -141,6 +164,10 @@ namespace Siniskalc.Homm3.Models
         /// Allows or forbids building <paramref name="building"/> (the mask of the buildings the map allows). Throws
         /// <see cref="GameRuleException"/> if the permission does not apply to the building.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <param name="allowed">Whether the map allows it.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel SetAllowed(CastleModel castle, Building building, bool allowed)
         {
             var reason = GetSetAllowedFailureReason(castle, building);
@@ -156,6 +183,10 @@ namespace Siniskalc.Homm3.Models
         /// Allows or forbids building <paramref name="building"/> without asking whether the permission applies to it. Used to
         /// put a single change back (the building may have been built since); <see cref="SetAllowed"/> checks first.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <param name="allowed">Whether the map allowed it originally.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel RestoreAllowed(CastleModel castle, Building building, bool allowed)
         {
             if (castle.EnabledBuildings.Contains(building) == allowed)
@@ -175,6 +206,9 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         /// <param name="level">The spell level, 1 to 5.</param>
         /// <param name="slot">The place in the list of the level, from 0.</param>
+        /// <param name="castle">The castle.</param>
+        /// <param name="spell">The spell.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel SetMageGuildSpell(CastleModel castle, int level, int slot, Spell spell)
         {
             RangeGuard.ThrowIfOutOfRange(level, 1, castle.MageGuildSpells.Count, nameof(level));
@@ -209,6 +243,9 @@ namespace Siniskalc.Homm3.Models
         /// Builds the Mage Guild up to <paramref name="level"/>, or removes the levels above it. Throws
         /// <see cref="GameRuleException"/> if a level cannot be built or removed.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="level">The level, from 0 to 5.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel SetMageGuildLevel(CastleModel castle, int level)
         {
             var levels = Building.ForFaction(castle.Faction).Where(b => b.IsMageGuild).OrderBy(b => b.MageGuildLevel).ToArray();
@@ -242,6 +279,9 @@ namespace Siniskalc.Homm3.Models
         /// Returns the dwelling that holds the creatures of <paramref name="level"/> (0 to 6) in the castle: the upgraded dwelling
         /// if it is built, otherwise the dwelling, otherwise null.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="level">The level of the dwelling, from 0.</param>
+        /// <returns>The building, or <see langword="null"/> when the dwelling is not built.</returns>
         public static Building? DwellingOf(CastleModel castle, int level)
         {
             if (castle.Faction.IsNeutral || !RangeGuard.IsInRange(level, 0, castle.CreaturesAvailable.Count - 1))
@@ -263,6 +303,10 @@ namespace Siniskalc.Homm3.Models
         /// Builds or removes <paramref name="building"/> without asking whether the game allows it, and follows with what the
         /// game does by itself. Used to put a single change back; <see cref="Build"/> and <see cref="Unbuild"/> check first.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <param name="built">Whether it is built.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public static CastleModel SetBuilt(CastleModel castle, Building building, bool built)
         {
             if (castle.Faction.IsNeutral || castle.HasBuilt(building) == built)
@@ -319,6 +363,8 @@ namespace Siniskalc.Homm3.Models
         /// Returns the buildings that <paramref name="building"/> takes the place of: those it upgrades, and for an automatic
         /// building also the ones it needs.
         /// </summary>
+        /// <param name="building">The building.</param>
+        /// <returns>The buildings.</returns>
         public static IEnumerable<Building> Replaced(Building building)
         {
             var result = new List<Building>();

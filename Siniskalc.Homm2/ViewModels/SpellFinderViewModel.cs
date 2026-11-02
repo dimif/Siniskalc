@@ -24,6 +24,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         public override string Footer => "Shift-click or Ctrl-click to select several spells, then tick or untick one of them to change them all.";
 
+        /// <inheritdoc/>
         public override string Summary
         {
             get

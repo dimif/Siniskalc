@@ -8,6 +8,10 @@ namespace Siniskalc.Wpf.ViewModels
     {
         private int selectedTab;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabbedPageViewModelBase"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
         protected TabbedPageViewModelBase(string title)
             : base(title)
         {

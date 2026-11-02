@@ -16,6 +16,14 @@
         private Action<TRow>? onChooseSecondary;
         private Func<TRow, bool>? canChooseSecondary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FinderViewModel"/> class.
+        /// </summary>
+        /// <param name="rows">The rows.</param>
+        /// <param name="groupPath">The group path.</param>
+        /// <param name="title">The title.</param>
+        /// <param name="noun">The noun.</param>
+        /// <param name="columns">The columns.</param>
         protected FinderViewModel(IReadOnlyList<TRow> rows, string? groupPath, string title, string noun, IReadOnlyList<FinderColumn> columns)
             : base(title, noun, columns, CreateItems(rows, groupPath))
         {
@@ -33,6 +41,7 @@
         /// <summary>
         /// Runs the action on <paramref name="row"/>, when it can be run.
         /// </summary>
+        /// <param name="row">The row, or <see langword="null"/> for no row.</param>
         public void Choose(TRow? row)
         {
             if (row != null && this.onChoose != null && (this.canChoose == null || this.canChoose(row)))
@@ -53,15 +62,20 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override bool CanChooseRowSecondary(object row) => row is TRow typed && (this.canChooseSecondary == null || this.canChooseSecondary(typed));
 
+        /// <inheritdoc/>
         protected override bool CanChooseRow(object row) => row is TRow typed && (this.canChoose == null || this.canChoose(typed));
 
+        /// <inheritdoc/>
         protected override bool MatchesRow(object row) => row is TRow typed && this.Matches(typed);
 
         /// <summary>
         /// Tells whether a row shows under the search text.
         /// </summary>
+        /// <param name="row">The row.</param>
+        /// <returns><see langword="true"/> if the row matches the search text.</returns>
         protected abstract bool Matches(TRow row);
 
         /// <summary>

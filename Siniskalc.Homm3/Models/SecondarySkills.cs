@@ -53,6 +53,11 @@
             return this.allSkillsToLevels.TryGetValue(skill, out var level) ? level : SkillLevel.None;
         }
 
+        /// <summary>
+        /// Gets the best level the hero has of the skills that have a role.
+        /// </summary>
+        /// <param name="role">The role.</param>
+        /// <returns>The level; none when the hero has no skill of the role.</returns>
         public SkillLevel GetSkillLevel(Data.SkillRole role) => this.allSkillsToLevels
             .Where(pair => pair.Key.Role == role).Select(pair => pair.Value).OrderByDescending(level => level.Code).FirstOrDefault() ?? SkillLevel.None;
 
@@ -143,6 +148,8 @@
         /// Returns a copy with an extra skill moved into the first free slot, so the hero screen shows it.
         /// Ignored when the skill is not an extra skill or all <see cref="Constants.SkillSlots.Max"/> slots are taken.
         /// </summary>
+        /// <param name="skill">The skill.</param>
+        /// <returns>The new skills; these are not changed.</returns>
         public SecondarySkills WithExtraSkillInSlot(SecondarySkill skill)
         {
             if (!this.IsExtra(skill) || this.skillSlots.Length >= Constants.SkillSlots.Max)
@@ -157,6 +164,8 @@
         /// Returns a copy where the skill in <paramref name="slotIndex"/> keeps its level but leaves the slot, so the
         /// hero screen no longer shows it. Later skills move up a slot.
         /// </summary>
+        /// <param name="slotIndex">The slot, from 0.</param>
+        /// <returns>The new skills; these are not changed.</returns>
         public SecondarySkills WithSlotAsExtra(int slotIndex)
         {
             RangeGuard.ThrowIfNotIndex(slotIndex, this.skillSlots.Length, nameof(slotIndex));

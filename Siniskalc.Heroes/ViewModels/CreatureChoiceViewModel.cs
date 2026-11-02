@@ -12,14 +12,25 @@ namespace Siniskalc.Heroes.ViewModels
     {
         private readonly CreatureInfo info;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreatureChoiceViewModel"/> class.
+        /// </summary>
+        /// <param name="creature">The creature.</param>
+        /// <param name="info">The facts about the creature.</param>
         public CreatureChoiceViewModel(ICreature creature, CreatureInfo info)
         {
             this.Creature = creature;
             this.info = info;
         }
 
+        /// <summary>
+        /// Gets the creature.
+        /// </summary>
         public ICreature Creature { get; }
 
+        /// <summary>
+        /// Gets the name of the creature.
+        /// </summary>
         public string Name => this.Creature.Name;
 
         /// <summary>
@@ -42,8 +53,14 @@ namespace Siniskalc.Heroes.ViewModels
         /// </summary>
         public string Form => this.Creature.IsUpgrade ? "Upgraded" : "Basic";
 
+        /// <summary>
+        /// Gets the attack of the creature.
+        /// </summary>
         public int Attack => this.info.Atk;
 
+        /// <summary>
+        /// Gets the defense of the creature.
+        /// </summary>
         public int Defense => this.info.Def;
 
         /// <summary>
@@ -53,8 +70,14 @@ namespace Siniskalc.Heroes.ViewModels
             ? this.info.MinDamage.ToString(CultureInfo.InvariantCulture)
             : $"{this.info.MinDamage}-{this.info.MaxDamage}";
 
+        /// <summary>
+        /// Gets the hit points of one creature.
+        /// </summary>
         public int Health => this.info.Health;
 
+        /// <summary>
+        /// Gets the speed of the creature.
+        /// </summary>
         public int Speed => this.info.Speed;
 
         /// <summary>

@@ -53,19 +53,31 @@ namespace Siniskalc.Homm3.Models
         /// </summary>
         public bool IsSpellBookGranted { get; }
 
+        /// <summary>
+        /// Gets every spell the hero can cast: the learned ones, the ones artifacts grant and the others available.
+        /// </summary>
         public ISet<Spell> GetAll => this.learnedSpells.Concat(this.grantedSpells.Keys).Concat(this.otherAvailableSpells).ToHashSet();
 
+        /// <summary>
+        /// Tells whether the hero has learned a spell.
+        /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <returns><see langword="true"/> if the spell is learned.</returns>
         public bool IsLearned(Spell spell) => this.learnedSpells.Contains(spell);
 
         /// <summary>
         /// Gets whether the hero can cast the spell: it is learned, an artifact grants it, or it is available for another reason.
         /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <returns><see langword="true"/> if the hero can cast it.</returns>
         public bool IsAvailable(Spell spell) => this.learnedSpells.Contains(spell) || this.grantedSpells.ContainsKey(spell) || this.otherAvailableSpells.Contains(spell);
 
         /// <summary>
         /// Gets where the spell comes from when it is not learned: the artifacts that grant it, such as "Sea Captain's Hat", or
         /// "Unknown source". Empty when the spell is learned only, or not available.
         /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <returns>The name of the source.</returns>
         public string Source(Spell spell)
         {
             if (this.grantedSpells.TryGetValue(spell, out var artifacts))
@@ -79,6 +91,10 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns a copy in which <paramref name="spell"/> is learned or forgotten.
         /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <param name="spells">The spells.</param>
+        /// <param name="learned">Whether they are learned.</param>
+        /// <returns>The new spell book; this one is not changed.</returns>
         public SpellBook WithLearned(Spell spell, bool learned)
         {
             return this.WithLearned([spell], learned);
@@ -87,6 +103,10 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns a copy in which every one of <paramref name="spells"/> is learned or forgotten.
         /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <param name="spells">The spells.</param>
+        /// <param name="learned">Whether they are learned.</param>
+        /// <returns>The new spell book; this one is not changed.</returns>
         public SpellBook WithLearned(IEnumerable<Spell> spells, bool learned)
         {
             var updated = new HashSet<Spell>(this.learnedSpells);
@@ -108,6 +128,8 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns a copy that has, or has not, a spell book.
         /// </summary>
+        /// <param name="hasSpellBook">Whether the hero has the spell book.</param>
+        /// <returns>The new spell book; this one is not changed.</returns>
         public SpellBook WithHasSpellBook(bool hasSpellBook)
         {
             return hasSpellBook == this.HasSpellBook
@@ -119,6 +141,9 @@ namespace Siniskalc.Homm3.Models
         /// Returns a copy whose spells from artifacts are <paramref name="grantedSpells"/> (spell to the names of the artifacts
         /// that give it), and that knows whether an artifact gives the hero a spell book. Returns this book when nothing changes.
         /// </summary>
+        /// <param name="grantedSpells">The spells the artifacts grant, with the name of the artifact that grants each.</param>
+        /// <param name="isSpellBookGranted">Whether an artifact gives the hero the spell book.</param>
+        /// <returns>The new spell book; this one is not changed.</returns>
         public SpellBook WithGrants(IReadOnlyDictionary<Spell, string> grantedSpells, bool isSpellBookGranted)
         {
             var same = isSpellBookGranted == this.IsSpellBookGranted
@@ -133,6 +158,8 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns a copy whose "other" available spells are exactly <paramref name="spells"/>.
         /// </summary>
+        /// <param name="spells">The spells that are available but are not learned or granted.</param>
+        /// <returns>The new spell book; this one is not changed.</returns>
         public SpellBook WithOtherAvailable(IEnumerable<Spell> spells)
         {
             return new SpellBook(this.learnedSpells, this.grantedSpells, this.IsSpellBookGranted, new HashSet<Spell>(spells), this.HasSpellBook);

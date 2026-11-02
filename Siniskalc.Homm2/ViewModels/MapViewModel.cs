@@ -43,6 +43,9 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the shrines.
+        /// </summary>
         public IReadOnlyList<ShrineRowViewModel> Shrines => this.ShrineList.Items;
 
         /// <summary>
@@ -50,6 +53,9 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public SortableListViewModel<ShrineRowViewModel> ShrineList { get; }
 
+        /// <summary>
+        /// Gets the sphinxes.
+        /// </summary>
         public IReadOnlyList<SphinxViewModel> Sphinxes { get; }
 
         /// <summary>
@@ -57,8 +63,14 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public string MapSummary => $"{this.Shrines.Count} {(this.Shrines.Count == 1 ? "shrine" : "shrines")}, {this.Sphinxes.Count} {(this.Sphinxes.Count == 1 ? "sphinx" : "sphinxes")}";
 
+        /// <summary>
+        /// Gets whether the map has a shrine.
+        /// </summary>
         public bool HasShrines => this.Shrines.Count > 0;
 
+        /// <summary>
+        /// Gets whether the map has a sphinx.
+        /// </summary>
         public bool HasSphinxes => this.Sphinxes.Count > 0;
 
         /// <summary>
@@ -85,6 +97,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Creates the raw bytes of the record that is picked, or <c>null</c> when none is. The caller owns the target and disposes it.
         /// </summary>
+        /// <returns>The target, or <see langword="null"/> when no record is picked.</returns>
         public IByteEditTarget? CreateByteEditTarget() => this.SelectedRecord?.Create();
 
         /// <inheritdoc/>

@@ -24,6 +24,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         /// <param name="bytes">The savefile.</param>
         /// <param name="searchEnd">Where to stop looking: the table comes before the players.</param>
+        /// <returns>The positions.</returns>
         public static IReadOnlyList<MapPosition> Find(byte[] bytes, int searchEnd)
         {
             var end = DefinitionsEnd(bytes, Math.Min(searchEnd, bytes.Length));

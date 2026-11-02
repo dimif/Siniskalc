@@ -8,6 +8,12 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class DwellingByteEditTarget : ChunkByteEditTarget<RecordChunk, DwellingModel>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DwellingByteEditTarget"/> class.
+        /// </summary>
+        /// <param name="history">The history.</param>
+        /// <param name="dwellingIndex">The dwelling index.</param>
+        /// <param name="regions">The regions.</param>
         public DwellingByteEditTarget(SaveDocumentHistory history, int dwellingIndex, IDwellingRegionProvider regions)
             : this(history.CreateDwellingSession(dwellingIndex), regions)
         {

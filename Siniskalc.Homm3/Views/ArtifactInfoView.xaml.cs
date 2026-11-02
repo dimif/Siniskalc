@@ -7,6 +7,9 @@
     /// </summary>
     public partial class ArtifactInfoView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactInfoView"/> class.
+        /// </summary>
         public ArtifactInfoView()
         {
             this.InitializeComponent();

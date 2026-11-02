@@ -17,6 +17,7 @@
     {
         private static readonly ILogger<MineDeserializer> Logger = LogFactory.For<MineDeserializer>();
 
+        /// <inheritdoc/>
         public MineModel Deserialize(RecordChunk chunk)
         {
             using var subject = Logger.BeginSubject("Mine", chunk.Name);

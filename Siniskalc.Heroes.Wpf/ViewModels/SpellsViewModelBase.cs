@@ -31,8 +31,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public abstract AbstractFinderViewModel Finder { get; }
 
+        /// <summary>
+        /// Gets the command that gives the hero every spell.
+        /// </summary>
         public ICommand LearnAllCommand { get; }
 
+        /// <summary>
+        /// Gets the command that takes every spell away from the hero.
+        /// </summary>
         public ICommand ForgetAllCommand { get; }
 
         /// <summary>
@@ -60,6 +66,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public virtual string SpellBookNote => "Without a spell book the hero cannot cast the learned spells.";
 
+        /// <summary>
+        /// Gets a row for each spell the game has.
+        /// </summary>
         protected IReadOnlyList<TRow> Rows { get; }
 
         /// <summary>
@@ -88,6 +97,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Called by a row when the user ticks or unticks it.
         /// </summary>
+        /// <param name="row">The row.</param>
+        /// <param name="learned">Whether it is now ticked.</param>
         protected void OnLearnedChanged(TRow row, bool learned)
         {
             if (this.isRefreshing)
@@ -105,18 +116,29 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.SetLearned(rows, learned);
         }
 
+        /// <summary>
+        /// Returns whether the hero has a spell book.
+        /// </summary>
+        /// <returns><see langword="true"/> if the hero has one.</returns>
         protected abstract bool ReadHasSpellBook();
 
+        /// <summary>
+        /// Gives the hero a spell book or takes it away.
+        /// </summary>
+        /// <param name="value">Whether the hero has one.</param>
         protected abstract void WriteHasSpellBook(bool value);
 
         /// <summary>
         /// Takes the hero's state of a spell into its row.
         /// </summary>
+        /// <param name="row">The row.</param>
         protected abstract void ShowRow(TRow row);
 
         /// <summary>
         /// Makes the hero learn or forget the spells of the rows.
         /// </summary>
+        /// <param name="rows">The rows.</param>
+        /// <param name="learned">Whether the hero learns the spells or forgets them.</param>
         protected abstract void SetLearned(IReadOnlyList<TRow> rows, bool learned);
 
         /// <summary>

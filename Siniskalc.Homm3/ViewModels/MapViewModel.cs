@@ -12,6 +12,11 @@
     /// </summary>
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="effectLines">The effect lines.</param>
         public MapViewModel(Siniskalc.Homm3.Runtime.Game game, EffectLineProvider effectLines)
             : base("Map", game.History, Homm3ChunkKinds.Merchants)
         {
@@ -25,6 +30,9 @@
         /// </summary>
         public IReadOnlyList<MerchantViewModel> Merchants { get; }
 
+        /// <summary>
+        /// Gets whether the map has a merchant.
+        /// </summary>
         public bool HasMerchants => this.Merchants.Count > 0;
 
         /// <summary>

@@ -17,6 +17,7 @@ namespace Siniskalc.Heroes.Models
         /// Returns who plays <paramref name="color"/>, or <c>null</c> when the setup does not say.
         /// </summary>
         /// <param name="color">The colour.</param>
+        /// <returns>Who plays the colour, or <see langword="null"/> when the setup has no entry for it.</returns>
         public PlayerType? GetControl(TColor color) => color.Code < this.PlayerControls.Count ? this.PlayerControls[color.Code] : null;
     }
 }

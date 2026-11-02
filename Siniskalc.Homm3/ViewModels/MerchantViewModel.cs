@@ -16,6 +16,13 @@ namespace Siniskalc.Homm3.ViewModels
     {
         private readonly IEditSession<MerchantStockModel> session;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MerchantViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session that edits the stock.</param>
+        /// <param name="catalog">The catalog of the artifacts.</param>
+        /// <param name="effectLines">Words the effects of artifacts.</param>
+        /// <param name="location">Where the merchant is, as text.</param>
         public MerchantViewModel(IEditSession<MerchantStockModel> session, EntityCatalog catalog, EffectLineProvider effectLines, string location = "")
         {
             this.session = session;
@@ -29,6 +36,9 @@ namespace Siniskalc.Homm3.ViewModels
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the name of the merchant.
+        /// </summary>
         public string Name => this.session.Current.Name;
 
         /// <summary>
@@ -36,6 +46,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string Location { get; }
 
+        /// <summary>
+        /// Gets whether the place of the merchant is known.
+        /// </summary>
         public bool HasLocation => this.Location.Length > 0;
 
         /// <summary>
@@ -43,6 +56,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public IReadOnlyList<ArtifactSlotViewModel> Slots { get; }
 
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
         public void Refresh()
         {
             var stock = this.session.Current;

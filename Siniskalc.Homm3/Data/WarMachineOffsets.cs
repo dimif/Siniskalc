@@ -5,6 +5,11 @@ using Siniskalc.Homm3.Entities;
 
 public static class WarMachineOffsets
 {
+    /// <summary>
+    /// Gets the field of the chunk of a hero that holds a war machine.
+    /// </summary>
+    /// <param name="machine">The war machine.</param>
+    /// <returns>The name of the offset.</returns>
     public static HeroOffsetName For(WarMachine machine) => machine.Encoding switch
     {
         WarMachineEncoding.Ballista => HeroOffsetName.Ballista,

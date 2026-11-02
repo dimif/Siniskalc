@@ -33,14 +33,19 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public const int NoArtifact = 96;
 
+        /// <summary>
+        /// Gets the name the editor shows for the sphinx, which says its place when it is known.
+        /// </summary>
         public string Name => this.Position is { } at ? this.Catalog.MapObjects.Single(o => o.Role == MapObjectRole.Sphinx).FormatName(at.X, at.Y) : this.Catalog.MapObjects.Single(o => o.Role == MapObjectRole.SphinxUnlocated).FormatName(this.Index + 1);
 
+        /// <inheritdoc/>
         public bool Equals(SphinxModel? other) =>
             other is not null
             && this.Index == other.Index && this.Position == other.Position && this.IsActive == other.IsActive && this.ArtifactCode == other.ArtifactCode
             && this.Riddle == other.Riddle && this.RiddleCapacity == other.RiddleCapacity
             && System.Linq.Enumerable.SequenceEqual(this.Reward, other.Reward) && System.Linq.Enumerable.SequenceEqual(this.Answers, other.Answers);
 
+        /// <inheritdoc/>
         public override int GetHashCode() => System.HashCode.Combine(this.Index, this.IsActive, this.ArtifactCode, this.Riddle);
     }
 }

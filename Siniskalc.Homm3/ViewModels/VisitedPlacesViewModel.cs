@@ -16,6 +16,13 @@
         private readonly Action<Func<HeroModel, HeroModel>> update;
         private readonly MapPlaces places;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VisitedPlacesViewModel"/> class.
+        /// </summary>
+        /// <param name="getHero">The get hero.</param>
+        /// <param name="update">The update.</param>
+        /// <param name="places">The places.</param>
+        /// <param name="gameVersion">The game version.</param>
         public VisitedPlacesViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, MapPlaces places, GameVersion gameVersion)
         {
             this.getHero = getHero;
@@ -27,8 +34,14 @@
                 []);
         }
 
+        /// <summary>
+        /// Gets the card of the places the hero has visited.
+        /// </summary>
         public VisitedPlacesCardViewModel PlacesVisited { get; }
 
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
         public void Refresh()
         {
             foreach (var row in this.PlacesVisited.Kinds)

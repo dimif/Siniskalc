@@ -19,6 +19,10 @@ namespace Siniskalc.Homm2.Models
 
         private readonly IReadOnlyDictionary<PlaceKind, IReadOnlyList<MapPosition>> places;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPlaces"/> class.
+        /// </summary>
+        /// <param name="places">The places.</param>
         public MapPlaces(IReadOnlyDictionary<PlaceKind, IReadOnlyList<MapPosition>> places)
         {
             this.places = places;
@@ -32,6 +36,8 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the places of a kind, the ones that have a bit, in the order of the bits (the first is bit 1).
         /// </summary>
+        /// <param name="kind">The kind of place.</param>
+        /// <returns>The positions, the first ones the game lists.</returns>
         public IReadOnlyList<MapPosition> Of(PlaceKind kind) => this.places.TryGetValue(kind, out var list) ? list.Take(MaxPerKind).ToList() : [];
     }
 }

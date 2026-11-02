@@ -35,6 +35,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasObelisks => this.Count > 0;
 
+        /// <summary>
+        /// Gets a row for each obelisk of the map.
+        /// </summary>
         public IReadOnlyList<ObeliskRowViewModel> Obelisks => this.obelisks;
 
         /// <summary>
@@ -57,8 +60,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string PuzzleToolTip { get; }
 
+        /// <summary>
+        /// Gets the command that marks every obelisk as visited.
+        /// </summary>
         public ICommand VisitAllCommand { get; }
 
+        /// <summary>
+        /// Gets the command that marks every obelisk as not visited.
+        /// </summary>
         public ICommand ClearAllCommand { get; }
 
         /// <summary>
@@ -103,15 +112,28 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns where obelisk <paramref name="index"/> is, or null when the savegame does not tell.
         /// </summary>
+        /// <returns>The position, or <see langword="null"/>.</returns>
+        /// <param name="index">The obelisk, from 0.</param>
         protected abstract MapPosition? PositionOf(int index);
 
+        /// <summary>
+        /// Returns whether the obelisk at an index has been visited.
+        /// </summary>
+        /// <param name="index">The obelisk, from 0.</param>
+        /// <returns><see langword="true"/> if it has been visited.</returns>
         protected abstract bool IsVisited(int index);
 
+        /// <summary>
+        /// Marks the obelisk at an index as visited or not.
+        /// </summary>
+        /// <param name="index">The obelisk, from 0.</param>
+        /// <param name="visited">Whether it has been visited.</param>
         protected abstract void SetVisited(int index, bool visited);
 
         /// <summary>
         /// Marks every obelisk as visited by the player, or none of them.
         /// </summary>
+        /// <param name="visited">Whether every obelisk has been visited.</param>
         protected abstract void SetAll(bool visited);
 
         private static SortableListViewModel<ObeliskRowViewModel> NewList(IReadOnlyList<ObeliskRowViewModel> rows) => new(

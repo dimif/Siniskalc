@@ -15,6 +15,13 @@ namespace Siniskalc.Heroes.Data
     {
         private readonly IDiffer<ObeliskVisits<TColor>> differ;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObeliskChunkCollection{TColor}"/> class.
+        /// </summary>
+        /// <param name="chunks">The chunks: one, or none when the savefile has no obelisks.</param>
+        /// <param name="deserializer">Reads a chunk into the visits of the obelisks.</param>
+        /// <param name="serializer">Writes the visits into a chunk.</param>
+        /// <param name="differ">Lists what an edit changed in the visits.</param>
         public ObeliskChunkCollection(
             IEnumerable<ObeliskChunk> chunks,
             IDeserializer<ObeliskChunk, ObeliskVisits<TColor>> deserializer,
@@ -54,6 +61,7 @@ namespace Siniskalc.Heroes.Data
         /// <summary>
         /// Returns the visited obelisks, or null when the savefile has none to show.
         /// </summary>
+        /// <returns>The visits, or <see langword="null"/> when the savefile has no obelisks.</returns>
         public ObeliskVisits<TColor>? GetModel() => this.Any ? this.Deserializer.Deserialize(this[0]) : null;
 
         /// <inheritdoc/>

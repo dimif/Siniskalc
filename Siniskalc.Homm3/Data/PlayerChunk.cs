@@ -8,6 +8,13 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class PlayerChunk : BytesChunk
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerChunk"/> class.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        /// <param name="bytes">The bytes.</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="layout">The layout.</param>
         public PlayerChunk(PlayerColor color, byte[] bytes, int startIndex, PlayerLayout layout)
             : base(color.ToString(), bytes, startIndex)
         {

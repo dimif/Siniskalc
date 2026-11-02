@@ -10,11 +10,19 @@
     /// </summary>
     public sealed class CastleEditSession : EditSession<CastleChunk, CastleModel>, ICastleSession
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleEditSession"/> class.
+        /// </summary>
+        /// <param name="history">The history.</param>
+        /// <param name="castleIndex">The castle index.</param>
         public CastleEditSession(SaveDocumentHistory history, int castleIndex)
             : base(history, Homm3ChunkKinds.Castle, castleIndex, history.Current.Castles().Deserializer, history.Current.Castles().Serializer)
         {
         }
 
+        /// <summary>
+        /// Gets the number of the castle.
+        /// </summary>
         public int CastleIndex => this.Index;
 
         /// <inheritdoc/>

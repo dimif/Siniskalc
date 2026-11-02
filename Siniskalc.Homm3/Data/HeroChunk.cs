@@ -88,6 +88,8 @@
         /// Gets the byte at <paramref name="offset"/> in the hero header. Reads the chunk when the byte is in it, so the
         /// result follows edits made to the chunk.
         /// </summary>
+        /// <param name="offset">The offset in the header.</param>
+        /// <returns>The byte.</returns>
         public byte GetHeaderByteAt(int offset)
         {
             CheckHeaderOffset(offset);
@@ -98,6 +100,9 @@
         /// <summary>
         /// Returns a chunk like this one, with the byte at <paramref name="offset"/> in the hero header replaced.
         /// </summary>
+        /// <param name="offset">The offset in the header.</param>
+        /// <param name="value">The new byte.</param>
+        /// <returns>The new chunk; this one is not changed.</returns>
         public HeroChunk WithHeaderByte(int offset, byte value)
         {
             CheckHeaderOffset(offset);

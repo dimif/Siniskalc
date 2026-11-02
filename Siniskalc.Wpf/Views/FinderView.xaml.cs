@@ -19,14 +19,23 @@
     /// </summary>
     public partial class FinderView : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="ToolbarContent"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ToolbarContentProperty =
             DependencyProperty.Register(nameof(ToolbarContent), typeof(object), typeof(FinderView));
 
+        /// <summary>
+        /// Identifies the <see cref="ListMaxHeight"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ListMaxHeightProperty =
             DependencyProperty.Register(nameof(ListMaxHeight), typeof(double), typeof(FinderView), new PropertyMetadata(360.0));
 
         private readonly Style? plainItemStyle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FinderView"/> class.
+        /// </summary>
         public FinderView()
         {
             this.InitializeComponent();

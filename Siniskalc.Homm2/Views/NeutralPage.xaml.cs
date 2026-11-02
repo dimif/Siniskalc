@@ -8,6 +8,10 @@ namespace Siniskalc.Homm2.Views
     /// </summary>
     public partial class NeutralPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NeutralPage"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public NeutralPage(NeutralViewModel viewModel)
         {
             this.InitializeComponent();

@@ -20,6 +20,10 @@ namespace Siniskalc.Heroes.Models
         /// </summary>
         public static ResourceSet None { get; } = new(0, 0, 0, 0, 0, 0, 0);
 
+        /// <summary>
+        /// Gets the amount of a resource.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
         public long this[Resource resource] => resource switch
         {
             Resource.Wood => this.Wood,
@@ -35,6 +39,9 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns the resources with one of them replaced.
         /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="amount">The new amount.</param>
+        /// <returns>The new set; this one is not changed.</returns>
         public ResourceSet With(Resource resource, long amount) => resource switch
         {
             Resource.Wood => this with { Wood = amount },

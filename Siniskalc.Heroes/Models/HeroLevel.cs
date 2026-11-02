@@ -15,6 +15,7 @@ namespace Siniskalc.Heroes.Models
         /// </summary>
         /// <param name="table">The experience each level of the game needs.</param>
         /// <param name="level">The level.</param>
+        /// <returns>The level and the experience a hero has then.</returns>
         public static HeroLevel AtLevel(ExperienceTable table, int level)
         {
             var reached = Math.Clamp(level, 1, table.MaxLevel);
@@ -27,6 +28,7 @@ namespace Siniskalc.Heroes.Models
         /// </summary>
         /// <param name="table">The experience each level of the game needs.</param>
         /// <param name="experience">The experience points.</param>
+        /// <returns>The experience and the level it gives.</returns>
         public static HeroLevel AtExperience(ExperienceTable table, long experience) => new(experience, table.LevelOf(experience));
     }
 }

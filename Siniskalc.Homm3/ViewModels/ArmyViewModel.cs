@@ -18,6 +18,13 @@
     {
         private readonly EntityCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArmyViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog of the creatures.</param>
+        /// <param name="getCreatures">Gets the army from the model.</param>
+        /// <param name="update">Changes the army in the model.</param>
+        /// <param name="isReadOnly">Says whether the army cannot be changed now; <see langword="null"/> means it always can.</param>
         public ArmyViewModel(
             EntityCatalog catalog,
             Func<IArmy<Creature>> getCreatures,

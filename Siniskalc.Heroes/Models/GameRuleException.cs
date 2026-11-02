@@ -8,6 +8,10 @@ namespace Siniskalc.Heroes.Models
     /// </summary>
     public sealed class GameRuleException : InvalidOperationException
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameRuleException"/> class.
+        /// </summary>
+        /// <param name="message">Why the rules do not allow the edit, for the user.</param>
         public GameRuleException(string message)
             : base(message)
         {

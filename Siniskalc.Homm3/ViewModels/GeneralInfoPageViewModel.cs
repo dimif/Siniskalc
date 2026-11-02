@@ -29,6 +29,17 @@
         private readonly Func<bool> canMoveToday;
         private bool isRefreshing;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeneralInfoPageViewModel"/> class.
+        /// </summary>
+        /// <param name="getHero">Gets the hero from the model.</param>
+        /// <param name="update">Changes the hero in the model.</param>
+        /// <param name="spellPoints">Works out the most spell points of the hero.</param>
+        /// <param name="gameVersion">The version of the game.</param>
+        /// <param name="hasUnderground">Whether the map has an underground level.</param>
+        /// <param name="canSleep">Says whether the hero can be put to sleep; <see langword="null"/> means it can.</param>
+        /// <param name="destinationsToSendTo">Lists the places the hero can be sent to; <see langword="null"/> for none.</param>
+        /// <param name="canMoveToday">Says whether the hero can still move today; <see langword="null"/> means it can.</param>
         public GeneralInfoPageViewModel(Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, GameVersion gameVersion, bool hasUnderground = true, Func<bool>? canSleep = null, Func<IReadOnlyList<MapDestination>>? destinationsToSendTo = null, Func<bool>? canMoveToday = null)
             : base("General Info")
         {
@@ -101,6 +112,9 @@
             this.RefreshWarMachines();
         }
 
+        /// <summary>
+        /// Gets the name of the hero.
+        /// </summary>
         public string HeroName => this.Hero.Name;
 
         /// <summary>
@@ -138,8 +152,14 @@
         /// </summary>
         public PrimarySkillsCardViewModel PrimarySkills { get; }
 
+        /// <summary>
+        /// Gets the biography of the hero.
+        /// </summary>
         public string? Biography => this.Hero.Biography;
 
+        /// <summary>
+        /// Gets whether the hero has a biography.
+        /// </summary>
         public bool HasBiography => !string.IsNullOrEmpty(this.Hero.Biography);
 
         /// <summary>
@@ -201,6 +221,9 @@
         /// </summary>
         public string LuckBreakdown => Modifiers(("Luck", this.LuckSkillBonus), ("artifacts", this.ArtifactEffects.Luck), ("buildings", this.Hero.LuckBonus));
 
+        /// <summary>
+        /// Gets whether the savegame is from Horn of the Abyss.
+        /// </summary>
         public bool IsHota => this.gameVersion == GameVersion.HornOfTheAbyss;
 
         private int LeadershipBonus => this.Hero.SecondarySkills.GetSkillLevel(Data.SkillRole.Morale).Code;
@@ -236,6 +259,11 @@
             }
         }
 
+        /// <summary>
+        /// Gives the hero a war machine or takes it away.
+        /// </summary>
+        /// <param name="warMachineName">The name of the war machine.</param>
+        /// <param name="isChecked">Whether the hero has it.</param>
         public void UpdateWarMachine(string warMachineName, bool isChecked)
         {
             if (this.isRefreshing)

@@ -8,6 +8,9 @@ namespace Siniskalc.Homm3.Views
     /// </summary>
     public partial class BackpackView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BackpackView"/> class.
+        /// </summary>
         public BackpackView()
         {
             this.InitializeComponent();

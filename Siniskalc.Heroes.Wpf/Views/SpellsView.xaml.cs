@@ -8,6 +8,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class SpellsView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpellsView"/> class.
+        /// </summary>
         public SpellsView()
         {
             this.InitializeComponent();

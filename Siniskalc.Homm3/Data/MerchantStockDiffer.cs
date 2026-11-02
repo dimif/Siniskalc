@@ -12,6 +12,13 @@ namespace Siniskalc.Homm3.Data
     {
         private const string NoArtifact = "(sold)";
 
+        /// <summary>
+        /// Lists what an edit changed in the stock of a merchant.
+        /// </summary>
+        /// <param name="index">The place in its list, from 0.</param>
+        /// <param name="original">The model as it was read from the savefile.</param>
+        /// <param name="current">The model after the edit.</param>
+        /// <returns>The changes, none when the two are the same.</returns>
         public IReadOnlyList<PendingChange> Diff(int index, MerchantStockModel original, MerchantStockModel current)
         {
             var changes = new ChangeSink<MerchantStockModel>((change, revert) => ChunkPendingChange.For<RecordChunk, MerchantStockModel>(Homm3ChunkKinds.Merchants, current.Name, index, change, revert));

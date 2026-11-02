@@ -25,11 +25,15 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns the name of an owner.
         /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>The name.</returns>
         public static string Of(TColor owner) => owner.Name;
 
         /// <summary>
         /// Returns the colour of a name, or neutral for a name that is no colour.
         /// </summary>
+        /// <param name="name">The name, or <see langword="null"/>.</param>
+        /// <returns>The colour, or the neutral colour for no name or one that is none.</returns>
         public static TColor Parse(string? name) => name is null ? Neutral : AbstractEnumeration.FromName<TColor>(name) ?? Neutral;
     }
 }

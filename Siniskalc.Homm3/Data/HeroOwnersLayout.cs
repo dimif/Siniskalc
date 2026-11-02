@@ -56,6 +56,8 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns how many heroes the table of <paramref name="gameVersion"/> has, or 0 when it is not known.
         /// </summary>
+        /// <param name="gameVersion">The version of the game.</param>
+        /// <returns>The length in bytes of the table of owners.</returns>
         public static int LengthFor(GameVersion gameVersion) => gameVersion switch
         {
             GameVersion.HornOfTheAbyss => 215,
@@ -66,12 +68,16 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns whether <paramref name="value"/> is a byte the table was seen with: FF, a colour, 40, or 40 with a colour.
         /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if the byte says that a player has seen the hero.</returns>
         public static bool IsSeen(byte value) => value == Nobody || (value & UnseenBits) == 0;
 
         /// <summary>
         /// Returns what a byte of the table says. A colour with the <see cref="ReservedBit"/> (the 41 of hero 3) reads as a hero nobody owns that
         /// is kept out of play; a byte that was never seen reads as a hero nobody owns.
         /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The ownership.</returns>
         public static HeroOwnership Read(byte value)
         {
             if (value == Nobody || !IsSeen(value))
@@ -86,6 +92,8 @@ namespace Siniskalc.Homm3.Data
         /// Returns the byte of an entry. A hero that has an owner is written with the colour alone: a hired hero loses the
         /// <see cref="ReservedBit"/> in the game.
         /// </summary>
+        /// <param name="ownership">The ownership.</param>
+        /// <returns>The byte.</returns>
         public static byte ByteOf(HeroOwnership ownership) => !ownership.Owner.IsNeutral
             ? ownership.Owner.Code
             : ownership.IsReserved ? ReservedBit : Nobody;

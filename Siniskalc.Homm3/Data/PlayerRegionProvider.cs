@@ -14,6 +14,9 @@ namespace Siniskalc.Homm3.Data
         /// Returns the known regions of a player chunk laid out as <paramref name="layout"/>, ordered by offset. Regions that
         /// would run past <paramref name="chunkLength"/> are left out: the last player of the table is cut short.
         /// </summary>
+        /// <param name="layout">The layout of the player records.</param>
+        /// <param name="chunkLength">The length of the chunk; regions past it are left out.</param>
+        /// <returns>The regions.</returns>
         public IReadOnlyList<ByteRegion> GetRegions(PlayerLayout layout, int chunkLength = int.MaxValue)
         {
             const string resourcesName = "Resources";

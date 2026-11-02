@@ -11,6 +11,8 @@ namespace Siniskalc.Heroes.Entities
         /// <summary>
         /// Returns the name of a kind of mine.
         /// </summary>
+        /// <param name="kind">The kind of mine.</param>
+        /// <returns>The name.</returns>
         public static string NameOf(MineKind kind) => kind switch
         {
             MineKind.Sawmill => "Sawmill",
@@ -29,11 +31,14 @@ namespace Siniskalc.Heroes.Entities
         /// <param name="kind">The kind of the mine.</param>
         /// <param name="position">The tile of the mine.</param>
         /// <param name="hasLevels">Whether the map of the game has two levels.</param>
+        /// <returns>The name.</returns>
         public static string NameAt(MineKind kind, MapPosition position, bool hasLevels) => $"{NameOf(kind)} at {MapLevelText.Place(position, hasLevels)}";
 
         /// <summary>
         /// Returns the resource a kind of mine gives.
         /// </summary>
+        /// <param name="kind">The kind of mine.</param>
+        /// <returns>The resource.</returns>
         public static Resource ResourceOf(MineKind kind) => kind switch
         {
             MineKind.Sawmill => Resource.Wood,

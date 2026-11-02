@@ -15,6 +15,7 @@ namespace Siniskalc.Homm3.Data
     {
         private static readonly ILogger<MerchantStockDeserializer> Logger = LogFactory.For<MerchantStockDeserializer>();
 
+        /// <inheritdoc/>
         public MerchantStockModel Deserialize(RecordChunk chunk)
         {
             using var subject = Logger.BeginSubject("Merchant", chunk.Name);

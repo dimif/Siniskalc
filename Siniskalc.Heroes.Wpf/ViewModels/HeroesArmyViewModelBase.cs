@@ -125,6 +125,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="creature">The creature of the stack.</param>
         /// <param name="amount">How many creatures it holds.</param>
+        /// <returns>The facts, one for each line.</returns>
         protected abstract IReadOnlyList<StackFact> FactsOf(TCreature creature, int amount);
 
         /// <inheritdoc/>

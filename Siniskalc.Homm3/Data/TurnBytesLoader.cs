@@ -15,6 +15,10 @@ namespace Siniskalc.Homm3.Data
 
         private readonly IPlayerControlLocator setupLocator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TurnBytesLoader"/> class.
+        /// </summary>
+        /// <param name="setupLocator">The setup locator.</param>
         public TurnBytesLoader(IPlayerControlLocator setupLocator)
         {
             this.setupLocator = setupLocator;

@@ -37,8 +37,19 @@ namespace Siniskalc.Homm2
             /// </summary>
             public const int MaxMapSize = 144;
 
+            /// <summary>
+            /// The number of hero records in a savefile, whatever the map.
+            /// </summary>
             public const int HeroCount = 54;
+
+            /// <summary>
+            /// The number of player records in a savefile, one for each colour whether it plays or not.
+            /// </summary>
             public const int PlayerCount = 6;
+
+            /// <summary>
+            /// The number of castle records in a savefile; the ones the map does not use are empty.
+            /// </summary>
             public const int CastleSlotCount = 72;
         }
 
@@ -47,15 +58,34 @@ namespace Siniskalc.Homm2
         /// </summary>
         public static class Hero
         {
+            /// <summary>
+            /// The number of artifact slots of a hero.
+            /// </summary>
             public const int ArtifactSlotCount = 14;
+
+            /// <summary>
+            /// The number of secondary skills the game has, which is the length of the tables of skill levels of a hero.
+            /// </summary>
             public const int SecondarySkillCount = 14;
+
+            /// <summary>
+            /// The most secondary skills a hero can know at once.
+            /// </summary>
             public const int MaxSecondarySkills = 8;
 
             /// <summary>
             /// What the places of the map give a hero for its next battle was seen from -1 to 2; the game shows a total from -3 to 3.
             /// </summary>
             public const long MinBattleBonus = -3;
+
+            /// <summary>
+            /// The greatest total of morale or luck the places of the map give a hero for its next battle.
+            /// </summary>
             public const long MaxBattleBonus = 3;
+
+            /// <summary>
+            /// The number of spells the game has.
+            /// </summary>
             public const int SpellCount = 65;
 
             /// <summary>
@@ -63,20 +93,59 @@ namespace Siniskalc.Homm2
             /// </summary>
             public const int PerFaction = 9;
 
+            /// <summary>
+            /// The least coordinate of a hero on the map.
+            /// </summary>
             public const long MinCoordinate = 0;
+
+            /// <summary>
+            /// The greatest coordinate of a hero on the map (a coordinate is a 32-bit number in the savefile).
+            /// </summary>
             public const long MaxCoordinate = int.MaxValue;
 
+            /// <summary>
+            /// The least level of a hero.
+            /// </summary>
             public const long MinLevel = 1;
+
+            /// <summary>
+            /// The greatest level of a hero (a byte in the savefile).
+            /// </summary>
             public const long MaxLevel = 255;
 
+            /// <summary>
+            /// The least experience of a hero.
+            /// </summary>
             public const long MinExperience = 0;
+
+            /// <summary>
+            /// The most experience the editor gives a hero.
+            /// </summary>
             public const long MaxExperience = 2_000_000_000;
+
+            /// <summary>
+            /// The step of the experience stepper of a hero.
+            /// </summary>
             public const long ExperienceStep = 100;
 
+            /// <summary>
+            /// The least value of a primary skill of a hero.
+            /// </summary>
             public const long MinPrimarySkill = 0;
+
+            /// <summary>
+            /// The greatest value of a primary skill of a hero (a byte in the savefile).
+            /// </summary>
             public const long MaxPrimarySkill = 255;
 
+            /// <summary>
+            /// The least spell points of a hero.
+            /// </summary>
             public const long MinSpellPoints = 0;
+
+            /// <summary>
+            /// The greatest spell points of a hero (16 bits in the savefile).
+            /// </summary>
             public const long MaxSpellPoints = 65_535;
 
             /// <summary>
@@ -84,8 +153,19 @@ namespace Siniskalc.Homm2
             /// </summary>
             public const int SpellPointsPerKnowledge = 10;
 
+            /// <summary>
+            /// The least movement points of a hero.
+            /// </summary>
             public const long MinMovementPoints = 0;
+
+            /// <summary>
+            /// The most movement points the editor gives a hero.
+            /// </summary>
             public const long MaxMovementPoints = 99_999;
+
+            /// <summary>
+            /// The step of the movement stepper of a hero.
+            /// </summary>
             public const long MovementStep = 100;
         }
 
@@ -94,32 +174,74 @@ namespace Siniskalc.Homm2
         /// </summary>
         public static class Player
         {
+            /// <summary>
+            /// The most heroes a player can have.
+            /// </summary>
             public const int HeroListSize = 5;
+
+            /// <summary>
+            /// The number of heroes the tavern offers a player.
+            /// </summary>
             public const int TavernSize = 2;
+
+            /// <summary>
+            /// The most castles a player can have.
+            /// </summary>
             public const int CastleListSize = 8;
+
+            /// <summary>
+            /// The number of resources a player keeps: wood, mercury, ore, sulfur, crystal, gems and gold.
+            /// </summary>
             public const int ResourceCount = 7;
 
+            /// <summary>
+            /// The least stock of a resource.
+            /// </summary>
             public const long MinResource = 0;
+
+            /// <summary>
+            /// The greatest stock of a resource the editor gives a player.
+            /// </summary>
             public const long MaxResource = Heroes.Constants.Resources.MaxGold;
 
             /// <summary>
             /// The most the editor gives a player (the same in every game of the series). The savegame holds 32 bits; the game took well over 1,000,000 gold and over 1,000 of the other resources (save E23LIMIT, where the next turn went past them).
             /// </summary>
             public const long MaxGold = Heroes.Constants.Resources.MaxGold;
+
+            /// <summary>
+            /// The greatest stock of a resource other than gold the editor gives a player.
+            /// </summary>
             public const long MaxOther = Heroes.Constants.Resources.MaxOther;
+
+            /// <summary>
+            /// The step of the gold stepper.
+            /// </summary>
             public const long GoldStep = 1000;
+
+            /// <summary>
+            /// The step of the stepper of a resource other than gold.
+            /// </summary>
             public const long OtherStep = 1;
 
             /// <summary>
             /// What the "Res +100" and "Gold +100k" buttons add.
             /// </summary>
             public const int AllResourcesIncrease = 100;
+
+            /// <summary>
+            /// What the "Gold +100k" button adds to the gold.
+            /// </summary>
             public const int GoldIncrease = 100_000;
 
             /// <summary>
             /// What the "+10" button of a resource and the "+10k" button of gold add.
             /// </summary>
             public const int OtherPreset = 10;
+
+            /// <summary>
+            /// What the "+10k" button of gold adds.
+            /// </summary>
             public const int GoldPreset = 10_000;
         }
 
@@ -128,15 +250,44 @@ namespace Siniskalc.Homm2
         /// </summary>
         public static class Castle
         {
+            /// <summary>
+            /// The number of dwellings of a castle.
+            /// </summary>
             public const int DwellingCount = 6;
+
+            /// <summary>
+            /// The number of levels of a Mage Guild.
+            /// </summary>
             public const int MageGuildLevels = 5;
+
+            /// <summary>
+            /// The number of spells a level of the Mage Guild can offer.
+            /// </summary>
             public const int MageGuildSlotsPerLevel = 4;
+
+            /// <summary>
+            /// The length of the field of the name of a castle in the savefile.
+            /// </summary>
             public const int NameLength = 13;
 
+            /// <summary>
+            /// The least coordinate of a castle on the map.
+            /// </summary>
             public const long MinCoordinate = 0;
+
+            /// <summary>
+            /// The greatest coordinate of a castle on the map (a byte in the savefile).
+            /// </summary>
             public const long MaxCoordinate = byte.MaxValue;
 
+            /// <summary>
+            /// The least number of spells a level of the Mage Guild offers.
+            /// </summary>
             public const long MinGuildSpellCount = 0;
+
+            /// <summary>
+            /// The most spells a level of the Mage Guild offers.
+            /// </summary>
             public const long MaxGuildSpellCount = MageGuildSlotsPerLevel;
 
             /// <summary>
@@ -144,7 +295,14 @@ namespace Siniskalc.Homm2
             /// </summary>
             public const long MaxTownBuildings = ushort.MaxValue;
 
+            /// <summary>
+            /// The least creatures that wait in a dwelling.
+            /// </summary>
             public const long MinCreatures = 0;
+
+            /// <summary>
+            /// The most creatures a dwelling holds in the savefile (16 bits).
+            /// </summary>
             public const long MaxCreatures = 65_535;
 
             /// <summary>
@@ -169,7 +327,14 @@ namespace Siniskalc.Homm2
         /// </summary>
         public static class Sphinx
         {
+            /// <summary>
+            /// The most answers a sphinx accepts.
+            /// </summary>
             public const int MaxAnswers = 8;
+
+            /// <summary>
+            /// The most characters an answer of a sphinx has.
+            /// </summary>
             public const int MaxAnswerLength = 12;
         }
     }

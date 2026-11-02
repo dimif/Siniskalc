@@ -16,6 +16,13 @@
     {
         private const int MinStackSize = 1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArmyViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="gameVersion">The game version.</param>
+        /// <param name="getArmy">The get army.</param>
+        /// <param name="update">The update.</param>
         public ArmyViewModel(GameCatalog catalog, GameVersion gameVersion, Func<IArmy<Creature>> getArmy, Action<Func<IArmy<Creature>, IArmy<Creature>>> update)
             : base(
                 catalog.Creatures.Where(c => c.IsAvailableIn(gameVersion)).ToList(),

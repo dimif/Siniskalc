@@ -28,11 +28,21 @@
         /// </summary>
         public bool GrantsSpellBook => this.slotsToArtifacts.Values.Any(a => a.EffectInfo.GrantsSpellBook);
 
+        /// <summary>
+        /// Tells whether a value names exactly one slot.
+        /// </summary>
+        /// <param name="slot">The slot, or several slots together.</param>
+        /// <returns><see langword="true"/> if it is one slot.</returns>
         public static bool IsSingleSlot(ArtifactSlots slot)
         {
             return slot != ArtifactSlots.None && ((int)slot & ((int)slot - 1)) == 0;
         }
 
+        /// <summary>
+        /// Gets the artifact in a slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <returns>The artifact, or <see langword="null"/> when the slot is empty.</returns>
         public Artifact? GetArtifact(ArtifactSlots slot)
         {
             return this.slotsToArtifacts.TryGetValue(slot, out var artifact) ? artifact : null;
@@ -41,6 +51,8 @@
         /// <summary>
         /// Gets the spell of the Spell Scroll worn in <paramref name="slot"/>; null when the slot holds no scroll or its spell is not known.
         /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <returns>The spell, or <see langword="null"/> when the slot holds no scroll.</returns>
         public Spell? GetScrollSpell(ArtifactSlots slot)
         {
             return this.scrollSpells.TryGetValue(slot, out var spell) ? spell : null;
@@ -51,6 +63,9 @@
         /// A combination artifact also empties the other slots it blocks; it is only stored in its own slot.
         /// </summary>
         /// <param name="spell">The spell of a Spell Scroll; ignored for any other artifact.</param>
+        /// <param name="slot">The slot.</param>
+        /// <param name="artifact">The artifact.</param>
+        /// <returns>The new artifacts; these are not changed.</returns>
         public EquippedArtifacts WithEquipped(ArtifactSlots slot, Artifact artifact, Spell? spell = null)
         {
             if (!IsSingleSlot(slot))
@@ -89,6 +104,11 @@
             return new EquippedArtifacts(slotsToArtifacts, scrollSpells);
         }
 
+        /// <summary>
+        /// Takes the artifact out of a slot.
+        /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <returns>The new artifacts; these are not changed.</returns>
         public EquippedArtifacts WithUnequipped(ArtifactSlots slot)
         {
             var slotsToArtifacts = new Dictionary<ArtifactSlots, Artifact>(this.slotsToArtifacts);
@@ -98,11 +118,19 @@
             return new EquippedArtifacts(slotsToArtifacts, scrollSpells);
         }
 
+        /// <summary>
+        /// Lists the artifacts that are worn.
+        /// </summary>
+        /// <returns>The slots with the artifact in each.</returns>
         public IEnumerable<Tuple<ArtifactSlots, Artifact>> GetEquippedArtifacts()
         {
             return this.slotsToArtifacts.Where(kv => kv.Value != null).Select(kv => Tuple.Create(kv.Key, kv.Value));
         }
 
+        /// <summary>
+        /// Adds up what the artifacts that are worn do.
+        /// </summary>
+        /// <returns>The total.</returns>
         public ArtifactEffectInfo GetTotalEffects()
         {
             ArtifactEffectInfo totalEffects = default;

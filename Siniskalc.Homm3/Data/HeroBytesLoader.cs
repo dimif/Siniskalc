@@ -62,6 +62,10 @@
 
         private readonly Encoding saveEncoding;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroBytesLoader"/> class.
+        /// </summary>
+        /// <param name="encoding">The encoding.</param>
         public HeroBytesLoader(Encoding encoding)
         {
             this.saveEncoding = encoding;

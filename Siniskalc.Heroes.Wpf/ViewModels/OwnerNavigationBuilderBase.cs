@@ -23,6 +23,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     {
         private readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> kinds;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwnerNavigationBuilderBase"/> class.
+        /// </summary>
+        /// <param name="kinds">The kinds.</param>
         protected OwnerNavigationBuilderBase(IReadOnlyDictionary<NavNodeKind, ChunkKind> kinds)
         {
             this.kinds = kinds;
@@ -34,6 +38,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns who owns each castle, hero, mine and dwelling, as one text that changes when any of them changes hands. Reads the owner bytes only.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The key.</returns>
         public string StructureKey(TGame game) =>
             string.Join(",", this.CastleOwners(game).Select(o => o.ToString())) + ";" + string.Join(",", this.HeroOwners(game).Select(o => o.ToString()))
             + ";" + string.Join(",", this.MineOwners(game).Select(o => o.ToString())) + ";" + string.Join(",", this.DwellingOwners(game).Select(o => o.ToString()));
@@ -64,6 +70,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         /// <param name="heroes">The heroes of the savefile.</param>
         /// <param name="owner">The colour whose heroes are wanted.</param>
+        /// <returns>The entries.</returns>
         protected static IReadOnlyList<NavEntry> HeroEntriesOf(IHeroSummaries<TColor> heroes, TColor owner) =>
             heroes.GetSummaries()
                 .Where(s => s.Owner == owner)
@@ -77,6 +84,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="mines">The mines of the map.</param>
         /// <param name="owner">The colour whose mines are wanted.</param>
         /// <param name="hasLevels">Whether the map of the game has two levels, so a place says which level it is on.</param>
+        /// <returns>The groups.</returns>
         protected static IReadOnlyList<NavGroup> MineGroupsOf(IEnumerable<IMineModel<TColor>> mines, TColor owner, bool hasLevels) =>
             mines
                 .Where(m => m.Owner == owner)
@@ -88,6 +96,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Adds the nodes a game has besides its players, under the node of the game. None by default.
         /// </summary>
+        /// <param name="tree">The tree being built.</param>
+        /// <param name="game">The game.</param>
+        /// <param name="overview">The node of the game, which the new nodes go under.</param>
         protected virtual void AddExtraNodes(NavigationTree tree, TGame game, NavNodeViewModel overview)
         {
         }
@@ -95,36 +106,52 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the owner of each castle of the savefile, in the order of the castles.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The owners.</returns>
         protected abstract IReadOnlyList<TColor> CastleOwners(TGame game);
 
         /// <summary>
         /// Gets the owners of the castles that are in the game, which can be fewer than the savefile has records for.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The owners.</returns>
         protected virtual IReadOnlyList<TColor> CastleOwnersInUse(TGame game) => this.CastleOwners(game);
 
         /// <summary>
         /// Gets the owner of each hero of the savefile, in the order of the heroes.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The owners.</returns>
         protected abstract IReadOnlyList<TColor> HeroOwners(TGame game);
 
         /// <summary>
         /// Gets the owner of each mine of the map, in the order of the mines. None by default.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The owners.</returns>
         protected virtual IReadOnlyList<TColor> MineOwners(TGame game) => [];
 
         /// <summary>
         /// Gets the owner of each dwelling of the map, in the order of the dwellings. None by default, for a game whose map has none.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The owners.</returns>
         protected virtual IReadOnlyList<TColor> DwellingOwners(TGame game) => [];
 
         /// <summary>
         /// Gets the colours of the players the savefile has data for. A player listed here has a node, whether it owns anything or not.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <returns>The colours.</returns>
         protected abstract IEnumerable<TColor> PlayersInGame(TGame game);
 
         /// <summary>
         /// Creates the node of an owner, with its heroes and towns, or of what nobody owns when <paramref name="owner"/> is neutral.
         /// </summary>
+        /// <param name="tree">The tree being built.</param>
+        /// <param name="game">The game.</param>
+        /// <returns>The node.</returns>
+        /// <param name="owner">The owner, or the neutral colour for what nobody owns.</param>
         protected abstract NavNodeViewModel CreateGroup(NavigationTree tree, TGame game, TColor owner);
 
         // A player is listed when the savefile has data for it or it owns a hero or a castle; what nobody owns comes last, as neutral has the highest code.

@@ -20,6 +20,11 @@
         private readonly GameCatalog catalog;
         private readonly ICreatureCodes<Creature> creatureCodes;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="creatureCodes">The creature codes.</param>
         public HeroDeserializer(GameCatalog catalog, ICreatureCodes<Creature> creatureCodes)
         {
             this.catalog = catalog;

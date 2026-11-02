@@ -13,11 +13,16 @@ namespace Siniskalc.Homm2.Data
     {
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SphinxDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public SphinxDeserializer(GameCatalog catalog)
         {
             this.catalog = catalog;
         }
 
+        /// <inheritdoc/>
         public SphinxModel Deserialize(MapObjectChunk chunk)
         {
             var bytes = chunk.ToArray();

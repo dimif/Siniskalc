@@ -6,14 +6,28 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public static class NeutralTabs
     {
+        /// <summary>
+        /// The index of the heroes tab.
+        /// </summary>
         public const int Heroes = 0;
+        /// <summary>
+        /// The index of the towns tab.
+        /// </summary>
         public const int Towns = 1;
+        /// <summary>
+        /// The index of the mines tab.
+        /// </summary>
         public const int Mines = 2;
+        /// <summary>
+        /// The index of the dwellings tab.
+        /// </summary>
         public const int Dwellings = 3;
 
         /// <summary>
         /// Returns the number of the tab of the Neutral page that holds what the tab <paramref name="ownerTab"/> of a player's page holds.
         /// </summary>
+        /// <returns>The number of the tab.</returns>
+        /// <param name="ownerTab">The tab of a player's page (see <see cref="OwnerTabs"/>).</param>
         public static int Of(int ownerTab) => ownerTab - OwnerTabs.Heroes;
     }
 }

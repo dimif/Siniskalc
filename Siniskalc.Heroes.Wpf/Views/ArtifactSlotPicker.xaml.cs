@@ -13,9 +13,15 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class ArtifactSlotPicker : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="PopupWidth"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty PopupWidthProperty =
             DependencyProperty.Register(nameof(PopupWidth), typeof(double), typeof(ArtifactSlotPicker), new PropertyMetadata(1000.0));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactSlotPicker"/> class.
+        /// </summary>
         public ArtifactSlotPicker()
         {
             this.InitializeComponent();

@@ -29,10 +29,19 @@ namespace Siniskalc.Wpf.ViewModels
             this.ToolTip = toolTip;
         }
 
+        /// <summary>
+        /// Gets the name of what the row switches.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the row.
+        /// </summary>
         public string ToolTip { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the row is switched on.
+        /// </summary>
         public bool IsChecked
         {
             get => this.get();
@@ -45,6 +54,9 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the user can switch the row now.
+        /// </summary>
         public bool CanToggle => this.canToggle?.Invoke() ?? true;
 
         /// <summary>
@@ -52,6 +64,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string Note => this.note?.Invoke() ?? string.Empty;
 
+        /// <summary>
+        /// Shows the row again. Call after its value changed elsewhere.
+        /// </summary>
         public void Refresh() => this.RaiseAllPropertiesChanged();
     }
 }

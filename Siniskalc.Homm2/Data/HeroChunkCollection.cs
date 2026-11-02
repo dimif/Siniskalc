@@ -15,6 +15,13 @@
     {
         private readonly IDiffer<HeroModel> differ;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroChunkCollection"/> class.
+        /// </summary>
+        /// <param name="chunks">The chunks.</param>
+        /// <param name="deserializer">The deserializer.</param>
+        /// <param name="serializer">The serializer.</param>
+        /// <param name="differ">The differ.</param>
         public HeroChunkCollection(IEnumerable<HeroChunk> chunks, IHeroDeserializer deserializer, ISerializer<HeroChunk, HeroModel> serializer, IDiffer<HeroModel> differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
@@ -27,11 +34,13 @@
         /// <summary>
         /// Returns the player each hero serves (<c>null</c> for the ones that serve nobody), by hero number.
         /// </summary>
+        /// <returns>The owners, in the order of the records.</returns>
         public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
         /// Returns a short summary of every hero, by hero number.
         /// </summary>
+        /// <returns>The summaries, in the order of the records.</returns>
         public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => this.GetModels().Select((hero, index) => hero.Summary with { Index = index, HeroId = index }).ToList();
 
         /// <inheritdoc/>

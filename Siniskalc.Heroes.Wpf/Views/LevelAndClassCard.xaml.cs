@@ -7,6 +7,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class LevelAndClassCard : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LevelAndClassCard"/> class.
+        /// </summary>
         public LevelAndClassCard()
         {
             this.InitializeComponent();

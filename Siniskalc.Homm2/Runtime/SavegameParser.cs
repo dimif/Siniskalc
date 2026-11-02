@@ -23,6 +23,17 @@ namespace Siniskalc.Homm2.Runtime
         private readonly GameCatalogs catalogs;
         private readonly Func<GameVersion, ISaveDocumentFactory>? documentFactoryForVersion;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SavegameParser"/> class.
+        /// </summary>
+        /// <param name="locator">Finds where the tables are in a savegame.</param>
+        /// <param name="loader">Loads the bytes of a file.</param>
+        /// <param name="headerReader">Reads the header of a savegame.</param>
+        /// <param name="documentFactory">Makes the document of a savegame.</param>
+        /// <param name="placesReader">Finds the places a hero can visit once.</param>
+        /// <param name="objectsReader">Finds the mines, shrines and sphinxes of the map.</param>
+        /// <param name="catalogs">The catalogs of the versions of the game.</param>
+        /// <param name="documentFactoryForVersion">Makes the factory of the documents of a version of the game; <see langword="null"/> uses <paramref name="documentFactory"/> for every version.</param>
         public SavegameParser(ISaveLayoutLocator locator, IBytesLoader loader, IHeaderReader headerReader, ISaveDocumentFactory documentFactory, IMapPlacesReader placesReader, IMapObjectsReader objectsReader, GameCatalogs catalogs, Func<GameVersion, ISaveDocumentFactory>? documentFactoryForVersion = null)
         {
             this.locator = locator;

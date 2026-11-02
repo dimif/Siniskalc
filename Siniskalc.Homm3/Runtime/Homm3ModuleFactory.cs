@@ -111,43 +111,95 @@
         /// </summary>
         public IGameModule<Homm3EditorViewModel> Module { get; }
 
+        /// <summary>
+        /// Gets the service that opens, edits and saves a savegame.
+        /// </summary>
         public ISavegameService<Game> GameService { get; }
 
+        /// <summary>
+        /// Gets what compresses and decompresses a savefile.
+        /// </summary>
         public ISavefileCodec SavefileCodec { get; }
 
+        /// <summary>
+        /// Gets what makes the document of a savegame.
+        /// </summary>
         public ISaveDocumentFactory DocumentFactory { get; }
 
+        /// <summary>
+        /// Gets what reads a castle from its chunk.
+        /// </summary>
         public ICastleDeserializer CastleDeserializer { get; }
 
+        /// <summary>
+        /// Gets what writes a castle into its chunk.
+        /// </summary>
         public ISerializer<CastleChunk, CastleModel> CastleSerializer { get; }
 
+        /// <summary>
+        /// Gets what reads a player from its chunk.
+        /// </summary>
         public IPlayerDeserializer PlayerDeserializer { get; }
 
+        /// <summary>
+        /// Gets what writes the edits into the bytes of the savefile.
+        /// </summary>
         public ISavefileBytesPatcher BytesPatcher { get; }
 
+        /// <summary>
+        /// Gets what lists the regions of a savegame for the hex editor.
+        /// </summary>
         public ISaveRegionProvider SaveRegionProvider { get; }
 
+        /// <summary>
+        /// Gets what makes the entities of each version of the game.
+        /// </summary>
         public IVersionSpecificEntitiesProviderFactory VersionEntities { get; }
 
+        /// <summary>
+        /// Gets the fields of a hero for the hex editor.
+        /// </summary>
         public IHeroRegionProvider HeroRegions { get; }
 
+        /// <summary>
+        /// Gets the fields of a player for the hex editor.
+        /// </summary>
         public IPlayerRegionProvider PlayerRegions { get; }
 
+        /// <summary>
+        /// Gets the fields of a castle for the hex editor.
+        /// </summary>
         public ICastleRegionProvider CastleRegions { get; }
 
+        /// <summary>
+        /// Gets what makes the targets of the hex editor.
+        /// </summary>
         public IByteEditTargetFactory ByteEditTargets { get; }
 
+        /// <summary>
+        /// Gets the words that describe the effects of a hero.
+        /// </summary>
         public EffectLineProvider EffectLines { get; }
 
+        /// <summary>
+        /// Gets the words of the countdown of a player who is losing or gaining a town.
+        /// </summary>
         public BanishingTextProvider BanishingText { get; }
 
+        /// <summary>
+        /// Gets the words that say why a building cannot be built.
+        /// </summary>
         public CastleBuildMessageProvider CastleBuildMessages { get; }
 
+        /// <summary>
+        /// Gets what works out the most spell points of a hero.
+        /// </summary>
         public ISpellPointsCalculatorFactory SpellPoints { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
+        /// <returns>The view model of the editor.</returns>
         public Homm3EditorViewModel CreateEditor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.BanishingText));
     }
 }

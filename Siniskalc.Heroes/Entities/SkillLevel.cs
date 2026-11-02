@@ -8,12 +8,24 @@ namespace Siniskalc.Heroes.Entities
     /// </summary>
     public sealed class SkillLevel : AbstractEnumeration
     {
+        /// <summary>
+        /// The hero has no level in the skill.
+        /// </summary>
         public static readonly SkillLevel None = new("None", 0);
 
+        /// <summary>
+        /// The first level of a skill.
+        /// </summary>
         public static readonly SkillLevel Beginner = new("Beginner", 1);
 
+        /// <summary>
+        /// The second level of a skill.
+        /// </summary>
         public static readonly SkillLevel Intermediate = new("Intermediate", 2);
 
+        /// <summary>
+        /// The third and highest level of a skill.
+        /// </summary>
         public static readonly SkillLevel Expert = new("Expert", 3);
 
         private SkillLevel(string name, byte code)

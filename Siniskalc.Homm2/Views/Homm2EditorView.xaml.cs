@@ -9,6 +9,9 @@ namespace Siniskalc.Homm2.Views
     /// </summary>
     public partial class Homm2EditorView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Homm2EditorView"/> class.
+        /// </summary>
         public Homm2EditorView()
         {
             this.InitializeComponent();

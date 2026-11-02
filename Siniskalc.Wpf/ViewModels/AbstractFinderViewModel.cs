@@ -15,6 +15,13 @@
     {
         private string filter = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractFinderViewModel"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="noun">The noun.</param>
+        /// <param name="columns">The columns.</param>
+        /// <param name="items">The items.</param>
         protected AbstractFinderViewModel(string title, string noun, IReadOnlyList<FinderColumn> columns, ListCollectionView items)
         {
             this.Title = title;
@@ -35,6 +42,9 @@
         /// </summary>
         public string Noun { get; }
 
+        /// <summary>
+        /// Gets the columns of the list, which the header of the list shows and sorts by.
+        /// </summary>
         public IReadOnlyList<FinderColumn> Columns { get; }
 
         /// <summary>
@@ -136,11 +146,14 @@
         /// <summary>
         /// Gets the entries of the right-click menu of a row; none by default.
         /// </summary>
+        /// <param name="row">The row, as the list holds it, or <see langword="null"/> for no row.</param>
+        /// <returns>The menu entries; empty for none.</returns>
         public virtual IReadOnlyList<FinderMenuItem> GetRowMenu(object? row) => [];
 
         /// <summary>
         /// Runs the action on a row, when it can be run. Does nothing for anything but a row of this finder.
         /// </summary>
+        /// <param name="row">The row, as the list holds it, or <see langword="null"/> for no row.</param>
         public abstract void ChooseRow(object? row);
 
         /// <summary>
@@ -155,12 +168,28 @@
         /// <summary>
         /// Runs the second action on a row, when it can be run.
         /// </summary>
+        /// <param name="row">The row, as the list holds it, or <see langword="null"/> for no row.</param>
         public abstract void ChooseRowSecondary(object? row);
 
+        /// <summary>
+        /// Returns whether the action can be run on a row.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the action can be run on <paramref name="row"/>.</returns>
         protected abstract bool CanChooseRow(object row);
 
+        /// <summary>
+        /// Returns whether the second action can be run on a row.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the second action can be run on <paramref name="row"/>.</returns>
         protected abstract bool CanChooseRowSecondary(object row);
 
+        /// <summary>
+        /// Returns whether a row passes the search text and the filters, so the list shows it.
+        /// </summary>
+        /// <param name="row">The row, as the list holds it.</param>
+        /// <returns><see langword="true"/> if the list shows <paramref name="row"/>.</returns>
         protected abstract bool MatchesRow(object row);
 
         /// <summary>
@@ -174,6 +203,7 @@
         /// <summary>
         /// Sets up the second action button.
         /// </summary>
+        /// <param name="label">The text of the button.</param>
         protected void EnableSecondaryAction(string label)
         {
             this.HasSecondaryAction = true;
@@ -183,6 +213,7 @@
         /// <summary>
         /// Sets up the action button.
         /// </summary>
+        /// <param name="label">The text of the button.</param>
         protected void EnableAction(string label)
         {
             this.HasAction = true;
@@ -193,12 +224,17 @@
         /// Tells whether every word of the search text is part of at least one of <paramref name="fields"/>, or there is no search text.
         /// So "relic helm" finds the helms of relic class, whichever fields hold those words.
         /// </summary>
+        /// <returns><see langword="true"/> if every word of the search text is in one of the fields, or there is no search text.</returns>
+        /// <param name="fields">The texts of a row to look in; a <see langword="null"/> one is skipped.</param>
         protected bool TextMatches(params string?[] fields)
         {
             var words = this.filter.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             return words.All(word => fields.Any(f => f != null && f.Contains(word, StringComparison.OrdinalIgnoreCase)));
         }
 
+        /// <summary>
+        /// Applies the search text and the filters to the list again and updates the summary.
+        /// </summary>
         protected void RefreshList()
         {
             this.Items.Refresh();

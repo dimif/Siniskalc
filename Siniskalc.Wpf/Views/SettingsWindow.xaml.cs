@@ -10,6 +10,10 @@ namespace Siniskalc.Wpf.Views
     {
         private readonly SettingsViewModel viewModel;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsWindow"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public SettingsWindow(SettingsViewModel viewModel)
         {
             this.InitializeComponent();

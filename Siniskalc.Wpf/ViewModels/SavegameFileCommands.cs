@@ -23,6 +23,12 @@ namespace Siniskalc.Wpf.ViewModels
         private readonly IFileDialogs dialogs;
         private readonly IMessageService messages;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SavegameFileCommands"/> class.
+        /// </summary>
+        /// <param name="recentFiles">The recent files.</param>
+        /// <param name="dialogs">The dialogs.</param>
+        /// <param name="messages">The messages.</param>
         public SavegameFileCommands(IRecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;
@@ -33,6 +39,10 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Runs <paramref name="action"/> and tells the user if it fails. False when it failed.
         /// </summary>
+        /// <param name="title">The title of the message shown on failure.</param>
+        /// <param name="what">What the action was doing, for the message.</param>
+        /// <returns><see langword="true"/> if the action succeeded; <see langword="false"/> if it failed and the user was told.</returns>
+        /// <param name="action">The action to run.</param>
         public bool Run(Action action, string title, string what)
         {
             try
@@ -50,6 +60,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Asks for a savegame and loads it.
         /// </summary>
+        /// <param name="shell">The shell that loads the game.</param>
+        /// <returns>The path of the file loaded, or <see langword="null"/> if the user cancelled or the load failed.</returns>
         public string? Open(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToOpen(shell.OpenFilter);
@@ -59,6 +71,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Loads a savegame from the list of recent files. A file that is gone is taken off the list.
         /// </summary>
+        /// <param name="shell">The shell that loads the game.</param>
+        /// <param name="path">The path from the list.</param>
+        /// <returns>The path of the file loaded, or <see langword="null"/> if it could not be loaded.</returns>
         public string? OpenRecent(ShellViewModel shell, string path)
         {
             if (!File.Exists(path))
@@ -75,6 +90,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// Reads the game again from its file, discarding the edits. When there are unsaved edits the user is asked first: save them, throw
         /// them away, or cancel. False when the game was not reloaded.
         /// </summary>
+        /// <param name="shell">The shell that reloads the game.</param>
+        /// <returns><see langword="true"/> if the game was read again; <see langword="false"/> if the user cancelled or it failed.</returns>
         public bool Reload(ShellViewModel shell)
         {
             if (shell.HasPendingChanges)
@@ -101,6 +118,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Saves over the file the game has (it is backed up first), or asks for one when the game has none.
         /// </summary>
+        /// <param name="shell">The shell that saves the game.</param>
+        /// <returns>The path saved to, or <see langword="null"/> if the user cancelled or the save failed.</returns>
         public string? Save(ShellViewModel shell)
         {
             if (!shell.HasFile)
@@ -114,6 +133,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Asks for a file and saves the game there.
         /// </summary>
+        /// <param name="shell">The shell that saves the game.</param>
+        /// <returns>The path saved to, or <see langword="null"/> if the user cancelled or the save failed.</returns>
         public string? SaveAs(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToSave(shell.SaveFilter);
@@ -140,6 +161,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Asks for a file and writes the bytes the savegame would have to it, without compression.
         /// </summary>
+        /// <param name="shell">The shell that gives the bytes.</param>
+        /// <returns>The path written, or <see langword="null"/> if the user cancelled or the write failed.</returns>
         public async Task<string?> ExportBytesAsync(ShellViewModel shell)
         {
             if (!shell.IsGameLoaded)
@@ -169,6 +192,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Asks for a file of bytes written by <see cref="ExportBytesAsync"/> and loads it as a game.
         /// </summary>
+        /// <param name="shell">The shell that loads the game.</param>
+        /// <returns>The path of the file loaded, or <see langword="null"/> if the user cancelled or the load failed.</returns>
         public string? LoadBytes(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToOpen(BytesFilter);
@@ -180,6 +205,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Returns whether the editor may close: nothing is unsaved, or the user saved it or chose to throw it away.
         /// </summary>
+        /// <param name="shell">The shell whose game is closed.</param>
+        /// <returns><see langword="true"/> if the editor may close.</returns>
         public bool ConfirmClose(ShellViewModel shell)
         {
             if (!shell.HasPendingChanges)

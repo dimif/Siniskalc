@@ -57,6 +57,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         protected virtual string ObjectsSummary => string.Empty;
 
+        /// <inheritdoc/>
         public void Dispose() => this.history.Changed -= this.OnHistoryChanged;
 
         /// <summary>
@@ -73,16 +74,22 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns "3 mines" style text, or nothing for none.
         /// </summary>
+        /// <param name="count">The number.</param>
+        /// <param name="one">The word for one.</param>
+        /// <param name="many">The word for any other number.</param>
+        /// <returns>The text, or nothing for none.</returns>
         protected static string Count(int count, string one, string many) => count == 0 ? string.Empty : $"{count} {(count == 1 ? one : many)}";
 
         /// <summary>
         /// Gets the heroes nobody owns.
         /// </summary>
+        /// <returns>The links to the heroes.</returns>
         protected abstract IReadOnlyList<ILink> LoadHeroes();
 
         /// <summary>
         /// Gets the towns nobody owns.
         /// </summary>
+        /// <returns>The links to the towns.</returns>
         protected abstract IReadOnlyList<ILink> LoadCastles();
 
         /// <summary>

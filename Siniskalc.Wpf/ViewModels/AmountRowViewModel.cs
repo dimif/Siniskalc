@@ -38,6 +38,9 @@ namespace Siniskalc.Wpf.ViewModels
             this.note = note;
         }
 
+        /// <summary>
+        /// Gets the name of what the amount counts, such as a resource.
+        /// </summary>
         public string Name { get; }
 
         /// <summary>
@@ -45,10 +48,19 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string Badge => this.Name.Length < 2 ? this.Name : this.Name[..2];
 
+        /// <summary>
+        /// Gets the colour of the row as a hex string such as <c>#FFD700</c>.
+        /// </summary>
         public string ColorHex { get; }
 
+        /// <summary>
+        /// Gets the least amount the row accepts.
+        /// </summary>
         public long Minimum { get; }
 
+        /// <summary>
+        /// Gets the greatest amount the row accepts.
+        /// </summary>
         public long Maximum { get; }
 
         /// <summary>
@@ -56,12 +68,18 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public long Step { get; }
 
+        /// <summary>
+        /// Gets or sets the amount, kept between <see cref="Minimum"/> and <see cref="Maximum"/>.
+        /// </summary>
         public long Value
         {
             get => this.current();
             set => this.set(RangeGuard.Clamp(value, this.Minimum, this.Maximum));
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the amount differs from the loaded one.
+        /// </summary>
         public bool IsChanged => this.Value != this.original();
 
         /// <summary>
@@ -81,6 +99,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public string Note => this.note?.Invoke() ?? string.Empty;
 
+        /// <summary>
+        /// Shows the amount again. Call after it changed elsewhere.
+        /// </summary>
         public void Refresh() => this.RaiseAllPropertiesChanged();
     }
 }

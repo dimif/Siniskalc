@@ -13,6 +13,14 @@ namespace Siniskalc.Homm3.Data
         private readonly IMineRegionProvider mineRegions;
         private readonly IDwellingRegionProvider dwellingRegions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ByteEditTargetFactory"/> class.
+        /// </summary>
+        /// <param name="heroRegions">The hero regions.</param>
+        /// <param name="playerRegions">The player regions.</param>
+        /// <param name="castleRegions">The castle regions.</param>
+        /// <param name="mineRegions">The mine regions.</param>
+        /// <param name="dwellingRegions">The dwelling regions.</param>
         public ByteEditTargetFactory(IHeroRegionProvider heroRegions, IPlayerRegionProvider playerRegions, ICastleRegionProvider castleRegions, IMineRegionProvider mineRegions, IDwellingRegionProvider dwellingRegions)
         {
             this.mineRegions = mineRegions;
@@ -22,14 +30,19 @@ namespace Siniskalc.Homm3.Data
             this.castleRegions = castleRegions;
         }
 
+        /// <inheritdoc/>
         public IByteEditTarget ForHero(HeroEditSession session) => new HeroByteEditTarget(session, this.heroRegions);
 
+        /// <inheritdoc/>
         public IByteEditTarget ForPlayer(PlayerEditSession session) => new PlayerByteEditTarget(session, this.playerRegions);
 
+        /// <inheritdoc/>
         public IByteEditTarget ForCastle(CastleEditSession session) => new CastleByteEditTarget(session, this.castleRegions);
 
+        /// <inheritdoc/>
         public IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex) => new MineByteEditTarget(history, mineIndex, this.mineRegions);
 
+        /// <inheritdoc/>
         public IByteEditTarget ForDwelling(SaveDocumentHistory history, int dwellingIndex) => new DwellingByteEditTarget(history, dwellingIndex, this.dwellingRegions);
     }
 }

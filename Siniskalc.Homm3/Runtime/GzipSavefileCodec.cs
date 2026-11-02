@@ -31,6 +31,8 @@
         /// <summary>
         /// Tells whether the first bytes of a file are those of a GZip file.
         /// </summary>
+        /// <param name="head">The first bytes of the data.</param>
+        /// <returns><see langword="true"/> if the bytes begin like gzip data.</returns>
         public static bool IsGzip(ReadOnlySpan<byte> head) => head.Length >= MagicLength && head[0] == FirstMagicByte && head[1] == SecondMagicByte;
 
         /// <inheritdoc/>

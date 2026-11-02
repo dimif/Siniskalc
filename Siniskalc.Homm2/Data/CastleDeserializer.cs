@@ -18,6 +18,10 @@
 
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public CastleDeserializer(GameCatalog catalog)
         {
             this.catalog = catalog;

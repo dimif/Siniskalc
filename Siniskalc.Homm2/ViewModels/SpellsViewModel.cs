@@ -18,6 +18,13 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Func<HeroModel> getHero;
         private readonly Action<Func<HeroModel, HeroModel>> update;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpellsViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="gameVersion">The game version.</param>
+        /// <param name="getHero">The get hero.</param>
+        /// <param name="update">The update.</param>
         public SpellsViewModel(GameCatalog catalog, GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
             : base(learned => CreateRows(catalog, gameVersion, learned))
         {
@@ -39,8 +46,10 @@ namespace Siniskalc.Homm2.ViewModels
         /// <inheritdoc/>
         public override string SpellBookNote => "Without a spell book the hero cannot cast the learned spells. The book is the Magic Book artifact, which needs a free artifact slot.";
 
+        /// <inheritdoc/>
         protected override bool ReadHasSpellBook() => this.getHero().HasSpellBook;
 
+        /// <inheritdoc/>
         protected override void WriteHasSpellBook(bool value) => this.update(hero => value ? hero.WithSpellBook() : hero.WithoutSpellBook());
 
         /// <inheritdoc/>

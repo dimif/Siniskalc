@@ -42,6 +42,9 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public ObservableCollection<NavNodeViewModel> Nodes { get; } = [];
 
+        /// <summary>
+        /// Gets the node of the overview page, or <see langword="null"/> until the tree is built.
+        /// </summary>
         public NavNodeViewModel? Overview { get; private set; }
 
         /// <summary>
@@ -64,25 +67,56 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public NavNodeViewModel? NeutralNode => this.neutralNodes.GetValueOrDefault(-1);
 
+        /// <summary>
+        /// Returns the node of a hero.
+        /// </summary>
+        /// <param name="heroIndex">The number of the hero.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? HeroNode(int heroIndex) => this.heroNodes.GetValueOrDefault(heroIndex);
 
+        /// <summary>
+        /// Returns the node of a player.
+        /// </summary>
+        /// <param name="playerIndex">The number of the player.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? PlayerNode(int playerIndex) => this.playerNodes.GetValueOrDefault(playerIndex);
 
         /// <summary>
         /// Gets the node of the player's resources (tab 0), heroes (1) or towns (2), or the player's node when it has no such group.
         /// </summary>
+        /// <param name="playerIndex">The number of the player.</param>
+        /// <param name="tab">The tab of the player's page.</param>
+        /// <returns>The node, or <see langword="null"/> if the player has none.</returns>
         public NavNodeViewModel? PlayerTabNode(int playerIndex, int tab) => this.playerTabNodes.GetValueOrDefault((playerIndex, tab)) ?? this.PlayerNode(playerIndex);
 
+        /// <summary>
+        /// Returns the node of a castle.
+        /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? CastleNode(int castleIndex) => this.castleNodes.GetValueOrDefault(castleIndex);
 
         /// <summary>
         /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group. A colour
         /// that has no page of its own has a neutral-style page too, told apart by <paramref name="owner"/> (-1 for what nobody owns).
         /// </summary>
+        /// <param name="tab">The tab of the neutral page (see <c>NeutralTabs</c>).</param>
+        /// <param name="owner">The number of the colour with a neutral-style page; -1 for what nobody owns.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? NeutralTabNode(int tab, int owner = -1) => this.neutralTabNodes.GetValueOrDefault((owner, tab)) ?? this.neutralNodes.GetValueOrDefault(owner);
 
+        /// <summary>
+        /// Returns the node of a mine.
+        /// </summary>
+        /// <param name="mineIndex">The number of the mine.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? MineNode(int mineIndex) => this.mineNodes.GetValueOrDefault(mineIndex);
 
+        /// <summary>
+        /// Returns the node of a dwelling.
+        /// </summary>
+        /// <param name="dwellingIndex">The number of the dwelling.</param>
+        /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? DwellingNode(int dwellingIndex) => this.dwellingNodes.GetValueOrDefault(dwellingIndex);
 
         /// <summary>
@@ -106,6 +140,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Makes <paramref name="node"/> the root of the tree.
         /// </summary>
+        /// <param name="node">The node of the game.</param>
         public void SetOverview(NavNodeViewModel node)
         {
             this.Overview = node;
@@ -116,6 +151,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// Remembers <paramref name="node"/> by what it stands for, so the editor can find it again: a hero, a castle, a player or a
         /// tab of a player's page, a mine or a dwelling.
         /// </summary>
+        /// <param name="node">The node to remember.</param>
         public void Register(NavNodeViewModel node)
         {
             switch (node.Kind)
@@ -154,6 +190,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Narrows the tree to the nodes matching <paramref name="text"/>.
         /// </summary>
+        /// <param name="text">The text to look for in the titles; empty to show every node.</param>
         public void ApplyFilter(string text)
         {
             this.filter = text ?? string.Empty;
@@ -177,6 +214,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Selects <paramref name="node"/> and makes sure it is on screen: the nodes above it may be collapsed.
         /// </summary>
+        /// <param name="node">The node to show, or <see langword="null"/> for none.</param>
         public void Reveal(NavNodeViewModel? node)
         {
             if (node == null)
@@ -195,6 +233,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Marks the nodes of the heroes, players and castles that have <paramref name="changes"/>, and the nodes above them.
         /// </summary>
+        /// <param name="changes">The pending changes.</param>
         public void MarkChanges(IEnumerable<PendingChange> changes)
         {
             var changed = changes.Select(c => (c.Kind, c.Index)).ToHashSet();

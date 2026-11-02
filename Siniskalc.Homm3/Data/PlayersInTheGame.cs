@@ -15,6 +15,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         /// <param name="players">The players the loader found.</param>
         /// <param name="controls">Who plays each colour, or <c>null</c> when the setup of the game is not known: then every player stays.</param>
+        /// <returns>The players that are in the game.</returns>
         public static IReadOnlyList<PlayerChunk> Of(IReadOnlyList<PlayerChunk> players, IReadOnlyList<PlayerType>? controls)
         {
             var kept = players.Where(player => !IsOutOfTheGame(player, controls)).ToList();

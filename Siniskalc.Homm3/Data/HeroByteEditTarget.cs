@@ -8,6 +8,11 @@
     /// </summary>
     public sealed class HeroByteEditTarget : ChunkByteEditTarget<HeroChunk, HeroModel>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroByteEditTarget"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        /// <param name="regions">The regions.</param>
         public HeroByteEditTarget(HeroEditSession session, IHeroRegionProvider regions)
             : base(
                 session,

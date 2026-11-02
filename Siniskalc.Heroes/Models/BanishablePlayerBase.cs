@@ -26,6 +26,7 @@ namespace Siniskalc.Heroes.Models
         /// Returns the days left once the player has gained a town: none, as the player owns one now and its countdown stops. A banished player
         /// stays banished.
         /// </summary>
+        /// <returns>The days left, or <see langword="null"/> if the player is not counting down.</returns>
         public int? DaysLeftOnGainingATown() => this.IsBanished ? this.DaysLeft : null;
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace Siniskalc.Heroes.Models
         /// had, and a banished player stays banished.
         /// </summary>
         /// <param name="townsLeft">The towns the player owns after the loss.</param>
+        /// <returns>The days left, or <see langword="null"/> if the player still owns a town.</returns>
         public int? DaysLeftOnLosingATown(int townsLeft) =>
             this.IsBanished || townsLeft > 0 ? this.DaysLeft : this.DaysLeft ?? Constants.Player.MaxDaysLeft;
     }

@@ -67,10 +67,19 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             this.setGender = setGender;
         }
 
+        /// <summary>
+        /// Gets the least and greatest level a hero can have, for the stepper.
+        /// </summary>
         public NumberRange LevelRange { get; }
 
+        /// <summary>
+        /// Gets the least and greatest experience a hero can have, for the stepper.
+        /// </summary>
         public NumberRange ExperienceRange { get; }
 
+        /// <summary>
+        /// Gets or sets the level of the hero.
+        /// </summary>
         public int Level
         {
             get => this.getLevel();
@@ -83,6 +92,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the experience points of the hero.
+        /// </summary>
         public long Experience
         {
             get => this.getExperience();
@@ -101,8 +113,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public string NextLevelNote => this.nextLevelNote();
 
+        /// <summary>
+        /// Gets the names of the classes the user can pick.
+        /// </summary>
         public IReadOnlyList<string> Classes { get; }
 
+        /// <summary>
+        /// Gets or sets the class of the hero.
+        /// </summary>
         public string HeroClass
         {
             get => this.getClass();
@@ -125,8 +143,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public bool HasGender => this.getGender != null;
 
+        /// <summary>
+        /// Gets the genders the user can pick.
+        /// </summary>
         public IReadOnlyList<string> Genders { get; }
 
+        /// <summary>
+        /// Gets or sets the gender of the hero.
+        /// </summary>
         public string Gender
         {
             get => this.getGender?.Invoke() ?? string.Empty;

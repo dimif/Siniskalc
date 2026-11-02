@@ -33,6 +33,24 @@
         private readonly IMapHeaderLocator mapHeaderLocator;
         private readonly ISaveDocumentFactory documentFactory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SavegameParser"/> class.
+        /// </summary>
+        /// <param name="versionDetector">The version detector.</param>
+        /// <param name="heroLoader">The hero loader.</param>
+        /// <param name="castleLoader">The castle loader.</param>
+        /// <param name="playerLoader">The player loader.</param>
+        /// <param name="obeliskLoader">The obelisk loader.</param>
+        /// <param name="mineLoader">The mine loader.</param>
+        /// <param name="dwellingLoader">The dwelling loader.</param>
+        /// <param name="merchantLoader">The merchant loader.</param>
+        /// <param name="heroOwnersLoader">The hero owners loader.</param>
+        /// <param name="turnLoader">The turn loader.</param>
+        /// <param name="placesLoader">The places loader.</param>
+        /// <param name="dateLocator">The date locator.</param>
+        /// <param name="setupLocator">The setup locator.</param>
+        /// <param name="mapHeaderLocator">The map header locator.</param>
+        /// <param name="documentFactory">The document factory.</param>
         public SavegameParser(
             ISavegameVersionDetector versionDetector,
             IHeroBytesLoader heroLoader,
@@ -67,6 +85,7 @@
             this.documentFactory = documentFactory;
         }
 
+        /// <inheritdoc/>
         public Game Parse(byte[] bytes, string? file, string? name = null)
         {
             var gameVersion = this.versionDetector.Detect(bytes);

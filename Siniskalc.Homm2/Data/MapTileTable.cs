@@ -11,17 +11,32 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class MapTileTable
     {
+        /// <summary>
+        /// The size of a tile.
+        /// </summary>
         public const int TileSize = 12;
 
+        /// <summary>
+        /// Where the byte 2 of a tile is, from the start of the tile.
+        /// </summary>
         public const int ClassOffset = 2;
 
+        /// <summary>
+        /// Where the byte 3 of a tile is, from the start of the tile.
+        /// </summary>
         public const int PictureOffset = 3;
 
+        /// <summary>
+        /// Where the byte 9 of a tile, which tells what the object a hero enters by is, from the start of the tile.
+        /// </summary>
         public const int ObjectOffset = 9;
 
         /// <summary>
         /// Returns where the tiles begin in the bytes of a savegame, or -1 when the table is not found.
         /// </summary>
+        /// <param name="bytes">The bytes of the savegame.</param>
+        /// <param name="layout">Where the tables are in the savegame.</param>
+        /// <returns>The offset of the first tile, or -1 when the table is not found.</returns>
         public static int FindStart(byte[] bytes, SaveLayout layout)
         {
             var size = layout.Width;
@@ -48,6 +63,10 @@ namespace Siniskalc.Homm2.Data
         /// Returns the byte at 9 of every tile in the order of the map, with the bytes of the tiles that heroes stand on put back from the
         /// records of the heroes.
         /// </summary>
+        /// <param name="bytes">The bytes of the savegame.</param>
+        /// <param name="layout">Where the tables are in the savegame.</param>
+        /// <param name="tiles">Where the tiles begin.</param>
+        /// <returns>The byte 9 of every tile.</returns>
         public static byte[] ObjectBytes(byte[] bytes, SaveLayout layout, int tiles)
         {
             var size = layout.Width;
@@ -78,6 +97,11 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns the position of every tile whose byte at 9 is <paramref name="value"/>, in the order of the map (row by row).
         /// </summary>
+        /// <param name="objectBytes">The byte 9 of every tile, from <see cref="ObjectBytes"/>.</param>
+        /// <param name="size">The width of the map.</param>
+        /// <param name="value">The byte to look for.</param>
+        /// <param name="keep">Decides by the number of the tile whether to keep a tile; <see langword="null"/> keeps them all.</param>
+        /// <returns>The positions of the tiles.</returns>
         public static IReadOnlyList<MapPosition> Find(byte[] objectBytes, int size, byte value, Func<int, bool>? keep = null)
         {
             var found = new List<MapPosition>();

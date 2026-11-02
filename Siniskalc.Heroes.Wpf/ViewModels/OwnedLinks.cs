@@ -21,6 +21,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="heroes">The heroes of the savefile.</param>
         /// <param name="owner">The colour whose heroes are wanted.</param>
         /// <param name="openHero">Opens the page of the hero at an index among the heroes; the links do nothing without it.</param>
+        /// <returns>The links.</returns>
         public static IReadOnlyList<HeroLinkViewModel> Heroes<TColor>(IHeroSummaries<TColor> heroes, TColor owner, Action<int>? openHero)
             where TColor : class, IPlayerColor =>
             heroes.GetSummaries()

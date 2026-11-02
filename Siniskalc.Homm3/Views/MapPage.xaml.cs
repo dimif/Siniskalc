@@ -8,6 +8,10 @@ namespace Siniskalc.Homm3.Views
     /// </summary>
     public partial class MapPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPage"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public MapPage(MapViewModel viewModel)
         {
             this.InitializeComponent();

@@ -79,16 +79,22 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Gets the position in the savefile of the record of the player at <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The record, from 0.</param>
+        /// <returns>The position of the record.</returns>
         public int PlayerStart(int index) => this.PlayerTableStart + (index * PlayerLayout.RecordSize);
 
         /// <summary>
         /// Gets the position in the savefile of the record of the hero at <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The record, from 0.</param>
+        /// <returns>The position of the record.</returns>
         public int HeroStart(int index) => this.HeroTableStart + (index * this.HeroStride);
 
         /// <summary>
         /// Gets the position in the savefile of the record of the castle at <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The record, from 0.</param>
+        /// <returns>The position of the record.</returns>
         public int CastleStart(int index) => this.CastleTableStart + (index * CastleLayout.RecordSize);
     }
 }

@@ -55,6 +55,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Finds the skill with a name.
         /// </summary>
         /// <param name="name">The name of the skill.</param>
+        /// <returns>The skill.</returns>
+        /// <exception cref="InvalidOperationException">No known skill has that name.</exception>
         protected TSkill Find(string name) => this.knownSkills.First(s => s.Name == name);
 
         /// <inheritdoc/>

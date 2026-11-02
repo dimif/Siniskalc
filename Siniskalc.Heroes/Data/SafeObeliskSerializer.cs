@@ -14,6 +14,10 @@ namespace Siniskalc.Heroes.Data
     {
         private readonly ObeliskFlagsLayout layout;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafeObeliskSerializer{TColor}"/> class.
+        /// </summary>
+        /// <param name="layout">Says which byte of the chunk holds the flags of each obelisk.</param>
         public SafeObeliskSerializer(ObeliskFlagsLayout layout)
         {
             this.layout = layout;

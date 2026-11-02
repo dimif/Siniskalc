@@ -26,6 +26,14 @@
         private readonly Action<int> openPlayer;
         private readonly Action<int>? openCastle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverviewViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="openPlayer">Opens the page of a player, by its colour number.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number; <see langword="null"/> for none.</param>
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
             : base(game, game, banishingText)
         {
@@ -81,6 +89,8 @@
         /// <summary>
         /// Returns the size of the map and its number of levels, e.g. "Small (36 x 36) · 2 levels" for a map with an underground.
         /// </summary>
+        /// <param name="map">The header of the map.</param>
+        /// <returns>The size of the map and its number of levels, as text.</returns>
         protected override string SizeOf(MapHeader map) => string.Join(" · ", new[] { map.SizeText, map.HasUnderground ? "2 levels" : "1 level" }.Where(t => t.Length > 0));
 
         /// <inheritdoc/>

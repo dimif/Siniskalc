@@ -12,6 +12,10 @@ namespace Siniskalc.Homm2.Data
     {
         private readonly ISaveLayoutLocator locator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveRegionProvider"/> class.
+        /// </summary>
+        /// <param name="locator">The locator.</param>
         public SaveRegionProvider(ISaveLayoutLocator locator)
         {
             this.locator = locator;

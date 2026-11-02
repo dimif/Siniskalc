@@ -10,6 +10,10 @@ namespace Siniskalc.Homm2.Data
     {
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreatureCodes"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public CreatureCodes(GameCatalog catalog)
         {
             this.catalog = catalog;

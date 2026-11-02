@@ -21,6 +21,15 @@ namespace Siniskalc.Homm3.Data
         private readonly IPlayerRegionProvider playerRegions;
         private readonly ICastleRegionProvider castleRegions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveRegionProvider"/> class.
+        /// </summary>
+        /// <param name="mapHeaderLocator">The map header locator.</param>
+        /// <param name="setupLocator">The setup locator.</param>
+        /// <param name="dateLocator">The date locator.</param>
+        /// <param name="heroRegions">The hero regions.</param>
+        /// <param name="playerRegions">The player regions.</param>
+        /// <param name="castleRegions">The castle regions.</param>
         public SaveRegionProvider(
             IMapHeaderLocator mapHeaderLocator,
             IPlayerControlLocator setupLocator,
@@ -43,6 +52,7 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         /// <param name="document">Where the heroes, players and castles are.</param>
         /// <param name="bytes">The bytes of the savefile that go with <paramref name="document"/>.</param>
+        /// <returns>The regions.</returns>
         public IReadOnlyList<ByteRegion> GetRegions(SaveDocument document, byte[] bytes)
         {
             var version = document.GameVersion();

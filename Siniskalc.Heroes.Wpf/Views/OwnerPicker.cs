@@ -9,6 +9,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class OwnerPicker : Control
     {
+        /// <summary>
+        /// Identifies the <see cref="PickerToolTip"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty PickerToolTipProperty = DependencyProperty.Register(nameof(PickerToolTip), typeof(string), typeof(OwnerPicker), new PropertyMetadata("Which player owns it. Neutral is nobody."));
 
         /// <summary>

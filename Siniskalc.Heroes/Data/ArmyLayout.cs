@@ -20,11 +20,15 @@ namespace Siniskalc.Heroes.Data
         /// <summary>
         /// Gets where the type of the slot at <paramref name="slot"/> is.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <returns>The offset in the chunk of the creature type of the slot.</returns>
         public int TypeAt(int slot) => this.TypeOffset + (slot * this.TypeSize);
 
         /// <summary>
         /// Gets where the count of the slot at <paramref name="slot"/> is.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <returns>The offset in the chunk of the creature count of the slot.</returns>
         public int CountAt(int slot) => this.CountOffset + (slot * this.CountSize);
     }
 }

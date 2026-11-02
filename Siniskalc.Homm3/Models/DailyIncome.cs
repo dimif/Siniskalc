@@ -32,6 +32,8 @@ namespace Siniskalc.Homm3.Models
         /// Returns the gold the best town hall of a town gives each day: 500 for a village hall, 1,000 for a town hall, 2,000 for a city hall and
         /// 4,000 for a capitol; nothing for a town without a hall.
         /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <returns>The gold.</returns>
         public static long HallGold(CastleModel castle)
         {
             return castle.Buildings.Select(b => b.GoldIncome).DefaultIfEmpty(0).Max();
@@ -43,6 +45,7 @@ namespace Siniskalc.Homm3.Models
         /// <param name="owner">The player.</param>
         /// <param name="mines">The mines of the map.</param>
         /// <param name="castles">The towns of the map.</param>
+        /// <returns>The income.</returns>
         public static ResourceSet Of(PlayerColor owner, IEnumerable<MineModel> mines, IEnumerable<CastleModel> castles)
         {
             var income = ResourceSet.None;

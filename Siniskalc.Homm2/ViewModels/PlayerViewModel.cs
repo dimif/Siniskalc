@@ -38,6 +38,15 @@
         private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string banishing = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
         public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
             : this(game, color, game.History.CreatePlayerSession(color.Code), banishingText, openHero, openCastle, byteEditTargets)
         {
@@ -73,6 +82,9 @@
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the colour of the player.
+        /// </summary>
         public PlayerColor Color { get; }
 
         /// <inheritdoc/>
@@ -154,6 +166,7 @@
         /// Creates the target the hex tab of the page works on: the raw bytes of the player. The caller disposes it. <c>null</c> when the
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
+        /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
         public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForPlayer(this.session);
 
         /// <inheritdoc/>

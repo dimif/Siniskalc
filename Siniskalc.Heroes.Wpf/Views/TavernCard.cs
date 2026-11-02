@@ -10,8 +10,14 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class TavernCard : Control
     {
+        /// <summary>
+        /// Identifies the <see cref="ItemsSource"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IEnumerable), typeof(TavernCard));
 
+        /// <summary>
+        /// Gets or sets the taverns the card lists.
+        /// </summary>
         public IEnumerable? ItemsSource
         {
             get => (IEnumerable?)this.GetValue(ItemsSourceProperty);

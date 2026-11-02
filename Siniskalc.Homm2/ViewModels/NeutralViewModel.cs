@@ -19,6 +19,13 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly Action<int> openCastle;
         private readonly IByteEditTargetFactory? byteEditTargets;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NeutralViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
         public NeutralViewModel(Game game, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
             : base(game.History, PlayerPalette.Of(PlayerColor.Neutral))
         {

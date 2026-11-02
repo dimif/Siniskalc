@@ -8,15 +8,27 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class MinesCard : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="Note"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty NoteProperty =
             DependencyProperty.Register(nameof(Note), typeof(string), typeof(MinesCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="SummaryHeading"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty SummaryHeadingProperty =
             DependencyProperty.Register(nameof(SummaryHeading), typeof(string), typeof(MinesCard), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="ShowLevel"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ShowLevelProperty =
             DependencyProperty.Register(nameof(ShowLevel), typeof(bool), typeof(MinesCard), new PropertyMetadata(false));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinesCard"/> class.
+        /// </summary>
         public MinesCard()
         {
             this.InitializeComponent();

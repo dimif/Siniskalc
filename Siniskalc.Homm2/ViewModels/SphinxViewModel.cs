@@ -20,6 +20,12 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly IEditSession<SphinxModel> session;
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SphinxViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="session">The session.</param>
+        /// <param name="version">The version.</param>
         public SphinxViewModel(GameCatalog catalog, IEditSession<SphinxModel> session, Siniskalc.Homm2.Entities.GameVersion version)
         {
             this.session = session;
@@ -44,12 +50,24 @@ namespace Siniskalc.Homm2.ViewModels
                 toolTip: "What the sphinx asks. It has the room of the original riddle: a longer one does not fit the savegame.");
         }
 
+        /// <summary>
+        /// Gets the place of the sphinx in the list, from 0.
+        /// </summary>
         public int Index => this.session.Index;
 
+        /// <summary>
+        /// Gets the name of the sphinx.
+        /// </summary>
         public string Title => this.session.Current.Name;
 
+        /// <summary>
+        /// Gets the toggle that says whether the riddle is answered.
+        /// </summary>
         public ToggleRowViewModel SolvedToggle { get; }
 
+        /// <summary>
+        /// Gets the resources the sphinx gives.
+        /// </summary>
         public IReadOnlyList<AmountRowViewModel> Reward { get; }
 
         /// <summary>
@@ -62,8 +80,14 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public IReadOnlyList<TextFieldViewModel> Answers { get; }
 
+        /// <summary>
+        /// Gets the field of the text of the riddle.
+        /// </summary>
         public TextFieldViewModel Riddle { get; }
 
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
         public void Refresh()
         {
             this.SolvedToggle.Refresh();

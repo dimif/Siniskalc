@@ -10,6 +10,12 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public partial class ErrorWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorWindow"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="details">The details.</param>
         public ErrorWindow(string title, string message, string details)
         {
             this.InitializeComponent();

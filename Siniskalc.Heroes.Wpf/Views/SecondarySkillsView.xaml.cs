@@ -8,6 +8,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class SecondarySkillsView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondarySkillsView"/> class.
+        /// </summary>
         public SecondarySkillsView()
         {
             this.InitializeComponent();

@@ -10,6 +10,9 @@ namespace Siniskalc.Heroes.ViewModels
     /// </summary>
     public static class PlayerPalette
     {
+        /// <summary>
+        /// The colour shown for what no player owns, as a hex string.
+        /// </summary>
         public const string NoPlayer = "#8A93A6";
 
         private static readonly IReadOnlyDictionary<string, string> ByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -33,6 +36,8 @@ namespace Siniskalc.Heroes.ViewModels
         /// <summary>
         /// Returns the colour of <paramref name="color"/>, or the colour of what nobody owns when it is <c>null</c> or unknown.
         /// </summary>
+        /// <param name="color">The colour of the player, or <see langword="null"/> for none.</param>
+        /// <returns>The colour as a hex string.</returns>
         public static string Of(IPlayerColor? color) => color != null && ByName.TryGetValue(color.Name, out var hex) ? hex : NoPlayer;
     }
 }

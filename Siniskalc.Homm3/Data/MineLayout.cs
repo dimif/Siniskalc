@@ -9,6 +9,9 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class MineLayout
     {
+        /// <summary>
+        /// The size of the record of a mine.
+        /// </summary>
         public const int RecordSize = 62;
 
         /// <summary>
@@ -16,7 +19,15 @@ namespace Siniskalc.Homm3.Data
         /// it stands somewhere else, 4 tiles to the right and 3 up in one row of the test map, 0 and 3 down in the other).
         /// </summary>
         public const int X = 0;
+
+        /// <summary>
+        /// The row of the tile the record gives; see <see cref="X"/>.
+        /// </summary>
         public const int Y = 1;
+
+        /// <summary>
+        /// The level of the map of the tile the record gives; see <see cref="X"/>.
+        /// </summary>
         public const int Level = 2;
 
         /// <summary>
@@ -35,8 +46,14 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int Abandoned = 5;
 
+        /// <summary>
+        /// The byte of the owner when nobody owns the mine.
+        /// </summary>
         public const byte NoOwner = 0xFF;
 
+        /// <summary>
+        /// The number of creatures that can guard a mine.
+        /// </summary>
         public const int SlotCount = 7;
 
         /// <summary>
@@ -54,6 +71,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const uint MaxCreatureCode = 0x1FF;
 
+        /// <summary>
+        /// The most creatures a guard can have: a count above it is not the record of a mine.
+        /// </summary>
         public const uint MaxCount = 1_000_000;
 
         /// <summary>

@@ -8,6 +8,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class NextBattleCard : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NextBattleCard"/> class.
+        /// </summary>
         public NextBattleCard()
         {
             this.InitializeComponent();

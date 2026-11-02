@@ -16,6 +16,9 @@ namespace Siniskalc.Homm3.Models
         /// <summary>
         /// Returns the stock with another artifact (or none) in a slot.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="artifact">The artifact, or <see langword="null"/> for none.</param>
+        /// <returns>The new stock; this one is not changed.</returns>
         public MerchantStockModel WithSlot(int slot, Artifact? artifact)
         {
             var slots = this.Slots.ToList();
@@ -23,8 +26,10 @@ namespace Siniskalc.Homm3.Models
             return this with { Slots = slots };
         }
 
+        /// <inheritdoc/>
         public bool Equals(MerchantStockModel? other) => other is not null && this.Index == other.Index && this.Name == other.Name && this.Slots.SequenceEqual(other.Slots);
 
+        /// <inheritdoc/>
         public override int GetHashCode() => HashCode.Combine(this.Index, this.Name, this.Slots.Count);
     }
 }

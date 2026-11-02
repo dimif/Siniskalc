@@ -16,6 +16,10 @@ namespace Siniskalc.Homm2.Models
     {
         private readonly Artifact?[] slots;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Artifacts"/> class.
+        /// </summary>
+        /// <param name="slots">The slots.</param>
         public Artifacts(IEnumerable<Artifact?> slots)
         {
             this.slots = slots.ToArray();
@@ -25,6 +29,9 @@ namespace Siniskalc.Homm2.Models
             }
         }
 
+        /// <summary>
+        /// Gets the artifacts of a hero that carries none.
+        /// </summary>
         public static Artifacts None { get; } = new(new Artifact?[Constants.Hero.ArtifactSlotCount]);
 
         /// <summary>
@@ -37,10 +44,22 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public PrimarySkillBonus TotalBonus => this.slots.Where(s => s != null).Aggregate(PrimarySkillBonus.None, (sum, a) => sum + a!.PrimarySkillBonus);
 
+        /// <summary>
+        /// Gets whether one of the slots holds the spell book.
+        /// </summary>
         public bool HasMagicBook => this.slots.Any(a => a?.IsSpellBook == true);
 
+        /// <summary>
+        /// Gets whether every slot holds an artifact.
+        /// </summary>
         public bool IsFull => this.slots.All(s => s != null);
 
+        /// <summary>
+        /// Puts an artifact in a slot.
+        /// </summary>
+        /// <param name="index">The slot, from 0.</param>
+        /// <param name="artifact">The artifact, or <see langword="null"/> to empty the slot.</param>
+        /// <returns>The new artifacts; these are not changed.</returns>
         public Artifacts WithSlot(int index, Artifact? artifact)
         {
             RangeGuard.ThrowIfNotIndex(index, this.slots.Length, nameof(index));
@@ -53,6 +72,8 @@ namespace Siniskalc.Homm2.Models
         /// Returns the artifacts with <paramref name="artifact"/> in the first empty slot.
         /// </summary>
         /// <exception cref="GameRuleException">Every slot is taken.</exception>
+        /// <param name="artifact">The artifact to add.</param>
+        /// <returns>The new artifacts; these are not changed.</returns>
         public Artifacts Add(Artifact artifact)
         {
             var free = Array.IndexOf(this.slots, null);
@@ -62,16 +83,21 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the artifacts without <paramref name="artifact"/> (the first slot that holds it is emptied).
         /// </summary>
+        /// <param name="artifact">The artifact to take out.</param>
+        /// <returns>The new artifacts; these are not changed.</returns>
         public Artifacts Remove(Artifact artifact)
         {
             var index = Array.IndexOf(this.slots, artifact);
             return index < 0 ? this : this.WithSlot(index, null);
         }
 
+        /// <inheritdoc/>
         public bool Equals(Artifacts? other) => other is not null && this.slots.AsSpan().SequenceEqual(other.slots);
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => this.Equals(obj as Artifacts);
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             var hash = default(HashCode);
@@ -83,6 +109,7 @@ namespace Siniskalc.Homm2.Models
             return hash.ToHashCode();
         }
 
+        /// <inheritdoc/>
         public override string ToString() => string.Join(", ", this.slots.Where(s => s != null).Select(s => s!.Name));
     }
 }

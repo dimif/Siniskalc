@@ -12,6 +12,15 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class MapObjectChunk : RecordChunk
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapObjectChunk"/> class.
+        /// </summary>
+        /// <param name="name">The name of the chunk.</param>
+        /// <param name="bytes">The bytes of the object.</param>
+        /// <param name="startIndex">The offset of the bytes in the savefile.</param>
+        /// <param name="position">Where the object is on the map, or <see langword="null"/> when it has no place.</param>
+        /// <param name="index">The place of the object in its list.</param>
+        /// <param name="tag">A number the reader keeps with the chunk for the deserializer (the circle of a shrine, the colours of the records for the turn).</param>
         public MapObjectChunk(string name, byte[] bytes, int startIndex, MapPosition? position, int index, int tag = 0, IReadOnlyList<MapObjectPart>? parts = null)
             : base(name, bytes, startIndex, index)
         {
@@ -57,6 +66,10 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns a chunk like this one with the bytes of one of its parts replaced.
         /// </summary>
+        /// <param name="index">The part, from 0.</param>
+        /// <param name="bytes">The new bytes of the part.</param>
+        /// <returns>The new chunk; this one is not changed.</returns>
+        /// <returns>The new chunk; this one is not changed.</returns>
         public MapObjectChunk WithPart(int index, byte[] bytes)
         {
             var parts = this.Parts.ToList();

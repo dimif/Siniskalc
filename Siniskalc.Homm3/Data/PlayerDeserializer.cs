@@ -11,6 +11,7 @@
     /// </summary>
     public sealed class PlayerDeserializer : IPlayerDeserializer
     {
+        /// <inheritdoc/>
         public PlayerModel Deserialize(PlayerChunk chunk)
         {
             return new PlayerModel(
@@ -23,12 +24,19 @@
         /// <summary>
         /// Reads the days left before banishing. A player who owns a town has FF, which reads as none, and so does a byte that holds more than the game counts.
         /// </summary>
+        /// <param name="chunk">The chunk.</param>
+        /// <returns>The days left, or <see langword="null"/> while the player owns a town.</returns>
         public int? DeserializeDaysLeft(PlayerChunk chunk)
         {
             var days = chunk.GetByteAt(PlayerLayout.DaysLeft);
             return days <= Constants.Player.MaxDaysLeft ? days : null;
         }
 
+        /// <summary>
+        /// Reads the heroes the tavern offers the player from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the player.</param>
+        /// <returns>The heroes.</returns>
         public TavernHeroes DeserializeTavern(PlayerChunk chunk)
         {
             int? Read(int place)
@@ -40,6 +48,11 @@
             return new TavernHeroes(Read(0), Read(1));
         }
 
+        /// <summary>
+        /// Reads the colour of the player from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the player.</param>
+        /// <returns>The colour.</returns>
         public PlayerColor DeserializeColor(PlayerChunk chunk)
         {
             var colorByte = chunk.GetByteAt(chunk.Layout.ColorOffset);
@@ -52,6 +65,11 @@
             return chunk.Color;
         }
 
+        /// <summary>
+        /// Reads the resources of the player from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the player.</param>
+        /// <returns>The stock of each resource.</returns>
         public ResourceSet DeserializeResources(PlayerChunk chunk)
         {
             int Read(Resource resource) => chunk.GetInt32At(PlayerLayout.OffsetOf(resource));

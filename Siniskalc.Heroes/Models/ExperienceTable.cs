@@ -43,6 +43,8 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Gets the experience with which a hero starts the given level. A level below 1 reads as 1 and one above the highest as the highest.
         /// </summary>
+        /// <param name="level">The level.</param>
+        /// <returns>The experience points.</returns>
         public long ExperienceOf(int level)
         {
             var index = Math.Clamp(level, 1, this.MaxLevel) - 1;
@@ -68,6 +70,8 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Gets the level a hero with the given experience has.
         /// </summary>
+        /// <param name="experience">The experience points.</param>
+        /// <returns>The level.</returns>
         public int LevelOf(long experience)
         {
             var level = 1;

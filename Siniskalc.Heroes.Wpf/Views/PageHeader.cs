@@ -10,12 +10,24 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public class PageHeader : ContentControl
     {
+        /// <summary>
+        /// Identifies the <see cref="ColorHex"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ColorHexProperty = DependencyProperty.Register(nameof(ColorHex), typeof(string), typeof(PageHeader), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="Title"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string), typeof(PageHeader), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the <see cref="EditedToolTip"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty EditedToolTipProperty = DependencyProperty.Register(nameof(EditedToolTip), typeof(string), typeof(PageHeader), new PropertyMetadata("This page has changes that are not saved yet"));
 
+        /// <summary>
+        /// Identifies the <see cref="ResetToolTip"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ResetToolTipProperty = DependencyProperty.Register(nameof(ResetToolTip), typeof(string), typeof(PageHeader), new PropertyMetadata("Put everything on this page back to what the savegame had"));
 
         /// <summary>
@@ -27,18 +39,27 @@ namespace Siniskalc.Heroes.Wpf.Views
             set => this.SetValue(ColorHexProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the title of the page.
+        /// </summary>
         public string Title
         {
             get => (string)this.GetValue(TitleProperty);
             set => this.SetValue(TitleProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the tooltip of the mark that shows the page has edits.
+        /// </summary>
         public string EditedToolTip
         {
             get => (string)this.GetValue(EditedToolTipProperty);
             set => this.SetValue(EditedToolTipProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the tooltip of the button that puts the page back to the loaded values.
+        /// </summary>
         public string ResetToolTip
         {
             get => (string)this.GetValue(ResetToolTipProperty);

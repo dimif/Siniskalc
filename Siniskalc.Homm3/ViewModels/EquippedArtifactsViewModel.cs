@@ -113,6 +113,9 @@
         /// </summary>
         public IReadOnlyList<ArtifactSlotViewModel> CarriedSlots => this.SlotsOf(MiscSlots);
 
+        /// <summary>
+        /// Gets what all the artifacts that are worn do together.
+        /// </summary>
         public ArtifactEffectInfo TotalEffects => this.model.GetTotalEffects();
 
         /// <summary>
@@ -130,84 +133,126 @@
         /// </summary>
         public ICommand ClearSlotCommand { get; }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn on the head, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedHelm
         {
             get => this.GetSlotValue(ArtifactSlots.Helmet);
             set => this.UpdateSelection(ArtifactSlots.Helmet, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn on the neck, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedNeck
         {
             get => this.GetSlotValue(ArtifactSlots.Necklace);
             set => this.UpdateSelection(ArtifactSlots.Necklace, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn as armor, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedArmor
         {
             get => this.GetSlotValue(ArtifactSlots.Torso);
             set => this.UpdateSelection(ArtifactSlots.Torso, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn as a cloak, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedCloak
         {
             get => this.GetSlotValue(ArtifactSlots.Cape);
             set => this.UpdateSelection(ArtifactSlots.Cape, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn on the feet, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedBoots
         {
             get => this.GetSlotValue(ArtifactSlots.Feet);
             set => this.UpdateSelection(ArtifactSlots.Feet, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn in the hand as a weapon, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedWeapon
         {
             get => this.GetSlotValue(ArtifactSlots.Weapon);
             set => this.UpdateSelection(ArtifactSlots.Weapon, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn as a shield, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedShield
         {
             get => this.GetSlotValue(ArtifactSlots.Shield);
             set => this.UpdateSelection(ArtifactSlots.Shield, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn on the left ring, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedLeftRing
         {
             get => this.GetSlotValue(ArtifactSlots.Ring1);
             set => this.UpdateSelection(ArtifactSlots.Ring1, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact worn on the right ring, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedRightRing
         {
             get => this.GetSlotValue(ArtifactSlots.Ring2);
             set => this.UpdateSelection(ArtifactSlots.Ring2, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact in the miscellaneous slot 1, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedItem1
         {
             get => this.GetSlotValue(ArtifactSlots.Misc1);
             set => this.UpdateSelection(ArtifactSlots.Misc1, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact in the miscellaneous slot 2, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedItem2
         {
             get => this.GetSlotValue(ArtifactSlots.Misc2);
             set => this.UpdateSelection(ArtifactSlots.Misc2, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact in the miscellaneous slot 3, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedItem3
         {
             get => this.GetSlotValue(ArtifactSlots.Misc3);
             set => this.UpdateSelection(ArtifactSlots.Misc3, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact in the miscellaneous slot 4, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedItem4
         {
             get => this.GetSlotValue(ArtifactSlots.Misc4);
             set => this.UpdateSelection(ArtifactSlots.Misc4, value);
         }
 
+        /// <summary>
+        /// Gets or sets the name of the artifact in the miscellaneous slot 5, or <see langword="null"/> for none.
+        /// </summary>
         public string? SelectedItem5
         {
             get => this.GetSlotValue(ArtifactSlots.Misc5);
@@ -217,12 +262,16 @@
         /// <summary>
         /// Gets the slot view model for <paramref name="slot"/>: what is in it, and the popup that picks something else.
         /// </summary>
+        /// <param name="slot">The slot.</param>
+        /// <returns>The view model of the slot.</returns>
         public ArtifactSlotViewModel SlotFor(ArtifactSlots slot) => this.slots[slot];
 
         /// <summary>
         /// Wears <paramref name="artifact"/> in its own slot, replacing what is worn there. A ring or item goes in the first empty
         /// slot of its kind.
         /// </summary>
+        /// <param name="artifact">The artifact.</param>
+        /// <param name="choice">The choice from the finder.</param>
         public void Equip(Artifact artifact)
         {
             var slot = this.FindFreeSlot(artifact);
@@ -235,6 +284,8 @@
         /// <summary>
         /// Wears the artifact of a finder row, with the spell when the row is a Spell Scroll.
         /// </summary>
+        /// <param name="artifact">The artifact.</param>
+        /// <param name="choice">The choice from the finder.</param>
         public void Equip(ArtifactChoiceViewModel choice)
         {
             var slot = this.FindFreeSlot(choice.Artifact);
@@ -247,6 +298,7 @@
         /// <summary>
         /// Shows <paramref name="model"/>, e.g. after an undo. A combination artifact is shown in every slot it blocks.
         /// </summary>
+        /// <param name="model">The artifacts.</param>
         public void Refresh(EquippedArtifacts model)
         {
             this.model = model;

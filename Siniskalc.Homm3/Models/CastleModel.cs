@@ -68,6 +68,8 @@
         /// <summary>
         /// Returns how many creatures of <paramref name="level"/> (0 to 6) wait in the castle, or null if no dwelling is built for them.
         /// </summary>
+        /// <param name="level">The level of the dwelling, from 0.</param>
+        /// <returns>The creatures, or <see langword="null"/> when the dwelling is not built.</returns>
         public int? CreaturesWaiting(int level) => CastleBuilder.DwellingOf(this, level) == null ? null : this.CreaturesAvailable[level];
 
         /// <summary>
@@ -75,6 +77,8 @@
         /// same for its upgrade, which is what a newly built dwelling holds (the Conflux saves). The bonuses of the castle, the horde building
         /// and the Grail are not included, as how the game adds them was not checked in a save. 0 if no dwelling is built for the level.
         /// </summary>
+        /// <param name="level">The level of the dwelling, from 0.</param>
+        /// <returns>The creatures it gains.</returns>
         public int BaseWeeklyGrowth(int level) => CastleBuilder.DwellingOf(this, level) == null
             ? 0
             : Creature.ForFaction(this.Faction).FirstOrDefault(c => c.Tier == level + 1)?.Info.Growth ?? 0;
@@ -83,6 +87,9 @@
         /// Returns the castle with <paramref name="count"/> creatures of <paramref name="level"/> (0 to 6) waiting in the dwelling that
         /// stands for them. Throws <see cref="GameRuleException"/> if there is no such dwelling.
         /// </summary>
+        /// <param name="level">The level of the dwelling, from 0.</param>
+        /// <param name="count">The creatures that wait.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithCreaturesWaiting(int level, int count)
         {
             RangeGuard.ThrowIfOutOfRange<long>(
@@ -103,8 +110,16 @@
         /// <summary>
         /// Returns whether the castle has built <paramref name="building"/>, or a building that replaced it.
         /// </summary>
+        /// <param name="building">The building.</param>
+        /// <returns><see langword="true"/> if it is built.</returns>
         public bool HasBuilt(Building building) => this.Buildings.Contains(building);
 
+        /// <summary>
+        /// Tells whether a building of a type is built.
+        /// </summary>
+        /// <param name="type">The type of building.</param>
+        /// <returns><see langword="true"/> if it is built.</returns>
+        /// <param name="building">The building.</param>
         public bool HasBuilt(BuildingType type) => this.Buildings.Any(b => b.Type == type);
 
         /// <summary>
@@ -112,6 +127,8 @@
         /// the game, so the slots of the castle cannot be set while a hero is garrisoned.
         /// </summary>
         /// <exception cref="GameRuleException">A hero is garrisoned in the castle.</exception>
+        /// <param name="garrison">The garrison.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithGarrison(IArmy<Creature> garrison) => this.GarrisonedHeroId != null
             ? throw new GameRuleException("A hero is garrisoned here, so its army takes the place of the town's creatures.")
             : this with { Garrison = garrison };
@@ -122,6 +139,8 @@
         /// </summary>
         /// <param name="level">The spell level, 1 to 5.</param>
         /// <param name="slot">The place in the list of the level, from 0.</param>
+        /// <param name="spell">The spell.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithMageGuildSpell(int level, int slot, Spell spell)
         {
             RangeGuard.ThrowIfOutOfRange(level, 1, this.MageGuildSpells.Count, nameof(level));

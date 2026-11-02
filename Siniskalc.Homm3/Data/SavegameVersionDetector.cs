@@ -10,6 +10,11 @@
     {
         private static readonly Encoding HeaderEncoding = Encoding.Latin1;
 
+        /// <summary>
+        /// Tells which game version wrote a savefile, from its header.
+        /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <returns>The version; <see cref="GameVersion.Unknown"/> when the header is not one of a savefile.</returns>
         public GameVersion Detect(byte[] bytes)
         {
             if (bytes.Length >= SaveHeaderLayout.ChroniclesSignature.Length

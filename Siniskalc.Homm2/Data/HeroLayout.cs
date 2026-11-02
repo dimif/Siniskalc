@@ -25,6 +25,9 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int SpellPoints = 0;
 
+        /// <summary>
+        /// The number of the hero that follows, in the header of the record.
+        /// </summary>
         public const int HeaderId = 2;
 
         /// <summary>
@@ -33,11 +36,29 @@ namespace Siniskalc.Homm2.Data
         public const int Owner = 3;
 
         // The body. Offsets are from the start of the name, which is 10 bytes into the record.
+        /// <summary>
+        /// The name of the hero, from the start of the record; the offsets of the body are from here.
+        /// </summary>
         public const int Name = 10;
+
+        /// <summary>
+        /// The length of the field of the name.
+        /// </summary>
         public const int NameLength = 14;
 
+        /// <summary>
+        /// The number of the hero (a byte).
+        /// </summary>
         public const int Id = Name + 0x0E;
+
+        /// <summary>
+        /// The column of the hero on the map (32 bits).
+        /// </summary>
         public const int X = Name + 0x0F;
+
+        /// <summary>
+        /// The row of the hero on the map (32 bits).
+        /// </summary>
         public const int Y = Name + 0x13;
 
         /// <summary>
@@ -57,15 +78,34 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int TileObject = Name + 0x23;
 
+        /// <summary>
+        /// The movement points the hero has at the start of a day (32 bits).
+        /// </summary>
         public const int MaxMovement = Name + 0x27;
+
+        /// <summary>
+        /// The movement points the hero has left today (32 bits).
+        /// </summary>
         public const int MovementLeft = Name + 0x2B;
+
+        /// <summary>
+        /// The experience of the hero (32 bits).
+        /// </summary>
         public const int Experience = Name + 0x2F;
+
+        /// <summary>
+        /// The level of the hero.
+        /// </summary>
         public const int Level = Name + 0x33;
 
         /// <summary>
         /// The morale (a signed byte) and the luck (the byte after it) the hero has for its next battle only (Threedom: a temple gave 2, a fountain 1).
         /// </summary>
         public const int BattleMorale = Name + 0x3A;
+
+        /// <summary>
+        /// The luck the hero has for its next battle only, a signed byte; see <see cref="BattleMorale"/>.
+        /// </summary>
         public const int BattleLuck = Name + 0x3B;
 
         /// <summary>
@@ -91,7 +131,14 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int PrimarySkills = Name + 0x35;
 
+        /// <summary>
+        /// The creature types of the army, a byte for each of the five slots.
+        /// </summary>
         public const int ArmyTypes = Name + 0x5B;
+
+        /// <summary>
+        /// The creature counts of the army, 16 bits for each of the five slots.
+        /// </summary>
         public const int ArmyCounts = Name + 0x60;
 
         /// <summary>
@@ -104,14 +151,24 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int SkillOrder = Name + 0x78;
 
+        /// <summary>
+        /// The number of secondary skills the hero knows, a byte.
+        /// </summary>
         public const int SkillCount = Name + 0x86;
 
         /// <summary>
         /// One byte, 0 or 1, for each spell by its number (so the first byte is not used): 66 bytes.
         /// </summary>
         public const int Spells = Name + 0x89;
+
+        /// <summary>
+        /// The length of the table of spells.
+        /// </summary>
         public const int SpellsLength = 66;
 
+        /// <summary>
+        /// The artifacts the hero carries, a byte for each of its slots.
+        /// </summary>
         public const int Artifacts = Name + 0xCB;
 
         /// <summary>

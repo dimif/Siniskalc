@@ -21,6 +21,10 @@ namespace Siniskalc
         private AppServices? services;
         private bool isReporting;
 
+        /// <summary>
+        /// Builds the components, shows the main window and gives it the shell view model. Shuts down when the components cannot be built.
+        /// </summary>
+        /// <param name="e">The start-up arguments.</param>
         protected override void OnStartup(StartupEventArgs e)
         {
             this.DispatcherUnhandledException += this.OnUnhandledException;
@@ -31,6 +35,8 @@ namespace Siniskalc
                 this.Shutdown();
                 return;
             }
+
+            Logger.LogDebug("Showing the main window");
 
             this.services = services;
             this.messages = services.Messages;
@@ -43,8 +49,10 @@ namespace Siniskalc
         /// <summary>
         /// Flushes the log file.
         /// </summary>
+        /// <param name="e">The exit arguments.</param>
         protected override void OnExit(ExitEventArgs e)
         {
+            Logger.LogInformation("Exiting with code {Code}", e.ApplicationExitCode);
             LogFactory.Reset();
             this.services?.LoggerFactory.Dispose();
             base.OnExit(e);
@@ -54,6 +62,11 @@ namespace Siniskalc
         /// Offers to put a damaged file of the user aside as <c>.bad</c> so the editor can start with the default one (written again by the
         /// next start). False when the user prefers to exit, or the file cannot be moved.
         /// </summary>
+        /// <param name="problem">What is wrong with the file, as told to the user.</param>
+        /// <param name="path">The path of the damaged file.</param>
+        /// <param name="title">The title of the dialogs.</param>
+        /// <param name="what">What the file holds, for the question ("settings").</param>
+        /// <returns><see langword="true"/> if the file was moved aside; otherwise <see langword="false"/>.</returns>
         private static bool ResetFile(string problem, string path, string title, string what)
         {
             var answer = MessageBox.Show(
@@ -82,6 +95,7 @@ namespace Siniskalc
         /// Builds the components, or tells the user why it cannot: a settings file or Serilog configuration that cannot be read, or a log folder that
         /// cannot be used. A damaged file can be reset (kept as <c>.bad</c> next to it), so it never locks the user out. Null when the editor must not start.
         /// </summary>
+        /// <returns>The components, or <see langword="null"/> if the editor must not start.</returns>
         private AppServices? StartServices()
         {
             while (true)
@@ -130,6 +144,8 @@ namespace Siniskalc
         /// Keeps the editor and its open savegame alive when an edit throws something nobody caught, so the user can still save
         /// (under another name if in doubt) instead of losing every unsaved edit.
         /// </summary>
+        /// <param name="sender">The dispatcher.</param>
+        /// <param name="e">The exception that was not caught; it is marked as handled.</param>
         private void OnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Logger.LogCritical(e.Exception, "An unexpected exception reached the dispatcher");

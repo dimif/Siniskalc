@@ -5,6 +5,7 @@
     using System.IO;
     using System.Text.Json;
     using System.Text.Json.Serialization;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Runtime;
 
     /// <summary>
@@ -12,6 +13,8 @@
     /// </summary>
     public sealed class JsonGameDefinitionReader : IGameDefinitionReader
     {
+        private static readonly ILogger<JsonGameDefinitionReader> Logger = LogFactory.For<JsonGameDefinitionReader>();
+
         private readonly string root;
         private readonly JsonSerializerOptions options = new()
         {
@@ -20,11 +23,25 @@
             Converters = { new DefinitionEnumConverter() },
         };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonGameDefinitionReader"/> class.
+        /// </summary>
+        /// <param name="root">The game data folder the paths are relative to; the folder of the application when omitted.</param>
+        /// <exception cref="ArgumentException"><paramref name="root"/> is empty or not a valid path.</exception>
         public JsonGameDefinitionReader(string? root = null)
         {
             this.root = System.IO.Path.GetFullPath(root ?? AppContext.BaseDirectory);
+            Logger.LogTrace("Reading game definitions from {Folder}", this.root);
         }
 
+        /// <summary>
+        /// Reads a JSON file inside the game data folder. A property named twice, a property the type does not have and a number where
+        /// an enum is expected are all errors.
+        /// </summary>
+        /// <typeparam name="T">The type the definition is read as.</typeparam>
+        /// <param name="relativePath">The path of the file, relative to the game data folder.</param>
+        /// <returns>The definition.</returns>
+        /// <exception cref="GameDefinitionException">The path is empty, rooted or outside the game data folder, or the file cannot be read or understood.</exception>
         public T Read<T>(string relativePath)
             where T : class
         {
@@ -45,8 +62,10 @@
                 using var stream = File.OpenRead(path);
                 using var document = JsonDocument.Parse(stream);
                 CheckProperties(document.RootElement, "$");
-                return document.RootElement.Deserialize<T>(this.options)
+                var definition = document.RootElement.Deserialize<T>(this.options)
                     ?? throw new JsonException("The definition cannot be null.");
+                Logger.LogDebug("Read the definition {File} as {Name}", relative, typeof(T).Name);
+                return definition;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or ArgumentException or NotSupportedException)
             {

@@ -36,6 +36,13 @@
         private IReadOnlyList<CastleHeroRowViewModel> heroes = [];
         private string visitingHeroName = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="castleIndex">The number of the castle.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
         public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
             : this(game, game.History.CreateCastleSession(castleIndex), openHero, byteEditTargets)
         {
@@ -111,12 +118,24 @@
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the number of the castle.
+        /// </summary>
         public int CastleIndex { get; }
 
+        /// <summary>
+        /// Gets the name of the castle.
+        /// </summary>
         public string Name => this.castle.Name;
 
+        /// <summary>
+        /// Gets the colour of the owner as a hex string.
+        /// </summary>
         public string ColorHex => PlayerPalette.Of(this.castle.Owner);
 
+        /// <summary>
+        /// Gets the name of the faction, or a text that says it is not known.
+        /// </summary>
         public string FactionName => this.castle.Faction.IsNeutral ? "Unknown faction" : this.castle.Faction.ToString();
 
         /// <summary>
@@ -129,8 +148,14 @@
         /// </summary>
         public string VisitingHeroName => this.visitingHeroName;
 
+        /// <summary>
+        /// Gets the command that opens the page of the hero who visits the castle.
+        /// </summary>
         public ICommand OpenHeroCommand { get; }
 
+        /// <summary>
+        /// Gets the field that sets the owner.
+        /// </summary>
         public ChoiceFieldViewModel OwnerField { get; }
 
         /// <summary>
@@ -150,6 +175,9 @@
         /// </summary>
         public string OwnerText => OwnerNames<PlayerColor>.Of(this.castle.Owner);
 
+        /// <summary>
+        /// Gets the position of the castle on the map as text.
+        /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.castle.Position.X, this.castle.Position.Y);
 
         /// <summary>
@@ -162,6 +190,9 @@
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes => this.heroes;
 
+        /// <summary>
+        /// Gets the toggles of the buildings.
+        /// </summary>
         public IReadOnlyList<ToggleRowViewModel> Buildings => this.buildings;
 
         /// <summary>
@@ -170,6 +201,9 @@
         /// </summary>
         public ToggleRowViewModel CanBuildThisTurn { get; }
 
+        /// <summary>
+        /// Gets the rows of the dwellings.
+        /// </summary>
         public IReadOnlyList<DwellingRowViewModel> Dwellings => this.dwellings;
 
         /// <summary>
@@ -182,8 +216,14 @@
         /// </summary>
         public ArmyViewModel GarrisonEditor { get; }
 
+        /// <summary>
+        /// Gets the field that sets the level of the Mage Guild.
+        /// </summary>
         public ChoiceFieldViewModel GuildLevelField { get; }
 
+        /// <summary>
+        /// Gets the spells of each level of the Mage Guild.
+        /// </summary>
         public IReadOnlyList<GuildLevelViewModel> GuildLevels => this.guildLevels;
 
         private Game Game { get; }
@@ -192,6 +232,7 @@
         /// Creates the target the hex tab of the page works on: the raw bytes of the castle. The caller disposes it. <c>null</c> when the
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
+        /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
         public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForCastle(this.Game.History, this.CastleIndex);
 
         /// <summary>

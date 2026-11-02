@@ -74,6 +74,8 @@
         /// <summary>
         /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
         /// </summary>
+        /// <param name="level">The level.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithLevel(int level)
         {
             RangeGuard.ThrowIfOutOfRange<long>(level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(level));
@@ -83,6 +85,8 @@
         /// <summary>
         /// Returns the hero with <paramref name="experience"/> points, at the level the game gives that much experience.
         /// </summary>
+        /// <param name="experience">The experience points.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithExperience(long experience)
         {
             RangeGuard.ThrowIfOutOfRange(experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(experience));
@@ -92,17 +96,23 @@
         /// <summary>
         /// Returns the hero with <paramref name="movement"/> movement points left today; the movement of a full day stays.
         /// </summary>
+        /// <param name="movement">The movement points left.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithMovementLeft(long movement) => this with { MovementPoints = this.MovementPoints with { Current = movement } };
 
         /// <summary>
         /// Returns the hero with <paramref name="spellPoints"/> spell points.
         /// </summary>
+        /// <param name="spellPoints">The spell points.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithSpellPoints(int spellPoints) => this with { SpellPoints = spellPoints };
 
         /// <summary>
         /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody has no move to finish, so its destination
         /// is cleared; the tile it stands on is left as the game leaves it (a defeated hero keeps the tile it fell on).
         /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithOwner(PlayerColor owner) => owner.IsNeutral ? this with { Owner = owner, Destination = MapPosition.None } : this with { Owner = owner };
 
         /// <summary>
@@ -110,6 +120,9 @@
         /// savegame keeps the primary skills with the bonuses of the artifacts in them, so what the artifact that leaves the slot gave
         /// is taken off and what the new one gives is added, as the game does when a hero is given an artifact. A skill stays between 0 and 255.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="artifact">The artifact.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithArtifact(int slot, Artifact? artifact)
         {
             var old = this.Artifacts.Slots[slot];
@@ -124,6 +137,9 @@
         /// Returns the hero with <paramref name="artifact"/> in its first free slot, and its skills changed by what the artifact gives.
         /// </summary>
         /// <exception cref="GameRuleException">The hero has no free artifact slot.</exception>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="artifact">The artifact.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithArtifact(Artifact artifact)
         {
             var free = Array.IndexOf(this.Artifacts.Slots.ToArray(), null);
@@ -133,6 +149,8 @@
         /// <summary>
         /// Returns the hero without <paramref name="artifact"/> (nothing changes when it does not carry it), and its skills changed by what the artifact gave.
         /// </summary>
+        /// <param name="artifact">The artifact to take off.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithoutArtifact(Artifact artifact)
         {
             var slot = Array.IndexOf(this.Artifacts.Slots.ToArray(), artifact);
@@ -143,11 +161,13 @@
         /// Returns the hero with the Magic Book in its first free slot (nothing changes when it has it already).
         /// </summary>
         /// <exception cref="GameRuleException">The hero has no free artifact slot.</exception>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithSpellBook() => this.HasSpellBook ? this : this with { Artifacts = this.Artifacts.Add(this.Faction.Catalog.SpellBook) };
 
         /// <summary>
         /// Returns the hero without the Magic Book. The spells it had stay marked, as they do in the game.
         /// </summary>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithoutSpellBook() => this with { Artifacts = this.Artifacts.Remove(this.Faction.Catalog.SpellBook) };
     }
 }

@@ -15,6 +15,7 @@ namespace Siniskalc.Heroes.Models
         /// <param name="player">The player.</param>
         /// <param name="days">The days left.</param>
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="days"/> is not 1 to <see cref="Constants.Player.MaxDaysLeft"/>.</exception>
+        /// <returns>The player with the days left; the player is not changed.</returns>
         public static TPlayer WithDaysLeft<TPlayer>(this TPlayer player, int days)
             where TPlayer : BanishablePlayerBase
         {

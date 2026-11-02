@@ -39,13 +39,24 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns the visits of a map with <paramref name="count"/> obelisks that nobody has visited.
         /// </summary>
+        /// <param name="count">The number of obelisks.</param>
+        /// <returns>The visits.</returns>
         public static ObeliskVisits<TColor> NoneVisited(int count) => new(new byte[count]);
 
         /// <summary>
         /// Returns where obelisk <paramref name="index"/> is on the map, or null when that is not known.
         /// </summary>
+        /// <param name="index">The obelisk, from 0.</param>
+        /// <returns>The position, or <see langword="null"/>.</returns>
         public MapPosition? PositionOf(int index) => index >= 0 && index < this.positions.Length ? this.positions[index] : null;
 
+        /// <summary>
+        /// Returns whether a colour has visited an obelisk.
+        /// </summary>
+        /// <param name="index">The obelisk, from 0.</param>
+        /// <param name="color">The colour of the player.</param>
+        /// <returns><see langword="true"/> if the colour has visited it.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not an obelisk of the map.</exception>
         public bool IsVisited(int index, TColor color)
         {
             RangeGuard.ThrowIfNotIndex(index, this.Count, nameof(index));
@@ -55,10 +66,25 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Gets how many obelisks <paramref name="color"/> has visited.
         /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <returns>The number of obelisks.</returns>
         public int VisitedCount(TColor color) => this.masks.Count(m => (m & Bit(color)) != 0);
 
+        /// <summary>
+        /// Returns whether a colour has visited every obelisk of the map.
+        /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <returns><see langword="true"/> if it has visited all of them.</returns>
         public bool AllVisited(TColor color) => this.VisitedCount(color) == this.Count;
 
+        /// <summary>
+        /// Returns the visits with one obelisk marked as visited by a colour, or not.
+        /// </summary>
+        /// <param name="index">The obelisk, from 0.</param>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="visited">Whether the colour has visited the obelisk.</param>
+        /// <returns>A new set of visits; this one is not changed.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not an obelisk of the map.</exception>
         public ObeliskVisits<TColor> WithVisited(int index, TColor color, bool visited)
         {
             RangeGuard.ThrowIfNotIndex(index, this.Count, nameof(index));
@@ -70,6 +96,9 @@ namespace Siniskalc.Heroes.Models
         /// <summary>
         /// Returns a copy in which <paramref name="color"/> has visited every obelisk, or none of them. The bits of the other colours stay as they are.
         /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="visited">Whether the colour has visited every obelisk or none.</param>
+        /// <returns>A new set of visits; this one is not changed.</returns>
         public ObeliskVisits<TColor> WithAll(TColor color, bool visited)
         {
             var result = this;
@@ -81,8 +110,17 @@ namespace Siniskalc.Heroes.Models
             return result;
         }
 
+        /// <summary>
+        /// Returns whether another set of visits has the same flags in the same order.
+        /// </summary>
+        /// <param name="other">The visits to compare with.</param>
+        /// <returns><see langword="true"/> if the flags are equal.</returns>
         public bool Equals(ObeliskVisits<TColor>? other) => other != null && this.masks.AsSpan().SequenceEqual(other.masks);
 
+        /// <summary>
+        /// Returns a hash code made from the flags, so equal visits have equal hash codes.
+        /// </summary>
+        /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
             var hash = default(HashCode);

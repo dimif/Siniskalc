@@ -7,6 +7,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
     /// </summary>
     public static class ResourcePalette
     {
+        /// <summary>
+        /// Unknown.
+        /// </summary>
         public const string Unknown = "#8A93A6";
 
         private static readonly IReadOnlyDictionary<string, string> Colors = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
@@ -23,6 +26,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns the colour of the resource called <paramref name="name"/>, e.g. "#B8902A" for "Gold".
         /// </summary>
+        /// <returns>The colour as a hex string, or a neutral grey for a name that is not a resource.</returns>
+        /// <param name="name">The name of the resource.</param>
         public static string Of(string name) => Colors.TryGetValue(name, out var hex) ? hex : Unknown;
     }
 }

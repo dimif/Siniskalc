@@ -31,6 +31,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Adds a stack of <paramref name="count"/> creatures with the stats <paramref name="info"/>.
         /// </summary>
+        /// <param name="info">The facts about the creature.</param>
+        /// <param name="count">The number of creatures in the stack.</param>
         public void Add(CreatureInfo info, long count)
         {
             this.Any = true;
@@ -52,6 +54,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Tells what the army is worth, such as "HP Total 1,200  ·  Damage 100-150". Empty for an empty army.
         /// </summary>
         /// <param name="withValues">Whether to tell the cost and the values of the computer player and the game too, for a game that knows them.</param>
+        /// <returns>The text, or nothing for an empty army.</returns>
         public string ToSummary(bool withValues)
         {
             if (!this.Any)

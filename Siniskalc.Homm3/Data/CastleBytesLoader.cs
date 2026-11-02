@@ -24,12 +24,22 @@
         private readonly Encoding encoding;
         private readonly EntityCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleBytesLoader"/> class.
+        /// </summary>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="catalog">The catalog.</param>
         public CastleBytesLoader(Encoding encoding, EntityCatalog catalog)
         {
             this.encoding = encoding;
             this.catalog = catalog;
         }
 
+        /// <summary>
+        /// Finds the castles in the bytes of a savefile, by the length of the name each one has.
+        /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <returns>The chunks of the castles, in the order they are in the savefile.</returns>
         public IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes)
         {
             var chunks = new List<CastleChunk>();

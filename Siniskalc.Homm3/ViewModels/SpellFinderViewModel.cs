@@ -26,6 +26,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         public override string SearchHint => "Type any of: a name, a school (fire, air, water, earth), a level (level 3) or adventure / combat";
 
+        /// <inheritdoc/>
         public override string Summary
         {
             get

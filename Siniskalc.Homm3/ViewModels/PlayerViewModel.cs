@@ -36,6 +36,16 @@
         private readonly Action<int>? openHero;
         private readonly Action<int>? openCastle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session that edits the player.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
+        /// <param name="control">Who plays the colour; <see langword="null"/> when that is not known.</param>
+        /// <param name="isCurrent">Whether it is the turn of the player.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number; <see langword="null"/> for none.</param>
         public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
             : base(session.Current.Color.ToString(), session)
         {
@@ -67,8 +77,14 @@
             this.RefreshOwned();
         }
 
+        /// <summary>
+        /// Gets the session that edits the player.
+        /// </summary>
         public new PlayerEditSession Session => this.session;
 
+        /// <summary>
+        /// Gets the colour of the player.
+        /// </summary>
         public PlayerColor Color => this.session.Current.Color;
 
         /// <inheritdoc/>
@@ -128,6 +144,9 @@
         /// </summary>
         public bool HasBanishing => this.DaysLeft != null;
 
+        /// <summary>
+        /// Gets whether the player is out of the game.
+        /// </summary>
         public bool IsBanished => this.session.Current.IsBanished;
 
         /// <summary>
@@ -165,6 +184,7 @@
         /// <summary>
         /// Creates the raw bytes of the player for the hex editor. The caller owns the target and disposes it.
         /// </summary>
+        /// <returns>The target.</returns>
         public IByteEditTarget CreateByteEditTarget() => this.byteEditTargets.ForPlayer(this.session);
 
         /// <summary>

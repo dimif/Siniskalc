@@ -26,8 +26,14 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int MarkerLength = 4;
 
+        /// <summary>
+        /// Where the number of obelisks is, from the start of the marker.
+        /// </summary>
         public const int CountOffset = 3;
 
+        /// <summary>
+        /// Where the flags of the obelisks begin, from the start of the marker.
+        /// </summary>
         public const int FlagsOffset = MarkerLength;
 
         /// <summary>

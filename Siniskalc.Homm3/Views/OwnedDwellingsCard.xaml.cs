@@ -15,6 +15,9 @@ namespace Siniskalc.Homm3.Views
         private OwnedMapObjectsViewModel? viewModel;
         private int boundDwelling = -1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwnedDwellingsCard"/> class.
+        /// </summary>
         public OwnedDwellingsCard()
         {
             this.InitializeComponent();

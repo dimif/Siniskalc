@@ -16,6 +16,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly int maxSlots;
         private bool isRefreshing;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondarySkillsViewModelBase"/> class.
+        /// </summary>
+        /// <param name="skillNames">The names of every skill the game has.</param>
+        /// <param name="maxSlots">The number of skills a hero can show on the hero screen.</param>
         protected SecondarySkillsViewModelBase(IReadOnlyList<string> skillNames, int maxSlots)
             : base("Secondary Skills")
         {
@@ -65,8 +70,14 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public IReadOnlyList<string> SkillNames { get; }
 
+        /// <summary>
+        /// Gets the levels a slot can have, which are all but None.
+        /// </summary>
         public IReadOnlyList<string> SlotLevelNames => SkillLevelNames.WithoutNone;
 
+        /// <summary>
+        /// Gets the levels a row of the list of every skill can have, None included.
+        /// </summary>
         public IReadOnlyList<string> RowLevelNames => SkillLevelNames.WithNone;
 
         /// <summary>
@@ -84,6 +95,9 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// </summary>
         public virtual string AllSkillsNote => string.Empty;
 
+        /// <summary>
+        /// Gets a value indicating whether the hero has a level in skills that the hero screen does not show.
+        /// </summary>
         public bool HasExtraSkills => this.ExtraCount > 0;
 
         /// <summary>
@@ -139,6 +153,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Moves the skill in a slot up (<paramref name="direction"/> -1) or down (1) the hero screen.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="direction">-1 to move it up, 1 to move it down.</param>
         public void MoveSkill(int slot, int direction)
         {
             var target = slot + direction;
@@ -154,6 +170,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Removes the skill in a slot. Later skills move up a slot, as the game needs the slots to be contiguous.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
         public void ClearSkill(int slot)
         {
             if (this.isRefreshing || slot < 0 || slot >= this.UsedSlots)
@@ -167,47 +184,75 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gets the name of the skill in a slot (from 0) that is in use.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <returns>The name of the skill.</returns>
         protected abstract string? SkillInSlot(int slot);
 
         /// <summary>
         /// Gets the level of the skill in a slot (from 0) that is in use, as <see cref="SkillLevelNames"/> names it.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <returns>The name of the level.</returns>
         protected abstract string LevelInSlot(int slot);
 
         /// <summary>
         /// Gets the hero's level in a skill, as <see cref="SkillLevelNames"/> names it ("None" for a skill the hero has not learned).
         /// </summary>
+        /// <param name="skillName">The name of the skill.</param>
+        /// <returns>The name of the level.</returns>
         protected abstract string LevelOf(string skillName);
 
         /// <summary>
         /// Gets the slot (from 0) the hero screen shows a skill in, or -1 when it does not.
         /// </summary>
+        /// <param name="skillName">The name of the skill.</param>
+        /// <returns>The slot, or -1.</returns>
         protected abstract int SlotOf(string skillName);
 
         /// <summary>
         /// Puts another skill in a slot that is in use, keeping what the game keeps of its level.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="skillName">The name of the skill to put there.</param>
         protected abstract void ReplaceSkillInSlot(int slot, string skillName);
 
         /// <summary>
         /// Adds a skill in the first free slot, at basic level.
         /// </summary>
+        /// <param name="skillName">The name of the skill.</param>
         protected abstract void AddSkill(string skillName);
 
+        /// <summary>
+        /// Gives the skill in a slot a level.
+        /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <param name="levelName">The level, as <see cref="SkillLevelNames"/> names it.</param>
         protected abstract void SetLevelInSlot(int slot, string levelName);
 
         /// <summary>
         /// Gives the hero a level in a skill; "None" takes the skill away.
         /// </summary>
+        /// <param name="skillName">The name of the skill.</param>
+        /// <param name="levelName">The name of the level.</param>
         protected abstract void SetLevelOf(string skillName, string levelName);
 
+        /// <summary>
+        /// Swaps the skills of two slots, with their levels.
+        /// </summary>
+        /// <param name="first">The first slot, from 0.</param>
+        /// <param name="second">The second slot, from 0.</param>
         protected abstract void SwapSlots(int first, int second);
 
+        /// <summary>
+        /// Removes the skill of a slot; the later skills move up a slot.
+        /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
         protected abstract void RemoveSlot(int slot);
 
         /// <summary>
         /// Takes a skill off the hero screen but keeps its level. Only called when <see cref="SupportsHiding"/>.
         /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
         protected virtual void HideSlot(int slot)
         {
         }
@@ -215,6 +260,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Puts a skill that has a level but no slot in a free slot. Only called when <see cref="SupportsHiding"/>.
         /// </summary>
+        /// <param name="skillName">The name of the skill.</param>
         protected virtual void ShowExtraSkill(string skillName)
         {
         }

@@ -13,6 +13,10 @@ namespace Siniskalc.Homm2.Views
         private readonly MapViewModel viewModel;
         private MapRecordViewModel? bound;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPage"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public MapPage(MapViewModel viewModel)
         {
             this.InitializeComponent();

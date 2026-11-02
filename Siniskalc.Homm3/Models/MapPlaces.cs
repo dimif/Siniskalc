@@ -13,6 +13,11 @@ namespace Siniskalc.Homm3.Models
     {
         private readonly IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPlaces"/> class.
+        /// </summary>
+        /// <param name="places">The places of each kind, with the number of each among the places of its kind.</param>
+        /// <param name="merchants">The merchants of the map, or <see langword="null"/> for none.</param>
         public MapPlaces(IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places, IReadOnlyList<(int Number, MapPosition Position)>? merchants = null)
         {
             this.places = places;
@@ -33,6 +38,8 @@ namespace Siniskalc.Homm3.Models
         /// Returns the places with those that a hero stands on added: such a place is not found on the map, as the hero hides it, but the hero's
         /// own record says what it stands on. A place the map already has is kept as it is.
         /// </summary>
+        /// <param name="standing">The places a hero stands on, which the map hides.</param>
+        /// <returns>The new places; these are not changed.</returns>
         public MapPlaces WithStanding(IEnumerable<(VisitedPlaceKind Kind, int Number, MapPosition Position)> standing)
         {
             var merged = new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>(this.places);

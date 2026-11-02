@@ -25,6 +25,12 @@ namespace Siniskalc.Wpf.ViewModels
         private string navigationFilter = string.Empty;
         private string structureKey = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditorViewModelBase"/> class.
+        /// </summary>
+        /// <param name="gameService">The game service.</param>
+        /// <param name="saveRegions">The save regions.</param>
+        /// <param name="navigationBuilder">The navigation builder.</param>
         protected EditorViewModelBase(ISavegameService<TGame> gameService, ISaveRegionProvider saveRegions, INavigationBuilder<TGame> navigationBuilder)
         {
             this.gameService = gameService;
@@ -164,12 +170,16 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Gets the open game, or throws when none is loaded.
         /// </summary>
+        /// <returns>The open game.</returns>
+        /// <exception cref="InvalidOperationException">No game is loaded.</exception>
         protected TGame Loaded() => this.currentGame ?? throw new InvalidOperationException("No game is currently loaded");
 
         /// <summary>
         /// Builds what reads <paramref name="game"/> (and so can fail on a savefile that is odd), before anything of the open game is
         /// let go, so a game that cannot be shown leaves the one that is open as it was. What it returns goes to <see cref="OpenGame"/>.
         /// </summary>
+        /// <returns>What <see cref="OpenGame"/> needs, or <see langword="null"/> for nothing.</returns>
+        /// <param name="game">The game being opened.</param>
         protected abstract object? PrepareGame(TGame game);
 
         /// <summary>
@@ -180,21 +190,27 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Takes <paramref name="game"/> (now the current game) and what <see cref="PrepareGame"/> made of it into use.
         /// </summary>
+        /// <param name="prepared">What <see cref="PrepareGame"/> returned.</param>
+        /// <param name="game">The game being opened.</param>
         protected abstract void OpenGame(TGame game, object? prepared);
 
         /// <summary>
         /// Gets the node of the navigation tree that <paramref name="page"/> belongs to, or <c>null</c> when it has none.
         /// </summary>
+        /// <returns>The node, or <see langword="null"/>.</returns>
+        /// <param name="page">The view model of the page.</param>
         protected abstract NavNodeViewModel? NodeOf(object page);
 
         /// <summary>
         /// Shows what <paramref name="node"/>, which the user picked, stands for.
         /// </summary>
+        /// <param name="node">The node the user picked.</param>
         protected abstract void OnNodeSelected(NavNodeViewModel node);
 
         /// <summary>
         /// Called when <paramref name="page"/> is about to be shown, in place of the one that is.
         /// </summary>
+        /// <param name="page">The view model of the page, or <see langword="null"/> for none.</param>
         protected virtual void OnPageShowing(object? page)
         {
         }
@@ -206,6 +222,10 @@ namespace Siniskalc.Wpf.ViewModels
         {
         }
 
+        /// <summary>
+        /// Makes <paramref name="page"/> the page the editor shows.
+        /// </summary>
+        /// <param name="page">The view model of the page, or <see langword="null"/> for none.</param>
         protected void SetCurrentPage(object? page)
         {
             if (!ReferenceEquals(this.currentPage, page))

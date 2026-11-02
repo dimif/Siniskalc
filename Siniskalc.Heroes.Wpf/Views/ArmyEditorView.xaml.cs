@@ -11,6 +11,9 @@ namespace Siniskalc.Heroes.Wpf.Views
     /// </summary>
     public partial class ArmyEditorView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArmyEditorView"/> class.
+        /// </summary>
         public ArmyEditorView()
         {
             this.InitializeComponent();

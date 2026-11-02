@@ -13,6 +13,11 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly CreatureInfo info;
         private readonly int amount;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StackTotals"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="amount">The amount.</param>
         public StackTotals(CreatureInfo info, int amount)
         {
             this.info = info;
@@ -83,6 +88,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gives the totals as the lines the army editor shows.
         /// </summary>
+        /// <returns>The facts.</returns>
         public IReadOnlyList<StackFact> ToFacts() =>
         [
             new("HP", this.CreatureHealth, "Hit points of one creature"),
@@ -98,6 +104,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Gives the hit points and damage only, for a game that knows nothing else of a stack (no cost or values of the computer player).
         /// </summary>
+        /// <returns>The facts.</returns>
         public IReadOnlyList<StackFact> ToHealthAndDamageFacts() =>
         [
             new("HP", this.CreatureHealth, "Hit points of one creature"),

@@ -8,6 +8,9 @@ namespace Siniskalc.Homm3.Views
     /// </summary>
     public partial class ArmyEditor : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArmyEditor"/> class.
+        /// </summary>
         public ArmyEditor()
         {
             this.InitializeComponent();

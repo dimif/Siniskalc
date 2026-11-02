@@ -25,6 +25,12 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         private readonly IGameInfo<TColor> game;
         private readonly BanishingTextProvider banishingText;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverviewViewModelBase"/> class.
+        /// </summary>
+        /// <param name="savegame">The savegame.</param>
+        /// <param name="game">The game.</param>
+        /// <param name="banishingText">The banishing text.</param>
         protected OverviewViewModelBase(AbstractSavegame savegame, IGameInfo<TColor> game, BanishingTextProvider banishingText)
         {
             this.savegame = savegame;
@@ -104,6 +110,10 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Returns the line about the savefile: the players, the heroes owned, then each of <paramref name="more"/> that is not empty,
         /// separated by dots.
         /// </summary>
+        /// <param name="players">The number of players.</param>
+        /// <param name="heroes">The number of heroes owned.</param>
+        /// <returns>The line.</returns>
+        /// <param name="more">More parts of the line; empty ones are left out.</param>
         protected static string SummaryOf(int players, int heroes, params string[] more)
         {
             return string.Join(" · ", new[] { OverviewText.Count(players, "player", "players"), OverviewText.Count(heroes, "hero", "heroes") }.Concat(more.Where(text => text.Length > 0)));
@@ -113,6 +123,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// Returns who plays <paramref name="color"/>, followed by "current turn" when it is that colour's turn.
         /// </summary>
         /// <param name="color">The colour.</param>
+        /// <returns>The text.</returns>
         protected string ControlTextOf(TColor color) => PlayerTypeText.Describe(this.game, color);
 
         /// <summary>
@@ -123,6 +134,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <param name="heroes">The links to the player's heroes.</param>
         /// <param name="castles">The links to the player's castles.</param>
         /// <param name="open">The game's command to open the player page.</param>
+        /// <returns>The card.</returns>
         protected PlayerCardViewModel CardOf(TColor color, PlayerModelBase<TColor>? player, IReadOnlyList<ILink> heroes, IReadOnlyList<CastleLinkViewModel> castles, ICommand open) =>
             new(
                 color.ToString() ?? string.Empty,
@@ -140,6 +152,7 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// the turn (<see cref="GiveTurn"/>) when it is a human who has not the turn.
         /// </summary>
         /// <param name="color">The colour.</param>
+        /// <returns>The item.</returns>
         protected OrderOfPlayItemViewModel OrderItemOf(TColor color)
         {
             var isCurrent = Equals(this.game.CurrentPlayer, color);
@@ -162,6 +175,8 @@ namespace Siniskalc.Heroes.Wpf.ViewModels
         /// <summary>
         /// Returns the size of the map as the page shows it; the size alone unless the game says more (HoMM3 adds its levels).
         /// </summary>
+        /// <param name="map">The header of the map.</param>
+        /// <returns>The text.</returns>
         protected virtual string SizeOf(MapHeader map) => map.SizeText;
     }
 }

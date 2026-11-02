@@ -10,6 +10,11 @@ public sealed class SpellGrantProvider
 {
     private readonly IReadOnlyList<Spell> spells;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="None"/> class.
+    /// </summary>
+    /// <param name="catalog">The catalog.</param>
+    /// <param name="definition">The definition.</param>
     internal SpellGrantProvider(EntityCatalog catalog, SpellGrantDefinition definition)
     {
         this.Description = definition.Description;
@@ -22,10 +27,23 @@ public sealed class SpellGrantProvider
         }).ToArray().AsReadOnly();
     }
 
+    /// <summary>
+    /// Gets the text that says what the artifact grants.
+    /// </summary>
     public string Description { get; }
 
+    /// <summary>
+    /// Gets the spells the grant gives.
+    /// </summary>
+    /// <param name="version">The version of the game.</param>
+    /// <returns>The spells that exist in the version.</returns>
     public IReadOnlyCollection<Spell> Resolve(GameVersion version) => this.spells.Where(s => s.IsAvailableIn(version)).ToArray().AsReadOnly();
 
+    /// <summary>
+    /// Makes a grant of named spells.
+    /// </summary>
+    /// <param name="spells">The spells.</param>
+    /// <returns>The grant.</returns>
     public static SpellGrantProvider Of(params Spell[] spells)
     {
         if (spells.Length == 0)
@@ -40,11 +58,22 @@ public sealed class SpellGrantProvider
         });
     }
 
+    /// <summary>
+    /// Makes a grant of every spell of a school.
+    /// </summary>
+    /// <param name="school">The school.</param>
+    /// <returns>The grant.</returns>
     public static SpellGrantProvider OfSchool(SpellSchool school) => new(school.Catalog, new SpellGrantDefinition
     {
         Kind = SpellGrantKind.School, Spells = [], School = school.Id, Level = null, Description = $"all {school.Name} spells",
     });
 
+    /// <summary>
+    /// Makes a grant of every spell of a level.
+    /// </summary>
+    /// <param name="catalog">The catalog of the spells.</param>
+    /// <param name="level">The level.</param>
+    /// <returns>The grant.</returns>
     public static SpellGrantProvider OfLevel(EntityCatalog catalog, int level) => new(catalog, new SpellGrantDefinition
     {
         Kind = SpellGrantKind.Level, Spells = [], School = null, Level = level, Description = $"all level {level} spells",

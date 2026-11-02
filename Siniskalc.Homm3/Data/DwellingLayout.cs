@@ -23,6 +23,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int ObjectType = 6;
 
+        /// <summary>
+        /// The number of the type of the objects of the map that are dwellings; see <see cref="ObjectType"/>.
+        /// </summary>
         public const byte CreatureGeneratorType = 17;
 
         /// <summary>
@@ -42,9 +45,20 @@ namespace Siniskalc.Homm3.Data
         /// as for the mines).
         /// </summary>
         public const int X = 20;
+
+        /// <summary>
+        /// The row of the tile of the dwelling; see <see cref="X"/>.
+        /// </summary>
         public const int Y = 21;
+
+        /// <summary>
+        /// The level of the map the dwelling is on; see <see cref="X"/>.
+        /// </summary>
         public const int Level = 22;
 
+        /// <summary>
+        /// The byte of the owner when nobody owns the dwelling.
+        /// </summary>
         public const byte NoOwner = 0xFF;
 
         /// <summary>

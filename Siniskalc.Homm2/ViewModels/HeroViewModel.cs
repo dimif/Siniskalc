@@ -30,6 +30,14 @@
         private string castleName = string.Empty;
         private int castleIndex = -1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="heroId">The number of the hero.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        /// <param name="spellPoints">Works out the most spell points of the hero.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
         public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
             : this(game, game.History.CreateHeroSession(heroId), openCastle, spellPoints, byteEditTargets)
         {
@@ -121,8 +129,14 @@
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the number of the hero.
+        /// </summary>
         public int HeroId { get; }
 
+        /// <summary>
+        /// Gets the field that sets the owner.
+        /// </summary>
         public ChoiceFieldViewModel OwnerField { get; }
 
         /// <inheritdoc/>
@@ -143,10 +157,19 @@
         /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.hero.Owner);
 
+        /// <summary>
+        /// Gets the name of the faction of the hero.
+        /// </summary>
         public string FactionName => this.hero.Faction.ToString();
 
+        /// <summary>
+        /// Gets the level of the hero.
+        /// </summary>
         public int Level => this.hero.HeroLevel.Level;
 
+        /// <summary>
+        /// Gets the owner as text.
+        /// </summary>
         public string OwnerText => OwnerNames<PlayerColor>.Of(this.hero.Owner);
 
         /// <summary>
@@ -164,6 +187,9 @@
         /// </summary>
         public string CastleName => this.castleName;
 
+        /// <summary>
+        /// Gets the command that opens the page of the castle the hero is in.
+        /// </summary>
         public ICommand OpenCastleCommand { get; }
 
         /// <summary>
@@ -242,6 +268,9 @@
         /// </summary>
         public ArtifactsViewModel ArtifactsEditor { get; }
 
+        /// <summary>
+        /// Gets whether the hero has the spell book.
+        /// </summary>
         public bool HasSpellBook => this.hero.HasSpellBook;
 
         private Game Game { get; }
@@ -250,6 +279,7 @@
         /// Creates the target the hex tab of the page works on: the raw bytes of the hero. The caller disposes it. <c>null</c> when the
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
+        /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
         public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForHero(this.Game.History, this.HeroId);
 
         /// <summary>

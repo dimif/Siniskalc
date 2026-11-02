@@ -6,6 +6,9 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class PlayerLayout
     {
+        /// <summary>
+        /// The size of the record of a player.
+        /// </summary>
         public const int RecordSize = 0xCF;
 
         /// <summary>
@@ -15,6 +18,9 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int Color = 0x01;
 
+        /// <summary>
+        /// The number of heroes the player has, a byte.
+        /// </summary>
         public const int HeroCount = 0x02;
 
         /// <summary>
@@ -37,6 +43,9 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int DaysLeft = 0x44;
 
+        /// <summary>
+        /// The number of castles the player has, a byte.
+        /// </summary>
         public const int CastleCount = 0x45;
 
         /// <summary>

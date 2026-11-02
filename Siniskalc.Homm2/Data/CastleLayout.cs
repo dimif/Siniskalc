@@ -9,8 +9,14 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class CastleLayout
     {
+        /// <summary>
+        /// The size of the record of a castle.
+        /// </summary>
         public const int RecordSize = 100;
 
+        /// <summary>
+        /// The number of the castle (a byte), which is its place in the table.
+        /// </summary>
         public const int Index = 0x00;
 
         /// <summary>
@@ -18,8 +24,19 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int Owner = 0x01;
 
+        /// <summary>
+        /// The faction of the castle, a byte.
+        /// </summary>
         public const int Faction = 0x03;
+
+        /// <summary>
+        /// The column of the castle on the map (a byte).
+        /// </summary>
         public const int X = 0x04;
+
+        /// <summary>
+        /// The row of the castle on the map (a byte).
+        /// </summary>
         public const int Y = 0x05;
 
         /// <summary>
@@ -27,7 +44,14 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int Boat = 0x06;
 
+        /// <summary>
+        /// The creature types of the garrison, a byte for each of the five slots.
+        /// </summary>
         public const int GarrisonTypes = 0x08;
+
+        /// <summary>
+        /// The creature counts of the garrison, 16 bits for each of the five slots.
+        /// </summary>
         public const int GarrisonCounts = 0x0D;
 
         /// <summary>
@@ -62,6 +86,9 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int SecondUpgradeMarker = 4;
 
+        /// <summary>
+        /// The value the game puts at <see cref="SecondUpgradeMarker"/> when the dragons are upgraded a second time.
+        /// </summary>
         public const int SecondUpgradeMarkerValue = 3;
 
         /// <summary>
@@ -74,6 +101,9 @@ namespace Siniskalc.Homm2.Data
         /// </summary>
         public const int GuildSpellCounts = 0x50;
 
+        /// <summary>
+        /// The name of the castle, in a field of <see cref="Constants.Castle.NameLength"/> bytes.
+        /// </summary>
         public const int Name = 0x57;
 
         /// <summary>
@@ -87,6 +117,9 @@ namespace Siniskalc.Homm2.Data
         /// own list until it is upgraded, then in the list of the upgraded ones, the dragons upgraded a second time in the sixth place (E34DWUP2:
         /// the Black Dragon had none in the fifth).
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <param name="level">How far the dwelling is built.</param>
+        /// <returns>The offset in the record.</returns>
         public static int CreaturesOffset(int dwelling, int level) =>
             level >= 2 ? UpgradedCreatures + ((level >= 3 ? 5 : dwelling - 2) * 2) : Creatures + ((dwelling - 1) * 2);
 
@@ -94,6 +127,8 @@ namespace Siniskalc.Homm2.Data
         /// Gets every place the savegame can keep creatures of dwelling <paramref name="dwelling"/> (1 to 6) in: its own, its upgrade and, for the
         /// sixth, the one of the second upgrade.
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The offsets in the record.</returns>
         public static IReadOnlyList<int> CreaturesOffsets(int dwelling) =>
             [Creatures + ((dwelling - 1) * 2), .. dwelling >= 2 ? new[] { UpgradedCreatures + ((dwelling - 2) * 2) } : [], .. dwelling == 6 ? new[] { UpgradedCreatures + (5 * 2) } : []];
     }

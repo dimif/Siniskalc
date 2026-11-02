@@ -34,8 +34,14 @@ namespace Siniskalc.Homm3.Data
         /// <summary>The map coordinates, one byte each: X, Y and the level.</summary>
         public const int PositionX = 4;
 
+        /// <summary>
+        /// The row of the castle on the map.
+        /// </summary>
         public const int PositionY = 5;
 
+        /// <summary>
+        /// The level of the map the castle is on.
+        /// </summary>
         public const int PositionZ = 6;
 
         /// <summary>
@@ -44,6 +50,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int ShipyardX = 7;
 
+        /// <summary>
+        /// The row of the tile where the boats of the castle appear; see <see cref="ShipyardX"/>.
+        /// </summary>
         public const int ShipyardY = 8;
 
         /// <summary>
@@ -52,11 +61,17 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int GarrisonTypes = 9;
 
+        /// <summary>
+        /// The creature counts of the garrison: seven 32-bit integers, after the types at <see cref="GarrisonTypes"/>.
+        /// </summary>
         public const int GarrisonCounts = 37;
 
         /// <summary>The length of the name in bytes, as a 16-bit integer. The name follows at <see cref="Name"/>.</summary>
         public const int NameLength = 69;
 
+        /// <summary>
+        /// The name of the castle, which follows its length at <see cref="NameLength"/>.
+        /// </summary>
         public const int Name = 71;
 
         /// <summary>
@@ -66,8 +81,14 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int CreaturesAvailableFromNameEnd = 0;
 
+        /// <summary>
+        /// The offset from the end of the name of the creatures that wait in the upgraded dwellings; see <see cref="CreaturesAvailableFromNameEnd"/>.
+        /// </summary>
         public const int UpgradedCreaturesAvailableFromNameEnd = 14;
 
+        /// <summary>
+        /// The number of levels of creatures of a faction, which is the number of dwellings.
+        /// </summary>
         public const int CreatureLevelCount = 7;
 
         /// <summary>
@@ -75,6 +96,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int SpellCountsFromNameEnd = 84;
 
+        /// <summary>
+        /// The number of levels of spells of the Mage Guild.
+        /// </summary>
         public const int SpellLevelCount = 5;
 
         /// <summary>

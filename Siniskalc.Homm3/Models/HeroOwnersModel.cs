@@ -17,18 +17,26 @@
         /// <summary>
         /// Returns whether the table has an entry for the hero.
         /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
+        /// <returns><see langword="true"/> if the table has the hero.</returns>
         public bool Has(int heroId) => heroId >= 0 && heroId < this.Heroes.Count;
 
         /// <summary>
         /// Returns the table with the hero owned by <paramref name="owner"/>, or by nobody. A hero given to a player is no longer reserved, as a
         /// hired hero is not; a hero that leaves its player may be drawn for a tavern again, as a defeated hero may.
         /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
+        /// <param name="owner">The owner.</param>
+        /// <returns>The new table; this one is not changed.</returns>
         public HeroOwnersModel WithOwner(int heroId, PlayerColor owner) =>
             this.With(heroId, owner.IsNeutral ? HeroOwnership.Free : new HeroOwnership(owner, false));
 
         /// <summary>
         /// Returns the table with <paramref name="ownership"/> for the hero.
         /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
+        /// <param name="ownership">The ownership.</param>
+        /// <returns>The new table; this one is not changed.</returns>
         public HeroOwnersModel With(int heroId, HeroOwnership ownership)
         {
             RangeGuard.ThrowIfNotIndex(heroId, this.Heroes.Count, nameof(heroId));

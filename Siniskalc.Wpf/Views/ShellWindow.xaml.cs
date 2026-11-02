@@ -21,6 +21,16 @@ namespace Siniskalc.Wpf.Views
         private readonly SavegameFileCommands files;
         private readonly Func<LoggingSettingsViewModel>? loggingSettings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellWindow"/> class.
+        /// </summary>
+        /// <param name="recentMenu">The menu of the recent files.</param>
+        /// <param name="urlLauncher">Opens web addresses and folders.</param>
+        /// <param name="about">What the About window shows.</param>
+        /// <param name="help">The links of the Help menu.</param>
+        /// <param name="messages">Shows messages to the user.</param>
+        /// <param name="files">The commands to open and save a savegame.</param>
+        /// <param name="loggingSettings">Makes the page of the logging settings, or <see langword="null"/> when the window has none.</param>
         public ShellWindow(RecentFilesMenuViewModel recentMenu, IUrlLauncher urlLauncher, AboutInfo about, HelpLinks help, IMessageService messages, SavegameFileCommands files, Func<LoggingSettingsViewModel>? loggingSettings = null)
         {
             this.loggingSettings = loggingSettings;
@@ -44,6 +54,7 @@ namespace Siniskalc.Wpf.Views
 
         private bool IsGameLoaded => this.ViewModel?.IsGameLoaded ?? false;
 
+        /// <inheritdoc/>
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);

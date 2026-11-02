@@ -36,8 +36,14 @@
     /// </summary>
     public class NavButton : ListBoxItem
     {
+        /// <summary>
+        /// Identifies the <see cref="Text"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(NavButton), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Identifies the <see cref="Navlink"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty NavlinkProperty = DependencyProperty.Register("Navlink", typeof(Uri), typeof(NavButton), new PropertyMetadata(null));
 
         /// <summary>
@@ -56,23 +62,35 @@
             VisibilityProperty.OverrideMetadata(typeof(NavButton), new FrameworkPropertyMetadata(Visibility.Visible, OnVisibilityChanged));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavButton"/> class.
+        /// </summary>
         public NavButton()
         {
             this.Loaded += this.OnLoaded;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the button is shown only while the advanced mode is on.
+        /// </summary>
         public bool RequiresAdvancedMode
         {
             get { return (bool)this.GetValue(RequiresAdvancedModeProperty); }
             set { this.SetValue(RequiresAdvancedModeProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the address of the page the button opens.
+        /// </summary>
         public Uri Navlink
         {
             get { return (Uri)this.GetValue(NavlinkProperty); }
             set { this.SetValue(NavlinkProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the text of the button.
+        /// </summary>
         public string Text
         {
             get { return (string)this.GetValue(TextProperty); }

@@ -7,15 +7,19 @@
 
     public sealed class GameVersionJsonConverter : JsonConverter<GameVersion>
     {
+        /// <inheritdoc/>
         public override GameVersion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
             reader.TokenType == JsonTokenType.String ? Parse(reader.GetString()) : throw new JsonException("A short game version name is required.");
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, GameVersion value, JsonSerializerOptions options) =>
             writer.WriteStringValue(Name(value));
 
+        /// <inheritdoc/>
         public override GameVersion ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
             Parse(reader.GetString());
 
+        /// <inheritdoc/>
         public override void WriteAsPropertyName(Utf8JsonWriter writer, GameVersion value, JsonSerializerOptions options) =>
             writer.WritePropertyName(Name(value));
 

@@ -7,6 +7,12 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public sealed class HeroChunk : BytesChunk
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroChunk"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="bytes">The bytes.</param>
+        /// <param name="startIndex">The start index.</param>
         public HeroChunk(string name, byte[] bytes, int startIndex)
             : base(name, bytes, startIndex)
         {

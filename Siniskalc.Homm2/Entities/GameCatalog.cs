@@ -14,6 +14,11 @@
         private readonly IReadOnlyDictionary<int, Faction> heroFactions;
         private readonly Faction heroFallback;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameCatalog"/> class.
+        /// </summary>
+        /// <param name="setId">The set id.</param>
+        /// <param name="definitions">The definitions.</param>
         internal GameCatalog(string setId, CatalogDefinitions definitions)
         {
             this.SetId = setId;
@@ -38,40 +43,96 @@
             this.heroFallback = this.Factions.Find(0)!;
         }
 
+        /// <summary>
+        /// Gets the name of the set of definitions the catalog is made from.
+        /// </summary>
         public string SetId { get; }
 
+        /// <summary>
+        /// Gets the factions.
+        /// </summary>
         public EntityCatalog<Faction> Factions { get; }
 
+        /// <summary>
+        /// Gets the abilities of the creatures.
+        /// </summary>
         public EntityCatalog<CreatureAbility> Abilities { get; }
 
+        /// <summary>
+        /// Gets the groups of spells.
+        /// </summary>
         public EntityCatalog<SpellGroup> SpellTypes { get; }
 
+        /// <summary>
+        /// Gets the secondary skills.
+        /// </summary>
         public EntityCatalog<SecondarySkill> Skills { get; }
 
+        /// <summary>
+        /// Gets the artifacts.
+        /// </summary>
         public EntityCatalog<Artifact> Artifacts { get; }
 
+        /// <summary>
+        /// Gets the spells.
+        /// </summary>
         public EntityCatalog<Spell> Spells { get; }
 
+        /// <summary>
+        /// Gets the creatures.
+        /// </summary>
         public EntityCatalog<Creature> Creatures { get; }
 
+        /// <summary>
+        /// Gets the buildings of a town.
+        /// </summary>
         public EntityCatalog<Building> Buildings { get; }
 
+        /// <summary>
+        /// Gets the places a hero can visit once.
+        /// </summary>
         public EntityCatalog<MapPlace> Places { get; }
 
+        /// <summary>
+        /// Gets the kinds of mines.
+        /// </summary>
         public EntityCatalog<Mine> Mines { get; }
 
+        /// <summary>
+        /// Gets the effects a visit leaves on a hero.
+        /// </summary>
         public EntityCatalog<VisitEffect> VisitEffects { get; }
 
+        /// <summary>
+        /// Gets the objects of the map the editor lists.
+        /// </summary>
         public EntityCatalog<MapObject> MapObjects { get; }
 
+        /// <summary>
+        /// Gets the faction a castle of no known faction has.
+        /// </summary>
         public Faction NeutralFaction { get; }
 
+        /// <summary>
+        /// Gets the spell book.
+        /// </summary>
         public Artifact SpellBook { get; }
 
+        /// <summary>
+        /// Gets the artifact a byte that is no artifact reads as.
+        /// </summary>
         public Artifact FallbackArtifact { get; }
 
+        /// <summary>
+        /// Gets the creature a byte that is no creature reads as.
+        /// </summary>
         public Creature FallbackCreature { get; }
 
+        /// <summary>
+        /// Gets the faction a hero belongs to.
+        /// </summary>
+        /// <param name="id">The number of the hero.</param>
+        /// <returns>The faction; the one with code zero when the number is in none.</returns>
         public Faction FactionForHero(int id)
         {
             if (this.heroFactions.TryGetValue(id, out var faction))

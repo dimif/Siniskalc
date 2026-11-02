@@ -105,10 +105,19 @@ namespace Siniskalc.Wpf.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the chosen log folder was refused, so the page shows the reason.
+        /// </summary>
         public bool HasError => this.error.Length > 0;
 
+        /// <summary>
+        /// Gets the command that lets the user pick the folder for the log files.
+        /// </summary>
         public ICommand BrowseCommand { get; }
 
+        /// <summary>
+        /// Gets the command that goes back to the default log folder.
+        /// </summary>
         public ICommand UseDefaultCommand { get; }
 
         /// <summary>

@@ -15,6 +15,9 @@ namespace Siniskalc.Homm3.Views
         private OwnedMapObjectsViewModel? viewModel;
         private int boundMine = -1;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwnedMinesCards"/> class.
+        /// </summary>
         public OwnedMinesCards()
         {
             this.InitializeComponent();

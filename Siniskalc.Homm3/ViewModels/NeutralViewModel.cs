@@ -21,6 +21,14 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NeutralViewModel"/> class.
+        /// </summary>
+        /// <param name="history">The history of the savegame.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        /// <param name="owner">The colour whose page it is; <see langword="null"/> for what nobody owns.</param>
         public NeutralViewModel(SaveDocumentHistory history, IByteEditTargetFactory byteEditTargets, Action<int> openHero, Action<int> openCastle, PlayerColor? owner = null)
             : base(history, PlayerPalette.Of(owner ?? PlayerColor.Neutral), OwnerNames<PlayerColor>.Of(owner ?? PlayerColor.Neutral))
         {
@@ -49,11 +57,15 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Gets the number a navigation node of <paramref name="owner"/> that has no player page carries (-1 for neutral).
         /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>The index.</returns>
         public static int IndexOf(PlayerColor owner) => owner.IsNeutral ? -1 : -2 - owner.Code;
 
         /// <summary>
         /// Gets the colour that <see cref="IndexOf"/> numbered <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>The owner.</returns>
         public static PlayerColor OwnerOf(int index) => index == -1 ? PlayerColor.Neutral : PlayerColor.FromByte((byte)(-2 - index));
 
         /// <inheritdoc/>

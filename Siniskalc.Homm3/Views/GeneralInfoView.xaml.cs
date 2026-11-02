@@ -4,6 +4,9 @@ namespace Siniskalc.Homm3.Views
 
     public partial class GeneralInfoView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GeneralInfoView"/> class.
+        /// </summary>
         public GeneralInfoView() => this.InitializeComponent();
     }
 }

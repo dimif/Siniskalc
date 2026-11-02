@@ -19,12 +19,17 @@
         private readonly EntityCatalog catalog;
         private readonly CreatureCodes creatureCodes;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public CastleDeserializer(EntityCatalog catalog)
         {
             this.catalog = catalog;
             this.creatureCodes = new CreatureCodes(catalog);
         }
 
+        /// <inheritdoc/>
         public CastleModel Deserialize(CastleChunk chunk)
         {
             var faction = this.DeserializeFaction(chunk);
@@ -48,6 +53,11 @@
                 this.DeserializeMageGuildSpells(chunk));
         }
 
+        /// <summary>
+        /// Reads the faction of the castle from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <returns>The faction; the neutral faction when the byte is no faction.</returns>
         public Faction DeserializeFaction(CastleChunk chunk)
         {
             var code = chunk.GetByteAt(CastleLayout.Faction);
@@ -61,6 +71,11 @@
             return faction ?? this.catalog.NeutralFaction;
         }
 
+        /// <summary>
+        /// Reads the player who owns the castle from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <returns>The colour of the player; the neutral colour when nobody owns it or the byte is no colour.</returns>
         public PlayerColor DeserializeOwner(CastleChunk chunk)
         {
             var code = chunk.GetByteAt(CastleLayout.Owner);
@@ -73,6 +88,11 @@
             return PlayerColor.FromByte(code);
         }
 
+        /// <summary>
+        /// Reads where the castle is on the map from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <returns>The position, with the level of the map.</returns>
         public MapPosition DeserializePosition(CastleChunk chunk)
         {
             return new MapPosition(
@@ -81,6 +101,11 @@
                 chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
+        /// <summary>
+        /// Reads where the boats of the castle appear from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <returns>The position, or <see langword="null"/> when the castle is not on the coast.</returns>
         public MapPosition? DeserializeShipyardLocation(CastleChunk chunk)
         {
             var x = chunk.GetByteAt(CastleLayout.ShipyardX);
@@ -88,6 +113,11 @@
             return x == byte.MaxValue && y == byte.MaxValue ? null : new MapPosition(x, y, chunk.GetByteAt(CastleLayout.PositionZ));
         }
 
+        /// <summary>
+        /// Reads the garrison of the castle from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <returns>The garrison.</returns>
         public IArmy<Creature> DeserializeGarrison(CastleChunk chunk)
         {
             using var subject = Logger.BeginSubject("Castle", chunk.Name);
@@ -97,6 +127,8 @@
         /// <summary>
         /// Returns every building the castle has built, including the ones an upgrade has replaced.
         /// </summary>
+        /// <param name="chunk">The chunk.</param>
+        /// <returns>The buildings that have been built, including those an upgrade replaced.</returns>
         public IReadOnlySet<Building> DeserializeBuiltBuildings(CastleChunk chunk)
         {
             return DeserializeBuildings(chunk, this.DeserializeFaction(chunk), CastleLayout.BuiltBuildingsFromNameEnd);
@@ -105,6 +137,8 @@
         /// <summary>
         /// Returns the buildings that are in the castle now, which leaves out the ones an upgrade has replaced.
         /// </summary>
+        /// <param name="chunk">The chunk.</param>
+        /// <returns>The buildings that are in the castle now.</returns>
         public IReadOnlySet<Building> DeserializeVisibleBuildings(CastleChunk chunk)
         {
             return DeserializeBuildings(chunk, this.DeserializeFaction(chunk), CastleLayout.VisibleBuildingsFromNameEnd);

@@ -14,6 +14,12 @@ namespace Siniskalc.Homm3.ViewModels
         private ArtifactEffectInfo selectedArtifactInfo;
         private Artifact? selectedArtifact;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactInfoViewModelBase"/> class.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="effectLines">The effect lines.</param>
+        /// <param name="catalog">The catalog.</param>
         protected ArtifactInfoViewModelBase(string title, EffectLineProvider effectLines, EntityCatalog catalog)
             : base(title)
         {
@@ -23,18 +29,39 @@ namespace Siniskalc.Homm3.ViewModels
             this.ClearArtifactInfoCommand = new DelegateCommand(_ => this.ClearArtifactInfo());
         }
 
+        /// <summary>
+        /// Gets the attack the selected artifact adds.
+        /// </summary>
         public short Attack => this.selectedArtifactInfo.Atk;
 
+        /// <summary>
+        /// Gets the defense the selected artifact adds.
+        /// </summary>
         public short Defense => this.selectedArtifactInfo.Def;
 
+        /// <summary>
+        /// Gets the spell power the selected artifact adds.
+        /// </summary>
         public short Power => this.selectedArtifactInfo.Pow;
 
+        /// <summary>
+        /// Gets the knowledge the selected artifact adds.
+        /// </summary>
         public short Knowledge => this.selectedArtifactInfo.Kno;
 
+        /// <summary>
+        /// Gets the morale the selected artifact adds.
+        /// </summary>
         public short Morale => this.selectedArtifactInfo.Morale;
 
+        /// <summary>
+        /// Gets the luck the selected artifact adds.
+        /// </summary>
         public short Luck => this.selectedArtifactInfo.Luck;
 
+        /// <summary>
+        /// Gets the text of the other things the selected artifact does.
+        /// </summary>
         public string Effects => this.selectedArtifactInfo.Other;
 
         /// <summary>
@@ -52,8 +79,14 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public bool HasSelectedInfo => this.SelectedEffectLines.Count > 0 || !string.IsNullOrEmpty(this.Effects) || !string.IsNullOrEmpty(this.ClassAndCost);
 
+        /// <summary>
+        /// Gets the command that shows the card of an artifact; its parameter is the name of the artifact.
+        /// </summary>
         public ICommand ShowArtifactInfoCommand { get; }
 
+        /// <summary>
+        /// Gets the command that hides the card.
+        /// </summary>
         public ICommand ClearArtifactInfoCommand { get; }
 
         /// <summary>
@@ -61,13 +94,23 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         protected EffectLineProvider EffectLines { get; }
 
+        /// <summary>
+        /// Gets the catalog of the artifacts.
+        /// </summary>
         protected EntityCatalog Catalog { get; }
 
+        /// <summary>
+        /// Shows the card of an artifact.
+        /// </summary>
+        /// <param name="name">The name of the artifact; <see langword="null"/> or blank hides the card.</param>
         public void ShowArtifactInfoByName(string? name)
         {
             this.ShowArtifactInfo(string.IsNullOrWhiteSpace(name) ? null : this.Catalog.FindArtifact(name));
         }
 
+        /// <summary>
+        /// Hides the card of the artifact.
+        /// </summary>
         public void ClearArtifactInfo()
         {
             this.ShowArtifactInfo(null);
@@ -76,6 +119,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows what <paramref name="artifact"/> does in the info card; null empties the card.
         /// </summary>
+        /// <param name="artifact">The artifact, or <see langword="null"/> to hide the card.</param>
         protected void ShowArtifactInfo(Artifact? artifact)
         {
             this.selectedArtifact = artifact;

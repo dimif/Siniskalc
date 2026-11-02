@@ -73,8 +73,14 @@
         /// </summary>
         public string AllowText { get; }
 
+        /// <summary>
+        /// Gets the tooltip of the toggle that allows or forbids the building.
+        /// </summary>
         public string AllowToolTip { get; }
 
+        /// <summary>
+        /// Gets the command that allows or forbids the building on the map.
+        /// </summary>
         public ICommand ToggleAllowedCommand { get; }
 
         /// <summary>
@@ -116,8 +122,14 @@
         /// </summary>
         public string Creatures { get; }
 
+        /// <summary>
+        /// Gets the name of the building.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Gets whether the building is built.
+        /// </summary>
         public bool IsBuilt { get; }
 
         /// <summary>

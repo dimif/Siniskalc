@@ -10,6 +10,7 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class DwellingDeserializer(EntityCatalog catalog) : IDeserializer<RecordChunk, DwellingModel>
     {
+        /// <inheritdoc/>
         public DwellingModel Deserialize(RecordChunk chunk)
         {
             var code = chunk.GetByteAt(DwellingLayout.Creature);

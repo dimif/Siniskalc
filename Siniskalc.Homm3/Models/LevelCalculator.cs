@@ -10,6 +10,9 @@ namespace Siniskalc.Homm3.Models
     /// </summary>
     public static class LevelCalculator
     {
+        /// <summary>
+        /// The experience a hero needs to reach each level, by level.
+        /// </summary>
         public static readonly IReadOnlyDictionary<short, int> LevelToExperienceThresholds = new Dictionary<short, int>
         {
             { 1, 0 },

@@ -18,6 +18,9 @@
         /// Returns <paramref name="chunk"/> with the player's resources, tavern heroes and days left before banishing written into it.
         /// Everything else is left as it was: the list of heroes and the selected hero are written by <see cref="SafePlayerListsSerializer"/>.
         /// </summary>
+        /// <param name="chunk">The chunk of the player.</param>
+        /// <param name="player">The player.</param>
+        /// <returns>The chunk with the player written; the chunk given is not changed.</returns>
         public PlayerChunk Serialize(PlayerChunk chunk, PlayerModel player)
         {
             // The number of towns (PlayerLayout.TownCount) and the list of their indices follow the owners of the castles in the saves, but

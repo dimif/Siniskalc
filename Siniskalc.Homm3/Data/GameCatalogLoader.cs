@@ -14,8 +14,16 @@ public sealed class GameCatalogLoader
     private const string Root = @"GameData\Homm3\";
     private readonly IGameDefinitionReader reader;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GameCatalogLoader"/> class.
+    /// </summary>
+    /// <param name="reader">Reads the definition files.</param>
     public GameCatalogLoader(IGameDefinitionReader reader) => this.reader = reader;
 
+    /// <summary>
+    /// Reads the definitions of every version of the game and makes a catalog of each.
+    /// </summary>
+    /// <returns>The catalogs by version.</returns>
     public IReadOnlyDictionary<GameVersion, EntityCatalog> Load()
     {
         var manifest = this.reader.Read<CatalogManifest>(Root + "manifest.json");
@@ -136,6 +144,12 @@ public sealed class GameCatalogLoader
         return catalogs.ToFrozenDictionary();
     }
 
+    /// <summary>
+    /// Throws when a definition is not valid.
+    /// </summary>
+    /// <param name="condition">What must be true.</param>
+    /// <param name="path">The file of the definition.</param>
+    /// <param name="message">What is wrong.</param>
     internal static void Require(bool condition, string path, string message)
     {
         if (!condition)

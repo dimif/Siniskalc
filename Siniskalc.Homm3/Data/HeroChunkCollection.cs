@@ -33,6 +33,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public HeroOffsets Offsets { get; }
 
+        /// <summary>
+        /// Gets the catalog the heroes are read with.
+        /// </summary>
         public EntityCatalog Catalog { get; }
 
         /// <summary>
@@ -51,11 +54,13 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who owns each hero, in the order of the collection. Reads the owner byte only.
         /// </summary>
+        /// <returns>The owners, in the order of the records.</returns>
         public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <summary>
         /// Returns a short summary of every hero. Reads only what the summary needs, so it is cheap enough to run for every hero.
         /// </summary>
+        /// <returns>The summaries, in the order of the records.</returns>
         public IReadOnlyList<HeroSummary<PlayerColor>> GetSummaries() => Enumerable.Range(0, this.Count).Select(this.GetSummary).ToList();
 
         /// <inheritdoc/>
@@ -71,6 +76,8 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns the summary of the hero at <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The place in its list, from 0.</param>
+        /// <returns>The summary.</returns>
         public HeroSummary<PlayerColor> GetSummary(int index)
         {
             var chunk = this[index];

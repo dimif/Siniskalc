@@ -11,6 +11,13 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public sealed class DwellingDiffer : IDiffer<DwellingModel>
     {
+        /// <summary>
+        /// Lists what an edit changed in a dwelling.
+        /// </summary>
+        /// <param name="index">The place in its list, from 0.</param>
+        /// <param name="original">The model as it was read from the savefile.</param>
+        /// <param name="current">The model after the edit.</param>
+        /// <returns>The changes, none when the two are the same.</returns>
         public IReadOnlyList<PendingChange> Diff(int index, DwellingModel original, DwellingModel current)
         {
             var changes = new ChangeSink<DwellingModel>((change, revert) => ChunkPendingChange.For<RecordChunk, DwellingModel>(Homm3ChunkKinds.Dwellings, current.Name, index, change, revert));

@@ -10,8 +10,14 @@ namespace Siniskalc.Homm3.Data
     /// </summary>
     public static class MerchantLayout
     {
+        /// <summary>
+        /// The number of artifacts a merchant offers.
+        /// </summary>
         public const int SlotCount = 7;
 
+        /// <summary>
+        /// The size of a slot of a merchant.
+        /// </summary>
         public const int SlotSize = 4;
 
         /// <summary>
@@ -19,6 +25,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int ListSize = SlotCount * SlotSize;
 
+        /// <summary>
+        /// The value of a slot that was bought.
+        /// </summary>
         public const uint Empty = 0xFFFFFFFF;
 
         /// <summary>
@@ -42,6 +51,11 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public const int MinimumStocked = 4;
 
+        /// <summary>
+        /// Gets where a slot is in the list of a merchant.
+        /// </summary>
+        /// <param name="slot">The slot, from 0.</param>
+        /// <returns>The offset from the start of the list.</returns>
         public static int SlotAt(int slot) => slot * SlotSize;
     }
 }

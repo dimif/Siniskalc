@@ -12,11 +12,18 @@
         /// <summary>
         /// Gets the spells the artifact lets the wearer cast in <paramref name="version"/>.
         /// </summary>
+        /// <param name="version">The version of the game.</param>
+        /// <returns>The spells.</returns>
         public IReadOnlyCollection<Spell> GrantedSpells(GameVersion version)
         {
             return (this.SpellGrants ?? []).SelectMany(g => g.Resolve(version)).Distinct().ToList();
         }
 
+        /// <summary>
+        /// Determines whether another effect is the same as this one.
+        /// </summary>
+        /// <param name="other">The effect to compare with.</param>
+        /// <returns><see langword="true"/> if every value and every spell grant is the same.</returns>
         public bool Equals(ArtifactEffectInfo other)
         {
             return this.Atk == other.Atk && this.Def == other.Def && this.Pow == other.Pow && this.Kno == other.Kno
@@ -28,6 +35,7 @@
                 && (this.SpellGrants ?? []).SequenceEqual(other.SpellGrants ?? []);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             var hash = default(HashCode);

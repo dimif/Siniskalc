@@ -12,6 +12,10 @@
     {
         private readonly bool hota;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MaxSpellPointsCalculator"/> class.
+        /// </summary>
+        /// <param name="version">The version.</param>
         public MaxSpellPointsCalculator(GameVersion version)
         {
             this.hota = version == GameVersion.HornOfTheAbyss;

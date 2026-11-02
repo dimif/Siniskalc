@@ -9,6 +9,9 @@ namespace Siniskalc.Homm3.Views
     /// </summary>
     public partial class Homm3EditorView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Homm3EditorView"/> class.
+        /// </summary>
         public Homm3EditorView()
         {
             this.InitializeComponent();

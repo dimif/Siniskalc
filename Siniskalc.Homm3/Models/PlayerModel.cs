@@ -20,6 +20,7 @@
         /// <summary>
         /// Returns the player once it has gained a town: its countdown stops. A banished player stays banished.
         /// </summary>
+        /// <returns>The new player; this one is not changed.</returns>
         public PlayerModel WithTownGained() => this with { DaysLeft = this.DaysLeftOnGainingATown() };
 
         /// <summary>
@@ -27,6 +28,7 @@
         /// <see cref="Constants.Player.MaxDaysLeft"/> days. A banished player stays banished.
         /// </summary>
         /// <param name="townsLeft">The towns the player owns after the loss.</param>
+        /// <returns>The new player; this one is not changed.</returns>
         public PlayerModel WithTownLost(int townsLeft) => this with { DaysLeft = this.DaysLeftOnLosingATown(townsLeft) };
     }
 }

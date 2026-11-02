@@ -11,6 +11,12 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class CastleBuildMessageProvider
     {
+        /// <summary>
+        /// Says why a building cannot be built.
+        /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The message, or <see langword="null"/> when it can be built.</returns>
         public string? DescribeBuild(CastleModel castle, Building building)
         {
             var reason = CastleBuilder.GetBuildFailureReason(castle, building);
@@ -23,6 +29,12 @@ namespace Siniskalc.Homm3.ViewModels
             };
         }
 
+        /// <summary>
+        /// Says why a building cannot be taken down.
+        /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The message, or <see langword="null"/> when it can be taken down.</returns>
         public string? DescribeUnbuild(CastleModel castle, Building building)
         {
             var reason = CastleBuilder.GetUnbuildFailureReason(castle, building);
@@ -35,6 +47,12 @@ namespace Siniskalc.Homm3.ViewModels
             };
         }
 
+        /// <summary>
+        /// Says why the permission to build a building cannot be changed.
+        /// </summary>
+        /// <param name="castle">The castle.</param>
+        /// <param name="building">The building.</param>
+        /// <returns>The message, or <see langword="null"/> when it can be changed.</returns>
         public string? DescribeSetAllowed(CastleModel castle, Building building)
         {
             var reason = CastleBuilder.GetSetAllowedFailureReason(castle, building);

@@ -25,16 +25,34 @@ namespace Siniskalc.Homm3.ViewModels
         {
         }
 
+        /// <summary>
+        /// Gets the hit points of the whole stack, or nothing when the slot is empty.
+        /// </summary>
         public string TotalHealth => this.Totals?.Health ?? string.Empty;
 
+        /// <summary>
+        /// Gets the damage of the whole stack, or nothing when the slot is empty.
+        /// </summary>
         public string TotalDamage => this.Totals?.Damage ?? string.Empty;
 
+        /// <summary>
+        /// Gets the gold the stack costs, or nothing when the slot is empty.
+        /// </summary>
         public string TotalCost => this.Totals?.Cost ?? string.Empty;
 
+        /// <summary>
+        /// Gets the value the computer players give the stack, or nothing when the slot is empty.
+        /// </summary>
         public string TotalAiValue => this.Totals?.AiValue ?? string.Empty;
 
+        /// <summary>
+        /// Gets the value of the stack for the strength of an army, or nothing when the slot is empty.
+        /// </summary>
         public string TotalFightValue => this.Totals?.FightValue ?? string.Empty;
 
+        /// <summary>
+        /// Gets what the stack costs in the resources other than gold, or nothing when the slot is empty.
+        /// </summary>
         public string TotalOtherCost => this.Totals?.OtherCost ?? string.Empty;
 
         private StackTotals? Totals => this.info is { } i ? new StackTotals(i, this.CreatureAmount) : null;
@@ -42,6 +60,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Takes the stats of the slot's creature, which the totals are worked out from.
         /// </summary>
+        /// <param name="creatureInfo">The numbers of the creature, or <see langword="null"/> for an empty slot.</param>
         public void SetInfo(CreatureInfo? creatureInfo)
         {
             this.info = creatureInfo;

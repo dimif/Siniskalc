@@ -181,6 +181,9 @@
         /// </summary>
         public ICommand OpenGarrisonCastleCommand { get; }
 
+        /// <summary>
+        /// Gets the level and the experience of the hero.
+        /// </summary>
         public HeroLevel Level => this.HeroModel.HeroLevel;
 
         /// <summary>
@@ -188,60 +191,90 @@
         /// </summary>
         public short LevelNumber => (short)this.HeroModel.HeroLevel.Level;
 
+        /// <summary>
+        /// Gets or sets the class of the hero.
+        /// </summary>
         public HeroClass HeroClass
         {
             get => this.HeroModel.HeroClass;
             set => this.Update(h => h with { HeroClass = value });
         }
 
+        /// <summary>
+        /// Gets or sets where the hero is.
+        /// </summary>
         public HeroPosition Position
         {
             get => this.HeroModel.Position;
             set => this.Update(h => h with { Position = value });
         }
 
+        /// <summary>
+        /// Gets or sets where the hero is going.
+        /// </summary>
         public MapPosition Destination
         {
             get => this.HeroModel.Destination;
             set => this.Update(h => h with { Destination = value });
         }
 
+        /// <summary>
+        /// Gets or sets the primary skills of the hero.
+        /// </summary>
         public PrimarySkills PrimarySkills
         {
             get => this.HeroModel.PrimarySkills;
             set => this.Update(h => h with { PrimarySkills = value });
         }
 
+        /// <summary>
+        /// Gets or sets the secondary skills of the hero.
+        /// </summary>
         public SecondarySkills SecondarySkills
         {
             get => this.HeroModel.SecondarySkills;
             set => this.Update(h => h with { SecondarySkills = value });
         }
 
+        /// <summary>
+        /// Gets or sets the spell book of the hero.
+        /// </summary>
         public SpellBook SpellBook
         {
             get => this.HeroModel.SpellBook;
             set => this.Update(h => h with { SpellBook = value });
         }
 
+        /// <summary>
+        /// Gets or sets whether the hero has the spell book.
+        /// </summary>
         public bool HasSpellBook
         {
             get => this.HeroModel.SpellBook.HasSpellBook;
             set => this.Update(h => h with { SpellBook = h.SpellBook.WithHasSpellBook(value) });
         }
 
+        /// <summary>
+        /// Gets or sets the spell points of the hero.
+        /// </summary>
         public int CurrentSpellPoints
         {
             get => this.HeroModel.SpellPoints;
             set => this.Update(h => h with { SpellPoints = value });
         }
 
+        /// <summary>
+        /// Gets or sets the army of the hero.
+        /// </summary>
         public IArmy<Creature> Army
         {
             get => this.HeroModel.Army;
             set => this.Update(h => h with { Army = value });
         }
 
+        /// <summary>
+        /// Gets or sets the war machines of the hero.
+        /// </summary>
         public IReadOnlyList<WarMachine> WarMachines
         {
             get => this.HeroModel.WarMachines;
@@ -257,14 +290,23 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the movement points of the hero.
+        /// </summary>
         public MovementPoints MovementPoints
         {
             get => this.HeroModel.MovementPoints;
             set => this.Update(h => h with { MovementPoints = value });
         }
 
+        /// <summary>
+        /// Gets the backpack of the hero.
+        /// </summary>
         public Backpack Backpack => this.HeroModel.Backpack;
 
+        /// <summary>
+        /// Gets the artifacts the hero wears.
+        /// </summary>
         public EquippedArtifacts EquippedArtifacts => this.HeroModel.EquippedArtifacts;
 
         /// <summary>
@@ -272,6 +314,9 @@
         /// </summary>
         public GameVersion GameVersion => this.session.GameVersion;
 
+        /// <summary>
+        /// Gets whether the savegame is from Horn of the Abyss.
+        /// </summary>
         public bool IsHota => this.GameVersion == GameVersion.HornOfTheAbyss;
 
         /// <summary>
@@ -300,6 +345,7 @@
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the hero. The caller disposes it.
         /// </summary>
+        /// <returns>The target.</returns>
         public IByteEditTarget CreateByteEditTarget() => this.session.CreateByteEditTarget(this.byteEditTargets);
 
         /// <inheritdoc/>

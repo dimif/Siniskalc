@@ -14,6 +14,16 @@ namespace Siniskalc.Homm3.Runtime
     /// </summary>
     public sealed class Game : HeroesSavegameBase<PlayerColor>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class.
+        /// </summary>
+        /// <param name="file">The path of the savefile, or <see langword="null"/> when it was not read from a file.</param>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="gameVersion">The version of the game that wrote the savefile.</param>
+        /// <param name="history">The history of the savegame.</param>
+        /// <param name="name">The name of the savegame, or <see langword="null"/> for none.</param>
+        /// <param name="metadata">What the header of the savefile says.</param>
+        /// <param name="places">Where the places a hero can visit are, or <see langword="null"/> for none.</param>
         public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata<PlayerColor> metadata, MapPlaces? places = null)
             : base(file, bytes, history, name, metadata)
         {
@@ -26,6 +36,9 @@ namespace Siniskalc.Homm3.Runtime
         /// </summary>
         public MapPlaces Places { get; }
 
+        /// <summary>
+        /// Gets the version of the game that wrote the savefile.
+        /// </summary>
         public GameVersion GameVersion { get; }
 
         /// <inheritdoc/>

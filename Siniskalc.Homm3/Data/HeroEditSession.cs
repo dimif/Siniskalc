@@ -10,12 +10,20 @@
     /// </summary>
     public sealed class HeroEditSession : EditSession<HeroChunk, HeroModel>, IHeroSession
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroEditSession"/> class.
+        /// </summary>
+        /// <param name="history">The history.</param>
+        /// <param name="heroIndex">The hero index.</param>
         public HeroEditSession(SaveDocumentHistory history, int heroIndex)
             : base(history, Homm3ChunkKinds.Hero, heroIndex, history.Current.Heroes().Deserializer, history.Current.Heroes().Serializer)
         {
             this.Offsets = history.Current.Heroes().Offsets;
         }
 
+        /// <summary>
+        /// Gets the number of the hero's record.
+        /// </summary>
         public int HeroIndex => this.Index;
 
         /// <summary>

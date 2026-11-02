@@ -227,6 +227,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public ArmyLayout Army => new(this[HeroOffsetName.Creatures], 4, this[HeroOffsetName.CreaturesAmounts], 4, Constants.CreatureSlotCount, uint.MaxValue);
 
+        /// <summary>
+        /// Gets the version of the game the offsets are for.
+        /// </summary>
         public GameVersion GameVersion { get; }
 
         /// <summary>
@@ -234,6 +237,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public IReadOnlyList<(VisitedBuildingEffects Effect, int Offset, byte Mask)> VisitEffectBits { get; }
 
+        /// <summary>
+        /// Gets whether the record has the fifth slot of the war machines, which only some versions have.
+        /// </summary>
         public bool HasItem5 { get; }
 
         /// <summary>
@@ -264,6 +270,9 @@ namespace Siniskalc.Homm3.Data
         /// </summary>
         public IReadOnlyList<(ArtifactSlots Group, int Offset)> ReservedSlotCounters { get; }
 
+        /// <summary>
+        /// Gets where a field of the hero is in its chunk.
+        /// </summary>
         public int this[HeroOffsetName key] => this.offsets[key];
 
         private static void AddAll(Dictionary<HeroOffsetName, int> target, IReadOnlyDictionary<HeroOffsetName, int> source)

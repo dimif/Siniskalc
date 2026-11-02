@@ -20,6 +20,35 @@
         private SpellBook spellBook;
         private ArtifactEffectInfo artifactEffects;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroModel"/> class.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="owner">The owner.</param>
+        /// <param name="position">The position.</param>
+        /// <param name="destination">The destination.</param>
+        /// <param name="movementPoints">The movement points.</param>
+        /// <param name="heroLevel">The hero level.</param>
+        /// <param name="spellPoints">The spell points.</param>
+        /// <param name="primarySkills">The primary skills.</param>
+        /// <param name="secondarySkills">The secondary skills.</param>
+        /// <param name="army">The army.</param>
+        /// <param name="grantedSpellsResolver">The granted spells resolver.</param>
+        /// <param name="heroClass">The hero class.</param>
+        /// <param name="backpack">The backpack.</param>
+        /// <param name="equippedArtifacts">The equipped artifacts.</param>
+        /// <param name="warMachines">The war machines.</param>
+        /// <param name="spellBook">The spell book.</param>
+        /// <param name="biography">The biography.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="movedToday">The moved today.</param>
+        /// <param name="activeSpells">The active spells.</param>
+        /// <param name="isAsleep">The is asleep.</param>
+        /// <param name="moraleBonus">The morale bonus.</param>
+        /// <param name="luckBonus">The luck bonus.</param>
+        /// <param name="visitEffects">The visit effects.</param>
+        /// <param name="placeVisits">The place visits.</param>
         public HeroModel(
             int id,
             string name,
@@ -103,6 +132,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the class of the hero.
+        /// </summary>
         public HeroClass HeroClass { get; init; }
 
         /// <inheritdoc/>
@@ -120,6 +152,9 @@
         /// <inheritdoc/>
         public SecondarySkills SecondarySkills { get; init; }
 
+        /// <summary>
+        /// Gets the backpack of the hero.
+        /// </summary>
         public Backpack Backpack { get; init; }
 
         /// <summary>
@@ -142,6 +177,9 @@
         /// </summary>
         public ArtifactEffectInfo ArtifactEffects => this.artifactEffects;
 
+        /// <summary>
+        /// Gets the war machines the hero has.
+        /// </summary>
         public IReadOnlyList<WarMachine> WarMachines { get; init; }
 
         /// <inheritdoc/>
@@ -220,6 +258,8 @@
         /// <summary>
         /// Returns the hero at <paramref name="level"/>, with the experience that level starts at.
         /// </summary>
+        /// <param name="level">The level.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithLevel(int level)
         {
             RangeGuard.ThrowIfOutOfRange<long>(level, Constants.Hero.MinLevel, Constants.Hero.MaxLevel, nameof(level));
@@ -229,6 +269,8 @@
         /// <summary>
         /// Returns the hero with <paramref name="experience"/> points, at the level the game gives that much experience.
         /// </summary>
+        /// <param name="experience">The experience points.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithExperience(long experience)
         {
             RangeGuard.ThrowIfOutOfRange(experience, Constants.Hero.MinExperience, Constants.Hero.MaxExperience, nameof(experience));
@@ -238,17 +280,23 @@
         /// <summary>
         /// Returns the hero with <paramref name="movement"/> movement points left today; the movement of a full day stays.
         /// </summary>
+        /// <param name="movement">The movement points left.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithMovementLeft(long movement) => this with { MovementPoints = this.MovementPoints with { Current = movement } };
 
         /// <summary>
         /// Returns the hero with <paramref name="spellPoints"/> spell points.
         /// </summary>
+        /// <param name="spellPoints">The spell points.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithSpellPoints(int spellPoints) => this with { SpellPoints = spellPoints };
 
         /// <summary>
         /// Returns the hero in the service of <paramref name="owner"/>. A hero that serves nobody leaves the map: its position and
         /// destination become -1, -1, -1 (as the game stores a hero in a tavern) and it faces east.
         /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithOwner(PlayerColor owner) => owner.IsNeutral
             ? this with
             {
@@ -263,6 +311,8 @@
         /// artifact that gives a spell book (Titan's Thunder) that was just put on gives the hero one. Taking it off does not take
         /// the book away, since there is no telling whether the hero had one before.
         /// </summary>
+        /// <param name="artifacts">The artifacts.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
         public HeroModel WithEquippedArtifacts(EquippedArtifacts artifacts)
         {
             var updated = this with { EquippedArtifacts = artifacts };

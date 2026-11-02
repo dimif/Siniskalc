@@ -19,12 +19,18 @@
         private readonly HeroOffsets heroOffsets;
         private readonly VersionSpecificEntitiesProvider entities;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroDeserializer"/> class.
+        /// </summary>
+        /// <param name="heroOffsets">The hero offsets.</param>
+        /// <param name="entities">The entities.</param>
         public HeroDeserializer(HeroOffsets heroOffsets, VersionSpecificEntitiesProvider entities)
         {
             this.heroOffsets = heroOffsets;
             this.entities = entities;
         }
 
+        /// <inheritdoc/>
         public HeroModel Deserialize(HeroChunk chunk)
         {
             var equippedArtifacts = this.DeserializeEquippedArtifacts(chunk);
@@ -57,6 +63,11 @@
                 this.DeserializePlaceVisits(chunk));
         }
 
+        /// <summary>
+        /// Reads the places the hero has visited from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The visits.</returns>
         public PlaceVisits DeserializePlaceVisits(HeroChunk chunk)
         {
             var masks = new uint[Constants.Catalog.PlaceCapacity];
@@ -68,10 +79,25 @@
             return new PlaceVisits(masks);
         }
 
+        /// <summary>
+        /// Reads the morale the visits to places give the hero for its next battle from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The morale bonus; it can be negative.</returns>
         public int DeserializeMoraleBonus(HeroChunk chunk) => (sbyte)chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MoraleBonus]);
 
+        /// <summary>
+        /// Reads the luck the visits to places give the hero for its next battle from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The luck bonus; it can be negative.</returns>
         public int DeserializeLuckBonus(HeroChunk chunk) => (sbyte)chunk.GetByteAt(this.heroOffsets[HeroOffsetName.LuckBonus]);
 
+        /// <summary>
+        /// Reads the effects of the buildings the hero visited from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The effects the hero remembers.</returns>
         public VisitedBuildingEffects DeserializeVisitEffects(HeroChunk chunk)
         {
             var effects = VisitedBuildingEffects.None;
@@ -86,6 +112,11 @@
             return effects;
         }
 
+        /// <summary>
+        /// Reads the adventure spells that are active on the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The active spells.</returns>
         public ActiveAdventureSpells DeserializeActiveSpells(HeroChunk chunk)
         {
             var active = ActiveAdventureSpells.None;
@@ -100,24 +131,49 @@
             return active;
         }
 
+        /// <summary>
+        /// Reads the number of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The number.</returns>
         public int DeserializeHeroId(HeroChunk chunk)
         {
             return chunk.GetByteAt(this.heroOffsets[HeroOffsetName.HeroId]);
         }
 
+        /// <summary>
+        /// Reads whether the hero is asleep from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns><see langword="true"/> if the hero is asleep; any value but 0 counts as set.</returns>
         public bool DeserializeIsAsleep(HeroChunk chunk)
         {
             return this.heroOffsets.AsleepOffset is { } offset && offset < chunk.Length && chunk.GetByteAt(offset) != 0;
         }
 
+        /// <summary>
+        /// Reads whether the hero has moved today from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns><see langword="true"/> if the hero has moved; any value but 0 counts as set.</returns>
         public bool DeserializeMovedToday(HeroChunk chunk)
         {
             return this.heroOffsets[HeroOffsetName.MovedToday] < chunk.Length
                 && chunk.GetByteAt(this.heroOffsets[HeroOffsetName.MovedToday]) != 0;
         }
 
+        /// <summary>
+        /// Reads the army of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The army.</returns>
         public IArmy<Creature> DeserializeCreatures(HeroChunk chunk) => ArmyReader.Read(chunk, this.heroOffsets.Army, this.entities.CreatureCodes);
 
+        /// <summary>
+        /// Reads the movement points of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The movement points left and the most the hero has.</returns>
         public MovementPoints DeserializeMovementPoints(HeroChunk chunk)
         {
             return new MovementPoints(
@@ -125,6 +181,11 @@
                 chunk.GetUInt32At(this.heroOffsets[HeroOffsetName.MaxMovementPoints]));
         }
 
+        /// <summary>
+        /// Reads the secondary skills of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The skills; a skill of the savefile that the editor does not know is left out.</returns>
         public SecondarySkills DeserializeSecondarySkills(HeroChunk chunk)
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
@@ -166,6 +227,11 @@
             return new SecondarySkills(allSkillsToLevels, slots);
         }
 
+        /// <summary>
+        /// Reads where the hero was going when its movement ran out from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The destination, or <see cref="MapPosition.None"/> for none.</returns>
         public MapPosition DeserializeDestination(HeroChunk chunk)
         {
             // Two 32 bit numbers, x and y (FFFFFFFF for none), and then the level in 16 bits, which is 0 when there is no marker.
@@ -176,6 +242,11 @@
             return destinationX < 0 || destinationY < 0 ? MapPosition.None : new MapPosition(destinationX, destinationY, destinationZ);
         }
 
+        /// <summary>
+        /// Reads the class of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The class; a byte that is no class reads as the first one.</returns>
         public HeroClass DeserializeClass(HeroChunk chunk)
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
@@ -188,6 +259,11 @@
             return this.entities.Catalog.HeroClasses.Find(code) ?? this.entities.Catalog.FallbackHeroClass;
         }
 
+        /// <summary>
+        /// Reads the level and the experience of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The level and the experience.</returns>
         public HeroLevel DeserializeLevel(HeroChunk chunk)
         {
             return new HeroLevel(
@@ -195,6 +271,11 @@
                 chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Level]));
         }
 
+        /// <summary>
+        /// Reads where the hero is on the map from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The position, with the level of the map.</returns>
         public HeroPosition DeserializePosition(HeroChunk chunk)
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
@@ -216,6 +297,11 @@
             return new HeroPosition(x, y, z, facing);
         }
 
+        /// <summary>
+        /// Reads the primary skills of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The skills, with what the artifacts add.</returns>
         public PrimarySkills DeserializePrimarySkills(HeroChunk chunk)
         {
             return new PrimarySkills(
@@ -225,6 +311,11 @@
                 chunk.GetByteAt(this.heroOffsets[HeroOffsetName.AttributeKno]));
         }
 
+        /// <summary>
+        /// Reads the war machines of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The war machines the hero has.</returns>
         public IReadOnlyList<WarMachine> DeserializeWarMachines(HeroChunk chunk)
         {
             return this.entities.WarMachines
@@ -232,11 +323,21 @@
                 .ToList();
         }
 
+        /// <summary>
+        /// Reads the spell points of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The spell points.</returns>
         public ushort DeserializeSpellPoints(HeroChunk chunk)
         {
             return chunk.GetUInt16At(this.heroOffsets[HeroOffsetName.CurrentSpellPoints]);
         }
 
+        /// <summary>
+        /// Reads the backpack of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The backpack.</returns>
         public Backpack DeserializeBackpack(HeroChunk chunk)
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
@@ -268,6 +369,11 @@
             return new Backpack(artifacts);
         }
 
+        /// <summary>
+        /// Reads the artifacts the hero wears from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The artifacts, by slot.</returns>
         public EquippedArtifacts DeserializeEquippedArtifacts(HeroChunk chunk)
         {
             using var subject = Logger.BeginSubject("Hero", chunk.Name);
@@ -302,6 +408,11 @@
             return new EquippedArtifacts(slotsToArtifacts, scrollSpells);
         }
 
+        /// <summary>
+        /// Reads the player the hero serves from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The colour of the player; the neutral colour when the byte is no colour.</returns>
         public PlayerColor DeserializeOwner(HeroChunk chunk)
         {
             var playerByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Owner]);
@@ -309,11 +420,21 @@
             return PlayerColor.FromByte(playerByte);
         }
 
+        /// <summary>
+        /// Reads the gender of the hero from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns>The gender, or <see langword="null"/> when the savefile does not say or says something the editor does not know.</returns>
         public HeroGender? DeserializeGender(HeroChunk chunk)
         {
             return ByteEnum.ReadOrNull<HeroGender>(chunk.GetHeaderByteAt(this.heroOffsets[HeroOffsetName.Gender]));
         }
 
+        /// <summary>
+        /// Reads whether the hero has the spell book from the chunk.
+        /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <returns><see langword="true"/> if the hero has the spell book.</returns>
         public bool DeserializeHasSpellBook(HeroChunk chunk)
         {
             // The spellbook slot holds the Spell Book artifact, whose id is 0.
@@ -324,6 +445,9 @@
         /// Reads the spell book of the hero. The spells its <paramref name="equippedArtifacts"/> grant are told apart from the
         /// other available spells, which are kept as the savefile has them.
         /// </summary>
+        /// <param name="chunk">The chunk of the hero.</param>
+        /// <param name="equippedArtifacts">The artifacts the hero wears, which can grant the book and spells.</param>
+        /// <returns>The spell book.</returns>
         public SpellBook DeserializeSpellBook(HeroChunk chunk, EquippedArtifacts equippedArtifacts)
         {
             var spellBookSpells = new HashSet<Spell>();

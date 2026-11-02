@@ -33,8 +33,14 @@
         /// </summary>
         public ArtifactFinderViewModel Finder { get; }
 
+        /// <summary>
+        /// Gets the slots of the first page of the backpack.
+        /// </summary>
         public ObservableCollection<BackpackSlotViewModel> Slots1To32 { get; }
 
+        /// <summary>
+        /// Gets the slots of the second page of the backpack.
+        /// </summary>
         public ObservableCollection<BackpackSlotViewModel> Slots33To64 { get; }
 
         /// <summary>
@@ -45,6 +51,7 @@
         /// <summary>
         /// Shows <paramref name="model"/>, e.g. after an undo, without reporting it as a user change.
         /// </summary>
+        /// <param name="model">The backpack.</param>
         public void Refresh(Backpack model)
         {
             this.model = model;
@@ -68,6 +75,7 @@
         /// <summary>
         /// Puts <paramref name="artifact"/> in the first empty slot of the backpack. Does nothing when it is full.
         /// </summary>
+        /// <param name="artifact">The artifact.</param>
         public void Add(Artifact artifact)
         {
             var slot = this.FirstEmptySlot();

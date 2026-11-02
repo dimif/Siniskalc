@@ -30,6 +30,13 @@
 
         private DwellingStockActions? dwellingActions;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session that edits the castle.</param>
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        /// <param name="buildMessages">Words why a building cannot be built.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
         public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
             : base(session.Name, session)
         {
@@ -50,8 +57,14 @@
             this.GarrisonEditor.SetTitle("Garrison");
         }
 
+        /// <summary>
+        /// Gets the number of the castle.
+        /// </summary>
         public int CastleIndex => this.castleSession.Index;
 
+        /// <summary>
+        /// Gets the name of the castle.
+        /// </summary>
         public string Name => this.Castle.Name;
 
         /// <summary>
@@ -68,6 +81,9 @@
             this.Castle.BuiltThisTurn ? "built this turn" : "nothing built this turn",
         });
 
+        /// <summary>
+        /// Gets the owner as text.
+        /// </summary>
         public string OwnerText => OwnerNames<PlayerColor>.Of(this.Castle.Owner);
 
         /// <summary>
@@ -108,6 +124,9 @@
             set => this.BuiltThisTurn = !value;
         }
 
+        /// <summary>
+        /// Gets the colour of the owner as a hex string.
+        /// </summary>
         public string ColorHex => PlayerPalette.Of(this.Castle.Owner);
 
         /// <summary>
@@ -115,6 +134,9 @@
         /// </summary>
         public string PositionText => $"{MapLevelText.Coordinates(this.Castle.Position.X, this.Castle.Position.Y, this.Castle.Position.Level)}";
 
+        /// <summary>
+        /// Gets what garrisons the castle: a hero, a number of slots, or nothing.
+        /// </summary>
         public string Garrisoned => this.HasGarrisonedHero ? $"Garrisoned by {this.GarrisonedHeroName}"
             : this.Castle.Garrison.Filled.Count() == 0 ? "No garrison" : $"{this.Castle.Garrison.Filled.Count()} of {Constants.CreatureSlotCount} slots in use";
 
@@ -133,6 +155,9 @@
         /// </summary>
         public string GarrisonedHeroName => this.GarrisonedHeroRow?.Name ?? $"Unknown hero {this.Castle.GarrisonedHeroId}";
 
+        /// <summary>
+        /// Gets the slots of the garrison.
+        /// </summary>
         public IReadOnlyList<GarrisonSlotRowViewModel> Garrison { get; private set; } = [];
 
         /// <summary>
@@ -145,8 +170,14 @@
         /// </summary>
         public IReadOnlyList<CastleHeroRowViewModel> Heroes { get; private set; } = [];
 
+        /// <summary>
+        /// Gets whether a hero is in the castle.
+        /// </summary>
         public bool HasHeroes => this.Heroes.Count > 0;
 
+        /// <summary>
+        /// Gets the buildings, in groups.
+        /// </summary>
         public IReadOnlyList<BuildingGroupViewModel> BuildingGroups { get; private set; } = [];
 
         /// <summary>
@@ -164,6 +195,9 @@
         /// </summary>
         public string DwellingsSummary { get; private set; } = string.Empty;
 
+        /// <summary>
+        /// Gets the levels of the Mage Guild.
+        /// </summary>
         public IReadOnlyList<MageGuildLevelRowViewModel> MageGuildLevels { get; private set; } = [];
 
         /// <summary>
@@ -221,6 +255,7 @@
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.
         /// </summary>
+        /// <returns>The target.</returns>
         public IByteEditTarget CreateByteEditTarget() => this.castleSession.CreateByteEditTarget(this.byteEditTargets);
 
         /// <summary>

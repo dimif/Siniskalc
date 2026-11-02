@@ -31,6 +31,17 @@ namespace Siniskalc.Homm3.ViewModels
 
         private MapViewModel? map;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Homm3EditorViewModel"/> class.
+        /// </summary>
+        /// <param name="gameService">The game service.</param>
+        /// <param name="effectLines">The effect lines.</param>
+        /// <param name="banishingText">The banishing text.</param>
+        /// <param name="castleBuildMessages">The castle build messages.</param>
+        /// <param name="spellPoints">The spell points.</param>
+        /// <param name="saveRegions">The save regions.</param>
+        /// <param name="byteEditTargets">The byte edit targets.</param>
+        /// <param name="navigationBuilder">The navigation builder.</param>
         public Homm3EditorViewModel(ISavegameService<Game> gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
             : base(gameService, saveRegions, navigationBuilder)
         {
@@ -54,6 +65,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         /// <param name="heroName">The name of the hero to search for.</param>
         /// <returns>True if the hero was found; false otherwise.</returns>
+        /// <param name="heroIndex">The number of the hero.</param>
         public bool ShowHero(string heroName)
         {
             var game = this.Loaded();
@@ -75,6 +87,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows the page of the hero at <paramref name="heroIndex"/> in the savegame's heroes.
         /// </summary>
+        /// <param name="heroIndex">The number of the hero.</param>
         public void ShowHero(int heroIndex)
         {
             var game = this.Loaded();
@@ -91,6 +104,8 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows the page of the player at <paramref name="playerIndex"/> in the savegame's players.
         /// </summary>
+        /// <param name="playerIndex">The place of the player's record, from 0.</param>
+        /// <param name="tab">The tab to show.</param>
         public void ShowPlayer(int playerIndex, int tab = 0)
         {
             var game = this.Loaded();
@@ -118,6 +133,8 @@ namespace Siniskalc.Homm3.ViewModels
         /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>), or of what a colour owns
         /// that has no player in the savegame, when <paramref name="owner"/> is given.
         /// </summary>
+        /// <param name="tab">The tab to show.</param>
+        /// <param name="owner">The colour whose page it is; <see langword="null"/> for what nobody owns.</param>
         public void ShowNeutral(int tab = NeutralTabs.Heroes, PlayerColor? owner = null)
         {
             var game = this.Loaded();
@@ -144,6 +161,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or of Neutral.
         /// </summary>
+        /// <param name="mineIndex">The place of the mine in the list of mines.</param>
         public void ShowMine(int mineIndex)
         {
             var game = this.Loaded();
@@ -164,6 +182,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows the dwelling at <paramref name="dwellingIndex"/> among the dwellings of the savegame: on the Dwellings tab of its owner, or of Neutral.
         /// </summary>
+        /// <param name="dwellingIndex">The place of the dwelling in the list of dwellings.</param>
         public void ShowDwelling(int dwellingIndex)
         {
             var game = this.Loaded();
@@ -183,6 +202,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Shows the page of the castle at <paramref name="castleIndex"/> in the savegame's castles.
         /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
         public void ShowCastle(int castleIndex)
         {
             var game = this.Loaded();

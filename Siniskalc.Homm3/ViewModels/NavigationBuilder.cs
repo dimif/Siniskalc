@@ -18,8 +18,19 @@
     /// </summary>
     public sealed class NavigationBuilder : OwnerNavigationBuilderBase<Game, PlayerColor>
     {
+        /// <summary>
+        /// The badge of the town that is the capital.
+        /// </summary>
         public const string CapitalBadge = "capital";
+
+        /// <summary>
+        /// The badge of the town where the Grail is built.
+        /// </summary>
         public const string GrailBadge = "grail";
+
+        /// <summary>
+        /// The badge of the town that has a hero in its garrison.
+        /// </summary>
         public const string GarrisonBadge = "garrison";
 
         private static readonly IReadOnlyDictionary<NavNodeKind, ChunkKind> Kinds = new Dictionary<NavNodeKind, ChunkKind>
@@ -44,6 +55,8 @@
         /// Shows the crown and the Grail mark of the castles and the days left of the players with no town as they are in
         /// <paramref name="game"/> now, after an edit or an undo.
         /// </summary>
+        /// <param name="tree">The navigation tree.</param>
+        /// <param name="game">The game.</param>
         public override void RefreshMarks(NavigationTree tree, Game game)
         {
             var castles = game.History.Current.Castles().GetModels();

@@ -13,6 +13,9 @@
         /// three, two or one that a guild gets when it is built (the count is 0 until then), and at most
         /// <see cref="CastleLayout.SpellsPerLevelMaximum"/>.
         /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <param name="level">The level of the Mage Guild, from 1.</param>
+        /// <returns>The number of spells.</returns>
         public static int Count(CastleChunk chunk, int level)
         {
             var stored = chunk.GetByteAt(chunk.NameEnd + CastleLayout.SpellCountsFromNameEnd + level - 1);
@@ -22,6 +25,10 @@
         /// <summary>
         /// Returns the offset in the chunk of a slot of a spell level (1 to 5), or -1 if the chunk ends before it.
         /// </summary>
+        /// <param name="chunk">The chunk of the castle.</param>
+        /// <param name="level">The level of the Mage Guild, from 1.</param>
+        /// <param name="slot">The slot in the level, from 0.</param>
+        /// <returns>The offset in the chunk.</returns>
         public static int Offset(CastleChunk chunk, int level, int slot)
         {
             var offset = chunk.NameEnd + CastleLayout.SpellListsFromNameEnd + ((level - 1) * CastleLayout.SpellListStride) + (slot * 4);

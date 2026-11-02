@@ -57,21 +57,27 @@
         /// Returns the list of heroes of the player at <paramref name="index"/>, as its record keeps it.
         /// </summary>
         /// <param name="index">The place of the player in the collection.</param>
+        /// <returns>The lists.</returns>
         public PlayerLists GetLists(int index) => this.ListsDeserializer.Deserialize(this[index]);
 
         /// <summary>
         /// Returns the colour of each player, in the order of the collection.
         /// </summary>
+        /// <returns>The colours, in the order of the records.</returns>
         public IReadOnlyList<PlayerColor> GetColors() => this.Select(this.Deserializer.DeserializeColor).ToList();
 
         /// <summary>
         /// Returns the colour of the player at <paramref name="index"/>.
         /// </summary>
+        /// <param name="index">The place in its list, from 0.</param>
+        /// <returns>The colour.</returns>
         public PlayerColor GetColor(int index) => this.Deserializer.DeserializeColor(this[index]);
 
         /// <summary>
         /// Returns the index of the player with the given colour, or -1 if the savefile has no such player.
         /// </summary>
+        /// <param name="color">The colour.</param>
+        /// <returns>The place of the record, or -1 when no record has the colour.</returns>
         public int FindByColor(PlayerColor color) => this.IndexOf(c => this.Deserializer.DeserializeColor(c) == color);
     }
 }

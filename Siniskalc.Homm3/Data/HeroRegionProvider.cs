@@ -21,6 +21,10 @@ namespace Siniskalc.Homm3.Data
 
         private readonly IVersionSpecificEntitiesProviderFactory versionEntities;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeroRegionProvider"/> class.
+        /// </summary>
+        /// <param name="versionEntities">The version entities.</param>
         public HeroRegionProvider(IVersionSpecificEntitiesProviderFactory versionEntities)
         {
             this.versionEntities = versionEntities;
@@ -30,6 +34,9 @@ namespace Siniskalc.Homm3.Data
         /// Returns a region for every <see cref="HeroOffsetName"/> that exists in the game version, ordered by offset.
         /// Regions that would run past <paramref name="chunkLength"/> are left out.
         /// </summary>
+        /// <param name="offsets">Where the fields of the hero are.</param>
+        /// <param name="chunkLength">The length of the chunk; regions past it are left out.</param>
+        /// <returns>The regions.</returns>
         public IReadOnlyList<ByteRegion> GetRegions(HeroOffsets offsets, int chunkLength = int.MaxValue)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
@@ -123,6 +130,8 @@ namespace Siniskalc.Homm3.Data
         /// offsets are from <see cref="HeroChunk.HeaderIndex"/>. The position is the same one the chunk of a hero without a
         /// biography starts with.
         /// </summary>
+        /// <param name="offsets">Where the fields of the hero are.</param>
+        /// <returns>The regions.</returns>
         public IReadOnlyList<ByteRegion> GetHeaderRegions(HeroOffsets offsets)
         {
             return

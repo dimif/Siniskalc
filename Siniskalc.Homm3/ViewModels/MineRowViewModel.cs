@@ -14,6 +14,10 @@ namespace Siniskalc.Homm3.ViewModels
     /// </summary>
     public sealed class MineRowViewModel : MineRowViewModel<MineModel, PlayerColor>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MineRowViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
         public MineRowViewModel(IEditSession<MineModel> session)
             : base(
                 session,
@@ -23,8 +27,10 @@ namespace Siniskalc.Homm3.ViewModels
         {
         }
 
+        /// <inheritdoc/>
         public override string Kind => this.Session.Current.Catalog.MapMetadata.Mine(this.Session.Current.Kind).Name;
 
+        /// <inheritdoc/>
         public override string ResourceName => this.Session.Current.Catalog.MapMetadata.Mine(this.Session.Current.Kind).Resource.ToString();
 
         /// <summary>
@@ -47,6 +53,7 @@ namespace Siniskalc.Homm3.ViewModels
         /// <summary>
         /// Changes the creatures that guard the mine.
         /// </summary>
+        /// <param name="edit">Changes the army of the guard.</param>
         public void UpdateGuard(Func<IArmy<Creature>, IArmy<Creature>> edit) => this.Session.Update(mine => mine with { Guard = edit(mine.Guard) });
     }
 }

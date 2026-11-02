@@ -9,6 +9,12 @@ using Siniskalc.Homm3.Entities;
 /// <summary>Validates representability and references before publishing any runtime entity.</summary>
 public static class CatalogValidator
 {
+    /// <summary>
+    /// Checks the definitions of a version of the game before any entity is made from them: that they can be represented in a savefile and that they refer to each other correctly.
+    /// </summary>
+    /// <param name="data">The definitions.</param>
+    /// <param name="version">The version of the game.</param>
+    /// <param name="directory">The folder the definitions were read from, for the messages.</param>
     public static void Validate(CatalogDefinitions data, GameVersion version, string directory)
     {
         void Check(bool condition, string domain, string message)

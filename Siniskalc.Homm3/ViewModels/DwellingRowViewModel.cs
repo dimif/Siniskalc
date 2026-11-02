@@ -32,6 +32,9 @@
             this.IsBuilt = isBuilt;
         }
 
+        /// <summary>
+        /// Gets the level of the creatures the dwelling recruits.
+        /// </summary>
         public int Level { get; }
 
         /// <summary>
@@ -39,6 +42,9 @@
         /// </summary>
         public long Maximum => Constants.Castle.MaxDwellingCreatures;
 
+        /// <summary>
+        /// Gets whether the creatures that wait can be changed.
+        /// </summary>
         public bool CanEdit { get; }
 
         /// <summary>
@@ -54,6 +60,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the name of the dwelling.
+        /// </summary>
         public string Dwelling { get; }
 
         /// <summary>
@@ -64,8 +73,14 @@
         /// <summary>Gets "Upgraded", "Built", "Not built" or "Not allowed by the map".</summary>
         public string State { get; }
 
+        /// <summary>
+        /// Gets the name of the creatures it recruits.
+        /// </summary>
         public string Creatures { get; }
 
+        /// <summary>
+        /// Gets whether the dwelling is built.
+        /// </summary>
         public bool IsBuilt { get; }
 
         /// <summary>

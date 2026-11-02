@@ -23,6 +23,7 @@ namespace Siniskalc.Homm3.Models
         /// <param name="heroId">The id of the hero.</param>
         /// <param name="owns">Whether the player has the hero now.</param>
         /// <param name="original">The list as the savegame had it.</param>
+        /// <returns>The new lists; this one is not changed.</returns>
         public PlayerLists WithHero(int heroId, bool owns, PlayerLists original)
         {
             if (owns == this.HeroIds.Contains(heroId))

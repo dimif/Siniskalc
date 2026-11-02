@@ -36,6 +36,29 @@
         private readonly IDocumentReconciler reconciler;
         private readonly ISavefileBytesPatcher patcher;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveDocumentFactory"/> class.
+        /// </summary>
+        /// <param name="versionEntities">The version entities.</param>
+        /// <param name="heroDiffer">The hero differ.</param>
+        /// <param name="castleDeserializer">The castle deserializer.</param>
+        /// <param name="castleSerializer">The castle serializer.</param>
+        /// <param name="castleDiffer">The castle differ.</param>
+        /// <param name="playerDeserializer">The player deserializer.</param>
+        /// <param name="playerSerializer">The player serializer.</param>
+        /// <param name="playerListsDeserializer">The player lists deserializer.</param>
+        /// <param name="playerListsSerializer">The player lists serializer.</param>
+        /// <param name="playerDiffer">The player differ.</param>
+        /// <param name="obeliskDeserializer">The obelisk deserializer.</param>
+        /// <param name="obeliskSerializer">The obelisk serializer.</param>
+        /// <param name="obeliskDiffer">The obelisk differ.</param>
+        /// <param name="mines">The mines.</param>
+        /// <param name="dwellings">The dwellings.</param>
+        /// <param name="merchants">The merchants.</param>
+        /// <param name="heroOwners">The hero owners.</param>
+        /// <param name="turn">The turn.</param>
+        /// <param name="reconciler">The reconciler.</param>
+        /// <param name="patcher">The patcher.</param>
         public SaveDocumentFactory(
             IVersionSpecificEntitiesProviderFactory versionEntities,
             IDiffer<HeroModel> heroDiffer,

@@ -19,6 +19,9 @@ namespace Siniskalc.Homm3.ViewModels
             this.Effects = spell == null ? DescribeEffects(effectLines, artifact.EffectInfo) : $"Casts {spell.Name}, level {spell.Level} {spell.School} spell";
         }
 
+        /// <summary>
+        /// Gets the artifact the choice stands for.
+        /// </summary>
         public Artifact Artifact { get; }
 
         /// <summary>
@@ -26,6 +29,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public Spell? Spell { get; }
 
+        /// <summary>
+        /// Gets the name of the choice: the artifact, or the scroll with the name of its spell.
+        /// </summary>
         public string Name => this.Spell == null ? this.Artifact.Name : SpellScroll.NameOf(this.Spell);
 
         /// <summary>
@@ -38,6 +44,9 @@ namespace Siniskalc.Homm3.ViewModels
         /// </summary>
         public string TypeName => this.Artifact.Class.ToString();
 
+        /// <summary>
+        /// Gets whether the artifact is a combination.
+        /// </summary>
         public bool IsCombined => this.Artifact.IsCombination;
 
         /// <summary>

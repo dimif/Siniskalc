@@ -19,6 +19,12 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly Func<SpellBook> getSpellBook;
         private readonly Action<Func<SpellBook, SpellBook>> update;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpellsViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="getSpellBook">The get spell book.</param>
+        /// <param name="update">The update.</param>
         public SpellsViewModel(EntityCatalog catalog, Func<SpellBook> getSpellBook, Action<Func<SpellBook, SpellBook>> update)
             : base(learned => CreateRows(catalog, learned))
         {
@@ -42,8 +48,10 @@ namespace Siniskalc.Homm3.ViewModels
         /// <inheritdoc/>
         public override string SpellBookNote => "Without a spell book the hero cannot cast the learned spells. An artifact such as Titan's Thunder gives one.";
 
+        /// <inheritdoc/>
         protected override bool ReadHasSpellBook() => this.getSpellBook().HasSpellBook;
 
+        /// <inheritdoc/>
         protected override void WriteHasSpellBook(bool value) => this.update(book => book.WithHasSpellBook(value));
 
         /// <inheritdoc/>

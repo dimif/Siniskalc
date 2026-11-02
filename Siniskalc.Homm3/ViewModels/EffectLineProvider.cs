@@ -17,6 +17,8 @@ namespace Siniskalc.Homm3.ViewModels
         /// Lists the numeric effects, the spells and spell book, and the resources. Only effects that are not zero get a line. The
         /// free text in <see cref="ArtifactEffectInfo.Other"/> is not included.
         /// </summary>
+        /// <param name="info">The effects.</param>
+        /// <returns>The lines.</returns>
         public IReadOnlyList<EffectLine> Describe(ArtifactEffectInfo info)
         {
             var lines = new List<EffectLine>();

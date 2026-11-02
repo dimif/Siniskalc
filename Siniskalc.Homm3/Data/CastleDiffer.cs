@@ -22,6 +22,13 @@ namespace Siniskalc.Homm3.Data
             this.pendingChanges = pendingChanges;
         }
 
+        /// <summary>
+        /// Lists what an edit changed in a castle.
+        /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
+        /// <param name="original">The castle as it was read from the savefile.</param>
+        /// <param name="current">The castle after the edit.</param>
+        /// <returns>The changes, none when the two are the same.</returns>
         public IReadOnlyList<PendingChange> Diff(int castleIndex, CastleModel original, CastleModel current)
         {
             var changes = new ChangeSink<CastleModel>((change, revert) => this.pendingChanges.ForCastle(current.Name, castleIndex, change, revert));
@@ -40,6 +47,10 @@ namespace Siniskalc.Homm3.Data
         /// was built since goes away with the buildings that need it, and one that was removed returns with what it needs.
         /// Whatever the building changed in the dwellings and the Mage Guild goes back too.
         /// </summary>
+        /// <param name="castle">The castle after the edit.</param>
+        /// <param name="building">The building.</param>
+        /// <param name="original">The castle as it was read from the savefile.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel RestoreBuilding(CastleModel castle, Building building, CastleModel original)
         {
             var restored = castle;

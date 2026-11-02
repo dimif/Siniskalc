@@ -16,6 +16,10 @@
     {
         private readonly IEditSession<DwellingModel> session;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapDwellingRowViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
         public MapDwellingRowViewModel(IEditSession<DwellingModel> session)
         {
             this.session = session;
@@ -27,12 +31,24 @@
                 toolTip: "Who owns the dwelling. Not tried in the game.");
         }
 
+        /// <summary>
+        /// Gets the place of the dwelling in the list, from 0.
+        /// </summary>
         public int Index => this.session.Index;
 
+        /// <summary>
+        /// Gets the name of the creature the dwelling recruits.
+        /// </summary>
         public string CreatureName => this.session.Current.Creature?.Name ?? $"Creature {this.session.Current.CreatureCode}";
 
+        /// <summary>
+        /// Gets the column of the dwelling.
+        /// </summary>
         public int X => this.session.Current.Position.X;
 
+        /// <summary>
+        /// Gets the row of the dwelling.
+        /// </summary>
         public int Y => this.session.Current.Position.Y;
 
         /// <summary>
@@ -52,6 +68,9 @@
         /// </summary>
         public string PositionText => MapLevelText.Coordinates(this.session.Current.Position, hasLevels: true);
 
+        /// <summary>
+        /// Gets the creatures that can be hired now.
+        /// </summary>
         public long Stock => this.session.Current.Stock;
 
         /// <summary>
@@ -76,10 +95,19 @@
             }
         }
 
+        /// <summary>
+        /// Gets the owner as the text the list sorts by.
+        /// </summary>
         public string OwnerSort => this.OwnerField.Selected;
 
+        /// <summary>
+        /// Gets the field that sets the owner.
+        /// </summary>
         public ChoiceFieldViewModel OwnerField { get; }
 
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
         public void Refresh()
         {
             this.OwnerField.Refresh();

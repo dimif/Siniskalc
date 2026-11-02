@@ -72,6 +72,9 @@
         /// <summary>
         /// Gives every row a second button, such as "Backpack", that does something else with the artifact.
         /// </summary>
+        /// <param name="label">The text of the action.</param>
+        /// <param name="onChoose">Called with the artifact that was chosen.</param>
+        /// <param name="canChoose">Says whether an artifact can be chosen; <see langword="null"/> means it can.</param>
         public void AddAction(string label, Action<Artifact> onChoose, Func<Artifact, bool>? canChoose = null)
         {
             this.SetSecondaryAction(label, OfArtifact(onChoose), OfArtifact(canChoose));

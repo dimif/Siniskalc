@@ -24,9 +24,24 @@ namespace Siniskalc.Homm3.Data
     /// </remarks>
     public sealed class PlayerControlLocator : IPlayerControlLocator
     {
+        /// <summary>
+        /// The size of the flag that says whether a colour is played by a human.
+        /// </summary>
         internal const int HumanFlagSize = 4;
+
+        /// <summary>
+        /// The length of the flags of every colour.
+        /// </summary>
         internal const int HumanFlagsLength = Constants.Player.ColorCount * HumanFlagSize;
+
+        /// <summary>
+        /// The distance from the start of the flags to the marker in a Horn of the Abyss savefile.
+        /// </summary>
         internal const int HotaHumanFlagsToMarker = HumanFlagsLength + 8;
+
+        /// <summary>
+        /// The distance from the start of the flags to the marker in a savefile of the other versions.
+        /// </summary>
         internal const int ClassicHumanFlagsToMarker = HumanFlagsLength + 4;
 
         private const byte NotInGameByte = 0xFF;
@@ -42,11 +57,17 @@ namespace Siniskalc.Homm3.Data
         /// <summary>
         /// Returns who plays each colour, indexed by <see cref="PlayerColor"/>, or <c>null</c> when it cannot be found.
         /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="gameVersion">The version of the game.</param>
+        /// <returns>Who plays each colour, or <see langword="null"/> when the setup is not found.</returns>
         public IReadOnlyList<PlayerType>? Find(byte[] bytes, GameVersion gameVersion) => this.FindSetup(bytes, gameVersion)?.PlayerControls;
 
         /// <summary>
         /// Returns who plays each colour and the difficulty, or <c>null</c> when they cannot be found.
         /// </summary>
+        /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="gameVersion">The version of the game.</param>
+        /// <returns>The setup, or <see langword="null"/> when it is not found.</returns>
         public GameSetup<PlayerColor>? FindSetup(byte[] bytes, GameVersion gameVersion)
         {
             var location = this.Locate(bytes, gameVersion);

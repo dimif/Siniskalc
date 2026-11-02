@@ -9,12 +9,39 @@
     /// </summary>
     public sealed class PlayerColor : Homm2Enumeration, IPlayerColor
     {
+        /// <summary>
+        /// Blue, record 0.
+        /// </summary>
         public static readonly PlayerColor Blue = new("Blue", 0);
+
+        /// <summary>
+        /// Green, record 1.
+        /// </summary>
         public static readonly PlayerColor Green = new("Green", 1);
+
+        /// <summary>
+        /// Red, record 2.
+        /// </summary>
         public static readonly PlayerColor Red = new("Red", 2);
+
+        /// <summary>
+        /// Yellow, record 3.
+        /// </summary>
         public static readonly PlayerColor Yellow = new("Yellow", 3);
+
+        /// <summary>
+        /// Orange, record 4.
+        /// </summary>
         public static readonly PlayerColor Orange = new("Orange", 4);
+
+        /// <summary>
+        /// Purple, record 5.
+        /// </summary>
         public static readonly PlayerColor Purple = new("Purple", 5);
+
+        /// <summary>
+        /// The owner of what no player has; its byte is 0xFF.
+        /// </summary>
         public static readonly PlayerColor Neutral = new("Neutral", 255);
 
         private PlayerColor(string name, byte code)
@@ -33,6 +60,8 @@
         /// <summary>
         /// Returns the colour of a byte of a savefile; a byte that is no colour reads as <see cref="Neutral"/>.
         /// </summary>
+        /// <param name="code">The byte.</param>
+        /// <returns>The colour; the neutral colour when the byte is no colour.</returns>
         public static PlayerColor FromByte(byte code) => FromCode<PlayerColor>(code) ?? Neutral;
     }
 }

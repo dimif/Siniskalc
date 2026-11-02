@@ -8,6 +8,10 @@ namespace Siniskalc.Homm2.Views
     /// </summary>
     public partial class CastlePage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastlePage"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public CastlePage(CastleViewModel viewModel)
         {
             this.InitializeComponent();

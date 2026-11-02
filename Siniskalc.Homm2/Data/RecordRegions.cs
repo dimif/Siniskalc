@@ -11,10 +11,19 @@ namespace Siniskalc.Homm2.Data
     /// </summary>
     public static class RecordRegions
     {
+        /// <summary>
+        /// Gets the named fields of the record of a hero, for the hex editor.
+        /// </summary>
         public static IReadOnlyList<ByteRegion> Hero { get; } = HeroFields();
 
+        /// <summary>
+        /// Gets the named fields of the record of a player, for the hex editor.
+        /// </summary>
         public static IReadOnlyList<ByteRegion> Player { get; } = PlayerFields();
 
+        /// <summary>
+        /// Gets the named fields of the record of a castle, for the hex editor.
+        /// </summary>
         public static IReadOnlyList<ByteRegion> Castle { get; } = CastleFields();
 
         /// <summary>
@@ -56,6 +65,8 @@ namespace Siniskalc.Homm2.Data
         /// <summary>
         /// Returns the fields of a sphinx whose block is <paramref name="length"/> bytes long (the riddle takes what is left).
         /// </summary>
+        /// <param name="length">The length of the block of the sphinx.</param>
+        /// <returns>The fields.</returns>
         public static IReadOnlyList<ByteRegion> Sphinx(int length) =>
         [
             Field("Active", MapObjectLayout.SphinxActive, 1, ByteRegionKind.Game, "1 while the riddle can be answered, 0 once it was"),
@@ -70,6 +81,9 @@ namespace Siniskalc.Homm2.Data
         /// Returns the fields of the table of the obelisks (<see cref="ObeliskLayout.Capacity"/> bytes) of a map that has <paramref name="count"/>
         /// of them: a byte each, in the order of the obelisks on the map, and room for the obelisks the map does not have.
         /// </summary>
+        /// <param name="count">The number of obelisks.</param>
+        /// <param name="length">The length of the chunk.</param>
+        /// <returns>The fields.</returns>
         public static IReadOnlyList<ByteRegion> Obelisks(int count, int length)
         {
             var regions = new List<ByteRegion>

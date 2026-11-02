@@ -8,14 +8,24 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class ArtifactChoiceViewModel
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactChoiceViewModel"/> class.
+        /// </summary>
+        /// <param name="artifact">The artifact.</param>
         public ArtifactChoiceViewModel(Artifact artifact)
         {
             this.Artifact = artifact;
             this.Bonuses = PrimarySkillBonusText.Describe(artifact.PrimarySkillBonus);
         }
 
+        /// <summary>
+        /// Gets the artifact the choice stands for.
+        /// </summary>
         public Artifact Artifact { get; }
 
+        /// <summary>
+        /// Gets the name of the artifact.
+        /// </summary>
         public string Name => this.Artifact.Name;
 
         /// <summary>

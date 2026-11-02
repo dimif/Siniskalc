@@ -14,18 +14,31 @@ namespace Siniskalc.Homm2.Models
     {
         private readonly Spell?[] spells;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MageGuildSlots"/> class.
+        /// </summary>
+        /// <param name="spells">The spells.</param>
         public MageGuildSlots(IEnumerable<Spell?> spells)
         {
             this.spells = spells.ToArray();
         }
 
+        /// <summary>
+        /// Gets the number of spells the guild lists in all.
+        /// </summary>
         public int Count => this.spells.Length;
 
+        /// <summary>
+        /// Gets the spell in a slot, or <see langword="null"/> for none.
+        /// </summary>
         public Spell? this[int index] => this.spells[index];
 
         /// <summary>
         /// Returns the slots with the spell at <paramref name="index"/> replaced.
         /// </summary>
+        /// <param name="index">The slot.</param>
+        /// <param name="spell">The spell, or <see langword="null"/> for none.</param>
+        /// <returns>The new slots; these are not changed.</returns>
         public MageGuildSlots With(int index, Spell? spell)
         {
             var copy = (Spell?[])this.spells.Clone();
@@ -33,10 +46,13 @@ namespace Siniskalc.Homm2.Models
             return new MageGuildSlots(copy);
         }
 
+        /// <inheritdoc/>
         public bool Equals(MageGuildSlots? other) => other is not null && this.spells.AsSpan().SequenceEqual(other.spells);
 
+        /// <inheritdoc/>
         public override bool Equals(object? obj) => this.Equals(obj as MageGuildSlots);
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             var hash = default(HashCode);
@@ -48,6 +64,7 @@ namespace Siniskalc.Homm2.Models
             return hash.ToHashCode();
         }
 
+        /// <inheritdoc/>
         public IEnumerator<Spell?> GetEnumerator() => ((IEnumerable<Spell?>)this.spells).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();

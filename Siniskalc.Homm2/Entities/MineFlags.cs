@@ -10,6 +10,8 @@ namespace Siniskalc.Homm2.Entities
         /// <summary>
         /// Gets the first picture of the flags of a kind of mine: the picture of the flag of a colour is this plus the number of the colour.
         /// </summary>
+        /// <param name="kind">The kind of mine.</param>
+        /// <returns>The picture.</returns>
         public static int PictureOf(MineKind kind) => kind switch
         {
             MineKind.Sawmill => 28,

@@ -43,6 +43,9 @@
         /// <inheritdoc/>
         public bool IsUsed => this.Name.Length > 0;
 
+        /// <summary>
+        /// Gets whether the town has a castle, not only a town.
+        /// </summary>
         public bool HasCastle => this.Town.HasFlag(TownBuildings.Castle);
 
         /// <summary>
@@ -69,6 +72,9 @@
         /// Gets the most levels a dwelling can have in a town of the faction: the creatures of that level, one for the dwelling and one more for
         /// each upgrade (the first dwelling has none).
         /// </summary>
+        /// <param name="faction">The faction of the town.</param>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The most levels, 1 to 3.</returns>
         public static int MaxDwellingLevel(Faction faction, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -79,12 +85,18 @@
         /// Gets how far dwelling <paramref name="dwelling"/> (1 to 6) is built: 0 when it is not, 1 for the dwelling, 2 once it is upgraded and
         /// 3 for the sixth when it is upgraded twice.
         /// </summary>
+        /// <param name="dwellings">The dwellings of a castle.</param>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The level: 0 for not built, 1 for built, 2 for upgraded, 3 for upgraded twice.</returns>
         public int DwellingLevel(int dwelling) => DwellingLevel(this.Dwellings, dwelling);
 
         /// <summary>
         /// Gets how far dwelling <paramref name="dwelling"/> (1 to 6) is built in a mask of the dwellings: 0 when it is not, 1 for the dwelling,
         /// 2 once it is upgraded and 3 for the sixth when it is upgraded twice.
         /// </summary>
+        /// <param name="dwellings">The dwellings of a castle.</param>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The level: 0 for not built, 1 for built, 2 for upgraded, 3 for upgraded twice.</returns>
         public static int DwellingLevel(Dwellings dwellings, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -99,6 +111,9 @@
         /// Returns the castle with everything of dwelling <paramref name="dwelling"/> (1 to 6) as it is in <paramref name="source"/>: its
         /// bits of the dwellings and the creatures that wait in it, wherever the savegame keeps them.
         /// </summary>
+        /// <param name="source">The castle to copy the dwelling from.</param>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithDwellingFrom(CastleModel source, int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -114,12 +129,17 @@
         /// Gets a value indicating whether dwelling <paramref name="dwelling"/> (1 to 6) is the same in <paramref name="other"/>: built to
         /// the same level, with the same creatures waiting wherever the savegame keeps them.
         /// </summary>
+        /// <param name="other">The castle to compare with.</param>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns><see langword="true"/> if the dwelling is the same in both castles.</returns>
         public bool HasSameDwelling(CastleModel other, int dwelling) => this.WithDwellingFrom(other, dwelling).Equals(this);
 
         /// <summary>
         /// Returns the castle with its Mage Guild as it is in <paramref name="source"/>: its level, the building and the number of
         /// spells each level shows (not the spells themselves).
         /// </summary>
+        /// <param name="source">The castle to copy the Mage Guild from.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithMageGuildFrom(CastleModel source) => this with
         {
             Dwellings = (Dwellings)(((uint)this.Dwellings & ~(uint)Dwellings.MageGuildLevelMask) | ((uint)source.Dwellings & (uint)Dwellings.MageGuildLevelMask)),
@@ -130,14 +150,24 @@
         /// <summary>
         /// Gets a value indicating whether the Mage Guild is the same in <paramref name="other"/>.
         /// </summary>
+        /// <param name="other">The castle to compare with.</param>
+        /// <returns><see langword="true"/> if the Mage Guild is the same in both castles.</returns>
         public bool HasSameMageGuild(CastleModel other) => this.WithMageGuildFrom(other).Equals(this);
 
+        /// <summary>
+        /// Tells whether a dwelling is built, at any level.
+        /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns><see langword="true"/> if the dwelling is built.</returns>
         public bool HasDwelling(int dwelling) => this.DwellingLevel(dwelling) > 0;
 
         /// <summary>
         /// Returns the castle with the building built or taken down. Building the castle takes away "town only" and taking it down puts it
         /// back, as the game has it. The other bits of the mask are kept.
         /// </summary>
+        /// <param name="building">The building.</param>
+        /// <param name="built">Whether it is built.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithBuilding(TownBuildings building, bool built)
         {
             if (building == TownBuildings.Castle)
@@ -152,6 +182,8 @@
         /// Returns the castle with its library built or taken down, changing the Mage Guild counts together.
         /// Nothing changes for a faction without the library capability.
         /// </summary>
+        /// <param name="built">Whether the library is built.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithLibrary(bool built)
         {
             if (!this.Faction.HasLibrary)
@@ -167,6 +199,9 @@
         /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) at <paramref name="level"/>: 0 for none, 1 for the dwelling,
         /// 2 and 3 for the upgrades. An upgrade replaces the bit of the dwelling, as the game has it. The creatures that wait stay.
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <param name="level">How far it is built.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithDwellingLevel(int dwelling, int level)
         {
             RangeGuard.ThrowIfOutOfRange(level, 0, MaxDwellingLevel(this.Faction, dwelling), nameof(level));
@@ -185,6 +220,9 @@
         /// Returns the castle with dwelling <paramref name="dwelling"/> (1 to 6) built (as the dwelling, or as it was when it is built
         /// already) or taken down. The creatures that wait in it stay.
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <param name="built">Whether it is built.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithDwelling(int dwelling, bool built) =>
             built ? (this.DwellingLevel(dwelling) > 0 ? this : this.WithDwellingLevel(dwelling, 1)) : this.WithDwellingLevel(dwelling, 0);
 
@@ -193,6 +231,8 @@
         /// Well and, for the first dwelling, +8 from the second well of the faction. A dwelling that is not built gains nothing (seen in BrokenAlliance
         /// and Threedom, and in the saves of SecondWell).
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The creatures it gains.</returns>
         public int WeeklyGrowth(int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -212,6 +252,8 @@
         /// <summary>
         /// Gets the creatures that wait in dwelling <paramref name="dwelling"/> (1 to 6), wherever the savegame keeps them for its level.
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <returns>The creatures that wait.</returns>
         public int CreaturesWaiting(int dwelling)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -221,6 +263,9 @@
         /// <summary>
         /// Returns the castle with <paramref name="count"/> creatures waiting in dwelling <paramref name="dwelling"/> (1 to 6).
         /// </summary>
+        /// <param name="dwelling">The dwelling, from 1 to 6.</param>
+        /// <param name="count">The creatures that wait.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithCreaturesWaiting(int dwelling, int count)
         {
             RangeGuard.ThrowIfOutOfRange(dwelling, 1, Constants.Castle.DwellingCount, nameof(dwelling));
@@ -232,6 +277,8 @@
         /// dwellings, the bit of the buildings tells that there is a guild, and each built level shows its faction-defined spell count
         /// (one more with a library); the levels that are not built show none.
         /// </summary>
+        /// <param name="level">The level, from 0 to 5.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithMageGuildLevel(int level)
         {
             RangeGuard.ThrowIfOutOfRange(level, 0, Constants.Castle.MageGuildLevels, nameof(level));
@@ -247,6 +294,10 @@
         /// <summary>
         /// Returns the castle with another spell (or none) in a place of the Mage Guild, at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3).
         /// </summary>
+        /// <param name="level">The level of the Mage Guild, from 1.</param>
+        /// <param name="slot">The slot in the level, from 0.</param>
+        /// <param name="spell">The spell, or <see langword="null"/> for none.</param>
+        /// <returns>The new castle; this one is not changed.</returns>
         public CastleModel WithMageGuildSpell(int level, int slot, Spell? spell)
         {
             RangeGuard.ThrowIfOutOfRange(level, 1, Constants.Castle.MageGuildLevels, nameof(level));
@@ -257,6 +308,9 @@
         /// <summary>
         /// Returns the spell of the Mage Guild at <paramref name="level"/> (1 to 5) and <paramref name="slot"/> (0 to 3), or <c>null</c> for none.
         /// </summary>
+        /// <param name="level">The level of the Mage Guild, from 1.</param>
+        /// <param name="slot">The slot in the level, from 0.</param>
+        /// <returns>The spell, or <see langword="null"/> for none.</returns>
         public Spell? MageGuildSpell(int level, int slot) => this.MageGuildSpells[((level - 1) * Constants.Castle.MageGuildSlotsPerLevel) + slot];
 
         // The bits of the dwellings that belong to dwelling 1 to 6: the dwelling, its upgrade and (for the sixth) the second upgrade.

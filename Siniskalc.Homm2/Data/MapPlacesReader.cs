@@ -19,6 +19,10 @@ namespace Siniskalc.Homm2.Data
 
         private readonly GameCatalogs catalogs;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPlacesReader"/> class.
+        /// </summary>
+        /// <param name="catalogs">The catalogs.</param>
         public MapPlacesReader(GameCatalogs catalogs)
         {
             this.catalogs = catalogs;

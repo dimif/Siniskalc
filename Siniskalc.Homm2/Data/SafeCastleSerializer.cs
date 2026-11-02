@@ -17,6 +17,10 @@
     {
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafeCastleSerializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public SafeCastleSerializer(GameCatalog catalog)
         {
             this.catalog = catalog;

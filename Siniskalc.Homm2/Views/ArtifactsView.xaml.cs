@@ -7,6 +7,9 @@ namespace Siniskalc.Homm2.Views
     /// </summary>
     public partial class ArtifactsView : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactsView"/> class.
+        /// </summary>
         public ArtifactsView()
         {
             this.InitializeComponent();

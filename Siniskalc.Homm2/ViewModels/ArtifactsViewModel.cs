@@ -23,6 +23,13 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly GameCatalog catalog;
         private IReadOnlyList<FactRow> bonuses = [];
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactsViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="gameVersion">The game version.</param>
+        /// <param name="getHero">The get hero.</param>
+        /// <param name="update">The update.</param>
         public ArtifactsViewModel(GameCatalog catalog, GameVersion gameVersion, Func<HeroModel> getHero, Action<Func<HeroModel, HeroModel>> update)
             : base("Artifacts")
         {
@@ -42,6 +49,9 @@ namespace Siniskalc.Homm2.ViewModels
             this.Refresh();
         }
 
+        /// <summary>
+        /// Gets the pickers of the slots.
+        /// </summary>
         public IReadOnlyList<ArtifactPickerViewModel> Slots { get; }
 
         /// <summary>
@@ -64,6 +74,9 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public IReadOnlyList<FactRow> Bonuses => this.bonuses;
 
+        /// <summary>
+        /// Gets whether the artifacts add anything to the primary skills.
+        /// </summary>
         public bool HasBonuses => this.bonuses.Count > 0;
 
         /// <summary>

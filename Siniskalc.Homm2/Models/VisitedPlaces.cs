@@ -25,6 +25,8 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the set of places of a kind: a bit for each, the first place on the map being bit 1.
         /// </summary>
+        /// <param name="kind">The kind of place.</param>
+        /// <returns>The set.</returns>
         public uint Of(PlaceKind kind) => kind switch
         {
             PlaceKind.Gazebo => this.Gazebos,
@@ -39,6 +41,9 @@ namespace Siniskalc.Homm2.Models
         /// <summary>
         /// Returns the places with the set of a kind replaced.
         /// </summary>
+        /// <param name="kind">The kind of place.</param>
+        /// <param name="bits">The new set.</param>
+        /// <returns>The new places; these are not changed.</returns>
         public VisitedPlaces With(PlaceKind kind, uint bits) => kind switch
         {
             PlaceKind.Gazebo => this with { Gazebos = bits },

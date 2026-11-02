@@ -19,11 +19,16 @@ namespace Siniskalc.Homm2.Models
         /// </summary>
         public Spell? Spell => this.SpellCode is >= 0 and <= byte.MaxValue ? this.Catalog.Spells.Find((byte)this.SpellCode) : null;
 
+        /// <summary>
+        /// Gets the name the editor shows for the shrine, which says its circle and its place.
+        /// </summary>
         public string Name => this.Catalog.MapObjects.Single(o => o.Role == this.Circle switch { 1 => MapObjectRole.ShrineFirst, 2 => MapObjectRole.ShrineSecond, _ => MapObjectRole.ShrineThird }).FormatName(this.Position.X, this.Position.Y);
 
         /// <summary>
         /// Returns the shrine teaching another spell.
         /// </summary>
+        /// <param name="spell">The spell.</param>
+        /// <returns>The new shrine; this one is not changed.</returns>
         public ShrineModel WithSpell(Spell spell) => this with { SpellCode = spell.Code };
     }
 }

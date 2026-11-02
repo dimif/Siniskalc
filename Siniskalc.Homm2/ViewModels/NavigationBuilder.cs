@@ -48,6 +48,8 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the castle badges, visitors and player countdowns as they are in <paramref name="game"/> now, after an edit, undo or redo.
         /// </summary>
+        /// <param name="tree">The navigation tree.</param>
+        /// <param name="game">The game.</param>
         public override void RefreshMarks(NavigationTree tree, Game game)
         {
             var document = game.History.Current;

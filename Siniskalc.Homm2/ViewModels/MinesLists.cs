@@ -18,6 +18,9 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Creates the list of the mines of <paramref name="game"/>, or of the mines of <paramref name="owner"/> when it is given.
         /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="owner">The owner of the mines to list, or <see langword="null"/> for every mine.</param>
+        /// <returns>The list.</returns>
         public static MinesListViewModel<MineRowViewModel> Create(Game game, PlayerColor? owner = null)
         {
             var rows = Enumerable.Range(0, game.History.Current.Mines().Count)

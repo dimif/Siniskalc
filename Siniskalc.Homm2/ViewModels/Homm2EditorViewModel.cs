@@ -28,6 +28,15 @@ namespace Siniskalc.Homm2.ViewModels
         private MapViewModel? map;
         private NeutralViewModel? neutral;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Homm2EditorViewModel"/> class.
+        /// </summary>
+        /// <param name="gameService">The game service.</param>
+        /// <param name="saveRegions">The save regions.</param>
+        /// <param name="byteEditTargets">The byte edit targets.</param>
+        /// <param name="navigationBuilder">The navigation builder.</param>
+        /// <param name="banishingText">The banishing text.</param>
+        /// <param name="spellPoints">The spell points.</param>
         public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
             : base(gameService, saveRegions, navigationBuilder)
         {
@@ -47,6 +56,8 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the page of the player of <paramref name="color"/>, on the tab <paramref name="tab"/>.
         /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="tab">The tab to show.</param>
         public void ShowPlayer(PlayerColor color, int tab = 0)
         {
             var game = this.Loaded();
@@ -63,6 +74,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>).
         /// </summary>
+        /// <param name="tab">The tab to show.</param>
         public void ShowNeutral(int tab = NeutralTabs.Heroes)
         {
             this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle, this.byteEditTargets);
@@ -74,6 +86,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
         /// when nobody owns it.
         /// </summary>
+        /// <param name="mineIndex">The place of the mine in the list of mines.</param>
         public void ShowMine(int mineIndex)
         {
             var owner = this.Loaded().History.Current.Mines().GetModel(mineIndex).Owner;
@@ -100,6 +113,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the page of the hero with the number <paramref name="heroId"/>.
         /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
         public void ShowHero(int heroId)
         {
             var game = this.Loaded();
@@ -115,6 +129,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Shows the page of the castle at <paramref name="castleIndex"/> in the savegame's castles.
         /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
         public void ShowCastle(int castleIndex)
         {
             var game = this.Loaded();

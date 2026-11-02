@@ -13,6 +13,13 @@
     {
         private readonly IDiffer<CastleModel> differ;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CastleChunkCollection"/> class.
+        /// </summary>
+        /// <param name="chunks">The chunks.</param>
+        /// <param name="deserializer">The deserializer.</param>
+        /// <param name="serializer">The serializer.</param>
+        /// <param name="differ">The differ.</param>
         public CastleChunkCollection(IEnumerable<CastleChunk> chunks, ICastleDeserializer deserializer, ISerializer<CastleChunk, CastleModel> serializer, IDiffer<CastleModel> differ)
             : base(chunks, deserializer, serializer, differ.Diff)
         {
@@ -25,11 +32,13 @@
         /// <summary>
         /// Returns the numbers of the castles the map uses.
         /// </summary>
+        /// <returns>The numbers of the castles that have a name.</returns>
         public IReadOnlyList<int> UsedIndexes() => Enumerable.Range(0, this.Count).Where(i => this[i].Name.Length > 0).ToList();
 
         /// <summary>
         /// Returns the player who owns each castle (<c>null</c> for nobody), by castle number.
         /// </summary>
+        /// <returns>The owners, in the order of the records.</returns>
         public IReadOnlyList<PlayerColor> GetOwners() => this.Select(this.Deserializer.DeserializeOwner).ToList();
 
         /// <inheritdoc/>

@@ -9,6 +9,7 @@
     /// </summary>
     public sealed class TurnDeserializer : IDeserializer<MapObjectChunk, TurnModel>
     {
+        /// <inheritdoc/>
         public TurnModel Deserialize(MapObjectChunk chunk)
         {
             var record = chunk.GetByteAt(0);

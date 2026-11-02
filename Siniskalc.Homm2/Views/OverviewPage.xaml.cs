@@ -8,6 +8,10 @@ namespace Siniskalc.Homm2.Views
     /// </summary>
     public partial class OverviewPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverviewPage"/> class.
+        /// </summary>
+        /// <param name="viewModel">The view model.</param>
         public OverviewPage(OverviewViewModel viewModel)
         {
             this.InitializeComponent();

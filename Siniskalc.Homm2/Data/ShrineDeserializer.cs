@@ -12,11 +12,16 @@ namespace Siniskalc.Homm2.Data
     {
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShrineDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public ShrineDeserializer(GameCatalog catalog)
         {
             this.catalog = catalog;
         }
 
+        /// <inheritdoc/>
         public ShrineModel Deserialize(MapObjectChunk chunk)
         {
             var hidden = (chunk.Tag & MapObjectsReader.HiddenShrine) != 0;

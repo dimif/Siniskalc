@@ -36,6 +36,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the skills of a hero that knows none.
+        /// </summary>
         public static SecondarySkills None { get; } = new(Array.Empty<SkillEntry>());
 
         /// <inheritdoc/>

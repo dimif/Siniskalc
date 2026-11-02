@@ -21,6 +21,14 @@
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OverviewViewModel"/> class.
+        /// </summary>
+        /// <param name="game">The game.</param>
+        /// <param name="banishingText">The banishing text.</param>
+        /// <param name="openPlayer">The open player.</param>
+        /// <param name="openHero">The open hero.</param>
+        /// <param name="openCastle">The open castle.</param>
         public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<PlayerColor> openPlayer, Action<int> openHero, Action<int> openCastle)
             : base(game, game, banishingText)
         {

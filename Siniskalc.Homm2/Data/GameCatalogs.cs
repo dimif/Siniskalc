@@ -15,6 +15,10 @@
         private const string Root = @"GameData\Homm2\";
         private readonly IReadOnlyDictionary<GameVersion, GameCatalog> catalogs;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameCatalogs"/> class.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
         public GameCatalogs(IGameDefinitionReader reader)
         {
             var manifest = reader.Read<DefinitionManifest>(Root + "manifest.json");
@@ -104,6 +108,11 @@
             }
         }
 
+        /// <summary>
+        /// Gets the catalog of a version of the game.
+        /// </summary>
+        /// <param name="version">The version.</param>
+        /// <returns>The catalog.</returns>
         public GameCatalog For(GameVersion version) => this.catalogs.TryGetValue(version, out var catalog) ? catalog : throw new ArgumentOutOfRangeException(nameof(version));
 
         private static void Require(bool condition, string file, string property, string message)

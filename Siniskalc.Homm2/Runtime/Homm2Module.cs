@@ -47,6 +47,8 @@
         /// or other character a DOS file name cannot have (the extension does not count). The file dialog does not say so, and a longer name
         /// is simply not there when the game is asked to load one.
         /// </summary>
+        /// <param name="fileName">The name of the file.</param>
+        /// <returns>A message that says why the name is not accepted, or <see langword="null"/> when it is.</returns>
         public string? ValidateSavegameName(string fileName)
         {
             var stem = Path.GetFileNameWithoutExtension(fileName);

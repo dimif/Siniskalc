@@ -10,6 +10,9 @@
     /// <param name="Color">The colour of that player, or <c>null</c> when the number is no record.</param>
     public sealed record TurnModel(int Index, int Record, PlayerColor? Color)
     {
+        /// <summary>
+        /// Gets the name the editor shows for whose turn it is.
+        /// </summary>
         public string Name => "Current turn";
     }
 }

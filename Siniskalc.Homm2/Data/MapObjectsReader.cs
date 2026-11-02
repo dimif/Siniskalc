@@ -19,6 +19,10 @@
 
         private readonly GameCatalogs catalogs;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapObjectsReader"/> class.
+        /// </summary>
+        /// <param name="catalogs">The catalogs.</param>
         public MapObjectsReader(GameCatalogs catalogs)
         {
             this.catalogs = catalogs;

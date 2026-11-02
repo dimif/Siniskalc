@@ -28,6 +28,7 @@ namespace Siniskalc.Homm2.Models
         /// <param name="heroId">The number of the hero.</param>
         /// <param name="owns">Whether the player has the hero now.</param>
         /// <param name="original">The lists as the savegame had them.</param>
+        /// <returns>The new lists; these are not changed.</returns>
         public PlayerLists WithHero(int heroId, bool owns, PlayerLists original)
         {
             if (owns == this.HeroIds.Contains(heroId))
@@ -46,6 +47,7 @@ namespace Siniskalc.Homm2.Models
         /// <param name="castleIndex">The number of the castle.</param>
         /// <param name="owns">Whether the player has the castle now.</param>
         /// <param name="original">The lists as the savegame had them.</param>
+        /// <returns>The new lists; these are not changed.</returns>
         public PlayerLists WithCastle(int castleIndex, bool owns, PlayerLists original)
         {
             if (owns == this.CastleIds.Contains(castleIndex))

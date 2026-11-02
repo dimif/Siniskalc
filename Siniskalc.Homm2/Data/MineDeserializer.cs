@@ -16,11 +16,16 @@
 
         private readonly GameCatalog catalog;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MineDeserializer"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
         public MineDeserializer(GameCatalog catalog)
         {
             this.catalog = catalog;
         }
 
+        /// <inheritdoc/>
         public MineModel Deserialize(MapObjectChunk chunk)
         {
             using var subject = Logger.BeginSubject("Mine", chunk.Index.ToString(System.Globalization.CultureInfo.InvariantCulture));

@@ -14,6 +14,13 @@
     /// </summary>
     public sealed class SecondarySkillsViewModel : HeroesSecondarySkillsViewModel<SecondarySkill, SecondarySkills>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SecondarySkillsViewModel"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="gameVersion">The game version.</param>
+        /// <param name="getSkills">The get skills.</param>
+        /// <param name="update">The update.</param>
         public SecondarySkillsViewModel(
             GameCatalog catalog,
             GameVersion gameVersion,

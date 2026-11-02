@@ -53,27 +53,40 @@
         public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) =>
             new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.ListsDeserializer, this.ListsSerializer, this.differ, this.heroName);
 
+        /// <summary>
+        /// Gets the colour of a player.
+        /// </summary>
+        /// <param name="index">The place of the record, from 0.</param>
+        /// <returns>The colour.</returns>
         public PlayerColor GetColor(int index) => PlayerColor.All[index];
 
         /// <summary>
         /// Returns the colours with a hero list, a castle list or a banishing countdown.
         /// </summary>
+        /// <returns>The colours.</returns>
         public IReadOnlyList<PlayerColor> GetColors() => this.GetPlayersInGame()
             .Select(player => player.Color)
             .ToList();
 
+        /// <summary>
+        /// Gets where the record of a colour is.
+        /// </summary>
+        /// <param name="color">The colour.</param>
+        /// <returns>The place of the record, which is the code of the colour.</returns>
         public int FindByColor(PlayerColor color) => color.Code;
 
         /// <summary>
         /// Returns the lists of heroes and castles of the player at <paramref name="index"/>, as its record keeps them.
         /// </summary>
         /// <param name="index">The place of the player, which is its colour.</param>
+        /// <returns>The lists.</returns>
         public PlayerLists GetLists(int index) => this.ListsDeserializer.Deserialize(this[index]);
 
         /// <summary>
         /// Returns the players that are in the game: those that have a castle or a hero in their lists, or whose days left to own a castle
         /// are counted, in the order of the colours.
         /// </summary>
+        /// <returns>The players.</returns>
         public IReadOnlyList<PlayerModel> GetPlayersInGame() =>
             this.GetModels().Where((player, index) => player.DaysLeft != null || this.GetLists(index).OwnsAnything).ToList();
     }

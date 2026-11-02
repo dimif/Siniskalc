@@ -4,6 +4,11 @@ namespace Siniskalc.Homm2.Entities
 
     public sealed class MapPlace : CatalogEntity
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapPlace"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="definition">The definition.</param>
         internal MapPlace(GameCatalog catalog, PlaceDefinition definition)
             : base(catalog, definition)
         {
@@ -11,8 +16,14 @@ namespace Siniskalc.Homm2.Entities
             this.Description = definition.Description;
         }
 
+        /// <summary>
+        /// Gets the kind of the place.
+        /// </summary>
         public PlaceKind Kind { get; }
 
+        /// <summary>
+        /// Gets what the place gives.
+        /// </summary>
         public string Description { get; }
     }
 }

@@ -5,6 +5,11 @@ namespace Siniskalc.Homm2.Entities
 
     public sealed class MapObject : CatalogEntity
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapObject"/> class.
+        /// </summary>
+        /// <param name="catalog">The catalog.</param>
+        /// <param name="definition">The definition.</param>
         internal MapObject(GameCatalog catalog, MapObjectDefinition definition)
             : base(catalog, definition)
         {
@@ -12,10 +17,21 @@ namespace Siniskalc.Homm2.Entities
             this.NameFormat = definition.NameFormat;
         }
 
+        /// <summary>
+        /// Gets what the object is for the editor.
+        /// </summary>
         public MapObjectRole Role { get; }
 
+        /// <summary>
+        /// Gets the format of the name of the object, which takes its position.
+        /// </summary>
         public string NameFormat { get; }
 
+        /// <summary>
+        /// Gets the name of the object at a place.
+        /// </summary>
+        /// <param name="arguments">The values that fill the format, such as the column and the row.</param>
+        /// <returns>The name.</returns>
         public string FormatName(params object[] arguments) => string.Format(CultureInfo.CurrentCulture, this.NameFormat, arguments);
     }
 }

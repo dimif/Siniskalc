@@ -12,6 +12,13 @@ namespace Siniskalc.Homm2.ViewModels
         private readonly System.Func<bool> isBuilt;
         private readonly System.Func<int> weeklyGrowth;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DwellingRowViewModel"/> class.
+        /// </summary>
+        /// <param name="built">The built.</param>
+        /// <param name="waiting">The waiting.</param>
+        /// <param name="isBuilt">The is built.</param>
+        /// <param name="weeklyGrowth">The weekly growth.</param>
         public DwellingRowViewModel(ChoiceFieldViewModel built, AmountRowViewModel waiting, System.Func<bool> isBuilt, System.Func<int> weeklyGrowth)
         {
             this.weeklyGrowth = weeklyGrowth;
@@ -21,8 +28,14 @@ namespace Siniskalc.Homm2.ViewModels
             this.AddWeekCommand = DwellingStockActions.AddWeekCommandOf(this);
         }
 
+        /// <summary>
+        /// Gets the field that sets how far the dwelling is built.
+        /// </summary>
         public ChoiceFieldViewModel Built { get; }
 
+        /// <summary>
+        /// Gets the creatures that wait in the dwelling.
+        /// </summary>
         public AmountRowViewModel Waiting { get; }
 
         /// <summary>
@@ -53,6 +66,9 @@ namespace Siniskalc.Homm2.ViewModels
         /// </summary>
         public string WeeklyGrowthText => Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(this.weeklyGrowth());
 
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
         public void Refresh()
         {
             this.Built.Refresh();

@@ -72,6 +72,9 @@
                         bytesPatcher);
         }
 
+        /// <summary>
+        /// Gets the catalogs of the versions of the game.
+        /// </summary>
         public GameCatalogs Catalogs { get; }
 
         /// <summary>
@@ -79,17 +82,30 @@
         /// </summary>
         public IGameModule<Homm2EditorViewModel> Module { get; }
 
+        /// <summary>
+        /// Gets the service that opens, edits and saves a savegame.
+        /// </summary>
         public ISavegameService<Game> GameService { get; }
 
+        /// <summary>
+        /// Gets what lists the regions of a savegame for the hex editor.
+        /// </summary>
         public ISaveRegionProvider SaveRegionProvider { get; }
 
+        /// <summary>
+        /// Gets what makes the targets of the hex editor.
+        /// </summary>
         public IByteEditTargetFactory ByteEditTargets { get; }
 
+        /// <summary>
+        /// Gets what works out the most spell points of a hero.
+        /// </summary>
         public IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> MaxSpellPointsCalculator { get; }
 
         /// <summary>
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
+        /// <returns>The view model of the editor.</returns>
         public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText), this.banishingText, this.MaxSpellPointsCalculator);
     }
 }

@@ -100,6 +100,8 @@ namespace Siniskalc.Wpf.ViewModels
         /// Gets the node of the tab <paramref name="tab"/> of the neutral page, or the neutral node when it has no such group. A colour
         /// that has no page of its own has a neutral-style page too, told apart by <paramref name="owner"/> (-1 for what nobody owns).
         /// </summary>
+        /// <param name="tab">The tab of the neutral page (see <c>NeutralTabs</c>).</param>
+        /// <param name="owner">The number of the colour with a neutral-style page; -1 for what nobody owns.</param>
         /// <returns>The node, or <see langword="null"/> if there is none.</returns>
         public NavNodeViewModel? NeutralTabNode(int tab, int owner = -1) => this.neutralTabNodes.GetValueOrDefault((owner, tab)) ?? this.neutralNodes.GetValueOrDefault(owner);
 

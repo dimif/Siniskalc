@@ -1,7 +1,7 @@
 # Threedom (HoMM2, Price of Loyalty)
 
 One game on a medium map (72 x 72) played by Blue (human, Necromancer, town Hillstone) with the heroes Charity and Colar Blau. Made to see what the savegame holds about the map: mines, obelisks, the places a hero visits, the temporary bonuses of luck and morale, and every building of two towns (Hillstone, a Necromancer's, and the captured neutral Whiteshield, a Wizard's).
-The saves are in the order they were made, each differing from the one before by what the table says. They are the Price of Loyalty's `.GX1`; the layout is in `docs/HOMM2_SAVE_FORMAT.md`.
+The saves are in the order they were made, each differing from the one before by what the table says. They are the Price of Loyalty's `.GX1`; the layout is in `docs/KNOWLEDGE_BASE.md`.
 
 The game only lists savegame names with at most 8 characters before the extension; the second column is the name the game gave the save.
 

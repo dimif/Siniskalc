@@ -5,7 +5,7 @@ Red's hero Tazar takes **one mine per day**; Blue's hero Orrin follows and **tak
 The first set (saves 01 to 09) takes the row of mines that is entered from the north, from the sulfur mine to the alchemist's lab; then the two abandoned mines. The second set (11 to 17) takes the other row in the reverse order, from the alchemist's lab to the sulfur mine; save 18 takes the first sulfur mine back.
 Where Tazar and Orrin stand in each save is the entrance of the mine just taken (Tazar) and of the one before (Orrin).
 
-Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_IMPROVEMENTS.md` item 4): a table of records of 62 bytes holds the owner (0xFF none, 0 Red, 1 Blue), the kind (as in Heroes II: 0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold) and the guard of every mine. Used by `MineTests`.
+Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_IMPROVEMENTS.md`, "Mines: the garrison"): a table of records of 62 bytes holds the owner (0xFF none, 0 Red, 1 Blue), the kind (as in Heroes II: 0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold) and the guard of every mine. Used by `MineTests`.
 
 | Save | What it is |
 |---|---|

@@ -1,6 +1,6 @@
 # Map difficulty, game difficulty and map size (HoMM2, Price of Loyalty)
 
-Nine saves made at the start of a game, to find where the savegame keeps the difficulty of the game, the difficulty of the map and the size of the map (`docs/HOMM2_SAVE_FORMAT.md`).
+Nine saves made at the start of a game, to find where the savegame keeps the difficulty of the game, the difficulty of the map and the size of the map (`docs/KNOWLEDGE_BASE.md`).
 All are Price of Loyalty saves (`.GX1`).
 
 - 01 to 05 are the same map (Arrax the Jerk, small, a map of normal difficulty) started at each of the five difficulties the player can choose, in ascending order.

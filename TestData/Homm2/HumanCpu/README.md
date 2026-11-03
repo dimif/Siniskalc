@@ -2,7 +2,7 @@
 
 Twenty-two saves made to find where the game keeps **who plays each colour** and **whose turn it is**. The first four, and the last eleven, are of Broken Alliance (a map where Blue, Green and Orange can be played by a human), the rest of one map with six colours (`slugfest.mp2`).
 
-Result (`docs/HOMM2_SAVE_FORMAT.md`): a byte for each colour at 0x1BE, Blue first: 0x0A is the computer, anything else a human, and the value is his number among the humans. The byte at 0x2AD is the number of the human whose turn it is (0 for Green and 1 for Orange when they are the two humans). The six bytes at 0x1B8 are the faction of each colour.
+Result (`docs/KNOWLEDGE_BASE.md`): a byte for each colour at 0x1BE, Blue first: 0x0A is the computer, anything else a human, and the value is his number among the humans. The byte at 0x2AD is the number of the human whose turn it is (0 for Green and 1 for Orange when they are the two humans). The six bytes at 0x1B8 are the faction of each colour.
 Used by `PlayerControlTests`. The game only lists save names of at most 8 characters before the extension; the second column is the name the game gave the save.
 
 | Save | Name in the game | What it is |

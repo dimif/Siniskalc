@@ -1,6 +1,6 @@
 # Arrax the Jerk (HoMM2, Price of Loyalty)
 
-One save of the expansion map "Arrax the Jerk" (36x36, 53,820 bytes), made in the Price of Loyalty, so it has the `.GX1` extension, a 4-byte marker at the start of the file and 250-byte hero records (see `docs/HOMM2_SAVE_FORMAT.md`, "Game versions").
+One save of the expansion map "Arrax the Jerk" (36x36, 53,820 bytes), made in the Price of Loyalty, so it has the `.GX1` extension, a 4-byte marker at the start of the file and 250-byte hero records (see `docs/KNOWLEDGE_BASE.md`, "Game versions").
 Blue is a Barbarian and starts with no resources; the hero is Bikko (hero 16). The enemy is Arrax (Green): the hero King Anthrax and the castle Arrax.
 
 | Save | Name in the game | What it is | Used by |

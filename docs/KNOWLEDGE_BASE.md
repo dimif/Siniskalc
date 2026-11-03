@@ -1,7 +1,7 @@
 # Knowledge base
 
-Findings about the savefile format that are not obvious from the code, one section per topic.
-How each thing is found is in `docs/LOCATING_HOMM3_ENTITIES.md`; the saves that show it are in the READMEs of `TestData`.
+Findings about the savefile formats that are not obvious from the code, one section per topic. The sections up to "What is verified and what is assumed" are about Heroes of Might and Magic III; the part headed "Heroes of Might and Magic II" at the end is about HoMM2.
+How each thing is found is in `docs/LOCATING_ENTITIES.md`; the saves that show it are in the READMEs of `TestData`.
 Offsets are from the start of the chunk unless said otherwise.
 "Sure" means confirmed by diffing saves or against the game; anything else is a hypothesis.
 Add new findings to the section of their topic.
@@ -31,7 +31,7 @@ This project therefore includes the GZip part of SharpZipLib 1.2.0 with the line
   The name starts at byte 95 in HotA saves and byte 58 in SoD and RoE saves (the 16-bit length is at that byte, the text two bytes later).
   Some names keep a leading space (`" The empire of the world"`).
   Non-ASCII names would break `MapHeaderLocator`.
-- **Map difficulty** is the byte after the description, 0 Pawn to 4 King (3 = Queen checked against the game, 0 to 2 only against samples; `map_difficulty_edited_to_expert`).
+- **Map difficulty** is the byte after the description, 0 Pawn to 4 King.
   It is separate from the game difficulty of the setup block.
   The byte after it was 0 everywhere and is not read.
 - **Map size** is a 32-bit integer five bytes before the name (36, 72, 144 seen).
@@ -43,7 +43,7 @@ This project therefore includes the GZip part of SharpZipLib 1.2.0 with the line
   The current player is a 32-bit colour index (0 Red to 7 Pink) at the flags +32, and it is always a human.
   Across 21 pairs of consecutive saves only this value changed in the setup window when the turn passed; among them `Hota/Mines` 00-01 and 18-19, `Hota/Banishing` 00-01, 02-03, 03-04, 12-13, 13-14 and 15-16, `Hota/Dwellings` 04-05 and 05-06, `Hota/VisitedPlaces` 00-01, `Sod/Hotseat` five_teams_01-02, hotseat_11-12 and hotseat_12-13, and `Hota/players_human_red_and_tan` to `players_human_tan`. The new-day block does not depend on it.
   The editor writes it (`SafeTurnSerializer`, the Order of play card). Not known: whether the game starts the new player's turn cleanly from an edited save, and whether anything else goes with the turn (`hotseat_12_blue_turn` also changes the selected hero of both players).
-- **Teams** (SoD and RoE; not found in HotA saves; not read by the editor): in the header, just before two lists `00 01 02 03 04 05 06 07`, a byte with the number of teams, and when it is not 0, eight bytes with the team of each colour (Red, Blue, Tan, Green, Orange, Purple, Teal, Pink).
+- **Teams** (SoD and RoE; not found in HotA saves; not yet read by the editor): in the header, just before two lists `00 01 02 03 04 05 06 07`, a byte with the number of teams, and when it is not 0, eight bytes with the team of each colour (Red, Blue, Tan, Green, Orange, Purple, Teal, Pink).
   The hotseat map has `03 | 00 00 01 01 01 02 00 02`; Teal, which nobody plays, keeps the default 0.
   With no teams the byte is 0 and there are no team bytes.
 
@@ -82,7 +82,7 @@ The byte in front of the marker (`PlayerLayout.FlagOffset`, 44 bytes after the r
 **Not checked in the game**: editing the tavern.
 The table of hero owners (below) marks the heroes the taverns offer with `40`, and the tavern page does not write it, so a tavern hero set by the editor is not marked as one the game chose.
 
-### The table of hero owners (found in `TestData/Hota/HeroOwners`, 2026-10-24)
+### The table of hero owners (found in `TestData/Hota/HeroOwners`)
 
 A byte per hero id, in the order of the ids (`HeroOwnersLayout`, `HeroOwnersModel`): the colour of the player who has the hero (0 Red to 7 Pink), `FF` for nobody, and `40` for a hero the game keeps from being drawn for a tavern (the two heroes of every tavern, and the campaign heroes 145 to 155). Hero 3 has `41` in every HotA save while nobody has it and no tavern offers it: unexplained, read as "kept out of play", left alone.
 It is 156 bytes in SoD (the `Roe` saves are SoD saves) and 215 in HotA; a second table of as many bytes, all `FF` in every save, follows, then `00 08`, two 16-bit numbers that vary, a zero byte and the 7F marker of the date. So `HeroOwnersBytesLoader` finds it from the date (`date - 11 - 2 * length`) and checks it (every byte `FF` or a colour with or without `40`, the second table all `FF`, the tail `00 08`); it is never searched for. It was found and checked in all 447 HoMM3 saves of `TestData` (`HeroOwnersBytesLoaderTests`): the table says the owner byte of every hero chunk, every hero of a player's list has the player's colour, every tavern hero has `40`, and an owned hero in no list is garrisoned in a castle (Blue's hero 29 in `hero_owners_04`, hired when Blue's list was full).
@@ -191,7 +191,7 @@ HotA has twelve bytes there too, laid out differently (`D0 07` in the second and
   Other versions were not seen.
 - **Bonus effects** (until the next battle, or the next week for some).
   Read: take the byte, mask the bit, non-zero means on.
-  `HeroModel.MoraleBonus`, `LuckBonus` and `VisitEffects` are edited on the General page ("Visited buildings", the shared next-battle card) and written by `SafeHeroSerializer` (the two signed bytes, and only the known bit of each building; the other bits of those bytes are left as they are). The watering hole (+1 morale), the swan pond (+2 luck) and the crypt (-1 morale) set their bit and the byte together, as HoMM2 must (`docs/HOMM2_SAVE_FORMAT.md`, T03BONUS); the stables have only a bit. The faerie ring, the fountain of fortune (a luck the game draws) and the idol of fortune are shown but not edited, as the saves do not pin down what they give. **Not tried in the game.**
+  `HeroModel.MoraleBonus`, `LuckBonus` and `VisitEffects` are edited on the General page ("Visited buildings", the shared next-battle card) and written by `SafeHeroSerializer` (the two signed bytes, and only the known bit of each building; the other bits of those bytes are left as they are). The watering hole (+1 morale), the swan pond (+2 luck) and the crypt (-1 morale) set their bit and the byte together, as HoMM2 must (`docs/KNOWLEDGE_BASE.md`, T03BONUS); the stables have only a bit. The faerie ring, the fountain of fortune (a luck the game draws) and the idol of fortune are shown but not edited, as the saves do not pin down what they give. **Not tried in the game.**
   - +28: morale bonus, +29 luck bonus, signed bytes (watering hole +1, crypt -1; swan pond +2, fountain of fortune +1).
   - +135: `0x02` stables (lasts the week), `0x08` swan pond, `0x40` watering hole. +136: `0x04` crypt, `0x20` Faerie Ring. +138: `0x08` Fountain of Fortune, `0x02` Idol of Fortune.
   - A battle clears luck, the fountain bit, and the Faerie Ring and Idol bits; a new day clears the stables bit.
@@ -249,7 +249,7 @@ The date (`day`, `week`, `month`, 16 bit each) follows the marker `7F xx 02 yy`:
   Neither matters for editing.
 - At a new week the castles' weekly growth appears.
 
-## Mines (Horn of the Abyss, found 2026-10-22)
+## Mines (Horn of the Abyss)
 
 From the saves of `TestData/Hota/Mines` (Red takes a mine a day, Blue takes it back the next turn).
 
@@ -258,7 +258,7 @@ From the saves of `TestData/Hota/Mines` (Red takes a mine a day, Blue takes it b
 - Taking a mine changes only its owner byte (and the guard if it was fought for). The income is not stored.
 - **The x, y of a record is not where the mine is entered.** In the first row of the test map a hero that stands on the entrance is 4 tiles to the right and 3 up (5 for the sawmill), in the second row 0 to the right and 3 down. The map-object list does not settle it either: the records are in the order of the mine objects of the list, but the y of the objects of one row is the other row's. The tiles of the map hold, for every object, its type, its place in the list and its number among the objects of the type (the cells of the Hota test map have a stride of 26 bytes in a row); that is where the entrance is likely to come from. Open.
 
-## Places a hero visited (Horn of the Abyss, found 2026-10-22)
+## Places a hero visited (Horn of the Abyss)
 
 From the saves of `TestData/Hota/VisitedPlaces`: Tazar and Orrin visit, a turn apart, two places of each kind.
 
@@ -269,18 +269,18 @@ From the saves of `TestData/Hota/VisitedPlaces`: Tazar and Orrin visit, a turn a
 - **A dragon utopia (once per map)** is marked visited for the heroes of the player that won it and not for the others: Orrin (Blue) saw no change in the save after Tazar's win. Where that mark is kept is not found (the saves after it are 99 and 8,749 bytes longer).
 - Tree of knowledge: other bytes change too (+231 and +1141 for Tazar, +224 and +1134 for Orrin) and the level (+75) goes up by one: the payment each tree asks (gold, gems...) is not stored in the hero.
 
-### Objects of the map: what the list of positions and the cells say (2026-10-24)
+### Objects of the map: what the list of positions and the cells say
 
 - **In the list of objects (a definition number and x, y, z for each) the position of an entry belongs to the object whose definition is in the next entry.** A hero standing on school of magic 0 in `visited_places_05` is at the position of entry 791 and the definition of entry 792 is the school; the cells of the map that give a place number point at the entry with the position. `MapObjectPositions` therefore gives the position of the object a cell names, and the type of that object is the type of the *next* definition.
 - **Definitions have a type and a subtype**: of the 33 bytes after the file name of a definition, the type of the object is at +26 and its subtype at +28. The Horn of the Abyss objects that are not in the older games share the type 144 and tell themselves apart by the subtype: `AVXgazeb` (gazebo) is 6, `AVXmspr0` (mineral spring) is 4, `AVSmgarn` 2, `avwtplce` 3, `AVShrmit` 5, `avmoilpm` 8, `avxtrmtw` 9, `avtprosp` 10, `avstrblz` 11, `AVStmplt` 0. Which of them is the colossus of the magi is not settled: the cells of the AVStmplt objects are the only ones with the type 144 in them and a number of FFFFFFFF, and a hero standing on a colossus reads 144 and the number 0 or 1, but no position of a hero ever agreed with a definition of the type 144.
 - **The cell of a tree of knowledge** (`66 00 00 00`, place, number, `20 05 00`) holds more than the number: the byte of the number is 0 or 1 before a visit and 0x60 or 0x61 after it, the three bytes after it are the payment (`20 05 00` is 2,000 gold at first, `2C 05 00` after a visit), and a hero standing on a tree reads 0x20 or 0x21 for its number. The number of the place is the low five bits (`VisitedPlaceKind.NumberMask`). Both trees of the test map are found this way: 0 at 2, 20 and 1 at 2, 23, and the bits Tazar sets are those (`visited_places_23` and `24`).
 - **A cell is written for every tile of an object**, and the cells of one object do not always agree on the number (a merchant of `multi_merchants` has 2 on its first tile and 1 on another): the first cell of a place with a valid number is the one to take.
 
-### The merchants (found in `TestData/Hota/multi_merchants`, 2026-10-24)
+### The merchants (found in `TestData/Hota/multi_merchants`)
 
 The 32 bit number in front of the first list of seven artifacts is **the number of merchants**, not a marker: 2 in the first map of the test series, 4 in `multi_merchants`, where two black markets were added with the map editor, and that many lists follow, one for each merchant of the map. The game calls every one of them a black market. Their number is the number among the objects of the type 7 (`07 00 00 00`, place, number), in the order of the object list: (28, 34), (28, 37), (31, 34) and (31, 37) in that map. The first two are the ones Tazar visits as number 0 and 1 in `visited_places_27` to `29`. Which merchant a list belongs to was not confirmed in the game for more than two.
 
-## Dwellings (Horn of the Abyss, found 2026-10-22)
+## Dwellings (Horn of the Abyss)
 
 From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature generators, Orrin flags them to Blue a turn later).
 
@@ -291,7 +291,7 @@ From the saves of `TestData/Hota/Dwellings` (Tazar flags the Castle's creature g
 
 ## The Places tab of a hero (HoMM3)
 
-The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The colossi and the gazebos are listed without their places: they share the object type 144 with the other objects of the Horn of the Abyss and their cells carry no number (see "Objects of the map"). The trees of knowledge are listed with theirs since 2026-10-24. A kind with no places can still be opened, and it shows nothing.
+The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCard` of the shared blocks (`VisitedPlacesViewModel` builds it): each kind of place with how many the hero visited, None and All, and each place of the map by its position to forget one by one. The places of a kind are found from the cells of the map (`MapPlacesLoader`) and from the heroes that stand on them (a hero hides the cell of the place it stands on). The colossi and the gazebos are listed without their places: they share the object type 144 with the other objects of the Horn of the Abyss and their cells carry no number (see "Objects of the map"). The trees of knowledge are listed with theirs. A kind with no places can still be opened, and it shows nothing.
 
 ## Hex views
 
@@ -299,9 +299,118 @@ The hero page has a Places tab, like HoMM2's, with the card of `VisitedPlacesCar
   The first 26 bytes of such a chunk are biography text, so `SaveRegionProvider` drops the chunk fields below offset 26 and uses `HeroRegionProvider.GetHeaderRegions`.
 - **Names are not unique**: `sod_game_00_baseline` has heroes or castles that share a name, so anything that matches regions to chunks goes by position (`StartIndex`), not by name.
 
+## Unnamed bytes of the hero chunk (hypotheses)
+
+Found by comparing the hero chunks of every pair of consecutive saves of the HoMM3 test series (Roe, Sod, Hota; about 340 saves) for bytes that change and are not named.
+Offsets are from the start of the hero chunk (as `HeroOffsets`); counts are the (hero, save pair) changes. **None of this is verified**: each row names the save that would settle it (`FUTURE_IMPROVEMENTS.md`, "Probes").
+
+| Offset | Changes | What was seen | First guess |
+|---|---|---|---|
+| 7, 8, 9 | 43, 97, 44 | change with the day and with moves | a small counter or path/animation state; low value |
+| 10 | 4 | `00`/`04` between a baseline and new-day saves | a flag |
+| 30 | 7 | counts down `08`, `06`, `01`, `00` (Tazar, grail saves); `00` to `03` (Crag Hack with horde artifacts) | a count of something used up (charges, boat movement?) |
+| 43, 44 | 156, 3 | `43` changes in almost every pair; `44` `00` to `06` after a battle | movement trail / facing counter |
+| 51, 52 | 15 | `FF FF` to `00 00` in pairs when a hero is in a town, and back | a 16-bit index of a town (0xFFFF none); cheap to confirm with two heroes in different towns |
+| 53, 55 | 2, 5 | `55` grows with fights | a battle counter? |
+| 77, 78, 79 | 4, 2, 2 | set at a new day for several heroes | a per-day value (random seed?) |
+| 95 | 2 | `00`/`04` | a flag |
+| 223..235 | few | `01`, `02`, `03`, `00` for Tazar after battles (`225` counts like `55`) | specialty or secondary-skill counters |
+| 263 | 2 | `00` to `05` for one hero | unknown |
+| 554, 555 | 2 | `FF FF` to `00 00` when an artifact enters the backpack | the count of the backpack (check whether it is already named) |
+| 601..623 | 1 each | `00` to `FF` in bulk at a hero's first save | backpack slots written at set-up; not meaningful |
+| 1088 | 8 | `0x40` set on fleeing or defeat | a bit set (see above, not understood) |
+| 1102..1144 (HotA) | 30 | Cove saves change with the hero's bits | a HotA-only tail: specialty or bonus counters of the new mechanics (boats, new objects) |
+
+Still unnamed from elsewhere in this file: `+135 0x10` (ring and idol together), `+138 0x01` (first castle visit), hero `+34` (always 0), the third byte of the visit effects (`+137`), the `yy` of the date marker `7F xx 02 yy`, the table of two bytes per object type at date + 12, the dug tiles' number (154, 536), the 4282-byte block that appears on a new day, the team table, banishing's counter and records, and the tavern's memory of a defeated hero.
+
+What the HoMM2 saves suggest for HoMM3 (untested): the temporary-bonus family should hold bits for Temple, Oasis, Rally Flag, Mermaids, Fountain of Youth, Buoy and Shrine of Magic; the permanent-bonus places may be remembered in the hero chunk, one bit per place in map order; the owner of a mine should be one byte in its record; the weekly objects (windmill, water wheel, magic spring) change a flag in the map and the player byte `+129`; the byte `+11` of the hero (the type of the object under it) can list every object of a kind once the type numbers are known.
+
 ## What is verified and what is assumed
 
 - Players, date and difficulty: verified on Horn of the Abyss and Shadow of Death saves.
   The castle layout and building edits are verified on both too (`TestData/Roe`).
   Restoration of Erathia and Armageddon's Blade are assumed to match Shadow of Death; no saves of those were seen.
 - Everything was read from a few maps per version, so a shape that is unique there may not be on another map.
+# Heroes of Might and Magic II
+
+Reverse-engineered from the saves in `TestData/Homm2` (their READMEs list what was done in each).
+The offsets of every field, with what it means, are documented on the constants of `Siniskalc.Homm2/Data/*Layout.cs` (`HeaderLayout`, `PlayerLayout`, `CastleLayout`, `HeroLayout`, `MapObjectLayout`, `ObeliskLayout`, `SaveLayout`); this part records what the layouts cannot say: how it was found, what was tried in the game, and what is not understood.
+All integers are little-endian. Saves are not compressed. "Confirmed" means a diff between saves or a try in the game; "guess" is anything else. Maps are named after the folders (Broken Alliance = `BrokenAlliance`, Arrax the Jerk = `ArraxTheJerk`, Threedom = `Threedom`); "save N" is the number in the file name.
+
+## HoMM2 game versions and layout
+
+The base game writes `.GM1`; the Price of Loyalty writes `.GX1`. Both were checked on every table. The expansion differs by:
+
+- the file starts with a 4-byte marker `FF FF FF FF` before the width and height, so the expansion is detected by it;
+- everything after the header text is shifted by +5 bytes (4 from the marker, 1 from an extra header field; the shift is empirical, and whether other maps shift more is not known);
+- a hero record is 250 bytes instead of 236: the first 0xD9 bytes are identical and the last 14 are extra (zeros, then `+0xE3..+0xE6` that turn `FF` one after the other as a hero carries more artifacts; what they are is not known);
+- the castle table starts 0x36 bytes after the hero table in both, with 72 slots of 100 bytes; players are 6 records of 0xCF in both (empty seats are zeros or `FF`).
+
+Map size changes nothing before the map arrays. The file is a fixed layout for a given map, so every save of a map has the same size, and only values change.
+
+## HoMM2 header and players
+
+- **Map difficulty and game difficulty are two fields.** The map's (0..3) is at 0x0C; the game's (0..4, easy to impossible) is the byte in front of the map file name at 0x1C4 (five saves of one map, `MapDifficultySize` 01 to 05). A percentage after it (70, 100, 120, 140, 160) also depends on the map.
+- **Who plays each colour has several places and the game reads only some of them** (`TestData/Homm2/HumanCpu` and probe saves `C01` to `C13`):
+  - 0x1BE (6 bytes, 0x0A for the computer, otherwise the human's number among the humans) and 0x1DA (how many humans) feed only the scenario summary: changing only them was ignored and the game played as before.
+  - The mask the game plays from is 6 bytes ending 6 bytes before the date (0x2B5): a byte per record of the table of players, 1 for a human, always the first N records. Changing it to one human made the game play Green alone.
+  - The mask is not enough: a mask of three humans in a file named `.GM2` played only two, and the same bytes in a `.GM3` file played all three. The digit of the extension (the number the game asks for when loading a hot seat game) caps the humans; the name stored in the save (0x29E) does not matter. To change who plays, the mask, the order of the records (the humans first, in the order they play; hot seat names at 0x1F4 follow it) and the extension all have to agree. Editing the seats is deliberately not built.
+- **Whose turn it is** is the number among the humans (the 0x1BE byte of that colour), not the colour: with Green and Orange as the only humans it goes 0, 1, 0, 1. It is 14 bytes before the date (5 bytes further in a Price of Loyalty save). Editing it is built and not tried in the game.
+- Header bytes 0x2AE and 0x2B0 (0 to 1 when a player was put out) look like a counter of eliminated players (guess); 0x1F1..0x1F3 change with play and are unexplained. A writer can ignore them.
+- The date (day of the week 1..7, week 1..4, month 1..) is global, three bytes with a zero between each, in front of the table of players. After day 7 of week 4 the month increments.
+- **Heroes and castles lists of a player** are table indexes: the player's hero list (5 places) holds hero ids and the castle list (8 places, 4 the most seen in use) castle indexes, `FF` for empty. The editor keeps them in step with the owner bytes of the heroes and castles (`PlayerListsReconciler`).
+- **Daily income** is a table of 6 numbers (wood, mercury, ore, sulfur, crystal, gems) then the gold, recalculated at the start of each day, so it lags a capture by one day. It counts the mines: 2 a day for each ore mine and sawmill, 1 for the others, 1,000 gold for the gold mine, +250 for a statue (save 71: 3 ore mines gave 6, 2 sawmills 4, 3 crystal mines 3, 2 gem mines 2, 2 alchemist labs 2, 2 sulfur mines 2 (the third was captured that day), gold 4,500). A put-out player has no mines but the table holds a single 1 that walks over the resources one a day: a leftover, not an income.
+- **Elimination.** A player who owns no castle shows his countdown (7 the day the last castle is lost, then down to 0); `FF` while he owns one, and regaining one sets `FF` at once. At 0 the player has no castle, no heroes, an empty hero list, and the heroes he had get owner `FF` while keeping their position and a shrunk army: no other flag is needed. Another player can hire the hero again.
+- **Defeated hero (save 16):** owner `FF`, position cleared, artifacts emptied except the Magic Book (the winner got the best one), and the loser's hero list loses her. A castle lost to another player changes its owner, both players' counts and lists, and the garrison holds the attacker's creature.
+- A text buffer near 0x5CC0 holds the current tavern rumor, built by the game at run time; a writer leaves it alone.
+
+## HoMM2 castles
+
+- **Building bits (16 bits at +0x18).** 0x01 Mage Guild (set with any level), 0x02 Thieves' Guild and 0x04 Tavern (these two were swapped until the write test: setting 0x02 showed a Thieves' Guild), 0x08 Shipyard, 0x10 Well, 0x20 "town only" (no castle; replaced by 0x40 when the castle is built), 0x40 Castle, 0x80 Statue, 0x100 left turret, 0x200 right turret, 0x400 marketplace, 0x800 the second well of the faction (Farm, Garbage Heap, Crystal Garden, Waterfall, Orchard, Skull Pile), 0x1000 moat, 0x2000 the special building of the faction (Fortifications, Coliseum, Rainbow, Dungeon, Library, Storm), 0x8000 captain's quarters. 0x4000 was set by no save. Each was seen in one or two saves (Threedom 39 to 71); none is tried in the game yet (T01BLDS). A town built nothing of the new bits before its castle.
+- **Dwellings (+0x1A, 32 bits).** Dwellings 1 to 6 are 0x08 to 0x100. An upgrade **replaces** the bit of its dwelling (dwellings 2 to 6 upgrade with 0x200, 0x400, 0x800, 0x1000, 0x2000, and the sixth a second time with 0x4000); setting both made the game show "Minotaur, 0 waiting" (E17DWEL), so the editor sets one bit. The upgrades stop where the creatures of the level do (the Cyclops not at all).
+- **Mage Guild.** The level is a **number** in the bits 16 to 18 (0 to 5), not a flag per level. Each level has 4 spell slots (a zero-based spell id) and a byte of how many are shown: 3, or 4 with a Wizard's Library (so the fourth slot of a level that is not counted is never shown). The spell pool and the counts are in the record.
+- **Creatures waiting.** Counts (six u16 at +0x1E) change only when a week starts, never when a building is built. An **upgraded** dwelling keeps its count in its own list at +0x2A (six u16; the plain slot at +0x1E is then 0, E27). The dragons upgraded twice use the sixth entry (+0x34), and the game shows none while the entry before it (+0x32) is 0: the saves the game made have a 3 there. The editor writes the 3 when it has to (E36 to E38, confirmed); what it means is not known. In Threedom the game leaves the old count in the plain list next to an upgraded dwelling (Hillstone, dwelling 2: 14 beside the live 11); the editor reads the live one and does not touch the old one while the level stays.
+- **The Well and the second well** (`SecondWell`, Threedom, BrokenAlliance): each week a **built** dwelling gains its creature's weekly growth, an unbuilt one stays at 0; the Well adds +2 to every built dwelling; the second well adds +8 to the first dwelling only. Seen: Xabran (Knight) 12 + 12 + 2 + 8 = 34 peasants and 8 + 8 + 2 = 18 archers; Hillstone (Necromancer) 18 skeletons; confirmed for five factions, the Warlock was in none of the saves.
+- **Built this turn.** A castle can build one thing a day. The game remembers it in **a set of 72 bits, one per castle slot, 9 bytes starting 0x48 bytes after the end of the castle table** (`0x5602` in the base-game map, `0x58FB` in Threedom). Bit n is set when castle n built today, stays set through the other players' turns, and the whole set is cleared when the day changes. The castle record holds nothing about it. Confirmed in Threedom and the 15 saves of BuiltThisTurn.
+- **Owner of a castle** (E14GIVE, E15LAST): the owner and both players' lists changed and the game agreed, but the flag on the map stayed the old owner's and the castle was missing from the old owner's list until the turn changed. The map holds the flag and what each player has explored, which the editor does not know: giving a castle to a player who had not explored its area left the town reachable only through the list of castles. A hero that captures a town stands in the square in front of the entrance (the tile under the castle's) and the town has no visiting hero (`+0x17` is `FF`); HoMM2 has no garrison hero, so that field is the only link.
+
+## HoMM2 heroes
+
+- **The record starts 10 bytes before the name.** The last 10 bytes of each slot are the header of the next hero (spell points, the id again, the owner colour), and the first hero's header sits before the table. The six bytes just before each name are leftover garbage.
+- **The hero id is the table index** (0 to 8 Knight, 9 to 17 Barbarian, and so on). Maps with heroes of their own (`MapDifficultySize` save 07: Famine, War, Pestilence) hold another number in the id byte for four heroes, probably the portrait the map gave them, while the player lists still reference table indexes. The locator therefore accepts a table when most heroes hold their index (and every castle holds its own), and links and taverns use the table index; the original byte is kept untouched. Loading an edited scenario in the game is unverified.
+- **Skills hold the bonuses of the artifacts.** The game adds and takes away the bonus when an artifact is given or taken (E13ARTSW: the Ultimate Sword is +12 attack; Threedom: Dragon Sword of Dominion +3 attack, Defender Helm +1 defense, Caster's Bracelet +2 spell power, Breastplate of Anduran +5 defense; the Golden Bow, Endless Sack of Gold, Elemental Ring and Fizbin of Misfortune add no skill). A bonus written to a hero does not show in the game until it is also in the skill, so the model moves the bonus with the artifact. The editor edits the base.
+- **Level is worked out from the experience; the game ignores the level byte** (E30 to E33): level byte 1 with 50,000 experience showed level 17, level byte 20 with none showed level 1, and 200,000 showed 25. `HeroLevels` uses the fheroes2 table, which agrees with seven (hero, save) pairs of levels 3 to 11 in Threedom and is slightly off at the top (54,200 and 232,700 against 54,244 and 231,549). The level of E25STATS (file level 20 with 50,000, game level 14) is not explained. The hero page sets the level from the experience and the experience to the start of a level when the level is set.
+- **Maximum movement is derived from the army** (1000 with peasants and archers, 1400 with black dragons, 1200 for Crodo's start army); the game recalculates it, and the editor does not store it.
+- **Spell points cap** is knowledge x 10 and is not stored; casting spends the cost (Magic Arrow 3) and the hero regains 1 a day.
+- **Artifacts** are a plain list of 14 slots, not tied to a body part, `FF` empty. A hero who wins a fight gets the loser's best artifact. Every spellcasting-class hero starts with the Magic Book (81) in slot 0; the spell book is a byte per spell id (1..65).
+- **Secondary skills** are two tables: a level per skill (0 none to 3 expert, 14 skills) and the order they were learned in (1-based), plus a count. A level-up is a plain stat change (the level never limits experience).
+- **Hire:** the owner byte goes from `FF` to the colour, the position to the castle, the castle visitor to the hero id, gold falls, the player's hero list gets the id and a new tavern hero replaces him.
+- **Destination and facing.** The destination (two u32 at +0x17, `FFFFFFFF` when none) is the tile the game marks on the map; the facing (+0x22, 0 north clockwise to 7 northwest) is the way of the last step and 0 inside a castle (`MarkerFacing`: the marker on each of the eight sides of Colar Blau, east in 83 to 90, west 91, northwest 92, northeast 93). The byte at +0x23 is the tile object under the hero (0xA3 castle gateway, guess) and +0x25 the castle index while inside (7 once while outside, unexplained). On the tile of a hero the map's byte 9 is 0xAA and the hero's +0x23 keeps the real one, which is why a place a hero stands on is not lost.
+- **What a hero remembers** (offsets from the name):
+  - **+0x3A and +0x3B: morale and luck for the next battle only** (signed bytes): a temple +2 morale, a fountain +1 luck, a faerie ring +1 luck, a graveyard visited a second time -1 morale. They are 0 again after the next battle. +0xD9 and +0xDA (Price of Loyalty only) hold the memory of what gave them: 0x04 fountain, 0x08 oasis (+1 morale and the maximum movement of the day went from 1,559 to 2,359), 0x10 faerie ring, 0x20 a graveyard that had been visited, 0x0100 temple, and for good or a week 0x400000 the arena (a point to a skill, once per hero) and 0x800000 the stables (+400 maximum movement until the start of the week). **`T03BONUS` set only the two bytes: the troops showed the bonus but the hero's screen did not, so the screen works from the bits and the troops from the bytes. The editor sets both together (T06SRC).** The game clears the first group after a battle.
+  - **+0x3D, +0x41, +0x45, +0x49, +0x4D, +0x55: the places visited that give a hero something once**, a 32-bit set each for gazebos, forts, witch doctor's huts, mercenary camps, standing stones and Xanadu, **a bit for each place in the order of the map, and the first place is bit 1** (bit 0 is unused; standing stones are counted by their left tile). Clearing a set lets the hero visit again (T02FORGT). +0x51 was never set. The windmill, water mill and graveyard (once a week to the first visitor of any player) are in the map, not the hero.
+  - The arena has no mark of its own on the map, so its memory is one bit of the hero, not one per arena; whether the game gives a bonus from each arena was not tried.
+
+## HoMM2 map part
+
+Offsets are from the end of the castle table ("M"). Most of this was seen in the 82 saves of Threedom, and the table of tiles, the obelisk bytes and the mine records were also looked for in the other maps.
+
+- **Capturing a mine, visiting an obelisk, picking up an artifact or capturing a town changes bytes only in the map part (and the owner's resources), never in the player's record.** The player record knows nothing about mines besides the income table.
+- **The first part is a list of blocks** each starting with `D2 04 00 00` (1234), a 16-bit length and a payload: signs, events and messages (rumors, a hero's story), and the objects with state. Blocks hold no position: an object's block is found by the order of the objects of its kind on the map, row by row, as the bits of a hero's visited places are.
+- **The table of tiles.** After M the width and height are written again as two u32, then `width * height` tiles of 12 bytes, row by row (Threedom: M+0x49B8). Bytes 0 and 1 the ground picture; 2 and 3 the kind and picture of the object (the kind varies with the terrain, so it is not used to find objects); 4 and 5 flags (what it blocks; 0x0188 or 0x0100 when a hero stands on it); 6 and 7 a second object such as the flag of a mine; **9 what the object a hero enters by is**, which is how places are found; 10 and 11 a link to an entry of the table of objects after the tiles. Byte 9: 0x99 obelisk, 0x8A gazebo, 0xBE fort, 0xC5 witch doctor's hut, 0xC9 mercenary camp, 0xC2 standing stones (two tiles), 0xD6 Xanadu, 0x9F / 0xCA / 0xCB shrine of the first / second / third circle, 0xC6 temple, 0x89 fountain, 0xA8 windmill, 0x96 water mill, 0x8C graveyard, 0xA3 the gate of a castle, 0xFA arena and stables, 0xCF sphinx. The counts agree with the pictures (Threedom: 9 obelisks, 5 gazebos, 5 forts, 6 huts, 4 camps, 7 stones, 1 Xanadu) and the byte is better across terrains (the largest map has 23 gazebos by the byte and 21 by the picture).
+- **Obelisks.** At M+0x538 are 48 records of 8 bytes, then 48 bytes of `FF`, and at M+0x6E8 one byte per obelisk with a bit for every colour that visited it (bit 0 Blue to 5 Purple; the AI sets theirs as they walk). They are in the order of the map, row by row. HoMM2 has no teams.
+- **Mines.** Records of 7 bytes from M+0x05: `owner, kind, FF, FF, x, y, FF`; owner a colour or `FF`, kind 0 sawmill to 6 gold. Capturing sets the owner, adds the flag as the second object of a tile (bytes 6 and 7: the first picture of the kind, 14 for mines, 21 for the alchemist's lab, 28 for the sawmill, plus the owner's colour) and recalculates the income the next day. The flag of a mine nobody owns is the empty object (class 0, picture `FF`). The editor writes both owner and flag, except for the alchemist's lab (the saves have no flag for it, even when Blue captured it). Guardians of a mine are not found.
+- **Sphinx** (one block, 335 bytes in Threedom, 377 in Arrax): 1 while the riddle is unanswered and 0 after (answered in save 74); the reward as seven u32 resources (8,000 gold; 15 mercury in Arrax); the artifact reward as u16 (96 means none and is also the code of the Legendary Scepter, read as none); the number of answers; 8 answers of 13 bytes ("darkness" and "shadow"); then the riddle text. The riddle and answers are in the savegame and can be edited. The gold arrived with the answer.
+- **Shrine:** the spell is in the tile: **the 16-bit number at tile bytes 4 and 5 shifted right by 3** (the low 3 bits are the tile's flags and are kept). A shrine is not used up and leaves no mark; the hero's spell book is the only memory. First-circle spells are all level 1, third mostly level 3. A hero standing on a shrine hides its spell (the tile holds the hero marker), so it is listed but not editable until it moves.
+- **Daemon cave, windmill, water mill:** nothing changes in the hero besides the reward; the picture of the object changes in the table of objects after the tiles (an entry goes from `5C 0C` to `5E 00`). Not decoded.
+- Walking reveals explored rows as runs of 6 to 9 bytes spaced 72 apart; terrain tiles and kingdom state are not decoded.
+
+## What the write test with the game showed
+
+Saves E01 to E39 were made by editing the models or with the editor, loaded in the game and ticked (the README is in `TestData/Homm2/out`, not in the repository). The findings that are not in the sections above:
+
+- A control that is a byte-for-byte copy loads, so nothing in the file is checked by name, date or checksum. Gold, resources, army, primary and secondary skills, the spell book, level, experience, movement, the garrison and a castle's owner are safe to edit.
+- **Stacks** are a signed 16 bits: 65,535 shows as -1 on the map and 0 on the hero screen and splitting misbehaves; 32,767 peasants and 9,999 rogues split fine and one more overflows to -32,768 (E24, E33), so the editor stops at 32,767.
+- **Resource limits** (tried in both games, E39GOLDX and `gold_limit`): gold is a signed 32 bits and 2,147,483,647 is the most; the other six took 65,535 each without trouble, the games' real limit is higher but unknown, and the editor stops at 65,535. Both limits are in `Heroes.Constants.Resources` (`MaxGold`, `MaxOther`); raise `MaxOther` only after trying a higher value in the game.
+- The creature codes of the Peasant, Archer and Black Dragon, the Mage Guild spells and the artifacts picked up were checked against the saves; the middle of the creature list follows the fheroes2 order and is not verified. Only spells 6, 18, 26, 35, 50 and 51 were verified against the game; the rest of the table is fheroes2's.
+- Not decoded in the castle: the use of the byte `+0x55` (it grows by 1 a day in every castle, guess: 1 + days played).

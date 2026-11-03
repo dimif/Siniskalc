@@ -14,7 +14,7 @@ For HoMM2:
   - Base, AKA: The Succession Wars
   - The Price of Loyalty.
 
-All the common file types used by the 2 titles are supported, for single player and hotseat sessions: `.GM1`, `.GM*`, `.GX1`, `.GX*`etc.
+All the common file types used by the 2 titles are supported, for single player and hotseat sessions: `.GM1`, `.GM*`, `.GX1`, `.GX*`, `.CGM` etc.
 
 Saves have been tested with Horn of The Abyss version 1.8.1, HoMM3 Complete and HoMM2 Complete from gog.com
 
@@ -132,7 +132,7 @@ Bug reports, savegames that break the editor and pull requests are welcome. Open
 * **Read first**: [`CLAUDE.md`](CLAUDE.md) has the repo rules (one type per file, immutable models, no byte chunks in view models, limits in `Constants.cs`, naming of tests).
   [`docs/SINISKALC_ARCHITECTURE.md`](docs/SINISKALC_ARCHITECTURE.md) shows how the projects, edit sessions, models and view models fit together.
 * **Where to start**: [`docs/FUTURE_IMPROVEMENTS.md`](docs/FUTURE_IMPROVEMENTS.md) lists open work and the saves that would settle open questions.
-* **Finding a new field in a savefile**: see "Finding a new field" in `docs/FUTURE_IMPROVEMENTS.md`, [`docs/LOCATING_HOMM3_ENTITIES.md`](docs/LOCATING_HOMM3_ENTITIES.md) for how things are located, and
+* **Finding a new field in a savefile**: see the "Probes" section of `docs/FUTURE_IMPROVEMENTS.md`, [`docs/LOCATING_ENTITIES.md`](docs/LOCATING_ENTITIES.md) for how things are located, and
   [`docs/KNOWLEDGE_BASE.md`](docs/KNOWLEDGE_BASE.md) for what is already known. Record new findings there.
 * **Test savegames**: name and place them by [`TestData/README.md`](TestData/README.md) and add a row to the README of their folder.
 * **Errors and logging**: see [`docs/ERROR_MODEL.md`](docs/ERROR_MODEL.md) and [`docs/LOGGING.md`](docs/LOGGING.md) (the logger, the levels, `serilog.json`).

@@ -3,7 +3,7 @@
 Eleven saves that continue the game of Threedom (after save 82), made to find where a hero keeps the **marker the game puts on the map where it is going** (the editor calls it the destination) and **the direction it faces**. Colar Blau stands at 1, 65 in all of them.
 In saves 83 to 90 he faces east and the destination goes round him, one tile at a time, clockwise from the south; in 91 to 93 he has no destination and faces west, northwest and northeast.
 
-Result (`docs/HOMM2_SAVE_FORMAT.md`): the destination is the two 32 bit numbers at +0x17 from the name (x, y; all FF for none), and the facing the byte at +0x22, clockwise from north (0 north, 1 northeast, 2 east, 3 southeast, 4 south, 5 southwest, 6 west, 7 northwest).
+Result (`docs/KNOWLEDGE_BASE.md`): the destination is the two 32 bit numbers at +0x17 from the name (x, y; all FF for none), and the facing the byte at +0x22, clockwise from north (0 north, 1 northeast, 2 east, 3 southeast, 4 south, 5 southwest, 6 west, 7 northwest).
 Used by `HeroDestinationAndFacingTests`. The game only lists save names of at most 8 characters before the extension; the second column is the name the game gave the save.
 
 | Save | Name in the game | What it is |

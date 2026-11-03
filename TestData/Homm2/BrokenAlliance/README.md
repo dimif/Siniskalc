@@ -2,7 +2,7 @@
 
 One game on the map "Broken Alliance" (72x72, normal difficulty), played by Blue (human, Knight), with Green (Barbarian), Red (Sorceress), Yellow (Warlock), Orange (Wizard) and Purple (Necromancer) as computer players.
 The saves are in the order they were made, each differing from the one before by what the table says.
-They are the base game's `.GM1`; the layout is in `docs/HOMM2_SAVE_FORMAT.md`.
+They are the base game's `.GM1`; the layout is in `docs/KNOWLEDGE_BASE.md`.
 
 **HoMM2 only lists savegames whose name has at most 8 characters before the extension.**
 The repo names are longer, so the table also gives the name the game gave each save: copy a save to the game's save folder under that name.

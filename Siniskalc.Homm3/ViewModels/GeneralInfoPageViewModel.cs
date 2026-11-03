@@ -364,7 +364,7 @@
             active => this.Update(h => h with { ActiveSpells = active ? h.ActiveSpells | spell : h.ActiveSpells & ~spell }));
 
         // The buildings whose morale or luck is known from the saves (TestData/Sod/Hotseat) set their bit and the byte together, as HoMM2 has to
-        // (docs/HOMM2_SAVE_FORMAT.md); the stables only have a bit. The faerie ring, the fountain and the idol of fortune give a bonus the
+        // (docs/KNOWLEDGE_BASE.md); the stables only have a bit. The faerie ring, the fountain and the idol of fortune give a bonus the
         // saves do not pin down, so their boxes cannot be changed.
         private NextBattleCardViewModel CreateNextBattle()
         {

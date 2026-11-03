@@ -109,10 +109,10 @@ See `docs/SINISKALC_ARCHITECTURE.md` for how the pieces fit together and `docs/F
   An integration test of one savefile feature through every layer (reader, writer, history, view model) may be named after that feature (`GenderTests`, `ObeliskVisitsTests`).
   Its methods are still sentences about the behaviour.
   Unit and multi-unit test classes are always named after one production type.
-- **Say what kind of test a class is** (target convention, being adopted; see `docs/TEST_REVIEW.md`).
+- **Say what kind of test a class is** (enforced by `TestFixtureConventionsTests` in each test project).
   A unit test checks one class, with Moq fakes for its collaborators and no savefiles; it is `[Category("Unit")]` and lives in the layer folder.
   A test of several real classes without savefiles is `[Category("MultiUnit")]` under `MultiUnit/<Layer>/`.
   A test that reads `TestData`, writes to disk or builds the whole graph (`TestServices`) is `[Category("Integration")]` under `Integration/<Layer>/`.
   Only integration tests and tests on binary data (deserializers, serializers) may be slow.
 - A test never ends in `Assert.Pass` or skips its assertions with `continue`; a serializer test asserts the bytes, not what the deserializer reads back.
-- The `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`) repeats the review and updates `docs/TEST_REVIEW.md`.
+- The `test-reviewer` agent (`.github/agents/test-reviewer.agent.md`, `.claude/agents/test-reviewer.md`) repeats the review and reports.

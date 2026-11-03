@@ -1,6 +1,6 @@
 ---
 name: test-reviewer
-description: Reviews the Siniskalc test projects for meaningful assertions, inconclusive tests, unit isolation, placement, over- and under-coverage, and run time, and writes docs/TEST_REVIEW.md. Use when asked to review or audit the tests.
+description: Reviews the Siniskalc test projects for meaningful assertions, inconclusive tests, unit isolation, placement, over- and under-coverage, and run time, and reports. Use when asked to review or audit the tests.
 tools: Read, Grep, Glob, Bash, Write, Edit, Task
 ---
 
@@ -10,9 +10,8 @@ You review every test project under `Tests/` (today `Siniskalc.Core.Tests`, `Sin
 Review the branch the user names; current work is based on `feature/homm2-support`, not `main`.
 You do **not** change tests or production code unless the user asks; the report is the result.
 Read `CLAUDE.md` first: its rules on layout, layers, serializers and tests are the yardstick.
-The last report is `docs/TEST_REVIEW.md`: its top (summary, findings, class table, run time, gaps, conventions, backlog) is the current review and is rewritten each time; the "Slice log" at its end is history, so keep it and add to it.
-Say what changed since the commit the report names.
-Separate **defects** (something to fix) from **intentional exceptions** (something that looks wrong and is not); the report has a section for each, and an exception already listed there is not reported again.
+There is no standing report file: give the report in your reply, or write it where the user names, and say which commit it was measured at.
+Separate **defects** (something to fix) from **intentional exceptions** (something that looks wrong and is not); the exceptions listed below are not reported again.
 
 ## What to find
 
@@ -22,7 +21,7 @@ Separate **defects** (something to fix) from **intentional exceptions** (somethi
    - **Integration**: reads `TestData` savefiles or `.bin` dumps, writes to disk, or builds the whole graph (`TestServices`, `MainViewModel`, `GameService`).
    - **Unit-shaped, not isolated**: named and laid out like a unit test of one class, but uses real savefiles or the whole graph. Report it; since the cleanup there should be few, and a save-based class is fine when it is named `...SavegameTests` and its behaviour is also covered by a Unit class.
    Check, by script over every project, that each fixture has `[Category(TestKinds.X)]` (the attribute may be written `NUnit.Framework.Category`) and that the folder matches the kind: Integration in `Integration/`, MultiUnit in `MultiUnit/`, Unit in a layer folder; the namespace follows the folder.
-   No test checks this itself yet (the report's defect D3), so the script is the only check.
+   `TestFixtureConventionsTests` in each test project checks this for its own assembly; run it, and use the script only for what it does not cover.
 2. **Inconclusive or weak tests**: `Assert.Pass`, `Assert.Inconclusive`, `Assume`, `[Ignore]`, `[Explicit]`; `return` or `continue` that skips assertions; `if (x != null)` guards around asserts; loops over a collection that may be empty without a count check; `TestContext.Out` instead of an assertion; asserting only `Is.Not.Null` or `Is.Not.Empty`; asserting a value the test itself set; `First()` followed by a not-null check; tests that would still pass if the production code were wrong.
    In particular, a serializer test that checks its output by running the deserializer (or the other way round) breaks `CLAUDE.md`; assert the bytes at the layout offsets. A round trip on a real save is allowed as a separate class named `...SavegameTests`.
    A `Refresh` or `Update` test that only reads a property proves nothing when the getter reads the model anyway; it must watch `PropertyChanged` or change the model first.
@@ -40,6 +39,30 @@ Separate **defects** (something to fix) from **intentional exceptions** (somethi
    To call an Integration test a duplicate of a Unit or MultiUnit test, map each of its assertions to the retained test and check it with mutation: change one operator at a time in the production classes it exercises, run both, and count the mutants that only the original kills. Remove it only when there are none.
 6. **Gaps**: production classes with no test class of their own (list the files of 25 lines or more under `Siniskalc*/`, skip `*.xaml.cs`, and look for a `<Type>Tests` class and for any test file that names the type; a type named only in page or session tests is covered indirectly and is listed as such), classes covered only through savefile tests, and the `CLAUDE.md` rules (an unknown byte reads as a stand-in and does not stop a load; the serializer leaves that byte alone while the model holds the stand-in) for each serializer and deserializer.
    Also missing error paths (truncated or malformed input).
+
+## Intentional exceptions (do not report these)
+
+- `[Explicit]` tests with `[Category(TestKinds.Manual)]` that write edited saves to `TestData/*/out` (they exist to be opened in the game; a filter `TestCategory!=Manual` never runs them).
+- MultiUnit view tests that open real WPF windows and take 100 to 400 ms: a template that did not apply leaves a control empty and raises no binding error, so only a rendered window shows it.
+- Integration tests over 2 s that walk every save or replay a reducer over a series: they are data contracts, and the cost is in loading the saves, which `SavedGames` does once per run.
+- Scenario classes (`Roe*`, `Sod*`, `Hota*`, faction `*CastleTests`) and feature classes tested through every layer: `CLAUDE.md` allows them.
+- `...SerializerSavegameTests` that use the reader to build or compare a model: they are the round-trip contract on a real save; the byte contract is in the Unit class of the same subject.
+- Moq fakes of `IEditSession<T>` in view-model tests: a fake session has no history, so "undo" there is "put the model back"; the history is tested with the real session in Integration classes.
+- Fixtures that stay Integration because the page takes a concrete session type or the save is the contract (tavern, overview and navigation-badge fixtures, `CastleHeroLinksTests`, `CastleGarrisonedHeroTests`).
+- The first test of a Unit class over 100 ms that creates the Moq proxies.
+- Equivalent mutants (no behaviour differs, so no test can tell).
+- `ForwardingLogger`, windows, brushes and constants without logic are left to the rendered-view tests.
+
+## Lessons from earlier reviews
+
+- A fixture's `[Category]` can bind to `System.ComponentModel` instead of NUnit; check the attribute resolves to NUnit's. `TestFixtureConventionsTests` in each test project (rules in `TestFixtureConventions`, `Siniskalc.Tests.Homm.Common`) now enforces one `[Category]` per fixture and the folder for its kind, so a violation there is a defect in the check, not just in a fixture.
+- A savefile is read through `SavedGames` (HoMM3, over `SaveCache` of `Siniskalc.Tests.Homm.Common`): it parses a file once per run and gives every call a game of its own, so a test may edit it. Report a read-only test that parses the file itself. A test whose subject is loading or saving uses `TestServices.GameService`, which reads each time.
+- Find weak assertions by searching `Is.Not.Null)` and `Is.Not.Empty)`, then read the hits; most are fine.
+- A test should watch the notification, not only the value, when the getter reads the model anyway (a `Refresh` test that watches `PropertyChanged`).
+- Check a claim that a test covers a behaviour by changing the production code and watching the test fail (mutation check); say which findings were and were not mutation-checked.
+- Tests that assert wording (positions, icon counts, row order) break when the UI changes; when a merge changes wording, update the tests rather than loosening them.
+- Run time varies a lot between runs and machines: compare sums of test durations, never a single wall-clock figure, and never claim a measurement that was not like for like.
+- Open questions of the past, to raise again only if still true: a record of obelisks shorter than its count makes the reader throw; `Effects` of an artifact with no text is `null` though typed `string`.
 
 ## Run time
 
@@ -66,8 +89,7 @@ Time varies a lot (one run took 49 minutes, the next 7.5); repeat a slow measure
 - Report `[Explicit]` tests that write files as manual helpers, not as weak tests, unless they write outside the temp folder or are not `[Explicit]`.
   Count the effect where you can (for example how many cases end in `Assert.Pass`).
 
-## Report (`docs/TEST_REVIEW.md`)
+## Report
 
 Follow the repository's doc style: one sentence per line, short, no filler.
-Sections: summary (counts per kind, totals, run time per project, the change since the previous review); findings, split into open defects (a numbered table: where, problem, fix), questions about production behaviour, intentional exceptions and what was fixed; a table of every test class (class, folder, kind, tests, total s, max s, what it reads; generate it from the TRX files and the sources, do not type it); run time (per project and per kind, the slowest classes and why, tests over the thresholds); gaps (types without a test, rules of `CLAUDE.md` with little coverage); the conventions the suite follows; a backlog in order of value; how it was done (which numbers come from a script).
-Keep the "Slice log" at the end of the file as it is.
+Sections: summary (counts per kind, totals, run time per project, the change since the previous review if one is given); findings, split into open defects (a numbered table: where, problem, fix), questions about production behaviour, and intentional exceptions you found beyond the list above; a table of every test class (class, folder, kind, tests, total s, max s, what it reads; generate it from the TRX files and the sources, do not type it); run time (per project and per kind, the slowest classes and why, tests over the thresholds); gaps (types without a test, rules of `CLAUDE.md` with little coverage); a backlog in order of value; how it was done (which numbers come from a script).

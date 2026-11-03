@@ -16,16 +16,16 @@ The editors of the games share `EditorViewModelBase<TGame>` (loading, saving, un
 A page with tabs derives from `TabbedPageViewModelBase`: its tab strip is a `ListBox` bound to `SelectedTab`, and the panels of the tabs sit in one grid, each with the style of its number.
 
 **`Siniskalc.Heroes`** (net8.0, no UI) is what the games of the series have in common and that knows no single game.
-It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
-A game implements them with its own types, and is free to repeat itself: factions and secondary skills come from the game's immutable JSON catalog, while HoMM2's `Color` and HoMM3's `PlayerColor` remain fixed `AbstractEnumeration`s. Models, readers and view models use those typed entities, not JSON records; `SkillLevel` remains an enum with a small catalog (`SkillLevels.Of(level)`).
+It holds the values that mean the same in every game (`Resource`, `GameDate`, `TavernHeroes`, `ChangeAreas`), and small interfaces for the things each game has its own set of: `IPlayerColor`, `IFaction` and `ISecondarySkill` (all `IGameEntity`), `ILink` (a hero or town shown as a name that opens it) and `IOwnerChoice`.
+A game implements them with its own types, and is free to repeat itself: factions and secondary skills come from the game's immutable JSON catalog, while HoMM2's `Color` and HoMM3's `PlayerColor` remain fixed `AbstractEnumeration`s. Models, readers and view models use those typed entities, not JSON records. `SkillLevel` is not per game: it is one shared `AbstractEnumeration` (None, Beginner, Intermediate, Expert; `SkillLevel.Of(code)`), because every savegame holds it as 0 to 3.
 A colour has a `Neutral` member (code 255, which is the byte of a savefile for what no player owns), and each game's catalog defines a neutral faction (normally code 99). Neutral choices are excluded where a picker requires a playable faction. An unknown colour or faction reads as neutral, so owners and creature factions are never `null`. `OwnerNames<TColor>` names the owners and `ByteEnumerations` handles fixed colour bytes; faction readers and safe serializers use the catalog, preserving unrecognised bytes while the model still holds the stand-in.
-A level a hero has not learned is `null`, whatever the game stores.
+A level a hero has not learned is `SkillLevel.None`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
 The creature, spell and artifact tables remain game-specific: they differ in codes, sets or meaning. `MapPosition`, `HeroPosition` and `MapHeader` are shared values.
 
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either.
-`Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel6`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
+`Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel7`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
 `PageHeader` (the marker, the name, what the page adds, the "edited" mark and Reset), `TabStripStyle`, `ResourcesPanel` (a card for each resource, the quick add buttons, a game's own cards in between), `ItemsCard` (a heading and a list, with a note for an empty one), `OwnerPicker` and `HeadedCard` (a card with a heading, a summary and content).
 A game's page puts its own content in the blocks; both player pages add the Banishing card (`DaysLeftCard` over `DaysLeftCardViewModel`, the days left of a player who owns no town) to the `ResourcesPanel`.
 A game's `Generic.xaml` merges `PageStyles.xaml`. Inside it a `StaticResource` finds only what is defined above it, so the styles of the controls come last.
@@ -35,10 +35,10 @@ The page view models share `ResettablePageViewModelBase` (tab, pending changes, 
 **`Siniskalc.Homm3`** (net8.0-windows) is the editor for Heroes of Might and Magic III.
 It supplies what is specific to the game: where things sit in a savefile, how they are found and converted to models, what the entities are called, the pages that edit them, and the editor that shows them (`Homm3EditorViewModel`, `Homm3EditorView`, `Homm3Module`).
 
-**`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`), and `ViewModels` and `Views` (the overview, the player, hero and castle pages and the navigation builder). Its format is in [HOMM2_SAVE_FORMAT.md](HOMM2_SAVE_FORMAT.md).
+**`Siniskalc.Homm2`** (net8.0-windows) is the editor for Heroes of Might and Magic II, built the same way: `Data` (the layouts of the header, players, heroes and castles, the locator that finds them in the base game's and in the Price of Loyalty's savegames, the chunks and their collections, the deserializers, serializers and differs), `Entities`, `Models`, `Runtime` (`Game`, the parser and `Homm2Module`), and `ViewModels` and `Views` (the overview, the player, hero and castle pages and the navigation builder). Its format is in the HoMM2 part of [KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md) and the `Siniskalc.Homm2/Data/*Layout.cs` classes.
 
 **`Siniskalc`** is the exe, the host that starts the window.
-It holds `App`, `AppCompositionRoot` (the composition root: it builds all the components once from what it is given, with no optional parameter) and `AppServices` (the holder of the finished components; it builds none), and lists the games (`Homm3Module` and `Homm2Module`; see `HOMM2_PLAN.md`), from the module factory that each game provides (`Homm3ModuleFactory`, `Homm2ModuleFactory`: the wiring of that game, built from what the games share), and `AppInfo` (the name and the web addresses).
+It holds `App`, `AppCompositionRoot` (the composition root: it builds all the components once from what it is given, with no optional parameter) and `AppServices` (the holder of the finished components; it builds none), and lists the games (`Homm3Module` and `Homm2Module`; see "How HoMM2 was added"), from the module factory that each game provides (`Homm3ModuleFactory`, `Homm2ModuleFactory`: the wiring of that game, built from what the games share), and `AppInfo` (the name and the web addresses).
 A game's data templates are merged in `App.xaml`.
 
 ```
@@ -56,10 +56,10 @@ Siniskalc.Homm3/
   Resources/      Files of the HoMM3 editor (the styles that only heroes need are in Views/Generic.xaml, with the template of the editor)
 Siniskalc.Homm2/  The same folders for HoMM2
 Siniskalc/        The exe: App, AppCompositionRoot (the composition root) and AppServices (what it builds); each game has its module factory in its own Runtime folder
-SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code, used by Siniskalc.Homm3 only (see "Savegame format" in the README).
+SharpZipLib.GZip  Trimmed copy of SharpZipLib's GZip code, used by Siniskalc.Homm3 only (see "Savegame format" in `docs/KNOWLEDGE_BASE.md`).
 Tests/            Unit tests (NUnit), one project per project (see below).
 TestData/         Sample savegames (Roe, Sod, Hota, Homm2) and hero dumps used by the tests.
-docs/             Architecture, how things are located in a savefile, knowledge base, user guide, plans.
+docs/             Architecture, how things are located in a savefile, knowledge base, game definitions, errors, logging, user guide, future improvements.
 ```
 
 Dependencies point one way: `Siniskalc` references the games and the libraries; `Siniskalc.Homm3` and `Siniskalc.Homm2` each reference `Siniskalc.Heroes.Wpf`, `Siniskalc.Heroes`, `Siniskalc.Wpf` and `Siniskalc.Core`; `Siniskalc.Heroes.Wpf` references `Siniskalc.Heroes` and `Siniskalc.Wpf`; `Siniskalc.Wpf` and `Siniskalc.Heroes` reference `Siniskalc.Core`.
@@ -68,6 +68,7 @@ A game gets a project of its own that references the same libraries; HoMM2 is th
 A type carries no game prefix (`Siniskalc.Homm2.Models.HeroModel`): the namespace says the game, and the exe uses namespace aliases where it names both.
 
 Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fakes, no savefiles), `Siniskalc.Wpf.Tests`, `Siniskalc.Heroes.Tests`, `Siniskalc.Heroes.Wpf.Tests` (the blocks, rendered), and `Siniskalc.Homm3.Tests` and `Siniskalc.Homm2.Tests` (the real savegames, and the pages of each game opened in a window: `PageRenderingTests`).
+`Siniskalc.Tests.Homm.Common` is a test library, not a test project: it holds what the two games' test projects would otherwise copy (`TestKinds`, `ByteDiff`, `PendingChangesFake`, `WpfTestApplication`, `SaveCache<TGame>`, `TestFixtureConventions`). It names no game and no test; it references Core and Heroes and builds what it needs from each game's module factory.
 A game's tests reference only that game's project, so they build the game from its module factory and never see the other game or the exe (`Homm3LayeringTests`, `Homm2LayeringTests`).
 `Siniskalc.Tests` mirrors the exe: it references both games and tests the application as a whole (`AppCompositionRoot`, `AppServices`, the shell with both games), with a few savegames of each game.
 
@@ -114,19 +115,32 @@ See [GAME_DEFINITIONS.md](GAME_DEFINITIONS.md) for the actual per-game file form
 A new game (HoMM1, fheroes2, VCMI, HoMM4 and later) is a project that references the libraries above and supplies:
 
 1. Its savefile: locator, chunks and collections, deserializers and `Safe...` serializers, differs, edit sessions, an `ISavegameService<Game>` (the shared `SavegameService<Game>`, whose parser is an `ISavegameParser<Game>` of the game) and a `Game : OpenGame`; collections derive from `ModelChunkCollection` (Core), and a list of records of one kind (mines, dwellings, shrines) is a `RecordChunkCollection<TChunk, TModel>` (Core) of `RecordChunk`s (or a chunk derived from it) built from a `RecordKit` (its deserializer, serializer and differ) and edited with `new EditSession<TChunk, TModel>(history, kind, index)`; the module (`IGameModule`) that recognises the file.
-2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction`, `ISecondarySkill` and `ISkillLevel` to the view models.
+2. Its entities and models, with the catalogs that give `IPlayerColor`, `IFaction` and `ISecondarySkill` to the view models (`SkillLevel` is shared).
 3. Its editor view model, an `EditorViewModelBase<Game>` that builds the pages and says which node each belongs to, and a `NavigationBuilder : INavigationBuilder<Game>` that fills the tree.
 4. Its pages: view models that implement `IPlayerPage` and `ICastlePage` (and `IResettablePage`, `IOwnerChoice` where they apply), built from the blocks of `Siniskalc.Heroes.Wpf`, with the content only that game has put into them.
 5. Its `Generic.xaml`, which merges `PageStyles.xaml` and gives the data template of its editor, and its line in `AppCompositionRoot`.
 
 What a second savefile format of the same game (fheroes2 for HoMM2, VCMI for HoMM3) would share is the entities, models and pages; splitting the game's project into the rules and the format is left until the first of them is started.
 
+### How HoMM2 was added (lessons for the next game)
+
+The order that worked, each step with the whole suite green and the same test numbers as before:
+
+1. **Housekeeping.** Rename the saves to `TestData/README.md` rules with a README per folder. Keep the other game's saves out of the first game's test project (`Siniskalc.Tests` once parsed every `*.GM?` under `TestData` as HoMM3); the new game's test project copies its own and has its own naming test (`.GX1` is not added to the HoMM3 one).
+2. **Split the first game out** of the exe into its own library (mechanical, `git mv` so `git log --follow` works, namespaces follow the folders), then make the exe a thin host: `IGameEditor` / `IGameModule` in Core (`IsOwnSavefile(path, head bytes)` picks the game from the first 16 bytes), `ShellViewModel` and `ShellWindow` in Wpf.
+3. **Data layer first**: locator (checks that every table entry holds its own number and refuses anything else with `UnsupportedSavefileException`, never misreads), layouts, chunks and collections, separate deserializers and `Safe...` serializers, models with value types that compare by content, entity tables, tests that load and write back every save byte for byte.
+4. **Write test with the game before building editing.** `EditedSaves` (in the tests) builds one save per kind of edit plus an unchanged control, and an `[Explicit]` test writes them to `TestData/<Game>/out` (git-ignored) with a README of what to look at; the user loads them in the real game. A control that fails means the game checks a name, date or checksum; an edit that fails means that record is checked; an edit that loads but shows something else means the layout is wrong. In HoMM2 this found that the savegame keeps the primary skills with the artifacts' bonus already in them (the game moves them with the artifact; the same was then found for HoMM3 by comparing the Arts saves), and that dwellings have levels.
+5. **Viewer, then editing**: pages with tabs, reducers on immutable models, shared view models; edits stay "not tried in the game" in the docs until the user has loaded them.
+6. **Share what means the same** (the `game-reconciler` agent keeps that list), with the game-specific wrappers kept.
+
+Facts about the game files that shaped the design: HoMM2 only accepts savegame names of at most 8 characters before the extension. The module supplies the rule (`IGameModule.ValidateSavegameName`, default "any name"), which "Save as" asks before writing; the backup keeps the game's extension plus `.bak`, which the game does not list. The saves the tool writes for the game to load get 8-character upper-case names (`E01GOLD.GM1`), and the writer keeps the file name the game stores inside the save (the buffer at `0x29E`). Entity tables of HoMM2 were made from the open-source engine fheroes2 (read only, no code copied) and checked against the saves.
+
 ## Layers
 
 ```
 SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Original, Undo/Redo, Changed event; Apply runs the document's IDocumentReconciler
                                 (PlayerListsReconciler of each game keeps the players' lists of heroes, and castles in HoMM2, the HoMM3 table of hero owners and the days left in step with the owners), ApplyAsIs does not (hex edits, Revert all)
-  SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
+  SaveDocument                  one chunk collection per ChunkKind (heroes, castles, players, obelisks, and the records of the map: mines, dwellings, merchants, the turn, hero owners, ...)
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
       a session class only where it adds a member: HoMM3 HeroEditSession / CastleEditSession (IHeroSession, ICastleSession: what the pages ask of the savefile), PlayerEditSession of both games (IsDirty counts the model only),
       EditSession<ObeliskChunk, ObeliskVisits<TColor>> (shared Core type); HoMM2's heroes and castles use EditSession<TChunk,TModel> itself (Homm2EditSessions.CreateHeroSession / CreateCastleSession)
@@ -140,7 +154,7 @@ Reading and writing a chunk are separate (`IDeserializer<TChunk, TEntity>`, and 
 
 Obelisk byte conversion is shared in `Siniskalc.Heroes.Data`: `ObeliskDeserializer<TColor>` and `SafeObeliskSerializer<TColor>` take `ObeliskFlagsLayout(FlagsOffset, CountOffset)`. Without a stored count, positions give the count; with one, the byte bounds reading and writing even when positions differ. Writing also stops at the model's flag count and preserves the remaining bytes.
 
-Data flow of an edit: view -> view model property -> `Update(h => h.Reducer(...))` -> `HeroEditSession.Update` -> serializer -> `SaveDocumentHistory.Apply` -> `Changed` -> `HeroViewModel.OnHistoryChanged` -> every child view model `Refresh()`.
+Data flow of an edit: view -> view model property -> `TryUpdate(h => h.Reducer(...))` (`SessionPageViewModelBase`) -> `EditSession.Update` -> serializer -> `SaveDocumentHistory.Apply` -> `Changed` -> `ResettablePageViewModelBase.OnHistoryChangedCore` -> the page refreshes its child view models. A `GameRuleException` from the edit leaves the savegame as it was and shows its message as the page's notice.
 
 ## Artifacts, spells and skills
 
@@ -198,7 +212,7 @@ Where to log, the levels, how to write a message and what never to log are in [L
 
 ## Locating
 
-How heroes, castles, players, the date and the map header are found in a savefile: see [LOCATING_HOMM3_ENTITIES.md](LOCATING_HOMM3_ENTITIES.md).
+How heroes, castles, players, the date and the map header are found in a savefile: see [LOCATING_ENTITIES.md](LOCATING_ENTITIES.md).
 
 ## Navigation tree
 

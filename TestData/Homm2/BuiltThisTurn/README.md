@@ -2,7 +2,7 @@
 
 Fifteen saves of the base-game map with the castles Xabran (Blue, Knight, slot 3), Woodhaven (Orange, slot 7) and Corackston (slot 2, neutral at the start), made to find where the game remembers that **a castle has already built today** (one building a day).
 
-Result (`docs/HOMM2_SAVE_FORMAT.md`): a set of 72 bits, one for each castle slot, 9 bytes that start 0x48 bytes after the end of the castle table (`0x5602` here, `0x58FB` in Threedom). Bit *n* is set when castle *n* has built today; the whole set is cleared when a new day starts, not when the turn passes to the next player.
+Result (`docs/KNOWLEDGE_BASE.md`): a set of 72 bits, one for each castle slot, 9 bytes that start 0x48 bytes after the end of the castle table (`0x5602` here, `0x58FB` in Threedom). Bit *n* is set when castle *n* has built today; the whole set is cleared when a new day starts, not when the turn passes to the next player.
 
 The game only lists save names of at most 8 characters before the extension; the second column is the name the game gave the save.
 

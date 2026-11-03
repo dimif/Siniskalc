@@ -65,7 +65,7 @@
         public string? Open(ShellViewModel shell)
         {
             var path = this.dialogs.PickFileToOpen(shell.OpenFilter);
-            return path == null ? null : this.LoadFile(shell, path);
+            return path == null ? null : this.Open(shell, path);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@
                 return null;
             }
 
-            return this.LoadFile(shell, path);
+            return this.Open(shell, path);
         }
 
         /// <summary>
@@ -222,7 +222,13 @@
             };
         }
 
-        private string? LoadFile(ShellViewModel shell, string path)
+        /// <summary>
+        /// Loads a savegame from a supplied path without asking for a file, and adds it to the recent files on success.
+        /// </summary>
+        /// <param name="shell">The shell that loads the game.</param>
+        /// <param name="path">The path to open, such as the file passed at startup.</param>
+        /// <returns>The path of the file loaded, or <see langword="null"/> if the load failed and the user was told.</returns>
+        public string? Open(ShellViewModel shell, string path)
         {
             if (!this.Run(() => shell.LoadGame(path), "Load Game Error", "load game"))
             {

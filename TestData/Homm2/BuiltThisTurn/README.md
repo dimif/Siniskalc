@@ -21,5 +21,5 @@ The game only lists save names of at most 8 characters before the extension; the
 | built_this_turn_10_hotseat_orange_turn_day_2 | `6_ONB.GM2` | Orange's turn |
 | built_this_turn_11_hotseat_woodhaven_dwelling_3 | `7_ORB.GM2` | Orange builds the third dwelling in Woodhaven |
 | built_this_turn_12_two_castles_day_4 | `5_2CASNB.GM1` | One player (Blue) with two castles, Corackston and Xabran, day 4, nothing built |
-| built_this_turn_13_corackston_well__xabran_well | `6_2CASB.GM1` | Both castles build the Well. Xabran's dwelling mask (+0x1A) also gains 0x3, which is not explained |
+| built_this_turn_13_corackston_well__xabran_well | `6_2CASB.GM1` | Both castles build the Well. Xabran's dwelling mask (+0x1A) also gains 0x3, which is not explained; manual comparison in the game showed no apparent change beyond the Well |
 | built_this_turn_14_two_castles_day_5 | `7_2CASNB.GM1` | Day 5, nothing built yet |

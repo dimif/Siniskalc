@@ -14,12 +14,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     [Category(TestKinds.Integration)]
     internal sealed class MineTests
     {
-        // The mines of the map in the order of the table: the first row of the test map is entered from the north (records at y 17), the second
-        // from the south (records at y 14); in each pair the first record is the one Red took first.
-        private const int FirstLab = 4;
-        private const int FirstSulfur = 16;
-        private const int AbandonedSulfur = 2;
-        private const int AbandonedGold = 3;
+        // The mine's own trailing coordinates, rather than the preceding record's coordinates, identify the captured row.
+        private const int FirstLab = 5;
+        private const int FirstSulfur = 17;
+        private const int AbandonedSulfur = 3;
+        private const int AbandonedGold = 4;
 
         private static string Path(string name) => System.IO.Path.Combine("TestData", "Hota", "Mines", name + ".GM2");
 
@@ -34,31 +33,32 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             foreach (var file in Directory.GetFiles(System.IO.Path.Combine("TestData", "Hota", "Mines"), "*.GM2"))
             {
-                Assert.That(Mines(System.IO.Path.GetFileNameWithoutExtension(file)), Has.Count.EqualTo(18), file);
+                Assert.That(Mines(System.IO.Path.GetFileNameWithoutExtension(file)), Has.Count.EqualTo(19), file);
             }
 
             var start = Mines("mines_00_game_begin");
             Assert.That(start.Select(m => m.Kind).Distinct().Count(), Is.EqualTo(7));
             Assert.That(start.Count(m => m.Owner != PlayerColor.Neutral), Is.EqualTo(0));
             Assert.That(start[FirstSulfur].Kind, Is.EqualTo(MineKind.SulfurMine));
-            Assert.That(start[FirstSulfur].Position, Is.EqualTo(new MapPosition(26, 17)));
+            Assert.That(start[FirstSulfur].Position, Is.EqualTo(new MapPosition(30, 14)));
+            Assert.That(start[0].Position, Is.EqualTo(new MapPosition(14, 62)), "the first record used to be lost");
         }
 
         [Test]
         public void RedTakesTheMinesOfTheFirstRowOneAtATimeAndBlueTakesEachFromHimTheNextTurn()
         {
-            Assert.That(Owners("mines_00_game_begin"), Is.EqualTo("------------------"));
-            Assert.That(Owners("mines_01_red_sulfur_mine_1"), Is.EqualTo("----------------R-"));
-            Assert.That(Owners("mines_02_red_sawmill_1"), Is.EqualTo("--------------R-B-"));
-            Assert.That(Owners("mines_07_red_alchemists_lab_1"), Is.EqualTo("----R-B-B-B-B-B-B-"));
-            Assert.That(Owners("mines_08_red_abandoned_mine_sulfur"), Is.EqualTo("--R-B-B-B-B-B-B-B-"));
+            Assert.That(Owners("mines_00_game_begin"), Is.EqualTo("-------------------"));
+            Assert.That(Owners("mines_01_red_sulfur_mine_1"), Is.EqualTo("-----------------R-"));
+            Assert.That(Owners("mines_02_red_sawmill_1"), Is.EqualTo("---------------R-B-"));
+            Assert.That(Owners("mines_07_red_alchemists_lab_1"), Is.EqualTo("-----R-B-B-B-B-B-B-"));
+            Assert.That(Owners("mines_08_red_abandoned_mine_sulfur"), Is.EqualTo("---R-B-B-B-B-B-B-B-"));
         }
 
         [Test]
         public void TheSecondRowIsTakenInTheReverseOrderAndAnAbandonedMineKeepsItsRecordWhenItIsTaken()
         {
-            Assert.That(Owners("mines_09_red_abandoned_mine_gold"), Is.EqualTo("--BRB-B-B-B-B-B-B-"));
-            Assert.That(Owners("mines_17_red_sulfur_mine_2"), Is.EqualTo("--BBBBBBBBBBBBBBBR"));
+            Assert.That(Owners("mines_09_red_abandoned_mine_gold"), Is.EqualTo("---BRB-B-B-B-B-B-B-"));
+            Assert.That(Owners("mines_17_red_sulfur_mine_2"), Is.EqualTo("---BBBBBBBBBBBBBBBR"));
         }
 
         [Test]

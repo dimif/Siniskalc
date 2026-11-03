@@ -45,9 +45,9 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var game = this.main.PlayerNodes();
             var leaves = game.Descendants().Where(n => n.Kind == NavNodeKind.Mine).Select(n => n.Index).ToList();
 
-            Assert.That(leaves, Has.Count.EqualTo(18));
-            Assert.That(leaves.Distinct().Count(), Is.EqualTo(18));
-            Assert.That(game.Single(n => n.Title == "Neutral").Descendants().Count(n => n.Kind == NavNodeKind.Mine), Is.EqualTo(10));
+            Assert.That(leaves, Has.Count.EqualTo(19));
+            Assert.That(leaves.Distinct().Count(), Is.EqualTo(19));
+            Assert.That(game.Single(n => n.Title == "Neutral").Descendants().Count(n => n.Kind == NavNodeKind.Mine), Is.EqualTo(11));
         }
 
         [Test]
@@ -145,8 +145,8 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             var page = this.main.CurrentPageOf<NeutralViewModel>();
             Assert.That(page.SelectedTab, Is.EqualTo(NeutralTabs.Heroes));
-            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(10));
-            Assert.That(page.Summary, Does.Contain("10 mines"));
+            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(11));
+            Assert.That(page.Summary, Does.Contain("11 mines"));
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             row.OwnerField.Selected = "Blue";
 
-            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(9));
+            Assert.That(page.MapObjects.Mines.Rows, Has.Count.EqualTo(10));
             Assert.That(page.MapObjects.Mines.Rows.Select(m => m.Index), Does.Not.Contain(row.Index));
         }
 

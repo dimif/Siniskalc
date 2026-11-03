@@ -103,7 +103,7 @@
 
             var obeliskChunks = this.obeliskLoader.LoadObeliskChunks(bytes, playerChunks);
             var mineChunks = this.mineLoader(gameVersion).LoadMineChunks(bytes);
-            var dwellingChunks = this.dwellingLoader(gameVersion).LoadDwellingChunks(bytes, mineChunks, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
+            var dwellingChunks = this.dwellingLoader(gameVersion).LoadDwellingChunks(bytes, heroChunks.Cast<BytesChunk>().Concat(castleChunks).Concat(playerChunks).Concat(obeliskChunks).Concat(mineChunks));
 
             var afterPlayers = playerChunks.Count == 0 ? 0 : playerChunks[^1].End;
             var metadata = new SaveMetadata<PlayerColor>(

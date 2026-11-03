@@ -7,6 +7,8 @@ Where Tazar and Orrin stand in each save is the entrance of the mine just taken 
 
 Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_IMPROVEMENTS.md`, "Mines: the garrison"): a table of records of 62 bytes holds the owner (0xFF none, 0 Red, 1 Blue), the kind (as in Heroes II: 0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold) and the guard of every mine. Used by `MineTests`.
 
+The HotA 32-bit count is 21: **19 mines and two kind-100 objects**. Besides the fourteen ordinary mines and two abandoned ones in the capture sequence, three neutral mines have record tiles (14,62), (2,69) and (66,61). Corrected records start at the owner byte, with kind at +1, abandoned at +2, guard types at +3, guard counts at +31 and coordinates at +59..61. The previous three-byte-backward alignment dropped the first mine and assigned the preceding record's coordinates to each mine. Capture rows now have record tiles matching the entrances listed below; this does not establish a general sprite/entrance rule.
+
 | Save | What it is |
 |---|---|
 | mines_00_game_begin | Start, Red's turn. No mine is owned |

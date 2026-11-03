@@ -43,8 +43,9 @@
             var catalogs = new GameCatalogLoader(definitions).Load();
             this.VersionEntities = new VersionSpecificEntitiesProviderFactory(catalogs);
             var castleLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new CastleBytesLoader(heroNameEncoding, pair.Value));
-            var mineLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MineBytesLoader(pair.Value));
-            var dwellingLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new DwellingBytesLoader(pair.Value));
+            var mapObjectTables = new MapObjectTablesLocator();
+            var mineLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MineBytesLoader(pair.Value, mapObjectTables));
+            var dwellingLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new DwellingBytesLoader(pair.Value, mapObjectTables));
             var merchantLoaders = catalogs.ToFrozenDictionary(pair => pair.Key, pair => new MerchantBytesLoader(pair.Value));
             var catalog = this.VersionEntities.For(GameVersion.HornOfTheAbyss).Catalog;
             this.HeroRegions = new HeroRegionProvider(this.VersionEntities);

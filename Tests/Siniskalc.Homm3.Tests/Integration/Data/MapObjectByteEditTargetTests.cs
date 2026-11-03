@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             using var target = TestServices.ByteEditTargets.ForMine(game.History, 0);
 
             Assert.That(target.Title, Is.EqualTo(mine.Name));
-            Assert.That(target.Regions.Select(r => r.Name), Is.EqualTo(new[] { "Pos X", "Pos Y", "Pos Lvl", "Owner", "Kind", "Abandoned", "Guard creatures", "Guard count" }));
+            Assert.That(target.Regions.Select(r => r.Name), Is.EqualTo(new[] { "Owner", "Kind", "Abandoned", "Guard creatures", "Guard count", "Pos X", "Pos Y", "Pos Lvl" }));
             var owner = target.Regions.Single(r => r.Name == "Owner").Start;
             Assert.That(target.Update(bytes => { bytes[owner] = (byte)PlayerColor.Blue.Code; return bytes; }), Is.True);
             Assert.That(game.History.Current.Mines().GetModel(0).Owner, Is.EqualTo(PlayerColor.Blue));

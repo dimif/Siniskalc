@@ -29,10 +29,10 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var red = Of(game, PlayerColor.Red);
             var neutral = Of(game, PlayerColor.Neutral);
 
-            Assert.That(red.Mines.Rows.Single(m => m.PositionText == "at 51, 33, Surface").OwnerField.Selected, Is.EqualTo("Red"));
-            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(10));
-            Assert.That(neutral.Mines.Summary, Is.EqualTo("10 mines, 0 of them owned"));
-            Assert.That(Colors().Sum(c => Of(game, c).Mines.Rows.Count), Is.EqualTo(18), "every mine is in the list of exactly one owner");
+            Assert.That(red.Mines.Rows.Single(m => m.PositionText == "at 1, 14, Surface").OwnerField.Selected, Is.EqualTo("Red"));
+            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(11));
+            Assert.That(neutral.Mines.Summary, Is.EqualTo("11 mines, 0 of them owned"));
+            Assert.That(Colors().Sum(c => Of(game, c).Mines.Rows.Count), Is.EqualTo(19), "every mine is in the list of exactly one owner");
         }
 
         [Test]
@@ -41,14 +41,14 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var game = Load("mines_00_game_begin");
             var neutral = Of(game, PlayerColor.Neutral);
             var green = Of(game, PlayerColor.Green);
-            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(18));
+            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(19));
 
             neutral.Mines.Rows.Single(m => m.PositionText == "at 26, 17, Surface").OwnerField.Selected = "Green";
             neutral.Refresh();
             green.Refresh();
 
             Assert.That(game.History.Current.Mines().GetModels().Count(m => m.Owner == PlayerColor.Green), Is.EqualTo(1));
-            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(17));
+            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(18));
             Assert.That(green.Mines.Rows.Select(m => m.PositionText), Is.EqualTo(new[] { "at 26, 17, Surface" }));
             Assert.That(game.History.GetPendingChanges(), Has.Count.EqualTo(1));
 
@@ -59,7 +59,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 
             neutral.Refresh();
             green.Refresh();
-            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(18));
+            Assert.That(neutral.Mines.Rows, Has.Count.EqualTo(19));
             Assert.That(green.Mines.HasMines, Is.False);
         }
 
@@ -126,7 +126,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(guardhouse.CreatureName, Is.EqualTo("Pikeman"));
             Assert.That(guardhouse.OwnerField.Selected, Is.EqualTo("Blue"));
             Assert.That(guardhouse.StockText, Is.EqualTo("28"));
-            Assert.That(Colors().Sum(c => Of(game, c).Dwellings.Count), Is.EqualTo(31), "every dwelling is in the list of exactly one owner");
+            Assert.That(Colors().Sum(c => Of(game, c).Dwellings.Count), Is.EqualTo(62), "every dwelling is in the list of exactly one owner");
             Assert.That(neutral.DwellingsSummary, Does.EndWith("dwellings"));
         }
 

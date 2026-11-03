@@ -189,6 +189,9 @@
     <None Include="..\..\TestData\Hota\Mines\*.GM2" Link="TestData\Hota\Mines\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\TestData\Hota\MineFinding\**\*.GM1" Link="TestData\Hota\MineFinding\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\TestData\Hota\VisitedPlaces\*.GM2" Link="TestData\Hota\VisitedPlaces\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

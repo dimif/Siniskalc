@@ -2,21 +2,19 @@
 using Siniskalc.Core.Data;
 using Siniskalc.Homm3.Data;
 
-namespace Siniskalc.Homm3.Tests.Data
+namespace Siniskalc.Homm3.Tests.MultiUnit.Data
 {
     /// <summary>
-    /// Tests how the table of dwellings is found in bytes made by hand: a run of records of 150 bytes right after the last mine, each
+    /// Tests how dwellings are found in complete counted tables made by hand, each
     /// naming the type of a creature generator.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.Unit)]
+    [Category(TestKinds.MultiUnit)]
     internal sealed class DwellingBytesLoaderTests
     {
         private const int MinesEnd = 40;
 
-        private static readonly RecordChunk Mine = new("Mine", new byte[MinesEnd - 10], 10, 0);
-
-        private readonly DwellingBytesLoader loader = new(TestCatalog.For(GameVersion.HornOfTheAbyss));
+        private readonly DwellingBytesLoader loader = new(TestCatalog.For(GameVersion.HornOfTheAbyss), new MapObjectTablesLocator());
 
         private static byte[] Record(int creature = 14, int x = 5, int y = 6, int level = 0, int owner = 0xFF, int type = DwellingLayout.CreatureGeneratorType)
         {
@@ -27,41 +25,44 @@ namespace Siniskalc.Homm3.Tests.Data
             bytes[DwellingLayout.Level] = (byte)level;
             bytes[DwellingLayout.Owner] = (byte)owner;
             bytes[DwellingLayout.ObjectType] = (byte)type;
+            for (var slot = 0; slot < MineLayout.SlotCount; slot++)
+            {
+                BitConverter.GetBytes(uint.MaxValue).CopyTo(bytes, DwellingLayout.Guard.TypeAt(slot));
+            }
+
             return bytes;
         }
 
         private static byte[] Savegame(params byte[][] records) =>
-            new byte[MinesEnd].Concat(records.SelectMany(r => r)).Concat(new byte[20]).ToArray();
+            new byte[MinesEnd].Concat(BitConverter.GetBytes((ushort)records.Length)).Concat(records.SelectMany(r => r)).Concat(new byte[20]).ToArray();
 
-        private IReadOnlyList<RecordChunk> Load(byte[] bytes, IReadOnlyList<RecordChunk>? mines = null, params BytesChunk[] others) =>
-            this.loader.LoadDwellingChunks(bytes, mines ?? [Mine], others);
+        private IReadOnlyList<RecordChunk> Load(byte[] bytes, params BytesChunk[] others) =>
+            this.loader.LoadDwellingChunks(bytes, others);
 
         [Test]
-        public void ARunOfThreeRecordsRightAfterTheLastMineIsFoundWithOffsetsAndIndexes()
+        public void ACountedGeneratorTableIsFoundWithOffsetsAndIndexesWithoutAnyMines()
         {
             var chunks = this.Load(Savegame(Record(), Record(), Record()));
 
-            Assert.That(chunks.Select(c => c.StartIndex), Is.EqualTo(new[] { MinesEnd, MinesEnd + 150, MinesEnd + 300 }));
+            Assert.That(chunks.Select(c => c.StartIndex), Is.EqualTo(new[] { MinesEnd + 2, MinesEnd + 77, MinesEnd + 152 }));
             Assert.That(chunks.Select(c => c.Index), Is.EqualTo(new[] { 0, 1, 2 }));
-            Assert.That(chunks[2].ToArray(), Is.EqualTo(Record()));
+            Assert.That(chunks[2].ToArray(), Is.EqualTo(Record()[..DwellingLayout.EditableSize]));
         }
 
         [Test]
-        public void TheRunStartsRightAfterTheLastOfSeveralMines()
+        public void TheTableCanBeLocatedAnywhereAfterAnExplicitEmptyOwnerGuardCount()
         {
-            var secondMine = new RecordChunk("Mine", new byte[30], MinesEnd, 1);
-            var bytes = new byte[MinesEnd + 30].Concat(new[] { Record(), Record(), Record() }.SelectMany(r => r)).ToArray();
+            var bytes = new byte[MinesEnd + 30].Concat(BitConverter.GetBytes((ushort)3)).Concat(new[] { Record(), Record(), Record() }.SelectMany(r => r)).ToArray();
 
-            var chunks = this.Load(bytes, [Mine, secondMine]);
+            var chunks = this.Load(bytes);
 
-            Assert.That(chunks.Select(c => c.StartIndex), Is.EqualTo(new[] { MinesEnd + 30, MinesEnd + 180, MinesEnd + 330 }));
-            Assert.That(this.Load(bytes), Is.Empty);
+            Assert.That(chunks.Select(c => c.StartIndex), Is.EqualTo(new[] { MinesEnd + 32, MinesEnd + 107, MinesEnd + 182 }));
         }
 
         [Test]
         public void ATableThatEndsWithTheLastByteOfTheSavegameIsFound()
         {
-            var bytes = new byte[MinesEnd].Concat(new[] { Record(), Record(), Record() }.SelectMany(r => r)).ToArray();
+            var bytes = Savegame(Record(), Record(), Record())[..^20];
 
             Assert.That(this.Load(bytes), Has.Count.EqualTo(3));
         }
@@ -69,9 +70,9 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void AChunkThatEndsWhereTheFirstRecordStartsDoesNotOverlapIt()
         {
-            var before = new RecordChunk("Other", new byte[10], MinesEnd - 10, 0);
+            var before = new RecordChunk("Other", new byte[10], MinesEnd + 2 - 10, 0);
 
-            Assert.That(this.Load(Savegame(Record(), Record(), Record()), null, before), Has.Count.EqualTo(3));
+            Assert.That(this.Load(Savegame(Record(), Record(), Record()), before), Has.Count.EqualTo(3));
         }
 
         [Test]
@@ -83,21 +84,31 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void WithoutMinesThereAreNoDwellings()
+        public void ASingleCountedDwellingIsFoundWithoutMines()
         {
-            Assert.That(this.Load(Savegame(Record(), Record(), Record()), []), Is.Empty);
+            Assert.That(this.Load(Savegame(Record())), Has.Count.EqualTo(1));
         }
 
         [Test]
-        public void ARunOfTwoRecordsIsNotATable()
+        public void TwoCountedDwellingsAreFoundWithoutMines()
         {
-            Assert.That(this.Load(Savegame(Record(), Record())), Is.Empty);
+            Assert.That(this.Load(Savegame(Record(), Record())), Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void UnsupportedGeneratorsArePreservedWhileSingleCreatureDwellingsOnBothSidesAreFound()
+        {
+            var bytes = Savegame(Record(creature: 54), Record(type: 20), Record(creature: 176));
+            var chunks = this.Load(bytes);
+            Assert.That(chunks.Select(c => c.StartIndex), Is.EqualTo(new[] { MinesEnd + 2, MinesEnd + 152 }));
+            Assert.That(chunks.Select(c => c.Index), Is.EqualTo(new[] { 0, 1 }));
+            Assert.That(chunks.Select(c => c.GetByteAt(DwellingLayout.Creature)), Is.EqualTo(new[] { 54, 176 }));
         }
 
         [Test]
         public void ARecordThatDoesNotFitInTheBytesIsNotRead()
         {
-            var bytes = Savegame(Record(), Record(), Record()).Take(MinesEnd + 449).ToArray();
+            var bytes = Savegame(Record(), Record(), Record()).Take(MinesEnd + 2 + (3 * DwellingLayout.RecordSize) - 2).ToArray();
 
             Assert.That(this.Load(bytes), Is.Empty);
         }
@@ -115,7 +126,7 @@ namespace Siniskalc.Homm3.Tests.Data
         public void ARecordThatBreaksOneCheckEndsTheRun(string reason, byte[] record)
         {
             Assert.That(this.Load(Savegame(Record(), record, Record())), Is.Empty, reason);
-            Assert.That(this.Load(Savegame(Record(), Record(), Record(), record)), Has.Count.EqualTo(3), reason);
+            Assert.That(this.Load(Savegame(Record(), Record(), Record(), record)), Is.Empty, reason);
         }
 
         [TestCaseSource(nameof(Valid))]
@@ -125,16 +136,16 @@ namespace Siniskalc.Homm3.Tests.Data
         }
 
         [Test]
-        public void ARecordThatOverlapsAnotherChunkStopsTheRunThere()
+        public void AnyOverlapRefusesTheWholeTableRatherThanExposingAPartialTable()
         {
             var bytes = Savegame(Record(), Record(), Record(), Record());
-            var overlapsTheThird = new RecordChunk("Other", new byte[10], MinesEnd + 300 + 100, 0);
-            var overlapsTheFourth = new RecordChunk("Other", new byte[10], MinesEnd + 450 + 100, 0);
-            var startsWhereTheFourthEnds = new RecordChunk("Other", new byte[10], MinesEnd + 600, 0);
+            var overlapsTheThird = new RecordChunk("Other", new byte[10], MinesEnd + 2 + (2 * DwellingLayout.RecordSize) + 10, 0);
+            var overlapsTheFourth = new RecordChunk("Other", new byte[10], MinesEnd + 2 + (3 * DwellingLayout.RecordSize) + 10, 0);
+            var startsWhereTheFourthEnds = new RecordChunk("Other", new byte[10], MinesEnd + 2 + (4 * DwellingLayout.RecordSize) - 1, 0);
 
-            Assert.That(this.Load(bytes, null, overlapsTheThird), Is.Empty);
-            Assert.That(this.Load(bytes, null, overlapsTheFourth), Has.Count.EqualTo(3));
-            Assert.That(this.Load(bytes, null, startsWhereTheFourthEnds), Has.Count.EqualTo(4));
+            Assert.That(this.Load(bytes, overlapsTheThird), Is.Empty);
+            Assert.That(this.Load(bytes, overlapsTheFourth), Is.Empty);
+            Assert.That(this.Load(bytes, startsWhereTheFourthEnds), Has.Count.EqualTo(4));
         }
 
         private static IEnumerable<object[]> Invalid()

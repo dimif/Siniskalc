@@ -55,7 +55,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.mines = new Mock<IMineBytesLoader>();
             this.mines.Setup(l => l.LoadMineChunks(It.IsAny<byte[]>())).Returns([]);
             this.dwellings = new Mock<IDwellingBytesLoader>();
-            this.dwellings.Setup(l => l.LoadDwellingChunks(It.IsAny<byte[]>(), It.IsAny<IReadOnlyList<RecordChunk>>(), It.IsAny<IEnumerable<BytesChunk>>())).Returns([]);
+            this.dwellings.Setup(l => l.LoadDwellingChunks(It.IsAny<byte[]>(), It.IsAny<IEnumerable<BytesChunk>>())).Returns([]);
             this.merchants = new Mock<IMerchantBytesLoader>();
             this.merchants.Setup(l => l.LoadMerchantChunks(It.IsAny<byte[]>())).Returns([]);
             this.heroOwners = new Mock<IHeroOwnersBytesLoader>();
@@ -139,7 +139,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
 
             this.Parser().Parse(Bytes, "x.GM1");
 
-            this.dwellings.Verify(l => l.LoadDwellingChunks(Bytes, It.Is<IReadOnlyList<RecordChunk>>(m => m.Single() == mine), It.Is<IEnumerable<BytesChunk>>(o => o.SequenceEqual(new BytesChunk[] { hero, player, obelisk, mine }))), Times.Once);
+            this.dwellings.Verify(l => l.LoadDwellingChunks(Bytes, It.Is<IEnumerable<BytesChunk>>(o => o.SequenceEqual(new BytesChunk[] { hero, player, obelisk, mine }))), Times.Once);
         }
 
         [Test]

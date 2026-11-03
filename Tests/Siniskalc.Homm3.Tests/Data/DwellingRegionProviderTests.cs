@@ -21,13 +21,13 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(regions.Select(r => (r.Name, r.Start, r.Length)), Is.EqualTo(new[]
             {
-                ("Owner", 5, 1),
-                ("Object type", 6, 1),
-                ("Creature", 8, 4),
-                ("Creatures to hire", 12, 4),
-                ("Pos X", 20, 1),
-                ("Pos Y", 21, 1),
-                ("Pos Lvl", 22, 1),
+                ("Owner", 0, 1),
+                ("Object type", 1, 1),
+                ("Creature", 3, 4),
+                ("Creatures to hire", 7, 4),
+                ("Pos X", 15, 1),
+                ("Pos Y", 16, 1),
+                ("Pos Lvl", 17, 1),
             }));
         }
 
@@ -43,7 +43,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ARecordCutShortLeavesOutTheFieldsThatWouldRunPastItsEnd()
         {
-            var regions = this.provider.GetRegions(Record(15));
+            var regions = this.provider.GetRegions(Record(10));
 
             Assert.That(regions.Select(r => r.Name), Is.EqualTo(new[] { "Owner", "Object type", "Creature" }));
         }
@@ -51,7 +51,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void ARecordTooShortForAnyFieldHasNoRegions()
         {
-            Assert.That(this.provider.GetRegions(Record(5)), Is.Empty);
+            Assert.That(this.provider.GetRegions(Record(0)), Is.Empty);
         }
     }
 }

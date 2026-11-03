@@ -12,9 +12,7 @@
         /// Returns the records of the dwellings in the order of the table, or none when the table is not found.
         /// </summary>
         /// <param name="bytes">The savefile.</param>
-        /// <param name="mines">The mines of the savefile: the dwellings come after them.</param>
-        /// <param name="others">The other chunks of the savefile: the table stops before the first record that would overlap one, as the player
-        /// block does on some maps.</param>
-        IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others);
+        /// <param name="others">Other chunks of the savefile; an overlapping generator table is refused in full.</param>
+        IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IEnumerable<BytesChunk> others);
     }
 }

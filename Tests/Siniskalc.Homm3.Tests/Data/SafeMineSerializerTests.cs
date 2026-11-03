@@ -92,7 +92,8 @@ namespace Siniskalc.Homm3.Tests.Data
 
             var written = this.Write(chunk, Mine());
 
-            Assert.That(written.GetBytesAt(0, 5), Is.EqualTo(new byte[] { 9, 8, 1, 0xFF, 3 }));
+            Assert.That(written.GetBytesAt(MineLayout.X, 3), Is.EqualTo(new byte[] { 9, 8, 1 }));
+            Assert.That(written.GetByteAt(MineLayout.Kind), Is.EqualTo(3));
         }
 
         [Test]

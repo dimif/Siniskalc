@@ -2,7 +2,9 @@
 
 Horn of the Abyss hotseat saves (`.GM2`) of the test map of `Mines` ("Island of HOTA tests 6p"). Red's Tazar flags the creature generators of the Castle faction one by one, from the guardhouse (level 1) to the portal of glory (level 7); Blue's Orrin follows a turn behind and flags to Blue what Tazar took.
 
-Result (`docs/KNOWLEDGE_BASE.md`, "Dwellings"): the dwellings are a table of records of 150 bytes in the map data after the table of the mines; the owner is the byte at +5 (FF none, 0 Red, 1 Blue), the creature the dwelling gives is at +8 (0 pikeman, 2 archer, 4 griffin, 6 swordsman, ... 14 centaur ...), the creatures that can be hired now are the number at +12 and the tile is at +20, +21, +22 (offsets from the end of the mines' table). Read by `DwellingTests`.
+Result (`docs/KNOWLEDGE_BASE.md`, "Dwellings"): a two-byte count after the complete owner/guard table precedes 75-byte owner-first records. Owner is +0 (FF none, 0 Red, 1 Blue), object type +1, creature code byte +3 (0 Pikeman, 2 Archer, 4 Griffin, 6 Swordsman, ... 14 Centaur ...), uint32 stock +7, and tile +15..17. There are 62 records; the former 150-byte stride combined pairs and skipped every second dwelling. Read by `DwellingTests`.
+
+The 75 bytes describe owner-to-owner spacing, not the editable extent. Chunks contain only the 74 known payload bytes through the last guard count; the next byte can belong to another block's marker, as established on the Arts map. `DwellingFindingTests` also checks unchanged round trips across the save corpus.
 
 | Save | The game's name | What it is |
 |---|---|---|
@@ -10,7 +12,7 @@ Result (`docs/KNOWLEDGE_BASE.md`, "Dwellings"): the dwellings are a table of rec
 | dwellings_02_tazar_at_archers_tower | `245` | Tazar goes to the archers' tower (castle, level 2); the table does not change yet |
 | dwellings_03_tazar_flags_archers_tower | `246` | The owner of the second record (the archer's) goes to 0 |
 | dwellings_04_orrin_flags_guardhouse__tazar_flags_griffin_tower | `247` | Orrin flags the guardhouse to Blue (the first owner is 1); Tazar flags the third dwelling (griffins, level 3) |
-| dwellings_05_tazar_flags_portal_of_glory | `314` | Tazar has flagged the portal of glory (castle, level 7), the last creature generator of the Castle; Orrin has flagged the first five to Blue. The saves between 247 and 314 are not filed. 31 records in the table: the Castle's seven creatures are 0, 2, 4, 6, 8, 10, 12 and the stock (+15) of the guardhouse is 28 (two weeks of 14) |
+| dwellings_05_tazar_flags_portal_of_glory | `314` | Tazar has flagged the portal of glory (castle, level 7), the last creature generator of the Castle; Orrin has flagged the first five to Blue. The saves between 247 and 314 are not filed. 62 records in the table: the Castle's seven creatures are 0, 2, 4, 6, 8, 10, 12 and the stock (+7) of the guardhouse is 28 (two weeks of 14) |
 | dwellings_06_tazar_flags_centaur_dwelling__orrin_flags_cavalier_dwelling | `315` | Tazar starts on the Rampart dwellings (the centaur stables, creature 14, flagged for Red); Orrin flags the cavalier's dwelling to Blue |
 | dwellings_07_orrin_hires_all_castle_dwellings_but_guardhouse | `316` | Orrin flags the angel's dwelling and hires every creature of every Castle dwelling but the guardhouse: **the creatures available to hire of each of those records go to 0**; Tazar flags the second Rampart dwelling |
 | dwellings_08_tazar_flags_wood_elf_dwelling | `317` | Tazar flags the Rampart's wood elf dwelling (creature 18) |

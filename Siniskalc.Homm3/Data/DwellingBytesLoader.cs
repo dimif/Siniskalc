@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.Data
+namespace Siniskalc.Homm3.Data
 {
     using System;
     using System.Collections.Generic;
@@ -8,56 +8,56 @@
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Entities;
 
-    /// <summary>
-    /// Finds the table of dwellings by what its records look like (see <see cref="DwellingLayout"/>): a run of records of 150 bytes that all
-    /// name the type of a creature generator, with an owner that is a colour or none and a tile on the map.
-    /// </summary>
-    public sealed class DwellingBytesLoader(EntityCatalog catalog) : IDwellingBytesLoader
+    /// <summary>Returns single-creature dwellings from an independently located, complete generator table.</summary>
+    public sealed class DwellingBytesLoader(EntityCatalog catalog, IMapObjectTablesLocator tablesLocator) : IDwellingBytesLoader
     {
         private static readonly ILogger<DwellingBytesLoader> Logger = LogFactory.For<DwellingBytesLoader>();
 
         /// <inheritdoc/>
-        public IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IReadOnlyList<RecordChunk> mines, IEnumerable<BytesChunk> others)
+        public IReadOnlyList<RecordChunk> LoadDwellingChunks(byte[] bytes, IEnumerable<BytesChunk> others)
         {
-            // The first record starts right after the last mine (the table of the mines ends with the last mine on the test map). Anywhere else
-            // the same bytes can be a table by chance, and a chunk that overlaps another one stops the savegame from being written.
-            if (mines.Count == 0)
+            var table = tablesLocator.Locate(bytes, catalog.Version);
+            if (table is null)
             {
                 return [];
             }
 
-            var taken = others.ToList();
-            var at = mines[^1].End;
-            var length = 0;
-            while (at + ((length + 1) * DwellingLayout.RecordSize) <= bytes.Length
-                && LooksLikeARecord(bytes, at + (length * DwellingLayout.RecordSize))
-                && !taken.Any(o => o.StartIndex < at + ((length + 1) * DwellingLayout.RecordSize) && o.End > at + (length * DwellingLayout.RecordSize)))
+            if (table.GeneratorCount > 0 && others.Any(o => o.StartIndex < table.GeneratorEnd && o.End > table.GeneratorStart))
             {
-                length++;
+                Logger.LogWarning("The generator table at {Offset:X} overlaps another save record; no dwellings are exposed for editing", table.GeneratorStart);
+                return [];
             }
 
-            Logger.LogDebug("Read {Count} dwellings from offset {Offset:X} after the last mine", length < DwellingLayout.MinimumRun ? 0 : length, at);
-            return length < DwellingLayout.MinimumRun ? [] : Enumerable.Range(0, length).Select(i => this.Chunk(bytes, at + (i * DwellingLayout.RecordSize), i)).ToList();
-        }
+            var chunks = new List<RecordChunk>();
+            for (var index = 0; index < table.GeneratorCount; index++)
+            {
+                var start = table.GeneratorStart + (index * DwellingLayout.RecordSize);
+                if (bytes[start + DwellingLayout.ObjectType] != DwellingLayout.CreatureGeneratorType)
+                {
+                    continue;
+                }
 
-        private static bool LooksLikeARecord(byte[] bytes, int start)
-        {
-            var owner = bytes[start + DwellingLayout.Owner];
-            return bytes[start + DwellingLayout.ObjectType] == DwellingLayout.CreatureGeneratorType
-                && (owner == DwellingLayout.NoOwner || owner < PlayerColor.All.Count)
-                && bytes[start + DwellingLayout.Level] <= 1
-                && bytes[start + DwellingLayout.X] <= Constants.Map.MaxCoordinate
-                && bytes[start + DwellingLayout.Y] <= Constants.Map.MaxCoordinate;
-        }
+                var code = bytes[start + DwellingLayout.Creature];
+                var creature = catalog.Creatures.Find(code);
+                if (creature is null)
+                {
+                    Logger.LogWarning("Unknown dwelling creature code {Code} at {Offset:X}; showing its code and preserving the record", code, start);
+                }
 
-        private RecordChunk Chunk(byte[] bytes, int start, int index)
-        {
-            var creature = catalog.Creatures.Find(bytes[start + DwellingLayout.Creature]);
-            return new RecordChunk(
-                $"{creature?.Name ?? $"Creature {bytes[start + DwellingLayout.Creature]}"} {catalog.MapMetadata.DwellingName} {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
-                bytes.AsSpan(start, DwellingLayout.RecordSize).ToArray(),
-                start,
-                index);
+                chunks.Add(new RecordChunk(
+                    $"{creature?.Name ?? $"Creature {code}"} {catalog.MapMetadata.DwellingName} {bytes[start + DwellingLayout.X]}, {bytes[start + DwellingLayout.Y]}",
+                    bytes.AsSpan(start, DwellingLayout.EditableSize).ToArray(),
+                    start,
+                    chunks.Count));
+            }
+
+            if (chunks.Count < table.GeneratorCount)
+            {
+                Logger.LogWarning("Skipped {Count} unsupported generator records at {Offset:X}; only type-17 dwellings are editable", table.GeneratorCount - chunks.Count, table.GeneratorStart);
+            }
+
+            Logger.LogDebug("Read {Count} dwellings from {Records} generator records at {Offset:X}", chunks.Count, table.GeneratorCount, table.GeneratorStart);
+            return chunks;
         }
     }
 }

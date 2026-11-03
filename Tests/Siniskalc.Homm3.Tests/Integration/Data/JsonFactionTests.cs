@@ -119,17 +119,19 @@ internal sealed class JsonFactionTests
     public void JsonOnlyCreaturesAreNamedByTheDwellingLoaderAndReadAndWrittenAsTheirOwnEntities()
     {
         var catalog = new GameCatalogLoader(new FixtureReader()).Load()[GameVersion.HornOfTheAbyss];
-        var bytes = new byte[10 + (DwellingLayout.MinimumRun * DwellingLayout.RecordSize)];
-        for (var i = 0; i < DwellingLayout.MinimumRun; i++)
+        var bytes = new byte[12 + DwellingLayout.RecordSize];
+        bytes[10] = 1;
+        const int start = 12;
+        bytes[start + DwellingLayout.Creature] = 201;
+        bytes[start + DwellingLayout.ObjectType] = DwellingLayout.CreatureGeneratorType;
+        bytes[start + DwellingLayout.Owner] = DwellingLayout.NoOwner;
+        for (var slot = 0; slot < MineLayout.SlotCount; slot++)
         {
-            var start = 10 + (i * DwellingLayout.RecordSize);
-            bytes[start + DwellingLayout.Creature] = 201;
-            bytes[start + DwellingLayout.ObjectType] = DwellingLayout.CreatureGeneratorType;
-            bytes[start + DwellingLayout.Owner] = DwellingLayout.NoOwner;
+            BitConverter.GetBytes(uint.MaxValue).CopyTo(bytes, start + DwellingLayout.Guard.TypeAt(slot));
         }
 
-        var chunks = new DwellingBytesLoader(catalog).LoadDwellingChunks(bytes, [new RecordChunk("mine", new byte[10], 0, 0)], []);
-        Assert.That(chunks, Has.Count.EqualTo(DwellingLayout.MinimumRun));
+        var chunks = new DwellingBytesLoader(catalog, new MapObjectTablesLocator()).LoadDwellingChunks(bytes, []);
+        Assert.That(chunks, Has.Count.EqualTo(1));
         Assert.That(chunks[0].Name, Does.Contain("Astral Scout"));
         var model = new DwellingDeserializer(catalog).Deserialize(chunks[0]);
         Assert.That(model.Creature, Is.SameAs(catalog.Creatures.ById("FixtureScout")));

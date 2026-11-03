@@ -25,7 +25,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var dwellings = Load(AfterTheCastle).History.Current.Dwellings().GetModels();
 
-            Assert.That(dwellings, Has.Count.EqualTo(31));
+            Assert.That(dwellings, Has.Count.EqualTo(62));
             var guardhouse = At(AfterTheCastle, 31, 56);
             Assert.That(guardhouse.Creature, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Creatures.ById("Pikeman")));
             Assert.That(guardhouse.Owner, Is.EqualTo(PlayerColor.Blue), "Tazar flagged it and Orrin flagged it to Blue");

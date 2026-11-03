@@ -22,6 +22,9 @@
         private string folder;
         private string error = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoggingSettingsViewModel"/> class.
+        /// </summary>
         /// <param name="store">Where the preferences of the user are kept.</param>
         /// <param name="defaultFolder">The folder the logs go to when the user chooses none.</param>
         /// <param name="dialogs">Asks the user for a folder.</param>

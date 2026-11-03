@@ -4,6 +4,9 @@
     using System.Windows.Input;
     using Siniskalc.Core.Runtime;
 
+    /// <summary>
+    /// Feeds the About window: what <see cref="AboutInfo"/> says about the application, and the commands that open its web pages.
+    /// </summary>
     public sealed class AboutViewModel : AbstractViewModelBase
     {
         private readonly AboutInfo info;
@@ -12,8 +15,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AboutViewModel"/> class.
         /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="launcher">The launcher.</param>
+        /// <param name="info">What the window says about the application.</param>
+        /// <param name="launcher">Opens the project and releases pages in the browser.</param>
         public AboutViewModel(AboutInfo info, IUrlLauncher launcher)
         {
             this.info = info;

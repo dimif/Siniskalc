@@ -15,7 +15,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RecentFilesMenuViewModel"/> class.
         /// </summary>
-        /// <param name="store">The store.</param>
+        /// <param name="store">Where the list of recent files is kept; the menu follows its changes.</param>
         public RecentFilesMenuViewModel(IRecentFilesStore store)
         {
             this.store = store;

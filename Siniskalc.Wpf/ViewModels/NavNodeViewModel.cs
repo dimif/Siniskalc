@@ -6,8 +6,9 @@
     using System.Linq;
 
     /// <summary>
-    /// A node of the navigation tree: the game, a player (whose page shows the player's resources, and which holds the player's heroes
-    /// and towns), a group of heroes or towns, a hero, or a castle. What a game adds to the look of a node are its
+    /// A node of the navigation tree. What it stands for is its <see cref="Kind"/>: the game, a player, a hero, a castle, a mine, a group
+    /// that only holds other nodes, and so on. It knows the page it opens (<see cref="Index"/> and <see cref="Tab"/>), whether it is
+    /// shown, expanded or selected, and whether it has unsaved edits. What a game adds to the look of a node are its
     /// <see cref="Badges"/> and its <see cref="Notes"/>.
     /// </summary>
     public sealed class NavNodeViewModel : AbstractViewModelBase
@@ -27,11 +28,11 @@
         /// Initializes a new instance of the <see cref="NavNodeViewModel"/> class.
         /// </summary>
         /// <param name="title">The text of the node.</param>
-        /// <param name="subtitle">The smaller text under it.</param>
+        /// <param name="subtitle">The smaller text beside it.</param>
         /// <param name="colorHex">The colour of the node as a hex string.</param>
         /// <param name="kind">What the node stands for.</param>
-        /// <param name="index">The number of the hero, castle, player or other thing the node is about; -1 when it is none.</param>
-        /// <param name="tab">The tab of the page to show when the node is picked.</param>
+        /// <param name="index">The number of the hero, castle, player, mine, dwelling or owner the node is about; -1 when it is none.</param>
+        /// <param name="tab">The tab of the page to show when the node is picked; 0 for a page without tabs.</param>
         /// <param name="onSelected">Called with the node when the user picks it.</param>
         public NavNodeViewModel(string title, string subtitle, string colorHex, NavNodeKind kind, int index = -1, int tab = 0, Action<NavNodeViewModel>? onSelected = null)
         {
@@ -65,12 +66,13 @@
         public NavNodeKind Kind { get; }
 
         /// <summary>
-        /// Gets the number of the hero, the castle or the player the node stands for, or -1 for a node that is none of them.
+        /// Gets the number of the hero, castle, player, mine, dwelling or owner the node stands for, or -1 for a node that is none of them.
         /// </summary>
         public int Index { get; }
 
         /// <summary>
-        /// Gets the tab of the player's page the node opens: 0 for the resources, 1 for the heroes, 2 for the towns.
+        /// Gets the tab of the page the node opens. On the page of a player it is 0 for the resources, 1 for the heroes, 2 for the towns;
+        /// on the neutral page it is the tab with the list of the node's group.
         /// </summary>
         public int Tab { get; }
 

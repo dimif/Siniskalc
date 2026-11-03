@@ -14,6 +14,9 @@
         private readonly Action<string> set;
         private readonly Func<bool>? isEnabled;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChoiceFieldViewModel"/> class.
+        /// </summary>
         /// <param name="label">What it is, such as "Owner".</param>
         /// <param name="choices">The names to pick from.</param>
         /// <param name="get">Gives the name of the value in the model as it is now.</param>

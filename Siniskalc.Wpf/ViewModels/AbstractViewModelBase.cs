@@ -2,6 +2,9 @@
 {
     using System.ComponentModel;
 
+    /// <summary>
+    /// The base of the view models: implements <see cref="INotifyPropertyChanged"/> and lets a view model tell the bindings what changed.
+    /// </summary>
     public abstract class AbstractViewModelBase : INotifyPropertyChanged
     {
         /// <inheritdoc/>

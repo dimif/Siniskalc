@@ -13,9 +13,9 @@
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// A search box, drop-down filters and a grouped list of rows. Set its DataContext to a <see cref="AbstractFinderViewModel"/>:
-    /// the view model says which columns there are, which filters, and what the button on a row does.
-    /// Put extra controls in the search row with <see cref="ToolbarContent"/>; they get the view model as their DataContext.
+    /// A search box and a grouped list of rows. Set its DataContext to a <see cref="AbstractFinderViewModel"/>: the view model says
+    /// which columns there are, which rows the search text lets through, what the buttons on a row do and what its right-click menu holds.
+    /// Put extra controls, such as drop-down filters, in the search row with <see cref="ToolbarContent"/>; they get the view model as their DataContext.
     /// </summary>
     public partial class FinderView : UserControl
     {

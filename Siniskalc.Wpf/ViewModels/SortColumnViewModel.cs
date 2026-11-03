@@ -13,8 +13,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SortColumnViewModel"/> class.
         /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="sort">The sort.</param>
+        /// <param name="name">The name of the column, which the heading shows.</param>
+        /// <param name="sort">The command that sorts the list by this column.</param>
         public SortColumnViewModel(string name, ICommand sort)
         {
             this.Name = name;

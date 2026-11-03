@@ -9,7 +9,7 @@
     /// put in order when a heading is clicked, not each time a row changes, so a row does not jump away while it is being edited. It knows no
     /// game; <see cref="Sort"/> puts the rows in order again.
     /// </summary>
-    /// <typeparam name="TRow">The row.</typeparam>
+    /// <typeparam name="TRow">What a row of the list is.</typeparam>
     public sealed class SortableListViewModel<TRow> : AbstractViewModelBase
     {
         private readonly IReadOnlyList<TRow> rows;
@@ -19,6 +19,9 @@
         private string? column;
         private bool descending;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SortableListViewModel{TRow}"/> class.
+        /// </summary>
         /// <param name="rows">The rows, in the order they have when not sorted.</param>
         /// <param name="keys">For each column, what a row is sorted by.</param>
         /// <param name="initialColumn">The column the list is sorted by first, or null for the order of the rows.</param>

@@ -17,13 +17,13 @@
         private Func<TRow, bool>? canChooseSecondary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FinderViewModel"/> class.
+        /// Initializes a new instance of the <see cref="FinderViewModel{TRow}"/> class.
         /// </summary>
-        /// <param name="rows">The rows.</param>
-        /// <param name="groupPath">The group path.</param>
-        /// <param name="title">The title.</param>
-        /// <param name="noun">The noun.</param>
-        /// <param name="columns">The columns.</param>
+        /// <param name="rows">Every row.</param>
+        /// <param name="groupPath">The property of a row the rows are grouped by, or <see langword="null"/> for no groups.</param>
+        /// <param name="title">The heading above the finder; empty for none.</param>
+        /// <param name="noun">What the rows are, in the plural, for the summary.</param>
+        /// <param name="columns">The columns of the list.</param>
         protected FinderViewModel(IReadOnlyList<TRow> rows, string? groupPath, string title, string noun, IReadOnlyList<FinderColumn> columns)
             : base(title, noun, columns, CreateItems(rows, groupPath))
         {

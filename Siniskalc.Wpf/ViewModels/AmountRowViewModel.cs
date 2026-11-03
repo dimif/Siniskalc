@@ -16,6 +16,9 @@
         private readonly Action<long> set;
         private readonly Func<string>? note;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AmountRowViewModel"/> class.
+        /// </summary>
         /// <param name="name">What the number is, such as "Gold" or "Attack".</param>
         /// <param name="colorHex">The colour of the badge or marker of the row, e.g. "#B8902A".</param>
         /// <param name="minimum">The least the number can be given.</param>

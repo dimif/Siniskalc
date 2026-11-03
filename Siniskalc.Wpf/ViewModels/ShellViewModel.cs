@@ -38,6 +38,9 @@
         private IObservableGameEditor editor;
         private bool isPendingChangesOpen;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellViewModel"/> class.
+        /// </summary>
         /// <param name="modules">The games the application can edit. The first is shown until a file of another one is opened.</param>
         /// <param name="settings">Where the preferences of the user are kept.</param>
         /// <param name="applicationName">The name of the application, for the title of the window.</param>
@@ -74,8 +77,9 @@
         public IObservableGameEditor Editor => this.editor;
 
         /// <summary>
-        /// Gets the title of the window: the name of the application and "Save game editor" until a savegame is open, then the name of the application
-        /// and the game and version of the savegame, such as "Siniskalc - Heroes of Might and Magic III (Shadow of Death)".
+        /// Gets the title of the window: the name of the application and "Save game editor" until a savegame is open, then the name of the application,
+        /// the game, the version of the savegame and the full path of its file (when it has one), such as
+        /// "Siniskalc - Heroes of Might and Magic III (Shadow of Death) - C:\Games\Save.GM1".
         /// </summary>
         public string Title => this.editor.Savegame is { } savegame
             ? $"{this.applicationName} - {this.currentModule.Name}{(savegame.VersionName.Length > 0 ? $" ({savegame.VersionName})" : string.Empty)}{(this.HasFile ? $" - {System.IO.Path.GetFullPath(this.File!)}" : string.Empty)}"
@@ -185,7 +189,7 @@
         public bool HasPendingChanges => this.editor.HasPendingChanges;
 
         /// <summary>
-        /// Gets the file dialog filter for opening a savegame: every game's types together, then each game's alone.
+        /// Gets the file dialog filter for opening a savegame: with several games, every game's types together and then each game's alone; with one, just its types.
         /// </summary>
         public string OpenFilter => this.modules.Count == 1
             ? $"{this.modules[0].Name} savegames |{this.modules[0].OpenPattern}"
@@ -250,15 +254,15 @@
         public void ReloadGame() => this.editor.ReloadGame();
 
         /// <summary>
-        /// Saves the game over its file, or to the path given.
+        /// Saves the game over its file.
         /// </summary>
-        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
+        /// <exception cref="InvalidOperationException">The game has no file to save to.</exception>
         public void SaveGame() => this.editor.SaveGame();
 
         /// <summary>
-        /// Saves the game over its file, or to the path given.
+        /// Saves the game to the path given.
         /// </summary>
-        /// <param name="filePath">The path of the file to write, which is then the file of the game.</param>
+        /// <param name="filePath">The path of the file to write.</param>
         public void SaveGame(string filePath) => this.editor.SaveGame(filePath);
 
         /// <summary>

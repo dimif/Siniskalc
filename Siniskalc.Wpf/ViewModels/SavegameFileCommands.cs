@@ -26,9 +26,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SavegameFileCommands"/> class.
         /// </summary>
-        /// <param name="recentFiles">The recent files.</param>
-        /// <param name="dialogs">The dialogs.</param>
-        /// <param name="messages">The messages.</param>
+        /// <param name="recentFiles">The list of recent files; files opened or saved are added, and a file that is gone is removed.</param>
+        /// <param name="dialogs">Asks the user for the files to open and save.</param>
+        /// <param name="messages">Tells the user about failures and asks about unsaved edits.</param>
         public SavegameFileCommands(IRecentFilesStore recentFiles, IFileDialogs dialogs, IMessageService messages)
         {
             this.recentFiles = recentFiles;
@@ -116,7 +116,7 @@
         }
 
         /// <summary>
-        /// Saves over the file the game has (it is backed up first), or asks for one when the game has none.
+        /// Saves over the file the game has (backed up first, when backups are on), or asks for one when the game has none.
         /// </summary>
         /// <param name="shell">The shell that saves the game.</param>
         /// <returns>The path saved to, or <see langword="null"/> if the user cancelled or the save failed.</returns>

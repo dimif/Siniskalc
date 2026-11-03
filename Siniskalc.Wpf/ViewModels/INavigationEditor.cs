@@ -18,6 +18,9 @@
         /// </summary>
         string NavigationFilter { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether a savegame is open.
+        /// </summary>
         bool IsGameLoaded { get; }
 
         /// <summary>

@@ -11,12 +11,11 @@
     internal sealed record RegionNode(string Label, string Range, Brush Swatch, ByteRegion? Region, IReadOnlyList<RegionNode> Children)
     {
         /// <summary>
-        /// Returns the node of <paramref name="region"/>, with a child for each of its elements. <paramref name="shade"/> is 0 or 1;
-        /// neighbouring elements alternate.
+        /// Returns the node of <paramref name="region"/>, with a child for each of its elements.
         /// </summary>
         /// <returns>The node.</returns>
         /// <param name="region">The region.</param>
-        /// <param name="shade">0 or 1; neighbouring elements alternate.</param>
+        /// <param name="shade">0 or 1, to tell the region from its neighbour of the same kind; its elements alternate between the two.</param>
         public static RegionNode From(ByteRegion region, int shade)
         {
             var children = region.Elements.Select((e, i) => From(e, i % 2)).ToList();

@@ -13,7 +13,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SettingsWindow"/> class.
         /// </summary>
-        /// <param name="viewModel">The view model.</param>
+        /// <param name="viewModel">The settings the window edits; the window keeps them with <see cref="SettingsViewModel.TrySave"/> when the user accepts.</param>
         public SettingsWindow(SettingsViewModel viewModel)
         {
             this.InitializeComponent();

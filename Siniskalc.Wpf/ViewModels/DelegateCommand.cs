@@ -3,6 +3,9 @@
     using System;
     using System.Windows.Input;
 
+    /// <summary>
+    /// A command that runs the delegates it is given, so a view model needs no class of its own for each command.
+    /// </summary>
     public class DelegateCommand : ICommand
     {
         private readonly Action<object?> execute;
@@ -19,8 +22,8 @@
             this.canExecute = canExecute;
         }
 
-        // Buttons ask again whenever WPF sees input or focus change, and when RaiseCanExecuteChanged is called.
         /// <inheritdoc/>
+        /// <remarks>Buttons ask again whenever WPF sees input or focus change, and when <see cref="RaiseCanExecuteChanged"/> is called.</remarks>
         public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;

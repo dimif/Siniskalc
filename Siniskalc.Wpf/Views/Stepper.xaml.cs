@@ -9,7 +9,8 @@
     /// <summary>
     /// A number box with a minus and a plus button. Typing a value, or pressing a button, changes <see cref="Value"/>;
     /// typed values and button presses stay between <see cref="Minimum"/> and <see cref="Maximum"/>.
-    /// A value set from the view model is shown as it is, even outside that range.
+    /// A value set from the view model is shown as it is, even outside that range. In the box, Enter keeps the typed value, the up and
+    /// down arrows step it and Escape puts the value back.
     /// </summary>
     public partial class Stepper : UserControl
     {
@@ -89,7 +90,7 @@
         }
 
         /// <summary>
-        /// Gets or sets whether the minus and plus buttons are shown; without them it is a plain number box.
+        /// Gets or sets a value indicating whether the minus and plus buttons are shown; without them it is a plain number box.
         /// </summary>
         public bool ShowButtons
         {

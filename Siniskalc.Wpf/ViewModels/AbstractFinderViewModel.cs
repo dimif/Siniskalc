@@ -18,10 +18,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractFinderViewModel"/> class.
         /// </summary>
-        /// <param name="title">The title.</param>
-        /// <param name="noun">The noun.</param>
-        /// <param name="columns">The columns.</param>
-        /// <param name="items">The items.</param>
+        /// <param name="title">The heading above the finder; empty for none.</param>
+        /// <param name="noun">What the rows are, in the plural, for the summary.</param>
+        /// <param name="columns">The columns of the list.</param>
+        /// <param name="items">The rows, already grouped; the finder narrows them by the search text.</param>
         protected AbstractFinderViewModel(string title, string noun, IReadOnlyList<FinderColumn> columns, ListCollectionView items)
         {
             this.Title = title;

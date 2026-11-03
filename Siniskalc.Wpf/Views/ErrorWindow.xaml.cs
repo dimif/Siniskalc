@@ -13,9 +13,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorWindow"/> class.
         /// </summary>
-        /// <param name="title">The title.</param>
-        /// <param name="message">The message.</param>
-        /// <param name="details">The details.</param>
+        /// <param name="title">The title of the window.</param>
+        /// <param name="message">What went wrong and what the user can do, in words for the user.</param>
+        /// <param name="details">The exception with its stack trace; the section that shows it is left out when empty.</param>
         public ErrorWindow(string title, string message, string details)
         {
             this.InitializeComponent();

@@ -14,7 +14,7 @@
     <SolidColorBrush x:Key="HighlightBrush" Color="#1F6F78"/>
     <SolidColorBrush x:Key="HighlightSoftBrush" Color="#D3EAEC"/>
 
-    <!-- A tab of a hero's page strip: plain text, with an accent underline when selected. -->
+    <!-- A tab of the strip of tabs of a page (a hero, a player, a castle): plain text, with an accent underline when selected. -->
     <Style TargetType="{x:Type local:NavButton}">
         <Setter Property="Margin" Value="0,0,2,0"/>
         <Setter Property="Padding" Value="12,8"/>

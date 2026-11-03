@@ -2,6 +2,9 @@
 {
     using System.Windows.Input;
 
+    /// <summary>
+    /// The commands of the menus and the toolbar of the window; the window binds each to what it does.
+    /// </summary>
     public static class EditorCommands
     {
         /// <summary>

@@ -26,11 +26,11 @@
         private string structureKey = string.Empty;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditorViewModelBase"/> class.
+        /// Initializes a new instance of the <see cref="EditorViewModelBase{TGame}"/> class.
         /// </summary>
-        /// <param name="gameService">The game service.</param>
-        /// <param name="saveRegions">The save regions.</param>
-        /// <param name="navigationBuilder">The navigation builder.</param>
+        /// <param name="gameService">Loads, reloads and saves the savegames of the game.</param>
+        /// <param name="saveRegions">Tells which regions of a savefile are known, for the hex dump.</param>
+        /// <param name="navigationBuilder">Says which nodes the navigation tree has and when it has to be built again.</param>
         protected EditorViewModelBase(ISavegameService<TGame> gameService, ISaveRegionProvider saveRegions, INavigationBuilder<TGame> navigationBuilder)
         {
             this.gameService = gameService;

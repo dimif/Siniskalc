@@ -6,33 +6,8 @@
     using System.Windows.Data;
 
     /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Siniskalc.View"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Siniskalc.View;assembly=Siniskalc.View"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:NavButton/>
-    ///
+    /// One tab of the strip of tabs under the header of a page: a list box item with a <see cref="Text"/>. Which tab is shown follows the
+    /// selected item of the list box; a tab with <see cref="RequiresAdvancedMode"/> is there only while the advanced mode is on.
     /// </summary>
     public class NavButton : ListBoxItem
     {
@@ -80,7 +55,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the address of the page the button opens.
+        /// Gets or sets an address to go with the button. The button does nothing with it; no page uses it at present.
         /// </summary>
         public Uri Navlink
         {

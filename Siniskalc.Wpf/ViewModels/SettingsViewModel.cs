@@ -11,6 +11,9 @@ namespace Siniskalc.Wpf.ViewModels
         private bool backupOnSave;
         private bool advancedMode;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
+        /// </summary>
         /// <param name="shell">The shell, which holds the choices that apply at once.</param>
         /// <param name="logging">The logging choices, or <c>null</c> when the application keeps no log settings.</param>
         public SettingsViewModel(ShellViewModel shell, LoggingSettingsViewModel? logging)

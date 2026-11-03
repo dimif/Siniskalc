@@ -11,7 +11,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AboutWindow"/> class.
         /// </summary>
-        /// <param name="viewModel">The view model.</param>
+        /// <param name="viewModel">What the window says, and the commands to open the project pages.</param>
         public AboutWindow(AboutViewModel viewModel)
         {
             this.InitializeComponent();

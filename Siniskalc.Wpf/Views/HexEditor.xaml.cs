@@ -95,16 +95,16 @@
         }
 
         /// <summary>
-        /// Gets the name of the savefile an element belongs to.
+        /// Gets the name of the savefile an element belongs to, which it inherits from the element above it.
         /// </summary>
-        /// <param name="element">The element.</param>
+        /// <param name="element">The element, such as a window or a hex editor.</param>
         /// <returns>The name of the file, or <see langword="null"/>.</returns>
         public static string? GetSourceFile(DependencyObject element) => (string?)element.GetValue(SourceFileProperty);
 
         /// <summary>
-        /// Sets the name of the savefile an element belongs to.
+        /// Sets the name of the savefile an element, and every hex editor inside it, belongs to.
         /// </summary>
-        /// <param name="element">The element.</param>
+        /// <param name="element">The element, such as a window.</param>
         /// <param name="value">The name of the file, or <see langword="null"/>.</param>
         public static void SetSourceFile(DependencyObject element, string? value) => element.SetValue(SourceFileProperty, value);
 

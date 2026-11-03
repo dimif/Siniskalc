@@ -13,6 +13,9 @@
         private readonly Func<bool>? canToggle;
         private readonly Func<string>? note;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ToggleRowViewModel"/> class.
+        /// </summary>
         /// <param name="name">What it is, such as "Tavern".</param>
         /// <param name="get">Gives the value in the model as it is now.</param>
         /// <param name="set">Writes a value to the model.</param>

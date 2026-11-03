@@ -24,6 +24,9 @@
         private readonly Dictionary<int, NavNodeViewModel> dwellingNodes = [];
         private string filter = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavigationTree"/> class.
+        /// </summary>
         /// <param name="onSelected">Called with the node when the user picks one.</param>
         /// <param name="chunkKinds">The kind of chunk a node of each kind stands for, to mark the nodes whose chunk has edits.</param>
         public NavigationTree(Action<NavNodeViewModel> onSelected, IReadOnlyDictionary<NavNodeKind, ChunkKind> chunkKinds)
@@ -231,7 +234,7 @@
         }
 
         /// <summary>
-        /// Marks the nodes of the heroes, players and castles that have <paramref name="changes"/>, and the nodes above them.
+        /// Marks the nodes whose chunk has <paramref name="changes"/> (the kinds of chunk the tree was given), and the nodes above them.
         /// </summary>
         /// <param name="changes">The pending changes.</param>
         public void MarkChanges(IEnumerable<PendingChange> changes)

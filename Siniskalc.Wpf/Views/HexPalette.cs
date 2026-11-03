@@ -15,12 +15,12 @@
     internal static class HexPalette
     {
         /// <summary>
-        /// Converts the kind of a region to the brush of its colour.
+        /// Converts the key of a colour, the name of a region kind followed by its shade (such as <c>Stats1</c>), to its brush; a key that is no colour gives nothing.
         /// </summary>
         public static readonly IValueConverter KindToBrush = new KindToBrushConverter();
 
         /// <summary>
-        /// Converts a value to its text, or to nothing for an empty one.
+        /// Converts a text to itself, or to nothing when it is empty or not a text.
         /// </summary>
         public static readonly IValueConverter TextOrNull = new TextOrNullConverter();
 

@@ -12,6 +12,9 @@
         private readonly Action<string> set;
         private readonly Func<int>? maxLength;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextFieldViewModel"/> class.
+        /// </summary>
         /// <param name="label">What it is, such as "Answer 1".</param>
         /// <param name="get">Gives the text in the model as it is now.</param>
         /// <param name="set">Writes a typed text to the model.</param>

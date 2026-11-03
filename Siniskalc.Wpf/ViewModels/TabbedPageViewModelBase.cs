@@ -11,7 +11,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="TabbedPageViewModelBase"/> class.
         /// </summary>
-        /// <param name="title">The title.</param>
+        /// <param name="title">The title of the page.</param>
         protected TabbedPageViewModelBase(string title)
             : base(title)
         {

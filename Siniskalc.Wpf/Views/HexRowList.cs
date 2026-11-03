@@ -28,9 +28,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="HexRowList"/> class.
         /// </summary>
-        /// <param name="bytes">The bytes.</param>
-        /// <param name="original">The original.</param>
-        /// <param name="map">The map.</param>
+        /// <param name="bytes">The bytes of the savefile as they are now.</param>
+        /// <param name="original">The bytes of the savefile as loaded, to mark the bytes that changed.</param>
+        /// <param name="map">Tells which regions a byte is in, for its colour and tooltip.</param>
         public HexRowList(byte[] bytes, byte[] original, IByteRegionLookup map)
         {
             this.bytes = bytes;

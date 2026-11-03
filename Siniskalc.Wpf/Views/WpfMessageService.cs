@@ -4,7 +4,8 @@
     using System.Windows;
 
     /// <summary>
-    /// Shows messages in message boxes owned by the window the user is working in, so a dialog never hides behind it.
+    /// Shows messages in message boxes, and unexpected errors in an <see cref="ErrorWindow"/>, owned by the window the user is working in,
+    /// so a dialog never hides behind it. With no such window they are shown on their own.
     /// </summary>
     public sealed class WpfMessageService : IMessageService
     {

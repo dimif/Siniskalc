@@ -49,7 +49,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var totals = new StackTotals(Info(wood: 1, ore: 2, mercury: 3, sulfur: 4, crystal: 5, gems: 6), 10);
 
-            Assert.That(totals.OtherCost, Is.EqualTo($"and {N(10)} wood, {N(20)} ore, {N(30)} mercury, {N(40)} sulfur, {N(50)} crystal, {N(60)} gems"));
+            Assert.That(totals.OtherCost, Is.EqualTo($"{N(10)}w, {N(20)}o, {N(30)}m, {N(40)}s, {N(50)}c, {N(60)}g"));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var totals = new StackTotals(Info(gems: 2), 7);
 
-            Assert.That(totals.OtherCost, Is.EqualTo($"and {N(14)} gems"));
+            Assert.That(totals.OtherCost, Is.EqualTo($"{N(14)}g"));
         }
 
         [Test]
@@ -67,23 +67,22 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
-        public void TheFactsListAttackDefenseSpeedHitPointsDamageCostTheOtherCostAsANoteAndTheTwoValues()
+        public void TheFactsListAttackDefenseSpeedHitPointsDamageCostWithTheOtherCostAfterTheGoldAndTheTwoValues()
         {
             var facts = new StackTotals(Info(health: 10, minDamage: 1, maxDamage: 2, gold: 50, ai: 4, fight: 3, ore: 1, atk: 7, def: 8, speed: 5), 10).ToFacts();
 
-            Assert.That(facts.Select(f => (f.Label, f.Value, f.IsNote)), Is.EqualTo(new[]
+            Assert.That(facts.Select(f => (f.Label, f.Value)), Is.EqualTo(new[]
             {
-                ("Atk", N(7), false),
-                ("Def", N(8), false),
-                ("Speed", N(5), false),
-                ("HP", N(10), false),
-                ("Damage", $"{N(1)}-{N(2)}", false),
-                ("Stack HP", N(100), false),
-                ("Stack Damage", $"{N(10)}-{N(20)}", false),
-                ("Cost", N(500), false),
-                (string.Empty, $"and {N(10)} ore", true),
-                ("AI value", N(40), false),
-                ("Fight value", N(30), false),
+                ("Atk", N(7)),
+                ("Def", N(8)),
+                ("Speed", N(5)),
+                ("HP", N(10)),
+                ("Damage", $"{N(1)}-{N(2)}"),
+                ("Stack HP", N(100)),
+                ("Stack Damage", $"{N(10)}-{N(20)}"),
+                ("Cost", $"{N(500)}, {N(10)}o"),
+                ("AI value", N(40)),
+                ("Fight value", N(30)),
             }));
         }
 

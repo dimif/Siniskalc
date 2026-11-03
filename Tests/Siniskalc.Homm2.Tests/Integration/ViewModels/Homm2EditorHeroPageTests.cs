@@ -71,7 +71,7 @@
             free.CreatureAmount = 7;
 
             Assert.That(model().Slots[free.SlotNumber], Is.EqualTo(new ArmySlot<Creature>(this.editor.CurrentGame!.Catalog.Creatures["Titan"], 7)));
-            Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "Atk", "Def", "Speed", "HP", "Damage", "Stack HP", "Stack Damage", "Town", "Level", "Growth" }));
+            Assert.That(free.Facts.Select(f => f.Label), Is.EqualTo(new[] { "Atk", "Def", "Speed", "HP", "Damage", "Stack HP", "Stack Damage", "Cost", "Town", "Level" }));
 
             army.Finder.AddAmount = 12;
             army.Finder.Choose(army.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Single(c => c.Name == "Peasant"));

@@ -72,10 +72,9 @@
         public override CreatureFinderViewModel Finder { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the summary of the army tells the cost and the values of the computer player too. False for a game
-        /// that does not know them.
+        /// Gets how much the summary of the army tells: by default the combat totals only; a game that knows more says so.
         /// </summary>
-        protected virtual bool SummaryHasValues => false;
+        protected virtual ArmySummaryDetail SummaryDetail => ArmySummaryDetail.Combat;
 
         /// <summary>
         /// Puts <paramref name="count"/> creatures in the first free slot, or does nothing when every slot is taken.
@@ -137,7 +136,7 @@
                 totals.Add(this.infoOf(stack.Creature), stack.Count);
             }
 
-            return totals.ToSummary(this.SummaryHasValues);
+            return totals.ToSummary(this.SummaryDetail);
         }
 
         /// <inheritdoc/>

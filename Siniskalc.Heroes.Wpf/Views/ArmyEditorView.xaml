@@ -42,16 +42,16 @@
                                         <!-- The size of the stack: the box takes what is left, so the last button ends under the edge of the Upgrade button. -->
                                         <DockPanel Margin="0,6,0,0">
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="Auto" MinHeight="24" Content="+" Command="{Binding AdjustAmountCommand}" CommandParameter="1"
+                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="26" Content="+" Command="{Binding AdjustAmountCommand}" CommandParameter="1"
                                                         ToolTip="One more" AutomationProperties.Name="Add 1"/>
-                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="Auto" MinHeight="24" Content="−" Command="{Binding AdjustAmountCommand}" CommandParameter="-1"
+                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="26" Content="−" Command="{Binding AdjustAmountCommand}" CommandParameter="-1"
                                                         ToolTip="One less" AutomationProperties.Name="Remove 1"/>
-                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="8,0,0,0" Height="Auto" MinHeight="24" Content="+5" Command="{Binding AdjustAmountCommand}" CommandParameter="5"
+                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="8,0,0,0" Height="26" Content="+5" Command="{Binding AdjustAmountCommand}" CommandParameter="5"
                                                         ToolTip="Five more" AutomationProperties.Name="Add 5"/>
-                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="Auto" MinHeight="24" Content="−5" Command="{Binding AdjustAmountCommand}" CommandParameter="-5"
+                                                <Button Style="{StaticResource SlotButtonStyle}" Margin="4,0,0,0" Height="26" Content="−5" Command="{Binding AdjustAmountCommand}" CommandParameter="-5"
                                                         ToolTip="Five less" AutomationProperties.Name="Remove 5"/>
                                             </StackPanel>
-                                            <TextBox HorizontalContentAlignment="Right" IsEnabled="{Binding HasCreature}" ToolTip="How many creatures are in the stack"
+                                            <TextBox Width="Auto" Height="26" Margin="0" HorizontalContentAlignment="Right" IsEnabled="{Binding HasCreature}" ToolTip="How many creatures are in the stack"
                                                      AutomationProperties.Name="Amount" Text="{Binding CreatureAmount, UpdateSourceTrigger=PropertyChanged}"/>
                                         </DockPanel>
                                     </StackPanel>
@@ -66,15 +66,15 @@
                                     </StackPanel>
 
                                     <!-- What the whole stack is worth, as the game works it out from one creature: label above value, in a row. -->
-                                    <ItemsControl Grid.Column="2" Margin="18,0,0,0" VerticalAlignment="Center" ItemsSource="{Binding Facts}">
+                                    <ItemsControl Grid.Column="2" Margin="18,0,0,0" Width="450" HorizontalAlignment="Left" VerticalAlignment="Center" ItemsSource="{Binding Facts}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <WrapPanel/>
+                                                    <WrapPanel ItemWidth="90"/>
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type vm:StackFact}">
-                                                    <StackPanel MinWidth="52" Margin="0,0,14,2" ToolTip="{Binding ToolTip}">
+                                                    <StackPanel Margin="0,0,6,2" ToolTip="{Binding ToolTip}">
                                                         <StackPanel.Style>
                                                             <Style TargetType="StackPanel">
                                                                 <Style.Triggers>
@@ -85,20 +85,7 @@
                                                             </Style>
                                                         </StackPanel.Style>
                                                         <TextBlock Style="{StaticResource MutedTextStyle}" FontSize="11" Text="{Binding Label}"/>
-                                                        <TextBlock TextWrapping="Wrap" Text="{Binding Value}">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding IsNote}" Value="True">
-                                                                            <Setter Property="FontWeight" Value="Normal"/>
-                                                                            <Setter Property="FontSize" Value="11"/>
-                                                                            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
+                                                        <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Text="{Binding Value}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

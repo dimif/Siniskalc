@@ -83,22 +83,28 @@
         public string FightValue => Format((long)this.info.FightValue * this.amount);
 
         /// <summary>
-        /// Gets what the stack costs besides gold, such as "and 12 wood, 3 gems"; empty when it costs only gold.
+        /// Gets what the stack costs besides gold, short, such as "12w, 3g" (w wood, o ore, m mercury, s sulfur, c crystal, g gems);
+        /// empty when it costs only gold.
         /// </summary>
         public string OtherCost
         {
             get
             {
                 var parts = new List<string>();
-                this.AddResource(parts, "wood", this.info.Wood);
-                this.AddResource(parts, "ore", this.info.Ore);
-                this.AddResource(parts, "mercury", this.info.Mercury);
-                this.AddResource(parts, "sulfur", this.info.Sulfur);
-                this.AddResource(parts, "crystal", this.info.Crystal);
-                this.AddResource(parts, "gems", this.info.Gems);
-                return parts.Count == 0 ? string.Empty : "and " + string.Join(", ", parts);
+                this.AddResource(parts, "w", this.info.Wood);
+                this.AddResource(parts, "o", this.info.Ore);
+                this.AddResource(parts, "m", this.info.Mercury);
+                this.AddResource(parts, "s", this.info.Sulfur);
+                this.AddResource(parts, "c", this.info.Crystal);
+                this.AddResource(parts, "g", this.info.Gems);
+                return string.Join(", ", parts);
             }
         }
+
+        /// <summary>
+        /// Gets the cost of the stack as one fact: its gold, then the other resources it costs, such as "35,000, 3g".
+        /// </summary>
+        public StackFact CostFact => new("Cost", this.OtherCost.Length == 0 ? this.Cost : $"{this.Cost}, {this.OtherCost}", "What the whole stack costs");
 
         /// <summary>
         /// Gives the totals as the lines the army editor shows.
@@ -113,14 +119,13 @@
             new("Damage", this.CreatureDamage, "Damage of one creature"),
             new("Stack HP", this.Health, "Hit points of the whole stack"),
             new("Stack Damage", this.Damage, "Damage of the whole stack"),
-            new("Cost", this.Cost),
-            new(string.Empty, this.OtherCost, IsNote: true),
+            this.CostFact,
             new("AI value", this.AiValue, "What the computer player counts the stack as worth"),
             new("Fight value", this.FightValue, "How much the stack counts for in the strength of an army"),
         ];
 
         /// <summary>
-        /// Gives the hit points and damage only, for a game that knows nothing else of a stack (no cost or values of the computer player).
+        /// Gives the combat stats, hit points and damage only, for a game that adds its own facts (no values of the computer player).
         /// </summary>
         /// <returns>The facts.</returns>
         public IReadOnlyList<StackFact> ToHealthAndDamageFacts() =>
@@ -140,7 +145,7 @@
         {
             if (perCreature != 0)
             {
-                parts.Add($"{Format((long)perCreature * this.amount)} {name}");
+                parts.Add($"{Format((long)perCreature * this.amount)}{name}");
             }
         }
     }

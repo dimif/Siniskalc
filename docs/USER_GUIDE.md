@@ -22,6 +22,11 @@ The editor also keeps a copy next to the save before it saves over it (see [Back
 
 Nothing is written until you choose **File > Save**.
 
+You can also open a savegame through Windows **Open with...** by choosing `Siniskalc.exe`,
+or run `Siniskalc.exe "C:\Games\My save.GM1"` from a command prompt.
+The editor opens the first file path passed at startup in a new window and detects its game automatically.
+The portable ZIP does not register file associations with Windows.
+
 ## Open, edit, save
 
 1. **File > Open** (Ctrl+O) and pick a savegame.

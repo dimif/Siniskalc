@@ -43,7 +43,13 @@
             this.MainWindow = new ShellWindow(services.RecentFilesMenu, services.UrlLauncher, services.About, services.Help, services.Messages, services.FileCommands, services.CreateLoggingSettings);
             this.MainWindow.Show();
 
-            this.MainWindow.DataContext = services.CreateShellViewModel();
+            var shell = services.CreateShellViewModel();
+            this.MainWindow.DataContext = shell;
+
+            if (e.Args.Length > 0)
+            {
+                services.FileCommands.Open(shell, e.Args[0]);
+            }
         }
 
         /// <summary>

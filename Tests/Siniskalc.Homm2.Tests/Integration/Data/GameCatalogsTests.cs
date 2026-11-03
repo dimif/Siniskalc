@@ -274,7 +274,7 @@
             var model = new Siniskalc.Homm2.Models.MineModel(0, Siniskalc.Heroes.Entities.MineKind.Sawmill, new Siniskalc.Heroes.Models.MapPosition(1, 2), PlayerColor.Blue, catalog);
             var session = new Moq.Mock<IEditSession<Siniskalc.Homm2.Models.MineModel>>();
             session.SetupGet(edit => edit.Current).Returns(model);
-            Siniskalc.Heroes.Wpf.ViewModels.MineRowViewModelBase row = new Siniskalc.Homm2.ViewModels.MineRowViewModel(session.Object, catalog, string.Empty);
+            Siniskalc.Heroes.Wpf.ViewModels.MineRowViewModelBase row = new Siniskalc.Homm2.ViewModels.MineRowViewModel(session.Object, catalog, string.Empty, TestServices.MineGuardianText);
 
             Assert.That(row.Kind, Is.EqualTo("Astral timber yard"));
             Assert.That(row.ResourceName, Is.EqualTo("Crystal"));

@@ -44,15 +44,16 @@
         /// <param name="game">The game.</param>
         /// <param name="color">The colour of the player.</param>
         /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
+        /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number.</param>
         /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
-            : this(game, color, game.History.CreatePlayerSession(color.Code), banishingText, openHero, openCastle, byteEditTargets)
+        public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+            : this(game, color, game.History.CreatePlayerSession(color.Code), banishingText, guardianText, openHero, openCastle, byteEditTargets)
         {
         }
 
-        private PlayerViewModel(Game game, PlayerColor color, PlayerEditSession session, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets)
+        private PlayerViewModel(Game game, PlayerColor color, PlayerEditSession session, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets)
             : base("Player", session)
         {
             this.byteEditTargets = byteEditTargets;
@@ -62,7 +63,7 @@
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.session = session;
-            this.Mines = MinesLists.Create(game, color);
+            this.Mines = MinesLists.Create(game, guardianText, color);
             this.Obelisks = new ObeliskVisitsViewModel<PlayerColor>(game.History, Homm2ChunkKinds.Obelisks, color, "Ultimate Artifact", hasLevels: false);
             this.resources = ResourcesEditorViewModel.ForPlayer(
                 Limits,

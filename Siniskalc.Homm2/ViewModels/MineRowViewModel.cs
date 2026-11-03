@@ -8,6 +8,7 @@
     public sealed class MineRowViewModel : Siniskalc.Heroes.Wpf.ViewModels.MineRowViewModel<MineModel, PlayerColor>
     {
         private readonly GameCatalog catalog;
+        private readonly MineGuardianTextProvider guardianText;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MineRowViewModel"/> class.
@@ -15,10 +16,12 @@
         /// <param name="session">The session.</param>
         /// <param name="catalog">The catalog.</param>
         /// <param name="ownerToolTip">The owner tool tip.</param>
-        public MineRowViewModel(IEditSession<MineModel> session, GameCatalog catalog, string ownerToolTip)
+        /// <param name="guardianText">Words the read-only guardian is shown with.</param>
+        public MineRowViewModel(IEditSession<MineModel> session, GameCatalog catalog, string ownerToolTip, MineGuardianTextProvider guardianText)
             : base(session, (mine, color) => mine with { Owner = color }, ownerToolTip, hasLevels: false)
         {
             this.catalog = catalog;
+            this.guardianText = guardianText;
         }
 
         /// <inheritdoc/>
@@ -26,5 +29,8 @@
 
         /// <inheritdoc/>
         public override string ResourceName => this.catalog.Mines.Find((byte)this.Session.Current.Kind)!.Resource.ToString();
+
+        /// <inheritdoc/>
+        public override string Summary => this.guardianText.Describe(this.Session.Current.Guardian);
     }
 }

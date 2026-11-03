@@ -7,7 +7,6 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 ## Wrong, lossy or missing behaviour
 
-- **Unexplained bytes that may hide a defect:** hero 3 holds `0x41` in the table of hero owners in some HotA saves; HoMM2 hero byte `+0x25` can be nonzero while the hero stands outside a castle.
 - **A defeated hero and the tavern.** A defeated hero cannot be rehired by its owner; it will not appear in its tavern rotation until it has been hired by another player and defeated again. The tavern has a table about 250 bytes before the date that changes when a hero is defeated, and might be what models the behaviour. Probe: several week changes with defeated heroes away from their players.
 - **Banishing is partial.** The counter (player byte 22) is read and edited. The other bytes banishing changes are not decoded (the player's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record near the end of the save, header bytes near 1313, 1356 and 12492), so a banished player (0) is read-only and no one can be banished or revived by the editor.
 
@@ -38,7 +37,7 @@ Nothing here is known to be wrong. It is edited and tested against saves, but no
 ## Features
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today. Giving a hero from a tavern to a player is refused with a message (the game refills the slot by a random draw), and so is anything that needs the owner of a garrisoned hero; see `docs/KNOWLEDGE_BASE.md`, "The table of hero owners".
-2. **HoMM2 mine guardians.** HoMM3 mines already have their guard (`MineModel.Guard`, seven slots, edited with the shared army blocks). HoMM2 stores the guardian spell code and count at +2 and +3 of its seven-byte mine record (see `KNOWLEDGE_BASE.md`). Discovery now accepts the observed encodings and owner edits preserve them; displaying and editing the guardians remains to be implemented after establishing valid counts.
+2. **HoMM2 mine guardian editing.** The elemental and saved count are displayed read-only. Editing remains after establishing valid count bounds (including counts above 255) and deciding how to handle unverified partial losses; see `KNOWLEDGE_BASE.md`.
 3. **Teams.** The team table of the header is found (Shadow of Death and Restoration of Erathia, not Horn of the Abyss) but not read. Reading it would let the obelisk card mark a whole team at once.
 4. **Dug tiles and the visited-object table:** readable, but the meaning of the number and of the table is unclear; the Grail flag beside the date (`7F xx 02 yy`) likewise.
 5. **Places a HoMM3 hero visited**, what is left: the **mineral spring** (a Horn of the Abyss object, type 144 subtype 4: +1 luck for the next battle and +600 movement points until the end of the day; where a hero keeps that it visited one is not known; probe: Tazar visits a mineral spring, then Orrin a turn later, and a save a day later).
@@ -78,7 +77,7 @@ What HoMM2 taught: a hero keeps bits for the places it visited and the morale an
 
 - **Level and experience kept in step:** the game showed level 14 for level 20 and 50,000 experience, so the experience table is not verified (saves E30 to E32 were made to find the rule). The maximum movement is worked out by the game and not stored.
 - **The guardians of a mine:** spell codes, counts and clearing after an enemy capture are established (see `KNOWLEDGE_BASE.md`). Remaining probes: partial guardian losses if possible; count encoding above 255 before allowing such edits.
-- Not decoded: the flags of the mines and towns (the second object of a tile), the owner of a mine on the map, the sphinx, the daemon cave and the shrines (objects with state), windmills and water mills, map dwellings (the docs say none), hero bytes `+0xE3..+0xE6` and `+0x51`, the bit `0x4000` of the buildings, the marketplace and the other high bits of the buildings, and the rule that a town needs its castle before it can build.
+- Still unresolved: the town's map flag remains stale after an editor ownership change; the daemon cave, windmill and water mill state is not decoded; the meaning of hero bytes `+0xE3..+0xE6` and `+0x51`; and the otherwise-unassigned `0x4000` bit in the castle-building mask. The building rules that have not been tried in-game are listed above.
 
 ## Architecture and code
 

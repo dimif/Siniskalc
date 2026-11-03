@@ -18,6 +18,7 @@
     public sealed class Homm2ModuleFactory
     {
         private readonly BanishingTextProvider banishingText;
+        private readonly MineGuardianTextProvider guardianText;
 
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
@@ -26,6 +27,7 @@
         public Homm2ModuleFactory(IFileBackupServiceProvider backup, ISavefileBytesPatcher bytesPatcher, BanishingTextProvider banishingText, IGameDefinitionReader definitions)
         {
             this.banishingText = banishingText;
+            this.guardianText = new MineGuardianTextProvider();
             this.Catalogs = new GameCatalogs(definitions);
 
             var locator = new SaveLayoutLocator();
@@ -107,6 +109,6 @@
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
         /// <returns>The view model of the editor.</returns>
-        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText), this.banishingText, this.MaxSpellPointsCalculator);
+        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText), this.banishingText, this.MaxSpellPointsCalculator, this.guardianText);
     }
 }

@@ -29,6 +29,16 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             var serializer = new SafeMineSerializer();
 
             Assert.That(model.Owner.Code, Is.EqualTo(owner));
+            if (spell == 0xFF)
+            {
+                Assert.That(model.Guardian, Is.Null);
+            }
+            else
+            {
+                Assert.That(model.Guardian, Is.Not.Null);
+                Assert.That((model.Guardian!.SpellCode, model.Guardian.Count, model.Guardian.Creature?.Code), Is.EqualTo((spell, count, (byte?)spell)));
+            }
+
             Assert.That(chunk.StartIndex, Is.EqualTo(0x568A));
             Assert.That(chunk.ToArray(), Is.EqualTo(original));
             Assert.That(serializer.Serialize(chunk, model).ToArray(), Is.EqualTo(original));

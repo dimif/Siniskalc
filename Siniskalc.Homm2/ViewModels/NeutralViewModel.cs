@@ -23,17 +23,18 @@
         /// Initializes a new instance of the <see cref="NeutralViewModel"/> class.
         /// </summary>
         /// <param name="game">The game.</param>
+        /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number.</param>
         /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public NeutralViewModel(Game game, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        public NeutralViewModel(Game game, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
             : base(game.History, PlayerPalette.Of(PlayerColor.Neutral))
         {
             this.game = game;
             this.openHero = openHero;
             this.openCastle = openCastle;
             this.byteEditTargets = byteEditTargets;
-            this.Mines = MinesLists.Create(game, PlayerColor.Neutral);
+            this.Mines = MinesLists.Create(game, guardianText, PlayerColor.Neutral);
             this.Refresh();
         }
 

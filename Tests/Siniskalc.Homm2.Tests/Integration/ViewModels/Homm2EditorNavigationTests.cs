@@ -286,7 +286,7 @@
         {
             var document = this.editor.CurrentGame!.History.Current;
             var color = PlayerColor.All.First(c => document.Heroes().GetModels().All(h => h.Owner != c) && document.Castles().GetModels().All(t => t.Owner != c));
-            var player = new PlayerViewModel(this.editor.CurrentGame!, color, TestServices.BanishingText, _ => { }, _ => { });
+            var player = new PlayerViewModel(this.editor.CurrentGame!, color, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
 
             Assert.That(player.HasHeroes, Is.False);
             Assert.That(player.HasCastles, Is.False);

@@ -20,6 +20,7 @@
     {
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
+        private readonly MineGuardianTextProvider guardianText;
         private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
@@ -37,12 +38,14 @@
         /// <param name="navigationBuilder">The navigation builder.</param>
         /// <param name="banishingText">The banishing text.</param>
         /// <param name="spellPoints">The spell points.</param>
-        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
+        /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
+        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, MineGuardianTextProvider guardianText)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.byteEditTargets = byteEditTargets;
             this.banishingText = banishingText;
             this.spellPoints = spellPoints;
+            this.guardianText = guardianText;
         }
 
         /// <summary>
@@ -63,7 +66,7 @@
             var game = this.Loaded();
             if (!this.players.TryGetValue(color.Code, out var player))
             {
-                player = new PlayerViewModel(game, color, this.banishingText, this.ShowHero, this.ShowCastle, this.byteEditTargets);
+                player = new PlayerViewModel(game, color, this.banishingText, this.guardianText, this.ShowHero, this.ShowCastle, this.byteEditTargets);
                 this.players[color.Code] = player;
             }
 
@@ -77,7 +80,7 @@
         /// <param name="tab">The tab to show.</param>
         public void ShowNeutral(int tab = NeutralTabs.Heroes)
         {
-            this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle, this.byteEditTargets);
+            this.neutral ??= new NeutralViewModel(this.Loaded(), this.guardianText, this.ShowHero, this.ShowCastle, this.byteEditTargets);
             this.neutral.SelectedTab = tab;
             this.SetCurrentPage(this.neutral);
         }

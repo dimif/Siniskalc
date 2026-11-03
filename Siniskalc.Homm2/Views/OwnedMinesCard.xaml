@@ -5,7 +5,7 @@
              xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf">
     <!-- The mines of one owner, and the bytes of the one picked. The DataContext is an IOwnedMines. -->
     <StackPanel>
-        <heroes:MinesCard x:Name="minesCard" DataContext="{Binding Mines}"/>
+        <heroes:MinesCard x:Name="minesCard" DataContext="{Binding Mines}" SummaryHeading="Guard (read-only)"/>
 
         <!-- Hex: the bytes of the mine that is picked -->
         <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">

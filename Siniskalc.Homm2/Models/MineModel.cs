@@ -15,6 +15,11 @@
     public sealed record MineModel(int Index, MineKind Kind, MapPosition Position, PlayerColor Owner, GameCatalog Catalog) : IMineModel<PlayerColor>
     {
         /// <summary>
+        /// Gets the saved guardian, or <see langword="null"/> when the mine has none. Guardian editing is not supported.
+        /// </summary>
+        public MineGuardian? Guardian { get; init; }
+
+        /// <summary>
         /// Gets the name of the mine with its place, such as "Gold mine at 12, 7" (the map of HoMM2 has one level).
         /// </summary>
         public string Name => $"{this.Catalog.Mines.Find((byte)this.Kind)!.Name} at {this.Position.X}, {this.Position.Y}";

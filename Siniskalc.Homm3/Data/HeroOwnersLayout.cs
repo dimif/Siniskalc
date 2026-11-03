@@ -17,8 +17,8 @@
     /// and an owned hero missing from every list is garrisoned in a castle (<c>HeroOwnersBytesLoaderTests</c>). Restoration of Erathia,
     /// Armageddon's Blade and Chronicles savefiles were not seen, so it is not looked for in them.
     /// What the game changes in it: a defeated hero's byte becomes FF; a hired hero's 40 becomes the colour of the player, and the hero that
-    /// takes its place in the tavern gets 40 (<c>hero_owners_00</c> to <c>01</c>, <c>02</c> to <c>03</c>). Hero 3 has 41 in every Horn of
-    /// the Abyss save while nobody owns it and no tavern offers it: unexplained, so it reads as a hero kept out of play and is left alone.
+    /// takes its place in the tavern gets 40 (<c>hero_owners_00</c> to <c>01</c>, <c>02</c> to <c>03</c>). Hero 3 has 41 in some Horn of
+    /// the Abyss saves while nobody owns it and no tavern offers it: unexplained, so it reads as a hero kept out of play and is left alone.
     /// </remarks>
     public static class HeroOwnersLayout
     {

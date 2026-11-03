@@ -93,6 +93,10 @@ namespace Siniskalc.Homm2.Tests.Data
         [TestCase(65, 20)]
         [TestCase(62, 40)]
         [TestCase(0xFF, 0)]
+        [TestCase(0xFF, 0xFF)]
+        [TestCase(61, 20)]
+        [TestCase(0xFF, 20)]
+        [TestCase(62, 0)]
         public void ChangingTheOwnerKeepsTheGuardianSpellAndCount(int spell, int count)
         {
             var chunk = new MapObjectChunk("Mine", [0, 6, (byte)spell, (byte)count, 43, 23, 0xFF], 100, new MapPosition(43, 23), 2);
@@ -100,6 +104,20 @@ namespace Siniskalc.Homm2.Tests.Data
             var written = this.serializer.Serialize(chunk, Model(MineKind.GoldMine, PlayerColor.Orange));
 
             Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 4, 6, (byte)spell, (byte)count, 43, 23, 0xFF }));
+        }
+
+        [Test]
+        public void AGuardianInTheModelIsNeverWrittenEvenWhenTheOwnerChanges()
+        {
+            var chunk = new MapObjectChunk("Mine", [0, 6, 62, 20, 43, 23, 0xFF], 100, new MapPosition(43, 23), 2);
+            var model = Model(MineKind.GoldMine, PlayerColor.Orange) with
+            {
+                Guardian = new MineGuardian(65, 40, TestCatalog.Standard.Creatures["WaterElemental"]),
+            };
+
+            var written = this.serializer.Serialize(chunk, model);
+
+            Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 4, 6, 62, 20, 43, 23, 0xFF }));
         }
 
         [Test]

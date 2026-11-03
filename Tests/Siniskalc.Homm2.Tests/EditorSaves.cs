@@ -287,7 +287,7 @@
 
         private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
 
-        private static PlayerViewModel Player(Game game, PlayerColor color) => new(game, color, TestServices.BanishingText, _ => { }, _ => { });
+        private static PlayerViewModel Player(Game game, PlayerColor color) => new(game, color, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
 
         private static string Towns(Game game, PlayerColor color)
         {

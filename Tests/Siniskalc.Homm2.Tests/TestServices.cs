@@ -9,6 +9,7 @@ namespace Siniskalc.Homm2.Tests
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Models;
     using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Homm2.ViewModels;
 
     /// <summary>
     /// The real components of the HoMM2 data layer, built the way the application builds them, for the tests that load savegames.
@@ -20,6 +21,8 @@ namespace Siniskalc.Homm2.Tests
         public static IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> SpellPoints { get; } = new MaxSpellPointsCalculator();
 
         public static BanishingTextProvider BanishingText { get; } = new();
+
+        public static MineGuardianTextProvider MineGuardianText { get; } = new();
 
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer(TestCatalog.Standard, new CreatureCodes(TestCatalog.Standard));
 

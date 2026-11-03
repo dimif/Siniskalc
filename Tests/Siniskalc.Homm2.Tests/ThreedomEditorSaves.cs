@@ -43,14 +43,14 @@
 
         private static void ChangeMines(Game game)
         {
-            var mines = MinesLists.Create(game).Rows;
+            var mines = MinesLists.Create(game, TestServices.MineGuardianText).Rows;
             mines.Single(m => m.PositionText == "at 22, 29").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "at 65, 31").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "at 23, 2").OwnerField.Selected = "Blue";
             mines.Single(m => m.PositionText == "at 44, 6").OwnerField.Selected = "Red";
         }
 
-        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game).Rows.Where(m => new[] { "at 22, 29", "at 65, 31", "at 23, 2", "at 44, 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} {m.PositionText}: {m.OwnerField.Selected}"));
+        private static string MinesOf(Game game) => string.Join(", ", MinesLists.Create(game, TestServices.MineGuardianText).Rows.Where(m => new[] { "at 22, 29", "at 65, 31", "at 23, 2", "at 44, 6" }.Contains(m.PositionText)).Select(m => $"{m.Kind} {m.PositionText}: {m.OwnerField.Selected}"));
 
         private static void ChangeShrines(Game game)
         {
@@ -71,7 +71,7 @@
             sphinx.Reward.Single(r => r.Name == "Gems").Value = 5;
         }
 
-        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);
+        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);
 
         private static void ForgetOneFort(Game game)
         {

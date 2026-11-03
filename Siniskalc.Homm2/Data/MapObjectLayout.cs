@@ -29,6 +29,16 @@ namespace Siniskalc.Homm2.Data
         public const int MineRecordSize = 7;
 
         /// <summary>
+        /// Where the guardian spell is stored in a mine record.
+        /// </summary>
+        public const int MineGuardianSpell = 2;
+
+        /// <summary>
+        /// Where the guardian count is stored in a mine record.
+        /// </summary>
+        public const int MineGuardianCount = 3;
+
+        /// <summary>
         /// The first guardian spell code stored in a mine record (Set Earth Guardian).
         /// </summary>
         public const byte FirstGuardianSpell = 62;

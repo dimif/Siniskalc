@@ -144,9 +144,9 @@ namespace Siniskalc.Homm2
             public const long MinSpellPoints = 0;
 
             /// <summary>
-            /// The greatest spell points of a hero (16 bits in the savefile).
+            /// The greatest spell points the editor gives a hero. The savefile holds 16 bits, but the game shows 32,767 and 65,535 as -1.
             /// </summary>
-            public const long MaxSpellPoints = 65_535;
+            public const long MaxSpellPoints = 32_766;
 
             /// <summary>
             /// The spell points a hero can have for each point of knowledge.

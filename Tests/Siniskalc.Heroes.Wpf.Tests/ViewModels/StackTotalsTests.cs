@@ -11,8 +11,8 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
     [Category(TestKinds.Unit)]
     internal sealed class StackTotalsTests
     {
-        private static CreatureInfo Info(short health = 0, short minDamage = 0, short maxDamage = 0, int gold = 0, int ai = 0, int fight = 0, short wood = 0, short ore = 0, short mercury = 0, short sulfur = 0, short crystal = 0, short gems = 0) =>
-            new(0, 0, minDamage, maxDamage, health, 0, 0, ai, fight, gold, wood, ore, mercury, sulfur, crystal, gems, 0, null);
+        private static CreatureInfo Info(short health = 0, short minDamage = 0, short maxDamage = 0, int gold = 0, int ai = 0, int fight = 0, short wood = 0, short ore = 0, short mercury = 0, short sulfur = 0, short crystal = 0, short gems = 0, short atk = 0, short def = 0, short speed = 0) =>
+            new(atk, def, minDamage, maxDamage, health, speed, 0, ai, fight, gold, wood, ore, mercury, sulfur, crystal, gems, 0, null);
 
         private static string N(long number) => number.ToString("N0", CultureInfo.CurrentCulture);
 
@@ -49,7 +49,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var totals = new StackTotals(Info(wood: 1, ore: 2, mercury: 3, sulfur: 4, crystal: 5, gems: 6), 10);
 
-            Assert.That(totals.OtherCost, Is.EqualTo($"and {N(10)} wood, {N(20)} ore, {N(30)} mercury, {N(40)} sulfur, {N(50)} crystal, {N(60)} gems"));
+            Assert.That(totals.OtherCost, Is.EqualTo($"{N(10)}w, {N(20)}o, {N(30)}m, {N(40)}s, {N(50)}c, {N(60)}g"));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         {
             var totals = new StackTotals(Info(gems: 2), 7);
 
-            Assert.That(totals.OtherCost, Is.EqualTo($"and {N(14)} gems"));
+            Assert.That(totals.OtherCost, Is.EqualTo($"{N(14)}g"));
         }
 
         [Test]
@@ -67,20 +67,22 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
-        public void TheFactsListHitPointsDamageCostTheOtherCostAsANoteAndTheTwoValues()
+        public void TheFactsListAttackDefenseSpeedHitPointsDamageCostWithTheOtherCostAfterTheGoldAndTheTwoValues()
         {
-            var facts = new StackTotals(Info(health: 10, minDamage: 1, maxDamage: 2, gold: 50, ai: 4, fight: 3, ore: 1), 10).ToFacts();
+            var facts = new StackTotals(Info(health: 10, minDamage: 1, maxDamage: 2, gold: 50, ai: 4, fight: 3, ore: 1, atk: 7, def: 8, speed: 5), 10).ToFacts();
 
-            Assert.That(facts.Select(f => (f.Label, f.Value, f.IsNote)), Is.EqualTo(new[]
+            Assert.That(facts.Select(f => (f.Label, f.Value)), Is.EqualTo(new[]
             {
-                ("HP", N(10), false),
-                ("Damage", $"{N(1)}-{N(2)}", false),
-                ("Stack HP", N(100), false),
-                ("Stack Damage", $"{N(10)}-{N(20)}", false),
-                ("Cost", N(500), false),
-                (string.Empty, $"and {N(10)} ore", true),
-                ("AI value", N(40), false),
-                ("Fight value", N(30), false),
+                ("Atk", N(7)),
+                ("Def", N(8)),
+                ("Speed", N(5)),
+                ("HP", N(10)),
+                ("Damage", $"{N(1)}-{N(2)}"),
+                ("Stack HP", N(100)),
+                ("Stack Damage", $"{N(10)}-{N(20)}"),
+                ("Cost", $"{N(500)}, {N(10)}o"),
+                ("AI value", N(40)),
+                ("Fight value", N(30)),
             }));
         }
 
@@ -104,11 +106,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         }
 
         [Test]
-        public void TheShortListOfFactsHasOnlyHitPointsAndDamage()
+        public void TheShortListOfFactsHasOnlyTheCombatStatsHitPointsAndDamage()
         {
-            var facts = new StackTotals(Info(health: 10, minDamage: 1, maxDamage: 1), 3).ToHealthAndDamageFacts();
+            var facts = new StackTotals(Info(health: 10, minDamage: 1, maxDamage: 1, atk: 7, def: 8, speed: 5), 3).ToHealthAndDamageFacts();
 
-            Assert.That(facts.Select(f => (f.Label, f.Value)), Is.EqualTo(new[] { ("HP", N(10)), ("Damage", N(1)), ("Stack HP", N(30)), ("Stack Damage", N(3)) }));
+            Assert.That(facts.Select(f => (f.Label, f.Value)), Is.EqualTo(new[] { ("Atk", N(7)), ("Def", N(8)), ("Speed", N(5)), ("HP", N(10)), ("Damage", N(1)), ("Stack HP", N(30)), ("Stack Damage", N(3)) }));
         }
     }
 }

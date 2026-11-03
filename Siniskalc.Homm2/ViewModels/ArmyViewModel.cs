@@ -38,12 +38,19 @@
         }
 
         /// <inheritdoc/>
-        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) =>
-        [
-            .. new StackTotals(creature.Info, amount).ToHealthAndDamageFacts(),
-            new("Town", creature.Faction?.ToString() ?? "Neutral"),
-            new("Level", creature.Tier.ToString()),
-            new("Growth", $"{creature.Info.Growth} a week"),
-        ];
+        protected override ArmySummaryDetail SummaryDetail => ArmySummaryDetail.CombatAndCost;
+
+        /// <inheritdoc/>
+        protected override System.Collections.Generic.IReadOnlyList<StackFact> FactsOf(Creature creature, int amount)
+        {
+            var totals = new StackTotals(creature.Info, amount);
+            return
+            [
+                .. totals.ToHealthAndDamageFacts(),
+                totals.CostFact,
+                new("Town", creature.Faction?.ToString() ?? "Neutral"),
+                new("Level", creature.Tier.ToString()),
+            ];
+        }
     }
 }

@@ -37,6 +37,30 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             Assert.That(slot.Facts, Is.Empty);
         }
 
+        [TestCase("1", 13)]
+        [TestCase("-1", 11)]
+        [TestCase("5", 17)]
+        [TestCase("-5", 7)]
+        [TestCase("-50", 0)]
+        public void TheAdjustAmountCommandAddsItsStepToTheAmountOfTheStackButNeverGoesBelowZero(string step, int expected)
+        {
+            var slot = this.Slot();
+            slot.InitializeSlot("Archer", 12, false, false);
+
+            slot.AdjustAmountCommand.Execute(step);
+
+            Assert.That(this.selections, Is.EqualTo(new[] { (2, (string?)"Archer", expected) }));
+        }
+
+        [Test]
+        public void TheAdjustAmountCommandCannotRunOnAnEmptySlot()
+        {
+            var slot = this.Slot();
+            slot.InitializeSlot(null, 0, false, false);
+
+            Assert.That(slot.AdjustAmountCommand.CanExecute("1"), Is.False);
+        }
+
         [Test]
         public void PickingACreatureTellsTheArmyWithTheAmountItHas()
         {

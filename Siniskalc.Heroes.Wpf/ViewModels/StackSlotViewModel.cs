@@ -42,6 +42,7 @@
             this.MoveDownCommand = new DelegateCommand(_ => onMove(slotNumber, 1), _ => this.canMoveDown);
             this.ClearCommand = new DelegateCommand(_ => onClear(slotNumber), _ => this.HasCreature);
             this.UpgradeCommand = new DelegateCommand(this.Upgrade, _ => this.HasUpgrade);
+            this.AdjustAmountCommand = new DelegateCommand(this.AdjustAmount, _ => this.HasCreature);
         }
 
         /// <summary>
@@ -106,6 +107,12 @@
         /// upgrade to; without one it upgrades to the first of <see cref="Upgrades"/>.
         /// </summary>
         public ICommand UpgradeCommand { get; }
+
+        /// <summary>
+        /// Gets the command that changes the size of the stack by a number of creatures, its parameter (an <see cref="int"/>, or text with one),
+        /// such as 1 or -5. The size is kept within its limits like a size typed in.
+        /// </summary>
+        public ICommand AdjustAmountCommand { get; }
 
         /// <summary>
         /// Gets the creatures the one in the slot can be upgraded to: none when it is fully upgraded, one for most, several for a few.
@@ -227,6 +234,7 @@
             this.RaisePropertyChanged(nameof(this.UpgradeText));
             this.RaisePropertyChanged(nameof(this.UpgradeToolTip));
             ((DelegateCommand)this.UpgradeCommand).RaiseCanExecuteChanged();
+            ((DelegateCommand)this.AdjustAmountCommand).RaiseCanExecuteChanged();
             ((DelegateCommand)this.MoveUpCommand).RaiseCanExecuteChanged();
             ((DelegateCommand)this.MoveDownCommand).RaiseCanExecuteChanged();
             ((DelegateCommand)this.ClearCommand).RaiseCanExecuteChanged();
@@ -236,6 +244,19 @@
         /// Tells the screen that what the stack is worth changed. A game that shows it in other properties raises them here too.
         /// </summary>
         protected virtual void RaiseFactsChanged() => this.RaisePropertyChanged(nameof(this.Facts));
+
+        private void AdjustAmount(object? parameter)
+        {
+            var step = parameter switch
+            {
+                int number => number,
+                string text when int.TryParse(text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var parsed) => parsed,
+                _ => 0,
+            };
+
+            // Never below zero here; the army clamps to the limits of its game, as it does for a size typed in.
+            this.CreatureAmount = (int)Math.Max(0L, (long)this.creatureAmount + step);
+        }
 
         private void Upgrade(object? parameter)
         {

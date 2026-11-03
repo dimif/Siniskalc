@@ -53,34 +53,43 @@
         /// <summary>
         /// Tells what the army is worth, such as "HP Total 1,200  ·  Damage 100-150". Empty for an empty army.
         /// </summary>
-        /// <param name="withValues">Whether to tell the cost and the values of the computer player and the game too, for a game that knows them.</param>
+        /// <param name="detail">What to tell besides the hit points: the damage, or the cost, or the cost and the values of the computer player and the game too.</param>
         /// <returns>The text, or nothing for an empty army.</returns>
-        public string ToSummary(bool withValues)
+        public string ToSummary(ArmySummaryDetail detail)
         {
             if (!this.Any)
             {
                 return string.Empty;
             }
 
-            if (!withValues)
+            if (detail == ArmySummaryDetail.Combat)
             {
-                var damage = this.minDamage == this.maxDamage ? Format(this.minDamage) : $"{Format(this.minDamage)}-{Format(this.maxDamage)}";
-                return $"HP Total {Format(this.health)}  ·  Damage {damage}";
+                return $"HP Total {Format(this.health)}  ·  Damage {this.DamageRange()}";
             }
 
-            var others = new List<string>();
+            var cost = $"Cost {this.LongCost()}";
+            return detail == ArmySummaryDetail.CombatAndCost
+                ? $"HP Total {Format(this.health)}  ·  Damage {this.DamageRange()}  ·  {cost}"
+                : $"HP Total {Format(this.health)}  ·  {cost}  ·  AI {Format(this.aiValue)}  ·  Fight {Format(this.fightValue)}";
+        }
+
+        private static string Format(long number) => number.ToString("N0", CultureInfo.CurrentCulture);
+
+        private string DamageRange() => this.minDamage == this.maxDamage ? Format(this.minDamage) : $"{Format(this.minDamage)}-{Format(this.maxDamage)}";
+
+        // The gold and each other resource in full, such as "35,000 gold, 3 gems, 3 mercury".
+        private string LongCost()
+        {
+            var parts = new List<string> { $"{Format(this.gold)} gold" };
             foreach (var (amount, name) in new[] { (this.wood, "wood"), (this.ore, "ore"), (this.mercury, "mercury"), (this.sulfur, "sulfur"), (this.crystal, "crystal"), (this.gems, "gems") })
             {
                 if (amount != 0)
                 {
-                    others.Add($"{Format(amount)} {name}");
+                    parts.Add($"{Format(amount)} {name}");
                 }
             }
 
-            var cost = others.Count == 0 ? Format(this.gold) : $"{Format(this.gold)} and {string.Join(", ", others)}";
-            return $"HP Total {Format(this.health)}  ·  Cost {cost}  ·  AI {Format(this.aiValue)}  ·  Fight {Format(this.fightValue)}";
+            return string.Join(", ", parts);
         }
-
-        private static string Format(long number) => number.ToString("N0", CultureInfo.CurrentCulture);
     }
 }

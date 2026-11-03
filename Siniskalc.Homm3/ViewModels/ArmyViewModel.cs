@@ -46,7 +46,7 @@
         }
 
         /// <inheritdoc/>
-        protected override bool SummaryHasValues => true;
+        protected override ArmySummaryDetail SummaryDetail => ArmySummaryDetail.CombatCostAndValues;
 
         /// <inheritdoc/>
         protected override IReadOnlyList<StackFact> FactsOf(Creature creature, int amount) => new StackTotals(creature.Info, amount).ToFacts();

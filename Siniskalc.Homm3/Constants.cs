@@ -133,7 +133,7 @@
             /// <summary>
             /// The most spell points the editor gives a hero.
             /// </summary>
-            public const long MaxSpellPoints = 999;
+            public const long MaxSpellPoints = 32_766;
 
             /// <summary>
             /// The step of the spell points stepper of a hero.

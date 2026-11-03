@@ -13,7 +13,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
         [Test]
         public void AnEmptyArmyHasNoSummary()
         {
-            Assert.That(new ArmyTotals().ToSummary(withValues: true), Is.Empty);
+            Assert.That(new ArmyTotals().ToSummary(ArmySummaryDetail.CombatCostAndValues), Is.Empty);
         }
 
         [Test]
@@ -23,7 +23,16 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             totals.Add(Info(10, 1, 3), 10);
             totals.Add(Info(20, 2, 2), 5);
 
-            Assert.That(totals.ToSummary(withValues: false), Is.EqualTo($"HP Total {200:N0}  ·  Damage {20:N0}-{40:N0}"));
+            Assert.That(totals.ToSummary(ArmySummaryDetail.Combat), Is.EqualTo($"HP Total {200:N0}  ·  Damage {20:N0}-{40:N0}"));
+        }
+
+        [Test]
+        public void ASummaryWithCostTellsTheGoldThenEachOtherResourceInFullAfterTheDamage()
+        {
+            var totals = new ArmyTotals();
+            totals.Add(Info(10, 1, 3, gold: 100, ai: 7, fight: 5, gems: 2), 10);
+
+            Assert.That(totals.ToSummary(ArmySummaryDetail.CombatAndCost), Is.EqualTo($"HP Total {100:N0}  ·  Damage {10:N0}-{30:N0}  ·  Cost {1000:N0} gold, {20:N0} gems"));
         }
 
         [Test]
@@ -32,7 +41,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
             var totals = new ArmyTotals();
             totals.Add(Info(10, 1, 3, gold: 100, ai: 7, fight: 5, gems: 2), 10);
 
-            Assert.That(totals.ToSummary(withValues: true), Is.EqualTo($"HP Total {100:N0}  ·  Cost {1000:N0} and {20:N0} gems  ·  AI {70:N0}  ·  Fight {50:N0}"));
+            Assert.That(totals.ToSummary(ArmySummaryDetail.CombatCostAndValues), Is.EqualTo($"HP Total {100:N0}  ·  Cost {1000:N0} gold, {20:N0} gems  ·  AI {70:N0}  ·  Fight {50:N0}"));
         }
     }
 }

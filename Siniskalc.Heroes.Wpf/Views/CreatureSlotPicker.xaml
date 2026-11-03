@@ -10,8 +10,9 @@
                 AutomationProperties.Name="Creature" ToolTip="Click to pick a creature">
             <TextBlock Text="{Binding CreatureButtonText}" TextTrimming="CharacterEllipsis"/>
         </Button>
-        <Popup IsOpen="{Binding IsPickerOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=button}" Placement="Bottom"
-               StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade" Opened="PopupOpened">
+        <!-- Placement is custom so the popup keeps the side of the button it opened on while a search makes the list shorter. -->
+        <Popup x:Name="popup" IsOpen="{Binding IsPickerOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=button}" Placement="Custom"
+               StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade" Opened="PopupOpened" Closed="PopupClosed">
             <Border Width="{Binding PopupWidth, ElementName=root}"
                     Margin="0,2,8,8" Padding="10" Background="White" BorderBrush="{StaticResource LineBrush}" BorderThickness="1" CornerRadius="4">
                 <Border.Effect>

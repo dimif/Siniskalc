@@ -25,6 +25,21 @@
         }
 
         /// <summary>
+        /// Gets the attack skill of one creature of the stack.
+        /// </summary>
+        public string CreatureAttack => Format(this.info.Atk);
+
+        /// <summary>
+        /// Gets the defense skill of one creature of the stack.
+        /// </summary>
+        public string CreatureDefense => Format(this.info.Def);
+
+        /// <summary>
+        /// Gets the speed of one creature of the stack.
+        /// </summary>
+        public string CreatureSpeed => Format(this.info.Speed);
+
+        /// <summary>
         /// Gets the hit points of one creature of the stack.
         /// </summary>
         public string CreatureHealth => Format(this.info.Health);
@@ -91,6 +106,9 @@
         /// <returns>The facts.</returns>
         public IReadOnlyList<StackFact> ToFacts() =>
         [
+            new("Atk", this.CreatureAttack, "Attack of one creature"),
+            new("Def", this.CreatureDefense, "Defense of one creature"),
+            new("Speed", this.CreatureSpeed, "Speed of one creature in combat"),
             new("HP", this.CreatureHealth, "Hit points of one creature"),
             new("Damage", this.CreatureDamage, "Damage of one creature"),
             new("Stack HP", this.Health, "Hit points of the whole stack"),
@@ -107,6 +125,9 @@
         /// <returns>The facts.</returns>
         public IReadOnlyList<StackFact> ToHealthAndDamageFacts() =>
         [
+            new("Atk", this.CreatureAttack, "Attack of one creature"),
+            new("Def", this.CreatureDefense, "Defense of one creature"),
+            new("Speed", this.CreatureSpeed, "Speed of one creature in combat"),
             new("HP", this.CreatureHealth, "Hit points of one creature"),
             new("Damage", this.CreatureDamage, "Damage of one creature"),
             new("Stack HP", this.Health, "Hit points of the whole stack"),

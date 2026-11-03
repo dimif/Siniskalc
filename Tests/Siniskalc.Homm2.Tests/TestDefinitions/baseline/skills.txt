@@ -1,0 +1,14 @@
+Pathfinding|Pathfinding|0
+Archery|Archery|1
+Logistics|Logistics|2
+Scouting|Scouting|3
+Diplomacy|Diplomacy|4
+Navigation|Navigation|5
+Leadership|Leadership|6
+Wisdom|Wisdom|7
+Mysticism|Mysticism|8
+Luck|Luck|9
+Ballistics|Ballistics|10
+EagleEye|Eagle Eye|11
+Necromancy|Necromancy|12
+Estates|Estates|13

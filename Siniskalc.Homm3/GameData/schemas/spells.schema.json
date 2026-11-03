@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 spells",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
+        ]
+      },
+      "school": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "level": {
+        "type": "integer"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "adventure",
+          "combat"
+        ]
+      },
+      "heroOnly": {
+        "type": "boolean",
+        "default": false
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "code",
+      "availableFrom",
+      "school",
+      "level",
+      "type"
+    ],
+    "additionalProperties": false
+  }
+}

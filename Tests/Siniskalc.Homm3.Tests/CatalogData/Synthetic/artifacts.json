@@ -1,0 +1,39 @@
+[
+  {
+    "id": "FixtureCharm",
+    "name": "Astral Charm",
+    "code": 200,
+    "availableFrom": "hota",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 2
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 1
+        }
+      ],
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "Haste"
+          ],
+          "school": null,
+          "level": null,
+          "description": "Haste"
+        }
+      ],
+      "other": "A light from a JSON-only faction."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1500,
+    "combinesInto": null
+  }
+]

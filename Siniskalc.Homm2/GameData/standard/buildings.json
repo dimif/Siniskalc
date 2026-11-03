@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Castle",
+      "name": "Castle",
+      "code": 0,
+      "flag": "Castle",
+      "description": "A town becomes a castle when it is built.",
+      "growth": 0
+    },
+    {
+      "id": "Tavern",
+      "name": "Tavern",
+      "code": 1,
+      "flag": "Tavern",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "ThievesGuild",
+      "name": "Thieves' Guild",
+      "code": 2,
+      "flag": "ThievesGuild",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "Shipyard",
+      "name": "Shipyard",
+      "code": 3,
+      "flag": "Shipyard",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "Well",
+      "name": "Well",
+      "code": 4,
+      "flag": "Well",
+      "description": "",
+      "growth": 2
+    },
+    {
+      "id": "Statue",
+      "name": "Statue",
+      "code": 5,
+      "flag": "Statue",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "Marketplace",
+      "name": "Marketplace",
+      "code": 6,
+      "flag": "Marketplace",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "LeftTurret",
+      "name": "Left turret",
+      "code": 7,
+      "flag": "LeftTurret",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "RightTurret",
+      "name": "Right turret",
+      "code": 8,
+      "flag": "RightTurret",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "Moat",
+      "name": "Moat",
+      "code": 9,
+      "flag": "Moat",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "CaptainsQuarters",
+      "name": "Captain's quarters",
+      "code": 10,
+      "flag": "CaptainsQuarters",
+      "description": "",
+      "growth": 0
+    },
+    {
+      "id": "GrowthBuilding",
+      "name": "Creature growth building",
+      "code": 11,
+      "flag": "GrowthBuilding",
+      "description": "More creatures every week.",
+      "role": "growth",
+      "growth": 8
+    },
+    {
+      "id": "Special",
+      "name": "Special building",
+      "code": 12,
+      "flag": "Special",
+      "description": "The special building of the faction.",
+      "role": "special",
+      "growth": 0
+    }
+  ],
+  "replacements": []
+}

@@ -1,0 +1,65 @@
+Fireball|Fireball|1|9|Combat|3|Elemental
+Fireblast|Fireblast|2|15|Combat|4|Elemental
+LightningBolt|Lightning Bolt|3|7|Combat|2|Elemental
+ChainLightning|Chain Lightning|4|15|Combat|4|Elemental
+Teleport|Teleport|5|9|Combat|3|None
+Cure|Cure|6|6|Combat|1|None
+MassCure|Mass Cure|7|15|Combat|4|None
+Resurrect|Resurrect|8|12|Combat|4|None
+ResurrectTrue|Resurrect True|9|15|Combat|5|None
+Haste|Haste|10|3|Combat|1|None
+MassHaste|Mass Haste|11|10|Combat|3|None
+Slow|Slow|12|3|Combat|1|None
+MassSlow|Mass Slow|13|15|Combat|4|None
+Blind|Blind|14|6|Combat|2|Mind
+Bless|Bless|15|3|Combat|1|None
+MassBless|Mass Bless|16|12|Combat|3|None
+Stoneskin|Stoneskin|17|3|Combat|1|None
+Steelskin|Steelskin|18|6|Combat|2|None
+Curse|Curse|19|3|Combat|1|None
+MassCurse|Mass Curse|20|12|Combat|3|None
+HolyWord|Holy Word|21|9|Combat|3|None
+HolyShout|Holy Shout|22|12|Combat|4|None
+AntiMagic|Anti-Magic|23|7|Combat|3|None
+DispelMagic|Dispel Magic|24|5|Combat|1|None
+MassDispel|Mass Dispel|25|12|Combat|3|None
+MagicArrow|Magic Arrow|26|3|Combat|1|None
+Berserker|Berserker|27|12|Combat|4|Mind
+Armageddon|Armageddon|28|20|Combat|5|None
+ElementalStorm|Elemental Storm|29|15|Combat|4|Elemental
+MeteorShower|Meteor Shower|30|15|Combat|4|None
+Paralyze|Paralyze|31|9|Combat|3|Mind
+Hypnotize|Hypnotize|32|15|Combat|5|Mind
+ColdRay|Cold Ray|33|6|Combat|2|Elemental
+ColdRing|Cold Ring|34|9|Combat|3|Elemental
+DisruptingRay|Disrupting Ray|35|7|Combat|2|None
+DeathRipple|Death Ripple|36|6|Combat|2|None
+DeathWave|Death Wave|37|10|Combat|3|None
+DragonSlayer|Dragon Slayer|38|6|Combat|2|None
+BloodLust|Blood Lust|39|3|Combat|1|None
+AnimateDead|Animate Dead|40|10|Combat|3|None
+MirrorImage|Mirror Image|41|25|Combat|5|None
+Shield|Shield|42|3|Combat|1|None
+MassShield|Mass Shield|43|7|Combat|4|None
+SummonEarthElemental|Summon Earth Elemental|44|30|Combat|5|None
+SummonAirElemental|Summon Air Elemental|45|30|Combat|5|None
+SummonFireElemental|Summon Fire Elemental|46|30|Combat|5|None
+SummonWaterElemental|Summon Water Elemental|47|30|Combat|5|None
+Earthquake|Earthquake|48|15|Combat|3|None
+ViewMines|View Mines|49|1|Adventure|1|None
+ViewResources|View Resources|50|1|Adventure|1|None
+ViewArtifacts|View Artifacts|51|2|Adventure|2|None
+ViewTowns|View Towns|52|2|Adventure|3|None
+ViewHeroes|View Heroes|53|2|Adventure|3|None
+ViewAll|View All|54|3|Adventure|4|None
+IdentifyHero|Identify Hero|55|3|Adventure|3|None
+SummonBoat|Summon Boat|56|5|Adventure|2|None
+DimensionDoor|Dimension Door|57|10|Adventure|5|None
+TownGate|Town Gate|58|10|Adventure|4|None
+TownPortal|Town Portal|59|20|Adventure|5|None
+Visions|Visions|60|6|Adventure|2|None
+Haunt|Haunt|61|8|Adventure|2|None
+SetEarthGuardian|Set Earth Guardian|62|15|Adventure|4|None
+SetAirGuardian|Set Air Guardian|63|15|Adventure|4|None
+SetFireGuardian|Set Fire Guardian|64|15|Adventure|4|None
+SetWaterGuardian|Set Water Guardian|65|15|Adventure|4|None

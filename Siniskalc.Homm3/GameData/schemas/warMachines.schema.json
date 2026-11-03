@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 warMachines",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
+        ]
+      },
+      "slot": {
+        "type": "string"
+      },
+      "encoding": {
+        "type": "string",
+        "enum": [
+          "ammoCart",
+          "ballista",
+          "cannon",
+          "firstAidTent"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "code",
+      "availableFrom",
+      "slot",
+      "encoding"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Pathfinding",
+      "name": "Pathfinding",
+      "code": 0
+    },
+    {
+      "id": "Archery",
+      "name": "Archery",
+      "code": 1
+    },
+    {
+      "id": "Logistics",
+      "name": "Logistics",
+      "code": 2
+    },
+    {
+      "id": "Scouting",
+      "name": "Scouting",
+      "code": 3
+    },
+    {
+      "id": "Diplomacy",
+      "name": "Diplomacy",
+      "code": 4
+    },
+    {
+      "id": "Navigation",
+      "name": "Navigation",
+      "code": 5
+    },
+    {
+      "id": "Leadership",
+      "name": "Leadership",
+      "code": 6
+    },
+    {
+      "id": "Wisdom",
+      "name": "Wisdom",
+      "code": 7
+    },
+    {
+      "id": "Mysticism",
+      "name": "Mysticism",
+      "code": 8
+    },
+    {
+      "id": "Luck",
+      "name": "Luck",
+      "code": 9
+    },
+    {
+      "id": "Ballistics",
+      "name": "Ballistics",
+      "code": 10
+    },
+    {
+      "id": "EagleEye",
+      "name": "Eagle Eye",
+      "code": 11
+    },
+    {
+      "id": "Necromancy",
+      "name": "Necromancy",
+      "code": 12
+    },
+    {
+      "id": "Estates",
+      "name": "Estates",
+      "code": 13
+    }
+  ],
+  "replacements": []
+}

@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.Runtime.InteropServices;
@@ -10,6 +10,12 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public partial class ErrorWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ErrorWindow"/> class.
+        /// </summary>
+        /// <param name="title">The title of the window.</param>
+        /// <param name="message">What went wrong and what the user can do, in words for the user.</param>
+        /// <param name="details">The exception with its stack trace; the section that shows it is left out when empty.</param>
         public ErrorWindow(string title, string message, string details)
         {
             this.InitializeComponent();

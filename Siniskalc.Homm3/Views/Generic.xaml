@@ -1,0 +1,25 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
+    xmlns:views="clr-namespace:Siniskalc.Homm3.Views">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- The colours and the styles of the controls that every page uses; the styles below are the ones that only make sense for heroes. -->
+        <ResourceDictionary Source="pack://application:,,,/Siniskalc.Heroes.Wpf;component/Styles/PageStyles.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+
+    <!-- One line of what artifacts do: the effect on the left, its amount on the right. -->
+    <DataTemplate x:Key="EffectLineTemplate">
+        <DockPanel Margin="0,2,18,2">
+            <TextBlock DockPanel.Dock="Right" FontWeight="SemiBold" Margin="10,0,0,0" Text="{Binding Value}"/>
+            <TextBlock Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Label}"/>
+        </DockPanel>
+    </DataTemplate>
+
+    <!-- What the shell shows for the HoMM3 editor. -->
+    <DataTemplate DataType="{x:Type vm:Homm3EditorViewModel}">
+        <views:Homm3EditorView/>
+    </DataTemplate>
+</ResourceDictionary>

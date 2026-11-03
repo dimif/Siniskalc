@@ -1,0 +1,34 @@
+[
+  {
+    "id": "Ballista",
+    "name": "Ballista",
+    "code": 4,
+    "availableFrom": "roe",
+    "slot": "artillery",
+    "encoding": "ballista"
+  },
+  {
+    "id": "AmmoCart",
+    "name": "Ammo Cart",
+    "code": 5,
+    "availableFrom": "roe",
+    "slot": "ammoCart",
+    "encoding": "ammoCart"
+  },
+  {
+    "id": "FirstAidTent",
+    "name": "First Aid Tent",
+    "code": 6,
+    "availableFrom": "roe",
+    "slot": "firstAidTent",
+    "encoding": "firstAidTent"
+  },
+  {
+    "id": "Cannon",
+    "name": "Cannon",
+    "code": 146,
+    "availableFrom": "hota",
+    "slot": "artillery",
+    "encoding": "cannon"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "water",
+    "name": "Water",
+    "code": 0,
+    "availableFrom": "roe",
+    "description": "Water magic"
+  },
+  {
+    "id": "earth",
+    "name": "Earth",
+    "code": 1,
+    "availableFrom": "roe",
+    "description": "Earth magic"
+  },
+  {
+    "id": "fire",
+    "name": "Fire",
+    "code": 2,
+    "availableFrom": "roe",
+    "description": "Fire magic"
+  },
+  {
+    "id": "wind",
+    "name": "Air",
+    "code": 3,
+    "availableFrom": "roe",
+    "description": "Air magic"
+  },
+  {
+    "id": "all",
+    "name": "All",
+    "code": 4,
+    "availableFrom": "roe",
+    "description": "All schools"
+  }
+]

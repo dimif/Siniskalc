@@ -1,0 +1,185 @@
+[
+  {
+    "id": "Pathfinding",
+    "name": "Pathfinding",
+    "code": 0,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Archery",
+    "name": "Archery",
+    "code": 1,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Logistics",
+    "name": "Logistics",
+    "code": 2,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Scouting",
+    "name": "Scouting",
+    "code": 3,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Diplomacy",
+    "name": "Diplomacy",
+    "code": 4,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Navigation",
+    "name": "Navigation",
+    "code": 5,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Leadership",
+    "name": "Leadership",
+    "code": 6,
+    "availableFrom": "roe",
+    "role": "morale"
+  },
+  {
+    "id": "Wisdom",
+    "name": "Wisdom",
+    "code": 7,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Mysticism",
+    "name": "Mysticism",
+    "code": 8,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Luck",
+    "name": "Luck",
+    "code": 9,
+    "availableFrom": "roe",
+    "role": "luck"
+  },
+  {
+    "id": "Ballistics",
+    "name": "Ballistics",
+    "code": 10,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "EagleEye",
+    "name": "Eagle Eye",
+    "code": 11,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Necromancy",
+    "name": "Necromancy",
+    "code": 12,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Estates",
+    "name": "Estates",
+    "code": 13,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FireMagic",
+    "name": "Fire Magic",
+    "code": 14,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AirMagic",
+    "name": "Air Magic",
+    "code": 15,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "WaterMagic",
+    "name": "Water Magic",
+    "code": 16,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "EarthMagic",
+    "name": "Earth Magic",
+    "code": 17,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Scholar",
+    "name": "Scholar",
+    "code": 18,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Tactics",
+    "name": "Tactics",
+    "code": 19,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Artillery",
+    "name": "Artillery",
+    "code": 20,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Learning",
+    "name": "Learning",
+    "code": 21,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Offense",
+    "name": "Offense",
+    "code": 22,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Armorer",
+    "name": "Armorer",
+    "code": 23,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Intelligence",
+    "name": "Intelligence",
+    "code": 24,
+    "availableFrom": "roe",
+    "role": "spellPointMultiplier"
+  },
+  {
+    "id": "Sorcery",
+    "name": "Sorcery",
+    "code": 25,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Resistance",
+    "name": "Resistance",
+    "code": 26,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FirstAid",
+    "name": "First Aid",
+    "code": 27,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Interference",
+    "name": "Interference",
+    "code": 28,
+    "availableFrom": "hota"
+  },
+  {
+    "id": "Runes",
+    "name": "Runes",
+    "code": 29,
+    "availableFrom": "hota"
+  }
+]

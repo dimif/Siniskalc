@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "versions": {
+    "roe": "standard",
+    "ab": "standard",
+    "sod": "standard",
+    "chronicles": "standard",
+    "hota": "standard"
+  },
+  "sets": {
+    "standard": {
+      "parent": null,
+      "directory": "standard"
+    }
+  }
+}

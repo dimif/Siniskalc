@@ -1,11 +1,19 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System.ComponentModel;
 
+    /// <summary>
+    /// The base of the view models: implements <see cref="INotifyPropertyChanged"/> and lets a view model tell the bindings what changed.
+    /// </summary>
     public abstract class AbstractViewModelBase : INotifyPropertyChanged
     {
+        /// <inheritdoc/>
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>
+        /// Tells the bindings that a property changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the property that changed; empty for all of them.</param>
         protected void RaisePropertyChanged(string propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

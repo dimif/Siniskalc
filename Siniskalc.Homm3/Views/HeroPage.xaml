@@ -1,0 +1,103 @@
+<Page x:Class="Siniskalc.Homm3.Views.HeroPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="HeroPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="16,14,16,4">
+        <heroes:PageHeader ColorHex="{Binding ColorHex}" Title="{Binding Name}"
+                           EditedToolTip="This hero has changes that are not saved yet"
+                           ResetToolTip="Put everything of this hero back to what the savegame had">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding SubtitleText, Mode=OneWay}"
+                           ToolTip="Class, level and where the hero is on the map"/>
+                <StackPanel Orientation="Horizontal" Margin="8,0,0,3" VerticalAlignment="Bottom">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GarrisonCastleName}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <TextBlock Text="· Garrisoned in " Foreground="{StaticResource MutedBrush}" FontSize="14" VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenGarrisonCastleCommand}" Content="{Binding GarrisonCastleName}"
+                            FontSize="14" ToolTip="Go to castle"/>
+                </StackPanel>
+            </StackPanel>
+        </heroes:PageHeader>
+        <heroes:OwnerPicker Margin="0,8,0,0"
+                            PickerToolTip="Which player the hero belongs to. The hero is taken from the list of heroes of its old owner and added to the list of its new one; a neutral hero is taken off the map."/>
+        <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        </StackPanel>
+
+        <!-- The pages of a hero, as tabs. -->
+        <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" x:Name="sidebar" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
+            <wpf:NavButton Text="General"/>
+            <wpf:NavButton Text="Skills"/>
+            <wpf:NavButton Text="Creatures"/>
+            <wpf:NavButton Text="Spells"/>
+            <wpf:NavButton Text="Places"/>
+            <wpf:NavButton Text="Artifacts"/>
+            <wpf:NavButton Text="Backpack"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+        </ListBox>
+
+        <!-- The panel of each tab, shown while its tab is the picked one. A panel keeps the data context of the page, which has the
+             selected tab; the data context of what it shows is the hero's view model of that tab. -->
+        <Grid Grid.Row="2" Margin="8,8,8,0">
+            <Grid Style="{StaticResource TabPanel0}">
+                <local:GeneralInfoView DataContext="{Binding GeneralInfoViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel1}">
+                <heroes:SecondarySkillsView DataContext="{Binding SecondarySkillsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel2}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <local:ArmyEditor DataContext="{Binding ArmyViewModel}"/>
+                </ScrollViewer>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel3}">
+                <heroes:SpellsView DataContext="{Binding SpellsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel4}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <WrapPanel>
+                        <heroes:VisitedPlacesCard DataContext="{Binding PlacesViewModel.PlacesVisited}"/>
+                    </WrapPanel>
+                </ScrollViewer>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel5}">
+                <local:ArtifactsView DataContext="{Binding ArtifactsViewModel}"/>
+            </Grid>
+            <Grid Style="{StaticResource TabPanel6}">
+                <local:BackpackView DataContext="{Binding BackpackViewModel}"/>
+            </Grid>
+            <wpf:HexEditor x:Name="hexEditor" Style="{StaticResource TabPanel7}"/>
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,130 @@
+﻿using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Heroes.Models;
+using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Models;
+
+namespace Siniskalc.Homm3.Tests.Integration.Data
+{
+    /// <summary>
+    /// castles_00_baseline, castles_01_blacksmith_garrison_tumlac_to_blue and castles_02_cloud_temple are HoTA savefiles of one map, with two castles of tan (Haret and Tumlac).
+    /// In castles_01_blacksmith_garrison_tumlac_to_blue Haret got a blacksmith and a garrison and Tumlac changed hands to blue. In castles_02_cloud_temple Tumlac built its cloud temple.
+    /// </summary>
+    [TestFixture]
+    [Category(TestKinds.Integration)]
+    internal sealed class CastleDeserializerTests
+    {
+        private static CastleModel Castle(string save, string name)
+        {
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", save + ".GM1"));
+            var castles = game.History.Current.Castles();
+            var index = castles.FindByName(name);
+            Assert.That(index, Is.GreaterThanOrEqualTo(0), $"{name} in {save}");
+            return castles.GetModel(index);
+        }
+
+        [TestCase("castles_00_baseline")]
+        [TestCase("castles_01_blacksmith_garrison_tumlac_to_blue")]
+        [TestCase("castles_02_cloud_temple")]
+        public void BothCastlesAreFound(string save)
+        {
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", save + ".GM1"));
+
+            Assert.That(game.History.Current.Castles().Select(c => c.Name), Does.Contain("Castle Haret").And.Contain("Castle Tumlac"));
+        }
+
+        // The list of castles of a player (CastleLinks, which the player page and the overview show) leaves out a castle the map does not
+        // use, as HoMM2's does; the loader of HoMM3 finds only the castles the map has, so every one has a name.
+        [Test]
+        public void EveryCastleOfEverySavefileHasANameSoTheMapUsesIt()
+        {
+            var paths = Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal).ToList();
+            SavedGames.LoadAll(paths);
+            foreach (var path in paths)
+            {
+                var game = SavedGames.Get(path);
+
+                Assert.That(game.History.Current.Castles().GetModels().Where(c => !c.IsUsed), Is.Empty, Path.GetFileName(path));
+            }
+        }
+
+        [Test]
+        public void HaretInTheBaselineIsACastleOfTanWithoutGarrison()
+        {
+            var haret = Castle("castles_00_baseline", "Castle Haret");
+
+            Assert.That(haret.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Castle")));
+            Assert.That(haret.Owner, Is.EqualTo(PlayerColor.Tan));
+            Assert.That(haret.Position, Is.EqualTo(new MapPosition(33, 23, 0)));
+            Assert.That(haret.Garrison.Filled, Is.Empty);
+            Assert.That(haret.Buildings, Is.EquivalentTo(new[]
+            {
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Fort"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGuardhouse"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleArchersTower"),
+                TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CastleGriffinTower"),
+            }));
+        }
+
+        [Test]
+        public void TumlacInTheBaselineIsATowerOfTan()
+        {
+            var tumlac = Castle("castles_00_baseline", "Castle Tumlac");
+
+            Assert.That(tumlac.Faction, Is.EqualTo(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Tower")));
+            Assert.That(tumlac.Owner, Is.EqualTo(PlayerColor.Tan));
+            Assert.That(tumlac.Position, Is.EqualTo(new MapPosition(9, 29, 0)));
+            Assert.That(tumlac.Garrison.Filled, Is.Empty);
+            Assert.That(tumlac.Buildings, Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("MagesGuild1"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall"), TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall") }));
+        }
+
+        [Test]
+        public void HaretGotABlacksmithAndAGarrison()
+        {
+            var before = Castle("castles_00_baseline", "Castle Haret");
+            var after = Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Haret");
+
+            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Blacksmith") }));
+            Assert.That(before.Buildings.Except(after.Buildings), Is.Empty);
+
+            var expected = new[] { "Pikeman", "Archer", "Griffin", "Swordsman", "Monk", "Cavalier", "Angel" };
+            Assert.That(after.Garrison.Slots, Has.All.Not.Null);
+            Assert.That(after.Garrison.Slots.Select(s => s!.Creature.Name), Is.EqualTo(expected));
+            Assert.That(after.Garrison.Slots.Select(s => s!.Count), Has.All.EqualTo(123));
+        }
+
+        [Test]
+        public void TumlacChangedOwnerToBlue()
+        {
+            Assert.That(Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Tumlac").Owner, Is.EqualTo(PlayerColor.Blue));
+            Assert.That(Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Tumlac").Buildings, Is.EquivalentTo(Castle("castles_00_baseline", "Castle Tumlac").Buildings));
+        }
+
+        [Test]
+        public void TumlacBuiltACloudTemple()
+        {
+            var before = Castle("castles_01_blacksmith_garrison_tumlac_to_blue", "Castle Tumlac");
+            var after = Castle("castles_02_cloud_temple", "Castle Tumlac");
+
+            Assert.That(after.Buildings.Except(before.Buildings), Is.EquivalentTo(new[] { TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TowerCloudTemple") }));
+            Assert.That(after.Owner, Is.EqualTo(PlayerColor.Blue));
+        }
+
+        [Test]
+        public void TheVisibleBuildingsLeaveOutWhatWasReplaced()
+        {
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
+            var haret = game.History.Current.Castles()[game.History.Current.Castles().FindByName("Castle Haret")];
+
+            var current = TestServices.CastleDeserializer.DeserializeVisibleBuildings(haret);
+
+            Assert.That(current, Does.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("Capitol")));
+            Assert.That(current, Does.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("CityHall")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("TownHall")).And.Not.Contain(TestCatalog.For(GameVersion.HornOfTheAbyss).Buildings.ById("VillageHall")));
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "versions": {
+    "sw": "standard",
+    "pol": "standard",
+    "unknown": "standard"
+  },
+  "sets": {
+    "standard": {
+      "parent": null
+    }
+  }
+}

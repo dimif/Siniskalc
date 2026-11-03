@@ -1,0 +1,9 @@
+namespace Siniskalc.Heroes.ViewModels
+{
+    /// <summary>
+    /// A level of the map to pick from: "Surface", "Underground", or a value this editor does not recognise.
+    /// </summary>
+    /// <param name="Value">The Z coordinate as the savefile holds it.</param>
+    /// <param name="Label">What the list shows.</param>
+    public sealed record MapLevelChoice(int Value, string Label);
+}

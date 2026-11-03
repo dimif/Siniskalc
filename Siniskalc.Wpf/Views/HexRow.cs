@@ -4,7 +4,7 @@
 
     /// <summary>
     /// One line of the grid of the hex viewer: an address, sixteen bytes and their text.
-    /// Lines in the collection are transient (see HexRowList), and two lines with the same position are equal.
+    /// Lines in the collection are transient (see <see cref="HexRowList"/>), and two lines with the same position are equal.
     /// </summary>
     internal sealed class HexRow(int index, string address, IReadOnlyList<HexCell> cells, string ascii)
     {

@@ -1,0 +1,633 @@
+[
+  {
+    "id": "SummonBoat",
+    "name": "Summon Boat",
+    "code": 0,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 1,
+    "type": "adventure"
+  },
+  {
+    "id": "ScuttleBoat",
+    "name": "Scuttle Boat",
+    "code": 1,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 2,
+    "type": "adventure"
+  },
+  {
+    "id": "Visions",
+    "name": "Visions",
+    "code": 2,
+    "availableFrom": "roe",
+    "school": "all",
+    "level": 2,
+    "type": "adventure"
+  },
+  {
+    "id": "ViewEarth",
+    "name": "View Earth",
+    "code": 3,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 1,
+    "type": "adventure"
+  },
+  {
+    "id": "Disguise",
+    "name": "Disguise",
+    "code": 4,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "adventure"
+  },
+  {
+    "id": "ViewAir",
+    "name": "View Air",
+    "code": 5,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 1,
+    "type": "adventure"
+  },
+  {
+    "id": "Fly",
+    "name": "Fly",
+    "code": 6,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 5,
+    "type": "adventure"
+  },
+  {
+    "id": "WaterWalk",
+    "name": "Water Walk",
+    "code": 7,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 4,
+    "type": "adventure"
+  },
+  {
+    "id": "DimensionDoor",
+    "name": "Dimension Door",
+    "code": 8,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 5,
+    "type": "adventure"
+  },
+  {
+    "id": "TownPortal",
+    "name": "Town Portal",
+    "code": 9,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 4,
+    "type": "adventure"
+  },
+  {
+    "id": "QuickSand",
+    "name": "Quick Sand",
+    "code": 10,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "LandMine",
+    "name": "Land Mine",
+    "code": 11,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "ForceField",
+    "name": "Force Field",
+    "code": 12,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "FireWall",
+    "name": "Fire Wall",
+    "code": 13,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Earthquake",
+    "name": "Earthquake",
+    "code": 14,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "MagicArrow",
+    "name": "Magic Arrow",
+    "code": 15,
+    "availableFrom": "roe",
+    "school": "all",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "IceBolt",
+    "name": "Ice Bolt",
+    "code": 16,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "LightningBolt",
+    "name": "Lightning Bolt",
+    "code": 17,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Implosion",
+    "name": "Implosion",
+    "code": 18,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "ChainLightning",
+    "name": "Chain Lightning",
+    "code": 19,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "FrostRing",
+    "name": "Frost Ring",
+    "code": 20,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Fireball",
+    "name": "Fireball",
+    "code": 21,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Inferno",
+    "name": "Inferno",
+    "code": 22,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "MeteorShower",
+    "name": "Meteor Shower",
+    "code": 23,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "DeathRipple",
+    "name": "Death Ripple",
+    "code": 24,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "DestroyUndead",
+    "name": "Destroy Undead",
+    "code": 25,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Armageddon",
+    "name": "Armageddon",
+    "code": 26,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Shield",
+    "name": "Shield",
+    "code": 27,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "AirShield",
+    "name": "Air Shield",
+    "code": 28,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "FireShield",
+    "name": "Fire Shield",
+    "code": 29,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "ProtectionFromAir",
+    "name": "Protection from Air",
+    "code": 30,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "ProtectionFromFire",
+    "name": "Protection from Fire",
+    "code": 31,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "ProtectionFromWater",
+    "name": "Protection from Water",
+    "code": 32,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "ProtectionFromEarth",
+    "name": "Protection from Earth",
+    "code": 33,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "AntiMagic",
+    "name": "Anti Magic",
+    "code": 34,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Dispel",
+    "name": "Dispel",
+    "code": 35,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "MagicMirror",
+    "name": "Magic Mirror",
+    "code": 36,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "Cure",
+    "name": "Cure",
+    "code": 37,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Resurrection",
+    "name": "Resurrection",
+    "code": 38,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "AnimateDead",
+    "name": "Animate Dead",
+    "code": 39,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Sacrifice",
+    "name": "Sacrifice",
+    "code": 40,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "Bless",
+    "name": "Bless",
+    "code": 41,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Curse",
+    "name": "Curse",
+    "code": 42,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Bloodlust",
+    "name": "Bloodlust",
+    "code": 43,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Precision",
+    "name": "Precision",
+    "code": 44,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Weakness",
+    "name": "Weakness",
+    "code": 45,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "StoneSkin",
+    "name": "Stone Skin",
+    "code": 46,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "DisruptingRay",
+    "name": "Disrupting Ray",
+    "code": 47,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Prayer",
+    "name": "Prayer",
+    "code": 48,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Mirth",
+    "name": "Mirth",
+    "code": 49,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Sorrow",
+    "name": "Sorrow",
+    "code": 50,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Fortune",
+    "name": "Fortune",
+    "code": 51,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Misfortune",
+    "name": "Misfortune",
+    "code": 52,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Haste",
+    "name": "Haste",
+    "code": 53,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Slow",
+    "name": "Slow",
+    "code": 54,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 1,
+    "type": "combat"
+  },
+  {
+    "id": "Slayer",
+    "name": "Slayer",
+    "code": 55,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Frenzy",
+    "name": "Frenzy",
+    "code": 56,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "TitansLightningBolt",
+    "name": "Titan's Lightning Bolt",
+    "code": 57,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 5,
+    "type": "combat",
+    "heroOnly": true
+  },
+  {
+    "id": "Counterstrike",
+    "name": "Counterstrike",
+    "code": 58,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Berserk",
+    "name": "Berserk",
+    "code": 59,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "Hypnotize",
+    "name": "Hypnotize",
+    "code": 60,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Forgetfulness",
+    "name": "Forgetfulness",
+    "code": 61,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "Blind",
+    "name": "Blind",
+    "code": 62,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Teleport",
+    "name": "Teleport",
+    "code": 63,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 3,
+    "type": "combat"
+  },
+  {
+    "id": "RemoveObstacle",
+    "name": "Remove Obstacle",
+    "code": 64,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 2,
+    "type": "combat"
+  },
+  {
+    "id": "Clone",
+    "name": "Clone",
+    "code": 65,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 4,
+    "type": "combat"
+  },
+  {
+    "id": "SummonFireElemental",
+    "name": "Summon Fire Elemental",
+    "code": 66,
+    "availableFrom": "roe",
+    "school": "fire",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "SummonEarthElemental",
+    "name": "Summon Earth Elemental",
+    "code": 67,
+    "availableFrom": "roe",
+    "school": "earth",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "SummonWaterElemental",
+    "name": "Summon Water Elemental",
+    "code": 68,
+    "availableFrom": "roe",
+    "school": "water",
+    "level": 5,
+    "type": "combat"
+  },
+  {
+    "id": "SummonAirElemental",
+    "name": "Summon Air Elemental",
+    "code": 69,
+    "availableFrom": "roe",
+    "school": "wind",
+    "level": 5,
+    "type": "combat"
+  }
+]

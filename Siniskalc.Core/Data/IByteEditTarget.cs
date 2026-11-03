@@ -1,4 +1,4 @@
-namespace Siniskalc.Core.Data
+﻿namespace Siniskalc.Core.Data
 {
     using System;
     using System.Collections.Generic;
@@ -40,6 +40,8 @@ namespace Siniskalc.Core.Data
         /// returns the new ones, of the same length. Records one undo step. Returns false, and records nothing,
         /// if the bytes end up unchanged.
         /// </summary>
+        /// <param name="edit">Gets a copy of the current bytes and returns the new ones.</param>
+        /// <returns><see langword="true"/> if the bytes changed and an undo step was recorded; otherwise <see langword="false"/>.</returns>
         bool Update(Func<byte[], byte[]> edit);
     }
 }

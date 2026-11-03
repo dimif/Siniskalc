@@ -1,0 +1,22 @@
+<UserControl x:Class="Siniskalc.Homm2.Views.OwnedMinesCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+             xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf">
+    <!-- The mines of one owner, and the bytes of the one picked. The DataContext is an IOwnedMines. -->
+    <StackPanel>
+        <heroes:MinesCard x:Name="minesCard" DataContext="{Binding Mines}"/>
+
+        <!-- Hex: the bytes of the mine that is picked -->
+        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hex: the bytes of the mine that is picked"/>
+                <wpf:HexEditor Grid.Row="1" x:Name="hexEditor" KnownFieldsHeight="120"/>
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

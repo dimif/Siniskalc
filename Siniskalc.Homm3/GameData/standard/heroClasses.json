@@ -1,0 +1,194 @@
+[
+  {
+    "id": "Knight",
+    "name": "Knight",
+    "code": 0,
+    "availableFrom": "roe",
+    "faction": "Castle",
+    "type": "might"
+  },
+  {
+    "id": "Cleric",
+    "name": "Cleric",
+    "code": 1,
+    "availableFrom": "roe",
+    "faction": "Castle",
+    "type": "magic"
+  },
+  {
+    "id": "Ranger",
+    "name": "Ranger",
+    "code": 2,
+    "availableFrom": "roe",
+    "faction": "Rampart",
+    "type": "might"
+  },
+  {
+    "id": "Druid",
+    "name": "Druid",
+    "code": 3,
+    "availableFrom": "roe",
+    "faction": "Rampart",
+    "type": "magic"
+  },
+  {
+    "id": "Alchemist",
+    "name": "Alchemist",
+    "code": 4,
+    "availableFrom": "roe",
+    "faction": "Tower",
+    "type": "might"
+  },
+  {
+    "id": "Wizard",
+    "name": "Wizard",
+    "code": 5,
+    "availableFrom": "roe",
+    "faction": "Tower",
+    "type": "magic"
+  },
+  {
+    "id": "Demoniac",
+    "name": "Demoniac",
+    "code": 6,
+    "availableFrom": "roe",
+    "faction": "Inferno",
+    "type": "might"
+  },
+  {
+    "id": "Heretic",
+    "name": "Heretic",
+    "code": 7,
+    "availableFrom": "roe",
+    "faction": "Inferno",
+    "type": "magic"
+  },
+  {
+    "id": "DeathKnight",
+    "name": "Death Knight",
+    "code": 8,
+    "availableFrom": "roe",
+    "faction": "Necropolis",
+    "type": "might"
+  },
+  {
+    "id": "Necromancer",
+    "name": "Necromancer",
+    "code": 9,
+    "availableFrom": "roe",
+    "faction": "Necropolis",
+    "type": "magic"
+  },
+  {
+    "id": "Overlord",
+    "name": "Overlord",
+    "code": 10,
+    "availableFrom": "roe",
+    "faction": "Dungeon",
+    "type": "might"
+  },
+  {
+    "id": "Warlock",
+    "name": "Warlock",
+    "code": 11,
+    "availableFrom": "roe",
+    "faction": "Dungeon",
+    "type": "magic"
+  },
+  {
+    "id": "Barbarian",
+    "name": "Barbarian",
+    "code": 12,
+    "availableFrom": "roe",
+    "faction": "Stronghold",
+    "type": "might"
+  },
+  {
+    "id": "BattleMage",
+    "name": "Battle Mage",
+    "code": 13,
+    "availableFrom": "roe",
+    "faction": "Stronghold",
+    "type": "magic"
+  },
+  {
+    "id": "Beastmaster",
+    "name": "Beastmaster",
+    "code": 14,
+    "availableFrom": "roe",
+    "faction": "Fortress",
+    "type": "might"
+  },
+  {
+    "id": "Witch",
+    "name": "Witch",
+    "code": 15,
+    "availableFrom": "roe",
+    "faction": "Fortress",
+    "type": "magic"
+  },
+  {
+    "id": "Planeswalker",
+    "name": "Planeswalker",
+    "code": 16,
+    "availableFrom": "ab",
+    "faction": "Conflux",
+    "type": "might"
+  },
+  {
+    "id": "Elementalist",
+    "name": "Elementalist",
+    "code": 17,
+    "availableFrom": "ab",
+    "faction": "Conflux",
+    "type": "magic"
+  },
+  {
+    "id": "Captain",
+    "name": "Captain",
+    "code": 18,
+    "availableFrom": "hota",
+    "faction": "Cove",
+    "type": "might"
+  },
+  {
+    "id": "Navigator",
+    "name": "Navigator",
+    "code": 19,
+    "availableFrom": "hota",
+    "faction": "Cove",
+    "type": "magic"
+  },
+  {
+    "id": "Mercenary",
+    "name": "Mercenary",
+    "code": 20,
+    "availableFrom": "hota",
+    "faction": "Factory",
+    "type": "might"
+  },
+  {
+    "id": "Artificier",
+    "name": "Artificier",
+    "code": 21,
+    "availableFrom": "hota",
+    "faction": "Factory",
+    "type": "magic"
+  },
+  {
+    "id": "Chieftain",
+    "name": "Chieftain",
+    "code": 22,
+    "availableFrom": "hota",
+    "faction": "Bulwark",
+    "type": "might"
+  },
+  {
+    "id": "Elder",
+    "name": "Elder",
+    "code": 23,
+    "availableFrom": "hota",
+    "faction": "Bulwark",
+    "type": "magic"
+  }
+]

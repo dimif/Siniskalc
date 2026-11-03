@@ -1,0 +1,99 @@
+UltimateBookOfKnowledge|Ultimate Book of Knowledge|0|BaseGame|0,0,0,12
+UltimateSwordOfDominion|Ultimate Sword of Dominion|1|BaseGame|12,0,0,0
+UltimateCloakOfProtection|Ultimate Cloak of Protection|2|BaseGame|0,12,0,0
+UltimateWandOfMagic|Ultimate Wand of Magic|3|BaseGame|0,0,12,0
+UltimateShield|Ultimate Shield|4|BaseGame|6,6,0,0
+UltimateStaff|Ultimate Staff|5|BaseGame|0,0,6,6
+UltimateCrown|Ultimate Crown|6|BaseGame|4,4,4,4
+GoldenGoose|Golden Goose|7|BaseGame|0,0,0,0
+ArcaneNecklaceOfMagic|Arcane Necklace of Magic|8|BaseGame|0,0,4,0
+CastersBraceletOfMagic|Caster's Bracelet of Magic|9|BaseGame|0,0,2,0
+MagesRingOfPower|Mage's Ring of Power|10|BaseGame|0,0,2,0
+WitchsBroachOfMagic|Witch's Broach of Magic|11|BaseGame|0,0,3,0
+MedalOfValor|Medal of Valor|12|BaseGame|0,0,0,0
+MedalOfCourage|Medal of Courage|13|BaseGame|0,0,0,0
+MedalOfHonor|Medal of Honor|14|BaseGame|0,0,0,0
+MedalOfDistinction|Medal of Distinction|15|BaseGame|0,0,0,0
+FizbinOfMisfortune|Fizbin of Misfortune|16|BaseGame|0,0,0,0
+ThunderMaceOfDominion|Thunder Mace of Dominion|17|BaseGame|1,0,0,0
+ArmoredGauntletsOfProtection|Armored Gauntlets of Protection|18|BaseGame|0,1,0,0
+DefenderHelmOfProtection|Defender Helm of Protection|19|BaseGame|0,1,0,0
+GiantFlailOfDominion|Giant Flail of Dominion|20|BaseGame|1,0,0,0
+BallistaOfQuickness|Ballista of Quickness|21|BaseGame|0,0,0,0
+StealthShieldOfProtection|Stealth Shield of Protection|22|BaseGame|0,2,0,0
+DragonSwordOfDominion|Dragon Sword of Dominion|23|BaseGame|3,0,0,0
+PowerAxeOfDominion|Power Axe of Dominion|24|BaseGame|2,0,0,0
+DivineBreastplateOfProtection|Divine Breastplate of Protection|25|BaseGame|0,3,0,0
+MinorScrollOfKnowledge|Minor Scroll of Knowledge|26|BaseGame|0,0,0,2
+MajorScrollOfKnowledge|Major Scroll of Knowledge|27|BaseGame|0,0,0,3
+SuperiorScrollOfKnowledge|Superior Scroll of Knowledge|28|BaseGame|0,0,0,4
+ForemostScrollOfKnowledge|Foremost Scroll of Knowledge|29|BaseGame|0,0,0,5
+EndlessSackOfGold|Endless Sack of Gold|30|BaseGame|0,0,0,0
+EndlessBagOfGold|Endless Bag of Gold|31|BaseGame|0,0,0,0
+EndlessPurseOfGold|Endless Purse of Gold|32|BaseGame|0,0,0,0
+NomadBootsOfMobility|Nomad Boots of Mobility|33|BaseGame|0,0,0,0
+TravelersBootsOfMobility|Traveler's Boots of Mobility|34|BaseGame|0,0,0,0
+LuckyRabbitsFoot|Lucky Rabbit's Foot|35|BaseGame|0,0,0,0
+GoldenHorseshoe|Golden Horseshoe|36|BaseGame|0,0,0,0
+GamblersLuckyCoin|Gambler's Lucky Coin|37|BaseGame|0,0,0,0
+FourLeafClover|Four-Leaf Clover|38|BaseGame|0,0,0,0
+TrueCompassOfMobility|True Compass of Mobility|39|BaseGame|0,0,0,0
+SailorsAstrolabeOfMobility|Sailor's Astrolabe of Mobility|40|BaseGame|0,0,0,0
+EvilEye|Evil Eye|41|BaseGame|0,0,0,0
+EnchantedHourglass|Enchanted Hourglass|42|BaseGame|0,0,0,0
+GoldWatch|Gold Watch|43|BaseGame|0,0,0,0
+Skullcap|Skullcap|44|BaseGame|0,0,0,0
+IceCloak|Ice Cloak|45|BaseGame|0,0,0,0
+FireCloak|Fire Cloak|46|BaseGame|0,0,0,0
+LightningHelm|Lightning Helm|47|BaseGame|0,0,0,0
+EvercoldIcicle|Evercold Icicle|48|BaseGame|0,0,0,0
+EverhotLavaRock|Everhot Lava Rock|49|BaseGame|0,0,0,0
+LightningRod|Lightning Rod|50|BaseGame|0,0,0,0
+SnakeRing|Snake-Ring|51|BaseGame|0,0,0,0
+Ankh|Ankh|52|BaseGame|0,0,0,0
+BookOfElements|Book of Elements|53|BaseGame|0,0,0,0
+ElementalRing|Elemental Ring|54|BaseGame|0,0,0,0
+HolyPendant|Holy Pendant|55|BaseGame|0,0,0,0
+PendantOfFreeWill|Pendant of Free Will|56|BaseGame|0,0,0,0
+PendantOfLife|Pendant of Life|57|BaseGame|0,0,0,0
+SerenityPendant|Serenity Pendant|58|BaseGame|0,0,0,0
+SeeingeyePendant|Seeing-eye Pendant|59|BaseGame|0,0,0,0
+KineticPendant|Kinetic Pendant|60|BaseGame|0,0,0,0
+PendantOfDeath|Pendant of Death|61|BaseGame|0,0,0,0
+WandOfNegation|Wand of Negation|62|BaseGame|0,0,0,0
+GoldenBow|Golden Bow|63|BaseGame|0,0,0,0
+Telescope|Telescope|64|BaseGame|0,0,0,0
+StatesmansQuill|Statesman's Quill|65|BaseGame|0,0,0,0
+WizardsHat|Wizard's Hat|66|BaseGame|0,0,0,0
+PowerRing|Power Ring|67|BaseGame|0,0,0,0
+AmmoCart|Ammo Cart|68|BaseGame|0,0,0,0
+TaxLien|Tax Lien|69|BaseGame|0,0,0,0
+HideousMask|Hideous Mask|70|BaseGame|0,0,0,0
+EndlessPouchOfSulfur|Endless Pouch of Sulfur|71|BaseGame|0,0,0,0
+EndlessVialOfMercury|Endless Vial of Mercury|72|BaseGame|0,0,0,0
+EndlessPouchOfGems|Endless Pouch of Gems|73|BaseGame|0,0,0,0
+EndlessCordOfWood|Endless Cord of Wood|74|BaseGame|0,0,0,0
+EndlessCartOfOre|Endless Cart of Ore|75|BaseGame|0,0,0,0
+EndlessPouchOfCrystal|Endless Pouch of Crystal|76|BaseGame|0,0,0,0
+SpikedHelm|Spiked Helm|77|BaseGame|1,1,0,0
+SpikedShield|Spiked Shield|78|BaseGame|2,2,0,0
+WhitePearl|White Pearl|79|BaseGame|0,0,1,1
+BlackPearl|Black Pearl|80|BaseGame|0,0,2,2
+MagicBook|Magic Book|81|BaseGame|0,0,0,0
+SpellScroll|Spell Scroll|86|PriceOfLoyalty|0,0,0,0
+ArmOfTheMartyr|Arm of the Martyr|87|PriceOfLoyalty|0,0,3,0
+BreastplateOfAnduran|Breastplate of Anduran|88|PriceOfLoyalty|0,5,0,0
+BroachOfShielding|Broach of Shielding|89|PriceOfLoyalty|0,0,-2,0
+BattleGarbOfAnduran|Battle Garb of Anduran|90|PriceOfLoyalty|5,5,5,0
+CrystalBall|Crystal Ball|91|PriceOfLoyalty|0,0,0,0
+HeartOfFire|Heart of Fire|92|PriceOfLoyalty|0,0,0,0
+HeartOfIce|Heart of Ice|93|PriceOfLoyalty|0,0,0,0
+HelmetOfAnduran|Helmet of Anduran|94|PriceOfLoyalty|0,0,5,0
+HolyHammer|Holy Hammer|95|PriceOfLoyalty|5,0,0,0
+LegendaryScepter|Legendary Scepter|96|PriceOfLoyalty|2,2,2,2
+Masthead|Masthead|97|PriceOfLoyalty|0,0,0,0
+SphereOfNegation|Sphere of Negation|98|PriceOfLoyalty|0,0,0,0
+StaffOfWizardry|Staff of Wizardry|99|PriceOfLoyalty|0,0,5,0
+SwordBreaker|Sword Breaker|100|PriceOfLoyalty|1,4,0,0
+SwordOfAnduran|Sword of Anduran|101|PriceOfLoyalty|5,0,0,0
+SpadeOfNecromancy|Spade of Necromancy|102|PriceOfLoyalty|0,0,0,0

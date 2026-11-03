@@ -1,0 +1,6 @@
+Gazebo|138
+Fort|190
+WitchDoctorHut|197
+MercenaryCamp|201
+StandingStones|194
+Xanadu|214

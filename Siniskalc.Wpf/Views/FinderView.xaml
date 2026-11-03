@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:Siniskalc.Wpf.Views"
              x:Name="root"
              mc:Ignorable="d" d:DesignWidth="760">
-    <!-- A search box, drop-down filters and a grouped list of rows. DataContext is a FinderViewModel, which says which columns there are. -->
+    <!-- A search box, the extra controls of ToolbarContent and a grouped list of rows. DataContext is an AbstractFinderViewModel, which says which columns there are. -->
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" Text="{Binding Title}">
             <TextBlock.Style>
@@ -45,6 +45,7 @@
         <ListBox x:Name="list" ItemsSource="{Binding Items}" MaxHeight="{Binding ListMaxHeight, ElementName=root}" Background="Transparent"
                  BorderThickness="0,1,0,0" BorderBrush="{StaticResource LineBrush}"
                  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.ScrollUnit="Pixel"
                  MouseDoubleClick="ListDoubleClick" ContextMenuOpening="ListContextMenuOpening">
             <ListBox.GroupStyle>
                 <GroupStyle>

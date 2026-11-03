@@ -1,0 +1,122 @@
+[
+  {
+    "id": "LearningStone",
+    "name": "Learning stones",
+    "objectType": 100,
+    "description": "Learning stones: experience, once per hero",
+    "numberMask": 255,
+    "code": 0,
+    "slot": "experience",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MarlettoTower",
+    "name": "Marletto towers",
+    "objectType": 23,
+    "description": "A point of defense, once per hero",
+    "numberMask": 255,
+    "code": 1,
+    "slot": "defense",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "GardenOfRevelation",
+    "name": "Revelation gardens",
+    "objectType": 32,
+    "description": "A point of knowledge, once per hero",
+    "numberMask": 255,
+    "code": 2,
+    "slot": "knowledge",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MercenaryCamp",
+    "name": "Mercenary camps",
+    "objectType": 51,
+    "description": "A point of attack, once per hero",
+    "numberMask": 255,
+    "code": 3,
+    "slot": "attack",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "StarAxis",
+    "name": "Star axes",
+    "objectType": 61,
+    "description": "A point of spell power, once per hero",
+    "numberMask": 255,
+    "code": 4,
+    "slot": "power",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "TreeOfKnowledge",
+    "name": "Trees of knowledge",
+    "objectType": 102,
+    "description": "A level, once per hero, for a payment",
+    "numberMask": 31,
+    "code": 5,
+    "slot": "level",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "LibraryOfEnlightenment",
+    "name": "Libraries",
+    "objectType": 41,
+    "description": "Libraries of enlightenment: two points of every primary skill for a hero of a high level, once per hero",
+    "numberMask": 255,
+    "code": 6,
+    "slot": "primarySkills",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Arena",
+    "name": "Arenas",
+    "objectType": 4,
+    "description": "A point of attack or defense, once per hero",
+    "numberMask": 255,
+    "code": 7,
+    "slot": "attackOrDefense",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SchoolOfMagic",
+    "name": "Schools of magic",
+    "objectType": 47,
+    "description": "A point of spell power or knowledge for a payment, once per hero",
+    "numberMask": 255,
+    "code": 8,
+    "slot": "powerOrKnowledge",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SchoolOfWar",
+    "name": "Schools of war",
+    "objectType": 107,
+    "description": "A point of attack or defense for a payment, once per hero",
+    "numberMask": 255,
+    "code": 9,
+    "slot": "paidAttackOrDefense",
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ColossusOfTheMagi",
+    "name": "Colossi",
+    "objectType": null,
+    "description": "Colossi of the magi, Horn of the Abyss only: once per hero. The places are not listed: the savegame does not number them apart from the gazebos",
+    "numberMask": 255,
+    "code": 10,
+    "slot": "hotaPrimarySkills",
+    "availableFrom": "hota"
+  },
+  {
+    "id": "Gazebo",
+    "name": "Gazebos",
+    "objectType": null,
+    "description": "Horn of the Abyss only: two thousand experience points, once per hero. The places are not listed: the savegame does not number them apart from the colossi",
+    "numberMask": 255,
+    "code": 11,
+    "slot": "hotaExperience",
+    "availableFrom": "hota"
+  }
+]

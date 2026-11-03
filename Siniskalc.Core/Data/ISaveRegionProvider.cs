@@ -1,7 +1,6 @@
-namespace Siniskalc.Core.Data
+﻿namespace Siniskalc.Core.Data
 {
     using System.Collections.Generic;
-    using Siniskalc.Core.Data;
 
     /// <summary>
     /// Describes where each known field lives in the whole savefile.
@@ -13,6 +12,7 @@ namespace Siniskalc.Core.Data
         /// </summary>
         /// <param name="document">Where the heroes, players and castles are.</param>
         /// <param name="bytes">The bytes of the savefile that go with <paramref name="document"/>.</param>
+        /// <returns>The regions, ordered by offset.</returns>
         IReadOnlyList<ByteRegion> GetRegions(SaveDocument document, byte[] bytes);
     }
 }

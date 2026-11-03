@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Astrolabe",
+      "name": "Astrolabe",
+      "code": 103,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 4
+          },
+          {
+            "attribute": "spellPower",
+            "amount": 2
+          }
+        ]
+      }
+    }
+  ],
+  "replacements": []
+}

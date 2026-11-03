@@ -1,0 +1,119 @@
+<Page x:Class="Siniskalc.Homm2.Views.HeroPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+      xmlns:local="clr-namespace:Siniskalc.Homm2.Views"
+      Title="Hero">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="16,14,16,4">
+            <heroes:PageHeader ColorHex="{Binding ColorHex}" Title="{Binding Name}"
+                               EditedToolTip="This hero has changes that are not saved yet"
+                               ResetToolTip="Put everything of this hero back to what the savegame had">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding SubtitleText, Mode=OneWay}"
+                               ToolTip="Faction, level and where the hero is on the map"/>
+                    <StackPanel Orientation="Horizontal" Margin="8,0,0,3" VerticalAlignment="Bottom">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CastleName}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="· In " Foreground="{StaticResource MutedBrush}" FontSize="14" VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenCastleCommand}" Content="{Binding CastleName}"
+                                FontSize="14" ToolTip="Go to castle"/>
+                    </StackPanel>
+                </StackPanel>
+            </heroes:PageHeader>
+            <heroes:OwnerPicker Margin="0,8,0,0"
+                                PickerToolTip="Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish."/>
+            <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- The pages of a hero, as tabs. -->
+        <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
+            <wpf:NavButton Text="General"/>
+            <wpf:NavButton Text="Skills"/>
+            <wpf:NavButton Text="Creatures"/>
+            <wpf:NavButton Text="Spells"/>
+            <wpf:NavButton Text="Places"/>
+            <wpf:NavButton Text="Artifacts"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+        </ListBox>
+
+        <!-- Hex -->
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel6}"/>
+
+        <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="6">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <Grid Margin="8,4,8,16">
+                <!-- General -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
+                    <heroes:PrimarySkillsCard DataContext="{Binding PrimarySkills}"/>
+                    <heroes:LevelAndClassCard DataContext="{Binding LevelAndClass}"/>
+                    <heroes:MovementAndSpellPointsCard DataContext="{Binding MovementAndSpellPoints}"/>
+                    <heroes:MapPointCard DataContext="{Binding Position}"/>
+                    <heroes:NextBattleCard DataContext="{Binding NextBattle}"/>
+                    <!-- Last, so that it is not stretched to the height of the tall card beside it. -->
+                    <heroes:MapPointCard DataContext="{Binding Destination}"/>
+                </WrapPanel>
+
+                <!-- Skills -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
+                    <heroes:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
+                </StackPanel>
+
+                <!-- Creatures -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+                    <heroes:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
+                </StackPanel>
+
+                <!-- Spells -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
+                    <heroes:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
+                </StackPanel>
+
+                <!-- Places -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel4}">
+                    <heroes:VisitedPlacesCard DataContext="{Binding PlacesVisited}"/>
+                    <heroes:VisitedPlacesCard DataContext="{Binding PlacesUsedWeekly}"/>
+                </WrapPanel>
+
+                <!-- Artifacts -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel5}">
+                    <local:ArtifactsView DataContext="{Binding ArtifactsEditor}"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

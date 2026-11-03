@@ -5,6 +5,10 @@ namespace Siniskalc.Core.Runtime
     /// </summary>
     public sealed class UnsupportedSavefileException : SavefileException
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnsupportedSavefileException"/> class.
+        /// </summary>
+        /// <param name="message">Why the file is not supported, for the user.</param>
         public UnsupportedSavefileException(string message)
             : base(message)
         {

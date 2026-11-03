@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 standard version manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "versions",
+    "sets"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "versions": {
+      "type": "object",
+      "required": [
+        "roe",
+        "ab",
+        "sod",
+        "chronicles",
+        "hota"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "roe": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ab": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sod": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chronicles": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hota": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sets": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "parent",
+          "directory"
+        ],
+        "properties": {
+          "parent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "directory": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

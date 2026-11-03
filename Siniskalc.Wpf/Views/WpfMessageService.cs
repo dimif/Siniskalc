@@ -1,15 +1,18 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using System.Linq;
     using System.Windows;
 
     /// <summary>
-    /// Shows messages in message boxes owned by the window the user is working in, so a dialog never hides behind it.
+    /// Shows messages in message boxes, and unexpected errors in an <see cref="ErrorWindow"/>, owned by the window the user is working in,
+    /// so a dialog never hides behind it. With no such window they are shown on their own.
     /// </summary>
     public sealed class WpfMessageService : IMessageService
     {
+        /// <inheritdoc/>
         public void ShowError(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Error);
 
+        /// <inheritdoc/>
         public void ShowUnexpectedError(string title, string message, string details)
         {
             var window = new ErrorWindow(title, message, details);
@@ -26,10 +29,13 @@ namespace Siniskalc.Wpf.Views
             window.ShowDialog();
         }
 
+        /// <inheritdoc/>
         public void ShowWarning(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Warning);
 
+        /// <inheritdoc/>
         public void ShowInformation(string title, string message) => Show(title, message, MessageBoxButton.OK, MessageBoxImage.Information);
 
+        /// <inheritdoc/>
         public MessageAnswer AskYesNoCancel(string title, string message) => Show(title, message, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning) switch
         {
             MessageBoxResult.Yes => MessageAnswer.Yes,

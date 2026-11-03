@@ -339,3 +339,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+# Saves made by the write test with Heroes of Might and Magic II (`EditedSaves`, see "How HoMM2 was added" in docs/SINISKALC_ARCHITECTURE.md)
+TestData/Homm2/out/
+TestData/Homm3/out/
+
+# Claude Code: isolated checkouts and personal settings
+.claude/worktrees/
+.claude/settings.local.json

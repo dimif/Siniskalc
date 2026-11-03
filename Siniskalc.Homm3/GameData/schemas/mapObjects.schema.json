@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "merchantName": {
+      "type": "string"
+    },
+    "dwellingName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "merchantName",
+    "dwellingName"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 supported map-object metadata"
+}

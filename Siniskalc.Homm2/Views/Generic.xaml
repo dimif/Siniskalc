@@ -1,0 +1,16 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
+    xmlns:views="clr-namespace:Siniskalc.Homm2.Views">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- The colours and the styles of the controls that every page uses, and the styles of the pages of a Heroes game. -->
+        <ResourceDictionary Source="pack://application:,,,/Siniskalc.Heroes.Wpf;component/Styles/PageStyles.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- What the shell shows for the HoMM2 editor. -->
+    <DataTemplate DataType="{x:Type vm:Homm2EditorViewModel}">
+        <views:Homm2EditorView/>
+    </DataTemplate>
+</ResourceDictionary>

@@ -1,0 +1,132 @@
+<UserControl x:Class="Siniskalc.Heroes.Wpf.Views.MapPointCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+    </UserControl.Resources>
+    <!-- The data context is a MapPointCardViewModel: the position of a hero or its marker. -->
+    <Border Style="{StaticResource CardStyle}" Width="330">
+        <StackPanel>
+            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Heading}"/>
+            <Grid Margin="0,3">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="X"/>
+                <wpf:Stepper Grid.Column="1" Width="110" ShowButtons="False" Value="{Binding X}"
+                             Minimum="{Binding Coordinates.Minimum}" Maximum="{Binding Coordinates.Maximum}" Step="{Binding Coordinates.Step}"/>
+            </Grid>
+            <Grid Margin="0,3">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Y"/>
+                <wpf:Stepper Grid.Column="1" Width="110" ShowButtons="False" Value="{Binding Y}"
+                             Minimum="{Binding Coordinates.Minimum}" Maximum="{Binding Coordinates.Maximum}" Step="{Binding Coordinates.Step}"/>
+            </Grid>
+            <Grid Margin="0,3" Visibility="{Binding HasLevel, Converter={StaticResource BoolToVisibility}}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Level (Z)"/>
+                <ComboBox Grid.Column="1" Width="110" HorizontalAlignment="Left" ItemsSource="{Binding LevelChoices}"
+                          DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding Level}"/>
+            </Grid>
+            <Grid Margin="0,3" Visibility="{Binding HasFacing, Converter={StaticResource BoolToVisibility}}">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Facing"/>
+                <ComboBox Grid.Column="1" Width="110" HorizontalAlignment="Left" ItemsSource="{Binding FacingChoices}" SelectedItem="{Binding Facing}"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0">
+                    <Button Width="28" Content="↺" FontSize="15" Padding="0,0,0,2" Command="{Binding RotateLeftCommand}" ToolTip="Rotate left (counter-clockwise)" AutomationProperties.Name="Rotate left"/>
+                    <Button Width="28" Margin="4,0,0,0" Content="↻" FontSize="15" Padding="0,0,0,2" Command="{Binding RotateRightCommand}" ToolTip="Rotate right (clockwise)" AutomationProperties.Name="Rotate right"/>
+                </StackPanel>
+            </Grid>
+            <StackPanel Margin="0,6,0,0" Orientation="Horizontal" Visibility="{Binding HasSendTo, Converter={StaticResource BoolToVisibility}}">
+                <Button x:Name="sendToggle" Style="{StaticResource PillButtonStyle}" Content="Send to... ▾" Command="{Binding SendTo.OpenCommand}"
+                        ToolTip="Move the hero to a castle, a mine or a dwelling of its player"/>
+                <Popup IsOpen="{Binding SendTo.IsOpen, Mode=TwoWay}" StaysOpen="False" PlacementTarget="{Binding ElementName=sendToggle}" Placement="Bottom" AllowsTransparency="True"
+                       PopupAnimation="Fade" Opened="OnCastlePopupOpened">
+                    <Border Style="{StaticResource CardStyle}" Margin="0,6,12,12" Width="500" Background="White">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.3"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Send to..."/>
+                            <Grid>
+                                <TextBox x:Name="castleSearch" Style="{StaticResource TextFieldStyle}" FontSize="14" Padding="8,6"
+                                         Text="{Binding SendTo.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="Search by name, kind, position or faction"/>
+                                <TextBlock Margin="11,0,0,0" FontSize="14" IsHitTestVisible="False" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}"
+                                           Text="Search by name, kind, position or faction">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=castleSearch}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                            <Grid Margin="8,10,8,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="90"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="Name"/>
+                                <TextBlock Grid.Column="1" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="Kind"/>
+                                <TextBlock Grid.Column="2" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="Position"/>
+                                <TextBlock Grid.Column="3" FontWeight="SemiBold" Foreground="{StaticResource MutedBrush}" Text="Faction"/>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding SendTo.Destinations}" MaxHeight="260">
+                                <ItemsControl.Template>
+                                    <ControlTemplate TargetType="ItemsControl">
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" Padding="8,5" Cursor="Hand" ToolTip="{Binding ToolTip}"
+                                                Command="{Binding DataContext.SendTo.SendCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"
+                                                AutomationProperties.Name="{Binding Label}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="row" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="3">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="row" Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" Value="0.45"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                    <ColumnDefinition Width="110"/>
+                                                    <ColumnDefinition Width="90"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding Name}"/>
+                                                <TextBlock Grid.Column="1" Foreground="{StaticResource MutedBrush}" Text="{Binding Kind}"/>
+                                                <TextBlock Grid.Column="2" Foreground="{StaticResource MutedBrush}" Text="{Binding PlaceText}"/>
+                                                <TextBlock Grid.Column="3" Foreground="{StaticResource MutedBrush}" Text="{Binding Detail}"/>
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </StackPanel>
+            <Button Margin="0,6,0,0" Padding="10,2" HorizontalAlignment="Left" Content="Remove" Command="{Binding RemoveCommand}" ToolTip="{Binding RemoveToolTip}"
+                    Visibility="{Binding CanRemove, Converter={StaticResource BoolToVisibility}}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

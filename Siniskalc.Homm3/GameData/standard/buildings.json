@@ -1,0 +1,3785 @@
+[
+  {
+    "id": "MagesGuild1",
+    "name": "Mage Guild, level 1",
+    "code": 0,
+    "availableFrom": "roe",
+    "type": "mageGuild1",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "MagesGuild2",
+    "name": "Mage Guild, level 2",
+    "code": 1,
+    "availableFrom": "roe",
+    "type": "mageGuild2",
+    "faction": null,
+    "upgrades": "MagesGuild1",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "MagesGuild3",
+    "name": "Mage Guild, level 3",
+    "code": 2,
+    "availableFrom": "roe",
+    "type": "mageGuild3",
+    "faction": null,
+    "upgrades": "MagesGuild2",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "MagesGuild4",
+    "name": "Mage Guild, level 4",
+    "code": 3,
+    "availableFrom": "roe",
+    "type": "mageGuild4",
+    "faction": null,
+    "upgrades": "MagesGuild3",
+    "requires": [],
+    "except": [
+      "Stronghold",
+      "Fortress"
+    ],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "MagesGuild5",
+    "name": "Mage Guild, level 5",
+    "code": 4,
+    "availableFrom": "roe",
+    "type": "mageGuild5",
+    "faction": null,
+    "upgrades": "MagesGuild4",
+    "requires": [],
+    "except": [
+      "Castle",
+      "Cove",
+      "Bulwark",
+      "Stronghold",
+      "Fortress"
+    ],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Tavern",
+    "name": "Tavern",
+    "code": 5,
+    "availableFrom": "roe",
+    "type": "tavern",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Shipyard",
+    "name": "Shipyard",
+    "code": 6,
+    "availableFrom": "roe",
+    "type": "shipyard",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [
+      "Rampart",
+      "Tower",
+      "Inferno",
+      "Dungeon",
+      "Stronghold",
+      "Factory"
+    ],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Fort",
+    "name": "Fort",
+    "code": 7,
+    "availableFrom": "roe",
+    "type": "fort",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Citadel",
+    "name": "Citadel",
+    "code": 8,
+    "availableFrom": "roe",
+    "type": "citadel",
+    "faction": null,
+    "upgrades": "Fort",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Castle",
+    "name": "Castle",
+    "code": 9,
+    "availableFrom": "roe",
+    "type": "castle",
+    "faction": null,
+    "upgrades": "Citadel",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "VillageHall",
+    "name": "Village Hall",
+    "code": 10,
+    "availableFrom": "roe",
+    "type": "villageHall",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 500
+  },
+  {
+    "id": "TownHall",
+    "name": "Town Hall",
+    "code": 11,
+    "availableFrom": "roe",
+    "type": "townHall",
+    "faction": null,
+    "upgrades": "VillageHall",
+    "requires": [
+      "Tavern"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 1000
+  },
+  {
+    "id": "Marketplace",
+    "name": "Marketplace",
+    "code": 14,
+    "availableFrom": "roe",
+    "type": "marketplace",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "Blacksmith",
+    "name": "Blacksmith",
+    "code": 16,
+    "availableFrom": "roe",
+    "type": "blacksmith",
+    "faction": null,
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CityHall",
+    "name": "City Hall",
+    "code": 12,
+    "availableFrom": "roe",
+    "type": "cityHall",
+    "faction": null,
+    "upgrades": "TownHall",
+    "requires": [
+      "MagesGuild1",
+      "Marketplace",
+      "Blacksmith"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 2000
+  },
+  {
+    "id": "Capitol",
+    "name": "Capitol",
+    "code": 13,
+    "availableFrom": "roe",
+    "type": "capitol",
+    "faction": null,
+    "upgrades": "CityHall",
+    "requires": [
+      "Castle"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 4000
+  },
+  {
+    "id": "ResourceSilo",
+    "name": "Resource Silo",
+    "code": 15,
+    "availableFrom": "roe",
+    "type": "resourceSilo",
+    "faction": null,
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleLighthouse",
+    "name": "Lighthouse",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "Shipyard"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleGuardhouse",
+    "name": "Guardhouse",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleBarracks",
+    "name": "Barracks",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "Blacksmith",
+      "CastleGuardhouse"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleGriffinTower",
+    "name": "Griffin Tower",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "CastleBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleGriffinBastion",
+    "name": "Griffin Bastion",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Castle",
+    "upgrades": "CastleGriffinTower",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgGriffinTower",
+    "name": "Upg. Griffin Tower",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Castle",
+    "upgrades": "CastleGriffinTower",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgGriffinBastion",
+    "name": "Upg. Griffin Bastion",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Castle",
+    "upgrades": "CastleUpgGriffinTower",
+    "requires": [
+      "CastleGriffinBastion"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleStables",
+    "name": "Stables",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "CastleBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleBrotherhoodOfTheSword",
+    "name": "Brotherhood of the Sword",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Castle",
+    "upgrades": "Tavern",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleColossus",
+    "name": "Colossus",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleArchersTower",
+    "name": "Archers' Tower",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "CastleGuardhouse"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleMonastery",
+    "name": "Monastery",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1",
+      "CastleBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleTrainingGrounds",
+    "name": "Training Grounds",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "CastleStables"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastlePortalOfGlory",
+    "name": "Portal of Glory",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Castle",
+    "upgrades": null,
+    "requires": [
+      "CastleMonastery"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgGuardhouse",
+    "name": "Upg. Guardhouse",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Castle",
+    "upgrades": "CastleGuardhouse",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgArchersTower",
+    "name": "Upg. Archers' Tower",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Castle",
+    "upgrades": "CastleArchersTower",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgBarracks",
+    "name": "Upg. Barracks",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Castle",
+    "upgrades": "CastleBarracks",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgMonastery",
+    "name": "Upg. Monastery",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Castle",
+    "upgrades": "CastleMonastery",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgTrainingGrounds",
+    "name": "Upg. Training Grounds",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Castle",
+    "upgrades": "CastleTrainingGrounds",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CastleUpgPortalOfGlory",
+    "name": "Upg. Portal of Glory",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Castle",
+    "upgrades": "CastlePortalOfGlory",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartMysticPond",
+    "name": "Mystic Pond",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartCentaurStables",
+    "name": "Centaur Stables",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartDwarfCottage",
+    "name": "Dwarf Cottage",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartCentaurStables"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartMinersGuild",
+    "name": "Miners' Guild",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Rampart",
+    "upgrades": "RampartDwarfCottage",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgDwarfCottage",
+    "name": "Upg. Dwarf Cottage",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Rampart",
+    "upgrades": "RampartDwarfCottage",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgMinersGuild",
+    "name": "Upg. Miners' Guild",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Rampart",
+    "upgrades": "RampartUpgDwarfCottage",
+    "requires": [
+      "RampartMinersGuild"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartFountainOfFortune",
+    "name": "Fountain of Fortune",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Rampart",
+    "upgrades": "RampartMysticPond",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartTreasury",
+    "name": "Treasury",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartMinersGuild"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartHomestead",
+    "name": "Homestead",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartCentaurStables"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartDendroidArches",
+    "name": "Dendroid Arches",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartHomestead"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartDendroidSaplings",
+    "name": "Dendroid Saplings",
+    "code": 24,
+    "availableFrom": "roe",
+    "type": "horde2",
+    "faction": "Rampart",
+    "upgrades": "RampartDendroidArches",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgDendroidArches",
+    "name": "Upg. Dendroid Arches",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Rampart",
+    "upgrades": "RampartDendroidArches",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgDendroidSaplings",
+    "name": "Upg. Dendroid Saplings",
+    "code": 25,
+    "availableFrom": "roe",
+    "type": "upgradedHorde2",
+    "faction": "Rampart",
+    "upgrades": "RampartUpgDendroidArches",
+    "requires": [
+      "RampartDendroidSaplings"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartSpiritGuardian",
+    "name": "Spirit Guardian",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartEnchantedSpring",
+    "name": "Enchanted Spring",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartHomestead"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUnicornGlade",
+    "name": "Unicorn Glade",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartEnchantedSpring",
+      "RampartDendroidArches"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartDragonCliffs",
+    "name": "Dragon Cliffs",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Rampart",
+    "upgrades": null,
+    "requires": [
+      "RampartUnicornGlade",
+      "MagesGuild2"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgCentaurStables",
+    "name": "Upg. Centaur Stables",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Rampart",
+    "upgrades": "RampartCentaurStables",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgHomestead",
+    "name": "Upg. Homestead",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Rampart",
+    "upgrades": "RampartHomestead",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgEnchantedSpring",
+    "name": "Upg. Enchanted Spring",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Rampart",
+    "upgrades": "RampartEnchantedSpring",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgUnicornGlade",
+    "name": "Upg. Unicorn Glade",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Rampart",
+    "upgrades": "RampartUnicornGlade",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "RampartUpgDragonCliffs",
+    "name": "Upg. Dragon Cliffs",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Rampart",
+    "upgrades": "RampartDragonCliffs",
+    "requires": [
+      "MagesGuild3"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerArtifactMerchants",
+    "name": "Artifact Merchants",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerWorkshop",
+    "name": "Workshop",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerParapet",
+    "name": "Parapet",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "TowerWorkshop"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerSculptorsWings",
+    "name": "Sculptor's Wings",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Tower",
+    "upgrades": "TowerParapet",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgParapet",
+    "name": "Upg. Parapet",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Tower",
+    "upgrades": "TowerParapet",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgSculptorsWings",
+    "name": "Upg. Sculptor's Wings",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Tower",
+    "upgrades": "TowerUpgParapet",
+    "requires": [
+      "TowerSculptorsWings"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerLookoutTower",
+    "name": "Lookout Tower",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerLibrary",
+    "name": "Library",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerWallOfKnowledge",
+    "name": "Wall of Knowledge",
+    "code": 23,
+    "availableFrom": "roe",
+    "type": "special4",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerSkyship",
+    "name": "Skyship",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerGolemFactory",
+    "name": "Golem Factory",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "TowerWorkshop"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerMageTower",
+    "name": "Mage Tower",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1",
+      "TowerParapet",
+      "TowerGolemFactory"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerAltarOfWishes",
+    "name": "Altar of Wishes",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "TowerMageTower"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerGoldenPavilion",
+    "name": "Golden Pavilion",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "TowerMageTower"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerCloudTemple",
+    "name": "Cloud Temple",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Tower",
+    "upgrades": null,
+    "requires": [
+      "TowerAltarOfWishes",
+      "TowerGoldenPavilion"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgWorkshop",
+    "name": "Upg. Workshop",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Tower",
+    "upgrades": "TowerWorkshop",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgGolemFactory",
+    "name": "Upg. Golem Factory",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Tower",
+    "upgrades": "TowerGolemFactory",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgMageTower",
+    "name": "Upg. Mage Tower",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Tower",
+    "upgrades": "TowerMageTower",
+    "requires": [
+      "TowerLibrary"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgAltarOfWishes",
+    "name": "Upg. Altar of Wishes",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Tower",
+    "upgrades": "TowerAltarOfWishes",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgGoldenPavilion",
+    "name": "Upg. Golden Pavilion",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Tower",
+    "upgrades": "TowerGoldenPavilion",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "TowerUpgCloudTemple",
+    "name": "Upg. Cloud Temple",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Tower",
+    "upgrades": "TowerCloudTemple",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoImpCrucible",
+    "name": "Imp Crucible",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoBirthingPool",
+    "name": "Birthing Pool",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Inferno",
+    "upgrades": "InfernoImpCrucible",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgImpCrucible",
+    "name": "Upg. Imp Crucible",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Inferno",
+    "upgrades": "InfernoImpCrucible",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgBirthingPool",
+    "name": "Upg. Birthing Pool",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Inferno",
+    "upgrades": "InfernoUpgImpCrucible",
+    "requires": [
+      "InfernoBirthingPool"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoBrimstoneStormclouds",
+    "name": "Brimstone Stormclouds",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoCastleGate",
+    "name": "Castle Gate",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "Citadel"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoOrderOfFire",
+    "name": "Order of Fire",
+    "code": 23,
+    "availableFrom": "roe",
+    "type": "special4",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoKennels",
+    "name": "Kennels",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "InfernoImpCrucible"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoCages",
+    "name": "Cages",
+    "code": 24,
+    "availableFrom": "roe",
+    "type": "horde2",
+    "faction": "Inferno",
+    "upgrades": "InfernoKennels",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgKennels",
+    "name": "Upg. Kennels",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Inferno",
+    "upgrades": "InfernoKennels",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgCages",
+    "name": "Upg. Cages",
+    "code": 25,
+    "availableFrom": "roe",
+    "type": "upgradedHorde2",
+    "faction": "Inferno",
+    "upgrades": "InfernoUpgKennels",
+    "requires": [
+      "InfernoCages"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoDeityOfFire",
+    "name": "Deity of Fire",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoHallOfSins",
+    "name": "Hall of Sins",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "InfernoImpCrucible"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoDemonGate",
+    "name": "Demon Gate",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "InfernoHallOfSins"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoHellHole",
+    "name": "Hell Hole",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "InfernoDemonGate"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoFireLake",
+    "name": "Fire Lake",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1",
+      "InfernoDemonGate"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoForsakenPalace",
+    "name": "Forsaken Palace",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Inferno",
+    "upgrades": null,
+    "requires": [
+      "InfernoHellHole",
+      "InfernoFireLake"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgHallOfSins",
+    "name": "Upg. Hall of Sins",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Inferno",
+    "upgrades": "InfernoHallOfSins",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgDemonGate",
+    "name": "Upg. Demon Gate",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Inferno",
+    "upgrades": "InfernoDemonGate",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgHellHole",
+    "name": "Upg. Hell Hole",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Inferno",
+    "upgrades": "InfernoHellHole",
+    "requires": [
+      "MagesGuild2"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgFireLake",
+    "name": "Upg. Fire Lake",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Inferno",
+    "upgrades": "InfernoFireLake",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "InfernoUpgForsakenPalace",
+    "name": "Upg. Forsaken Palace",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Inferno",
+    "upgrades": "InfernoForsakenPalace",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisCoverOfDarkness",
+    "name": "Cover of Darkness",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisCursedTemple",
+    "name": "Cursed Temple",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisSkeletonTransformer",
+    "name": "Skeleton Transformer",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisCursedTemple"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUnearthedGraves",
+    "name": "Unearthed Graves",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisCursedTemple",
+    "requires": [
+      "NecropolisSkeletonTransformer"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgCursedTemple",
+    "name": "Upg. Cursed Temple",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisCursedTemple",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgUnearthedGraves",
+    "name": "Upg. Unearthed Graves",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisUpgCursedTemple",
+    "requires": [
+      "NecropolisUnearthedGraves"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisNecromancyAmplifier",
+    "name": "Necromancy Amplifier",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisSoulPrison",
+    "name": "Soul Prison",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisGraveyard",
+    "name": "Graveyard",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisCursedTemple"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisTombOfSouls",
+    "name": "Tomb of Souls",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisCursedTemple"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisEstate",
+    "name": "Estate",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisGraveyard"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisMausoleum",
+    "name": "Mausoleum",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1",
+      "NecropolisGraveyard"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisHallOfDarkness",
+    "name": "Hall of Darkness",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisEstate",
+      "NecropolisMausoleum"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisDragonVault",
+    "name": "Dragon Vault",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Necropolis",
+    "upgrades": null,
+    "requires": [
+      "NecropolisHallOfDarkness"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgGraveyard",
+    "name": "Upg. Graveyard",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisGraveyard",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgTombOfSouls",
+    "name": "Upg. Tomb of Souls",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisTombOfSouls",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgEstate",
+    "name": "Upg. Estate",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisEstate",
+    "requires": [
+      "NecropolisNecromancyAmplifier"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgMausoleum",
+    "name": "Upg. Mausoleum",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisMausoleum",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgHallOfDarkness",
+    "name": "Upg. Hall of Darkness",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisHallOfDarkness",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "NecropolisUpgDragonVault",
+    "name": "Upg. Dragon Vault",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Necropolis",
+    "upgrades": "NecropolisDragonVault",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonArtifactMerchants",
+    "name": "Artifact Merchants",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonWarren",
+    "name": "Warren",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonMushroomRings",
+    "name": "Mushroom Rings",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Dungeon",
+    "upgrades": "DungeonWarren",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgWarren",
+    "name": "Upg. Warren",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Dungeon",
+    "upgrades": "DungeonWarren",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgMushroomRings",
+    "name": "Upg. Mushroom Rings",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Dungeon",
+    "upgrades": "DungeonUpgWarren",
+    "requires": [
+      "DungeonMushroomRings"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonManaVortex",
+    "name": "Mana Vortex",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonPortalOfSummoning",
+    "name": "Portal of Summoning",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonBattleScholarAcademy",
+    "name": "Battle Scholar Academy",
+    "code": 23,
+    "availableFrom": "roe",
+    "type": "special4",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonGuardianOfEarth",
+    "name": "Guardian of Earth",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonHarpyLoft",
+    "name": "Harpy Loft",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "DungeonWarren"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonPillarOfEyes",
+    "name": "Pillar of Eyes",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "DungeonWarren"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonChapelOfStilledVoices",
+    "name": "Chapel of Stilled Voices",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "DungeonHarpyLoft",
+      "DungeonPillarOfEyes"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonLabyrinth",
+    "name": "Labyrinth",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "DungeonChapelOfStilledVoices"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonManticoreLair",
+    "name": "Manticore Lair",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "DungeonChapelOfStilledVoices"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonDragonCave",
+    "name": "Dragon Cave",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Dungeon",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild2",
+      "DungeonLabyrinth",
+      "DungeonManticoreLair"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgHarpyLoft",
+    "name": "Upg. Harpy Loft",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Dungeon",
+    "upgrades": "DungeonHarpyLoft",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgPillarOfEyes",
+    "name": "Upg. Pillar of Eyes",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Dungeon",
+    "upgrades": "DungeonPillarOfEyes",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgChapelOfStilledVoices",
+    "name": "Upg. Chapel of Stilled Voices",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Dungeon",
+    "upgrades": "DungeonChapelOfStilledVoices",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgLabyrinth",
+    "name": "Upg. Labyrinth",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Dungeon",
+    "upgrades": "DungeonLabyrinth",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgManticoreLair",
+    "name": "Upg. Manticore Lair",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Dungeon",
+    "upgrades": "DungeonManticoreLair",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "DungeonUpgDragonCave",
+    "name": "Upg. Dragon Cave",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Dungeon",
+    "upgrades": "DungeonDragonCave",
+    "requires": [
+      "MagesGuild3"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdEscapeTunnel",
+    "name": "Escape Tunnel",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdGoblinBarracks",
+    "name": "Goblin Barracks",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdMessHall",
+    "name": "Mess Hall",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdGoblinBarracks",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgGoblinBarracks",
+    "name": "Upg. Goblin Barracks",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdGoblinBarracks",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgMessHall",
+    "name": "Upg. Mess Hall",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdUpgGoblinBarracks",
+    "requires": [
+      "StrongholdMessHall"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdFreelancersGuild",
+    "name": "Freelancer's Guild",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdBallistaYard",
+    "name": "Ballista Yard",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "Blacksmith"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdHallOfValhalla",
+    "name": "Hall of Valhalla",
+    "code": 23,
+    "availableFrom": "roe",
+    "type": "special4",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdWarlordsMonument",
+    "name": "Warlords' Monument",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdWolfPen",
+    "name": "Wolf Pen",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdGoblinBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdOrcTower",
+    "name": "Orc Tower",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdGoblinBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdOgreFort",
+    "name": "Ogre Fort",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdOrcTower"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdCliffNest",
+    "name": "Cliff Nest",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdWolfPen"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdCyclopsCave",
+    "name": "Cyclops Cave",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdOgreFort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdBehemothLair",
+    "name": "Behemoth Lair",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Stronghold",
+    "upgrades": null,
+    "requires": [
+      "StrongholdCliffNest"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgWolfPen",
+    "name": "Upg. Wolf Pen",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdWolfPen",
+    "requires": [
+      "StrongholdUpgGoblinBarracks"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgOrcTower",
+    "name": "Upg. Orc Tower",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdOrcTower",
+    "requires": [
+      "Blacksmith"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgOgreFort",
+    "name": "Upg. Ogre Fort",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdOgreFort",
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgCliffNest",
+    "name": "Upg. Cliff Nest",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdCliffNest",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgCyclopsCave",
+    "name": "Upg. Cyclops Cave",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdCyclopsCave",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "StrongholdUpgBehemothLair",
+    "name": "Upg. Behemoth Lair",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Stronghold",
+    "upgrades": "StrongholdBehemothLair",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressGlyphsOfFear",
+    "name": "Glyphs of Fear",
+    "code": 21,
+    "availableFrom": "roe",
+    "type": "special2",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressCaptainsQuarters",
+    "name": "Captain's Quarters",
+    "code": 17,
+    "availableFrom": "roe",
+    "type": "special1",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "TownHall",
+      "FortressGlyphsOfFear"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressGnollHut",
+    "name": "Gnoll Hut",
+    "code": 30,
+    "availableFrom": "roe",
+    "type": "dwelling1",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressCageOfWarlords",
+    "name": "Cage of Warlords",
+    "code": 18,
+    "availableFrom": "roe",
+    "type": "horde1",
+    "faction": "Fortress",
+    "upgrades": "FortressGnollHut",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgGnollHut",
+    "name": "Upg. Gnoll Hut",
+    "code": 37,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling1",
+    "faction": "Fortress",
+    "upgrades": "FortressGnollHut",
+    "requires": [
+      "Tavern"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgCageOfWarlords",
+    "name": "Upg. Cage of Warlords",
+    "code": 19,
+    "availableFrom": "roe",
+    "type": "upgradedHorde1",
+    "faction": "Fortress",
+    "upgrades": "FortressUpgGnollHut",
+    "requires": [
+      "FortressCageOfWarlords"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressBloodObelisk",
+    "name": "Blood Obelisk",
+    "code": 22,
+    "availableFrom": "roe",
+    "type": "special3",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressGlyphsOfFear"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressCarnivorousPlant",
+    "name": "Carnivorous Plant",
+    "code": 26,
+    "availableFrom": "roe",
+    "type": "grail",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressLizardDen",
+    "name": "Lizard Den",
+    "code": 31,
+    "availableFrom": "roe",
+    "type": "dwelling2",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressGnollHut"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressSerpentFlyHive",
+    "name": "Serpent Fly Hive",
+    "code": 32,
+    "availableFrom": "roe",
+    "type": "dwelling3",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressGnollHut"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressBasiliskPit",
+    "name": "Basilisk Pit",
+    "code": 33,
+    "availableFrom": "roe",
+    "type": "dwelling4",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressSerpentFlyHive"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressGorgonLair",
+    "name": "Gorgon Lair",
+    "code": 34,
+    "availableFrom": "roe",
+    "type": "dwelling5",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressLizardDen",
+      "FortressSerpentFlyHive"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressWyvernNest",
+    "name": "Wyvern Nest",
+    "code": 35,
+    "availableFrom": "roe",
+    "type": "dwelling6",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressLizardDen"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressHydraPond",
+    "name": "Hydra Pond",
+    "code": 36,
+    "availableFrom": "roe",
+    "type": "dwelling7",
+    "faction": "Fortress",
+    "upgrades": null,
+    "requires": [
+      "FortressBasiliskPit",
+      "FortressWyvernNest"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgLizardDen",
+    "name": "Upg. Lizard Den",
+    "code": 38,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling2",
+    "faction": "Fortress",
+    "upgrades": "FortressLizardDen",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgSerpentFlyHive",
+    "name": "Upg. Serpent Fly Hive",
+    "code": 39,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling3",
+    "faction": "Fortress",
+    "upgrades": "FortressSerpentFlyHive",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgBasiliskPit",
+    "name": "Upg. Basilisk Pit",
+    "code": 40,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling4",
+    "faction": "Fortress",
+    "upgrades": "FortressBasiliskPit",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgGorgonLair",
+    "name": "Upg. Gorgon Lair",
+    "code": 41,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling5",
+    "faction": "Fortress",
+    "upgrades": "FortressGorgonLair",
+    "requires": [
+      "ResourceSilo"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgWyvernNest",
+    "name": "Upg. Wyvern Nest",
+    "code": 42,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling6",
+    "faction": "Fortress",
+    "upgrades": "FortressWyvernNest",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FortressUpgHydraPond",
+    "name": "Upg. Hydra Pond",
+    "code": 43,
+    "availableFrom": "roe",
+    "type": "upgradedDwelling7",
+    "faction": "Fortress",
+    "upgrades": "FortressHydraPond",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxArtifactMerchants",
+    "name": "Artifact Merchants",
+    "code": 17,
+    "availableFrom": "ab",
+    "type": "special1",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxMagicLantern",
+    "name": "Magic Lantern",
+    "code": 30,
+    "availableFrom": "ab",
+    "type": "dwelling1",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "Fort"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxGardenOfLife",
+    "name": "Garden of Life",
+    "code": 18,
+    "availableFrom": "ab",
+    "type": "horde1",
+    "faction": "Conflux",
+    "upgrades": "ConfluxMagicLantern",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgMagicLantern",
+    "name": "Upg. Magic Lantern",
+    "code": 37,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling1",
+    "faction": "Conflux",
+    "upgrades": "ConfluxMagicLantern",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgGardenOfLife",
+    "name": "Upg. Garden of Life",
+    "code": 19,
+    "availableFrom": "ab",
+    "type": "upgradedHorde1",
+    "faction": "Conflux",
+    "upgrades": "ConfluxUpgMagicLantern",
+    "requires": [
+      "ConfluxGardenOfLife"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxMagicUniversity",
+    "name": "Magic University",
+    "code": 21,
+    "availableFrom": "ab",
+    "type": "special2",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAuroraBorealis",
+    "name": "Aurora Borealis",
+    "code": 26,
+    "availableFrom": "ab",
+    "type": "grail",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAltarOfAir",
+    "name": "Altar of Air",
+    "code": 31,
+    "availableFrom": "ab",
+    "type": "dwelling2",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxMagicLantern",
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAltarOfWater",
+    "name": "Altar of Water",
+    "code": 32,
+    "availableFrom": "ab",
+    "type": "dwelling3",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxMagicLantern",
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAltarOfFire",
+    "name": "Altar of Fire",
+    "code": 33,
+    "availableFrom": "ab",
+    "type": "dwelling4",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxAltarOfAir"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAltarOfEarth",
+    "name": "Altar of Earth",
+    "code": 34,
+    "availableFrom": "ab",
+    "type": "dwelling5",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxAltarOfWater"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxAltarOfThought",
+    "name": "Altar of Thought",
+    "code": 35,
+    "availableFrom": "ab",
+    "type": "dwelling6",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxAltarOfFire",
+      "ConfluxAltarOfEarth"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxPyre",
+    "name": "Pyre",
+    "code": 36,
+    "availableFrom": "ab",
+    "type": "dwelling7",
+    "faction": "Conflux",
+    "upgrades": null,
+    "requires": [
+      "ConfluxAltarOfThought"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgAltarOfAir",
+    "name": "Upg. Altar of Air",
+    "code": 38,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling2",
+    "faction": "Conflux",
+    "upgrades": "ConfluxAltarOfAir",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgAltarOfWater",
+    "name": "Upg. Altar of Water",
+    "code": 39,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling3",
+    "faction": "Conflux",
+    "upgrades": "ConfluxAltarOfWater",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgAltarOfFire",
+    "name": "Upg. Altar of Fire",
+    "code": 40,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling4",
+    "faction": "Conflux",
+    "upgrades": "ConfluxAltarOfFire",
+    "requires": [
+      "ConfluxAltarOfAir"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgAltarOfEarth",
+    "name": "Upg. Altar of Earth",
+    "code": 41,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling5",
+    "faction": "Conflux",
+    "upgrades": "ConfluxAltarOfEarth",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgAltarOfThought",
+    "name": "Upg. Altar of Thought",
+    "code": 42,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling6",
+    "faction": "Conflux",
+    "upgrades": "ConfluxAltarOfThought",
+    "requires": [
+      "MagesGuild2"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgPyre",
+    "name": "Upg. Pyre",
+    "code": 43,
+    "availableFrom": "ab",
+    "type": "upgradedDwelling7",
+    "faction": "Conflux",
+    "upgrades": "ConfluxPyre",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxVaultOfAshes",
+    "name": "Vault of Ashes",
+    "code": 24,
+    "availableFrom": "ab",
+    "type": "horde2",
+    "faction": "Conflux",
+    "upgrades": "ConfluxPyre",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "ConfluxUpgVaultOfAshes",
+    "name": "Upg. Vault of Ashes",
+    "code": 25,
+    "availableFrom": "ab",
+    "type": "upgradedHorde2",
+    "faction": "Conflux",
+    "upgrades": "ConfluxUpgPyre",
+    "requires": [
+      "ConfluxVaultOfAshes"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveThievesGuild",
+    "name": "Thieves' Guild",
+    "code": 22,
+    "availableFrom": "hota",
+    "type": "special3",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveGrotto",
+    "name": "Grotto",
+    "code": 23,
+    "availableFrom": "hota",
+    "type": "special4",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveLodestar",
+    "name": "Lodestar",
+    "code": 26,
+    "availableFrom": "hota",
+    "type": "grail",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveNymphWaterfall",
+    "name": "Nymph Waterfall",
+    "code": 30,
+    "availableFrom": "hota",
+    "type": "dwelling1",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgNymphWaterfall",
+    "name": "Upg. Nymph Waterfall",
+    "code": 37,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling1",
+    "faction": "Cove",
+    "upgrades": "CoveNymphWaterfall",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveShack",
+    "name": "Shack",
+    "code": 31,
+    "availableFrom": "hota",
+    "type": "dwelling2",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgShack",
+    "name": "Upg. Shack",
+    "code": 38,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling2",
+    "faction": "Cove",
+    "upgrades": "CoveShack",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CovePub",
+    "name": "Pub",
+    "code": 18,
+    "availableFrom": "hota",
+    "type": "horde1",
+    "faction": "Cove",
+    "upgrades": "CoveShack",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveFrigate",
+    "name": "Frigate",
+    "code": 32,
+    "availableFrom": "hota",
+    "type": "dwelling3",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgFrigate",
+    "name": "Upg. Frigate",
+    "code": 39,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling3",
+    "faction": "Cove",
+    "upgrades": "CoveFrigate",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveGunpowderWarehouse",
+    "name": "Gunpowder Warehouse",
+    "code": 21,
+    "availableFrom": "hota",
+    "type": "special2",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveNest",
+    "name": "Nest",
+    "code": 33,
+    "availableFrom": "hota",
+    "type": "dwelling4",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveRoost",
+    "name": "Roost",
+    "code": 24,
+    "availableFrom": "hota",
+    "type": "horde2",
+    "faction": "Cove",
+    "upgrades": "CoveNest",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgNest",
+    "name": "Upg. Nest",
+    "code": 40,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling4",
+    "faction": "Cove",
+    "upgrades": "CoveNest",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgPub",
+    "name": "Upg. Pub",
+    "code": 19,
+    "availableFrom": "hota",
+    "type": "upgradedHorde1",
+    "faction": "Cove",
+    "upgrades": "CoveUpgShack",
+    "requires": [
+      "CovePub"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgRoost",
+    "name": "Upg. Roost",
+    "code": 25,
+    "availableFrom": "hota",
+    "type": "upgradedHorde2",
+    "faction": "Cove",
+    "upgrades": "CoveUpgNest",
+    "requires": [
+      "CoveRoost"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveToweroftheSeas",
+    "name": "Tower of the Seas",
+    "code": 34,
+    "availableFrom": "hota",
+    "type": "dwelling5",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [
+      "MagesGuild1"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgToweroftheSeas",
+    "name": "Upg. Tower of the Seas",
+    "code": 41,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling5",
+    "faction": "Cove",
+    "upgrades": "CoveToweroftheSeas",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveNixFort",
+    "name": "Nix Fort",
+    "code": 35,
+    "availableFrom": "hota",
+    "type": "dwelling6",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgNixFort",
+    "name": "Upg. Nix Fort",
+    "code": 42,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling6",
+    "faction": "Cove",
+    "upgrades": "CoveNixFort",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveMaelstrom",
+    "name": "Maelstrom",
+    "code": 36,
+    "availableFrom": "hota",
+    "type": "dwelling7",
+    "faction": "Cove",
+    "upgrades": null,
+    "requires": [
+      "CoveToweroftheSeas"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "CoveUpgMaelstrom",
+    "name": "Upg. Maelstrom",
+    "code": 43,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling7",
+    "faction": "Cove",
+    "upgrades": "CoveMaelstrom",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryBank",
+    "name": "Bank",
+    "code": 21,
+    "availableFrom": "hota",
+    "type": "special2",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryManaGenerator",
+    "name": "Mana Generator",
+    "code": 6,
+    "availableFrom": "hota",
+    "type": "manaGenerator",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryArtifactMerchants",
+    "name": "Artifact Merchants",
+    "code": 17,
+    "availableFrom": "hota",
+    "type": "special1",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [
+      "Marketplace"
+    ],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryLightningRod",
+    "name": "Lightning Rod",
+    "code": 26,
+    "availableFrom": "hota",
+    "type": "grail",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryHalflingAdobe",
+    "name": "Halfling Adobe",
+    "code": 30,
+    "availableFrom": "hota",
+    "type": "dwelling1",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgHalflingAdobe",
+    "name": "Upg. Halfling Adobe",
+    "code": 37,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling1",
+    "faction": "Factory",
+    "upgrades": "FactoryHalflingAdobe",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryFoundry",
+    "name": "Foundry",
+    "code": 31,
+    "availableFrom": "hota",
+    "type": "dwelling2",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgFoundry",
+    "name": "Upg. Foundry",
+    "code": 38,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling2",
+    "faction": "Factory",
+    "upgrades": "FactoryFoundry",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryRanch",
+    "name": "Ranch",
+    "code": 32,
+    "availableFrom": "hota",
+    "type": "dwelling3",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgRanch",
+    "name": "Upg. Ranch",
+    "code": 39,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling3",
+    "faction": "Factory",
+    "upgrades": "FactoryRanch",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryPen",
+    "name": "Pen",
+    "code": 18,
+    "availableFrom": "hota",
+    "type": "horde1",
+    "faction": "Factory",
+    "upgrades": "FactoryRanch",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgPen",
+    "name": "Upg. Pen",
+    "code": 19,
+    "availableFrom": "hota",
+    "type": "upgradedHorde1",
+    "faction": "Factory",
+    "upgrades": "FactoryUpgRanch",
+    "requires": [
+      "FactoryPen"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryManufactory",
+    "name": "Manufactory",
+    "code": 33,
+    "availableFrom": "hota",
+    "type": "dwelling4",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgManufactory",
+    "name": "Upg. Manufactory",
+    "code": 40,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling4",
+    "faction": "Factory",
+    "upgrades": "FactoryManufactory",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryCatacombs",
+    "name": "Catacombs",
+    "code": 34,
+    "availableFrom": "hota",
+    "type": "dwelling5",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgCatacombs",
+    "name": "Upg. Catacombs",
+    "code": 41,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling5",
+    "faction": "Factory",
+    "upgrades": "FactoryCatacombs",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryWatchtower",
+    "name": "Watchtower",
+    "code": 35,
+    "availableFrom": "hota",
+    "type": "dwelling6",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgWatchtower",
+    "name": "Upg. Watchtower",
+    "code": 42,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling6",
+    "faction": "Factory",
+    "upgrades": "FactoryWatchtower",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactorySerpentarium",
+    "name": "Serpentarium",
+    "code": 36,
+    "availableFrom": "hota",
+    "type": "dwelling7",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgSerpentarium",
+    "name": "Upg. Serpentarium",
+    "code": 43,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling7",
+    "faction": "Factory",
+    "upgrades": "FactorySerpentarium",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryGantry",
+    "name": "Gantry",
+    "code": 22,
+    "availableFrom": "hota",
+    "type": "special3",
+    "faction": "Factory",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "FactoryUpgGantry",
+    "name": "Upg. Gantry",
+    "code": 23,
+    "availableFrom": "hota",
+    "type": "special4",
+    "faction": "Factory",
+    "upgrades": "FactoryGantry",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkFair",
+    "name": "Fair",
+    "code": 17,
+    "availableFrom": "hota",
+    "type": "special1",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkSieidiOfTheRunes",
+    "name": "Sieidi of the Runes",
+    "code": 21,
+    "availableFrom": "hota",
+    "type": "special2",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkAltarOfTheRunes",
+    "name": "Altar of the Runes",
+    "code": 22,
+    "availableFrom": "hota",
+    "type": "special3",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkSieidiOfTheRunes",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkSpiritsOfTheForebears",
+    "name": "Spirits of the Forebears",
+    "code": 26,
+    "availableFrom": "hota",
+    "type": "grail",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkColliery",
+    "name": "Colliery",
+    "code": 30,
+    "availableFrom": "hota",
+    "type": "dwelling1",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgColliery",
+    "name": "Upg. Colliery",
+    "code": 37,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling1",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkColliery",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkFrigidSpur",
+    "name": "Frigid Spur",
+    "code": 31,
+    "availableFrom": "hota",
+    "type": "dwelling2",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgFrigidSpur",
+    "name": "Upg. Frigid Spur",
+    "code": 38,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling2",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkFrigidSpur",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkHalloftheBold",
+    "name": "Hall of the Bold",
+    "code": 32,
+    "availableFrom": "hota",
+    "type": "dwelling3",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgHalloftheBold",
+    "name": "Upg. Hall of the Bold",
+    "code": 39,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling3",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkHalloftheBold",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkMountainEmbassy",
+    "name": "Mountain Embassy",
+    "code": 33,
+    "availableFrom": "hota",
+    "type": "dwelling4",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgMountainEmbassy",
+    "name": "Upg. Mountain Embassy",
+    "code": 40,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling4",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkMountainEmbassy",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkShamanFane",
+    "name": "Shaman Fane",
+    "code": 34,
+    "availableFrom": "hota",
+    "type": "dwelling5",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgShamanFane",
+    "name": "Upg. Shaman Fane",
+    "code": 41,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling5",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkShamanFane",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkMammothStalls",
+    "name": "Mammoth Stalls",
+    "code": 35,
+    "availableFrom": "hota",
+    "type": "dwelling6",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgMammothStalls",
+    "name": "Upg. Mammoth Stalls",
+    "code": 42,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling6",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkMammothStalls",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkHayBins",
+    "name": "Hay Bins",
+    "code": 18,
+    "availableFrom": "hota",
+    "type": "horde1",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkMammothStalls",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgHayBins",
+    "name": "Upg. Hay Bins",
+    "code": 19,
+    "availableFrom": "hota",
+    "type": "upgradedHorde1",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkUpgMammothStalls",
+    "requires": [
+      "BulwarkHayBins"
+    ],
+    "except": [],
+    "automatic": true,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkFrosthome",
+    "name": "Frosthome",
+    "code": 36,
+    "availableFrom": "hota",
+    "type": "dwelling7",
+    "faction": "Bulwark",
+    "upgrades": null,
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  },
+  {
+    "id": "BulwarkUpgFrosthome",
+    "name": "Upg. Frosthome",
+    "code": 43,
+    "availableFrom": "hota",
+    "type": "upgradedDwelling7",
+    "faction": "Bulwark",
+    "upgrades": "BulwarkFrosthome",
+    "requires": [],
+    "except": [],
+    "automatic": false,
+    "goldIncome": 0
+  }
+]

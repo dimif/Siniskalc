@@ -1,0 +1,117 @@
+﻿namespace Siniskalc.Homm3.ViewModels
+{
+    using System.Globalization;
+    using Siniskalc.Core;
+    using Siniskalc.Core.Data;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.ViewModels;
+    using Siniskalc.Homm3.Models;
+    using Siniskalc.Wpf.ViewModels;
+
+    /// <summary>
+    /// A dwelling of the map: the creature it gives, where it is entered, who owns it (picked from a list) and how many creatures can be hired
+    /// now (typed).
+    /// </summary>
+    public sealed class MapDwellingRowViewModel : AbstractViewModelBase
+    {
+        private readonly IEditSession<DwellingModel> session;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MapDwellingRowViewModel"/> class.
+        /// </summary>
+        /// <param name="session">The session.</param>
+        public MapDwellingRowViewModel(IEditSession<DwellingModel> session)
+        {
+            this.session = session;
+            this.OwnerField = new ChoiceFieldViewModel(
+                "Owner",
+                OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Choices,
+                () => OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Of(this.session.Current.Owner),
+                name => this.session.Update(dwelling => dwelling with { Owner = OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Parse(name) }),
+                toolTip: "Who owns the dwelling. Not tried in the game.");
+        }
+
+        /// <summary>
+        /// Gets the place of the dwelling in the list, from 0.
+        /// </summary>
+        public int Index => this.session.Index;
+
+        /// <summary>
+        /// Gets the name of the creature the dwelling recruits.
+        /// </summary>
+        public string CreatureName => this.session.Current.Creature?.Name ?? $"Creature {this.session.Current.CreatureCode}";
+
+        /// <summary>
+        /// Gets the column of the dwelling.
+        /// </summary>
+        public int X => this.session.Current.Position.X;
+
+        /// <summary>
+        /// Gets the row of the dwelling.
+        /// </summary>
+        public int Y => this.session.Current.Position.Y;
+
+        /// <summary>
+        /// Gets the level of the map the dwelling is on.
+        /// </summary>
+        public int Level => this.session.Current.Position.Level;
+
+        /// <summary>
+        /// Gets the level of the map the dwelling is on, such as "Underground".
+        /// </summary>
+        public string LevelText => MapLevelText.Of(this.Level);
+
+        /// <summary>
+        /// Gets the tile the savegame gives for the dwelling, as the other lists show it, such as "at 31, 56, Surface". A hero stood on it
+        /// to flag the dwellings of the Castle and the Rampart of the test map, and 3 tiles lower to visit the neutral ones in the row above, so
+        /// it is only where the dwelling is, give or take its entrance.
+        /// </summary>
+        public string PositionText => MapLevelText.Coordinates(this.session.Current.Position, hasLevels: true);
+
+        /// <summary>
+        /// Gets the creatures that can be hired now.
+        /// </summary>
+        public long Stock => this.session.Current.Stock;
+
+        /// <summary>
+        /// Gets or sets the creatures that can be hired now, as the player types them: a number that is not one, or is out of range, is
+        /// taken as the nearest the savegame can hold.
+        /// </summary>
+        public string StockText
+        {
+            get => this.session.Current.Stock.ToString(CultureInfo.CurrentCulture);
+            set
+            {
+                if (long.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out var stock))
+                {
+                    var clamped = (long)RangeGuard.Clamp(stock, 0, Constants.Army.MaxStackSize);
+                    if (clamped != this.session.Current.Stock)
+                    {
+                        this.session.Update(dwelling => dwelling with { Stock = clamped });
+                    }
+                }
+
+                this.RaisePropertyChanged(nameof(this.StockText));
+            }
+        }
+
+        /// <summary>
+        /// Gets the owner as the text the list sorts by.
+        /// </summary>
+        public string OwnerSort => this.OwnerField.Selected;
+
+        /// <summary>
+        /// Gets the field that sets the owner.
+        /// </summary>
+        public ChoiceFieldViewModel OwnerField { get; }
+
+        /// <summary>
+        /// Reads the model again and tells the view that every value may have changed.
+        /// </summary>
+        public void Refresh()
+        {
+            this.OwnerField.Refresh();
+            this.RaiseAllPropertiesChanged();
+        }
+    }
+}

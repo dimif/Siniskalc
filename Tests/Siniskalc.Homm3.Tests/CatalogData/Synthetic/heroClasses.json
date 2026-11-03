@@ -1,0 +1,18 @@
+[
+  {
+    "id": "FixtureChampion",
+    "name": "Astral Champion",
+    "code": 24,
+    "availableFrom": "hota",
+    "faction": "FixtureTown",
+    "type": "might"
+  },
+  {
+    "id": "FixtureOracle",
+    "name": "Astral Oracle",
+    "code": 25,
+    "availableFrom": "hota",
+    "faction": "FixtureTown",
+    "type": "magic"
+  }
+]

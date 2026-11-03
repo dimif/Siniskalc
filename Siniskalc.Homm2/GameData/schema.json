@@ -1,0 +1,1181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:siniskalc:homm2:definitions",
+  "title": "HoMM2 standard definition files",
+  "description": "Editor assistance. Runtime also validates references, roles, uniqueness, inheritance and fixed binary capacities before startup. Associate externally; data records deliberately reject unknown properties.",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/Manifest"
+    },
+    {
+      "$ref": "#/$defs/FactionFile"
+    },
+    {
+      "$ref": "#/$defs/AbilityFile"
+    },
+    {
+      "$ref": "#/$defs/SkillFile"
+    },
+    {
+      "$ref": "#/$defs/ArtifactFile"
+    },
+    {
+      "$ref": "#/$defs/CreatureFile"
+    },
+    {
+      "$ref": "#/$defs/SpellFile"
+    },
+    {
+      "$ref": "#/$defs/SpellTypeFile"
+    },
+    {
+      "$ref": "#/$defs/BuildingFile"
+    },
+    {
+      "$ref": "#/$defs/PlaceFile"
+    },
+    {
+      "$ref": "#/$defs/MineFile"
+    },
+    {
+      "$ref": "#/$defs/VisitEffectFile"
+    },
+    {
+      "$ref": "#/$defs/MapObjectFile"
+    }
+  ],
+  "$defs": {
+    "Faction": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "library": {
+          "type": "boolean"
+        },
+        "growthBuildingName": {
+          "type": "string"
+        },
+        "specialBuildingName": {
+          "type": "string"
+        },
+        "heroIds": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "guildSpellCounts": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          }
+        },
+        "specialBuildingDescription": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "library",
+        "growthBuildingName",
+        "specialBuildingName",
+        "heroIds",
+        "guildSpellCounts",
+        "specialBuildingDescription"
+      ]
+    },
+    "FactionFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Faction"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Faction"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Ability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code"
+      ]
+    },
+    "AbilityFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ability"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Ability"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code"
+      ]
+    },
+    "SkillFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Skill"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Skill"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "availableFrom": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "sw",
+            "pol"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "Ordinary",
+            "SpellBook",
+            "Scroll",
+            "ordinary",
+            "spellBook",
+            "scroll"
+          ]
+        },
+        "effectInfo": {
+          "type": "object",
+          "properties": {
+            "modifiers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attribute": {
+                    "type": "string",
+                    "enum": [
+                      "attack",
+                      "defense",
+                      "spellPower",
+                      "knowledge"
+                    ]
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "minimum": -32768,
+                    "maximum": 32767
+                  }
+                },
+                "required": [
+                  "attribute",
+                  "amount"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "availableFrom"
+      ]
+    },
+    "ArtifactFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Artifact"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Creature": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "faction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tier": {
+          "type": "integer"
+        },
+        "stats": {
+          "$ref": "#/$defs/CreatureStats"
+        },
+        "abilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "baseCreature": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dwelling": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "None",
+                "Dwelling1",
+                "Dwelling2",
+                "Dwelling3",
+                "Dwelling4",
+                "Dwelling5",
+                "Dwelling6",
+                "Dwelling2Upgraded",
+                "Dwelling3Upgraded",
+                "Dwelling4Upgraded",
+                "Dwelling5Upgraded",
+                "Dwelling6Upgraded",
+                "Dwelling6UpgradedTwice",
+                "MageGuild1",
+                "MageGuild2",
+                "MageGuildLevelMask",
+                "none",
+                "dwelling1",
+                "dwelling2",
+                "dwelling3",
+                "dwelling4",
+                "dwelling5",
+                "dwelling6",
+                "dwelling2Upgraded",
+                "dwelling3Upgraded",
+                "dwelling4Upgraded",
+                "dwelling5Upgraded",
+                "dwelling6Upgraded",
+                "dwelling6UpgradedTwice",
+                "mageGuild1",
+                "mageGuild2",
+                "mageGuildLevelMask"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "faction",
+        "tier",
+        "stats",
+        "abilities",
+        "baseCreature",
+        "dwelling"
+      ]
+    },
+    "CreatureFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Creature"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Creature"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "CreatureStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "atk": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "def": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "minDamage": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "maxDamage": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "health": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "speed": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "growth": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "gold": {
+          "type": "integer"
+        },
+        "wood": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "ore": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "mercury": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "sulfur": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "crystal": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "gems": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "shots": {
+          "type": "integer",
+          "minimum": -32768,
+          "maximum": 32767
+        },
+        "aiValue": {
+          "type": "integer"
+        },
+        "fightValue": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "atk",
+        "def",
+        "minDamage",
+        "maxDamage",
+        "health",
+        "speed",
+        "growth",
+        "gold",
+        "aiValue",
+        "fightValue"
+      ]
+    },
+    "Spell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "spellPoints": {
+          "type": "integer"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Combat",
+            "Adventure"
+          ]
+        },
+        "level": {
+          "type": "integer"
+        },
+        "group": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "spellPoints",
+        "type",
+        "level",
+        "group"
+      ]
+    },
+    "SpellFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Spell"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Spell"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "SpellType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "hidden": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "hidden"
+      ]
+    },
+    "SpellTypeFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpellType"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpellType"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Building": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "flag": {
+          "type": "string",
+          "enum": [
+            "None",
+            "MageGuild",
+            "ThievesGuild",
+            "Tavern",
+            "Shipyard",
+            "Well",
+            "TownOnly",
+            "Castle",
+            "Statue",
+            "LeftTurret",
+            "RightTurret",
+            "Marketplace",
+            "GrowthBuilding",
+            "Moat",
+            "Special",
+            "CaptainsQuarters",
+            "none",
+            "mageGuild",
+            "thievesGuild",
+            "tavern",
+            "shipyard",
+            "well",
+            "townOnly",
+            "castle",
+            "statue",
+            "leftTurret",
+            "rightTurret",
+            "marketplace",
+            "growthBuilding",
+            "moat",
+            "special",
+            "captainsQuarters"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "Ordinary",
+            "Growth",
+            "Special",
+            "ordinary",
+            "growth",
+            "special"
+          ]
+        },
+        "growth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "flag",
+        "description",
+        "growth"
+      ]
+    },
+    "BuildingFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Building"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Building"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Place": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Gazebo",
+            "Fort",
+            "WitchDoctorHut",
+            "MercenaryCamp",
+            "StandingStones",
+            "Xanadu",
+            "gazebo",
+            "fort",
+            "witchDoctorHut",
+            "mercenaryCamp",
+            "standingStones",
+            "xanadu"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "kind",
+        "description"
+      ]
+    },
+    "PlaceFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Place"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Mine": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Sawmill",
+            "AlchemistLab",
+            "OreMine",
+            "SulfurMine",
+            "CrystalMine",
+            "GemMine",
+            "GoldMine"
+          ]
+        },
+        "resource": {
+          "type": "string",
+          "enum": [
+            "Wood",
+            "Mercury",
+            "Ore",
+            "Sulfur",
+            "Crystal",
+            "Gems",
+            "Gold"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "kind",
+        "resource"
+      ]
+    },
+    "MineFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Mine"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Mine"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "VisitEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "flag": {
+          "type": "string",
+          "enum": [
+            "None",
+            "Fountain",
+            "Oasis",
+            "FaerieRing",
+            "Graveyard",
+            "Temple",
+            "Arena",
+            "Stables",
+            "none",
+            "fountain",
+            "oasis",
+            "faerieRing",
+            "graveyard",
+            "temple",
+            "arena",
+            "stables"
+          ]
+        },
+        "behaviour": {
+          "type": "string",
+          "enum": [
+            "NextBattle",
+            "Once",
+            "Weekly",
+            "nextBattle",
+            "once",
+            "weekly"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "morale": {
+          "type": "integer"
+        },
+        "luck": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "flag",
+        "behaviour",
+        "description",
+        "morale",
+        "luck"
+      ]
+    },
+    "VisitEffectFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VisitEffect"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VisitEffect"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "MapObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "ShrineFirst",
+            "ShrineSecond",
+            "ShrineThird",
+            "Sphinx",
+            "SphinxUnlocated",
+            "shrineFirst",
+            "shrineSecond",
+            "shrineThird",
+            "sphinx",
+            "sphinxUnlocated",
+            "ShrineMarker",
+            "shrineMarker"
+          ]
+        },
+        "nameFormat": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "code",
+        "nameFormat"
+      ]
+    },
+    "MapObjectFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MapObject"
+          }
+        },
+        "replacements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MapObject"
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "entries",
+        "replacements"
+      ]
+    },
+    "Manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unknown": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sw": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pol": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "unknown",
+            "sw",
+            "pol"
+          ]
+        },
+        "sets": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "parent": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "parent"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "versions",
+        "sets"
+      ]
+    }
+  }
+}

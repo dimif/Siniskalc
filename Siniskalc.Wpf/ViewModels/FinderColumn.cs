@@ -1,7 +1,10 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System.Windows;
 
+    /// <summary>
+    /// A column of a finder: its heading, the property of a row it shows and how.
+    /// </summary>
     /// <param name="Header">The column heading.</param>
     /// <param name="Path">The property of a row it shows.</param>
     /// <param name="Width">The column width; a star width shares what is left.</param>

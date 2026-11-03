@@ -1,0 +1,12 @@
+[
+  {
+    "id": "Haste",
+    "name": "Haste",
+    "code": 53,
+    "availableFrom": "roe",
+    "school": "fixtureSky",
+    "level": 1,
+    "type": "combat",
+    "replaces": true
+  }
+]

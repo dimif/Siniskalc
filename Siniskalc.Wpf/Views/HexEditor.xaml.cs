@@ -14,7 +14,6 @@
     using System.Windows.Threading;
     using Microsoft.Win32;
     using Siniskalc.Core.Data;
-    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// A hex and ASCII editor for any <see cref="IByteEditTarget"/>. It colours the bytes of known regions, marks
@@ -34,6 +33,16 @@
             typeof(HexEditor),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
+        /// <summary>
+        /// The height of the list of known fields under the grid. It is tall for a chunk with many fields (a hero), and can be small where
+        /// there are few (a mine).
+        /// </summary>
+        public static readonly DependencyProperty KnownFieldsHeightProperty = DependencyProperty.Register(
+            nameof(KnownFieldsHeight),
+            typeof(double),
+            typeof(HexEditor),
+            new PropertyMetadata(230.0));
+
         private const int BytesPerRow = 16;
         private const int AddressColumnIndex = 0;
         private const int FirstByteColumnIndex = 1;
@@ -51,6 +60,9 @@
         private int selectionAnchor = -1;
         private bool hasPendingSync;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HexEditor"/> class.
+        /// </summary>
         public HexEditor()
         {
             this.InitializeComponent();
@@ -73,14 +85,34 @@
             };
         }
 
+        /// <summary>
+        /// Gets or sets the height of the list of known fields under the grid.
+        /// </summary>
+        public double KnownFieldsHeight
+        {
+            get { return (double)this.GetValue(KnownFieldsHeightProperty); }
+            set { this.SetValue(KnownFieldsHeightProperty, value); }
+        }
+
+        /// <summary>
+        /// Gets the name of the savefile an element belongs to, which it inherits from the element above it.
+        /// </summary>
+        /// <param name="element">The element, such as a window or a hex editor.</param>
+        /// <returns>The name of the file, or <see langword="null"/>.</returns>
         public static string? GetSourceFile(DependencyObject element) => (string?)element.GetValue(SourceFileProperty);
 
+        /// <summary>
+        /// Sets the name of the savefile an element, and every hex editor inside it, belongs to.
+        /// </summary>
+        /// <param name="element">The element, such as a window.</param>
+        /// <param name="value">The name of the file, or <see langword="null"/>.</param>
         public static void SetSourceFile(DependencyObject element, string? value) => element.SetValue(SourceFileProperty, value);
 
         /// <summary>
         /// Shows <paramref name="newTarget"/> and takes ownership of it: the target is disposed when another one is
         /// bound or <see cref="Unbind"/> is called. Any target bound before is disposed.
         /// </summary>
+        /// <param name="newTarget">The bytes to show and edit.</param>
         public void Bind(IByteEditTarget newTarget)
         {
             this.Unbind();
@@ -117,6 +149,20 @@
         private static string GetChangedColumnKey(int offset) => $"D{offset:X2}";
 
         private static string GetTipColumnKey(int offset) => $"T{offset:X2}";
+
+        private static T? FindAncestor<T>(DependencyObject? start)
+            where T : DependencyObject
+        {
+            for (var current = start; current != null; current = current is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetParent(current) : LogicalTreeHelper.GetParent(current))
+            {
+                if (current is T match)
+                {
+                    return match;
+                }
+            }
+
+            return null;
+        }
 
         private void SubscribeToTarget()
         {
@@ -210,7 +256,7 @@
 
             var selected = new Trigger { Property = DataGridCell.IsSelectedProperty, Value = true };
             selected.Setters.Add(new Setter(Control.BackgroundProperty, HexPalette.SelectedBackground));
-            selected.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.Black));
+            selected.Setters.Add(new Setter(Control.ForegroundProperty, HexPalette.SelectedForeground));
             style.Triggers.Add(selected);
 
             return style;
@@ -418,6 +464,31 @@
 
             // Deselect again so that clicking the same field a second time selects its bytes once more.
             this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => item.IsSelected = false));
+        }
+
+        // A click on a field selects its bytes whatever was selected before. The Selected event alone is not enough: it comes only when the item
+        // was not selected, so a click on the field that was clicked last did nothing while its reset was still waiting.
+        private void RegionClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not TreeViewItem item || item.DataContext is not RegionNode node || node.Region == null)
+            {
+                return;
+            }
+
+            // The click bubbles up through the items above; only the item under the pointer acts, and the arrow that opens it does not select.
+            var source = e.OriginalSource as DependencyObject;
+            if (source != null && FindAncestor<System.Windows.Controls.Primitives.ToggleButton>(source) != null)
+            {
+                return;
+            }
+
+            if (!ReferenceEquals(FindAncestor<TreeViewItem>(source), item))
+            {
+                return;
+            }
+
+            e.Handled = true;
+            this.SelectRegion(node.Region);
         }
 
         private void SelectRegion(ByteRegion region)

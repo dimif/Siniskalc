@@ -6,38 +6,19 @@
     using System.Windows.Data;
 
     /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Siniskalc.View"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:Siniskalc.View;assembly=Siniskalc.View"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:NavButton/>
-    ///
+    /// One tab of the strip of tabs under the header of a page: a list box item with a <see cref="Text"/>. Which tab is shown follows the
+    /// selected item of the list box; a tab with <see cref="RequiresAdvancedMode"/> is there only while the advanced mode is on.
     /// </summary>
     public class NavButton : ListBoxItem
     {
+        /// <summary>
+        /// Identifies the <see cref="Text"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(NavButton), new PropertyMetadata(null));
 
+        /// <summary>
+        /// Identifies the <see cref="Navlink"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty NavlinkProperty = DependencyProperty.Register("Navlink", typeof(Uri), typeof(NavButton), new PropertyMetadata(null));
 
         /// <summary>
@@ -56,23 +37,35 @@
             VisibilityProperty.OverrideMetadata(typeof(NavButton), new FrameworkPropertyMetadata(Visibility.Visible, OnVisibilityChanged));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavButton"/> class.
+        /// </summary>
         public NavButton()
         {
             this.Loaded += this.OnLoaded;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the button is shown only while the advanced mode is on.
+        /// </summary>
         public bool RequiresAdvancedMode
         {
             get { return (bool)this.GetValue(RequiresAdvancedModeProperty); }
             set { this.SetValue(RequiresAdvancedModeProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets an address to go with the button. The button does nothing with it; no page uses it at present.
+        /// </summary>
         public Uri Navlink
         {
             get { return (Uri)this.GetValue(NavlinkProperty); }
             set { this.SetValue(NavlinkProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the text of the button.
+        /// </summary>
         public string Text
         {
             get { return (string)this.GetValue(TextProperty); }

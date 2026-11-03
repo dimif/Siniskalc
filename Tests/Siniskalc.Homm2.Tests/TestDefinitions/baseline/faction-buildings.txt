@@ -1,0 +1,12 @@
+Knight|Farm
+Barbarian|Garbage Heap
+Sorceress|Crystal Garden
+Warlock|Waterfall
+Wizard|Orchard
+Necromancer|Skull Pile
+Knight|Fortifications
+Barbarian|Coliseum
+Sorceress|Rainbow
+Warlock|Dungeon
+Wizard|Library
+Necromancer|Storm

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fixtureSky",
+    "name": "fixtureSky",
+    "code": 5,
+    "availableFrom": "hota",
+    "description": "The astral sky"
+  }
+]

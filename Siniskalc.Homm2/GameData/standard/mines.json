@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Sawmill",
+      "name": "Sawmill",
+      "code": 0,
+      "kind": "Sawmill",
+      "resource": "Wood"
+    },
+    {
+      "id": "AlchemistLab",
+      "name": "Alchemist's lab",
+      "code": 1,
+      "kind": "AlchemistLab",
+      "resource": "Mercury"
+    },
+    {
+      "id": "OreMine",
+      "name": "Ore mine",
+      "code": 2,
+      "kind": "OreMine",
+      "resource": "Ore"
+    },
+    {
+      "id": "SulfurMine",
+      "name": "Sulfur mine",
+      "code": 3,
+      "kind": "SulfurMine",
+      "resource": "Sulfur"
+    },
+    {
+      "id": "CrystalMine",
+      "name": "Crystal mine",
+      "code": 4,
+      "kind": "CrystalMine",
+      "resource": "Crystal"
+    },
+    {
+      "id": "GemMine",
+      "name": "Gem mine",
+      "code": 5,
+      "kind": "GemMine",
+      "resource": "Gems"
+    },
+    {
+      "id": "GoldMine",
+      "name": "Gold mine",
+      "code": 6,
+      "kind": "GoldMine",
+      "resource": "Gold"
+    }
+  ],
+  "replacements": []
+}

@@ -1,7 +1,18 @@
 # Siniskalc user guide
 
-Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death, Horn of the Abyss, and *maybe* even Heroes Chronicles, for heroes and towns only.
+Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss) and Heroes of Might and Magic II (The Succession Wars and The Price of Loyalty).
+Heroes Chronicles support is speculative and limited to heroes and towns.
+HoMM2 editing has savefile regression coverage but has not yet been verified in the game.
 It needs Windows; there is nothing to install, unzip a release and run `Siniskalc.exe`.
+Keep both shipped `GameData` folders beside the executable.
+
+## Standard game definitions
+
+The editor loads entity definitions from `GameData\Homm2` and `GameData\Homm3` once at startup.
+Editing these files requires restarting the editor; **File > Reload** reloads only the savegame.
+Missing or invalid definitions stop startup with the file and cause; correct or restore the named file rather than expecting built-in fallback data.
+There are no custom profiles or live reload.
+See [Editing game definitions](GAME_DEFINITIONS.md) for the formats, supported effects and limits of JSON-only changes.
 
 ## Before you start: back up your saves
 
@@ -16,7 +27,9 @@ Nothing is written until you choose **File > Save**.
 1. **File > Open** (Ctrl+O) and pick a savegame.
    **File > Recent** lists the last ones.
 2. Pick what to edit in the tree on the left.
-   The tree shows the game, then one node per player, each with its heroes and towns.
+   The tree shows the game, then one node per player, each with its heroes, towns, mines and dwellings, then **Neutral** and the **Map**.
+   Below **Mines** the mines are grouped by the resource they give (Gold, Wood, ...), and below **Dwellings** (HoMM3) the dwellings are grouped by the faction of their creature, so `Red > Mines > Gold` holds the gold mines Red owns.
+   A player with no mine or dwelling has no such node.
 3. Change values on the page.
    A dot next to a node in the tree means it has changes that are not saved.
 4. **File > Save** (Ctrl+S).
@@ -25,7 +38,11 @@ Nothing is written until you choose **File > Save**.
 Pages:
 
 - **Game overview**: map and game setup read from the save (difficulty, date, who controls each player).
-- **Player**: the seven resources, the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
+- **Player**: the seven resources (tab **General**), the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
+  A player who owns no town has a "No towns: n days left" pill beside the name, in the overview and in the navigation tree, and a Banishing card on the General tab with the buttons 7 to 1 to change the days left. A player who has been banished stays in the game as he is and cannot be edited.
+  Its **Mines** tab lists the mines the player owns (pick one to see and edit its guard, and change its owner) and its **Dwellings** tab (HoMM3) the dwellings it owns, with the creatures that can be hired there. A mine or dwelling given to another player moves to that player's tabs.
+- **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings**). It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
+- **Map**: what the map keeps that no player owns: the artifact merchants and the black market (HoMM3), the shrines and sphinxes (HoMM2).
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
 - **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings.
 
@@ -38,12 +55,35 @@ Pages:
 
 ## Settings
 
-The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them.
+The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them. The first time the editor starts it writes `settings.json` with the defaults, and `serilog.json` (how and where the log is written: the template, the rolling interval and the days kept) beside it; both can be edited by hand.
 
-- **Settings > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
+- **Settings... > Saving > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
   See below.
-- **Settings > Advanced mode** (off by default): shows the tools for working with the raw bytes.
+- **Settings... > Tools > Advanced mode** (off by default): shows the tools for working with the raw bytes.
   See below.
+- **Settings... > Logging > Log level and Log folder**: how much the editor writes to its log file and where the file goes.
+  See below.
+
+### The log
+
+The editor writes a plain text log of what it did and of anything unexpected it met (a value it does not know, a file it could not read, a save that failed).
+It is meant for bug reports, and nothing in it leaves your computer.
+
+- **Help > Show logs** opens the folder of the log files.
+  There is one file for each day, `siniskalc-<date>.log`, and the last 7 days are kept.
+  The default folder is `%LOCALAPPDATA%\Siniskalc\logs` (on Linux and macOS, `~/.local/share/Siniskalc/logs`).
+- **Settings... > Logging** sets the **Log level** and the **Log folder** (Browse... picks one, Use default empties the box).
+  The level says how much is written: *Information* (the usual) lists what you opened and saved and anything unexpected; *Debug* and *Trace* add detail (for example, each value in a
+  savegame that the editor did not know and read as a stand-in); *Warning*, *Error* and *Critical* write less. *Default* leaves the level to `serilog.json` (Information, as shipped).
+  A folder is checked when you press OK: it has to be a full path the editor can write to.
+  The choices apply **the next time the editor starts**.
+- Every line starts with the time and the level, then the part of the editor that wrote it, then what it is about when it is about one hero, castle or player
+  (`Siniskalc.Homm3.Data.HeroDeserializer (Hero Sandro): Class byte FE read as Knight and kept until the class is changed`).
+- **How and where the log is written** (the template of a line, the sinks, the rolling interval, how many days are kept) is in `serilog.json`, beside `settings.json`
+  in `%APPDATA%\Siniskalc`. The editor writes it with the defaults the first time it starts; edit it with a text editor, for example `"retainedFileCountLimit": 30` to keep a month, and restart.
+  The log folder is `{LogFolder}` in its `path`, so leave that as it is unless you want a fixed path.
+  If the file cannot be read, the editor says so when it starts and offers to put it aside (`serilog.json.bad`) and start with the default one.
+  The details are in [LOGGING.md](LOGGING.md).
 
 ### Backups
 
@@ -68,6 +108,7 @@ Advanced mode is for finding out where things are in a savefile and for editing 
 It shows:
 
 - a **Hex** tab on every player, hero and town, which edits the raw bytes of that part of the savefile;
+- a **Hex** card below the mine (and, in HoMM3, the dwelling) that is picked on the Mines and Dwellings tabs, which edits the bytes of that one record;
 - the **Advanced** menu: **View save hex** shows the whole file with its known regions, **Export save bytes** writes the decompressed savegame to a `.bin` file and **Load save from bytes** reads one back.
   These files are useful to compare two saves in a diff tool and to attach to a bug report.
 
@@ -89,3 +130,5 @@ Nothing that was edited is lost.
 
 To report a problem use **Help > Report an issue**, or <https://github.com/dimif/Siniskalc/issues>.
 Say which game and version it is and what you did, and attach the savegame (or a dump from the Advanced menu) if you can.
+Attach the log of the day too (**Help > Show logs**); set the level to *Debug* first and repeat what you did if the problem is about a value the editor misread.
+The log names the savegame files but does not hold their contents; a full path appears only when the path itself is the problem (the settings file, the log folder).

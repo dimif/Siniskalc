@@ -16,6 +16,14 @@
         private Action<TRow>? onChooseSecondary;
         private Func<TRow, bool>? canChooseSecondary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FinderViewModel{TRow}"/> class.
+        /// </summary>
+        /// <param name="rows">Every row.</param>
+        /// <param name="groupPath">The property of a row the rows are grouped by, or <see langword="null"/> for no groups.</param>
+        /// <param name="title">The heading above the finder; empty for none.</param>
+        /// <param name="noun">What the rows are, in the plural, for the summary.</param>
+        /// <param name="columns">The columns of the list.</param>
         protected FinderViewModel(IReadOnlyList<TRow> rows, string? groupPath, string title, string noun, IReadOnlyList<FinderColumn> columns)
             : base(title, noun, columns, CreateItems(rows, groupPath))
         {
@@ -27,11 +35,13 @@
         /// </summary>
         protected IReadOnlyList<TRow> Rows { get; }
 
+        /// <inheritdoc/>
         protected override int TotalCount => this.Rows.Count;
 
         /// <summary>
         /// Runs the action on <paramref name="row"/>, when it can be run.
         /// </summary>
+        /// <param name="row">The row, or <see langword="null"/> for no row.</param>
         public void Choose(TRow? row)
         {
             if (row != null && this.onChoose != null && (this.canChoose == null || this.canChoose(row)))
@@ -40,8 +50,10 @@
             }
         }
 
+        /// <inheritdoc/>
         public override void ChooseRow(object? row) => this.Choose(row as TRow);
 
+        /// <inheritdoc/>
         public override void ChooseRowSecondary(object? row)
         {
             if (row is TRow typed && this.onChooseSecondary != null && (this.canChooseSecondary == null || this.canChooseSecondary(typed)))
@@ -50,15 +62,20 @@
             }
         }
 
+        /// <inheritdoc/>
         protected override bool CanChooseRowSecondary(object row) => row is TRow typed && (this.canChooseSecondary == null || this.canChooseSecondary(typed));
 
+        /// <inheritdoc/>
         protected override bool CanChooseRow(object row) => row is TRow typed && (this.canChoose == null || this.canChoose(typed));
 
+        /// <inheritdoc/>
         protected override bool MatchesRow(object row) => row is TRow typed && this.Matches(typed);
 
         /// <summary>
         /// Tells whether a row shows under the search text.
         /// </summary>
+        /// <param name="row">The row.</param>
+        /// <returns><see langword="true"/> if the row matches the search text.</returns>
         protected abstract bool Matches(TRow row);
 
         /// <summary>

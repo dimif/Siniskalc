@@ -1,0 +1,37 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "effect": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "morale": {
+        "type": "integer"
+      },
+      "luck": {
+        "type": "integer"
+      },
+      "editable": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "effect",
+      "name",
+      "description",
+      "morale",
+      "luck",
+      "editable"
+    ],
+    "additionalProperties": false
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 visitEffects"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "FixtureLauncher",
+    "name": "Astral Launcher",
+    "code": 200,
+    "availableFrom": "hota",
+    "slot": "artillery",
+    "encoding": "ballista"
+  }
+]

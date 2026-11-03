@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using System;
     using System.Windows;
@@ -9,6 +9,9 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public partial class SaveHexWindow : Window
     {
+        /// <summary>
+        /// Opens the window and fills its hex viewer from <paramref name="dumpSource"/>.
+        /// </summary>
         /// <param name="dumpSource">Gives the savefile as it is now; asked again when the view is refreshed.</param>
         public SaveHexWindow(Func<SaveHexDump> dumpSource)
         {

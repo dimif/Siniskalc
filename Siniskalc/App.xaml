@@ -5,7 +5,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Views/Generic.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Siniskalc.Wpf;component/Styles/SiniskalcStyles.xaml"/>
+                <ResourceDictionary Source="/Siniskalc.Homm3;component/Views/Generic.xaml"/>
+                <ResourceDictionary Source="/Siniskalc.Homm2;component/Views/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

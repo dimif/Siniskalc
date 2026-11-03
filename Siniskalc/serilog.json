@@ -1,0 +1,42 @@
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Debug", "Serilog.Sinks.File" ],
+    "MinimumLevel": {
+      "Default": "Information"
+    },
+    "Enrich": [ "FromLogContext" ],
+    "WriteTo": [
+      {
+        "Name": "Debug",
+        "Args": {
+          "formatter": {
+            "type": "Serilog.Templates.ExpressionTemplate, Serilog.Expressions",
+            "template": "{@t:yyyy-MM-dd HH:mm:ss.fff zzz} [{@l:u3}] {SourceContext}{#if Subject is not null} ({Subject}){#end}: {@m}\n{#if @x is not null}{@x}\n{#end}"
+          }
+        }
+      },
+      {
+        "Name": "Console",
+        "Args": {
+          "formatter": {
+            "type": "Serilog.Templates.ExpressionTemplate, Serilog.Expressions",
+            "template": "{@t:yyyy-MM-dd HH:mm:ss.fff zzz} [{@l:u3}] {SourceContext}{#if Subject is not null} ({Subject}){#end}: {@m}\n{#if @x is not null}{@x}\n{#end}"
+          }
+        }
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "{LogFolder}/siniskalc-.log",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": 7,
+          "shared": true,
+          "formatter": {
+            "type": "Serilog.Templates.ExpressionTemplate, Serilog.Expressions",
+            "template": "{@t:yyyy-MM-dd HH:mm:ss.fff zzz} [{@l:u3}] {SourceContext}{#if Subject is not null} ({Subject}){#end}: {@m}\n{#if @x is not null}{@x}\n{#end}"
+          }
+        }
+      }
+    ]
+  }
+}

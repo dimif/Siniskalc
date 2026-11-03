@@ -1,22 +1,13 @@
+using Moq;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Wpf.ViewModels;
 
 namespace Siniskalc.Wpf.Tests.ViewModels
 {
     [TestFixture]
+    [Category(TestKinds.Unit)]
     internal sealed class AboutViewModelTests
     {
-        private sealed class RecordingLauncher : IUrlLauncher
-        {
-            public List<string> Opened { get; } = [];
-
-            public bool TryOpen(string url)
-            {
-                this.Opened.Add(url);
-                return true;
-            }
-        }
-
         private static readonly AboutInfo Info = new(
             "Sample",
             "2.3.4",
@@ -29,7 +20,7 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         [Test]
         public void TheNameVersionAndNoticesComeFromTheInfo()
         {
-            var viewModel = new AboutViewModel(Info, new RecordingLauncher());
+            var viewModel = new AboutViewModel(Info, new Mock<IUrlLauncher>().Object);
 
             Assert.That(viewModel.Name, Is.EqualTo("Sample"));
             Assert.That(viewModel.VersionText, Is.EqualTo("Version 2.3.4"));
@@ -39,13 +30,15 @@ namespace Siniskalc.Wpf.Tests.ViewModels
         [Test]
         public void TheLinksOpenTheRepositoryAndTheReleasesThroughTheLauncher()
         {
-            var launcher = new RecordingLauncher();
-            var viewModel = new AboutViewModel(Info, launcher);
+            var launcher = new Mock<IUrlLauncher>();
+            launcher.Setup(l => l.TryOpen(It.IsAny<string>())).Returns(true);
+            var viewModel = new AboutViewModel(Info, launcher.Object);
 
             viewModel.OpenRepositoryCommand.Execute(null);
             viewModel.OpenReleasesCommand.Execute(null);
 
-            Assert.That(launcher.Opened, Is.EqualTo(new[] { "https://example.com/repo", "https://example.com/repo/releases" }));
+            launcher.Verify(l => l.TryOpen("https://example.com/repo"), Times.Once);
+            launcher.Verify(l => l.TryOpen("https://example.com/repo/releases"), Times.Once);
         }
     }
 }

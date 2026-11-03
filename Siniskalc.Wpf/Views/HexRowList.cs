@@ -13,38 +13,59 @@
     /// </summary>
     internal sealed class HexRowList : IList
     {
+        /// <summary>
+        /// Bytes per row.
+        /// </summary>
         public const int BytesPerRow = 16;
 
         private const int MaxCachedRows = 1024;
 
         private readonly byte[] bytes;
         private readonly byte[] original;
-        private readonly ByteRegionMap map;
+        private readonly IByteRegionLookup map;
         private readonly Dictionary<int, HexRow> cache = [];
 
-        public HexRowList(byte[] bytes, byte[] original, ByteRegionMap map)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HexRowList"/> class.
+        /// </summary>
+        /// <param name="bytes">The bytes of the savefile as they are now.</param>
+        /// <param name="original">The bytes of the savefile as loaded, to mark the bytes that changed.</param>
+        /// <param name="map">Tells which regions a byte is in, for its colour and tooltip.</param>
+        public HexRowList(byte[] bytes, byte[] original, IByteRegionLookup map)
         {
             this.bytes = bytes;
             this.original = original;
             this.map = map;
         }
 
+        /// <inheritdoc/>
         public int Count => (this.bytes.Length + BytesPerRow - 1) / BytesPerRow;
 
+        /// <inheritdoc/>
         public bool IsReadOnly => true;
 
+        /// <inheritdoc/>
         public bool IsFixedSize => true;
 
+        /// <inheritdoc/>
         public bool IsSynchronized => false;
 
+        /// <inheritdoc/>
         public object SyncRoot => this;
 
+        /// <inheritdoc/>
         public object? this[int index]
         {
             get => this.GetRow(index);
             set => throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// Returns the row at <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The place of the row, from 0.</param>
+        /// <returns>The row.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not a row of the list.</exception>
         public HexRow GetRow(int index)
         {
             RangeGuard.ThrowIfNotIndex(index, this.Count, nameof(index));
@@ -62,10 +83,13 @@
             return row;
         }
 
+        /// <inheritdoc/>
         public int IndexOf(object? value) => value is HexRow row && row.Index < this.Count ? row.Index : -1;
 
+        /// <inheritdoc/>
         public bool Contains(object? value) => this.IndexOf(value) >= 0;
 
+        /// <inheritdoc/>
         public IEnumerator GetEnumerator()
         {
             for (var i = 0; i < this.Count; i++)
@@ -74,6 +98,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public void CopyTo(Array array, int index)
         {
             foreach (var row in this)
@@ -82,14 +107,19 @@
             }
         }
 
+        /// <inheritdoc/>
         public int Add(object? value) => throw new NotSupportedException();
 
+        /// <inheritdoc/>
         public void Clear() => throw new NotSupportedException();
 
+        /// <inheritdoc/>
         public void Insert(int index, object? value) => throw new NotSupportedException();
 
+        /// <inheritdoc/>
         public void Remove(object? value) => throw new NotSupportedException();
 
+        /// <inheritdoc/>
         public void RemoveAt(int index) => throw new NotSupportedException();
 
         private HexRow CreateRow(int index)

@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.ViewModels
+﻿namespace Siniskalc.Wpf.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
@@ -10,9 +10,13 @@ namespace Siniskalc.Wpf.ViewModels
     /// </summary>
     public sealed class RecentFilesMenuViewModel : IDisposable
     {
-        private readonly RecentFilesStore store;
+        private readonly IRecentFilesStore store;
 
-        public RecentFilesMenuViewModel(RecentFilesStore store)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecentFilesMenuViewModel"/> class.
+        /// </summary>
+        /// <param name="store">Where the list of recent files is kept; the menu follows its changes.</param>
+        public RecentFilesMenuViewModel(IRecentFilesStore store)
         {
             this.store = store;
             this.store.Changed += this.OnStoreChanged;
@@ -30,6 +34,7 @@ namespace Siniskalc.Wpf.ViewModels
         /// </summary>
         public ObservableCollection<RecentMenuItemViewModel> Items { get; } = new();
 
+        /// <inheritdoc/>
         public void Dispose() => this.store.Changed -= this.OnStoreChanged;
 
         private void OnStoreChanged(object? sender, EventArgs e) => this.Rebuild();

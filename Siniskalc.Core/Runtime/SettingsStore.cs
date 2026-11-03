@@ -1,26 +1,29 @@
 ﻿namespace Siniskalc.Core.Runtime
 {
+    using System;
     using System.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// The one place that holds the <see cref="UserSettings"/> of the user and writes them to their file. Everything that keeps a
     /// preference shares one store, so that saving one preference never overwrites another.
     /// </summary>
-    public sealed class SettingsStore
+    public sealed class SettingsStore : ISettingsStore
     {
+        private static readonly ILogger<SettingsStore> Logger = LogFactory.For<SettingsStore>();
+
         private readonly string path;
         private readonly UserSettings settings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsStore"/> class and reads the settings from their file.
+        /// </summary>
         /// <param name="path">Where the settings are kept.</param>
-        /// <param name="legacyPath">
-        /// Where an earlier version kept them. Read once when there is no file at <paramref name="path"/> yet, so a rename of
-        /// the editor does not lose the settings.
-        /// </param>
-        public SettingsStore(string path, string? legacyPath = null)
+        /// <exception cref="SettingsException">The file exists but cannot be read or understood.</exception>
+        public SettingsStore(string path)
         {
             this.path = path;
-            var loadFrom = !File.Exists(path) && legacyPath is not null && File.Exists(legacyPath) ? legacyPath : path;
-            this.settings = UserSettings.Load(loadFrom);
+            this.settings = UserSettings.Load(path);
         }
 
         /// <summary>
@@ -36,6 +39,7 @@
             get => this.settings.BackupOnSave;
             set
             {
+                Logger.LogDebug("Backup on save set to {BackupOnSave}", value);
                 this.settings.BackupOnSave = value;
                 this.Save();
             }
@@ -49,11 +53,42 @@
             get => this.settings.AdvancedMode;
             set
             {
+                Logger.LogDebug("Advanced mode set to {AdvancedMode}", value);
                 this.settings.AdvancedMode = value;
                 this.Save();
             }
         }
 
-        public void Save() => this.settings.Save(this.path);
+        /// <inheritdoc/>
+        public void Save()
+        {
+            Logger.LogTrace("Saving the settings to {Path}", this.path);
+            this.settings.Save(this.path);
+        }
+
+        /// <summary>
+        /// Makes sure the settings file is there: when the user has none yet, writes the default settings file the application ships, so the
+        /// user can see and edit it.
+        /// </summary>
+        /// <exception cref="SettingsException">The file cannot be written.</exception>
+        public void EnsureCreated()
+        {
+            if (File.Exists(this.path))
+            {
+                Logger.LogTrace("The settings file {Path} is there", this.path);
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(this.path) ?? string.Empty);
+                File.WriteAllText(this.path, DefaultSettings.Json);
+                Logger.LogInformation("Wrote the default settings to {Path}", this.path);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                throw new SettingsException(this.path, $"Failed to save the settings to {this.path}: {ex.Message}", ex);
+            }
+        }
     }
 }

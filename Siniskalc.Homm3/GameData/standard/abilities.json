@@ -1,0 +1,830 @@
+[
+  {
+    "id": "Spying",
+    "name": "Spying",
+    "code": 0,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DoublesFriendlyUnitsLuckChance",
+    "name": "Doubles friendly units Luck chance",
+    "code": 1,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterFortune",
+    "name": "Spellcaster (Fortune)",
+    "code": 2,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Undead",
+    "name": "Undead",
+    "code": 3,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Curse",
+    "name": "Curse",
+    "code": 4,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Sandwalker",
+    "name": "Sandwalker",
+    "code": 5,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ranged",
+    "name": "Ranged",
+    "code": 6,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NoRangeAndObstaclePenalty",
+    "name": "No range and obstacle penalty",
+    "code": 7,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterMirth",
+    "name": "Spellcaster (Mirth)",
+    "code": 8,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Unliving",
+    "name": "Unliving",
+    "code": 9,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellDamageResistancePlus80Percent",
+    "name": "Spell damage resistance (+80%)",
+    "code": 10,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Regeneration",
+    "name": "Regeneration",
+    "code": 11,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellDamageResistancePlus85Percent",
+    "name": "Spell damage resistance (+85%)",
+    "code": 12,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Flying",
+    "name": "Flying",
+    "code": 13,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MindSpellsImmunity",
+    "name": "Mind spells immunity",
+    "code": 14,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "UnlimitedRetaliations",
+    "name": "Unlimited retaliations",
+    "code": 15,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HypnotizingAttack",
+    "name": "Hypnotizing attack",
+    "code": 16,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellDamageResistancePlus95Percent",
+    "name": "Spell Damage Resistance (+95%)",
+    "code": 17,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NoMeleeAndObstaclePenalty",
+    "name": "No melee and obstacle penalty",
+    "code": 18,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Spellcaster",
+    "name": "Spellcaster",
+    "code": 19,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Dragon",
+    "name": "Dragon",
+    "code": 20,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NaturalMagicMirror",
+    "name": "Natural Magic Mirror",
+    "code": 21,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "BreathAttack",
+    "name": "Breath attack",
+    "code": 22,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AcidBreath",
+    "name": "Acid breath",
+    "code": 23,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "CrystalGeneration",
+    "name": "Crystal generation",
+    "code": 24,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MagicResistancePlus20Percent",
+    "name": "Magic resistance (+20%)",
+    "code": 25,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Fear",
+    "name": "Fear",
+    "code": 26,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Fearless",
+    "name": "Fearless",
+    "code": 27,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellsImmunityLevels1To3",
+    "name": "1-3 lvl spells immunity",
+    "code": 28,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ImmuneToJousting",
+    "name": "Immune to Jousting",
+    "code": 29,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DoubleAttack",
+    "name": "Double attack",
+    "code": 30,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "TwoRetaliations",
+    "name": "Two retaliations",
+    "code": 31,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NoMeleePenalty",
+    "name": "No melee penalty",
+    "code": 32,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Jousting",
+    "name": "Jousting",
+    "code": 33,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesDevils",
+    "name": "Hates Devils",
+    "code": 34,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MoralePlus1",
+    "name": "Morale +1",
+    "code": 35,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Resurrection",
+    "name": "Resurrection",
+    "code": 36,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ResistancePlus20Percent",
+    "name": "Resistance (+20%)",
+    "code": 37,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ResistancePlus40Percent",
+    "name": "Resistance (+40%)",
+    "code": 38,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MagicDamper",
+    "name": "Magic damper",
+    "code": 39,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Binding",
+    "name": "Binding",
+    "code": 40,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "BlindingAttack",
+    "name": "Blinding attack",
+    "code": 41,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AuraOfResistancePlus20Percent",
+    "name": "Aura of Resistance (+20%)",
+    "code": 42,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellsImmunityLevels1To4",
+    "name": "1-4 lvl spells immunity",
+    "code": 43,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Bloodless",
+    "name": "Bloodless",
+    "code": 44,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellDamageResistancePlus50Percent",
+    "name": "Spell damage resistance +50%",
+    "code": 45,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellDamageResistancePlus75Percent",
+    "name": "Spell damage resistance +75%",
+    "code": 46,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NoObstaclePenalty",
+    "name": "No obstacle penalty",
+    "code": 47,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MagicChanneler",
+    "name": "Magic channeler",
+    "code": 48,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesEfreetAndEfreetSultans",
+    "name": "Hates Efreet and Efreet Sultans",
+    "code": 49,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NoEnemyRetaliation",
+    "name": "No enemy retaliation",
+    "code": 50,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesBlackDragons",
+    "name": "Hates Black Dragons",
+    "code": 51,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MagicChannel",
+    "name": "Magic channel",
+    "code": 52,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FireballAttack",
+    "name": "Fireball attack",
+    "code": 53,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ThreeHeadedAttack",
+    "name": "3-headed attack",
+    "code": 54,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SummonDemons",
+    "name": "Summon demons",
+    "code": 55,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FireImmunity",
+    "name": "Fire immunity",
+    "code": 56,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesGenies",
+    "name": "Hates Genies",
+    "code": 57,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "NaturalFireShield",
+    "name": "Natural Fire Shield",
+    "code": 58,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Teleporting",
+    "name": "Teleporting",
+    "code": 59,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "LuckMinus1",
+    "name": "Luck -1",
+    "code": 60,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesAngels",
+    "name": "Hates Angels",
+    "code": 61,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "LuckMinus2",
+    "name": "Luck -2",
+    "code": 62,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Disease",
+    "name": "Disease",
+    "code": 63,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ManaDrain",
+    "name": "Mana drain",
+    "code": 64,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "LifeDrain",
+    "name": "Life drain",
+    "code": 65,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DeathCloud",
+    "name": "Death cloud",
+    "code": 66,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DeathBlow",
+    "name": "Death blow",
+    "code": 67,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MoraleMinus1",
+    "name": "Morale -1",
+    "code": 68,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Aging",
+    "name": "Aging",
+    "code": 69,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ImmuneToBlindingAndStoneGaze",
+    "name": "Immune to Blinding and Stone gaze",
+    "code": 70,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "StrikeAndReturn",
+    "name": "Strike and return",
+    "code": 71,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PetrifyingAttack",
+    "name": "Petrifying attack",
+    "code": 72,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PositiveMorale",
+    "name": "Positive Morale",
+    "code": 73,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ParalyzingVenom",
+    "name": "Paralyzing venom",
+    "code": 74,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MagicImmunity",
+    "name": "Magic immunity",
+    "code": 75,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HatesTitans",
+    "name": "Hates Titans",
+    "code": 76,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterBloodlust",
+    "name": "Spellcaster (Bloodlust)",
+    "code": 77,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "LightningStrike",
+    "name": "Lightning strike",
+    "code": 78,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "CanAttackSiegeWalls",
+    "name": "Can attack siege walls",
+    "code": 79,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ignores40PercentOfEnemyDefenseValue",
+    "name": "Ignores 40% of enemy defense value",
+    "code": 80,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ignores80PercentOfEnemyDefenseValue",
+    "name": "Ignores 80% of enemy defense value",
+    "code": 81,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DispelsBeneficialSpells",
+    "name": "Dispels beneficial spells",
+    "code": 82,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Weakness",
+    "name": "Weakness",
+    "code": 83,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DeathStare10PercentChancePerUnit",
+    "name": "Death stare (10% chance per unit)",
+    "code": 84,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Poisonous",
+    "name": "Poisonous",
+    "code": 85,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AttacksAllAdjacentEnemies",
+    "name": "Attacks all adjacent enemies",
+    "code": 86,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Elemental",
+    "name": "Elemental",
+    "code": 87,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ImmuneToMeteorShower",
+    "name": "Immune to Meteor Shower",
+    "code": 88,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "VulnerableToLightningBoltChainLightningTitansLightningBoltAndArmageddon",
+    "name": "Vulnerable to Lightning Bolt, Chain Lightning, Titan's Lightning Bolt and Armageddon",
+    "code": 89,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Plus100PercentToBasicDamageToEarthAndMagmaElementals",
+    "name": "+100% to basic damage to Earth and Magma Elementals",
+    "code": 90,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterProtectionFromAir",
+    "name": "Spellcaster (Protection from Air)",
+    "code": 91,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ImmuneToIceBoltAndFrostRing",
+    "name": "Immune to Ice Bolt and Frost Ring",
+    "code": 92,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "VulnerableToFireballInfernoAndArmageddon",
+    "name": "Vulnerable to Fireball, Inferno and Armageddon",
+    "code": 93,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Plus100PercentToBasicDamageToFireAndEnergyElementals",
+    "name": "+100% to basic damage to Fire and Energy Elementals",
+    "code": 94,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterProtectionFromWater",
+    "name": "Spellcaster (Protection from Water)",
+    "code": 95,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "VulnerableToIceBoltAndFrostRing",
+    "name": "Vulnerable to Ice Bolt and Frost Ring",
+    "code": 96,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Plus100PercentToBasicDamageToWaterAndIceElementals",
+    "name": "+100% to basic damage to Water and Ice Elementals",
+    "code": 97,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterProtectionFromFire",
+    "name": "Spellcaster (Protection from Fire)",
+    "code": 98,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ImmuneToLightningBoltChainLightningTitansLightningBoltAndArmageddon",
+    "name": "Immune to Lightning Bolt, Chain Lightning, Titan's Lightning Bolt and Armageddon",
+    "code": 99,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "VulnerableToMeteorShower",
+    "name": "Vulnerable to Meteor Shower",
+    "code": 100,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Plus100PercentToBasicDamageToAirAndStormElementals",
+    "name": "+100% to basic damage to Air and Storm Elementals",
+    "code": 101,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterProtectionFromEarth",
+    "name": "Spellcaster (Protection from Earth)",
+    "code": 102,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Minus50PercentDamageToCreaturesWithMindSpellsImmunity",
+    "name": "-50% damage to creatures with Mind spells immunity",
+    "code": 103,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Minus50PercentDamageToCreaturesWithMagicImmunity",
+    "name": "-50% damage to creatures with Magic immunity",
+    "code": 104,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FireResistance50Percent",
+    "name": "50% Fire resistance",
+    "code": 105,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Rebirth",
+    "name": "Rebirth",
+    "code": 106,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AccurateShot",
+    "name": "Accurate shot",
+    "code": 107,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ferocity",
+    "name": "Ferocity",
+    "code": 108,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterAfterShotWeaknessDisruptingRay",
+    "name": "Spellcaster (after shot, Weakness / Disrupting Ray)",
+    "code": 109,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ignores30PercentOfEnemyAttackValue",
+    "name": "Ignores 30% of enemy attack value",
+    "code": 110,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Ignores60PercentOfEnemyAttackValue",
+    "name": "Ignores 60% of enemy attack value",
+    "code": 111,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Revenge",
+    "name": "Revenge",
+    "code": 112,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PositiveLuck",
+    "name": "Positive Luck",
+    "code": 113,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "RangedAttackIgnores20PercentOfEnemysDefenseSkill",
+    "name": "Ranged attack ignores 20% of enemy's defense skill",
+    "code": 114,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Repairing10HPPerUnit",
+    "name": "Repairing (10 HP per unit)",
+    "code": 115,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Repairing20HPPerUnit",
+    "name": "Repairing (20 HP per unit)",
+    "code": 116,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Mechanical",
+    "name": "Mechanical",
+    "code": 117,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Detonation",
+    "name": "Detonation",
+    "code": 118,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Burrowing",
+    "name": "Burrowing",
+    "code": 119,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "DevoursCorpses",
+    "name": "Devours corpses",
+    "code": 120,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PreemptiveShotOncePerRound",
+    "name": "Preemptive shot (once per round)",
+    "code": 121,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PreemptiveShotUnlimited",
+    "name": "Preemptive shot (unlimited)",
+    "code": 122,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MeditationSkippingATurn",
+    "name": "Meditation (skipping a turn)",
+    "code": 123,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MeditationWithoutSkippingATurn",
+    "name": "Meditation (without skipping a turn)",
+    "code": 124,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "HeatStroke",
+    "name": "Heat stroke",
+    "code": 125,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Generates1GoldPerUnitPerDay",
+    "name": "Generates 1 Gold per unit per day",
+    "code": 126,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "AdjacentEnemiesReceivePlus20PercentSpellDamage",
+    "name": "Adjacent enemies receive +20% Spell Damage",
+    "code": 127,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "MayShootWhileAdjacentToEnemyCreatures",
+    "name": "May shoot while adjacent to enemy creatures",
+    "code": 128,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "RecoversFromNegativeEffectsInOneRoundOfCombat",
+    "name": "Recovers from negative effects in one round of combat",
+    "code": 129,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "PossessesRunes",
+    "name": "Possesses Runes",
+    "code": 130,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "SpellcasterAirShield",
+    "name": "Spellcaster (Air Shield)",
+    "code": 131,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "FreezingShot",
+    "name": "Freezing Shot",
+    "code": 132,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "ReceivesPlus100PercentDefenseWhileDefendingInCombat",
+    "name": "Receives +100% Defense while defending in combat",
+    "code": 133,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "TeleportsAlliesOncePerCombat",
+    "name": "Teleports allies (once per combat)",
+    "code": 134,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Minus1EnemyFlyingUnitsSpeed",
+    "name": "-1 enemy flying units' Speed",
+    "code": 135,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "TeleportsAlliesUnlimited",
+    "name": "Teleports allies (unlimited)",
+    "code": 136,
+    "availableFrom": "roe"
+  },
+  {
+    "id": "Minus2EnemyFlyingUnitsSpeed",
+    "name": "-2 enemy flying units' Speed",
+    "code": 137,
+    "availableFrom": "roe"
+  }
+]

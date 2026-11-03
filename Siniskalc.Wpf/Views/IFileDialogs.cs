@@ -18,5 +18,12 @@ namespace Siniskalc.Wpf.Views
         /// <param name="fileName">The name to suggest.</param>
         /// <param name="defaultExtension">The extension to add when the user types none, with its dot.</param>
         string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null);
+
+        /// <summary>
+        /// Asks for a folder. Returns its path, or <c>null</c> when the user cancels.
+        /// </summary>
+        /// <param name="initialFolder">The folder to start in.</param>
+        /// <param name="title">What the dialog says it is for.</param>
+        string? PickFolder(string? initialFolder, string title);
     }
 }

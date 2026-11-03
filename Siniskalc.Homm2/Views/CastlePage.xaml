@@ -1,0 +1,167 @@
+<Page x:Class="Siniskalc.Homm2.Views.CastlePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+      xmlns:hvm="clr-namespace:Siniskalc.Heroes.ViewModels;assembly=Siniskalc.Heroes"
+      xmlns:vm="clr-namespace:Siniskalc.Homm2.ViewModels"
+      Title="Castle">
+    <Page.Resources>
+        <!-- A hero in the castle, on the title row: its role, and its name, which opens the hero. -->
+        <DataTemplate x:Key="CastleHeroTemplate" DataType="{x:Type hvm:LinkViewModel}">
+            <StackPanel Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Bottom">
+                <TextBlock VerticalAlignment="Bottom" FontSize="14" Foreground="{StaticResource MutedBrush}" Text="{Binding Detail, StringFormat={}{0}:}"/>
+                <Button Style="{StaticResource LinkButtonStyle}" Margin="6,0,0,0" VerticalAlignment="Bottom" FontSize="14" Command="{Binding OpenCommand}" Content="{Binding Name}"
+                        ToolTip="Open this hero"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- A dwelling on the Buildings tab: whether it is built, and its level. -->
+        <DataTemplate x:Key="DwellingBuiltTemplate" DataType="{x:Type vm:DwellingRowViewModel}">
+            <ContentControl Content="{Binding Built}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
+        </DataTemplate>
+
+        <!-- A creature level on the Available creatures tab: the creature of the dwelling, and how many of them wait in it. -->
+        <DataTemplate x:Key="AvailableCreaturesTemplate" DataType="{x:Type vm:DwellingRowViewModel}">
+            <DockPanel Margin="0,3">
+                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" IsEnabled="{Binding IsBuilt}"
+                             Value="{Binding Waiting.Value}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
+                             ToolTip="How many creatures wait in the dwelling"/>
+                <Button DockPanel.Dock="Right" Style="{StaticResource PillButtonStyle}" Margin="12,0,0,0" VerticalAlignment="Center" Content="+1 wk" Command="{Binding AddWeekCommand}"
+                        ToolTip="Add a week of growth to the dwelling"/>
+                <TextBlock DockPanel.Dock="Right" Width="80" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource MutedBrush}" Text="{Binding WeeklyGrowthText}"
+                           ToolTip="What the dwelling gains each week, with the Well and the second well"/>
+                <TextBlock DockPanel.Dock="Left" Width="60" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Label}"/>
+                <TextBlock x:Name="creature" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Selected}"/>
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsBuilt}" Value="True">
+                    <Setter TargetName="creature" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    <Setter TargetName="creature" Property="FontWeight" Value="SemiBold"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- A level of the Mage Guild: its spells. -->
+        <DataTemplate x:Key="GuildLevelTemplate" DataType="{x:Type vm:GuildLevelViewModel}">
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Margin="0,4,0,2" FontWeight="SemiBold" Text="{Binding Heading}"/>
+                <ItemsControl ItemsSource="{Binding Spells}" ItemTemplate="{StaticResource ChoiceFieldTemplate}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="16,14,16,4">
+            <heroes:PageHeader ColorHex="{Binding ColorHex}" Title="{Binding Name}"
+                               EditedToolTip="This castle has changes that are not saved yet"
+                               ResetToolTip="Put everything of this castle back to what the savegame had">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <TextBlock Margin="12,0,0,3" VerticalAlignment="Bottom" Foreground="{StaticResource MutedBrush}" FontSize="14">
+                        <Run Text="{Binding FactionName, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding KindText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding OwnerText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding PositionText, Mode=OneWay}"/>
+                    </TextBlock>
+                    <!-- The hero in the castle. -->
+                    <ItemsControl Margin="24,0,0,3" VerticalAlignment="Bottom" ItemsSource="{Binding Heroes}" ItemTemplate="{StaticResource CastleHeroTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+            </heroes:PageHeader>
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource FieldNoteStyle}" Text="{Binding ShipyardText}"/>
+            <heroes:OwnerPicker Margin="0,8,0,0"
+                                PickerToolTip="Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one."/>
+            <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasNotice}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                       Text="The flag of the castle on the map, and what the new owner has seen of the map around it, are not changed: the game fixes the flag when someone visits, and the castle may show only in the list of castles of its owner until the map is explored."/>
+        </StackPanel>
+
+        <!-- The pages of a castle, as tabs. -->
+        <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
+            <wpf:NavButton Text="Buildings"/>
+            <wpf:NavButton Text="Garrison"/>
+            <wpf:NavButton Text="Available creatures"/>
+            <wpf:NavButton Text="Mage guild"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+        </ListBox>
+
+        <!-- Hex -->
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
+
+        <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="4">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <Grid Margin="8,4,8,16">
+                <!-- Buildings -->
+                <StackPanel Style="{StaticResource TabPanel0}">
+                    <CheckBox Margin="0,0,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding CanBuildThisTurn.Name}"
+                              IsChecked="{Binding CanBuildThisTurn.IsChecked}" ToolTip="{Binding CanBuildThisTurn.ToolTip}"/>
+                    <WrapPanel Margin="-6,0,0,0">
+                        <heroes:HeadedCard Heading="Buildings">
+                            <ItemsControl ItemsSource="{Binding Buildings}" ItemTemplate="{StaticResource ToggleRowTemplate}"/>
+                        </heroes:HeadedCard>
+                        <heroes:HeadedCard Heading="Dwellings">
+                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingBuiltTemplate}"/>
+                        </heroes:HeadedCard>
+                    </WrapPanel>
+                    <TextBlock Margin="0,8,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                               Text="The editor does not check what the game needs before a building can be built: a town needs its castle first. A dwelling that is upgraded shows the creature of its upgrade."/>
+                </StackPanel>
+
+                <!-- Garrison: the same army editor as the creatures of a hero. -->
+                <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
+                    <heroes:ArmyEditorView DataContext="{Binding GarrisonEditor}"/>
+                </StackPanel>
+
+                <!-- Available creatures -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
+                    <heroes:HeadedCard Heading="Available creatures" CardWidth="672">
+                        <StackPanel>
+                            <heroes:DwellingStockQuickRow DataContext="{Binding DwellingActions}"/>
+                            <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource AvailableCreaturesTemplate}"/>
+                        </StackPanel>
+                    </heroes:HeadedCard>
+                </WrapPanel>
+
+                <!-- Mage guild -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
+                    <heroes:HeadedCard Heading="Mage guild" CardWidth="400">
+                        <StackPanel>
+                            <ContentControl Content="{Binding GuildLevelField}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
+                            <ItemsControl ItemsSource="{Binding GuildLevels}" ItemTemplate="{StaticResource GuildLevelTemplate}"/>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                                       Text="The guild teaches the spells of the levels it has built: three at the first two levels, two at the next two and one at the last (one more with the Library of a Wizard)."/>
+                        </StackPanel>
+                    </heroes:HeadedCard>
+                </WrapPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

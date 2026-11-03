@@ -1,0 +1,223 @@
+﻿namespace Siniskalc.Homm2.ViewModels
+{
+    using System.Collections.Generic;
+    using System.Linq;
+    using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
+    using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.ViewModels;
+    using Siniskalc.Homm2.Data;
+    using Siniskalc.Homm2.Entities;
+    using Siniskalc.Homm2.Models;
+    using Siniskalc.Homm2.Runtime;
+    using Siniskalc.Wpf.ViewModels;
+
+    /// <summary>
+    /// The editor of Heroes of Might and Magic II: the open savegame, its history and what it shows. The application shell
+    /// (<see cref="ShellViewModel"/>) works with it through <see cref="IGameEditor"/>.
+    /// </summary>
+    public sealed class Homm2EditorViewModel : EditorViewModelBase<Game>
+    {
+        private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly BanishingTextProvider banishingText;
+        private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
+        private readonly Dictionary<int, PlayerViewModel> players = [];
+        private readonly Dictionary<int, HeroViewModel> heroes = [];
+        private readonly Dictionary<int, CastleViewModel> castles = [];
+        private OverviewViewModel? overview;
+        private MapViewModel? map;
+        private NeutralViewModel? neutral;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Homm2EditorViewModel"/> class.
+        /// </summary>
+        /// <param name="gameService">The game service.</param>
+        /// <param name="saveRegions">The save regions.</param>
+        /// <param name="byteEditTargets">The byte edit targets.</param>
+        /// <param name="navigationBuilder">The navigation builder.</param>
+        /// <param name="banishingText">The banishing text.</param>
+        /// <param name="spellPoints">The spell points.</param>
+        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints)
+            : base(gameService, saveRegions, navigationBuilder)
+        {
+            this.byteEditTargets = byteEditTargets;
+            this.banishingText = banishingText;
+            this.spellPoints = spellPoints;
+        }
+
+        /// <summary>
+        /// Gets what the editor shows about the loaded game, or <c>null</c> when none is loaded.
+        /// </summary>
+        public OverviewViewModel? Overview => this.overview;
+
+        /// <inheritdoc/>
+        protected override object? OverviewPage => this.overview;
+
+        /// <summary>
+        /// Shows the page of the player of <paramref name="color"/>, on the tab <paramref name="tab"/>.
+        /// </summary>
+        /// <param name="color">The colour of the player.</param>
+        /// <param name="tab">The tab to show.</param>
+        public void ShowPlayer(PlayerColor color, int tab = 0)
+        {
+            var game = this.Loaded();
+            if (!this.players.TryGetValue(color.Code, out var player))
+            {
+                player = new PlayerViewModel(game, color, this.banishingText, this.ShowHero, this.ShowCastle, this.byteEditTargets);
+                this.players[color.Code] = player;
+            }
+
+            player.SelectedTab = tab;
+            this.SetCurrentPage(player);
+        }
+
+        /// <summary>
+        /// Shows the page of what nobody owns, on the tab <paramref name="tab"/> (see <see cref="NeutralTabs"/>).
+        /// </summary>
+        /// <param name="tab">The tab to show.</param>
+        public void ShowNeutral(int tab = NeutralTabs.Heroes)
+        {
+            this.neutral ??= new NeutralViewModel(this.Loaded(), this.ShowHero, this.ShowCastle, this.byteEditTargets);
+            this.neutral.SelectedTab = tab;
+            this.SetCurrentPage(this.neutral);
+        }
+
+        /// <summary>
+        /// Shows the mine at <paramref name="mineIndex"/> among the mines of the savegame: on the Mines tab of its owner, or on the map page
+        /// when nobody owns it.
+        /// </summary>
+        /// <param name="mineIndex">The place of the mine in the list of mines.</param>
+        public void ShowMine(int mineIndex)
+        {
+            var owner = this.Loaded().History.Current.Mines().GetModel(mineIndex).Owner;
+            if (owner.IsNeutral)
+            {
+                this.ShowNeutral(NeutralTabs.Mines);
+                this.neutral!.Mines.PickMine(mineIndex);
+                return;
+            }
+
+            this.ShowPlayer(owner, OwnerTabs.Mines);
+            this.players[owner.Code].Mines.PickMine(mineIndex);
+        }
+
+        /// <summary>
+        /// Shows the page of the objects of the map: its mines, shrines and sphinxes.
+        /// </summary>
+        public void ShowMap()
+        {
+            this.map ??= new MapViewModel(this.Loaded(), this.byteEditTargets);
+            this.SetCurrentPage(this.map);
+        }
+
+        /// <summary>
+        /// Shows the page of the hero with the number <paramref name="heroId"/>.
+        /// </summary>
+        /// <param name="heroId">The number of the hero.</param>
+        public void ShowHero(int heroId)
+        {
+            var game = this.Loaded();
+            if (!this.heroes.TryGetValue(heroId, out var hero))
+            {
+                hero = new HeroViewModel(game, heroId, this.ShowCastle, this.spellPoints, this.byteEditTargets);
+                this.heroes[heroId] = hero;
+            }
+
+            this.SetCurrentPage(hero);
+        }
+
+        /// <summary>
+        /// Shows the page of the castle at <paramref name="castleIndex"/> in the savegame's castles.
+        /// </summary>
+        /// <param name="castleIndex">The number of the castle.</param>
+        public void ShowCastle(int castleIndex)
+        {
+            var game = this.Loaded();
+            if (!this.castles.TryGetValue(castleIndex, out var castle))
+            {
+                castle = new CastleViewModel(game, castleIndex, this.ShowHero, this.byteEditTargets);
+                this.castles[castleIndex] = castle;
+            }
+
+            this.SetCurrentPage(castle);
+        }
+
+        /// <inheritdoc/>
+        protected override object? PrepareGame(Game game) => new OverviewViewModel(game, this.banishingText, color => this.ShowPlayer(color), this.ShowHero, this.ShowCastle);
+
+        /// <inheritdoc/>
+        protected override void CloseGame()
+        {
+            foreach (var page in this.players.Values.Cast<ResettablePageViewModelBase>().Concat(this.heroes.Values).Concat(this.castles.Values))
+            {
+                page.Dispose();
+            }
+
+            this.players.Clear();
+            this.heroes.Clear();
+            this.castles.Clear();
+            this.map?.Dispose();
+            this.map = null;
+            this.neutral?.Dispose();
+            this.neutral = null;
+        }
+
+        /// <inheritdoc/>
+        protected override void OpenGame(Game game, object? prepared)
+        {
+            this.overview = (OverviewViewModel?)prepared;
+            this.RaisePropertyChanged(nameof(this.Overview));
+        }
+
+        /// <inheritdoc/>
+        protected override NavNodeViewModel? NodeOf(object page) => page switch
+        {
+            OverviewViewModel => this.Navigation.Overview,
+            PlayerViewModel player => this.Navigation.PlayerTabNode(player.Color.Code, player.SelectedTab),
+            HeroViewModel hero => this.Navigation.HeroNode(hero.HeroId),
+            CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
+            NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab),
+            MapViewModel => this.Navigation.MapNode,
+            _ => null,
+        };
+
+        /// <inheritdoc/>
+        protected override void OnNodeSelected(NavNodeViewModel node)
+        {
+            switch (node.Kind)
+            {
+                case NavNodeKind.Overview:
+                    this.ShowOverview();
+                    break;
+                case NavNodeKind.Player:
+                    this.ShowPlayer(PlayerColor.All[node.Index]);
+                    break;
+                case NavNodeKind.PlayerTab:
+                    this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
+                    break;
+                case NavNodeKind.OwnerSubGroup when node.Index < 0:
+                    this.ShowNeutral(node.Tab);
+                    break;
+                case NavNodeKind.OwnerSubGroup:
+                    this.ShowPlayer(PlayerColor.All[node.Index], node.Tab);
+                    break;
+                case NavNodeKind.Neutral:
+                case NavNodeKind.NeutralTab:
+                    this.ShowNeutral(node.Tab);
+                    break;
+                case NavNodeKind.Mine:
+                    this.ShowMine(node.Index);
+                    break;
+                case NavNodeKind.Hero:
+                    this.ShowHero(node.Index);
+                    break;
+                case NavNodeKind.Castle:
+                    this.ShowCastle(node.Index);
+                    break;
+                case NavNodeKind.Map:
+                    this.ShowMap();
+                    break;
+            }
+        }
+    }
+}

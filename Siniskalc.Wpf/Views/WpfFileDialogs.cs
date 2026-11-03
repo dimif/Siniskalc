@@ -1,4 +1,4 @@
-namespace Siniskalc.Wpf.Views
+﻿namespace Siniskalc.Wpf.Views
 {
     using Microsoft.Win32;
 
@@ -7,12 +7,14 @@ namespace Siniskalc.Wpf.Views
     /// </summary>
     public sealed class WpfFileDialogs : IFileDialogs
     {
+        /// <inheritdoc/>
         public string? PickFileToOpen(string filter)
         {
             var dialog = new OpenFileDialog { Filter = filter };
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
 
+        /// <inheritdoc/>
         public string? PickFileToSave(string filter, string? fileName = null, string? defaultExtension = null)
         {
             var dialog = new SaveFileDialog { Filter = filter };
@@ -28,6 +30,18 @@ namespace Siniskalc.Wpf.Views
             }
 
             return dialog.ShowDialog() == true ? dialog.FileName : null;
+        }
+
+        /// <inheritdoc/>
+        public string? PickFolder(string? initialFolder, string title)
+        {
+            var dialog = new OpenFolderDialog { Title = title };
+            if (initialFolder != null && System.IO.Directory.Exists(initialFolder))
+            {
+                dialog.InitialDirectory = initialFolder;
+            }
+
+            return dialog.ShowDialog() == true ? dialog.FolderName : null;
         }
     }
 }

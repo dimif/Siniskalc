@@ -1,0 +1,29 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "kind": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "resource": {
+        "type": "string"
+      },
+      "dailyAmount": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "kind",
+      "name",
+      "resource",
+      "dailyAmount"
+    ],
+    "additionalProperties": false
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 mines"
+}

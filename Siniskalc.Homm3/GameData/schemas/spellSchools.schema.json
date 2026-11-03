@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 spellSchools",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
+        ]
+      },
+      "description": {
+        "type": "string"
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "code",
+      "availableFrom",
+      "description"
+    ],
+    "additionalProperties": false
+  }
+}

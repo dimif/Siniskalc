@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Siniskalc.Homm3</AssemblyName>
+    <RootNamespace>Siniskalc.Homm3</RootNamespace>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Siniskalc.Core\Siniskalc.Core.csproj" />
+    <ProjectReference Include="..\Siniskalc.Heroes\Siniskalc.Heroes.csproj" />
+    <ProjectReference Include="..\Siniskalc.Heroes.Wpf\Siniskalc.Heroes.Wpf.csproj" />
+    <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
+    <ProjectReference Include="..\SharpZipLib.GZip\SharpZipLib.GZip.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.globalconfig" Link=".globalconfig" />
+    <None Remove="GameData\**\*.json" />
+    <Content Include="GameData\**\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>GameData\Homm3\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
+
+</Project>

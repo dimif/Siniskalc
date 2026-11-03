@@ -34,6 +34,9 @@
         private ByteRegionMap map = new([], 0);
         private bool isSelecting;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HexViewer"/> class.
+        /// </summary>
         public HexViewer()
         {
             this.InitializeComponent();
@@ -44,6 +47,7 @@
         /// <summary>
         /// Shows the savefile that <paramref name="dumpSource"/> gives, and again whenever the view is refreshed.
         /// </summary>
+        /// <param name="dumpSource">Gives the dump of the savefile when asked.</param>
         public void Bind(Func<SaveHexDump> dumpSource)
         {
             this.source = dumpSource;
@@ -146,7 +150,7 @@
 
             var selected = new Trigger { Property = DataGridCell.IsSelectedProperty, Value = true };
             selected.Setters.Add(new Setter(Control.BackgroundProperty, HexPalette.SelectedBackground));
-            selected.Setters.Add(new Setter(Control.ForegroundProperty, System.Windows.Media.Brushes.Black));
+            selected.Setters.Add(new Setter(Control.ForegroundProperty, HexPalette.SelectedForeground));
             style.Triggers.Add(selected);
 
             return style;

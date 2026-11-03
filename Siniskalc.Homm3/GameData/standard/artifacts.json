@@ -1,0 +1,3291 @@
+[
+  {
+    "id": "HelmOfTheAlabasterUnicorn",
+    "name": "Helm of the Alabaster Unicorn",
+    "code": 19,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "SkullHelmet",
+    "name": "Skull Helmet",
+    "code": 20,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 3000,
+    "combinesInto": "ArmorOfTheDamned"
+  },
+  {
+    "id": "HelmOfChaos",
+    "name": "Helm of Chaos",
+    "code": 21,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "CrownOfTheSupremeMagi",
+    "name": "Crown of the Supreme Magi",
+    "code": 22,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": "IronfistOfTheOgre"
+  },
+  {
+    "id": "HellstormHelmet",
+    "name": "Hellstorm Helmet",
+    "code": 23,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 5
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": null
+  },
+  {
+    "id": "ThunderHelmet",
+    "name": "Thunder Helmet",
+    "code": 24,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": -2
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 10
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": "TitansThunder"
+  },
+  {
+    "id": "HelmOfHeavenlyEnlightenment",
+    "name": "Helm of Heavenly Enlightenment",
+    "code": 36,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 6
+        },
+        {
+          "attribute": "defense",
+          "amount": 6
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 6
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 6
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 24000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "CrownOfDragontooth",
+    "name": "Crown of Dragontooth",
+    "code": 44,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 4
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 8000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "SeaCaptainsHat",
+    "name": "Sea Captain's Hat",
+    "code": 123,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "waterMovement",
+          "amount": 500
+        }
+      ],
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "SummonBoat",
+            "ScuttleBoat"
+          ],
+          "description": "Summon Boat, Scuttle Boat",
+          "school": null,
+          "level": null
+        }
+      ],
+      "other": "Can Cast Summon Boat, Scuttle Boat, Protection from Whirlpools"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 15000,
+    "combinesInto": "AdmiralsHat"
+  },
+  {
+    "id": "SpellbindersHat",
+    "name": "Spellbinder's Hat",
+    "code": 124,
+    "availableFrom": "roe",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [],
+      "spellGrants": [
+        {
+          "kind": "level",
+          "level": 5,
+          "description": "all level 5 spells",
+          "spells": [],
+          "school": null
+        }
+      ],
+      "other": "When equipped, the hat enables the hero to cast all 5th level spells."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 30000,
+    "combinesInto": null
+  },
+  {
+    "id": "AdmiralsHat",
+    "name": "Admiral's Hat",
+    "code": 136,
+    "availableFrom": "sod",
+    "slot": "helmet",
+    "blockedSlots": "helmet, necklace",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "waterMovement",
+          "amount": 1500
+        }
+      ],
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "SummonBoat",
+            "ScuttleBoat"
+          ],
+          "description": "Summon Boat, Scuttle Boat",
+          "school": null,
+          "level": null
+        }
+      ],
+      "other": "No Penalty to Board/Leave Boat, Can Cast Summon Boat and Scuttle Boat, Protection from Whirlpools."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 25000,
+    "combinesInto": null
+  },
+  {
+    "id": "CrownOfTheFiveSeas",
+    "name": "Crown of the Five Seas",
+    "code": 150,
+    "availableFrom": "hota",
+    "slot": "helmet",
+    "blockedSlots": "helmet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "knowledge",
+          "amount": 6
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "AmuletOfTheUndertaker",
+    "name": "Amulet of the Undertaker",
+    "code": 54,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Necromancy +5%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": "CloakOfUndeadKing"
+  },
+  {
+    "id": "CelestialNecklaceOfBliss",
+    "name": "Celestial Necklace of Bliss",
+    "code": 33,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 3
+        },
+        {
+          "attribute": "defense",
+          "amount": 3
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 3
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 12000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "CollarOfConjuring",
+    "name": "Collar of Conjuring",
+    "code": 76,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Spell Duration +1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 500,
+    "combinesInto": "RingOfTheMagi"
+  },
+  {
+    "id": "GarnitureOfInterference",
+    "name": "Garniture of Interference",
+    "code": 57,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Magic Resistance 5%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 2000,
+    "combinesInto": "PendantOfReflection"
+  },
+  {
+    "id": "NecklaceOfDragonteeth",
+    "name": "Necklace of Dragonteeth",
+    "code": 43,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 3
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "NecklaceOfOceanGuidance",
+    "name": "Necklace of Ocean Guidance",
+    "code": 71,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "waterMovement",
+          "amount": 1000
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 10000,
+    "combinesInto": "AdmiralsHat"
+  },
+  {
+    "id": "NecklaceOfSwiftness",
+    "name": "Necklace of Swiftness",
+    "code": 97,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+1 Unit Speed"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfCourage",
+    "name": "Pendant of Courage",
+    "code": 108,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "luck",
+          "amount": 3
+        },
+        {
+          "attribute": "morale",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfDeath",
+    "name": "Pendant of Death",
+    "code": 104,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Destroy Undead"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2500,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfDispassion",
+    "name": "Pendant of Dispassion",
+    "code": 100,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Berserk"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfFreeWill",
+    "name": "Pendant of Free Will",
+    "code": 105,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Hypnotize"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfHoliness",
+    "name": "Pendant of Holiness",
+    "code": 102,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Curse"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfLife",
+    "name": "Pendant of Life",
+    "code": 103,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Death Ripple"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2500,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfNegativity",
+    "name": "Pendant of Negativity",
+    "code": 106,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Lightning Bolt and Chain-Lightning"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfSecondSight",
+    "name": "Pendant of Second Sight",
+    "code": 101,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Blind"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfTotalRecall",
+    "name": "Pendant of Total Recall",
+    "code": 107,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immunity to Forgetfulness"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "StatesmensMedal",
+    "name": "Statesmen's Medal",
+    "code": 66,
+    "availableFrom": "roe",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Surrendering Cost -10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "DiplomatsCloak"
+  },
+  {
+    "id": "PendantOfDownfall",
+    "name": "Pendant of Downfall",
+    "code": 157,
+    "availableFrom": "hota",
+    "slot": "necklace",
+    "blockedSlots": "necklace",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Morale by 2"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "PendantOfReflection",
+    "name": "Pendant of Reflection",
+    "code": 142,
+    "availableFrom": "hota",
+    "slot": "necklace",
+    "blockedSlots": "necklace, feet, cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Magic resistance +20%. Components effect: Magic resistance +30%"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 12000,
+    "combinesInto": null
+  },
+  {
+    "id": "ArmorOfTheDamned",
+    "name": "Armor of the Damned",
+    "code": 132,
+    "availableFrom": "sod",
+    "slot": "torso",
+    "blockedSlots": "helmet, torso, weapon, shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 3
+        },
+        {
+          "attribute": "defense",
+          "amount": 3
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 2
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 2
+        }
+      ],
+      "other": "Cast Slow,Curse,Weakness and Misfortune for 50 rounds in combat."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 12000,
+    "combinesInto": null
+  },
+  {
+    "id": "ArmorOfWonder",
+    "name": "Armor of Wonder",
+    "code": 31,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 1
+        },
+        {
+          "attribute": "defense",
+          "amount": 1
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 1
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "BreastplateOfBrimstone",
+    "name": "Breastplate of Brimstone",
+    "code": 29,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 5
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "ArmageddonsBlade"
+  },
+  {
+    "id": "BreastplateOfPetrifiedWood",
+    "name": "Breastplate of Petrified Wood",
+    "code": 25,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "DragonScaleArmor",
+    "name": "Dragon Scale Armor",
+    "code": 40,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 4
+        },
+        {
+          "attribute": "defense",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 8000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "PowerOfTheDragonFather",
+    "name": "Power of the Dragon Father",
+    "code": 134,
+    "availableFrom": "sod",
+    "slot": "torso",
+    "blockedSlots": "helmet, necklace, torso, feet, weapon, shield, cape, rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 16
+        },
+        {
+          "attribute": "defense",
+          "amount": 16
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 16
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 16
+        },
+        {
+          "attribute": "luck",
+          "amount": 1
+        },
+        {
+          "attribute": "morale",
+          "amount": 1
+        }
+      ],
+      "other": "Immune to Lvl 1-4 Spells"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 42000,
+    "combinesInto": null
+  },
+  {
+    "id": "RibCage",
+    "name": "Rib Cage",
+    "code": 26,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 3000,
+    "combinesInto": "ArmorOfTheDamned"
+  },
+  {
+    "id": "ScalesOfTheGreaterBasilisk",
+    "name": "Scales of the Greater Basilisk",
+    "code": 27,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "TitansCuirass",
+    "name": "Titan's Cuirass",
+    "code": 30,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 10
+        },
+        {
+          "attribute": "knowledge",
+          "amount": -2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": "TitansThunder"
+  },
+  {
+    "id": "TunicOfTheCyclopsKing",
+    "name": "Tunic of the Cyclops King",
+    "code": 28,
+    "availableFrom": "roe",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "IronfistOfTheOgre"
+  },
+  {
+    "id": "PlateOfDyingLight",
+    "name": "Plate of Dying Light",
+    "code": 164,
+    "availableFrom": "hota",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Reduces the Power skill of enemy hero by 25% during combat"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": null
+  },
+  {
+    "id": "RoyalArmorOfNix",
+    "name": "Royal Armor of Nix",
+    "code": 149,
+    "availableFrom": "hota",
+    "slot": "torso",
+    "blockedSlots": "torso",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Increases Spell Power skill by 6"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "AmbassadorsSash",
+    "name": "Ambassador's Sash",
+    "code": 68,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Surrendering Cost -10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "DiplomatsCloak"
+  },
+  {
+    "id": "AngelWings",
+    "name": "Angel Wings",
+    "code": 72,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Permanent Expert Fly when equipped."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "CapeOfConjuring",
+    "name": "Cape of Conjuring",
+    "code": 78,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Spell Duration +3"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1500,
+    "combinesInto": "RingOfTheMagi"
+  },
+  {
+    "id": "CapeOfVelocity",
+    "name": "Cape of Velocity",
+    "code": 99,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+2 Unit Speed"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 10000,
+    "combinesInto": null
+  },
+  {
+    "id": "CloakOfUndeadKing",
+    "name": "Cloak of Undead King",
+    "code": 130,
+    "availableFrom": "sod",
+    "slot": "cape",
+    "blockedSlots": "necklace, feet, cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Necromancy +60%, Raise more Creature Types"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 12000,
+    "combinesInto": null
+  },
+  {
+    "id": "DragonWingTabard",
+    "name": "Dragon Wing Tabard",
+    "code": 42,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 2
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "EverflowingCrystalCloak",
+    "name": "Everflowing Crystal Cloak",
+    "code": 109,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "crystal",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "Cornucopia"
+  },
+  {
+    "id": "RecantersCloak",
+    "name": "Recanter's Cloak",
+    "code": 83,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Prevents Casting lvl 3+ Spells"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 8000,
+    "combinesInto": null
+  },
+  {
+    "id": "SurcoatOfCounterpoise",
+    "name": "Surcoat of Counterpoise",
+    "code": 58,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Magic Resistance 10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 4000,
+    "combinesInto": "PendantOfReflection"
+  },
+  {
+    "id": "VampiresCowl",
+    "name": "Vampire's Cowl",
+    "code": 55,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Necromancy 10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": "CloakOfUndeadKing"
+  },
+  {
+    "id": "CapeOfSilence",
+    "name": "Cape of Silence",
+    "code": 159,
+    "availableFrom": "hota",
+    "slot": "cape",
+    "blockedSlots": "cape",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Bans all level 1 and 2 spells in battle"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7500,
+    "combinesInto": null
+  },
+  {
+    "id": "DiplomatsCloak",
+    "name": "Diplomat's Cloak",
+    "code": 141,
+    "availableFrom": "roe",
+    "slot": "cape",
+    "blockedSlots": "necklace, cape, ring1",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Allows your hero to retreat or surrender when battling neutral monsters or defending a town. Multiplies your hero army strength by 3"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 15000,
+    "combinesInto": null
+  },
+  {
+    "id": "BootsOfLevitation",
+    "name": "Boots of Levitation",
+    "code": 90,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Permanent Expert Water Walk when equipped."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": null
+  },
+  {
+    "id": "BootsOfPolarity",
+    "name": "Boots of Polarity",
+    "code": 59,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Magic Resistance 15%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 6000,
+    "combinesInto": "PendantOfReflection"
+  },
+  {
+    "id": "BootsOfSpeed",
+    "name": "Boots of Speed",
+    "code": 98,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "landMovement",
+          "amount": 600
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 6000,
+    "combinesInto": null
+  },
+  {
+    "id": "DeadMensBoots",
+    "name": "Dead Men's Boots",
+    "code": 56,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Necromancy 15%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "CloakOfUndeadKing"
+  },
+  {
+    "id": "DragonboneGreaves",
+    "name": "Dragonbone Greaves",
+    "code": 41,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "spellPower",
+          "amount": 1
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "SandalsOfTheSaint",
+    "name": "Sandals of the Saint",
+    "code": 32,
+    "availableFrom": "roe",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 2
+        },
+        {
+          "attribute": "defense",
+          "amount": 2
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 2
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 8000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "WayfarersBoots",
+    "name": "Wayfarer's Boots",
+    "code": 151,
+    "availableFrom": "hota",
+    "slot": "feet",
+    "blockedSlots": "feet",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Reduces the cost of moving one tile to 100 on any terrain."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "AngelicAlliance",
+    "name": "Angelic Alliance",
+    "code": 129,
+    "availableFrom": "sod",
+    "slot": "weapon",
+    "blockedSlots": "helmet, necklace, torso, feet, weapon, shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 21
+        },
+        {
+          "attribute": "defense",
+          "amount": 21
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 21
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 21
+        }
+      ],
+      "other": "Allows Castle, Rampart, Tower, Fortress, Stronghold, Conflux, Cove, Factory, and Bulwark creatures to be mixed without a morale penalty. Casts Expert Prayer for 10 rounds at the start of combat."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 84000,
+    "combinesInto": null
+  },
+  {
+    "id": "BlackshardOfTheDeadKnight",
+    "name": "Blackshard of the Dead Knight",
+    "code": 8,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 3000,
+    "combinesInto": "ArmorOfTheDamned"
+  },
+  {
+    "id": "CentaursAxe",
+    "name": "Centaur's Axe",
+    "code": 7,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "GreaterKnollsFlail",
+    "name": "Greater Knoll's Flail",
+    "code": 9,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "OgresClubOfHavoc",
+    "name": "Ogre's Club of Havoc",
+    "code": 10,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 5
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "IronfistOfTheOgre"
+  },
+  {
+    "id": "RedDragonFlameTongue",
+    "name": "Red Dragon Flame Tongue",
+    "code": 38,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 2
+        },
+        {
+          "attribute": "defense",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "SwordOfHellfire",
+    "name": "Sword of Hellfire",
+    "code": 11,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 6
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "ArmageddonsBlade"
+  },
+  {
+    "id": "SwordOfJudgement",
+    "name": "Sword of Judgement",
+    "code": 35,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 5
+        },
+        {
+          "attribute": "defense",
+          "amount": 5
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 5
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 5
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "TitansGladius",
+    "name": "Titan's Gladius",
+    "code": 12,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 12
+        },
+        {
+          "attribute": "defense",
+          "amount": -3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": "TitansThunder"
+  },
+  {
+    "id": "TitansThunder",
+    "name": "Titan's Thunder",
+    "code": 135,
+    "availableFrom": "sod",
+    "slot": "weapon",
+    "blockedSlots": "helmet, torso, weapon, shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 9
+        },
+        {
+          "attribute": "defense",
+          "amount": 9
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 8
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 8
+        }
+      ],
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "TitansLightningBolt"
+          ],
+          "description": "Titan's Lightning Bolt",
+          "school": null,
+          "level": null
+        }
+      ],
+      "grantsSpellBook": true,
+      "other": "Gain Titan's Lightning Bolt while equipped. Gain a Spell Book."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 40000,
+    "combinesInto": null
+  },
+  {
+    "id": "ArmageddonsBlade",
+    "name": "Armageddon's Blade",
+    "code": 128,
+    "availableFrom": "ab",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 3
+        },
+        {
+          "attribute": "defense",
+          "amount": 3
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 3
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 6
+        }
+      ],
+      "spellGrants": [
+        {
+          "kind": "named",
+          "spells": [
+            "Armageddon"
+          ],
+          "description": "Armageddon",
+          "school": null,
+          "level": null
+        }
+      ],
+      "other": "Can Cast Armageddon, Immune to Armageddon"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 50000,
+    "combinesInto": null
+  },
+  {
+    "id": "IronfistOfTheOgre",
+    "name": "Ironfist of the Ogre",
+    "code": 143,
+    "availableFrom": "hota",
+    "slot": "weapon",
+    "blockedSlots": "helmet, torso, weapon, shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 5
+        },
+        {
+          "attribute": "defense",
+          "amount": 4
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 4
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 4
+        }
+      ],
+      "other": "Casts Expert Haste, Bloodlust, Fire Shield, and Counterstrike for 50 rounds at the start of combat."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "TridentOfDomination",
+    "name": "Trident of Domination",
+    "code": 147,
+    "availableFrom": "roe",
+    "slot": "weapon",
+    "blockedSlots": "weapon",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 7
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "BucklerOfTheGnollKing",
+    "name": "Buckler of the Gnoll King",
+    "code": 15,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "DragonScaleShield",
+    "name": "Dragon Scale Shield",
+    "code": 39,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 3
+        },
+        {
+          "attribute": "defense",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "LionsShieldOfCourage",
+    "name": "Lion's Shield of Courage",
+    "code": 34,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 4
+        },
+        {
+          "attribute": "defense",
+          "amount": 4
+        },
+        {
+          "attribute": "spellPower",
+          "amount": 4
+        },
+        {
+          "attribute": "knowledge",
+          "amount": 4
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 16000,
+    "combinesInto": "AngelicAlliance"
+  },
+  {
+    "id": "SentinelsShield",
+    "name": "Sentinel's Shield",
+    "code": 18,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": -3
+        },
+        {
+          "attribute": "defense",
+          "amount": 12
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": "TitansThunder"
+  },
+  {
+    "id": "ShieldOfTheDamned",
+    "name": "Shield of the Damned",
+    "code": 17,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 6
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "ArmageddonsBlade"
+  },
+  {
+    "id": "ShieldOfTheDwarvenLords",
+    "name": "Shield of the Dwarven Lords",
+    "code": 13,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 2
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "ShieldOfTheYawningDead",
+    "name": "Shield of the Yawning Dead",
+    "code": 14,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 3
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "TargOfTheRampagingOgre",
+    "name": "Targ of the Rampaging Ogre",
+    "code": 16,
+    "availableFrom": "roe",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 5
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "IronfistOfTheOgre"
+  },
+  {
+    "id": "ShieldOfNavalGlory",
+    "name": "Shield of Naval Glory",
+    "code": 148,
+    "availableFrom": "hota",
+    "slot": "shield",
+    "blockedSlots": "shield",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "defense",
+          "amount": 7
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7000,
+    "combinesInto": null
+  },
+  {
+    "id": "DiplomatRing",
+    "name": "Diplomat Ring",
+    "code": 67,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Surrendering Cost -10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "EquestriansGloves",
+    "name": "Equestrian's Gloves",
+    "code": 70,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "landMovement",
+          "amount": 300
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "EversmokingRingOfSulfur",
+    "name": "Eversmoking Ring of Sulfur",
+    "code": 113,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "sulfur",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "Cornucopia"
+  },
+  {
+    "id": "QuietEyeOfTheDragon",
+    "name": "Quiet Eye of the Dragon",
+    "code": 37,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "attack",
+          "amount": 1
+        },
+        {
+          "attribute": "defense",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "RingOfConjuring",
+    "name": "Ring of Conjuring",
+    "code": 77,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Spell Duration +2"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": "RingOfTheMagi"
+  },
+  {
+    "id": "RingOfInfiniteGems",
+    "name": "Ring of Infinite Gems",
+    "code": 110,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "gems",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "Cornucopia"
+  },
+  {
+    "id": "RingOfLife",
+    "name": "Ring of Life",
+    "code": 95,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+1 Unit Health"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": "ElixirOfLife"
+  },
+  {
+    "id": "RingOfTheMagi",
+    "name": "Ring of the Magi",
+    "code": 139,
+    "availableFrom": "sod",
+    "slot": "ring1",
+    "blockedSlots": "necklace, cape, ring1",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Add 50+6 rounds to spell duration"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "RingOfTheWayfarer",
+    "name": "Ring of the Wayfarer",
+    "code": 69,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Unit Speed +1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "RingOfVitality",
+    "name": "Ring of Vitality",
+    "code": 94,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+1 Unit Health"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 5000,
+    "combinesInto": "ElixirOfLife"
+  },
+  {
+    "id": "StillEyeOfTheDragon",
+    "name": "Still Eye of the Dragon",
+    "code": 45,
+    "availableFrom": "roe",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "luck",
+          "amount": 1
+        },
+        {
+          "attribute": "morale",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": "PowerOfTheDragonFather"
+  },
+  {
+    "id": "RingOfOblivion",
+    "name": "Ring of Oblivion",
+    "code": 158,
+    "availableFrom": "hota",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Makes all losses in the battle irrevocable"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7500,
+    "combinesInto": null
+  },
+  {
+    "id": "RingOfSuppression",
+    "name": "Ring of Suppression",
+    "code": 156,
+    "availableFrom": "hota",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Morale by 1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "SealOfSunset",
+    "name": "Seal of Sunset",
+    "code": 163,
+    "availableFrom": "hota",
+    "slot": "rings",
+    "blockedSlots": "rings",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Reduces the Power skill of enemy hero by 10% during combat"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "SpellScroll",
+    "name": "Spell Scroll",
+    "code": 1,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": []
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "special",
+    "cost": 0,
+    "combinesInto": null,
+    "role": "scroll"
+  },
+  {
+    "id": "AngelFeatherArrows",
+    "name": "Angel Feather Arrows",
+    "code": 62,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Archery Skill 15%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": "BowOfTheSharpshooter"
+  },
+  {
+    "id": "ArmsOfLegion",
+    "name": "Arms of Legion",
+    "code": 121,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Lvl 5 Creature Growth +2"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "StatueOfLegion"
+  },
+  {
+    "id": "BadgeOfCourage",
+    "name": "Badge of Courage",
+    "code": 49,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "morale",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "BirdOfPerception",
+    "name": "Bird of Perception",
+    "code": 63,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Eagle Eye Skill 5%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "BowOfElvenCherrywood",
+    "name": "Bow of Elven Cherrywood",
+    "code": 60,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Archery Skill 5%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": "BowOfTheSharpshooter"
+  },
+  {
+    "id": "BowOfTheSharpshooter",
+    "name": "Bow of the Sharpshooter",
+    "code": 137,
+    "availableFrom": "sod",
+    "slot": "misc1",
+    "blockedSlots": "misc1, misc2, misc3",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Shooters may shoot while adjacent to enemy creatures, no range and obstacle Penalty, no melee Penalty, Archery Skill +30%"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 12000,
+    "combinesInto": null
+  },
+  {
+    "id": "BowstringOfTheUnicornsMane",
+    "name": "Bowstring of the Unicorn's Mane",
+    "code": 61,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Archery Skill 10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": "BowOfTheSharpshooter"
+  },
+  {
+    "id": "CardsOfProphecy",
+    "name": "Cards of Prophecy",
+    "code": 47,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "luck",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "CharmOfSpellPoints",
+    "name": "Charm of Spell Points",
+    "code": 73,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Regenerates +1 Spell Points per day"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 500,
+    "combinesInto": "WizardsWell"
+  },
+  {
+    "id": "CloverOfFortune",
+    "name": "Clover of Fortune",
+    "code": 46,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "luck",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "Cornucopia",
+    "name": "Cornucopia",
+    "code": 140,
+    "availableFrom": "sod",
+    "slot": "misc1",
+    "blockedSlots": "cape, rings, misc1",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "crystal",
+          "amount": 5
+        },
+        {
+          "attribute": "gems",
+          "amount": 5
+        },
+        {
+          "attribute": "mercury",
+          "amount": 5
+        },
+        {
+          "attribute": "sulfur",
+          "amount": 5
+        }
+      ],
+      "other": "Generates 5 of each precious resource, each day."
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "CrestOfValor",
+    "name": "Crest of Valor",
+    "code": 50,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "morale",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "ElixirOfLife",
+    "name": "Elixir of Life",
+    "code": 131,
+    "availableFrom": "sod",
+    "slot": "misc1",
+    "blockedSlots": "rings, misc1",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+25% Unit Health, +4 Health Point Regeneration"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "EmblemOfCognizance",
+    "name": "Emblem of Cognizance",
+    "code": 65,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Eagle Eye Skill 15%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "EndlessBagOfGold",
+    "name": "Endless Bag of Gold",
+    "code": 116,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "gold",
+          "amount": 750
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7500,
+    "combinesInto": "GoldenGoose"
+  },
+  {
+    "id": "EndlessPurseOfGold",
+    "name": "Endless Purse of Gold",
+    "code": 117,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "gold",
+          "amount": 500
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "GoldenGoose"
+  },
+  {
+    "id": "EndlessSackOfGold",
+    "name": "Endless Sack of Gold",
+    "code": 115,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "gold",
+          "amount": 1000
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 10000,
+    "combinesInto": "GoldenGoose"
+  },
+  {
+    "id": "EverpouringVialOfMercury",
+    "name": "Everpouring Vial of Mercury",
+    "code": 111,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "mercury",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "Cornucopia"
+  },
+  {
+    "id": "GlyphOfGallantry",
+    "name": "Glyph of Gallantry",
+    "code": 51,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "morale",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "GoldenBow",
+    "name": "Golden Bow",
+    "code": 91,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "No Range and Obstacle Penalty"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 8000,
+    "combinesInto": null
+  },
+  {
+    "id": "HeadOfLegion",
+    "name": "Head of Legion",
+    "code": 122,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Lvl 6 Creature Growth +1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": "StatueOfLegion"
+  },
+  {
+    "id": "HourglassOfTheEvilHour",
+    "name": "Hourglass of the Evil Hour",
+    "code": 85,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Negates ally and enemy Luck bonuses."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "InexhaustibleCartOfOre",
+    "name": "Inexhaustible Cart of Ore",
+    "code": 112,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "ore",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "InexhaustibleCartOfLumber",
+    "name": "Inexhaustible Cart of Lumber",
+    "code": 114,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "wood",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "LadybirdOfLuck",
+    "name": "Ladybird of Luck",
+    "code": 48,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [
+        {
+          "attribute": "luck",
+          "amount": 1
+        }
+      ]
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "LegsOfLegion",
+    "name": "Legs of Legion",
+    "code": 118,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Lvl 2 Creature Growth +5"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 5000,
+    "combinesInto": "StatueOfLegion"
+  },
+  {
+    "id": "LoinsOfLegion",
+    "name": "Loins of Legion",
+    "code": 119,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Lvl 3 Creature Growth +4"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": "StatueOfLegion"
+  },
+  {
+    "id": "MysticOrbOfSpellPoints",
+    "name": "Mystic Orb of Spell Points",
+    "code": 75,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Regenerates +3 Spell Points per day"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1500,
+    "combinesInto": "WizardsWell"
+  },
+  {
+    "id": "OrbOfDrivingRain",
+    "name": "Orb of Driving Rain",
+    "code": 82,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "All Water Spell Damage +50%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": null
+  },
+  {
+    "id": "OrbOfInhibition",
+    "name": "Orb of Inhibition",
+    "code": 126,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Prevents Casting All Spells"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "OrbOfSilt",
+    "name": "Orb of Silt",
+    "code": 80,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "All Earth Spell Damage +50%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": null
+  },
+  {
+    "id": "OrbOfTempestousFire",
+    "name": "Orb of Tempestous Fire",
+    "code": 81,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "All Fire Spell Damage +50%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 6000,
+    "combinesInto": null
+  },
+  {
+    "id": "OrbOfFirmament",
+    "name": "Orb of Firmament",
+    "code": 79,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "All Air Spell Damage +50%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "special",
+    "cost": 0,
+    "combinesInto": null
+  },
+  {
+    "id": "OrbOfVulnerability",
+    "name": "Orb of Vulnerability",
+    "code": 93,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Negate natural magic resistance, magic immunity and chances to resist spells of all creatures on the battlefield. Does not affect the limitations on applicability stated in spell descriptions as well as the immunities given by artifacts."
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 25000,
+    "combinesInto": null
+  },
+  {
+    "id": "ShacklesOfWar",
+    "name": "Shackles of War",
+    "code": 125,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Neither you nor your opponent may flee or surrender"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "Speculum",
+    "name": "Speculum",
+    "code": 52,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Scouting Radius +1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "SphereOfPermanence",
+    "name": "Sphere of Permanence",
+    "code": 92,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Immune to Dispel"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 7500,
+    "combinesInto": null
+  },
+  {
+    "id": "SpiritOfOppression",
+    "name": "Spirit of Oppression",
+    "code": 84,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Positive Morale Disabled"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "Spyglass",
+    "name": "Spyglass",
+    "code": 53,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Scouting Radius +1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": null
+  },
+  {
+    "id": "StatueOfLegion",
+    "name": "Statue of Legion",
+    "code": 133,
+    "availableFrom": "sod",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Creature Growth +50% base in all towns + Artifact Effects"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 25000,
+    "combinesInto": null
+  },
+  {
+    "id": "StoicWatchman",
+    "name": "Stoic Watchman",
+    "code": 64,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Eagle Eye Skill 10%"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "TalismanOfSpellPoints",
+    "name": "Talisman of Spell Points",
+    "code": 74,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Regenerates +2 Spell Points per day"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 1000,
+    "combinesInto": "WizardsWell"
+  },
+  {
+    "id": "TomeOfAirMagic",
+    "name": "Tome of Wind Magic",
+    "code": 87,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "spellGrants": [
+        {
+          "kind": "school",
+          "school": "wind",
+          "description": "all Wind spells",
+          "spells": [],
+          "level": null
+        }
+      ],
+      "other": "When equipped, all air spells are available"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "TomeOfEarthMagic",
+    "name": "Tome of Earth Magic",
+    "code": 89,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "spellGrants": [
+        {
+          "kind": "school",
+          "school": "earth",
+          "description": "all Earth spells",
+          "spells": [],
+          "level": null
+        }
+      ],
+      "other": "When equipped, all earth spells are available"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "TomeOfFireMagic",
+    "name": "Tome of Fire Magic",
+    "code": 86,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "spellGrants": [
+        {
+          "kind": "school",
+          "school": "fire",
+          "description": "all Fire spells",
+          "spells": [],
+          "level": null
+        }
+      ],
+      "other": "When equipped, all fire spells are available"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "TomeOfWaterMagic",
+    "name": "Tome of Water Magic",
+    "code": 88,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "spellGrants": [
+        {
+          "kind": "school",
+          "school": "water",
+          "description": "all Water spells",
+          "spells": [],
+          "level": null
+        }
+      ],
+      "other": "When equipped, all water spells are available"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "TorsoOfLegion",
+    "name": "Torso of Legion",
+    "code": 120,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Lvl 4 Creature Growth +3"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": "StatueOfLegion"
+  },
+  {
+    "id": "VialOfDragonblood",
+    "name": "Vial of Dragonblood",
+    "code": 127,
+    "availableFrom": "ab",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Dragons receive +5 Attack and Defense"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 20000,
+    "combinesInto": null
+  },
+  {
+    "id": "VialOfLifeblood",
+    "name": "Vial of Lifeblood",
+    "code": 96,
+    "availableFrom": "roe",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "+2 Unit Health"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "major",
+    "cost": 10000,
+    "combinesInto": "ElixirOfLife"
+  },
+  {
+    "id": "WizardsWell",
+    "name": "Wizard's Well",
+    "code": 138,
+    "availableFrom": "sod",
+    "slot": "misc1",
+    "blockedSlots": "misc1, misc2, misc3",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Regenerates all spell points each day"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 3000,
+    "combinesInto": null
+  },
+  {
+    "id": "CharmOfEclipse",
+    "name": "Charm of Eclipse",
+    "code": 162,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Reduces the Power skill of enemy hero by 10% during combat"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 5000,
+    "combinesInto": null
+  },
+  {
+    "id": "DemonsHorseshoe",
+    "name": "Demon's Horseshoe",
+    "code": 153,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Luck by 1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "GoldenGoose",
+    "name": "Golden Goose",
+    "code": 160,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc1, misc2, misc3",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "brings 7000 gold per day"
+    },
+    "description": "",
+    "isCombination": true,
+    "class": "relic",
+    "cost": 22500,
+    "combinesInto": null
+  },
+  {
+    "id": "HideousMask",
+    "name": "Hideous Mask",
+    "code": 155,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Morale by 1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "HornOfTheAbyss",
+    "name": "Horn of the Abyss",
+    "code": 161,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "After a stack of living creatures is slain, a stack of Fangarms will rise in their stead and will stay loyal to the hero after the battle concludes"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "relic",
+    "cost": 50000,
+    "combinesInto": null
+  },
+  {
+    "id": "RunesOfImminency",
+    "name": "Runes of Imminency",
+    "code": 152,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Luck by 1"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "treasure",
+    "cost": 2000,
+    "combinesInto": null
+  },
+  {
+    "id": "ShamansPuppet",
+    "name": "Shaman's Puppet",
+    "code": 154,
+    "availableFrom": "hota",
+    "slot": "misc",
+    "blockedSlots": "misc",
+    "effectInfo": {
+      "modifiers": [],
+      "other": "Decreases enemy's Luck by 2"
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "minor",
+    "cost": 4000,
+    "combinesInto": null
+  },
+  {
+    "id": "SpellBook",
+    "name": "Spell Book",
+    "code": 0,
+    "availableFrom": "roe",
+    "slot": "none",
+    "blockedSlots": "none",
+    "effectInfo": {
+      "modifiers": []
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "special",
+    "cost": 0,
+    "combinesInto": null,
+    "role": "spellBook",
+    "wearable": false,
+    "backpack": false
+  },
+  {
+    "id": "TheGrail",
+    "name": "The Grail",
+    "code": 2,
+    "availableFrom": "roe",
+    "slot": "none",
+    "blockedSlots": "none",
+    "effectInfo": {
+      "modifiers": []
+    },
+    "description": "",
+    "isCombination": false,
+    "class": "special",
+    "cost": 0,
+    "combinesInto": null,
+    "wearable": false
+  }
+]

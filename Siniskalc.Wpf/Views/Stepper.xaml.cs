@@ -9,43 +9,71 @@
     /// <summary>
     /// A number box with a minus and a plus button. Typing a value, or pressing a button, changes <see cref="Value"/>;
     /// typed values and button presses stay between <see cref="Minimum"/> and <see cref="Maximum"/>.
-    /// A value set from the view model is shown as it is, even outside that range.
+    /// A value set from the view model is shown as it is, even outside that range. In the box, Enter keeps the typed value, the up and
+    /// down arrows step it and Escape puts the value back.
     /// </summary>
     public partial class Stepper : UserControl
     {
+        /// <summary>
+        /// Identifies the <see cref="Value"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
             nameof(Value),
             typeof(long),
             typeof(Stepper),
             new FrameworkPropertyMetadata(0L, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnValueChanged));
 
+        /// <summary>
+        /// Identifies the <see cref="Minimum"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(nameof(Minimum), typeof(long), typeof(Stepper), new PropertyMetadata(0L));
 
+        /// <summary>
+        /// Identifies the <see cref="Maximum"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(nameof(Maximum), typeof(long), typeof(Stepper), new PropertyMetadata(99999999L));
 
+        /// <summary>
+        /// Identifies the <see cref="Step"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty StepProperty = DependencyProperty.Register(nameof(Step), typeof(long), typeof(Stepper), new PropertyMetadata(1L));
 
+        /// <summary>
+        /// Identifies the <see cref="ShowButtons"/> dependency property.
+        /// </summary>
         public static readonly DependencyProperty ShowButtonsProperty = DependencyProperty.Register(
             nameof(ShowButtons), typeof(bool), typeof(Stepper), new PropertyMetadata(true, OnShowButtonsChanged));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Stepper"/> class.
+        /// </summary>
         public Stepper()
         {
             this.InitializeComponent();
             this.ShowValue();
         }
 
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
         public long Value
         {
             get => (long)this.GetValue(ValueProperty);
             set => this.SetValue(ValueProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the least value the stepper allows.
+        /// </summary>
         public long Minimum
         {
             get => (long)this.GetValue(MinimumProperty);
             set => this.SetValue(MinimumProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the greatest value the stepper allows.
+        /// </summary>
         public long Maximum
         {
             get => (long)this.GetValue(MaximumProperty);
@@ -62,7 +90,7 @@
         }
 
         /// <summary>
-        /// Gets or sets whether the minus and plus buttons are shown; without them it is a plain number box.
+        /// Gets or sets a value indicating whether the minus and plus buttons are shown; without them it is a plain number box.
         /// </summary>
         public bool ShowButtons
         {

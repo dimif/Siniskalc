@@ -1,0 +1,958 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "UltimateBookOfKnowledge",
+      "name": "Ultimate Book of Knowledge",
+      "code": 0,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "knowledge",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateSwordOfDominion",
+      "name": "Ultimate Sword of Dominion",
+      "code": 1,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateCloakOfProtection",
+      "name": "Ultimate Cloak of Protection",
+      "code": 2,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateWandOfMagic",
+      "name": "Ultimate Wand of Magic",
+      "code": 3,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 12
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateShield",
+      "name": "Ultimate Shield",
+      "code": 4,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 6
+          },
+          {
+            "attribute": "defense",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateStaff",
+      "name": "Ultimate Staff",
+      "code": 5,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 6
+          },
+          {
+            "attribute": "knowledge",
+            "amount": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "UltimateCrown",
+      "name": "Ultimate Crown",
+      "code": 6,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 4
+          },
+          {
+            "attribute": "defense",
+            "amount": 4
+          },
+          {
+            "attribute": "spellPower",
+            "amount": 4
+          },
+          {
+            "attribute": "knowledge",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "GoldenGoose",
+      "name": "Golden Goose",
+      "code": 7,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "ArcaneNecklaceOfMagic",
+      "name": "Arcane Necklace of Magic",
+      "code": 8,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "CastersBraceletOfMagic",
+      "name": "Caster's Bracelet of Magic",
+      "code": 9,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "MagesRingOfPower",
+      "name": "Mage's Ring of Power",
+      "code": 10,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "WitchsBroachOfMagic",
+      "name": "Witch's Broach of Magic",
+      "code": 11,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "MedalOfValor",
+      "name": "Medal of Valor",
+      "code": 12,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "MedalOfCourage",
+      "name": "Medal of Courage",
+      "code": 13,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "MedalOfHonor",
+      "name": "Medal of Honor",
+      "code": 14,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "MedalOfDistinction",
+      "name": "Medal of Distinction",
+      "code": 15,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "FizbinOfMisfortune",
+      "name": "Fizbin of Misfortune",
+      "code": 16,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "ThunderMaceOfDominion",
+      "name": "Thunder Mace of Dominion",
+      "code": 17,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "ArmoredGauntletsOfProtection",
+      "name": "Armored Gauntlets of Protection",
+      "code": 18,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "DefenderHelmOfProtection",
+      "name": "Defender Helm of Protection",
+      "code": 19,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "GiantFlailOfDominion",
+      "name": "Giant Flail of Dominion",
+      "code": 20,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "BallistaOfQuickness",
+      "name": "Ballista of Quickness",
+      "code": 21,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "StealthShieldOfProtection",
+      "name": "Stealth Shield of Protection",
+      "code": 22,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "DragonSwordOfDominion",
+      "name": "Dragon Sword of Dominion",
+      "code": 23,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "PowerAxeOfDominion",
+      "name": "Power Axe of Dominion",
+      "code": 24,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "DivineBreastplateOfProtection",
+      "name": "Divine Breastplate of Protection",
+      "code": 25,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "MinorScrollOfKnowledge",
+      "name": "Minor Scroll of Knowledge",
+      "code": 26,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "knowledge",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "MajorScrollOfKnowledge",
+      "name": "Major Scroll of Knowledge",
+      "code": 27,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "knowledge",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "SuperiorScrollOfKnowledge",
+      "name": "Superior Scroll of Knowledge",
+      "code": 28,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "knowledge",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "ForemostScrollOfKnowledge",
+      "name": "Foremost Scroll of Knowledge",
+      "code": 29,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "knowledge",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "EndlessSackOfGold",
+      "name": "Endless Sack of Gold",
+      "code": 30,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessBagOfGold",
+      "name": "Endless Bag of Gold",
+      "code": 31,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessPurseOfGold",
+      "name": "Endless Purse of Gold",
+      "code": 32,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "NomadBootsOfMobility",
+      "name": "Nomad Boots of Mobility",
+      "code": 33,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "TravelersBootsOfMobility",
+      "name": "Traveler's Boots of Mobility",
+      "code": 34,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "LuckyRabbitsFoot",
+      "name": "Lucky Rabbit's Foot",
+      "code": 35,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "GoldenHorseshoe",
+      "name": "Golden Horseshoe",
+      "code": 36,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "GamblersLuckyCoin",
+      "name": "Gambler's Lucky Coin",
+      "code": 37,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "FourLeafClover",
+      "name": "Four-Leaf Clover",
+      "code": 38,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "TrueCompassOfMobility",
+      "name": "True Compass of Mobility",
+      "code": 39,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "SailorsAstrolabeOfMobility",
+      "name": "Sailor's Astrolabe of Mobility",
+      "code": 40,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EvilEye",
+      "name": "Evil Eye",
+      "code": 41,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EnchantedHourglass",
+      "name": "Enchanted Hourglass",
+      "code": 42,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "GoldWatch",
+      "name": "Gold Watch",
+      "code": 43,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "Skullcap",
+      "name": "Skullcap",
+      "code": 44,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "IceCloak",
+      "name": "Ice Cloak",
+      "code": 45,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "FireCloak",
+      "name": "Fire Cloak",
+      "code": 46,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "LightningHelm",
+      "name": "Lightning Helm",
+      "code": 47,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EvercoldIcicle",
+      "name": "Evercold Icicle",
+      "code": 48,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EverhotLavaRock",
+      "name": "Everhot Lava Rock",
+      "code": 49,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "LightningRod",
+      "name": "Lightning Rod",
+      "code": 50,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "SnakeRing",
+      "name": "Snake-Ring",
+      "code": 51,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "Ankh",
+      "name": "Ankh",
+      "code": 52,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "BookOfElements",
+      "name": "Book of Elements",
+      "code": 53,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "ElementalRing",
+      "name": "Elemental Ring",
+      "code": 54,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "HolyPendant",
+      "name": "Holy Pendant",
+      "code": 55,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "PendantOfFreeWill",
+      "name": "Pendant of Free Will",
+      "code": 56,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "PendantOfLife",
+      "name": "Pendant of Life",
+      "code": 57,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "SerenityPendant",
+      "name": "Serenity Pendant",
+      "code": 58,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "SeeingeyePendant",
+      "name": "Seeing-eye Pendant",
+      "code": 59,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "KineticPendant",
+      "name": "Kinetic Pendant",
+      "code": 60,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "PendantOfDeath",
+      "name": "Pendant of Death",
+      "code": 61,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "WandOfNegation",
+      "name": "Wand of Negation",
+      "code": 62,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "GoldenBow",
+      "name": "Golden Bow",
+      "code": 63,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "Telescope",
+      "name": "Telescope",
+      "code": 64,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "StatesmansQuill",
+      "name": "Statesman's Quill",
+      "code": 65,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "WizardsHat",
+      "name": "Wizard's Hat",
+      "code": 66,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "PowerRing",
+      "name": "Power Ring",
+      "code": 67,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "AmmoCart",
+      "name": "Ammo Cart",
+      "code": 68,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "TaxLien",
+      "name": "Tax Lien",
+      "code": 69,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "HideousMask",
+      "name": "Hideous Mask",
+      "code": 70,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessPouchOfSulfur",
+      "name": "Endless Pouch of Sulfur",
+      "code": 71,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessVialOfMercury",
+      "name": "Endless Vial of Mercury",
+      "code": 72,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessPouchOfGems",
+      "name": "Endless Pouch of Gems",
+      "code": 73,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessCordOfWood",
+      "name": "Endless Cord of Wood",
+      "code": 74,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessCartOfOre",
+      "name": "Endless Cart of Ore",
+      "code": 75,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "EndlessPouchOfCrystal",
+      "name": "Endless Pouch of Crystal",
+      "code": 76,
+      "availableFrom": "sw"
+    },
+    {
+      "id": "SpikedHelm",
+      "name": "Spiked Helm",
+      "code": 77,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 1
+          },
+          {
+            "attribute": "defense",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "SpikedShield",
+      "name": "Spiked Shield",
+      "code": 78,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 2
+          },
+          {
+            "attribute": "defense",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "WhitePearl",
+      "name": "White Pearl",
+      "code": 79,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 1
+          },
+          {
+            "attribute": "knowledge",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "BlackPearl",
+      "name": "Black Pearl",
+      "code": 80,
+      "availableFrom": "sw",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 2
+          },
+          {
+            "attribute": "knowledge",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "MagicBook",
+      "name": "Magic Book",
+      "code": 81,
+      "availableFrom": "sw",
+      "role": "spellBook"
+    },
+    {
+      "id": "SpellScroll",
+      "name": "Spell Scroll",
+      "code": 86,
+      "availableFrom": "pol",
+      "role": "scroll"
+    },
+    {
+      "id": "ArmOfTheMartyr",
+      "name": "Arm of the Martyr",
+      "code": 87,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "BreastplateOfAnduran",
+      "name": "Breastplate of Anduran",
+      "code": 88,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "defense",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "BroachOfShielding",
+      "name": "Broach of Shielding",
+      "code": 89,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": -2
+          }
+        ]
+      }
+    },
+    {
+      "id": "BattleGarbOfAnduran",
+      "name": "Battle Garb of Anduran",
+      "code": 90,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 5
+          },
+          {
+            "attribute": "defense",
+            "amount": 5
+          },
+          {
+            "attribute": "spellPower",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "CrystalBall",
+      "name": "Crystal Ball",
+      "code": 91,
+      "availableFrom": "pol"
+    },
+    {
+      "id": "HeartOfFire",
+      "name": "Heart of Fire",
+      "code": 92,
+      "availableFrom": "pol"
+    },
+    {
+      "id": "HeartOfIce",
+      "name": "Heart of Ice",
+      "code": 93,
+      "availableFrom": "pol"
+    },
+    {
+      "id": "HelmetOfAnduran",
+      "name": "Helmet of Anduran",
+      "code": 94,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "HolyHammer",
+      "name": "Holy Hammer",
+      "code": 95,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "LegendaryScepter",
+      "name": "Legendary Scepter",
+      "code": 96,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 2
+          },
+          {
+            "attribute": "defense",
+            "amount": 2
+          },
+          {
+            "attribute": "spellPower",
+            "amount": 2
+          },
+          {
+            "attribute": "knowledge",
+            "amount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "Masthead",
+      "name": "Masthead",
+      "code": 97,
+      "availableFrom": "pol"
+    },
+    {
+      "id": "SphereOfNegation",
+      "name": "Sphere of Negation",
+      "code": 98,
+      "availableFrom": "pol"
+    },
+    {
+      "id": "StaffOfWizardry",
+      "name": "Staff of Wizardry",
+      "code": 99,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "spellPower",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "SwordBreaker",
+      "name": "Sword Breaker",
+      "code": 100,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 1
+          },
+          {
+            "attribute": "defense",
+            "amount": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "SwordOfAnduran",
+      "name": "Sword of Anduran",
+      "code": 101,
+      "availableFrom": "pol",
+      "effectInfo": {
+        "modifiers": [
+          {
+            "attribute": "attack",
+            "amount": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "SpadeOfNecromancy",
+      "name": "Spade of Necromancy",
+      "code": 102,
+      "availableFrom": "pol"
+    }
+  ],
+  "replacements": []
+}

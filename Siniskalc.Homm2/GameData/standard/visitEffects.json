@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Temple",
+      "name": "Temple",
+      "code": 0,
+      "flag": "Temple",
+      "behaviour": "nextBattle",
+      "description": "+2 morale for the next battle",
+      "morale": 2,
+      "luck": 0
+    },
+    {
+      "id": "Fountain",
+      "name": "Fountain",
+      "code": 1,
+      "flag": "Fountain",
+      "behaviour": "nextBattle",
+      "description": "+1 luck for the next battle",
+      "morale": 0,
+      "luck": 1
+    },
+    {
+      "id": "Oasis",
+      "name": "Oasis",
+      "code": 2,
+      "flag": "Oasis",
+      "behaviour": "nextBattle",
+      "description": "+1 morale for the next battle",
+      "morale": 1,
+      "luck": 0
+    },
+    {
+      "id": "FaerieRing",
+      "name": "Faerie ring",
+      "code": 3,
+      "flag": "FaerieRing",
+      "behaviour": "nextBattle",
+      "description": "+1 luck for the next battle",
+      "morale": 0,
+      "luck": 1
+    },
+    {
+      "id": "Graveyard",
+      "name": "Graveyard visited before",
+      "code": 4,
+      "flag": "Graveyard",
+      "behaviour": "nextBattle",
+      "description": "-1 morale for the next battle",
+      "morale": -1,
+      "luck": 0
+    },
+    {
+      "id": "Arena",
+      "name": "Arena used",
+      "code": 5,
+      "flag": "Arena",
+      "behaviour": "once",
+      "description": "The hero used the arena: it gives a point of skill once per hero",
+      "morale": 0,
+      "luck": 0
+    },
+    {
+      "id": "Stables",
+      "name": "Stables used this week",
+      "code": 6,
+      "flag": "Stables",
+      "behaviour": "weekly",
+      "description": "The stables give more movement points once a week for each hero; the game clears this at the start of a week",
+      "morale": 0,
+      "luck": 0
+    }
+  ],
+  "replacements": []
+}

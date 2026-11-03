@@ -12,11 +12,23 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Siniskalc.Core\Siniskalc.Core.csproj" />
+    <ProjectReference Include="..\Siniskalc.Homm2\Siniskalc.Homm2.csproj" />
+    <ProjectReference Include="..\Siniskalc.Homm3\Siniskalc.Homm3.csproj" />
     <ProjectReference Include="..\Siniskalc.Wpf\Siniskalc.Wpf.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
+    <EmbeddedResource Include="serilog.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+    <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,15 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\VS2026\DownloadDocument.png" />
-    <Resource Include="Resources\VS2026\Exit.png" />
-    <Resource Include="Resources\VS2026\OpenFile.png" />
-    <Resource Include="Resources\VS2026\Redo.png" />
-    <Resource Include="Resources\VS2026\Refresh.png" />
-    <Resource Include="Resources\VS2026\Save.png" />
-    <Resource Include="Resources\VS2026\Undo.png" />
     <None Include="..\.globalconfig" Link=".globalconfig" />
-    <None Include="Resources\VS2026\Visual Studio Image Library EULA.rtf" />
   </ItemGroup>
 
 </Project>

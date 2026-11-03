@@ -2,7 +2,7 @@
 
 HotA hotseat saves supplied from an in-game capture sequence. Town ids in file order:
 0 Red_Tower, 1 Red_Inferno, 2 Blue_Necropoli, 3 Neutral_Bulwar.
-Town lists follow acquisition order, not sorted ids. Used by `CastleOwnershipTests`.
+Town lists follow acquisition order, not sorted ids. Used by `TownOwnershipTests`.
 
 | Save | State |
 |---|---|

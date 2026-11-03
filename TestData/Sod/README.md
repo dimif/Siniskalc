@@ -6,7 +6,7 @@ Shadow of Death savegames from the complete edition (156 heroes, Red is the play
 |---|---|---|
 | sod_game_00_baseline | Red plays with Marius (Demoniac, level 1, 20 Imps and 7 Gogs) as the only hero; Red has 20 wood, 10 mercury, 20 ore, 10 sulfur, 10 crystal, 10 gems and 20000 gold | `SodSaveTests`: the version is detected, every hero reads and writes back to the same bytes, Marius, the players and their resources |
 | sod_game_01_red_gives_blue_resources | The same game after Red gave resources to Blue | `SodSaveTests`: the resources of both players |
-| sod_day_01_m1w1d1, sod_day_02_m1w1d2, sod_day_03_m1w1d3 | The same game on three consecutive days (day 1 to 3 of week 1 of month 1) | `GameDateTests`: the date block on Shadow of Death; `MapDifficultyTests`: the map difficulty (King) |
+| sod_day_01_m1w1d1, sod_day_02_m1w1d2, sod_day_03_m1w1d3 | The same game on three consecutive days (day 1 to 3 of week 1 of month 1) | `GameDateLocatorTests`: the date block on Shadow of Death; `MapDifficultyTests`: the map difficulty (King) |
 
 ## The Conflux series (saves 0 to 34)
 
@@ -14,7 +14,7 @@ The Conflux saves are named `conflux_NN_<what changed>` (`conflux_00_baseline` t
 
 The same map as `TestData/Roe`, played with seven colours (all but Teal; the computer plays Blue, Tan, Green, Orange, Purple and Pink).
 Red builds its Conflux castle (at 50, 4), one building per save, from the fort to the Grail structure; Tazar, Red's hero with the Grails in his backpack, moves in save 1 and visits the castle in save 34.
-Tests: `SodSeriesTests` (and `GameDateTests`, `ObeliskVisitsTests`, `PlayerHeadTests`, which run on every savefile).
+Tests: `SodSeriesTests` (and `GameDateLocatorTests`, `ObeliskVisitsTests`, `PlayerHeadTests`, which run on every savefile).
 See `docs/KNOWLEDGE_BASE.md` ("Castles", dwelling growth and companion bits).
 
 | Save | What changed | What it checks |

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 secondarySkills",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
+        ]
+      },
+      "role": {
+        "type": "string",
+        "enum": [
+          "luck",
+          "morale",
+          "none",
+          "spellPointMultiplier"
+        ]
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "code",
+      "availableFrom"
+    ],
+    "additionalProperties": false
+  }
+}

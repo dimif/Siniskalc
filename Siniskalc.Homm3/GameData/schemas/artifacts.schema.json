@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HoMM3 artifacts",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "code": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "availableFrom": {
+        "type": "string",
+        "enum": [
+          "roe",
+          "ab",
+          "sod",
+          "chronicles",
+          "hota"
+        ]
+      },
+      "slot": {
+        "type": "string"
+      },
+      "blockedSlots": {
+        "type": "string"
+      },
+      "effectInfo": {
+        "type": "object",
+        "properties": {
+          "spellGrants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string"
+                },
+                "spells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": {
+                  "type": "string"
+                },
+                "school": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "level": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "kind",
+                "spells",
+                "description",
+                "school",
+                "level"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "grantsSpellBook": {
+            "type": "boolean"
+          },
+          "other": {
+            "type": "string"
+          },
+          "modifiers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "attribute": {
+                  "type": "string",
+                  "enum": [
+                    "attack",
+                    "defense",
+                    "spellPower",
+                    "knowledge",
+                    "luck",
+                    "morale",
+                    "landMovement",
+                    "waterMovement",
+                    "gold",
+                    "ore",
+                    "wood",
+                    "crystal",
+                    "gems",
+                    "mercury",
+                    "sulfur"
+                  ]
+                },
+                "amount": {
+                  "type": "integer",
+                  "minimum": -32768,
+                  "maximum": 32767
+                }
+              },
+              "required": [
+                "attribute",
+                "amount"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": {
+        "type": "string"
+      },
+      "isCombination": {
+        "type": "boolean"
+      },
+      "class": {
+        "type": "string",
+        "enum": [
+          "major",
+          "minor",
+          "relic",
+          "special",
+          "treasure"
+        ]
+      },
+      "cost": {
+        "type": "integer"
+      },
+      "combinesInto": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "role": {
+        "type": "string",
+        "enum": [
+          "none",
+          "scroll",
+          "spellBook"
+        ]
+      },
+      "wearable": {
+        "type": "boolean",
+        "default": true
+      },
+      "backpack": {
+        "type": "boolean",
+        "default": true
+      },
+      "replaces": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "code",
+      "availableFrom",
+      "slot",
+      "blockedSlots",
+      "effectInfo",
+      "description",
+      "isCombination",
+      "class",
+      "cost",
+      "combinesInto"
+    ],
+    "additionalProperties": false
+  }
+}

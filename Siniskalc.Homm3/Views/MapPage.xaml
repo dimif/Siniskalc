@@ -1,0 +1,68 @@
+<Page x:Class="Siniskalc.Homm3.Views.MapPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+      xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
+      xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
+      xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
+      Title="Map">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityMap"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <heroes:PageHeader Grid.Row="0" Margin="16,14,16,4" ColorHex="#9AA3AE" Title="Map"
+                           EditedToolTip="The merchants have changes that are not saved yet"
+                           ResetToolTip="Put every merchant back to what the savegame had">
+            <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding MapSummary}"/>
+        </heroes:PageHeader>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <Grid Margin="8,4,8,16">
+            <!-- Merchants -->
+            <StackPanel Margin="-6,0,0,0">
+                <ItemsControl ItemsSource="{Binding Merchants}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:MerchantViewModel}">
+                            <Border Style="{StaticResource CardStyle}" Width="380">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Name}"/>
+                                    <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,4" Text="{Binding Location}">
+                                        <TextBlock.Visibility>
+                                            <Binding Path="HasLocation" Converter="{StaticResource BoolToVisibilityMap}"/>
+                                        </TextBlock.Visibility>
+                                    </TextBlock>
+                                    <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,6"
+                                               Text="The seven artifacts in store. Clear a slot for an artifact that was sold. Not yet tried in the game."/>
+                                    <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Margin="6,8,0,0" Text="The stock of the merchants was not found in this savegame.">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasMerchants}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

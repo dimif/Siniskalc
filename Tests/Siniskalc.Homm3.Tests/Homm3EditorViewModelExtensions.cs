@@ -1,0 +1,32 @@
+namespace Siniskalc.Homm3.Tests
+{
+    using Siniskalc.Homm3.Runtime;
+    using Siniskalc.Homm3.ViewModels;
+
+    /// <summary>
+    /// Lets a test read what the shell shows without a null-forgiving operator: a missing page or game fails the test.
+    /// </summary>
+    internal static class Homm3EditorViewModelExtensions
+    {
+        public static T CurrentPageOf<T>(this Homm3EditorViewModel main)
+            where T : class
+        {
+            return main.CurrentPage as T ?? throw new AssertionException($"The current page is {main.CurrentPage?.GetType().Name ?? "none"}, not {typeof(T).Name}.");
+        }
+
+        public static HeroViewModel SelectedHero(this Homm3EditorViewModel main)
+        {
+            return main.CurrentPageOf<HeroViewModel>();
+        }
+
+        public static OverviewViewModel LoadedOverview(this Homm3EditorViewModel main)
+        {
+            return main.Overview ?? throw new AssertionException("No overview is shown.");
+        }
+
+        public static Game LoadedGame(this Homm3EditorViewModel main)
+        {
+            return main.CurrentGame ?? throw new AssertionException("No game is loaded.");
+        }
+    }
+}

@@ -1,7 +1,9 @@
-namespace Siniskalc.Core.Data
+﻿namespace Siniskalc.Core.Data
 {
     using System;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
+    using Siniskalc.Core.Runtime;
 
     /// <summary>
     /// A view onto a single struct (a hero, a player, a castle) in a <see cref="SaveDocumentHistory"/>. Edits made through it
@@ -10,16 +12,22 @@ namespace Siniskalc.Core.Data
     /// </summary>
     /// <typeparam name="TChunk">The chunk of the struct.</typeparam>
     /// <typeparam name="TModel">The model of the struct that is edited, which the session reads from the chunk and writes back.</typeparam>
-    public class EditSession<TChunk, TModel>
+    public class EditSession<TChunk, TModel> : IEditSession<TModel>
         where TChunk : BytesChunk
         where TModel : class
     {
+        private static readonly ILogger Logger = LogFactory.For(typeof(EditSession<,>));
+
         private readonly IDeserializer<TChunk, TModel> deserializer;
         private readonly ISerializer<TChunk, TModel> serializer;
         private Cache? cache;
 
         /// <param name="deserializer">Reads the model from a chunk.</param>
         /// <param name="serializer">Writes a model to a chunk, as it is.</param>
+        /// <param name="history">The history of the savefile the record is in.</param>
+        /// <param name="kind">The kind of the record.</param>
+        /// <param name="index">The place of the record among the records of its kind.</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not a record of <paramref name="kind"/> in the current document.</exception>
         public EditSession(SaveDocumentHistory history, ChunkKind kind, int index, IDeserializer<TChunk, TModel> deserializer, ISerializer<TChunk, TModel> serializer)
         {
             this.History = history;
@@ -30,17 +38,40 @@ namespace Siniskalc.Core.Data
 
             this.Kind = kind;
             this.Index = index;
+            Logger.LogTrace("Opened a session on {Kind} {Index}", kind, index);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditSession{TChunk, TModel}"/> class on a record whose chunks are a
+        /// <see cref="IModelChunkCollection{TChunk, TModel}"/>, which gives the deserializer and the serializer.
+        /// </summary>
+        /// <param name="history">The history of the savefile the record is in.</param>
+        /// <param name="kind">The kind of the record.</param>
+        /// <param name="index">The place of the record among the records of its kind.</param>
+        /// <exception cref="ArgumentException">The chunks of <paramref name="kind"/> are not a collection of models.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is not a record of <paramref name="kind"/> in the current document.</exception>
+        public EditSession(SaveDocumentHistory history, ChunkKind kind, int index)
+            : this(history, kind, index, ModelsOf(history, kind).ChunkDeserializer, ModelsOf(history, kind).ChunkSerializer)
+        {
+        }
+
+        /// <inheritdoc/>
         public SaveDocumentHistory History { get; }
 
-        public ChunkKind Kind { get; }
+        /// <inheritdoc/>
+        public IHistoryEvents Events => this.History;
 
         /// <summary>
-        /// Gets the index of the struct among the savefile's structs of the same kind.
+        /// Gets the kind of the record.
         /// </summary>
+        public ChunkKind Kind { get; }
+
+        /// <inheritdoc/>
         public int Index { get; }
 
+        /// <summary>
+        /// Gets the chunk of the record as it is in the current document.
+        /// </summary>
         public TChunk Chunk => this.History.Current.GetChunks<TChunk>(this.Kind)[this.Index];
 
         /// <summary>
@@ -49,9 +80,14 @@ namespace Siniskalc.Core.Data
         public TChunk OriginalChunk => this.History.Original.GetChunks<TChunk>(this.Kind)[this.Index];
 
         /// <summary>
+        /// Gets the model of the chunk as it was loaded or last saved.
+        /// </summary>
+        public TModel Original => this.deserializer.Deserialize(this.OriginalChunk);
+
+        /// <summary>
         /// Gets whether the struct differs from the savefile as it was loaded or last saved.
         /// </summary>
-        public bool IsDirty => !this.Chunk.HasSameBytes(this.OriginalChunk);
+        public virtual bool IsDirty => !this.Chunk.HasSameBytes(this.OriginalChunk);
 
         /// <summary>
         /// Gets a token that changes whenever this struct is edited, and stays the same while other structs are. Compare it with
@@ -70,6 +106,7 @@ namespace Siniskalc.Core.Data
                 var cached = this.cache;
                 if (cached == null || !ReferenceEquals(document, cached.Document))
                 {
+                    Logger.LogTrace("Read the model of {Kind} {Index} again as the document changed", this.Kind, this.Index);
                     cached = new Cache(document, this.deserializer.Deserialize(document.GetChunks<TChunk>(this.Kind)[this.Index]));
                     this.cache = cached;
                 }
@@ -82,39 +119,53 @@ namespace Siniskalc.Core.Data
         /// Applies <paramref name="edit"/> to the current model and records the result in the history.
         /// An edit that leaves the bytes unchanged is not recorded.
         /// </summary>
+        /// <param name="edit">Returns the edited model, from the current one.</param>
+        /// <exception cref="InvalidOperationException">The reconciler of the savefile refuses the edit; the history is left as it was.</exception>
         public void Update(Func<TModel, TModel> edit)
         {
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
-            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)));
+            this.Apply(document, chunk, this.serializer.Serialize(chunk, edit(this.Current)), "Edited", asIs: false);
         }
 
         /// <summary>
-        /// Replaces the raw bytes of the struct and records the result in the history. Used by the hex editor.
+        /// Replaces the raw bytes of the struct and records the result in the history as it is, without the reconciler of the savefile
+        /// (<see cref="SaveDocumentHistory.ApplyAsIs"/>). Used by the hex editor.
         /// A replacement that leaves the bytes unchanged is not recorded.
         /// </summary>
+        /// <param name="edit">Gets a copy of the bytes of the chunk and returns the new ones.</param>
+        /// <exception cref="ArgumentException">The bytes <paramref name="edit"/> returns are not as many as the chunk has.</exception>
         public void UpdateBytes(Func<byte[], byte[]> edit)
         {
             var document = this.History.Current;
             var chunk = document.GetChunks<TChunk>(this.Kind)[this.Index];
 
-            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())));
+            this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())), "Replaced the bytes of", asIs: true);
         }
 
-        /// <summary>
-        /// Builds one history snapshot, including any other structs that must change with this edit.
-        /// </summary>
-        protected virtual SaveDocument ApplyToDocument(SaveDocument document, TChunk chunk, TChunk newChunk) =>
-            document.WithChunk(this.Kind, this.Index, newChunk);
+        private static IModelChunkCollection<TChunk, TModel> ModelsOf(SaveDocumentHistory history, ChunkKind kind) =>
+            history.Current.GetCollection(kind) as IModelChunkCollection<TChunk, TModel>
+            ?? throw new ArgumentException($"The chunks of kind {kind} are not a collection of models.", nameof(kind));
 
-        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk)
+        // An edit of the model goes through the reconciler of the savefile; an edit of the raw bytes is recorded as it is.
+        private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk, string what, bool asIs)
         {
             if (newChunk.HasSameBytes(chunk))
             {
+                Logger.LogTrace("An edit of {Kind} {Index} left the bytes unchanged", this.Kind, this.Index);
                 return;
             }
 
-            this.History.Apply(this.ApplyToDocument(document, chunk, newChunk));
+            Logger.LogDebug("{What} {Kind} {Index} ({Name})", what, this.Kind, this.Index, chunk.Name);
+            var next = document.WithChunk(this.Kind, this.Index, newChunk);
+            if (asIs)
+            {
+                this.History.ApplyAsIs(next);
+            }
+            else
+            {
+                this.History.Apply(next);
+            }
         }
 
         private sealed record Cache(SaveDocument Document, TModel Model);

@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "Ranged",
+      "name": "Ranged",
+      "code": 0
+    },
+    {
+      "id": "Flying",
+      "name": "Flying",
+      "code": 1
+    },
+    {
+      "id": "DoubleShot",
+      "name": "Double shot",
+      "code": 2
+    },
+    {
+      "id": "DoubleAttack",
+      "name": "Double attack",
+      "code": 3
+    },
+    {
+      "id": "NoEnemyRetaliation",
+      "name": "No enemy retaliation",
+      "code": 4
+    },
+    {
+      "id": "AttacksAllAdjacentEnemies",
+      "name": "Attacks all adjacent enemies",
+      "code": 5
+    },
+    {
+      "id": "UnlimitedRetaliations",
+      "name": "Unlimited retaliations",
+      "code": 6
+    },
+    {
+      "id": "BreathAttack",
+      "name": "Breath attack",
+      "code": 7
+    },
+    {
+      "id": "Dragon",
+      "name": "Dragon",
+      "code": 8
+    },
+    {
+      "id": "Undead",
+      "name": "Undead",
+      "code": 9
+    },
+    {
+      "id": "Regeneration",
+      "name": "Regeneration",
+      "code": 10
+    },
+    {
+      "id": "LifeDrain",
+      "name": "Life drain",
+      "code": 11
+    },
+    {
+      "id": "DeathCloud",
+      "name": "Death cloud",
+      "code": 12
+    },
+    {
+      "id": "MindSpellsImmunity",
+      "name": "Mind spells immunity",
+      "code": 13
+    },
+    {
+      "id": "MagicImmunity",
+      "name": "Magic immunity",
+      "code": 14
+    },
+    {
+      "id": "MoraleMinus1",
+      "name": "Morale -1",
+      "code": 15
+    },
+    {
+      "id": "Curse",
+      "name": "Curse",
+      "code": 16
+    },
+    {
+      "id": "BlindingAttack",
+      "name": "Blinding attack (20% chance)",
+      "code": 17
+    },
+    {
+      "id": "ParalyzingAttack",
+      "name": "Paralyzing attack",
+      "code": 18
+    },
+    {
+      "id": "PetrifyingAttack",
+      "name": "Petrifying attack",
+      "code": 19
+    },
+    {
+      "id": "Elemental",
+      "name": "Elemental",
+      "code": 20
+    },
+    {
+      "id": "FireImmunity",
+      "name": "Immune to Fireball and Fireblast",
+      "code": 21
+    },
+    {
+      "id": "HalvesEnemyStack",
+      "name": "Halves an enemy stack",
+      "code": 22
+    },
+    {
+      "id": "MagicResistance",
+      "name": "Magic resistance (25% chance)",
+      "code": 23
+    },
+    {
+      "id": "SpellDamageReduction",
+      "name": "Spell damage reduction (50%)",
+      "code": 24
+    },
+    {
+      "id": "ElementalSpellsImmunity",
+      "name": "Elemental spells immunity",
+      "code": 25
+    },
+    {
+      "id": "NeutralMorale",
+      "name": "Always neutral morale",
+      "code": 26
+    },
+    {
+      "id": "VulnerableToColdSpells",
+      "name": "Vulnerable to Cold Ray and Cold Ring (+100% damage)",
+      "code": 27
+    },
+    {
+      "id": "ImmuneToLightningAndMeteorSpells",
+      "name": "Immune to Lightning Bolt, Chain Lightning, Elemental Storm and Meteor Shower",
+      "code": 28
+    },
+    {
+      "id": "ImmuneToMeteorShower",
+      "name": "Immune to Meteor Shower",
+      "code": 29
+    },
+    {
+      "id": "VulnerableToLightningSpells",
+      "name": "Vulnerable to Lightning Bolt, Chain Lightning and Elemental Storm (+100% damage)",
+      "code": 30
+    },
+    {
+      "id": "ImmuneToColdSpells",
+      "name": "Immune to Cold Ray and Cold Ring",
+      "code": 31
+    }
+  ],
+  "replacements": []
+}

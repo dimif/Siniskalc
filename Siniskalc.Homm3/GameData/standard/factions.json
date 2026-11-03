@@ -1,0 +1,93 @@
+[
+  {
+    "id": "Neutral",
+    "name": "Neutral",
+    "code": 99,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Castle",
+    "name": "Castle",
+    "code": 0,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Rampart",
+    "name": "Rampart",
+    "code": 1,
+    "availableFrom": "roe",
+    "companionBits": "halls"
+  },
+  {
+    "id": "Tower",
+    "name": "Tower",
+    "code": 2,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Dungeon",
+    "name": "Dungeon",
+    "code": 5,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Inferno",
+    "name": "Inferno",
+    "code": 3,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Necropolis",
+    "name": "Necropolis",
+    "code": 4,
+    "availableFrom": "roe",
+    "companionBits": "halls"
+  },
+  {
+    "id": "Stronghold",
+    "name": "Stronghold",
+    "code": 6,
+    "availableFrom": "roe",
+    "companionBits": "fort"
+  },
+  {
+    "id": "Fortress",
+    "name": "Fortress",
+    "code": 7,
+    "availableFrom": "roe",
+    "companionBits": "none"
+  },
+  {
+    "id": "Conflux",
+    "name": "Conflux",
+    "code": 8,
+    "availableFrom": "ab",
+    "companionBits": "fortAndHalls"
+  },
+  {
+    "id": "Cove",
+    "name": "Cove",
+    "code": 9,
+    "availableFrom": "hota",
+    "companionBits": "none"
+  },
+  {
+    "id": "Factory",
+    "name": "Factory",
+    "code": 10,
+    "availableFrom": "hota",
+    "companionBits": "fort"
+  },
+  {
+    "id": "Bulwark",
+    "name": "Bulwark",
+    "code": 11,
+    "availableFrom": "hota",
+    "companionBits": "fort"
+  }
+]

@@ -22,6 +22,7 @@
         /// <param name="model">
         /// The entity to serialize.
         /// </param>
+        /// <returns>A new chunk with the bytes of <paramref name="chunk"/> and <paramref name="model"/> written to them; <paramref name="chunk"/> is not modified.</returns>
         TChunk Serialize(TChunk chunk, TModel model);
     }
 }

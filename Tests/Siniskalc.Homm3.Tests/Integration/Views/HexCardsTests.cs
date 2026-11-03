@@ -52,6 +52,13 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
 
                     Assert.That(grid.Items.Count, Is.GreaterThan(0));
                     Assert.That(scroll.ViewportHeight, Is.GreaterThanOrEqualTo(scroll.ExtentHeight), $"the grid of the {kind} cuts off rows");
+
+                    shell.IsAdvancedMode = false;
+                    Pump();
+                    Assert.That(grid.ItemsSource, Is.Null, $"the hidden {kind} releases its target");
+                    shell.IsAdvancedMode = true;
+                    Pump();
+                    Assert.That(grid.Items.Count, Is.GreaterThan(0), $"the {kind} rebinds when advanced mode returns");
                 }
             }
             finally

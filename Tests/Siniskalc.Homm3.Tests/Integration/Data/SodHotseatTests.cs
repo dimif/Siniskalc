@@ -132,8 +132,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var game = Hotseat("five_teams_01_red_two_obelisks");
             var players = game.History.Current.Players();
-            using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(players.FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText);
-            using var blue = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(players.FindByColor(PlayerColor.Blue)), TestServices.ByteEditTargets, TestServices.BanishingText);
+            using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(players.FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText, game);
+            using var blue = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(players.FindByColor(PlayerColor.Blue)), TestServices.ByteEditTargets, TestServices.BanishingText, game);
 
             Assert.That(red.Obelisks.Summary, Is.EqualTo("2 of 7 visited"));
             Assert.That(blue.Obelisks.Summary, Is.EqualTo("0 of 7 visited"));
@@ -158,7 +158,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         public void TheTilesOfTheObelisksNameTheirPlaceWithTheLevel()
         {
             var game = Hotseat("five_teams_00_game_begin");
-            using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText);
+            using var red = new Siniskalc.Homm3.ViewModels.PlayerViewModel(game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red)), TestServices.ByteEditTargets, TestServices.BanishingText, game);
 
             Assert.That(red.Obelisks.Obelisks[0].Coordinates, Is.EqualTo("at 47, 8, Surface"));
         }

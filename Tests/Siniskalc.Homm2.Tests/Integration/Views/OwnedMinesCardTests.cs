@@ -66,6 +66,52 @@ namespace Siniskalc.Homm2.Tests.Integration.Views
             }
         }
 
+        [Test]
+        public void TheMineGuardiansEarthSaveKeepsTheSameHexGridDuringAnEditAndReleasesItOutsideAdvancedMode()
+        {
+            TestApplication.Ensure();
+            var game = TestServices.LoadNamed("MineGuardians", "mine_guardians_01_earth");
+            var mine = game.History.Current.Mines().GetModels().Single(m => m.Position == new MapPosition(43, 23));
+            using var page = new PlayerViewModel(game, mine.Owner, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, new ByteEditTargetFactory());
+            page.Mines.PickMine(mine.Index);
+            var card = new OwnedMinesCard { DataContext = page };
+            var window = new Window
+            {
+                Content = card,
+                DataContext = new { IsAdvancedMode = true },
+                Width = 1000,
+                Height = 700,
+                ShowInTaskbar = false,
+            };
+            window.Show();
+            try
+            {
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+                window.UpdateLayout();
+                var editor = Descendants<Siniskalc.Wpf.Views.HexEditor>(card).Single();
+                var grid = (DataGrid)editor.FindName("bytesGrid");
+                var source = grid.ItemsSource;
+                Assert.That(grid.Items.Count, Is.GreaterThan(0));
+                using var target = new ByteEditTargetFactory().ForMine(game.History, mine.Index);
+                Assert.That(target.Update(bytes => { bytes[3] = 17; return bytes; }), Is.True);
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+                Assert.That(grid.ItemsSource, Is.SameAs(source), "refreshing the selected mine must not replace the grid");
+                Assert.That(((System.Data.DataRowView)grid.Items[0])["B03"], Is.EqualTo("11"));
+
+                window.DataContext = new { IsAdvancedMode = false };
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+                Assert.That(grid.ItemsSource, Is.Null);
+                window.DataContext = new { IsAdvancedMode = true };
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ContextIdle);
+                Assert.That(grid.Items.Count, Is.GreaterThan(0));
+                Assert.That(((System.Data.DataRowView)grid.Items[0])["B03"], Is.EqualTo("11"));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
         private static IEnumerable<T> Descendants<T>(DependencyObject root)
             where T : DependencyObject
         {

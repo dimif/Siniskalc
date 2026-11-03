@@ -226,6 +226,8 @@ The Map page keeps the records no player owns: merchants (HoMM3), shrines and sp
 
 ## Hex views
 
+`SelectedRecordHexPresenter<TContext>` in `Siniskalc.Wpf.Views` manages selected-record hex cards in both games. Each card supplies its selection notifications, stable record key and byte-target factory; the presenter binds lazily while visible, preserves the grid for same-record edits, and releases targets and subscriptions on context replacement or unload. Layouts and target construction stay in the games.
+
 ```
 IByteEditTarget (editable)   HeroByteEditTarget / PlayerByteEditTarget / CastleByteEditTarget  ->  HexEditor (hero, player and castle pages)
                              MineByteEditTarget / DwellingByteEditTarget (HoMM3)                 ->  HexEditor (card below the picked mine or dwelling)

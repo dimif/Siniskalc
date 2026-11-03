@@ -112,13 +112,11 @@
 
             if (!this.players.TryGetValue(playerIndex, out var player))
             {
-                var color = game.History.Current.Players().GetColor(playerIndex);
                 player = new PlayerViewModel(
                     game.History.CreatePlayerSession(playerIndex),
                     this.byteEditTargets,
                     this.banishingText,
-                    game.GetControl(color),
-                    game.CurrentPlayer == color,
+                    game,
                     this.ShowHero,
                     this.ShowCastle);
                 this.players[playerIndex] = player;

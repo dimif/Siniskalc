@@ -1,6 +1,7 @@
 namespace Siniskalc.Homm2.Tests.Integration.Data
 {
     using Siniskalc.Heroes.Entities;
+    using Siniskalc.Heroes.Models;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Runtime;
@@ -64,6 +65,87 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Assert.That(
                 (change.Change.Description, change.Change.After),
                 Is.EqualTo(("Movement points", $"{left:N0} / {original.MovementPoints.Max:N0}")));
+        }
+
+        [TestCase(null, "UltimateSwordOfDominion")]
+        [TestCase("UltimateSwordOfDominion", null)]
+        [TestCase("UltimateCrown", "UltimateCloakOfProtection")]
+        public void AnIndividualArtifactRevertRestoresTheBrokenAllianceStartSkillsAndBytesThroughUndoAndRedo(string? before, string? after)
+        {
+            this.game.History.CreateHeroSession(Maximus).Update(h => h.WithArtifact(2, before is null ? null : this.game.Catalog.Artifacts[before]));
+            this.game = TestServices.Parser.Parse(this.game.GetBytesToSave(), null);
+            var history = this.game.History;
+            var original = history.Current.Heroes().GetModel(Maximus);
+            var originalBytes = this.game.GetBytesToSave();
+
+            history.CreateHeroSession(Maximus).Update(h => h.WithArtifact(2, after is null ? null : this.game.Catalog.Artifacts[after]));
+            var edited = history.Current.Heroes().GetModel(Maximus);
+            var editedBytes = this.game.GetBytesToSave();
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Slot 3").Revert(history);
+
+            Assert.That(history.Current.Heroes().GetModel(Maximus), Is.EqualTo(original));
+            Assert.That(history.Current.Heroes().GetModel(Maximus).PrimarySkills.Bonus, Is.EqualTo(original.PrimarySkills.Bonus));
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(originalBytes));
+
+            history.Undo();
+
+            Assert.That(history.Current.Heroes().GetModel(Maximus), Is.EqualTo(edited));
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(editedBytes));
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Does.Contain("Slot 3"));
+
+            history.Redo();
+
+            Assert.That(history.Current.Heroes().GetModel(Maximus), Is.EqualTo(original));
+            Assert.That(history.Current.Heroes().GetModel(Maximus).PrimarySkills.Bonus, Is.EqualTo(original.PrimarySkills.Bonus));
+            Assert.That(history.GetPendingChanges(), Is.Empty);
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(originalBytes));
+        }
+
+        [Test]
+        public void AnIndividualArtifactRevertKeepsOtherArtifactsAndEditedSkillsInTheBrokenAllianceStartBytesThroughUndoAndRedo()
+        {
+            this.game.History.CreateHeroSession(Maximus).Update(h => h.WithArtifact(2, this.game.Catalog.Artifacts["UltimateSwordOfDominion"]));
+            this.game = TestServices.Parser.Parse(this.game.GetBytesToSave(), null);
+            var history = this.game.History;
+            var expectedBytes = this.game.GetBytesToSave();
+            var heroAt = this.game.Layout.HeroStart(Maximus);
+            expectedBytes[heroAt + HeroLayout.Artifacts + 3] = 6;
+            expectedBytes[heroAt + HeroLayout.PrimarySkills] = 36;
+            expectedBytes[heroAt + HeroLayout.PrimarySkills + 1] = 25;
+            expectedBytes[heroAt + HeroLayout.PrimarySkills + 2] = 26;
+            expectedBytes[heroAt + HeroLayout.PrimarySkills + 3] = 27;
+
+            history.CreateHeroSession(Maximus).Update(h =>
+            {
+                var equipped = h.WithArtifact(2, this.game.Catalog.Artifacts["UltimateCloakOfProtection"])
+                    .WithArtifact(3, this.game.Catalog.Artifacts["UltimateCrown"]);
+                return equipped with
+                {
+                    PrimarySkills = equipped.PrimarySkills.WithBaseAttack(20).WithBaseDefense(21).WithBaseSpellPower(22).WithBaseKnowledge(23),
+                };
+            });
+            var editedBytes = this.game.GetBytesToSave();
+
+            history.GetPendingChanges().Single(c => c.Change.Description == "Slot 3").Revert(history);
+
+            var reverted = history.Current.Heroes().GetModel(Maximus);
+            Assert.That(reverted.Artifacts.Slots[2], Is.EqualTo(this.game.Catalog.Artifacts["UltimateSwordOfDominion"]));
+            Assert.That(reverted.Artifacts.Slots[3], Is.EqualTo(this.game.Catalog.Artifacts["UltimateCrown"]));
+            Assert.That(reverted.PrimarySkills, Is.EqualTo(new PrimarySkills(36, 25, 26, 27)));
+            Assert.That(reverted.PrimarySkills.Bonus, Is.EqualTo(new PrimarySkillBonus(16, 4, 4, 4)));
+            Assert.That((reverted.PrimarySkills.BaseAttack, reverted.PrimarySkills.BaseDefense, reverted.PrimarySkills.BaseSpellPower, reverted.PrimarySkills.BaseKnowledge), Is.EqualTo((20, 21, 22, 23)));
+            Assert.That(history.GetPendingChanges().Select(c => c.Change.Description), Is.EquivalentTo(new[] { "Attack", "Defense", "Spell power", "Knowledge", "Slot 4" }));
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(expectedBytes));
+
+            history.Undo();
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(editedBytes));
+
+            history.Redo();
+            Assert.That(history.Current.Heroes().GetModel(Maximus), Is.EqualTo(reverted));
+            Assert.That(history.Current.Heroes().GetModel(Maximus).PrimarySkills.Bonus, Is.EqualTo(reverted.PrimarySkills.Bonus));
+            Assert.That(this.game.GetBytesToSave(), Is.EqualTo(expectedBytes));
         }
 
         [Test]

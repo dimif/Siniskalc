@@ -5,6 +5,9 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- **Fixed (HoMM2): reverting an individual artifact change also reconciles its primary-skill bonuses**, preserving other artifacts and independently edited skills.
+- **Fixed (HoMM3): cached player pages refresh their current-turn labels** after a turn change, undo and redo.
+- Mine and dwelling hex cards share their selection/binding lifecycle, releasing hidden targets and retaining the byte grid during edits to the same visible record.
 - **Added (HoMM2): mine guardians are shown read-only.** The Mines tabs show the saved elemental type and count, or "Unguarded", in the existing mine list. Unknown guardian encodings are identified rather than shown as unguarded. Owner edits and saving continue to preserve all guardian bytes; guardian editing is not implemented.
 - **Fixed (HoMM2): guarded mines and mines with a cleared guardian count no longer disappear.** Mine discovery accepts the observed guardian spell/count bytes instead of requiring `FF, FF`. Owner edits preserve those bytes; guardian editing is not yet implemented. Covered by the eight controlled saves in `TestData/Homm2/MineGuardians`.
 - **Fixed (HoMM3): dwelling discovery no longer requires mines or three consecutive dwellings.** Mines and dwellings share a validated counted-table locator, including empty owner/guard tables and trailing non-mine objects. Mixed generator types no longer hide later single-creature dwellings; types 18..20 remain uneditable. The Arts map now shows all five dwellings: editable payloads exclude the trailing byte that belongs to its obelisk marker, while owner bytes retain their observed 75-byte spacing. Owner/stock edits still need checking in the game.

@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         private static PlayerViewModel Red(Game game, List<int> opened, List<int>? castlesOpened = null)
         {
             var session = game.History.CreatePlayerSession(game.History.Current.Players().FindByColor(PlayerColor.Red));
-            return new PlayerViewModel(session, TestServices.ByteEditTargets, TestServices.BanishingText, openHero: opened.Add, openCastle: (castlesOpened ?? []).Add);
+            return new PlayerViewModel(session, TestServices.ByteEditTargets, TestServices.BanishingText, game, openHero: opened.Add, openCastle: (castlesOpened ?? []).Add);
         }
 
         [Test]

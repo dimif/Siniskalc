@@ -36,5 +36,44 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(overview.OrderOfPlay.Single(i => i.IsCurrent).Name, Is.EqualTo("Blue"));
             Assert.That(overview.TurnText, Is.EqualTo("Current turn: Blue"));
         }
+
+        [Test]
+        public void TheCachedRedAndBluePagesFollowTheTurnInTheSodHotseatBaselineThroughUndoAndRedo()
+        {
+            var path = Path.Combine("TestData", "Sod", "Hotseat", "hotseat_00_baseline_200_diff.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            editor.ShowPlayer(0);
+            var red = (PlayerViewModel)editor.CurrentPage!;
+            editor.ShowPlayer(1);
+            var blue = (PlayerViewModel)editor.CurrentPage!;
+            var redNotifications = 0;
+            var blueNotifications = 0;
+            red.PropertyChanged += (_, args) => redNotifications += args.PropertyName == nameof(PlayerViewModel.ControlText) ? 1 : 0;
+            blue.PropertyChanged += (_, args) => blueNotifications += args.PropertyName == nameof(PlayerViewModel.ControlText) ? 1 : 0;
+
+            AssertLabels("Human · current turn", "Human");
+            editor.Overview!.OrderOfPlay.Single(i => i.Name == "Blue").Command!.Execute(null);
+            AssertLabels("Human", "Human · current turn");
+            Assert.That((redNotifications, blueNotifications), Is.EqualTo((1, 1)));
+
+            editor.Undo();
+            AssertLabels("Human · current turn", "Human");
+            Assert.That((redNotifications, blueNotifications), Is.EqualTo((2, 2)));
+
+            editor.Redo();
+            AssertLabels("Human", "Human · current turn");
+            Assert.That((redNotifications, blueNotifications), Is.EqualTo((3, 3)));
+
+            void AssertLabels(string redText, string blueText)
+            {
+                editor.ShowPlayer(0);
+                Assert.That(editor.CurrentPage, Is.SameAs(red));
+                Assert.That(red.ControlText, Is.EqualTo(redText));
+                editor.ShowPlayer(1);
+                Assert.That(editor.CurrentPage, Is.SameAs(blue));
+                Assert.That(blue.ControlText, Is.EqualTo(blueText));
+            }
+        }
     }
 }

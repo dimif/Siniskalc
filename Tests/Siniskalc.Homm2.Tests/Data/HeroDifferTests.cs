@@ -97,12 +97,50 @@ namespace Siniskalc.Homm2.Tests.Data
         public void AnArtifactInASlotIsAChangeOfThatSlotAndPutBackEmpty()
         {
             var original = DifferSamples.Hero();
-            var current = original with { Artifacts = original.Artifacts.WithSlot(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]) };
+            var current = original.WithArtifact(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
 
-            var change = this.Diff(original, current).Single();
+            var change = this.Diff(original, current).Single(c => c.Change.Description == "Slot 3");
 
             Assert.That((change.Change.Description, change.Change.Before, change.Change.After), Is.EqualTo(("Slot 3", ChangeText.Empty, "Ultimate Sword of Dominion")));
-            Assert.That(this.fake.HeroReverts["Slot 3"](current).Artifacts.Slots[2], Is.Null);
+            var reverted = this.fake.HeroReverts["Slot 3"](current);
+            Assert.That(reverted, Is.EqualTo(original));
+            Assert.That(reverted.PrimarySkills.Bonus, Is.EqualTo(original.PrimarySkills.Bonus));
+        }
+
+        [TestCase("UltimateSwordOfDominion", null)]
+        [TestCase("UltimateSwordOfDominion", "UltimateCloakOfProtection")]
+        [TestCase("UltimateCrown", "UltimateSwordOfDominion")]
+        public void AnArtifactRevertRestoresTheOriginalBonusesAndSavedPrimarySkills(string before, string? after)
+        {
+            var original = DifferSamples.Hero().WithArtifact(2, TestCatalog.Standard.Artifacts[before]);
+            var current = original.WithArtifact(2, after is null ? null : TestCatalog.Standard.Artifacts[after]);
+
+            this.Diff(original, current);
+            var reverted = this.fake.HeroReverts["Slot 3"](current);
+
+            Assert.That(reverted, Is.EqualTo(original));
+            Assert.That(reverted.PrimarySkills.Bonus, Is.EqualTo(original.PrimarySkills.Bonus));
+        }
+
+        [Test]
+        public void AnArtifactRevertPreservesOtherArtifactsAndIndependentlyEditedPrimarySkills()
+        {
+            var original = DifferSamples.Hero().WithArtifact(2, TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]);
+            var current = original.WithArtifact(2, TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"])
+                .WithArtifact(3, TestCatalog.Standard.Artifacts["UltimateCrown"]);
+            current = current with
+            {
+                PrimarySkills = current.PrimarySkills.WithBaseAttack(20).WithBaseDefense(21).WithBaseSpellPower(22).WithBaseKnowledge(23),
+            };
+
+            this.Diff(original, current);
+            var reverted = this.fake.HeroReverts["Slot 3"](current);
+
+            Assert.That(reverted.Artifacts.Slots[2], Is.EqualTo(original.Artifacts.Slots[2]));
+            Assert.That(reverted.Artifacts.Slots[3], Is.EqualTo(current.Artifacts.Slots[3]));
+            Assert.That(reverted.PrimarySkills, Is.EqualTo(new PrimarySkills(36, 25, 26, 27)));
+            Assert.That(reverted.PrimarySkills.Bonus, Is.EqualTo(new PrimarySkillBonus(16, 4, 4, 4)));
+            Assert.That((reverted.PrimarySkills.BaseAttack, reverted.PrimarySkills.BaseDefense, reverted.PrimarySkills.BaseSpellPower, reverted.PrimarySkills.BaseKnowledge), Is.EqualTo((20, 21, 22, 23)));
         }
 
         [Test]

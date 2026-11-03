@@ -6,6 +6,7 @@
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Runtime;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
@@ -31,6 +32,7 @@
 
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
+        private readonly IGameInfo<PlayerColor> game;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int>? openHero;
@@ -42,19 +44,18 @@
         /// <param name="session">The session that edits the player.</param>
         /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
         /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
-        /// <param name="control">Who plays the colour; <see langword="null"/> when that is not known.</param>
-        /// <param name="isCurrent">Whether it is the turn of the player.</param>
+        /// <param name="game">The live control and current-turn information of the game.</param>
         /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number; <see langword="null"/> for none.</param>
-        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, PlayerType? control = null, bool isCurrent = false, Action<int>? openHero = null, Action<int>? openCastle = null)
+        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, IGameInfo<PlayerColor> game, Action<int>? openHero = null, Action<int>? openCastle = null)
             : base(session.Current.Color.ToString(), session)
         {
             this.session = session;
+            this.game = game;
             this.byteEditTargets = byteEditTargets;
             this.banishingText = banishingText;
             this.openHero = openHero;
             this.openCastle = openCastle;
-            this.ControlText = PlayerTypeText.Describe(control, isCurrent);
             this.resources = ResourcesEditorViewModel.ForPlayer(
                 Limits,
                 () => this.session.Current.Resources,
@@ -91,9 +92,9 @@
         public string Name => this.Color.ToString();
 
         /// <summary>
-        /// Gets "Human" or "Computer", or nothing when the savefile does not tell.
+        /// Gets who plays the colour, followed by "current turn" when it is the turn of the player.
         /// </summary>
-        public string ControlText { get; }
+        public string ControlText => PlayerTypeText.Describe(this.game, this.Color);
 
         /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.Color);
@@ -193,6 +194,7 @@
         /// <inheritdoc/>
         protected override void OnHistoryChanged()
         {
+            this.RaisePropertyChanged(nameof(this.ControlText));
             this.resources.Refresh();
 
             this.UpdateIsDirty();

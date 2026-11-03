@@ -23,7 +23,8 @@
         /// <param name="gameVersion">The version of the savefile.</param>
         /// <param name="occupied">Chunks of other things (heroes, castles) found in the savefile. The last player of the table is
         /// followed by other data, so its chunk is cut short where one of them begins.</param>
-        public IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, GameVersion gameVersion, IEnumerable<BytesChunk>? occupied = null)
+        /// <param name="includeInactive">Whether to keep unused player records too.</param>
+        public IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, GameVersion gameVersion, IEnumerable<BytesChunk>? occupied = null, bool includeInactive = false)
         {
             // Only the layouts of the versions that have been compared are known.
             var layout = PlayerLayout.For(gameVersion);
@@ -88,23 +89,7 @@
             // The savefile holds a struct for every colour, in play or not. The ones not in play have all resources at zero, no heroes and no
             // towns. A player that has only heroes or towns is in play too (Red of the Horn of the Abyss saves of TestData/Hota/SleepGarrisonVisiting,
             // Blue of the hotseat saves of TestData/Sod/Hotseat): the resources alone would hide it.
-            var inPlay = chunks.Where(c => IsInPlay(c.ToArray())).ToList();
-            return (inPlay.Count > 0 ? inPlay : chunks).AsReadOnly();
-        }
-
-        private static bool IsInPlay(byte[] chunk) => HasResources(chunk) || chunk[PlayerLayout.HeroCount] > 0 || chunk[PlayerLayout.TownCount] > 0;
-
-        private static bool HasResources(byte[] chunk)
-        {
-            for (var resource = 0; resource < PlayerResources.All.Count; resource++)
-            {
-                if (BitConverter.ToInt32(chunk, PlayerLayout.ResourcesOffset + (resource * PlayerLayout.ResourceSize)) != 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return includeInactive ? chunks.AsReadOnly() : PlayersInTheGame.WithActivity(chunks);
         }
 
         private static PlayerChunk CreateChunk(byte[] bytes, int start, PlayerLayout layout, int color, int length = 0)

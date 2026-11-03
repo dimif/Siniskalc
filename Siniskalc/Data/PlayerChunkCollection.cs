@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Models;
     using Siniskalc.Entities;
     using Siniskalc.Models;
 
@@ -14,15 +15,17 @@
     {
         private readonly IPlayerDiffer differ;
         private readonly Func<int, string> heroName;
+        private readonly ChunkKind kind;
 
         /// <param name="heroName">Gives the name of the hero with an id, so that a change of the heroes of the tavern can name them.</param>
-        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ, Func<int, string> heroName)
+        public PlayerChunkCollection(IEnumerable<PlayerChunk> chunks, IPlayerDeserializer deserializer, IPlayerSerializer serializer, IPlayerDiffer differ, Func<int, string> heroName, ChunkKind? kind = null)
             : base(chunks)
         {
             this.Deserializer = deserializer;
             this.Serializer = serializer;
             this.differ = differ;
             this.heroName = heroName;
+            this.kind = kind ?? Homm3ChunkKinds.Player;
         }
 
         /// <summary>
@@ -35,7 +38,7 @@
         /// </summary>
         public IPlayerSerializer Serializer { get; }
 
-        public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ, this.heroName);
+        public override PlayerChunkCollection WithChunk(int index, PlayerChunk chunk) => new(this.Replace(index, chunk), this.Deserializer, this.Serializer, this.differ, this.heroName, this.kind);
 
         /// <summary>
         /// Returns the colour of each player, in the order of the collection.
@@ -59,7 +62,40 @@
 
         protected override IEnumerable<PendingChange> DiffChunk(int index, PlayerChunk original, PlayerChunk current)
         {
-            return this.differ.Diff(index, this.Deserializer.Deserialize(original), this.Deserializer.Deserialize(current), this.heroName);
+            foreach (var change in this.differ.Diff(index, this.Deserializer.Deserialize(original), this.Deserializer.Deserialize(current), this.heroName))
+            {
+                yield return change;
+            }
+
+            var beforeCount = original.GetByteAt(PlayerLayout.TownCount);
+            var afterCount = current.GetByteAt(PlayerLayout.TownCount);
+            if (beforeCount != afterCount || beforeCount > Constants.Player.MaxTownCount)
+            {
+                yield break;
+            }
+
+            var before = original.GetBytesAt(PlayerLayout.TownIds, beforeCount);
+            var after = current.GetBytesAt(PlayerLayout.TownIds, afterCount);
+
+            // Membership changes belong to castle ownership; a round trip can leave only an order change.
+            if (!before.SequenceEqual(after) && before.Order().SequenceEqual(after.Order()))
+            {
+                yield return new PendingChange(
+                    current.Name,
+                    new Change(ChangeAreas.General, "Town order", string.Join(", ", before), string.Join(", ", after)),
+                    this.kind,
+                    index,
+                    history =>
+                    {
+                        var chunk = history.Current.GetChunks<PlayerChunk>(this.kind)[index];
+                        var count = chunk.GetByteAt(PlayerLayout.TownCount);
+                        var ids = chunk.GetBytesAt(PlayerLayout.TownIds, count);
+                        var ordered = before.Where(ids.Contains).Concat(ids.Except(before)).ToArray();
+                        var bytes = chunk.ToArray();
+                        ordered.CopyTo(bytes, PlayerLayout.TownIds);
+                        history.Apply(history.Current.WithChunk(this.kind, index, chunk.WithBytes(bytes)));
+                    });
+            }
         }
     }
 }

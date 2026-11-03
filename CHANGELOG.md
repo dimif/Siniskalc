@@ -5,6 +5,9 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- Changing a town's owner now updates both players' town counts and acquisition-ordered town lists in the same undoable edit.
+  Reverting ownership restores the original list position. Town selection is left unchanged.
+
 - Test savegames were renamed to the rules in `TestData/README.md` (2026-10-12).
   Old names were like `0_roe_tests_baseline`, `4_roe_cita`, `15_dwell_3`, `1_arts`, `111` to `214` or `2PHotseat/_GAME_BEGIN`; `git log --follow` on a save shows its old name.
   Where the new name is a guess, the folder's `README.md` says so.

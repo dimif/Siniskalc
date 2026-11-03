@@ -164,6 +164,10 @@ namespace Siniskalc
             /// </summary>
             public const int MinHeroId = 0;
             public const int MaxHeroId = 254;
+
+            public const int MaxTownCount = 72;
+            public const int MinTownId = 0;
+            public const int MaxTownId = 254;
         }
 
         /// <summary>

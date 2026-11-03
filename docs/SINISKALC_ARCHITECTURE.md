@@ -42,13 +42,21 @@ Each project has a test project with the same shape: `Siniskalc.Core.Tests` (fak
 SaveDocumentHistory (Data)      immutable SaveDocument snapshots: Current, Original, Undo/Redo, Changed event
   SaveDocument                  chunk collections: Heroes, Castles, Players, Obelisks
     EditSession<TChunk,TModel>  one chunk + its model; Update(edit) deserializes, applies edit, serializes, pushes to history (given its IDeserializer and ISerializer)
-      HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (thin: they pick the kind and the collection's (de)serializer)
+      HeroEditSession / CastleEditSession / PlayerEditSession / ObeliskEditSession   (pick the kind and the collection's (de)serializer)
 Models / Entities               immutable models and game vocabulary (HeroModel, SpellBook, Artifact, ...)
 ViewModels                      hold immutable models, apply edits through reducers, never touch chunks
 Views                           XAML
 ```
 
 Reading and writing a chunk are separate (`IDeserializer<TChunk, TEntity>`, and `ISerializer<TChunk, TModel>` implemented by the `Safe...Serializer` classes), and a value the editor does not know never stops a load or gets overwritten: see `CLAUDE.md`.
+
+`EditSession.ApplyToDocument` builds the snapshot before it is pushed to history. `CastleEditSession` uses it for
+`CastleOwnership`: an owner change updates the castle and both player town lists atomically, including raw hex edits.
+Town ids stay in acquisition order. Reverting the owner also restores the town's original place; undo/redo restore the
+whole snapshot. If ownership returns to its starting state but acquisition order differs, a separate pending town-order
+change keeps that edit visible and revertible.
+Unused player records are retained in a separate `InactivePlayer` collection, not shown in navigation, so giving a town
+to a hidden colour still updates its record. The player's selection bytes and the game setup are not changed.
 
 Data flow of an edit: view -> view model property -> `Update(h => h.Reducer(...))` -> `HeroEditSession.Update` -> serializer -> `SaveDocumentHistory.Apply` -> `Changed` -> `HeroViewModel.OnHistoryChanged` -> every child view model `Refresh()`.
 

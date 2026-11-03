@@ -59,7 +59,8 @@ namespace Siniskalc.Data
             HeroOffsets offsets,
             IEnumerable<PlayerChunk>? playerChunks = null,
             IEnumerable<CastleChunk>? castleChunks = null,
-            IEnumerable<ObeliskChunk>? obeliskChunks = null)
+            IEnumerable<ObeliskChunk>? obeliskChunks = null,
+            IEnumerable<PlayerChunk>? inactivePlayerChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer);
@@ -71,7 +72,14 @@ namespace Siniskalc.Data
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
             var castles = new CastleChunkCollection(castleChunks ?? Enumerable.Empty<CastleChunk>(), this.castleDeserializer, this.castleSerializer, this.castleDiffer);
             var obelisks = new ObeliskChunkCollection(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, this.patcher);
+            var inactivePlayers = new PlayerChunkCollection(
+                inactivePlayerChunks ?? Enumerable.Empty<PlayerChunk>(),
+                this.playerDeserializer,
+                this.playerSerializer,
+                this.playerDiffer,
+                heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}",
+                Homm3ChunkKinds.InactivePlayer);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, inactivePlayers, this.patcher);
         }
     }
 }

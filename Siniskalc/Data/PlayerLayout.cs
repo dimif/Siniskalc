@@ -55,6 +55,11 @@
         public const int SelectedTown = 24;
 
         /// <summary>
+        /// Town ids in acquisition order, one byte each; unused places are FF.
+        /// </summary>
+        public const int TownIds = 25;
+
+        /// <summary>
         /// Resources are consecutive 32-bit integers in the order of <see cref="Resource"/>.
         /// </summary>
         public const int ResourcesOffset = HeadLength;

@@ -3,6 +3,7 @@ namespace Siniskalc.Data
     using System.Collections.Generic;
     using System.Linq;
     using Siniskalc.Entities;
+    using Siniskalc.Models;
 
     /// <summary>
     /// Tells which of the players found in a savefile are in the game, from the setup of the game. The scan that finds the players looks at
@@ -10,6 +11,17 @@ namespace Siniskalc.Data
     /// </summary>
     public static class PlayersInTheGame
     {
+        /// <summary>
+        /// Keeps records with resources, heroes or towns, or every record when none has activity.
+        /// </summary>
+        public static IReadOnlyList<PlayerChunk> WithActivity(IReadOnlyList<PlayerChunk> players)
+        {
+            var kept = players.Where(p => p.GetByteAt(PlayerLayout.HeroCount) > 0
+                || p.GetByteAt(PlayerLayout.TownCount) > 0
+                || PlayerResources.All.Any(r => p.GetInt32At(PlayerLayout.OffsetOf(r)) != 0)).ToList();
+            return kept.Count > 0 ? kept.AsReadOnly() : players;
+        }
+
         /// <summary>
         /// Returns <paramref name="players"/> without the colours the setup says are not played, unless that leaves none.
         /// </summary>

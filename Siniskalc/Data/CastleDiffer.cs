@@ -81,11 +81,11 @@
         {
             if (original.Owner != current.Owner)
             {
-                changes.Add(Homm3PendingChanges.ForCastle(
+                changes.Add(Homm3PendingChanges.ForCastleOwner(
                     current.Name,
                     castleIndex,
                     new Change(ChangeAreas.General, "Owner", OwnerNames.Of(original.Owner), OwnerNames.Of(current.Owner)),
-                    c => c with { Owner = original.Owner }));
+                    original.Owner));
             }
 
             if (original.BuiltThisTurn != current.BuiltThisTurn)

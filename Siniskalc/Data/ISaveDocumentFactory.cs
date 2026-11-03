@@ -15,12 +15,14 @@ namespace Siniskalc.Data
         /// <param name="playerChunks">The players; none when omitted.</param>
         /// <param name="castleChunks">The castles; none when omitted.</param>
         /// <param name="obeliskChunks">The visited obelisks (one chunk or none); none when omitted.</param>
+        /// <param name="inactivePlayerChunks">Player records hidden from navigation, retained for ownership edits.</param>
         SaveDocument Create(
             byte[] bytes,
             IEnumerable<HeroChunk> heroChunks,
             HeroOffsets offsets,
             IEnumerable<PlayerChunk>? playerChunks = null,
             IEnumerable<CastleChunk>? castleChunks = null,
-            IEnumerable<ObeliskChunk>? obeliskChunks = null);
+            IEnumerable<ObeliskChunk>? obeliskChunks = null,
+            IEnumerable<PlayerChunk>? inactivePlayerChunks = null);
     }
 }

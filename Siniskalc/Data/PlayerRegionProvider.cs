@@ -39,6 +39,7 @@ namespace Siniskalc.Data
                 new(tavernName, PlayerLayout.TavernHeroes, PlayerLayout.TavernHeroPlaces, ByteRegionKind.Identity, null, "The ids of the two heroes the tavern offers; FF when it has none for a place", tavernParts),
                 new("Town count", PlayerLayout.TownCount, 1, ByteRegionKind.Identity, null, "How many towns the player has"),
                 new("Selected town", PlayerLayout.SelectedTown, 1, ByteRegionKind.Identity, null, "The index of the town selected on the adventure map, in the savefile's table of towns; FF when none is"),
+                new("Town ids", PlayerLayout.TownIds, Constants.Player.MaxTownCount, ByteRegionKind.Identity, null, "Town ids in acquisition order, one byte each; FF for an empty place"),
                 new(resourcesName, PlayerLayout.ResourcesOffset, resourceParts.Count * PlayerLayout.ResourceSize, ByteRegionKind.Resources, null, "One 32-bit integer per resource", resourceParts),
                 new("Marker", layout.MarkerOffset, layout.Marker.Length, ByteRegionKind.Other, null, "The same in every player; it is what the loader looks for to find the table of players"),
                 new("Colour", layout.ColorOffset, 1, ByteRegionKind.Identity, null, "The colour of the player plus one: 1 is red. Missing in a slot that is not in play"),

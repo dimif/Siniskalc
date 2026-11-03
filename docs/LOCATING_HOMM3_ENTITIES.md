@@ -62,7 +62,8 @@ The table of players has one fixed-size struct per colour in colour order (`Play
 A struct starts 97 bytes (`PlayerLayout.HeadLength`) before its first resource, with the heroes of the player, its tavern and its towns, and the chunk is the whole struct.
 The scan looks for a run of structs a stride apart, each with a marker after the resources (`01 00 00` in SoD, `01 10 00 00 00` in HotA) and a colour byte higher than the previous one's. The longest run is the table.
 A struct with the marker but no valid colour byte (an unused last slot) is named after the colour that follows the previous one, so every colour of the table is loaded.
-Only versions with a known layout are loaded; RoE and AB assume SoD's. The savefile holds a struct for every colour; only the colours in play are returned as chunks: those with resources, heroes or towns (all of them when none is).
+Only versions with a known layout are loaded; RoE and AB assume SoD's. The savefile holds a struct for every colour; by default the loader returns those with resources, heroes or towns (all of them when none is).
+The parser requests unused records too, retaining them separately from the visible players so ownership edits can update their town lists.
 The scan reads bytes only: the setup of the game (below) is applied afterwards by `PlayersInTheGame`, which drops a colour the setup says is not played even when it has gold (the colour Tan of `TestData/Hota/tan_not_parsing` has 10000), unless it has heroes or towns.
 
 ## The visited obelisks: `ObeliskBytesLoader`

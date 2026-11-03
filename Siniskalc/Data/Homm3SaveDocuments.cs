@@ -9,7 +9,7 @@ namespace Siniskalc.Data
     /// </summary>
     public static class Homm3SaveDocuments
     {
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, ISavefileBytesPatcher patcher)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection obelisks, PlayerChunkCollection inactivePlayers, ISavefileBytesPatcher patcher)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -17,6 +17,7 @@ namespace Siniskalc.Data
                 [Homm3ChunkKinds.Player] = players,
                 [Homm3ChunkKinds.Castle] = castles,
                 [Homm3ChunkKinds.Obelisks] = obelisks,
+                [Homm3ChunkKinds.InactivePlayer] = inactivePlayers,
             };
 
             return new SaveDocument(originalBytes, collections, patcher);
@@ -28,6 +29,11 @@ namespace Siniskalc.Data
         /// Gets the players, in colour order. Empty when the savefile's players are not known.
         /// </summary>
         public static PlayerChunkCollection Players(this SaveDocument document) => (PlayerChunkCollection)document.GetCollection(Homm3ChunkKinds.Player);
+
+        /// <summary>
+        /// Gets records hidden from navigation, retained so ownership edits can update their town lists.
+        /// </summary>
+        public static PlayerChunkCollection InactivePlayers(this SaveDocument document) => (PlayerChunkCollection)document.GetCollection(Homm3ChunkKinds.InactivePlayer);
 
         /// <summary>
         /// Gets the castles whose name is stored in the savefile.

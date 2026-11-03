@@ -19,6 +19,8 @@ namespace Siniskalc.Tests.Data
             Assert.That(resources.Elements.Select(e => e.Start), Is.EqualTo(Enum.GetValues<Resource>().Select(PlayerLayout.OffsetOf)));
             Assert.That(regions.Single(r => r.Name == "Marker"), Has.Property("Start").EqualTo(PlayerLayout.ResourcesOffset + 44).And.Property("Length").EqualTo(5));
             Assert.That(regions.Single(r => r.Name == "Colour").Start, Is.EqualTo(PlayerLayout.HornOfTheAbyss.ColorOffset));
+            Assert.That(regions.Single(r => r.Name == "Town ids").Start, Is.EqualTo(PlayerLayout.TownIds));
+            Assert.That(regions.Single(r => r.Name == "Town ids").Length, Is.EqualTo(Constants.Player.MaxTownCount));
         }
 
         [Test]
@@ -26,7 +28,7 @@ namespace Siniskalc.Tests.Data
         {
             var regions = TestServices.PlayerRegions.GetRegions(PlayerLayout.HornOfTheAbyss, PlayerLayout.HornOfTheAbyss.ColorOffset);
 
-            Assert.That(regions.Select(r => r.Name), Is.EqualTo(new[] { "Hero count", "Selected hero", "Hero ids", "Tavern heroes", "Town count", "Selected town", "Resources", "Marker" }));
+            Assert.That(regions.Select(r => r.Name), Is.EqualTo(new[] { "Hero count", "Selected hero", "Hero ids", "Tavern heroes", "Town count", "Selected town", "Town ids", "Resources", "Marker" }));
         }
 
         [Test]

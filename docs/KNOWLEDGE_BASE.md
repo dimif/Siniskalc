@@ -55,6 +55,12 @@ From the start of the chunk:
 - 10 and 11: the two heroes of the tavern, by hero id (`PlayerModel.Tavern`).
   The computer's taverns change both heroes at the start of a week and, within a week, only the place of a hero the computer hired (`SodSeriesTests`).
 - 19: changed from 03 to A7 when a hero dug; unexplained. 23: number of castles. 24: the selected castle (index in the table of castles, `FF` for none), exclusive with a selected hero.
+- 25 to 96: town ids, one byte each, with unused places `FF`. The list follows acquisition order: a captured town is appended;
+  losing one removes it and closes the gap without reordering the rest. In `TestData/Hota/TownOwnership`, Blue's list goes
+  `02` -> `02 01` -> `02 01 00`, then `02 00` when Red recaptures Inferno. Red's later captures give `01 03`, then `03 00`.
+  The count at 23 matches the list length throughout. Selecting Tower, second in Blue's list, writes its global id `00` at 24,
+  not its position in that list. Selections clear when turns pass; the user also observed that loading clears town selection.
+  Ownership edits update the count and list together, leaving selection bytes unchanged.
 - 129 (Red): became 1 with the first visit to a magic spring and stayed 1 on the other square and after the week change.
   It is **not** the visit mark, which the game keeps per square, probably with the map objects.
   Open.

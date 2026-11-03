@@ -30,3 +30,4 @@ See `docs/KNOWLEDGE_BASE.md` for what was found in them.
 | OtherFactions | Eight castles of Red, one of each of Tower, Inferno, Necropolis, Dungeon, Stronghold, Fortress, Conflux and Castle, built one building per save, plus `dung_necro` made in the map editor | `OtherFactionsCastleTests`; README.md in the folder |
 | SleepGarrisonVisiting | Akka and Oidana in Red's castle: visiting, garrisoned, asleep, moved away and swapped | `HotaSleepGarrisonVisitingTests`; README.md in the folder |
 | Rampart | Two neutral Rampart castles: "Gladeroot" never changes and "Fortune Keep" gets one building per save (the first is the town hall) | `RampartCastleTests` |
+| TownOwnership | Hotseat town captures, recaptures, a townless player, a neutral capture and town selections; the README lists all twelve checkpoints | `CastleOwnershipTests` |

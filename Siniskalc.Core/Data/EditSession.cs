@@ -101,6 +101,12 @@ namespace Siniskalc.Core.Data
             this.Apply(document, chunk, (TChunk)chunk.WithBytes(edit(chunk.ToArray())));
         }
 
+        /// <summary>
+        /// Builds one history snapshot, including any other structs that must change with this edit.
+        /// </summary>
+        protected virtual SaveDocument ApplyToDocument(SaveDocument document, TChunk chunk, TChunk newChunk) =>
+            document.WithChunk(this.Kind, this.Index, newChunk);
+
         private void Apply(SaveDocument document, TChunk chunk, TChunk newChunk)
         {
             if (newChunk.HasSameBytes(chunk))
@@ -108,7 +114,7 @@ namespace Siniskalc.Core.Data
                 return;
             }
 
-            this.History.Apply(document.WithChunk(this.Kind, this.Index, newChunk));
+            this.History.Apply(this.ApplyToDocument(document, chunk, newChunk));
         }
 
         private sealed record Cache(SaveDocument Document, TModel Model);

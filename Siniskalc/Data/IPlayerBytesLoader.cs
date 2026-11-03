@@ -12,6 +12,7 @@
         /// <param name="bytes">The savefile bytes.</param>
         /// <param name="gameVersion">The version of the savefile.</param>
         /// <param name="occupied">Chunks of other things (heroes, castles) found in the savefile; the last player is cut short where one begins.</param>
-        IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, GameVersion gameVersion, IEnumerable<BytesChunk>? occupied = null);
+        /// <param name="includeInactive">Keep unused player records for edits that transfer ownership to an otherwise hidden colour.</param>
+        IReadOnlyList<PlayerChunk> LoadPlayerChunks(byte[] bytes, GameVersion gameVersion, IEnumerable<BytesChunk>? occupied = null, bool includeInactive = false);
     }
 }

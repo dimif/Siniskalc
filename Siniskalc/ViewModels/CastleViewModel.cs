@@ -38,7 +38,7 @@
             this.castleIndex = castleIndex;
             this.openHero = openHero;
             this.Castle = this.session.Current;
-            this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.Original), _ => this.HasPendingChanges);
+            this.ResetCommand = new DelegateCommand(_ => this.session.Reset(), _ => this.HasPendingChanges);
             this.Refresh();
 
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
@@ -213,11 +213,6 @@
         public ICommand ResetCommand { get; }
 
         private CastleModel Castle { get; set; }
-
-        /// <summary>
-        /// Gets the castle as the savegame had it when it was loaded or last saved.
-        /// </summary>
-        private CastleModel Original => this.history.Original.Castles().GetModel(this.castleIndex);
 
         public void Dispose()
         {

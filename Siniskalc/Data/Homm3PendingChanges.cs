@@ -3,6 +3,7 @@ namespace Siniskalc.Data
     using System;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Models;
+    using Siniskalc.Entities;
     using Siniskalc.Models;
 
     /// <summary>
@@ -10,6 +11,9 @@ namespace Siniskalc.Data
     /// </summary>
     public static class Homm3PendingChanges
     {
+        public static PendingChange ForCastleOwner(string castleName, int castleIndex, Change change, PlayerColor? owner) =>
+            new(castleName, change, Homm3ChunkKinds.Castle, castleIndex, history => history.CreateCastleSession(castleIndex).RestoreOwner(owner));
+
         public static PendingChange ForHero(string heroName, int heroIndex, HeroChange change)
         {
             return new PendingChange(heroName, change, Homm3ChunkKinds.Hero, heroIndex, history => history.CreateHeroSession(heroIndex).Update(change.Revert));

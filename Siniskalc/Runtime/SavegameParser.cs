@@ -57,9 +57,8 @@ namespace Siniskalc.Runtime
 
             var castleChunks = this.castleLoader.LoadCastleChunks(bytes);
             var setup = this.setupLocator.FindSetup(bytes, gameVersion);
-            var playerChunks = PlayersInTheGame.Of(
-                this.playerLoader.LoadPlayerChunks(bytes, gameVersion, heroChunks.Cast<BytesChunk>().Concat(castleChunks)),
-                setup?.PlayerControls);
+            var allPlayerChunks = this.playerLoader.LoadPlayerChunks(bytes, gameVersion, heroChunks.Cast<BytesChunk>().Concat(castleChunks), includeInactive: true);
+            var playerChunks = PlayersInTheGame.Of(PlayersInTheGame.WithActivity(allPlayerChunks), setup?.PlayerControls);
 
             var obeliskChunks = this.obeliskLoader.LoadObeliskChunks(bytes, playerChunks);
 
@@ -69,7 +68,7 @@ namespace Siniskalc.Runtime
                 this.mapHeaderLocator.Find(bytes, gameVersion));
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks);
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, allPlayerChunks.Except(playerChunks));
             return new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), metadata, name);
         }
     }

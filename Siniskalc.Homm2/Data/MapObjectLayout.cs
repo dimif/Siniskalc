@@ -19,7 +19,7 @@ namespace Siniskalc.Homm2.Data
 
         /// <summary>
         /// Where the list of mines begins, from the end of the table of castles. A record is 7 bytes: the owner (a colour, 0xFF for nobody),
-        /// the kind, two bytes of 0xFF, the column, the row and a byte of 0xFF; records that are not mines have other bytes in those places.
+        /// the kind, guardian spell and count, the column, the row and a byte of 0xFF. No guardian is FF with count zero or FF.
         /// </summary>
         public const int MineTable = 5;
 
@@ -27,6 +27,16 @@ namespace Siniskalc.Homm2.Data
         /// The size of a record of the list of mines.
         /// </summary>
         public const int MineRecordSize = 7;
+
+        /// <summary>
+        /// The first guardian spell code stored in a mine record (Set Earth Guardian).
+        /// </summary>
+        public const byte FirstGuardianSpell = 62;
+
+        /// <summary>
+        /// The last guardian spell code stored in a mine record (Set Water Guardian).
+        /// </summary>
+        public const byte LastGuardianSpell = 65;
 
         /// <summary>
         /// Where the room for the list of mines ends, from the end of the table of castles.

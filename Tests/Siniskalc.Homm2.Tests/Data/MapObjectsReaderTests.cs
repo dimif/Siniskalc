@@ -72,13 +72,47 @@ namespace Siniskalc.Homm2.Tests.Data
             save.Mine(4, 0xFF, 7, 1, 1);
             save.Mine(5, 5, (byte)MineKind.GemMine, 4, 4);
             save.Bytes[save.Mine(6, 0xFF, (byte)MineKind.OreMine, 2, 2) + 2] = 0;
-            save.Bytes[save.Mine(7, 0xFF, (byte)MineKind.OreMine, 2, 2) + 3] = 0;
+            save.Bytes[save.Mine(7, 0xFF, (byte)MineKind.OreMine, 2, 2) + 3] = 1;
             save.Bytes[save.Mine(8, 0xFF, (byte)MineKind.OreMine, 2, 2) + 6] = 0;
             save.Mine(9, 0xFF, (byte)MineKind.Sawmill, 3, 3);
 
             var mines = this.Read(save).Mines;
 
             Assert.That(mines.Select(m => (m.Index, m.Name)), Is.EqualTo(new[] { (0, "Ore mine at 1, 1"), (1, "Gem mine at 4, 4"), (2, "Sawmill at 3, 3") }));
+        }
+
+        [Test]
+        [TestCase(0xFF, 0)]
+        [TestCase(0xFF, 0xFF)]
+        [TestCase(62, 20)]
+        [TestCase(63, 20)]
+        [TestCase(64, 20)]
+        [TestCase(65, 20)]
+        [TestCase(62, 40)]
+        public void AMineWithAKnownGuardianEncodingIsFoundWithAllItsBytesIntact(int spell, int count)
+        {
+            var save = new MapSavegame(6);
+            var at = save.Mine(0, 0, (byte)MineKind.GoldMine, 1, 2);
+            save.Bytes[at + 2] = (byte)spell;
+            save.Bytes[at + 3] = (byte)count;
+
+            var mine = this.Read(save).Mines.Single();
+
+            Assert.That(mine.ToArray(), Is.EqualTo(new byte[] { 0, (byte)MineKind.GoldMine, (byte)spell, (byte)count, 1, 2, 0xFF }));
+        }
+
+        [TestCase(61, 20)]
+        [TestCase(66, 20)]
+        [TestCase(62, 0)]
+        [TestCase(0xFF, 20)]
+        public void ARecordWithAnUnestablishedGuardianEncodingIsNotMistakenForAMine(int spell, int count)
+        {
+            var save = new MapSavegame(6);
+            var at = save.Mine(0, 0, (byte)MineKind.GoldMine, 1, 2);
+            save.Bytes[at + 2] = (byte)spell;
+            save.Bytes[at + 3] = (byte)count;
+
+            Assert.That(this.Read(save).Mines, Is.Empty);
         }
 
         [Test]

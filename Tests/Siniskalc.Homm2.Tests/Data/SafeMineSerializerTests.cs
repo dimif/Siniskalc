@@ -87,6 +87,22 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
+        [TestCase(62, 20)]
+        [TestCase(63, 20)]
+        [TestCase(64, 20)]
+        [TestCase(65, 20)]
+        [TestCase(62, 40)]
+        [TestCase(0xFF, 0)]
+        public void ChangingTheOwnerKeepsTheGuardianSpellAndCount(int spell, int count)
+        {
+            var chunk = new MapObjectChunk("Mine", [0, 6, (byte)spell, (byte)count, 43, 23, 0xFF], 100, new MapPosition(43, 23), 2);
+
+            var written = this.serializer.Serialize(chunk, Model(MineKind.GoldMine, PlayerColor.Orange));
+
+            Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 4, 6, (byte)spell, (byte)count, 43, 23, 0xFF }));
+        }
+
+        [Test]
         public void TheKindTheTileAndThePlaceInTheTableAreNeverWritten()
         {
             var chunk = Mine(0xFF, [MapObjectLayout.NoClass, MapObjectLayout.NoPicture]);

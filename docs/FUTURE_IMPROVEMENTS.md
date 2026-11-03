@@ -38,7 +38,7 @@ Nothing here is known to be wrong. It is edited and tested against saves, but no
 ## Features
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today. Giving a hero from a tavern to a player is refused with a message (the game refills the slot by a random draw), and so is anything that needs the owner of a garrisoned hero; see `docs/KNOWLEDGE_BASE.md`, "The table of hero owners".
-2. **HoMM2 mine guardians.** HoMM3 mines already have their guard (`MineModel.Guard`, seven slots, edited with the shared army blocks). HoMM2 mines can hold a few elementals put there by Set Earth, Air, Fire and Water Guardian (spells 62 to 65), but where that is kept is unknown (see the probes); model it with the same army blocks once found.
+2. **HoMM2 mine guardians.** HoMM3 mines already have their guard (`MineModel.Guard`, seven slots, edited with the shared army blocks). HoMM2 stores the guardian spell code and count at +2 and +3 of its seven-byte mine record (see `KNOWLEDGE_BASE.md`). Discovery now accepts the observed encodings and owner edits preserve them; displaying and editing the guardians remains to be implemented after establishing valid counts.
 3. **Teams.** The team table of the header is found (Shadow of Death and Restoration of Erathia, not Horn of the Abyss) but not read. Reading it would let the obelisk card mark a whole team at once.
 4. **Dug tiles and the visited-object table:** readable, but the meaning of the number and of the table is unclear; the Grail flag beside the date (`7F xx 02 yy`) likewise.
 5. **Places a HoMM3 hero visited**, what is left: the **mineral spring** (a Horn of the Abyss object, type 144 subtype 4: +1 luck for the next battle and +600 movement points until the end of the day; where a hero keeps that it visited one is not known; probe: Tazar visits a mineral spring, then Orrin a turn later, and a save a day later).
@@ -77,7 +77,7 @@ What HoMM2 taught: a hero keeps bits for the places it visited and the morale an
 ### HoMM2
 
 - **Level and experience kept in step:** the game showed level 14 for level 20 and 50,000 experience, so the experience table is not verified (saves E30 to E32 were made to find the rule). The maximum movement is worked out by the game and not stored.
-- **The guardians of a mine:** the 7-byte mine record (owner, kind, x, y) has no room for them and no save has a guarded mine. Saves: one mine with each of the four spells cast on it (note the hero's spell power and knowledge), one with the guardians defeated by an enemy, one with a guarded mine that changes owner.
+- **The guardians of a mine:** spell codes, counts and clearing after an enemy capture are established (see `KNOWLEDGE_BASE.md`). Remaining probes: partial guardian losses if possible; count encoding above 255 before allowing such edits.
 - Not decoded: the flags of the mines and towns (the second object of a tile), the owner of a mine on the map, the sphinx, the daemon cave and the shrines (objects with state), windmills and water mills, map dwellings (the docs say none), hero bytes `+0xE3..+0xE6` and `+0x51`, the bit `0x4000` of the buildings, the marketplace and the other high bits of the buildings, and the rule that a town needs its castle before it can build.
 
 ## Architecture and code

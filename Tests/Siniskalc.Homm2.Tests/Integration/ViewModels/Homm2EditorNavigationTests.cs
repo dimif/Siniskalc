@@ -59,7 +59,7 @@
         {
             this.editor.LoadGame(Saves.Path(Saves.BrokenAlliance, "broken_alliance_21_blue_has_no_castle"));
             var blue = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Index == PlayerColor.Blue.Code);
-            Assert.That(blue.Subtitle, Is.EqualTo("2 heroes · 7 mines"));
+            Assert.That(blue.Subtitle, Is.EqualTo("2 heroes · 8 mines"));
             Assert.That(blue.Notes, Is.EqualTo(new[] { "7 days left" }));
             blue.IsSelected = true;
             var page = (PlayerViewModel)this.editor.CurrentPage!;

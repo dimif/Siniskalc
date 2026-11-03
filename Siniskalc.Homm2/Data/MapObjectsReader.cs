@@ -60,7 +60,12 @@
             for (var offset = mapStart + MapObjectLayout.MineTable; offset + MapObjectLayout.MineRecordSize <= mapStart + MapObjectLayout.MineTableEnd; offset += MapObjectLayout.MineRecordSize)
             {
                 var (owner, kind, x, y) = (bytes[offset], bytes[offset + 1], bytes[offset + 4], bytes[offset + 5]);
-                if (bytes[offset + 2] != 0xFF || bytes[offset + 3] != 0xFF || bytes[offset + 6] != 0xFF || x >= size || y >= size || kind > (byte)MineKind.GoldMine || (owner != 0xFF && owner > PlayerColor.Purple.Code))
+                var spell = bytes[offset + 2];
+                var count = bytes[offset + 3];
+                var hasKnownGuard = spell == 0xFF
+                    ? count is 0 or 0xFF
+                    : spell is >= MapObjectLayout.FirstGuardianSpell and <= MapObjectLayout.LastGuardianSpell && count > 0;
+                if (!hasKnownGuard || bytes[offset + 6] != 0xFF || x >= size || y >= size || kind > (byte)MineKind.GoldMine || (owner != 0xFF && owner > PlayerColor.Purple.Code))
                 {
                     continue;
                 }

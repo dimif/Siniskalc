@@ -5,36 +5,9 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 # Bugs and known defects
 
-## Wrong, lossy or missing behaviour
-
-- **A defeated hero and the tavern.** A defeated hero cannot be rehired by its owner; it will not appear in its tavern rotation until it has been hired by another player and defeated again. The tavern has a table about 250 bytes before the date that changes when a hero is defeated, and might be what models the behaviour. Probe: several week changes with defeated heroes away from their players.
-- **Banishing is partial.** The counter (player byte 22) is read and edited. The other bytes banishing changes are not decoded (the player's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record near the end of the save, header bytes near 1313, 1356 and 12492), so a banished player (0) is read-only and no one can be banished or revived by the editor.
-
-## Limits of what is shown
-
-- **HoMM3 weekly growth** shows the base growth of the creature only; the castle, horde-building and Grail bonuses are not documented, and the growth table is not read.
-- **HoMM3 daily income** (`DailyIncome`) counts only the mines and the best town hall of each town, so the amounts are "at least" values (the save does not store the income). See "Daily income" below.
-- **HoMM3 faerie ring, fountain and idol of fortune** are shown but not editable because the saves do not say what they give.
-- **HoMM2 guild restrictions:** any spell can be put in any Mage Guild slot.
-- **HoMM3 visited-place offsets** are verified only in Horn of the Abyss; Shadow of Death and Restoration of Erathia are unchecked.
-- **Dragon utopia "visited for Red only"** and the per-place lists of **colossi and gazebos** are not found.
-- **HoMM3 merchants:** that the lists follow the merchants in the order of their numbers is confirmed only for the first two. Merchants never sell spell scrolls (the picker excludes them); it could be limited to treasure, minor and major artifacts if that rule is confirmed.
-- **Position versus entrance:** the record tile of a mine or dwelling is not always the entrance; the hero's destination marker equals the entrance and may be the better source.
-
-## Written but never tried in the game
-
-Nothing here is known to be wrong. It is edited and tested against saves, but no edited savegame was opened in the game yet. Try each and delete the line when it works.
-
-- HoMM3: the Order of play buttons that give the turn (probe: edit `TestData/Sod/Hotseat/hotseat_11_sir_mullich_magic_well.GM2` to Blue's turn, load it, check the game opens on Blue's turn with Blue's heroes and towns to move, and that ending Blue's turn goes on to the next day with Red; if it does not start cleanly, switch the buttons off with `protected override bool CanGiveTurn => false;` in the HoMM3 `OverviewViewModel`). Also `hotseat_12_blue_turn` changes the players' selected hero (`PlayerLayout.SelectedHero`), which the editor leaves alone.
-- HoMM3: castle owner edits now update both players' town counts and acquisition-ordered lists, verified against the twelve `TestData/Hota/TownOwnership` saves. Load an edited save in the game to check both town lists; town selection is deliberately left alone (the user reports selection clears on reload).
-- HoMM3: load owner/stock edits of the newly found dwellings on the no-mine and one/two-dwelling controls in `TestData/Hota/MineFinding`; on the Arts map, check the last dwelling and obelisk visits together.
-- HoMM3: morale, luck and visited-building bits; owner and stock edits of mines and dwellings, guard edits, merchant stock edits, the destination fix; forgetting a visited place; the banishing counter (does a lower or higher number of days make the game banish earlier or later); editing the tavern.
-- HoMM2: building rules (a turret or moat on a town without a castle, a shipyard inland, one building a day); the turn; "Can build this turn"; the growth rules (and whether a dwelling built or upgraded today gets its first creatures at once or next week; Threedom saves 15 and 16 suggest next week); T01BLDS (buildings), T02FORGT (a hero visits a fort or gazebo again after forgetting it), T03BONUS (morale and luck of the next battle), T04OBELS, T05FORT, T06SRC; that a changed owner behaves as expected now that `PlayerListsReconciler` keeps the players' lists in step; the Warlock (Waterfall) growth, since it was in none of the saves and only five factions are confirmed.
-- Both: the moved Dwellings tab keeps its "Not yet tried in the game" note.
-
 # Improvements
 
-## Features
+## Game Features
 
 1. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today. Giving a hero from a tavern to a player is refused with a message (the game refills the slot by a random draw), and so is anything that needs the owner of a garrisoned hero; see `docs/KNOWLEDGE_BASE.md`, "The table of hero owners".
 2. **HoMM2 mine guardian editing.** The elemental and saved count are displayed read-only. Editing remains after establishing valid count bounds (including counts above 255) and deciding how to handle unverified partial losses; see `KNOWLEDGE_BASE.md`.
@@ -49,19 +22,30 @@ Nothing here is known to be wrong. It is edited and tested against saves, but no
    - Grail building (unclear): its daily effect was never checked in a save (see the note in `CastleModel`).
    - Verify each value with a pair of saves (before/after equipping or building), add tests that name the save, then change the wording from "at least" to "estimated". HoMM2 stores its income in the player record.
 8. **Editing the date.** Not built. In HoMM2 it must clear the whole set of "built today" bits (72 castle bits, cleared by the game on every new day); in HoMM3 whose turn it is has to follow it. Editing the human/computer seats of HoMM2 is deliberately not built (see the HoMM2 header notes in `KNOWLEDGE_BASE.md`).
-9. **Localized entity names.** Names and data-authored descriptions live in each game's standard JSON catalog, loaded through an injected reader. Selecting a language and resolving localized catalog text remain future work; generated wording belongs to injected text providers.
-10. **Entity editing UI and custom profiles** are deferred. Standard definitions load from JSON at startup, with JSON-only extensions within known mechanics and format capacities. There is no profile selector, user override directory, hot reload or in-app editor (`docs/GAME_DEFINITIONS.md`).
-11. **Log viewer** in the UI, for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
-12. **A third game** (HoMM1 first, as the test that the page interfaces are right): see "Adding a game" and "How HoMM2 was added" in `docs/SINISKALC_ARCHITECTURE.md`.
-13. **A second savefile format of a game we have** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the format is not. Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules and the format (locator, chunks, (de)serializers) when the first of them is started.
-14. **Cross platform support.** The core logic is platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI. The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite.
 
-## Probes: saves to make, to decode what is still a guess
+## Editor features
+1. **Log viewer** in the UI, for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
+2. **A second savefile format of a game we have** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the format is not. Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules and the format (locator, chunks, (de)serializers) when the first of them is started.
+3. **Cross platform support.** The core logic is platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI. The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite.
 
-Each probe is one scenario saved before and after one change, named by `TestData/README.md`, so two files can be compared byte by byte.
-One step between two saves and nothing else (no moves, no battles, no spending). Send the file names with the names of the heroes and the coordinates of the places.
-When a probe settles an offset it goes into `HeroOffsets` (or the HoMM2 layout) with a test that names the save, and a row in `KNOWLEDGE_BASE.md`.
-What HoMM2 taught: a hero keeps bits for the places it visited and the morale and luck bytes beside them, and writing the numbers without the bit shows on the troops but not on the hero screen, so bit and byte are always set together.
+## Limits of what is shown
+
+- **HoMM3 weekly growth** shows the base growth of the creature only; the castle, horde-building and Grail bonuses are not documented, and the growth table is not read.
+- **HoMM3 daily income** (`DailyIncome`) counts only the mines and the best town hall of each town, so the amounts are "at least" values (the save does not store the income). See "Daily income" below.
+- **HoMM3 faerie ring, fountain and idol of fortune** are shown but not editable because the saves do not say what they give.
+- **HoMM2 guild restrictions:** any spell can be put in any Mage Guild slot.
+- **HoMM3 visited-place offsets** are verified only in Horn of the Abyss; Shadow of Death and Restoration of Erathia are unchecked.
+- **Dragon utopia "visited for Red only"** and the per-place lists of **colossi and gazebos** are not found.
+- **HoMM3 merchants:** that the lists follow the merchants in the order of their numbers is confirmed only for the first two. Merchants never sell spell scrolls (the picker excludes them); it could be limited to treasure, minor and major artifacts if that rule is confirmed.
+- **Position versus entrance:** the record tile of a mine or dwelling is not always the entrance; the hero's destination marker equals the entrance and may be the better source.
+- **A defeated hero and the tavern.** A defeated hero cannot be rehired by its owner; it will not appear in its tavern rotation until it has been hired by another player and defeated again. The tavern has a table about 250 bytes before the date that changes when a hero is defeated, and might be what models the behaviour. Probe: several week changes with defeated heroes away from their players.
+- **Banishing is partial.** The counter (player byte 22) is read and edited. The other bytes banishing changes are not decoded (the player's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record near the end of the save, header bytes near 1313, 1356 and 12492), so a banished player (0) is read-only and no one can be banished or revived by the editor.
+
+## Partially decoded
+
+- HoMM3: morale, luck and visited-building bits; owner and stock edits of mines and dwellings, guard edits, merchant stock edits, the destination fix; forgetting a visited place; the banishing counter (does a lower or higher number of days make the game banish earlier or later); editing the tavern.
+- HoMM2: building rules (a turret or moat on a town without a castle, a shipyard inland, one building a day); the turn; "Can build this turn"; the growth rules (and whether a dwelling built or upgraded today gets its first creatures at once or next week; Threedom saves 15 and 16 suggest next week); T01BLDS (buildings), T02FORGT (a hero visits a fort or gazebo again after forgetting it), T03BONUS (morale and luck of the next battle), T04OBELS, T05FORT, T06SRC; that a changed owner behaves as expected now that `PlayerListsReconciler` keeps the players' lists in step; the Warlock (Waterfall) growth, since it was in none of the saves and only five factions are confirmed.
+- Both: the moved Dwellings tab keeps its "Not yet tried in the game" note.
 
 ### HoMM3
 

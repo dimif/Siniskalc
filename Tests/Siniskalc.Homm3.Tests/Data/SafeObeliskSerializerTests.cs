@@ -43,25 +43,5 @@ namespace Siniskalc.Homm3.Tests.Data
 
             Assert.That(ByteDiff.Of(chunk.ToArray(), written.ToArray()), Is.EqualTo(new[] { (ObeliskLayout.FlagsOffset, (byte)0b0000_0111, (byte)0b0000_0101) }));
         }
-
-        [Test]
-        public void VisitsOfMoreObelisksThanTheCountSaysAreNotWritten()
-        {
-            var chunk = ObeliskDeserializerTests.Obelisks(2, 1, 2, 3, 4);
-
-            var written = this.serializer.Serialize(chunk, new ObeliskVisits<PlayerColor>([9, 9, 9, 9]));
-
-            Assert.That(written.ToArray().Skip(ObeliskLayout.FlagsOffset), Is.EqualTo(new byte[] { 9, 9, 3, 4 }), "the bytes past the count are not the visits of any obelisk");
-        }
-
-        [Test]
-        public void VisitsOfFewerObelisksThanTheCountSaysLeaveTheRestOfTheBytesAlone()
-        {
-            var chunk = ObeliskDeserializerTests.Obelisks(3, 5, 6, 7);
-
-            var written = this.serializer.Serialize(chunk, new ObeliskVisits<PlayerColor>([0x10, 0x20]));
-
-            Assert.That(written.ToArray().Skip(ObeliskLayout.FlagsOffset), Is.EqualTo(new byte[] { 0x10, 0x20, 7 }));
-        }
     }
 }

@@ -29,22 +29,6 @@ namespace Siniskalc.Homm2.Tests.Data
         }
 
         [Test]
-        public void TheTilesOfTheObelisksAreTheOnesTheChunkWasFoundWithAndAMissingTileStaysMissing()
-        {
-            var visits = new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(0, 0, 0));
-
-            Assert.That(Enumerable.Range(0, 3).Select(visits.PositionOf), Is.EqualTo(Places));
-        }
-
-        [Test]
-        public void OnlyAsManyBytesAsTheChunkHasTilesAreRead()
-        {
-            var visits = new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(1, 2, 4, 8, 16));
-
-            Assert.That(visits.Masks, Is.EqualTo(new byte[] { 1, 2, 4 }));
-        }
-
-        [Test]
         public void BitsOfColoursTheGameDoesNotHaveAreReadAsTheyAreAndNotAnError()
         {
             var visits = new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(0xC0, 0, 0));

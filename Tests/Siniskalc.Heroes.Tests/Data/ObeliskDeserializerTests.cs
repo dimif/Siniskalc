@@ -31,6 +31,16 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void AMissingTileStaysMissingWhateverTheFlagsAre()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0, 0, 0], 0, [new MapPosition(1, 2), null, new MapPosition(9, 9)]);
+
+            var visits = new ObeliskDeserializer<TestColor>(new ObeliskFlagsLayout(0, null)).Deserialize(chunk);
+
+            Assert.That(Enumerable.Range(0, 3).Select(visits.PositionOf), Is.EqualTo(new MapPosition?[] { new MapPosition(1, 2), null, new MapPosition(9, 9) }));
+        }
+
+        [Test]
         public void TheStoredCountLimitsHowManyFlagsAreRead()
         {
             var chunk = new ObeliskChunk("Obelisks", [0x99, 0x02, 0x11, 0x22, 0x33], 0);

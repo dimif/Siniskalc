@@ -1,5 +1,6 @@
 namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
 {
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
@@ -21,6 +22,49 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
     {
         [OneTimeSetUp]
         public void MakeTheApplication() => WpfTestApplication.Ensure();
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ADetailWhoseDataContextIsAPagePropertyRaisesNoBindingErrorInAHiddenTabOnLoadAndOnReload(bool hasGuard)
+        {
+            var errors = new BindingErrorListener();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(errors);
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+            try
+            {
+                var page = new Page(TestColor.Red) { Guard = hasGuard ? "The guard of the picked mine" : null };
+                var detail = new Border();
+                detail.SetBinding(FrameworkElement.DataContextProperty, new Binding(nameof(Page.Guard)));
+                var text = new TextBlock();
+                text.SetBinding(TextBlock.TextProperty, new Binding());
+                detail.Child = text;
+                var card = new OwnedMinesCard { Detail = detail };
+                var tab = new Border { Child = card, Visibility = Visibility.Collapsed };
+                var root = new Grid { DataContext = page };
+                root.Children.Add(tab);
+
+                using (ShowOutsideAdvancedMode(root))
+                {
+                    Assert.That(detail.DataContext, Is.EqualTo(page.Guard), "the detail has the page while its tab is hidden");
+                    tab.Visibility = Visibility.Visible;
+                    Idle();
+                    Assert.That(text.IsVisible, Is.True);
+                    Assert.That(text.Text, Is.EqualTo(page.Guard ?? string.Empty));
+                    root.Children.Remove(tab);
+                    Idle();
+                    root.Children.Add(tab);
+                    Idle();
+                    Assert.That(detail.DataContext, Is.EqualTo(page.Guard), "the detail has the page again once it is shown again");
+                }
+
+                Idle();
+                Assert.That(errors.Messages, Is.Empty);
+            }
+            finally
+            {
+                PresentationTraceSources.DataBindingSource.Listeners.Remove(errors);
+            }
+        }
 
         [Test]
         public void TheCardShowsTheMinesOfTheOwnerWithItsNoteAndHeadingAndTheDetailOfTheGameBoundToThePage()
@@ -87,11 +131,24 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.Views
             public void Dispose() => window.Close();
         }
 
+        private sealed class BindingErrorListener : TraceListener
+        {
+            public List<string> Messages { get; } = [];
+
+            public override void Write(string? message)
+            {
+            }
+
+            public override void WriteLine(string? message) => this.Messages.Add(message ?? string.Empty);
+        }
+
         private sealed class Page(TestColor owner) : IOwnedMineList<MineRowViewModel<IMineModel<TestColor>, TestColor>>
         {
             public MinesListViewModel<MineRowViewModel<IMineModel<TestColor>, TestColor>> Mines { get; } = OwnedMines.List(4, TestMineRows.OfFour, owner);
 
             public string GuardText => "The guard of the picked mine";
+
+            public string? Guard { get; init; }
 
             public List<int> AskedBytes { get; } = [];
 

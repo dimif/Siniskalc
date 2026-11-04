@@ -34,27 +34,5 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That((visits.IsVisited(1, PlayerColor.Blue), visits.IsVisited(1, PlayerColor.Pink)), Is.EqualTo((true, true)));
             Assert.That(visits.VisitedCount(PlayerColor.Red), Is.EqualTo(1));
         }
-
-        [Test]
-        public void OnlyAsManyBytesAsTheCountSaysAreReadWhateverElseTheRecordHolds()
-        {
-            var visits = new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(2, 5, 6, 7, 8));
-
-            Assert.That(visits.Masks, Is.EqualTo(new byte[] { 5, 6 }));
-        }
-
-        [Test]
-        public void ARecordWithNoObeliskHasNoVisits()
-        {
-            Assert.That(new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(0, 5, 6)).Count, Is.Zero);
-        }
-
-        [Test]
-        public void TheTilesOfTheObelisksAreTheOnesTheChunkWasFoundWithAndAMissingTileStaysMissing()
-        {
-            var visits = new ObeliskDeserializer<PlayerColor>(ObeliskLayout.Flags).Deserialize(Obelisks(3, 0, 0, 0));
-
-            Assert.That(Enumerable.Range(0, 3).Select(visits.PositionOf), Is.EqualTo(Places));
-        }
     }
 }

@@ -57,25 +57,5 @@ namespace Siniskalc.Homm2.Tests.Data
 
             Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 1, 0b1000_0001, 1 }));
         }
-
-        [Test]
-        public void VisitsOfFewerObelisksThanTheChunkHasLeaveTheRestOfTheBytesAlone()
-        {
-            var chunk = Obelisks(5, 6, 7);
-
-            var written = this.serializer.Serialize(chunk, new ObeliskVisits<PlayerColor>([0x10, 0x20]));
-
-            Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 0x10, 0x20, 7 }));
-        }
-
-        [Test]
-        public void VisitsOfMoreObelisksThanTheChunkHasTilesAreNotWritten()
-        {
-            var chunk = Obelisks(5, 6, 7, 8, 9);
-
-            var written = this.serializer.Serialize(chunk, new ObeliskVisits<PlayerColor>([1, 2, 3, 4, 5]));
-
-            Assert.That(written.ToArray(), Is.EqualTo(new byte[] { 1, 2, 3, 8, 9 }), "the bytes past the tiles of the obelisks are not the visits of any obelisk");
-        }
     }
 }

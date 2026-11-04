@@ -1,5 +1,7 @@
 ﻿namespace Siniskalc.Heroes.Wpf.Views
 {
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Windows;
     using System.Windows.Controls;
     using Siniskalc.Heroes.Wpf.ViewModels;
@@ -46,7 +48,7 @@
             nameof(Detail),
             typeof(object),
             typeof(OwnedMinesCard),
-            new PropertyMetadata(null, (d, e) => ((OwnedMinesCard)d).detail.Content = e.NewValue));
+            new PropertyMetadata(null, (d, e) => ((OwnedMinesCard)d).ShowDetail(e.OldValue, e.NewValue)));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OwnedMinesCard"/> class.
@@ -99,6 +101,46 @@
         {
             get => this.GetValue(DetailProperty);
             set => this.SetValue(DetailProperty, value);
+        }
+
+        /// <inheritdoc/>
+        protected override IEnumerator LogicalChildren
+        {
+            get
+            {
+                var children = new List<object>();
+                var content = base.LogicalChildren;
+                while (content != null && content.MoveNext())
+                {
+                    children.Add(content.Current);
+                }
+
+                if (this.Detail != null)
+                {
+                    children.Add(this.Detail);
+                }
+
+                return children.GetEnumerator();
+            }
+        }
+
+        // The detail is a logical child of the card, so it takes the data context of the card as soon as it is set, even while the presenter
+        // that shows it has not made it its visual child (a collapsed tab, or before the first layout); without a parent its bindings report
+        // that no element provides a data context.
+        private void ShowDetail(object? oldDetail, object? newDetail)
+        {
+            this.detail.Content = null;
+            if (oldDetail != null)
+            {
+                this.RemoveLogicalChild(oldDetail);
+            }
+
+            if (newDetail != null)
+            {
+                this.AddLogicalChild(newDetail);
+            }
+
+            this.detail.Content = newDetail;
         }
     }
 }

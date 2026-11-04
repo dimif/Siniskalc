@@ -21,6 +21,39 @@ namespace Siniskalc.Heroes.Tests.Data
         }
 
         [Test]
+        public void AShorterModelLeavesTheOtherBytesAloneWhenTheChunkStoresNoCount()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0x11, 0x22, 0x33], 0, [new MapPosition(1, 2), null, new MapPosition(9, 9)]);
+            var serializer = new SafeObeliskSerializer<TestColor>(new ObeliskFlagsLayout(0, null));
+
+            var result = serializer.Serialize(chunk, new ObeliskVisits<TestColor>([0x44, 0x55]));
+
+            Assert.That(result.ToArray(), Is.EqualTo(new byte[] { 0x44, 0x55, 0x33 }));
+        }
+
+        [Test]
+        public void VisitsReadFromAChunkWithACountWriteBackEveryByteAlone()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0x99, 0x02, 0x11, 0x22, 0x33], 0);
+            var layout = new ObeliskFlagsLayout(2, 1);
+
+            var visits = new ObeliskDeserializer<TestColor>(layout).Deserialize(chunk);
+
+            Assert.That(new SafeObeliskSerializer<TestColor>(layout).Serialize(chunk, visits).ToArray(), Is.EqualTo(chunk.ToArray()));
+        }
+
+        [Test]
+        public void VisitsReadFromAChunkWithNoCountWriteBackEveryByteAlone()
+        {
+            var chunk = new ObeliskChunk("Obelisks", [0x11, 0x22, 0x33], 0, [new MapPosition(1, 2), null]);
+            var layout = new ObeliskFlagsLayout(0, null);
+
+            var visits = new ObeliskDeserializer<TestColor>(layout).Deserialize(chunk);
+
+            Assert.That(new SafeObeliskSerializer<TestColor>(layout).Serialize(chunk, visits).ToArray(), Is.EqualTo(chunk.ToArray()));
+        }
+
+        [Test]
         public void TheStoredCountLimitsWritesAndUnrelatedBytesStayAlone()
         {
             var chunk = new ObeliskChunk("Obelisks", [0x99, 0x02, 0x11, 0x22, 0x33, 0x88], 0);

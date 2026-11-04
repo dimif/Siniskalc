@@ -119,16 +119,16 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var castle = this.Show("Still Water");
             var row = castle.Dwellings.Single(d => d.Level == 3);
-            Assert.That(row.CanEdit, Is.True);
+            Assert.That(row.CanStock, Is.True);
 
-            row.Count = 55;
+            row.Stock = 55;
 
-            Assert.That(castle.Dwellings.Single(d => d.Level == 3).Count, Is.EqualTo(55));
+            Assert.That(castle.Dwellings.Single(d => d.Level == 3).Stock, Is.EqualTo(55));
             Assert.That(castle.Dwellings.Single(d => d.Level == 3).Creatures, Is.EqualTo("55"));
             Assert.That(this.main.PendingChanges.Single().Change.Area, Is.EqualTo(ChangeAreas.Dwellings));
 
-            castle.Dwellings.Single(d => d.Level == 3).Count = Constants.Castle.MaxDwellingCreatures + 1;
-            Assert.That(castle.Dwellings.Single(d => d.Level == 3).Count, Is.EqualTo(Constants.Castle.MaxDwellingCreatures));
+            castle.Dwellings.Single(d => d.Level == 3).Stock = Constants.Castle.MaxDwellingCreatures + 1;
+            Assert.That(castle.Dwellings.Single(d => d.Level == 3).Stock, Is.EqualTo(Constants.Castle.MaxDwellingCreatures));
         }
 
         [Test]
@@ -244,7 +244,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
                         tabs.SelectedIndex = 0;
                         var castle = this.main.CurrentPageOf<CastleViewModel>();
                         Row(castle, castle.Name == "Still Water" ? "Dragon Cliffs" : "Frosthome").IsChecked = false;
-                        castle.Dwellings.First(d => d.CanEdit).Count = 7;
+                        castle.Dwellings.First(d => d.CanStock).Stock = 7;
                         castle.SelectedMageGuildLevel = 3;
                         castle.GarrisonEditor.CreatureSlots[0].SelectedCreature = "Angel";
                         castle.BuiltThisTurn = true;

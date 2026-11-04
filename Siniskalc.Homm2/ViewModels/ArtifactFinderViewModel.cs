@@ -41,8 +41,7 @@
         public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code or effect..." : "Search by name or effect...";
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type part of a name, or what it adds: attack, defense, spell power, knowledge"
-            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
+        public override string SearchHint => ByteCodeFinder.Hint("Type part of a name, or what it adds: attack, defense, spell power, knowledge", this.ShowsCodes);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -51,10 +50,7 @@
         ];
 
         private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
-        [
-            new("Code", nameof(ArtifactChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the artifact in a savefile, in hex"),
-            .. FinderColumns,
-        ];
+            ByteCodeFinder.WithCodeColumn(FinderColumns, nameof(ArtifactChoiceViewModel.Code), "artifact");
 
         /// <summary>
         /// Makes a finder that only looks artifacts up: it has no action, and shows the byte code of each, left of its name.

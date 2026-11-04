@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.ViewModels;
+﻿using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.ViewModels;
@@ -41,6 +41,17 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         [Test]
+        public void TheArtifactCatalogListsEveryArtifactIncludingTheSpellBookAndTheGrail()
+        {
+            var finder = NewArtifacts();
+            var codes = finder.Items.Cast<ArtifactChoiceViewModel>().Select(c => c.CodeValue).ToList();
+
+            Assert.That(codes, Does.Contain((byte)0));
+            Assert.That(codes, Does.Contain((byte)2));
+            Assert.That(codes, Is.EquivalentTo(TestCatalog.Hota.Artifacts.All.Select(a => a.Code)));
+        }
+
+        [Test]
         public void TheArtifactCatalogStillSearchesByName()
         {
             var finder = NewArtifacts();
@@ -51,25 +62,13 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         [Test]
-        public void TheCreatureCatalogShowsTheCodeLeftOfTheNameAndHasNoAction()
+        public void TheCreatureCatalogListsEveryCreatureOfTheGameWithItsCode()
         {
             var finder = NewCreatures();
 
-            Assert.That(finder.Columns[0].Path, Is.EqualTo(nameof(CreatureChoiceViewModel.Code)));
-            Assert.That(finder.Columns[1].Path, Is.EqualTo(nameof(CreatureChoiceViewModel.Name)));
-            Assert.That(finder.HasAction, Is.False);
-            Assert.That(finder.GetRowMenu(finder.Items.Cast<object>().First()), Is.Empty);
-        }
-
-        [Test]
-        public void TheCreatureCatalogFindsACreatureByItsCode()
-        {
-            var finder = NewCreatures();
-            var creature = TestCatalog.Hota.Creatures.All.First();
-
-            finder.Filter = "0x" + creature.Code.ToString("X2");
-
-            Assert.That(finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.Creature), Does.Contain(creature));
+            Assert.That(
+                finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.CodeValue),
+                Is.EquivalentTo(TestCatalog.Hota.Creatures.All.Select(c => c.Code)));
         }
     }
 }

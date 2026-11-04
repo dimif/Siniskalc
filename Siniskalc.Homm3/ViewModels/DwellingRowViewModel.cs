@@ -11,7 +11,7 @@
     public sealed class DwellingRowViewModel : IStockedDwelling
     {
         private readonly Action<int>? setCount;
-        private long count;
+        private long stock;
 
         /// <param name="count">How many creatures wait in the dwelling, or null when no dwelling is built.</param>
         /// <param name="setCount">Called with the new number of creatures when the user edits it; null for a row that cannot be edited.</param>
@@ -23,8 +23,8 @@
             this.AddWeekCommand = DwellingStockActions.AddWeekCommandOf(this);
             this.CreatureNames = creatureNames;
             this.setCount = setCount;
-            this.count = count ?? 0;
-            this.CanEdit = isBuilt && setCount != null;
+            this.stock = count ?? 0;
+            this.CanStock = isBuilt && setCount != null;
             this.Level = level;
             this.Dwelling = dwelling;
             this.State = state;
@@ -43,20 +43,20 @@
         public long Maximum => Constants.Castle.MaxDwellingCreatures;
 
         /// <summary>
-        /// Gets whether the creatures that wait can be changed.
+        /// Gets a value indicating whether the creatures that wait can be changed: the dwelling is built and there is an action to write them.
         /// </summary>
-        public bool CanEdit { get; }
+        public bool CanStock { get; }
 
         /// <summary>
-        /// Gets or sets how many creatures wait in the dwelling.
+        /// Gets or sets how many creatures wait in the dwelling. Setting more than the dwelling can hold, or less than none, stops at the limit.
         /// </summary>
-        public long Count
+        public long Stock
         {
-            get => this.count;
+            get => this.stock;
             set
             {
-                this.count = RangeGuard.Clamp(value, Constants.Castle.MinDwellingCreatures, this.Maximum);
-                this.setCount?.Invoke((int)this.count);
+                this.stock = RangeGuard.Clamp(value, Constants.Castle.MinDwellingCreatures, this.Maximum);
+                this.setCount?.Invoke((int)this.stock);
             }
         }
 
@@ -97,15 +97,5 @@
         /// Gets the command that adds a week of growth to the dwelling.
         /// </summary>
         public ICommand AddWeekCommand { get; }
-
-        /// <inheritdoc/>
-        bool IStockedDwelling.CanStock => this.CanEdit;
-
-        /// <inheritdoc/>
-        long IStockedDwelling.Stock
-        {
-            get => this.Count;
-            set => this.Count = value;
-        }
     }
 }

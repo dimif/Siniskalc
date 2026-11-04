@@ -136,16 +136,16 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             this.session = new FakeCastleSession(CastleModels.With(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")), dwelling));
             using var page = this.Page();
             var row = page.Dwellings.Single(d => d.Level == 3);
-            Assert.That(row.CanEdit, Is.True);
+            Assert.That(row.CanStock, Is.True);
 
-            row.Count = 55;
+            row.Stock = 55;
 
-            Assert.That(page.Dwellings.Single(d => d.Level == 3).Count, Is.EqualTo(55));
+            Assert.That(page.Dwellings.Single(d => d.Level == 3).Stock, Is.EqualTo(55));
             Assert.That(this.session.Current.CreaturesAvailable[2], Is.EqualTo(55));
 
-            page.Dwellings.Single(d => d.Level == 3).Count = Constants.Castle.MaxDwellingCreatures + 1;
+            page.Dwellings.Single(d => d.Level == 3).Stock = Constants.Castle.MaxDwellingCreatures + 1;
 
-            Assert.That(page.Dwellings.Single(d => d.Level == 3).Count, Is.EqualTo(Constants.Castle.MaxDwellingCreatures));
+            Assert.That(page.Dwellings.Single(d => d.Level == 3).Stock, Is.EqualTo(Constants.Castle.MaxDwellingCreatures));
         }
 
         [Test]
@@ -153,7 +153,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             using var page = this.Page();
 
-            Assert.That(page.Dwellings.Single(d => d.Level == 3).CanEdit, Is.False);
+            Assert.That(page.Dwellings.Single(d => d.Level == 3).CanStock, Is.False);
         }
 
         [Test]

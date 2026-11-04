@@ -302,11 +302,11 @@
             var page = Castle(game, castle);
             return string.Join(", ", page.Buildings.Where(b => b.IsChecked).Select(b => b.Name)
                 .Append(model.MageGuildLevel > 0 ? $"Mage Guild {model.MageGuildLevel}" : "no Mage Guild")
-                .Concat(page.Dwellings.Where(d => d.IsBuilt).Select(d => d.Built.Selected)));
+                .Concat(page.Dwellings.Where(d => d.CanStock).Select(d => d.Built.Selected)));
         }
 
         private static string DwellingsOf(Game game, string castle) =>
-            string.Join(", ", Castle(game, castle).Dwellings.Select(d => d.IsBuilt ? $"{d.Built.Label}: {d.Built.Selected} ({d.Waiting.Value} waiting)" : $"{d.Built.Label} not built"));
+            string.Join(", ", Castle(game, castle).Dwellings.Select(d => d.CanStock ? $"{d.Built.Label}: {d.Built.Selected} ({d.Stock} waiting)" : $"{d.Built.Label} not built"));
 
         private static string GuildOf(Game game, string castle, int level, int shown) =>
             string.Join(", ", Castle(game, castle).GuildLevels[level - 1].Spells.Take(shown).Select(s => s.Selected));

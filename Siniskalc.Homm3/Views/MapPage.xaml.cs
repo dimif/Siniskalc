@@ -23,9 +23,9 @@
                 this,
                 this.recordHexPanel,
                 this.recordHexEditor,
-                page => page,
-                page => page.SelectedRecord,
-                page => page.CreateByteEditTarget());
+                page => page.ByteRecords,
+                page => page.ByteRecords.SelectedRecord,
+                page => page.ByteRecords.CreateTarget());
         }
 
         private void OnBankSelected(object sender, SelectionChangedEventArgs e)

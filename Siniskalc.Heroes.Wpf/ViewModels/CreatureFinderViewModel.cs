@@ -107,8 +107,7 @@
         public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code, level, town..." : "Search by name, level, town...";
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type any of: a name, a town (castle, knight...), a level (level 3) or basic / upgraded"
-            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
+        public override string SearchHint => ByteCodeFinder.Hint("Type any of: a name, a town (castle, knight...), a level (level 3) or basic / upgraded", this.ShowsCodes);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -125,10 +124,7 @@
         ];
 
         private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
-        [
-            new("Code", nameof(CreatureChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the creature in a savefile, in hex"),
-            .. FinderColumns,
-        ];
+            ByteCodeFinder.WithCodeColumn(FinderColumns, nameof(CreatureChoiceViewModel.Code), "creature");
 
         /// <summary>
         /// Offers "Send 1 to slot" and "Send 100 to slot" with one entry per slot; a slot that is taken gets its stack replaced.

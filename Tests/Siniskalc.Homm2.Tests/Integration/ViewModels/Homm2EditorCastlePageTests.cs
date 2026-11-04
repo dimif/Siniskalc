@@ -52,7 +52,7 @@
             tavern.IsChecked = !had;
             Assert.That(model().Town.HasFlag(TownBuildings.Tavern), Is.EqualTo(!had));
 
-            var dwelling = page.Dwellings.First(d => !d.IsBuilt);
+            var dwelling = page.Dwellings.First(d => !d.CanStock);
             var index = page.Dwellings.ToList().IndexOf(dwelling);
             dwelling.Built.Selected = dwelling.Built.Choices[1];
             dwelling.Waiting.Value = 40;
@@ -157,19 +157,19 @@
         {
             this.editor.ShowCastle(this.editor.CurrentGame!.History.Current.Castles().FindByName("Xabran"));
             var page = (CastleViewModel)this.editor.CurrentPage!;
-            var built = page.Dwellings.First(d => !d.IsBuilt);
+            var built = page.Dwellings.First(d => !d.CanStock);
             built.Built.Selected = built.Built.Choices[1];
-            built.Waiting.Value = 10;
-            var growth = ((Siniskalc.Heroes.Wpf.ViewModels.IStockedDwelling)built).WeeklyGrowthAmount;
+            built.Stock = 10;
+            var growth = built.WeeklyGrowthAmount;
 
             built.AddWeekCommand.Execute(null);
-            Assert.That(built.Waiting.Value, Is.EqualTo(10 + growth), "the dwelling adds what it gains each week");
+            Assert.That(built.Stock, Is.EqualTo(10 + growth), "the dwelling adds what it gains each week");
 
             page.DwellingActions.AddHundredToAllCommand.Execute(null);
-            Assert.That(built.Waiting.Value, Is.EqualTo(110 + growth));
+            Assert.That(built.Stock, Is.EqualTo(110 + growth));
 
             page.DwellingActions.ClearAllCommand.Execute(null);
-            Assert.That(page.Dwellings.Where(d => d.IsBuilt).Select(d => d.Waiting.Value), Has.All.EqualTo(0));
+            Assert.That(page.Dwellings.Where(d => d.CanStock).Select(d => d.Stock), Has.All.EqualTo(0));
         }
     }
 }

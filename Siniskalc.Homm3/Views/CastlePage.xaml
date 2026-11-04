@@ -36,13 +36,13 @@
             <DockPanel Margin="0,3">
                 <Button DockPanel.Dock="Right" Style="{StaticResource PillButtonStyle}" Margin="12,0,0,0" VerticalAlignment="Center" Content="+1 wk" Command="{Binding AddWeekCommand}"
                         ToolTip="Add a week of growth to the dwelling"/>
-                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" Value="{Binding Count}" Minimum="0" Maximum="{Binding Maximum}"
+                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" Value="{Binding Stock}" Minimum="0" Maximum="{Binding Maximum}"
                                ToolTip="How many creatures wait in this dwelling">
                     <wpf:Stepper.Style>
                         <Style TargetType="wpf:Stepper">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CanEdit}" Value="True">
+                                <DataTrigger Binding="{Binding CanStock}" Value="True">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>

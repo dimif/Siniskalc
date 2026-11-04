@@ -1,4 +1,4 @@
-using Siniskalc.Heroes.ViewModels;
+﻿using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm2.Entities;
 using Siniskalc.Homm2.ViewModels;
@@ -41,16 +41,13 @@ namespace Siniskalc.Homm2.Tests.MultiUnit.ViewModels
         }
 
         [Test]
-        public void TheCreatureCatalogShowsTheCodeLeftOfTheNameAndFindsACreatureByIt()
+        public void TheCreatureCatalogListsEveryCreatureOfTheGameWithItsCode()
         {
             var finder = NewCreatures();
-            var creature = TestCatalog.Standard.Creatures.First(c => c.IsAvailableIn(GameVersion.BaseGame));
 
-            finder.Filter = "0x" + creature.Code.ToString("X2");
-
-            Assert.That(finder.Columns[0].Path, Is.EqualTo(nameof(CreatureChoiceViewModel.Code)));
-            Assert.That(finder.HasAction, Is.False);
-            Assert.That(finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.Creature), Does.Contain(creature));
+            Assert.That(
+                finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.CodeValue),
+                Is.EquivalentTo(TestCatalog.Standard.Creatures.Where(c => c.IsAvailableIn(GameVersion.BaseGame)).Select(c => c.Code)));
         }
     }
 }

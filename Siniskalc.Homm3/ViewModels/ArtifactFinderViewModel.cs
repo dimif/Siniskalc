@@ -46,7 +46,7 @@
         }
 
         private ArtifactFinderViewModel(EntityCatalog catalog, EffectLineProvider effectLines, string title, bool includeScrolls, Func<Artifact, bool>? rowFilter, bool showCodes)
-            : base(CreateRows(catalog, effectLines, includeScrolls, rowFilter), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", showCodes ? CatalogColumns : FinderColumns)
+            : base(CreateRows(catalog, effectLines, includeScrolls, rowFilter, showCodes), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", showCodes ? CatalogColumns : FinderColumns)
         {
             this.ShowsCodes = showCodes;
             this.StartFiltering();
@@ -78,8 +78,7 @@
         public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code, slot, type, effect..." : "Search by name, slot, type, effect...";
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type any of: a name, a slot (helm, ring, item...), a type (relic, major, minor, treasure, combined) or an effect"
-            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
+        public override string SearchHint => ByteCodeFinder.Hint("Type any of: a name, a slot (helm, ring, item...), a type (relic, major, minor, treasure, combined) or an effect", this.ShowsCodes);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -91,10 +90,7 @@
         ];
 
         private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
-        [
-            new("Code", nameof(ArtifactChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the artifact in a savefile, in hex"),
-            .. FinderColumns,
-        ];
+            ByteCodeFinder.WithCodeColumn(FinderColumns, nameof(ArtifactChoiceViewModel.Code), "artifact");
 
         /// <summary>
         /// Gives every row a second button, such as "Backpack", that does something else with the artifact.
@@ -124,8 +120,19 @@
             return canChoose == null ? null : choice => canChoose(choice.Artifact);
         }
 
-        private static List<ArtifactChoiceViewModel> CreateRows(EntityCatalog catalog, EffectLineProvider effectLines, bool includeScrolls, Func<Artifact, bool>? rowFilter)
+        private static List<ArtifactChoiceViewModel> CreateRows(EntityCatalog catalog, EffectLineProvider effectLines, bool includeScrolls, Func<Artifact, bool>? rowFilter, bool allArtifacts)
         {
+            if (allArtifacts)
+            {
+                // The catalog lists every artifact with its byte code, including the Spell Book, the Grail and those worn nowhere.
+                return catalog.Artifacts.All
+                    .Select(a => new ArtifactChoiceViewModel(a, effectLines))
+                    .OrderBy(c => Array.IndexOf(SlotOrder, c.SlotName))
+                    .ThenBy(c => c.Name)
+                    .ThenBy(c => c.CodeValue)
+                    .ToList();
+            }
+
             var rows = catalog.WearableArtifacts
                 .Where(a => a.Slot != ArtifactSlots.None && (rowFilter?.Invoke(a) ?? true))
                 .GroupBy(a => a.Name)

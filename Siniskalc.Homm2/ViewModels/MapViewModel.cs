@@ -20,8 +20,6 @@ namespace Siniskalc.Homm2.ViewModels
     {
         private readonly MapTextProvider mapText;
 
-        private MapRecordViewModel? selectedRecord;
-
         /// <param name="game">The game the page shows.</param>
         /// <param name="byteEditTargets">Makes the raw bytes of a record for the Bytes tab.</param>
         /// <param name="mapText">Words the header of the map is shown with.</param>
@@ -42,8 +40,7 @@ namespace Siniskalc.Homm2.ViewModels
                     ["Spell"] = s => s.SpellName,
                 });
             this.Sphinxes = Enumerable.Range(0, document.Sphinxes().Count).Select(i => new SphinxViewModel(game.Catalog, game.History.CreateSphinxSession(i), game.GameVersion)).ToList();
-            this.Records = RecordsOf(game.History, byteEditTargets);
-            this.selectedRecord = this.Records.FirstOrDefault();
+            this.ByteRecords = new ByteRecordListViewModel(RecordsOf(game.History, byteEditTargets));
             this.Refresh();
         }
 
@@ -78,31 +75,9 @@ namespace Siniskalc.Homm2.ViewModels
         public bool HasSphinxes => this.Sphinxes.Count > 0;
 
         /// <summary>
-        /// Gets the records of the map whose raw bytes the Bytes tab can show.
+        /// Gets the records of the map whose raw bytes the Bytes tab can show, and the one it shows.
         /// </summary>
-        public IReadOnlyList<MapRecordViewModel> Records { get; }
-
-        /// <summary>
-        /// Gets or sets the record the Bytes tab shows.
-        /// </summary>
-        public MapRecordViewModel? SelectedRecord
-        {
-            get => this.selectedRecord;
-            set
-            {
-                if (value != this.selectedRecord)
-                {
-                    this.selectedRecord = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedRecord));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates the raw bytes of the record that is picked, or <c>null</c> when none is. The caller owns the target and disposes it.
-        /// </summary>
-        /// <returns>The target, or <see langword="null"/> when no record is picked.</returns>
-        public IByteEditTarget? CreateByteEditTarget() => this.SelectedRecord?.Create();
+        public ByteRecordListViewModel ByteRecords { get; }
 
         /// <inheritdoc/>
         protected override void RefreshRecords()
@@ -118,26 +93,26 @@ namespace Siniskalc.Homm2.ViewModels
             }
         }
 
-        private static IReadOnlyList<MapRecordViewModel> RecordsOf(SaveDocumentHistory history, IByteEditTargetFactory factory)
+        private static IReadOnlyList<ByteRecordViewModel> RecordsOf(SaveDocumentHistory history, IByteEditTargetFactory factory)
         {
             var document = history.Current;
-            var records = new List<MapRecordViewModel>();
-            records.AddRange(Enumerable.Range(0, document.Mines().Count).Select(i => new MapRecordViewModel(document.Mines().GetName(i), () => factory.ForMine(history, i))));
-            records.AddRange(Enumerable.Range(0, document.Shrines().Count).Select(i => new MapRecordViewModel(document.Shrines().GetName(i), () => factory.ForShrine(history, i))));
-            records.AddRange(Enumerable.Range(0, document.Sphinxes().Count).Select(i => new MapRecordViewModel(document.Sphinxes().GetName(i), () => factory.ForSphinx(history, i))));
+            var records = new List<ByteRecordViewModel>();
+            records.AddRange(Enumerable.Range(0, document.Mines().Count).Select(i => new ByteRecordViewModel(document.Mines().GetName(i), () => factory.ForMine(history, i))));
+            records.AddRange(Enumerable.Range(0, document.Shrines().Count).Select(i => new ByteRecordViewModel(document.Shrines().GetName(i), () => factory.ForShrine(history, i))));
+            records.AddRange(Enumerable.Range(0, document.Sphinxes().Count).Select(i => new ByteRecordViewModel(document.Sphinxes().GetName(i), () => factory.ForSphinx(history, i))));
             if (document.Turn().Count > 0)
             {
-                records.Add(new MapRecordViewModel(document.Turn().GetName(0), () => factory.ForTurn(history)));
+                records.Add(new ByteRecordViewModel(document.Turn().GetName(0), () => factory.ForTurn(history)));
             }
 
             if (document.BuiltToday().Count > 0)
             {
-                records.Add(new MapRecordViewModel(document.BuiltToday().GetName(0), () => factory.ForBuiltToday(history)));
+                records.Add(new ByteRecordViewModel(document.BuiltToday().GetName(0), () => factory.ForBuiltToday(history)));
             }
 
             if (document.Obelisks().Count > 0)
             {
-                records.Add(new MapRecordViewModel("Obelisks", () => factory.ForObelisks(history)));
+                records.Add(new ByteRecordViewModel("Obelisks", () => factory.ForObelisks(history)));
             }
 
             return records;

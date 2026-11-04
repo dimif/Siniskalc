@@ -24,8 +24,8 @@
         <!-- A creature level on the Available creatures tab: the creature of the dwelling, and how many of them wait in it. -->
         <DataTemplate x:Key="AvailableCreaturesTemplate" DataType="{x:Type vm:DwellingRowViewModel}">
             <DockPanel Margin="0,3">
-                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" IsEnabled="{Binding IsBuilt}"
-                             Value="{Binding Waiting.Value}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
+                <wpf:Stepper DockPanel.Dock="Right" Width="130" Margin="12,0,0,0" VerticalAlignment="Center" IsEnabled="{Binding CanStock}"
+                             Value="{Binding Stock}" Minimum="{Binding Waiting.Minimum}" Maximum="{Binding Waiting.Maximum}" Step="{Binding Waiting.Step}"
                              ToolTip="How many creatures wait in the dwelling"/>
                 <Button DockPanel.Dock="Right" Style="{StaticResource PillButtonStyle}" Margin="12,0,0,0" VerticalAlignment="Center" Content="+1 wk" Command="{Binding AddWeekCommand}"
                         ToolTip="Add a week of growth to the dwelling"/>
@@ -35,7 +35,7 @@
                 <TextBlock x:Name="creature" TextTrimming="CharacterEllipsis" Foreground="{StaticResource MutedBrush}" Text="{Binding Built.Selected}"/>
             </DockPanel>
             <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsBuilt}" Value="True">
+                <DataTrigger Binding="{Binding CanStock}" Value="True">
                     <Setter TargetName="creature" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                     <Setter TargetName="creature" Property="FontWeight" Value="SemiBold"/>
                 </DataTrigger>

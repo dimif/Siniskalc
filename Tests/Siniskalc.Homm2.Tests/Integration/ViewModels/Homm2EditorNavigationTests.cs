@@ -95,13 +95,13 @@
             Assert.That(map.IsSelected, Is.True);
             page.SelectedTab = 2;
             Assert.That(page.SelectedTab, Is.EqualTo(2));
-            Assert.That(page.Records, Has.Count.EqualTo(document.Mines().Count + 3));
-            Assert.That(page.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
+            Assert.That(page.ByteRecords.Records, Has.Count.EqualTo(document.Mines().Count + 3));
+            Assert.That(page.ByteRecords.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
 
-            foreach (var record in page.Records)
+            foreach (var record in page.ByteRecords.Records)
             {
-                page.SelectedRecord = record;
-                using var target = page.CreateByteEditTarget();
+                page.ByteRecords.SelectedRecord = record;
+                using var target = page.ByteRecords.CreateTarget();
                 Assert.That(target, Is.Not.Null, record.Name);
                 Assert.That(target!.Title, Is.EqualTo(record.Name));
             }

@@ -112,7 +112,7 @@
         <DockPanel x:Name="recordHexPanel" Grid.Row="2" Margin="8,8,8,0" Style="{StaticResource TabPanel2}">
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,8">
                 <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Record"/>
-                <ComboBox x:Name="records" Width="300" ItemsSource="{Binding Records}" SelectedItem="{Binding SelectedRecord}" DisplayMemberPath="Name"
+                <ComboBox x:Name="records" Width="300" ItemsSource="{Binding ByteRecords.Records}" SelectedItem="{Binding ByteRecords.SelectedRecord}" DisplayMemberPath="Name"
                           ToolTip="The record of the map whose bytes are shown: a mine, a shrine, a sphinx, whose turn it is, the castles that built today or the obelisks"/>
             </StackPanel>
             <wpf:HexEditor x:Name="hexEditor"/>

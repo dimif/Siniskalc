@@ -29,12 +29,12 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var document = game.History.Current;
             var page = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText);
 
-            Assert.That(page.Records, Has.Count.EqualTo(document.Mines().Count + document.Shrines().Count + document.Sphinxes().Count + 3));
-            Assert.That(page.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
-            Assert.That(page.SelectedRecord, Is.SameAs(page.Records[0]));
+            Assert.That(page.ByteRecords.Records, Has.Count.EqualTo(document.Mines().Count + document.Shrines().Count + document.Sphinxes().Count + 3));
+            Assert.That(page.ByteRecords.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
+            Assert.That(page.ByteRecords.SelectedRecord, Is.SameAs(page.ByteRecords.Records[0]));
 
-            page.SelectedRecord = page.Records.Single(r => r.Name == "Obelisks");
-            using var target = page.CreateByteEditTarget()!;
+            page.ByteRecords.SelectedRecord = page.ByteRecords.Records.Single(r => r.Name == "Obelisks");
+            using var target = page.ByteRecords.CreateTarget()!;
             Assert.That(target.Title, Is.EqualTo("Obelisks"));
         }
 

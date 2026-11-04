@@ -22,9 +22,9 @@
                 this,
                 this.recordHexPanel,
                 this.hexEditor,
-                page => page,
-                page => page.SelectedRecord,
-                page => page.CreateByteEditTarget());
+                page => page.ByteRecords,
+                page => page.ByteRecords.SelectedRecord,
+                page => page.ByteRecords.CreateTarget());
         }
     }
 }

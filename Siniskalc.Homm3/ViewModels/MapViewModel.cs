@@ -7,6 +7,7 @@ namespace Siniskalc.Homm3.ViewModels
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Models;
+    using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
     /// What the map keeps that no player owns: merchant stock and creature banks. The mines and dwellings of the map are on the pages of their
@@ -15,9 +16,8 @@ namespace Siniskalc.Homm3.ViewModels
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
         private readonly CreatureBankTextProvider bankText;
-        private CreatureBankViewModel? selectedBank;
-        private MapRecordViewModel? selectedRecord;
         private readonly List<CreatureBankKind> bankKinds;
+        private CreatureBankViewModel? selectedBank;
         private CreatureBankKind bankKind = CreatureBankKind.DragonUtopia;
 
         /// <summary>
@@ -41,39 +41,16 @@ namespace Siniskalc.Homm3.ViewModels
             }
 
             this.VisibleBanks = this.Banks.Where(b => b.Kind == this.bankKind).ToList();
-            this.Records = this.Merchants.Select((m, i) => new MapRecordViewModel(m.Name, () => byteEditTargets.ForMerchant(game.History, i)))
-                .Concat(this.Banks.Select(b => new MapRecordViewModel(b.Name, () => byteEditTargets.ForCreatureBank(game.History, b.Index))))
-                .ToList();
-            this.selectedRecord = this.Records.FirstOrDefault();
+            this.ByteRecords = new ByteRecordListViewModel(this.Merchants.Select((m, i) => new ByteRecordViewModel(m.Name, () => byteEditTargets.ForMerchant(game.History, i)))
+                .Concat(this.Banks.Select(b => new ByteRecordViewModel(b.Name, () => byteEditTargets.ForCreatureBank(game.History, b.Index))))
+                .ToList());
             this.Refresh();
         }
 
         /// <summary>
-        /// Gets the records of the map whose raw bytes the Hex tab can show: the merchants and the creature banks.
+        /// Gets the records of the map whose raw bytes the Hex tab can show (the merchants and then the creature banks), and the one it shows.
         /// </summary>
-        public IReadOnlyList<MapRecordViewModel> Records { get; }
-
-        /// <summary>
-        /// Gets or sets the record the Hex tab shows.
-        /// </summary>
-        public MapRecordViewModel? SelectedRecord
-        {
-            get => this.selectedRecord;
-            set
-            {
-                if (value != this.selectedRecord)
-                {
-                    this.selectedRecord = value;
-                    this.RaisePropertyChanged(nameof(this.SelectedRecord));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates the raw bytes of the record that is picked, or <c>null</c> when none is. The caller owns the target and disposes it.
-        /// </summary>
-        /// <returns>The target, or <see langword="null"/> when no record is picked.</returns>
-        public IByteEditTarget? CreateByteEditTarget() => this.SelectedRecord?.Create();
+        public ByteRecordListViewModel ByteRecords { get; }
 
         /// <summary>
         /// Gets whether the map has a creature bank that can be edited.
@@ -131,7 +108,7 @@ namespace Siniskalc.Homm3.ViewModels
                     if (value != null)
                     {
                         // The Hex tab follows the bank that is picked.
-                        this.SelectedRecord = this.Records[this.Merchants.Count + value.Index];
+                        this.ByteRecords.SelectedRecord = this.ByteRecords.Records[this.Merchants.Count + value.Index];
                     }
 
                     this.RaisePropertyChanged(nameof(this.SelectedBank));

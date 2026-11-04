@@ -47,7 +47,7 @@
         <DockPanel x:Name="recordHexPanel" Grid.Row="2" Margin="8,8,8,0" Style="{StaticResource TabPanel2}">
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,8">
                 <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Record"/>
-                <ComboBox Width="300" ItemsSource="{Binding Records}" SelectedItem="{Binding SelectedRecord}" DisplayMemberPath="Name"
+                <ComboBox Width="300" ItemsSource="{Binding ByteRecords.Records}" SelectedItem="{Binding ByteRecords.SelectedRecord}" DisplayMemberPath="Name"
                           ToolTip="The record of the map whose bytes are shown: a merchant or a creature bank"/>
             </StackPanel>
             <wpf:HexEditor x:Name="recordHexEditor"/>

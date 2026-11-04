@@ -21,12 +21,12 @@
                 () => built,
                 () => growth);
 
-            Assert.That(row.IsBuilt, Is.True);
+            Assert.That(row.CanStock, Is.True);
             Assert.That(row.WeeklyGrowthText, Is.EqualTo(Siniskalc.Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(7)));
 
             built = false;
             growth = 3;
-            Assert.That(row.IsBuilt, Is.False);
+            Assert.That(row.CanStock, Is.False);
             Assert.That(row.WeeklyGrowthText, Is.EqualTo(Siniskalc.Heroes.Wpf.ViewModels.WeeklyGrowthText.Of(3)));
         }
 

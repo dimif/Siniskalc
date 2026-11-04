@@ -25,10 +25,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var merchants = game.History.Current.Merchants().Count;
 
             Assert.That(merchants, Is.GreaterThan(0));
-            Assert.That(page.Records, Has.Count.EqualTo(merchants + page.Banks.Count));
-            Assert.That(page.Records.Take(merchants).Select(r => r.Name), Is.EqualTo(page.Merchants.Select(m => m.Name)));
-            page.SelectedRecord = page.Records[0];
-            using var target = page.CreateByteEditTarget()!;
+            Assert.That(page.ByteRecords.Records, Has.Count.EqualTo(merchants + page.Banks.Count));
+            Assert.That(page.ByteRecords.Records.Take(merchants).Select(r => r.Name), Is.EqualTo(page.Merchants.Select(m => m.Name)));
+            page.ByteRecords.SelectedRecord = page.ByteRecords.Records[0];
+            using var target = page.ByteRecords.CreateTarget()!;
             Assert.That(target.GetBytes(), Is.EqualTo(game.History.Current.Merchants()[0].ToArray()));
         }
 
@@ -69,7 +69,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = SavedGames.Get(path);
             using var page = new MapViewModel(game, TestServices.EffectLines, TestServices.BankText, TestServices.ByteEditTargets);
             page.SelectedBank = page.VisibleBanks[1];
-            using var target = page.CreateByteEditTarget()!;
+            using var target = page.ByteRecords.CreateTarget()!;
             var original = target.GetBytes();
             Assert.That(original, Is.EqualTo(game.History.Current.CreatureBanks()[1].ToArray()));
             var notifications = 0;

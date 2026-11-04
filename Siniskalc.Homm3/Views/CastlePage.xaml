@@ -197,6 +197,7 @@
             <wpf:NavButton Text="Available creatures"/>
             <wpf:NavButton Text="Mage guild"/>
             <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+            <wpf:NavButton Text="Artifact merchant" Visibility="{Binding HasArtifactMerchant, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </ListBox>
 
         <!-- Hex -->
@@ -255,6 +256,38 @@
                         </StackPanel>
                     </heroes:HeadedCard>
                 </WrapPanel>
+
+                <StackPanel Style="{StaticResource TabPanel5}">
+                    <TextBlock Margin="0,0,0,8" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
+                               Text="This stock is shared by all town Artifact Merchants, regardless of owner. Changes here affect every town, not the adventure-map Black Markets. Editor-written stock has not yet been tried in the game."/>
+                    <Border Style="{StaticResource CardStyle}" Width="380" HorizontalAlignment="Left"
+                            Visibility="{Binding HasMerchantStock, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel DataContext="{Binding Merchant}">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Style="{StaticResource LinkButtonStyle}" Content="Reset shared stock"
+                                        Command="{Binding ResetCommand}" ToolTip="Restore the shared town stock for every town; does not reset buildings or Black Markets"/>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Shared town stock"/>
+                            </DockPanel>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,6" TextWrapping="Wrap"
+                                       Text="Seven artifacts in store. Clear a slot to mark it sold. The town's Reset button does not reset this shared stock."/>
+                            <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="Shared stock has unsaved changes"
+                                       Visibility="{Binding HasPendingChanges, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="The shared town stock could not be located safely in this savegame. It cannot be edited." TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasMerchantStock}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

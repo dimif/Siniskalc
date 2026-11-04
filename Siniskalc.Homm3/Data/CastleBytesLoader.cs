@@ -10,10 +10,10 @@
     /// Finds the castles (towns) in a savefile and loads each as a <see cref="CastleChunk"/> named after the castle.
     /// </summary>
     /// <remarks>
-    /// Castles are not in a table, so they are found by what they look like: a four byte prefix that ends with a 00 and
+    /// Castles are not in a table, so they are found by what they look like: a four byte prefix
     /// whose third byte (the level of the Mage Guild) is small, the length of the name, a printable name, and around it a
     /// valid owner, faction, garrison and the counts of Mage Guild spells that come before the build masks.
-    /// The first two bytes of the prefix vary from castle to castle.
+    /// The first two bytes of the prefix vary from castle to castle. Neutral towns also have nonzero final prefix bytes.
     /// </remarks>
     public sealed class CastleBytesLoader : ICastleBytesLoader
     {
@@ -39,16 +39,17 @@
         /// Finds the castles in the bytes of a savefile, by the length of the name each one has.
         /// </summary>
         /// <param name="bytes">The bytes of the savefile.</param>
+        /// <param name="searchFrom">The first possible record byte, after the map header when it is known.</param>
         /// <returns>The chunks of the castles, in the order they are in the savefile.</returns>
-        public IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes)
+        public IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes, int searchFrom = 0)
         {
             var chunks = new List<CastleChunk>();
             var minimum = 0;
 
             // Position of the length of the name: a four byte prefix, then <length:u16>.
-            for (var i = CastleLayout.NamePrefix; i + CastleLayout.NameLength + 2 < bytes.Length; i++)
+            for (var i = Math.Max(0, searchFrom) + CastleLayout.NamePrefix; i + CastleLayout.NameLength + 2 < bytes.Length; i++)
             {
-                if (bytes[i + 2] > MaxMageGuildLevel || bytes[i + 3] != 0x00)
+                if (bytes[i + 2] > MaxMageGuildLevel)
                 {
                     continue;
                 }

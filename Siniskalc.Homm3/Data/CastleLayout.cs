@@ -147,7 +147,7 @@
         public const int ChunkEndFromNameEnd = SpellListsFromNameEnd + SpellListsLength;
 
         /// <summary>
-        /// Four bytes in front of the name length. The third is the level of the Mage Guild (0 to 5), the last is 00 and
+        /// Four bytes in front of the name length. The third is the level of the Mage Guild (0 to 5), the last is 00 in owned towns (variable in neutral towns), and
         /// the first two are the garrisoned and the visiting hero (<see cref="GarrisonedHero"/>, <see cref="VisitingHero"/>).
         /// </summary>
         public const int NamePrefixLength = 4;

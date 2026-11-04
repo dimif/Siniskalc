@@ -62,6 +62,9 @@ public sealed class Building : CatalogEntity
     /// </summary>
     public bool IsGrail => this.Type == BuildingType.Grail;
 
+    /// <summary>Gets whether this building gives access to the shared town artifact stock.</summary>
+    public bool IsArtifactMerchant => this.Id is "TowerArtifactMerchants" or "DungeonArtifactMerchants" or "ConfluxArtifactMerchants" or "FactoryArtifactMerchants";
+
     /// <summary>
     /// Gets whether the building is a dwelling that has not been upgraded.
     /// </summary>

@@ -207,7 +207,7 @@
 
             if (!this.castles.TryGetValue(castleIndex, out var castle))
             {
-                castle = new CastleViewModel(game.History.CreateCastleSession(castleIndex), this.byteEditTargets, this.castleBuildMessages, this.ShowHero);
+                castle = new CastleViewModel(game.History.CreateCastleSession(castleIndex), this.byteEditTargets, this.castleBuildMessages, this.effectLines, this.ShowHero);
                 this.castles[castleIndex] = castle;
             }
 

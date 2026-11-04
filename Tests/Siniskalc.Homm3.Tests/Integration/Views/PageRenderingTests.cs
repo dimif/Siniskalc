@@ -5,6 +5,9 @@ using System.Windows.Threading;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Heroes.Wpf.Views;
 using Siniskalc.Homm3.Tests.ViewModels;
+using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Homm3.Data;
+using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Wpf.ViewModels;
 
@@ -20,6 +23,52 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
     internal sealed class PageRenderingTests
     {
         private static readonly string SavePath = Path.Combine("TestData", "Hota", "empire_of_the_world_01_m5w4d6.GM1");
+
+        [Test]
+        public void TheTownMerchantTabRendersSevenSharedSlotsAndDisappearsWhenItsBuildingIsRemoved()
+        {
+            EnsureApplication();
+            var path = Path.Combine("TestData", "Hota", "MerchantStock", "merchant_stock_00_baseline.GM2");
+            var game = SavedGames.Get(path);
+            var index = game.History.Current.Castles().GetModels().ToList().FindIndex(c => c.Buildings.Any(b => b.IsArtifactMerchant));
+            using var model = TestServices.CreateCastleViewModel(game.History.CreateCastleSession(index));
+            var page = new Siniskalc.Homm3.Views.CastlePage(model);
+            var window = TestServices.CreateShellWindow(TestServices.CreateShell());
+            window.Show();
+            try
+            {
+                window.HeroFrame().Content = page;
+                model.SelectedTab = 5;
+                Show(window);
+                var tab = Descendants<Siniskalc.Wpf.Views.NavButton>(page).Single(b => b.Text == "Artifact merchant");
+                Assert.That(tab.IsVisible, Is.True);
+                var texts = Descendants<TextBlock>(page).Where(t => t.IsVisible).Select(t => t.Text).ToList();
+                Assert.That(texts, Does.Contain("Shared town stock").And.Contain("Stoic Watchman").And.Contain("Head of Legion"));
+                Assert.That(texts, Is.SupersetOf(Enumerable.Range(1, 7).Select(i => $"Slot {i}")));
+                var reset = Descendants<Button>(page).Single(b => Equals(b.Content, "Reset shared stock"));
+                Assert.That(reset.IsVisible, Is.True);
+                model.Merchant!.Slots[6].ClearCommand.Execute(null);
+                Show(window);
+                Assert.That(Descendants<TextBlock>(page).Where(t => t.IsVisible).Select(t => t.Text), Does.Contain("Shared stock has unsaved changes"));
+                Assert.That(reset.Command.CanExecute(null), Is.True);
+
+                var building = game.History.Current.Castles().GetModel(index).Buildings.Single(b => b.IsArtifactMerchant);
+                game.History.CreateCastleSession(index).Update(c => CastleBuilder.Unbuild(c, building));
+                Show(window);
+                Assert.That(tab.IsVisible, Is.False);
+                Assert.That(model.SelectedTab, Is.EqualTo(0));
+                game.History.Undo();
+                Show(window);
+                Assert.That(tab.IsVisible, Is.True);
+                model.SelectedTab = 5;
+                Show(window);
+                Assert.That(model.Merchant.Slots[6].HasArtifact, Is.False);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
 
         [Test]
         public void ThePagesShowTheirHeaderTheirResourcesAndTheirCardsOnEveryTab()

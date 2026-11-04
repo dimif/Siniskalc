@@ -63,7 +63,7 @@ internal sealed class JsonFactionTests
             Assert.That(services.VersionEntities.For(GameVersion.ShadowOfDeath).Catalog.Factions.Find(12), Is.Null);
         });
 
-        using var page = new CastleViewModel(session, services.ByteEditTargets, services.CastleBuildMessages);
+        using var page = new CastleViewModel(session, services.ByteEditTargets, services.CastleBuildMessages, services.EffectLines);
         page.GarrisonEditor.Finder.Filter = faction.Name;
         Assert.That(page.GarrisonEditor.Finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.Name),
             Is.EqualTo(new[] { scout.Name, catalog.Creatures.ById("FixtureGuard").Name }));

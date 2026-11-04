@@ -54,5 +54,8 @@
 
         /// <summary>Unused player records retained for ownership bookkeeping, but hidden from navigation.</summary>
         public static readonly ChunkKind InactivePlayer = new("InactivePlayer", 9);
+
+        /// <summary>The single stock shared by every town Artifact Merchant.</summary>
+        public static readonly ChunkKind TownMerchant = new("TownMerchant", 10);
     }
 }

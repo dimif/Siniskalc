@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Input;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
@@ -9,7 +10,7 @@
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// What a merchant (every one is a black market) has in store: seven slots, each picked like the artifact of a hero. A slot
+    /// What a Black Market or the shared town merchants have in store: seven slots, each picked like the artifact of a hero. A slot
     /// that is cleared is a sold one. Call <see cref="Refresh"/> after the stock changed.
     /// </summary>
     public sealed class MerchantViewModel : AbstractViewModelBase
@@ -26,6 +27,7 @@
         public MerchantViewModel(IEditSession<MerchantStockModel> session, EntityCatalog catalog, EffectLineProvider effectLines, string location = "")
         {
             this.session = session;
+            this.ResetCommand = new DelegateCommand(_ => this.session.Update(_ => this.session.Original), _ => this.HasPendingChanges);
             this.Location = location;
             this.Slots = Enumerable.Range(0, MerchantLayout.SlotCount)
                 .Select(slot => new ArtifactSlotViewModel(
@@ -55,6 +57,12 @@
         /// Gets the seven slots of the shop, in order.
         /// </summary>
         public IReadOnlyList<ArtifactSlotViewModel> Slots { get; }
+
+        /// <summary>Gets whether this stock differs from the loaded or last-saved stock.</summary>
+        public bool HasPendingChanges => this.session.IsDirty;
+
+        /// <summary>Gets the command that restores this stock only, shared by every town that uses it.</summary>
+        public ICommand ResetCommand { get; }
 
         /// <summary>
         /// Reads the model again and tells the view that every value may have changed.

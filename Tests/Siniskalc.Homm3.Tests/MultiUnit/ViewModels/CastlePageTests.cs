@@ -30,7 +30,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         private CastleViewModel Page(FakeCastleSession? other = null)
         {
             this.byteEditTargets = new Mock<IByteEditTargetFactory>();
-            return new CastleViewModel(other ?? this.session, this.byteEditTargets.Object, new CastleBuildMessageProvider(), this.openedHeroes.Add);
+            return new CastleViewModel(other ?? this.session, this.byteEditTargets.Object, new CastleBuildMessageProvider(), new EffectLineProvider(), this.openedHeroes.Add);
         }
 
         private static BuildingRowViewModel Row(CastleViewModel page, string name) =>

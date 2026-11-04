@@ -29,6 +29,7 @@
         private readonly ITurnBytesLoader turnLoader;
         private readonly IMapPlacesLoader placesLoader;
         private readonly IGameDateLocator dateLocator;
+        private readonly ITownMerchantStockLocator townMerchantStockLocator;
         private readonly IPlayerControlLocator setupLocator;
         private readonly IMapHeaderLocator mapHeaderLocator;
         private readonly ISaveDocumentFactory documentFactory;
@@ -48,6 +49,7 @@
         /// <param name="turnLoader">The turn loader.</param>
         /// <param name="placesLoader">The places loader.</param>
         /// <param name="dateLocator">The date locator.</param>
+        /// <param name="townMerchantStockLocator">The shared town-stock locator.</param>
         /// <param name="setupLocator">The setup locator.</param>
         /// <param name="mapHeaderLocator">The map header locator.</param>
         /// <param name="documentFactory">The document factory.</param>
@@ -64,6 +66,7 @@
             ITurnBytesLoader turnLoader,
             IMapPlacesLoader placesLoader,
             IGameDateLocator dateLocator,
+            ITownMerchantStockLocator townMerchantStockLocator,
             IPlayerControlLocator setupLocator,
             IMapHeaderLocator mapHeaderLocator,
             ISaveDocumentFactory documentFactory)
@@ -80,6 +83,7 @@
             this.turnLoader = turnLoader;
             this.placesLoader = placesLoader;
             this.dateLocator = dateLocator;
+            this.townMerchantStockLocator = townMerchantStockLocator;
             this.setupLocator = setupLocator;
             this.mapHeaderLocator = mapHeaderLocator;
             this.documentFactory = documentFactory;
@@ -96,7 +100,8 @@
 
             var heroChunks = this.heroLoader.LoadHeroChunks(bytes, gameVersion);
 
-            var castleChunks = this.castleLoader(gameVersion).LoadCastleChunks(bytes);
+            var headerEnd = this.mapHeaderLocator.Locate(bytes, gameVersion)?.DifficultyAt + 1 ?? 0;
+            var castleChunks = this.castleLoader(gameVersion).LoadCastleChunks(bytes, headerEnd);
             var setup = this.setupLocator.FindSetup(bytes, gameVersion);
             var allPlayerChunks = this.playerLoader.LoadPlayerChunks(bytes, gameVersion, heroChunks.Cast<BytesChunk>().Concat(castleChunks), includeInactive: true);
             var playerChunks = PlayersInTheGame.Of(PlayersInTheGame.WithActivity(allPlayerChunks), setup?.PlayerControls);
@@ -112,7 +117,9 @@
                 Setup: setup);
 
             var offsets = new HeroOffsets(gameVersion);
-            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader(gameVersion).LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion), allPlayerChunks.Except(playerChunks));
+            var townStockAt = this.townMerchantStockLocator.FindOffset(bytes, gameVersion, afterPlayers);
+            RecordChunk[] townStock = townStockAt < 0 ? [] : [new RecordChunk("Town Artifact Merchants", bytes.AsSpan(townStockAt, TownMerchantStockLayout.Length).ToArray(), townStockAt, 0)];
+            var document = this.documentFactory.Create(bytes, heroChunks, offsets, playerChunks, castleChunks, obeliskChunks, mineChunks, dwellingChunks, this.merchantLoader(gameVersion).LoadMerchantChunks(bytes), this.heroOwnersLoader.LoadHeroOwnerChunks(bytes, gameVersion, afterPlayers), this.turnLoader.LoadTurnChunks(bytes, gameVersion), allPlayerChunks.Except(playerChunks), townStock);
             var game = new Game(file, bytes, gameVersion, new SaveDocumentHistory(document), name, metadata, this.placesLoader.Load(bytes, document.Catalog()).WithStanding(StandingOn(document)));
             Logger.LogInformation(
                 "Opened {File} as Heroes III {Version}: {Heroes} heroes, {Castles} castles, {Players} players, {Mines} mines, {Dwellings} dwellings",

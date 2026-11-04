@@ -145,12 +145,32 @@ namespace Siniskalc.Homm3.Tests.Data
             Assert.That(this.loader.LoadCastleChunks(bytes), found ? Has.Count.EqualTo(1) : Is.Empty);
         }
 
-        [Test]
-        public void TheByteAfterTheMageGuildLevelMustBeZero()
+        [TestCase(0x73, 0)]
+        [TestCase(0x57, 7)]
+        [TestCase(0)]
+        [TestCase(0x57)]
+        [TestCase(0x73)]
+        [TestCase(0xFF)]
+        public void ATownCanHaveANonzeroByteAfterTheMageGuildLevel(int value, int owner = 0xFF)
         {
-            var bytes = Savegame("Stormwatch", change: (b, start, _) => b[start + CastleLayout.NameLength - 1] = 1);
+            var bytes = Savegame("Stormwatch", change: (b, start, _) =>
+            {
+                b[start + CastleLayout.Owner] = (byte)owner;
+                b[start + CastleLayout.NameLength - 1] = (byte)value;
+            });
 
-            Assert.That(this.loader.LoadCastleChunks(bytes), Is.Empty);
+            var chunk = this.loader.LoadCastleChunks(bytes).Single();
+
+            Assert.That(chunk.ToArray(), Is.EqualTo(bytes.AsSpan(100, chunk.Length).ToArray()));
+        }
+
+        [Test]
+        public void ARecordBeforeTheSearchBoundaryIsNotMistakenForATown()
+        {
+            var bytes = Savegame("Stormwatch");
+
+            Assert.That(this.loader.LoadCastleChunks(bytes, 101), Is.Empty);
+            Assert.That(this.loader.LoadCastleChunks(bytes, 100).Single().Name, Is.EqualTo("Stormwatch"));
         }
 
         [Test]

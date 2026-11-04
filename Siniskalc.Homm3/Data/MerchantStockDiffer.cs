@@ -12,6 +12,14 @@
     {
         private const string NoArtifact = "(sold)";
 
+        private readonly ChunkKind kind;
+
+        /// <param name="kind">The stock collection whose pending changes and reverts this differ targets.</param>
+        public MerchantStockDiffer(ChunkKind kind)
+        {
+            this.kind = kind;
+        }
+
         /// <summary>
         /// Lists what an edit changed in the stock of a merchant.
         /// </summary>
@@ -21,7 +29,7 @@
         /// <returns>The changes, none when the two are the same.</returns>
         public IReadOnlyList<PendingChange> Diff(int index, MerchantStockModel original, MerchantStockModel current)
         {
-            var changes = new ChangeSink<MerchantStockModel>((change, revert) => ChunkPendingChange.For<RecordChunk, MerchantStockModel>(Homm3ChunkKinds.Merchants, current.Name, index, change, revert));
+            var changes = new ChangeSink<MerchantStockModel>((change, revert) => ChunkPendingChange.For<RecordChunk, MerchantStockModel>(this.kind, current.Name, index, change, revert));
             for (var slot = 0; slot < current.Slots.Count; slot++)
             {
                 var number = slot;

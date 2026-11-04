@@ -49,7 +49,7 @@ Pages:
 - **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings**). It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
 - **Map**: what the map keeps that no player owns: the adventure-map Black Markets (HoMM3), the shrines and sphinxes (HoMM2). HoMM3's town Artifact Merchants share separate stock that is not shown or edited here.
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
-- **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings.
+- **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings. In HoMM3 a town with an Artifact Merchant built also has an **Artifact merchant** tab. Its seven slots are shared by every town and owner, separate from the Map page's Black Markets. Clear a slot to mark it sold. **Reset shared stock** restores that stock only; the town's **Reset** does not change it. Unsupported save layouts show an unavailable notice. Editor-written stock has not yet been checked in the game.
 
 ## Undo, redo and pending changes
 

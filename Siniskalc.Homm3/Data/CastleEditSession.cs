@@ -35,6 +35,10 @@
         public IHeroSummaries<PlayerColor> Heroes => this.History.Current.Heroes();
 
         /// <inheritdoc/>
+        public IEditSession<MerchantStockModel>? CreateTownMerchantSession() =>
+            this.History.Current.TownMerchant().Count == 0 ? null : new EditSession<RecordChunk, MerchantStockModel>(this.History, Homm3ChunkKinds.TownMerchant, 0);
+
+        /// <inheritdoc/>
         public HeroModel? FindHero(int heroId)
         {
             var heroes = this.History.Current.Heroes();

@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void TwoEqualStocksHaveNoChanges()
         {
-            Assert.That(new MerchantStockDiffer().Diff(0, Merchant(), Merchant()), Is.Empty);
+            Assert.That(new MerchantStockDiffer(Homm3ChunkKinds.Merchants).Diff(0, Merchant(), Merchant()), Is.Empty);
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.Data
             var original = Merchant();
             var current = original.WithSlot(0, null).WithSlot(2, TestCatalog.For(GameVersion.HornOfTheAbyss).Artifacts.ById("ThunderHelmet"));
 
-            var changes = new MerchantStockDiffer().Diff(3, original, current);
+            var changes = new MerchantStockDiffer(Homm3ChunkKinds.Merchants).Diff(3, original, current);
 
             Assert.That(changes.Select(c => (c.Change.Description, c.Change.Before, c.Change.After)), Is.EqualTo(new[]
             {

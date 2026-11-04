@@ -27,8 +27,9 @@
         /// <param name="reconciler">Brings the chunks in line with the bytes when the savegame is reloaded.</param>
         /// <param name="patcher">Writes the edits into the bytes.</param>
         /// <param name="inactivePlayers">Hidden player records retained for town ownership edits.</param>
+        /// <param name="townMerchant">The stock shared by every town Artifact Merchant.</param>
         /// <returns>The document.</returns>
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher, PlayerChunkCollection inactivePlayers)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher, PlayerChunkCollection inactivePlayers, RecordChunkCollection<RecordChunk, MerchantStockModel> townMerchant)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -42,6 +43,7 @@
                 [Homm3ChunkKinds.HeroOwners] = heroOwners,
                 [Homm3ChunkKinds.Turn] = turn,
                 [Homm3ChunkKinds.InactivePlayer] = inactivePlayers,
+                [Homm3ChunkKinds.TownMerchant] = townMerchant,
             };
 
             return new SaveDocument(originalBytes, collections, patcher, reconciler);
@@ -100,6 +102,11 @@
         /// <param name="document">The document of the savegame.</param>
         /// <returns>The collection of merchants.</returns>
         public static RecordChunkCollection<RecordChunk, MerchantStockModel> Merchants(this SaveDocument document) => (RecordChunkCollection<RecordChunk, MerchantStockModel>)document.GetCollection(Homm3ChunkKinds.Merchants);
+
+        /// <summary>Gets the single stock shared by all town Artifact Merchants, or none when its layout is not recognized.</summary>
+        /// <param name="document">The document.</param>
+        /// <returns>The shared stock collection.</returns>
+        public static RecordChunkCollection<RecordChunk, MerchantStockModel> TownMerchant(this SaveDocument document) => (RecordChunkCollection<RecordChunk, MerchantStockModel>)document.GetCollection(Homm3ChunkKinds.TownMerchant);
 
         /// <summary>
         /// Gets the table of who owns each hero (<see cref="HeroOwnersLayout"/>): one chunk, or none when the savefile has no table the editor knows.

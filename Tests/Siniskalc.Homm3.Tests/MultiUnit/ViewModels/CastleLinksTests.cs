@@ -66,6 +66,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 _ => Kit<MineModel>(),
                 _ => Kit<DwellingModel>(),
                 _ => Kit<MerchantStockModel>(),
+                _ => Kit<MerchantStockModel>(),
                 Kit<HeroOwnersModel>(),
                 Kit<TurnModel>(),
                 Mock.Of<IDocumentReconciler>(),

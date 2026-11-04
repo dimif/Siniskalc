@@ -67,8 +67,9 @@ empty and unknown stock slots remain locatable. The stock moves to
 This structure matches 488 SoD/HotA saves in the current corpus, including
 these eleven controls. The five `empire_of_the_world` / `new_day` HotA saves
 have another date prefix and are deliberately refused for town stock.
-Genuine RoE, AB and Chronicles formats are not enabled. The editor does not
-expose this shared town stock yet. Neutral-town access, monthly refresh and
+Genuine RoE, AB and Chronicles formats are not enabled. Town pages with an
+Artifact Merchant built now edit this single shared stock, with independent
+shared reset and pending changes. Editor-written stock, neutral-town access in the game, monthly refresh and
 the meaning of the surrounding fields remain unverified.
 
 `MerchantStockTests` checks the eight purchases, all fixture round trips,
@@ -76,3 +77,9 @@ isolated edits with reload/undo/redo/revert, and the separate town-stock
 observations. `MapViewModelTests` checks all eight displayed locations.
 `TownMerchantStockLocatorTests` checks the moving offsets, expected stock,
 the complete save corpus, unknown/sold-out slots and rejected malformed blocks.
+`TownMerchantTests` checks shared Red/Blue/Neutral tabs, exact-byte edits,
+reload, undo/redo/revert, independent resets and captured neutral-town discovery.
+The baseline has seven towns: four Red (including `Neu_Tow`), two Neutral
+(`Neu_Dung`, `Neu_Fac`) and one Blue. The two neutral towns have an unknown
+`73` byte after the Mage Guild level, which must not prevent discovery or
+be overwritten on capture.

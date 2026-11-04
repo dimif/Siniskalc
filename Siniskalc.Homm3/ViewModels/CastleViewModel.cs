@@ -36,14 +36,18 @@
         /// <param name="session">The session that edits the castle.</param>
         /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
         /// <param name="buildMessages">Words why a building cannot be built.</param>
+        /// <param name="effectLines">Words the effects of merchant artifacts.</param>
         /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
-        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, Action<int>? openHero = null)
+        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, EffectLineProvider effectLines, Action<int>? openHero = null)
             : base(session.Name, session)
         {
             this.castleSession = session;
             this.byteEditTargets = byteEditTargets;
             this.buildMessages = buildMessages;
             this.openHero = openHero;
+            this.Merchant = session.CreateTownMerchantSession() is { } stockSession
+                ? new MerchantViewModel(stockSession, session.Current.Faction.Catalog, effectLines)
+                : null;
             this.Castle = this.Session.Current;
             this.Refresh();
 
@@ -179,6 +183,15 @@
         /// Gets the buildings, in groups.
         /// </summary>
         public IReadOnlyList<BuildingGroupViewModel> BuildingGroups { get; private set; } = [];
+
+        /// <summary>Gets whether this town has its Artifact Merchant building built.</summary>
+        public bool HasArtifactMerchant => this.Castle.Buildings.Any(b => b.IsArtifactMerchant);
+
+        /// <summary>Gets the shared town stock editor, or null when the stock block is unsupported.</summary>
+        public MerchantViewModel? Merchant { get; }
+
+        /// <summary>Gets whether the town stock can be edited.</summary>
+        public bool HasMerchantStock => this.Merchant != null;
 
         /// <summary>
         /// Gets the seven creature levels with the dwelling that serves each and the creatures waiting in it.
@@ -316,6 +329,12 @@
             this.MageGuildSummary = this.Castle.MageGuildLevel == 0 ? $"No Mage Guild, up to level {maximum}" : $"Level {this.Castle.MageGuildLevel} of {maximum}";
 
             this.GarrisonEditor?.Refresh();
+            this.Merchant?.Refresh();
+            if (!this.HasArtifactMerchant && this.SelectedTab == 5)
+            {
+                this.SelectedTab = 0;
+            }
+
             this.RaiseAllPropertiesChanged();
             CommandManager.InvalidateRequerySuggested();
         }

@@ -49,6 +49,8 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public HeroModel? FindHero(int heroId) => this.HeroModels.GetValueOrDefault(heroId);
 
+        public IEditSession<MerchantStockModel>? CreateTownMerchantSession() => null;
+
         public IByteEditTarget CreateByteEditTarget(IByteEditTargetFactory factory)
         {
             this.FactoryAsked = factory;

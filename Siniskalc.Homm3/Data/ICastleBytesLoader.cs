@@ -7,6 +7,6 @@
     /// </summary>
     public interface ICastleBytesLoader
     {
-        IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes);
+        IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes, int searchFrom = 0);
     }
 }

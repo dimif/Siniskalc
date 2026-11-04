@@ -31,6 +31,7 @@
         private readonly Func<Entities.EntityCatalog, RecordKit<RecordChunk, MineModel>> mines;
         private readonly Func<Entities.EntityCatalog, RecordKit<RecordChunk, DwellingModel>> dwellings;
         private readonly Func<Entities.EntityCatalog, RecordKit<RecordChunk, MerchantStockModel>> merchants;
+        private readonly Func<Entities.EntityCatalog, RecordKit<RecordChunk, MerchantStockModel>> townMerchant;
         private readonly RecordKit<RecordChunk, HeroOwnersModel> heroOwners;
         private readonly RecordKit<RecordChunk, TurnModel> turn;
         private readonly IDocumentReconciler reconciler;
@@ -55,6 +56,7 @@
         /// <param name="mines">The mines.</param>
         /// <param name="dwellings">The dwellings.</param>
         /// <param name="merchants">The merchants.</param>
+        /// <param name="townMerchant">The shared town stock.</param>
         /// <param name="heroOwners">The hero owners.</param>
         /// <param name="turn">The turn.</param>
         /// <param name="reconciler">The reconciler.</param>
@@ -76,6 +78,7 @@
             Func<Entities.EntityCatalog, RecordKit<RecordChunk, MineModel>> mines,
             Func<Entities.EntityCatalog, RecordKit<RecordChunk, DwellingModel>> dwellings,
             Func<Entities.EntityCatalog, RecordKit<RecordChunk, MerchantStockModel>> merchants,
+            Func<Entities.EntityCatalog, RecordKit<RecordChunk, MerchantStockModel>> townMerchant,
             RecordKit<RecordChunk, HeroOwnersModel> heroOwners,
             RecordKit<RecordChunk, TurnModel> turn,
             IDocumentReconciler reconciler,
@@ -97,6 +100,7 @@
             this.mines = mines;
             this.dwellings = dwellings;
             this.merchants = merchants;
+            this.townMerchant = townMerchant;
             this.heroOwners = heroOwners;
             this.turn = turn;
             this.reconciler = reconciler;
@@ -116,7 +120,8 @@
             IEnumerable<RecordChunk>? merchantChunks = null,
             IEnumerable<RecordChunk>? heroOwnerChunks = null,
             IEnumerable<RecordChunk>? turnChunks = null,
-            IEnumerable<PlayerChunk>? inactivePlayerChunks = null)
+            IEnumerable<PlayerChunk>? inactivePlayerChunks = null,
+            IEnumerable<RecordChunk>? townMerchantChunks = null)
         {
             var entities = this.versionEntities.For(offsets.GameVersion);
             var heroes = new HeroChunkCollection(heroChunks, offsets, new HeroDeserializer(offsets, entities), new SafeHeroSerializer(offsets, entities), this.heroDiffer, entities.Catalog);
@@ -132,6 +137,7 @@
             var obelisks = new ObeliskChunkCollection<PlayerColor>(obeliskChunks ?? Enumerable.Empty<ObeliskChunk>(), this.obeliskDeserializer, this.obeliskSerializer, this.obeliskDiffer);
             var mines = new RecordChunkCollection<RecordChunk, MineModel>(mineChunks ?? Enumerable.Empty<RecordChunk>(), this.mines(entities.Catalog));
             var merchants = new RecordChunkCollection<RecordChunk, MerchantStockModel>(merchantChunks ?? Enumerable.Empty<RecordChunk>(), this.merchants(entities.Catalog));
+            var townMerchant = new RecordChunkCollection<RecordChunk, MerchantStockModel>(townMerchantChunks ?? Enumerable.Empty<RecordChunk>(), this.townMerchant(entities.Catalog));
             var dwellings = new RecordChunkCollection<RecordChunk, DwellingModel>(dwellingChunks ?? Enumerable.Empty<RecordChunk>(), this.dwellings(entities.Catalog));
             var heroOwners = new RecordChunkCollection<RecordChunk, HeroOwnersModel>(heroOwnerChunks ?? Enumerable.Empty<RecordChunk>(), this.heroOwners);
             var turn = new RecordChunkCollection<RecordChunk, TurnModel>(turnChunks ?? Enumerable.Empty<RecordChunk>(), this.turn);
@@ -143,7 +149,7 @@
                 this.playerListsSerializer,
                 this.playerDiffer,
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.reconciler, this.patcher, inactivePlayers);
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.reconciler, this.patcher, inactivePlayers, townMerchant);
         }
     }
 }

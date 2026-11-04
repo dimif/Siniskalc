@@ -50,6 +50,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 _ => new RecordKit<RecordChunk, MineModel>(Mock.Of<IDeserializer<RecordChunk, MineModel>>(), Mock.Of<ISerializer<RecordChunk, MineModel>>(), Mock.Of<IDiffer<MineModel>>()),
                 _ => new RecordKit<RecordChunk, DwellingModel>(Mock.Of<IDeserializer<RecordChunk, DwellingModel>>(), Mock.Of<ISerializer<RecordChunk, DwellingModel>>(), Mock.Of<IDiffer<DwellingModel>>()),
                 _ => new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
+                _ => new RecordKit<RecordChunk, MerchantStockModel>(Mock.Of<IDeserializer<RecordChunk, MerchantStockModel>>(), Mock.Of<ISerializer<RecordChunk, MerchantStockModel>>(), Mock.Of<IDiffer<MerchantStockModel>>()),
                 new RecordKit<RecordChunk, HeroOwnersModel>(Mock.Of<IDeserializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<ISerializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<IDiffer<HeroOwnersModel>>()),
                 new RecordKit<RecordChunk, TurnModel>(Mock.Of<IDeserializer<RecordChunk, TurnModel>>(), Mock.Of<ISerializer<RecordChunk, TurnModel>>(), Mock.Of<IDiffer<TurnModel>>()),
                 Mock.Of<IDocumentReconciler>(),
@@ -80,6 +81,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
             Assert.That(document.Mines(), Is.Empty);
             Assert.That(document.Dwellings(), Is.Empty);
             Assert.That(document.Merchants(), Is.Empty);
+            Assert.That(document.TownMerchant(), Is.Empty);
             Assert.That(document.HeroOwners(), Is.Empty);
         }
 

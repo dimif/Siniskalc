@@ -13,6 +13,13 @@ namespace Siniskalc.Homm3.Tests.Entities
         ];
 
         [Test]
+        public void OnlyTheFourArtifactMerchantBuildingsGiveAccessToTheSharedStock()
+        {
+            Assert.That(TestCatalog.Hota.Buildings.All.Where(b => b.IsArtifactMerchant).Select(b => b.Id),
+                Is.EquivalentTo(new[] { "TowerArtifactMerchants", "DungeonArtifactMerchants", "ConfluxArtifactMerchants", "FactoryArtifactMerchants" }));
+        }
+
+        [Test]
         public void NoTwoBuildingsOfAFactionShareABit()
         {
             foreach (var faction in OriginalFactions)

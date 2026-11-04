@@ -22,6 +22,7 @@
         /// <param name="heroOwnerChunks">The table of hero owners (one chunk or none); none when omitted.</param>
         /// <param name="turnChunks">Whose turn it is (one chunk or none); none when omitted.</param>
         /// <param name="inactivePlayerChunks">Hidden player records retained for ownership edits.</param>
+        /// <param name="townMerchantChunks">The single stock shared by town Artifact Merchants, or none.</param>
         SaveDocument Create(
             byte[] bytes,
             IEnumerable<HeroChunk> heroChunks,
@@ -34,6 +35,7 @@
             IEnumerable<RecordChunk>? merchantChunks = null,
             IEnumerable<RecordChunk>? heroOwnerChunks = null,
             IEnumerable<RecordChunk>? turnChunks = null,
-            IEnumerable<PlayerChunk>? inactivePlayerChunks = null);
+            IEnumerable<PlayerChunk>? inactivePlayerChunks = null,
+            IEnumerable<RecordChunk>? townMerchantChunks = null);
     }
 }

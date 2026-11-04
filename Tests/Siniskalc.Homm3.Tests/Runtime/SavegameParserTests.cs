@@ -34,6 +34,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
         private Mock<ITurnBytesLoader> turn = null!;
         private Mock<IMapPlacesLoader> places = null!;
         private Mock<IGameDateLocator> date = null!;
+        private Mock<ITownMerchantStockLocator> townMerchant = null!;
         private Mock<IPlayerControlLocator> setup = null!;
         private Mock<IMapHeaderLocator> map = null!;
         private Mock<ISaveDocumentFactory> documents = null!;
@@ -47,7 +48,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.heroes = new Mock<IHeroBytesLoader>();
             this.heroes.Setup(l => l.LoadHeroChunks(It.IsAny<byte[]>(), It.IsAny<GameVersion>())).Returns([]);
             this.castles = new Mock<ICastleBytesLoader>();
-            this.castles.Setup(l => l.LoadCastleChunks(It.IsAny<byte[]>())).Returns([]);
+            this.castles.Setup(l => l.LoadCastleChunks(It.IsAny<byte[]>(), It.IsAny<int>())).Returns([]);
             this.players = new Mock<IPlayerBytesLoader>();
             this.players.Setup(l => l.LoadPlayerChunks(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<IEnumerable<BytesChunk>>(), true)).Returns([]);
             this.obelisks = new Mock<IObeliskBytesLoader>();
@@ -65,18 +66,20 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.places = new Mock<IMapPlacesLoader>();
             this.places.Setup(l => l.Load(It.IsAny<byte[]>(), It.IsAny<EntityCatalog>())).Returns(MapPlaces.None);
             this.date = new Mock<IGameDateLocator>();
+            this.townMerchant = new Mock<ITownMerchantStockLocator>();
+            this.townMerchant.Setup(l => l.FindOffset(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<int>())).Returns(-1);
             this.setup = new Mock<IPlayerControlLocator>();
             this.map = new Mock<IMapHeaderLocator>();
             this.document = CastleSamples.Load(CastleSamples.Folder("Bulwark").First()).History.Current;
             this.documents = new Mock<ISaveDocumentFactory>();
             this.documents
-                .Setup(f => f.Create(It.IsAny<byte[]>(), It.IsAny<IEnumerable<HeroChunk>>(), It.IsAny<HeroOffsets>(), It.IsAny<IEnumerable<PlayerChunk>?>(), It.IsAny<IEnumerable<CastleChunk>?>(), It.IsAny<IEnumerable<ObeliskChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<PlayerChunk>?>()))
+                .Setup(f => f.Create(It.IsAny<byte[]>(), It.IsAny<IEnumerable<HeroChunk>>(), It.IsAny<HeroOffsets>(), It.IsAny<IEnumerable<PlayerChunk>?>(), It.IsAny<IEnumerable<CastleChunk>?>(), It.IsAny<IEnumerable<ObeliskChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>(), It.IsAny<IEnumerable<PlayerChunk>?>(), It.IsAny<IEnumerable<RecordChunk>?>()))
                 .Returns(() => this.document);
         }
 
         private SavegameParser Parser() => new(
             this.detector.Object, this.heroes.Object, _ => this.castles.Object, this.players.Object, this.obelisks.Object, _ => this.mines.Object, _ => this.dwellings.Object,
-            _ => this.merchants.Object, this.heroOwners.Object, this.turn.Object, this.places.Object, this.date.Object, this.setup.Object, this.map.Object, this.documents.Object);
+            _ => this.merchants.Object, this.heroOwners.Object, this.turn.Object, this.places.Object, this.date.Object, this.townMerchant.Object, this.setup.Object, this.map.Object, this.documents.Object);
 
         [Test]
         public void ABytesArrayOfNoKnownVersionIsRefusedBeforeAnythingIsLookedFor()
@@ -107,9 +110,20 @@ namespace Siniskalc.Homm3.Tests.Runtime
 
             this.heroes.Verify(l => l.LoadHeroChunks(Bytes, GameVersion.ShadowOfDeath), Times.Once);
             this.merchants.Verify(l => l.LoadMerchantChunks(Bytes), Times.Once);
-            this.castles.Verify(l => l.LoadCastleChunks(Bytes), Times.Once);
+            this.castles.Verify(l => l.LoadCastleChunks(Bytes, 0), Times.Once);
             this.mines.Verify(l => l.LoadMineChunks(Bytes), Times.Once);
             this.places.Verify(l => l.Load(Bytes, It.IsAny<EntityCatalog>()), Times.Once);
+        }
+
+        [Test]
+        public void TheCastleSearchStartsAfterTheMapHeaderRatherThanTreatingItsNameAsATown()
+        {
+            var header = new MapHeaderLocation(95, 18, 115, 40);
+            this.map.Setup(l => l.Locate(Bytes, GameVersion.ShadowOfDeath)).Returns(header);
+
+            this.Parser().Parse(Bytes, "x.GM1");
+
+            this.castles.Verify(l => l.LoadCastleChunks(Bytes, header.DifficultyAt + 1), Times.Once);
         }
 
         [Test]
@@ -118,7 +132,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             var hero = new HeroChunk("Orrin", [1, 2, 3], 10);
             var castle = new CastleChunk("Haret", new byte[CastleLayout.FixedLength], 50);
             this.heroes.Setup(l => l.LoadHeroChunks(Bytes, GameVersion.ShadowOfDeath)).Returns([hero]);
-            this.castles.Setup(l => l.LoadCastleChunks(Bytes)).Returns([castle]);
+            this.castles.Setup(l => l.LoadCastleChunks(Bytes, 0)).Returns([castle]);
 
             this.Parser().Parse(Bytes, "x.GM1");
 
@@ -148,6 +162,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
             this.Parser().Parse(Bytes, "x.GM1");
             this.date.Verify(l => l.Find(Bytes, GameVersion.ShadowOfDeath, 0), Times.Once);
             this.heroOwners.Verify(l => l.LoadHeroOwnerChunks(Bytes, GameVersion.ShadowOfDeath, 0), Times.Once);
+            this.townMerchant.Verify(l => l.FindOffset(Bytes, GameVersion.ShadowOfDeath, 0), Times.Once);
 
             var first = PlayerRecords.Blank(PlayerLayout.ShadowOfDeath, PlayerColor.Red, 0);
             var last = new PlayerChunk(PlayerColor.Blue, first.ToArray(), 5000, PlayerLayout.ShadowOfDeath);
@@ -157,6 +172,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
 
             this.date.Verify(l => l.Find(Bytes, GameVersion.ShadowOfDeath, last.End), Times.Once);
             this.heroOwners.Verify(l => l.LoadHeroOwnerChunks(Bytes, GameVersion.ShadowOfDeath, last.End), Times.Once);
+            this.townMerchant.Verify(l => l.FindOffset(Bytes, GameVersion.ShadowOfDeath, last.End), Times.Once);
         }
 
         [Test]
@@ -195,7 +211,8 @@ namespace Siniskalc.Homm3.Tests.Runtime
                     It.Is<IEnumerable<RecordChunk>?>(m => m!.Single() == merchant),
                     It.IsAny<IEnumerable<RecordChunk>?>(),
                     It.IsAny<IEnumerable<RecordChunk>?>(),
-                    It.IsAny<IEnumerable<PlayerChunk>?>()),
+                    It.IsAny<IEnumerable<PlayerChunk>?>(),
+                    It.Is<IEnumerable<RecordChunk>?>(s => !s!.Any())),
                 Times.Once);
         }
     }

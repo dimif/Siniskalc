@@ -31,6 +31,10 @@
         /// </summary>
         HeroModel? FindHero(int heroId);
 
+        /// <summary>Creates a session on the shared town stock, or returns null when its layout is not recognized.</summary>
+        /// <returns>The shared stock session.</returns>
+        IEditSession<MerchantStockModel>? CreateTownMerchantSession();
+
         /// <summary>
         /// Creates a target for the hex editor onto the raw bytes of the castle. The caller disposes it.
         /// </summary>

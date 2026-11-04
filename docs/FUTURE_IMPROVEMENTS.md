@@ -22,9 +22,8 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
    - Verify each value with a pair of saves (before/after equipping or building), add tests that name the save, then change the wording from "at least" to "estimated". HoMM2 stores its income in the player record.
 
 ## Editor features
-1. **Log viewer** in the UI, for users to report issues. Logging itself is in place (`docs/LOGGING.md`).
-2. **A second savefile format of a game we have** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the format is not. Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules and the format (locator, chunks, (de)serializers) when the first of them is started.
-3. **Cross platform support.** The core logic is platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI. The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite.
+1. **Support for alternative HoMM2 and 3 clients** (fheroes2 for HoMM2, VCMI for HoMM3): the entities, models and pages are the same, the serialization stack will differ. Split `Siniskalc.Homm2` / `Siniskalc.Homm3` into the rules and the format (locator, chunks, (de)serializers) when the first of them is started.
+2. **Cross platform support.** The core logic is platform-agnostic; the WPF UI could be replaced with Avalonia or MAUI. The view models in `Siniskalc.Wpf` and `Siniskalc.Heroes.Wpf` use little of WPF (`ICommand`, `INotifyPropertyChanged`); moving them to `net8.0` projects would leave only the views to rewrite.
 
 ## Limits of what is shown
 

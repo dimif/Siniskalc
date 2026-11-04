@@ -36,10 +36,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 shell.IsAdvancedMode = true;
                 var location = editor.NavigationNodes.Descendants().First(n => n.Kind == NavNodeKind.MapObject && n.Tab == section);
                 location.IsSelected = true;
+                editor.CurrentPageOf<MapViewModel>().SelectedTab = MapSections.Hex;
                 Pump();
                 window.UpdateLayout();
                 var page = (Page)window.HeroFrame().Content;
-                var hex = Find<Siniskalc.Wpf.Views.HexEditor>(page).Single(h => h.Name == "bankHexEditor");
+                var hex = Find<Siniskalc.Wpf.Views.HexEditor>(page).Single(h => h.Name == "recordHexEditor");
                 var grid = Find<DataGrid>(hex).Single();
                 Assert.That(hex.IsVisible, Is.True);
                 Assert.That(grid.Items.Count, Is.GreaterThan(0));
@@ -55,11 +56,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 Pump();
                 Assert.That(grid.ItemsSource, Is.Null);
                 shell.IsAdvancedMode = true;
+                model.SelectedTab = MapSections.Hex;
                 Pump();
                 Assert.That(grid.Items.Count, Is.GreaterThan(0));
-                model.SelectedBank = null;
-                Pump();
-                Assert.That(grid.ItemsSource, Is.Null);
                 model.SelectedBank = model.VisibleBanks[0];
                 Pump();
                 Assert.That(grid.Items.Count, Is.GreaterThan(0));

@@ -19,14 +19,13 @@
             this.InitializeComponent();
 
             this.DataContext = viewModel;
-            AdvancedModeVisibility.Apply(this.bankHexCard);
             _ = new SelectedRecordHexPresenter<MapViewModel>(
                 this,
-                this.bankHexCard,
-                this.bankHexEditor,
+                this.recordHexPanel,
+                this.recordHexEditor,
                 page => page,
-                page => page.SelectedBank?.Index,
-                page => page.CreateBankByteEditTarget());
+                page => page.SelectedRecord,
+                page => page.CreateByteEditTarget());
         }
 
         private void OnBankSelected(object sender, SelectionChangedEventArgs e)

@@ -78,8 +78,11 @@
 
             if (tree.MapNode is { } map)
             {
-                var merchants = map.Children.Single(n => n.Tab == MapSections.Merchants);
-                merchants.HasChanges = game.History.GetPendingChanges().Any(c => c.Kind == Homm3ChunkKinds.Merchants);
+                if (map.Children.SingleOrDefault(n => n.Tab == MapSections.Merchants) is { } merchants)
+                {
+                    merchants.HasChanges = game.History.GetPendingChanges().Any(c => c.Kind == Homm3ChunkKinds.Merchants);
+                }
+
                 map.HasChanges = map.Children.Any(n => n.HasChanges);
                 if (map.HasChanges && tree.Overview is { } overview)
                 {
@@ -98,10 +101,14 @@
                 return;
             }
 
-            var node = new NavNodeViewModel("Map", string.Empty, PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            var node = new NavNodeViewModel("Map", this.bankText.MapNavSummary(merchants, banks.Count), PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
-            node.Children.Add(new NavNodeViewModel("Merchants", merchants.ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, index: 0, tab: MapSections.Merchants, onSelected: tree.OnSelected));
+            if (merchants > 0)
+            {
+                node.Children.Add(new NavNodeViewModel("Merchants", merchants.ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, index: 0, tab: MapSections.Merchants, onSelected: tree.OnSelected));
+            }
+
             var creatureBanks = new NavNodeViewModel("Creature banks", banks.Count.ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, tab: MapSections.CreatureBanks, onSelected: tree.OnSelected);
             node.Children.Add(creatureBanks);
             foreach (var group in banks.Select((model, index) => (Model: model, Index: index)).GroupBy(b => b.Model.Kind).OrderBy(g => g.Key))

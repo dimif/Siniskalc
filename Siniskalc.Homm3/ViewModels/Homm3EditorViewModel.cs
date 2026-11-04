@@ -312,7 +312,7 @@
         private NavNodeViewModel? MapNodeOf(MapViewModel page)
         {
             var mapNode = this.Navigation.MapNode;
-            if (page.SelectedTab == MapSections.Overview || mapNode == null)
+            if (page.SelectedTab is MapSections.Overview or MapSections.Hex || mapNode == null)
             {
                 return mapNode;
             }

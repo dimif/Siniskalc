@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -15,9 +15,9 @@
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
         private readonly CreatureBankTextProvider bankText;
-        private readonly SaveDocumentHistory history;
-        private readonly IByteEditTargetFactory byteEditTargets;
         private CreatureBankViewModel? selectedBank;
+        private MapRecordViewModel? selectedRecord;
+        private readonly List<CreatureBankKind> bankKinds;
         private CreatureBankKind bankKind = CreatureBankKind.DragonUtopia;
 
         /// <summary>
@@ -29,15 +29,75 @@
             : base("Map", game.History, Homm3ChunkKinds.Merchants, Homm3ChunkKinds.CreatureBanks)
         {
             this.bankText = bankText;
-            this.history = game.History;
-            this.byteEditTargets = byteEditTargets;
             var document = game.History.Current;
             this.Merchants = Enumerable.Range(0, document.Merchants().Count).Select(i => new MerchantViewModel(game.History.CreateMerchantSession(i), document.Catalog(), effectLines, LocationOf(game, i))).ToList();
             var models = document.CreatureBanks().GetModels();
             this.Banks = Enumerable.Range(0, models.Count).Select(i =>
                 new CreatureBankViewModel(game.History.CreateCreatureBankSession(i), document.Catalog(), effectLines, bankText, models.Take(i + 1).Count(m => m.Kind == models[i].Kind))).ToList();
+            this.bankKinds = this.Banks.Select(b => b.Kind).Distinct().OrderBy(k => k).ToList();
+            if (this.bankKinds.Count > 0)
+            {
+                this.bankKind = this.bankKinds[0];
+            }
+
             this.VisibleBanks = this.Banks.Where(b => b.Kind == this.bankKind).ToList();
+            this.Records = this.Merchants.Select((m, i) => new MapRecordViewModel(m.Name, () => byteEditTargets.ForMerchant(game.History, i)))
+                .Concat(this.Banks.Select(b => new MapRecordViewModel(b.Name, () => byteEditTargets.ForCreatureBank(game.History, b.Index))))
+                .ToList();
+            this.selectedRecord = this.Records.FirstOrDefault();
             this.Refresh();
+        }
+
+        /// <summary>
+        /// Gets the records of the map whose raw bytes the Hex tab can show: the merchants and the creature banks.
+        /// </summary>
+        public IReadOnlyList<MapRecordViewModel> Records { get; }
+
+        /// <summary>
+        /// Gets or sets the record the Hex tab shows.
+        /// </summary>
+        public MapRecordViewModel? SelectedRecord
+        {
+            get => this.selectedRecord;
+            set
+            {
+                if (value != this.selectedRecord)
+                {
+                    this.selectedRecord = value;
+                    this.RaisePropertyChanged(nameof(this.SelectedRecord));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates the raw bytes of the record that is picked, or <c>null</c> when none is. The caller owns the target and disposes it.
+        /// </summary>
+        /// <returns>The target, or <see langword="null"/> when no record is picked.</returns>
+        public IByteEditTarget? CreateByteEditTarget() => this.SelectedRecord?.Create();
+
+        /// <summary>
+        /// Gets whether the map has a creature bank that can be edited.
+        /// </summary>
+        public bool HasBanks => this.Banks.Count > 0;
+
+        /// <summary>
+        /// Gets the names of the bank types the map has, in the order of the navigation tree.
+        /// </summary>
+        public IReadOnlyList<string> BankTypes => this.bankKinds.Select(this.bankText.GroupName).ToList();
+
+        /// <summary>
+        /// Gets or sets the place in <see cref="BankTypes"/> of the bank type whose banks are shown.
+        /// </summary>
+        public int SelectedBankType
+        {
+            get => this.bankKinds.IndexOf(this.bankKind);
+            set
+            {
+                if (value >= 0 && value < this.bankKinds.Count && this.bankKinds[value] != this.bankKind)
+                {
+                    this.ShowSection(MapSections.ForBank(this.bankKinds[value]));
+                }
+            }
         }
 
         /// <summary>
@@ -68,6 +128,12 @@
                 if (this.selectedBank != value)
                 {
                     this.selectedBank = value;
+                    if (value != null)
+                    {
+                        // The Hex tab follows the bank that is picked.
+                        this.SelectedRecord = this.Records[this.Merchants.Count + value.Index];
+                    }
+
                     this.RaisePropertyChanged(nameof(this.SelectedBank));
                 }
             }
@@ -97,9 +163,6 @@
 
             this.SelectedBank = bankIndex is { } index ? this.VisibleBanks.Single(u => u.Index == index) : null;
         }
-
-        public IByteEditTarget? CreateBankByteEditTarget() =>
-            this.SelectedBank is { } bank ? this.byteEditTargets.ForCreatureBank(this.history, bank.Index) : null;
 
         /// <inheritdoc/>
         protected override void RefreshRecords()

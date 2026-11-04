@@ -30,11 +30,10 @@
         </DockPanel>
         <Grid Margin="0,8,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="350"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Margin="0,0,20,0">
+            <StackPanel Margin="0,0,16,0">
                 <TextBlock Text="Garrison" FontWeight="SemiBold" Margin="0,0,0,4"
                            ToolTip="For a defeated bank, these are the guards restored by Reset."/>
                 <ItemsControl ItemsSource="{Binding Garrison}">
@@ -44,26 +43,24 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Margin="0,0,24,0">
-                <TextBlock Text="Change guard strength and rewards" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBlock Text="Change guard strength and rewards" FontWeight="SemiBold" Margin="0,12,0,8"/>
                 <ComboBox ItemsSource="{Binding StrengthChoices}" SelectedIndex="{Binding SelectedStrength, Mode=TwoWay}"
-                          HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                          Width="NaN" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="280"/>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
-                           Text="Changing strength does not reroll artifacts or reset a defeated bank. Changed strengths and rewards still need an in-game check."/>
+                           Text="Changing strength does not reroll artifacts or reset a defeated bank."/>
                 <CheckBox Content="Upgraded centre stack" IsChecked="{Binding UpgradedCenter, Mode=TwoWay}"
                           Margin="0,8,0,0" Visibility="{Binding HasCenterUpgrade, Converter={StaticResource BankBoolToVisibility}}"/>
                 <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
                            Visibility="{Binding HasUnknownOriginalGuards, Converter={StaticResource BankBoolToVisibility}}"
                            Text="The defeated record no longer stores its original centre upgrade. Choose the guards for Reset above; the default is unupgraded."/>
             </StackPanel>
-            <StackPanel Grid.Column="2">
+            <StackPanel Grid.Column="1">
                 <TextBlock Text="Rewards" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding ResourceReward}" Margin="0,4,0,8"/>
                 <ItemsControl ItemsSource="{Binding Artifacts}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>

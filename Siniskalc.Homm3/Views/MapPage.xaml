@@ -11,8 +11,8 @@
         <DataTemplate x:Key="BankOverviewRow" DataType="{x:Type vm:CreatureBankViewModel}">
             <Grid Margin="0,3" Background="Transparent">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45"/>
-                    <ColumnDefinition Width="155"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="110"/>
                     <ColumnDefinition Width="115"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
@@ -20,12 +20,13 @@
                 <TextBlock Grid.Column="1" Text="{Binding Location}" VerticalAlignment="Center"/>
                 <ComboBox Grid.Column="2" Width="105" HorizontalAlignment="Left" ItemsSource="{Binding DefeatChoices}"
                           SelectedIndex="{Binding SelectedDefeat, Mode=TwoWay}" ToolTip="Whether this bank has been defeated. Undefeated restores the displayed garrison for another battle."/>
-                <TextBlock Grid.Column="3" Text="{Binding RewardSummary}" VerticalAlignment="Center" ToolTip="{Binding RewardSummary}"/>
+                <TextBlock Grid.Column="3" Text="{Binding RewardSummary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding RewardSummary}"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -36,7 +37,33 @@
             <TextBlock Margin="12,0,0,3" Foreground="{StaticResource MutedBrush}" FontSize="14" Text="{Binding MapSummary}"/>
         </heroes:PageHeader>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+        <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
+            <wpf:NavButton Text="Merchants" Visibility="{Binding HasMerchants, Converter={StaticResource BoolToVisibilityMap}}"/>
+            <wpf:NavButton Text="Creature banks" Visibility="{Binding HasBanks, Converter={StaticResource BoolToVisibilityMap}}"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
+        </ListBox>
+
+        <!-- Hex: the raw bytes of the merchant or creature bank that is picked, with its own scrolling. -->
+        <DockPanel x:Name="recordHexPanel" Grid.Row="2" Margin="8,8,8,0" Style="{StaticResource TabPanel2}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,8">
+                <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Record"/>
+                <ComboBox Width="300" ItemsSource="{Binding Records}" SelectedItem="{Binding SelectedRecord}" DisplayMemberPath="Name"
+                          ToolTip="The record of the map whose bytes are shown: a merchant or a creature bank"/>
+            </StackPanel>
+            <wpf:HexEditor x:Name="recordHexEditor"/>
+        </DockPanel>
+
+        <!-- The pages of cards scroll, except the Hex tab, which has its own scrolling. -->
+        <ScrollViewer x:Name="cardsViewer" Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTab}" Value="2">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
             <Grid Margin="8,4,8,16">
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel0}">
                     <TextBlock Text="Merchants" Style="{StaticResource CardHeadingStyle}" Margin="6,0,0,8"/>
@@ -76,14 +103,16 @@
                 </StackPanel>
 
                 <StackPanel Style="{StaticResource TabPanel1}">
+                    <ComboBox ItemsSource="{Binding BankTypes}" SelectedIndex="{Binding SelectedBankType, Mode=TwoWay}" HorizontalAlignment="Left" MinWidth="220"
+                              Margin="0,0,0,8" ToolTip="The type of creature bank to show"/>
                     <TextBlock Text="{Binding BankGroupName}" Style="{StaticResource CardHeadingStyle}"/>
                     <TextBlock Text="{Binding BankSummary}" Margin="0,4,0,8"/>
-                    <heroes:ListCard x:Name="bankOverview" Heading="{Binding BankGroupName}" CardWidth="1120" ItemsSource="{Binding VisibleBanks}"
+                    <heroes:ListCard x:Name="bankOverview" Heading="{Binding BankGroupName}" ItemsSource="{Binding VisibleBanks}"
                                      ItemTemplate="{StaticResource BankOverviewRow}" SelectedItem="{Binding SelectedBank, Mode=TwoWay}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="45"/>
-                                <ColumnDefinition Width="155"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="110"/>
                                 <ColumnDefinition Width="115"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
@@ -93,14 +122,6 @@
                             <TextBlock Grid.Column="3" Text="Rewards" FontWeight="SemiBold"/>
                         </Grid>
                     </heroes:ListCard>
-                    <Border x:Name="bankHexCard" Style="{StaticResource CardStyle}" Width="{Binding CardWidth, ElementName=bankOverview}" HorizontalAlignment="Left">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hex: the selected creature-bank record"/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,8"
-                                       Text="Select a bank in the overview or navigation tree. These bytes are the bank record only; the separate entrance state is reconciled when its defeated state changes."/>
-                            <wpf:HexEditor x:Name="bankHexEditor" KnownFieldsHeight="120"/>
-                        </StackPanel>
-                    </Border>
                     <ListBox x:Name="banks" ItemsSource="{Binding VisibleBanks}" SelectedItem="{Binding SelectedBank, Mode=TwoWay}"
                              SelectionChanged="OnBankSelected" Background="Transparent" BorderThickness="0" Padding="0"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -150,17 +171,11 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </StackPanel>
-                <StackPanel Style="{StaticResource TabPanel2}">
-                    <TextBlock Text="Creature banks" Style="{StaticResource CardHeadingStyle}"/>
-                    <TextBlock Text="{Binding MapSummary}" Margin="0,8,0,8"/>
-                    <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="Choose a bank type under Creature banks in the navigation tree to see its garrisons and rewards. Choose a location below that type to highlight it in the list. Only safely located, supported banks are shown."/>
-                </StackPanel>
                 <StackPanel Style="{StaticResource TabPanel3}">
                     <TextBlock Text="Map contents" Style="{StaticResource CardHeadingStyle}"/>
                     <TextBlock Text="{Binding MapSummary}" Margin="0,8,0,8"/>
                     <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="Choose Merchants or Creature banks under Map in the navigation tree."/>
+                               Text="Choose Merchants or Creature banks above or under Map in the navigation tree."/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -61,7 +61,21 @@
         /// <summary>
         /// Gets what the header says: how many shrines and sphinxes the map has.
         /// </summary>
-        public string MapSummary => $"{this.Shrines.Count} {(this.Shrines.Count == 1 ? "shrine" : "shrines")}, {this.Sphinxes.Count} {(this.Sphinxes.Count == 1 ? "sphinx" : "sphinxes")}";
+        public string MapSummary => Summarize(this.Shrines.Count, this.Sphinxes.Count);
+
+        /// <summary>
+        /// Says how many shrines and sphinxes a map has; a kind the map does not have is left out.
+        /// </summary>
+        /// <param name="shrines">The number of shrines.</param>
+        /// <param name="sphinxes">The number of sphinxes.</param>
+        /// <returns>The summary, such as "13 shrines, 1 sphinx".</returns>
+        public static string Summarize(int shrines, int sphinxes) => string.Join(
+            ", ",
+            new[]
+            {
+                shrines > 0 ? $"{shrines} {(shrines == 1 ? "shrine" : "shrines")}" : null,
+                sphinxes > 0 ? $"{sphinxes} {(sphinxes == 1 ? "sphinx" : "sphinxes")}" : null,
+            }.Where(part => part != null));
 
         /// <summary>
         /// Gets whether the map has a shrine.

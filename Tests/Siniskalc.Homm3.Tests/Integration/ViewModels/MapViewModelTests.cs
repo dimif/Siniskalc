@@ -1,4 +1,4 @@
-﻿using Siniskalc.Homm3.Tests.Data;
+using Siniskalc.Homm3.Tests.Data;
 
 namespace Siniskalc.Homm3.Tests.Integration.ViewModels
 {
@@ -13,6 +13,16 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     [Category(TestKinds.Integration)]
     internal sealed class MapViewModelTests
     {
+        [TestCase(3, 28, "3 merchants, 28 creature banks")]
+        [TestCase(1, 1, "1 merchant, 1 creature bank")]
+        [TestCase(0, 28, "28 creature banks")]
+        [TestCase(2, 0, "2 merchants")]
+        [TestCase(0, 0, "")]
+        public void TheMapSummaryLeavesOutWhatTheMapDoesNotHave(int merchants, int banks, string expected)
+        {
+            Assert.That(TestServices.BankText.MapSummary(merchants, banks), Is.EqualTo(expected));
+        }
+
         [Test]
         public void ADefeatedImpCacheExplainsItsUnknownUpgradeAndRestoresTheChosenCentreWithoutChangingItsRewards()
         {
@@ -26,13 +36,13 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(bank.Heading, Is.EqualTo("Imp Cache 1 at 2, 27, Surface"));
             Assert.That(bank.HasUnknownOriginalGuards, Is.True);
             Assert.That(bank.UpgradedCenter, Is.False);
-            Assert.That(bank.RewardSummary, Is.EqualTo("6 mercury, 3k gold"));
+            Assert.That(bank.RewardSummary, Is.EqualTo("6 mercury, 3k g"));
             bank.UpgradedCenter = true;
             Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes), "choosing a future reset's centre alone does not write a defeated record");
             bank.RestoreCommand.Execute(null);
             Assert.That(bank.HasPendingChanges, Is.True);
             Assert.That(game.History.Current.CreatureBanks()[16].GetInt32At(8), Is.EqualTo(43));
-            Assert.That(bank.RewardSummary, Is.EqualTo("6 mercury, 3k gold"));
+            Assert.That(bank.RewardSummary, Is.EqualTo("6 mercury, 3k g"));
             game.History.Undo();
             Assert.That(bank.IsCleared, Is.True);
             Assert.That(bank.UpgradedCenter, Is.True);
@@ -111,7 +121,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(utopia.Status, Is.EqualTo("Defeated"));
             Assert.That(utopia.Tier, Is.EqualTo(4));
             Assert.That(utopia.Location, Is.EqualTo("4, 15, Surface"));
-            Assert.That(utopia.RewardSummary, Is.EqualTo("50k gold, Admiral's Hat, Angel Wings, Angelic Alliance, Armageddon's Blade"));
+            Assert.That(utopia.RewardSummary, Is.EqualTo("50k g, Admiral's Hat, Angel Wings, Angelic Alliance, Armageddon's Blade"));
             Assert.That(utopia.Garrison, Is.EqualTo(new[] { "8 Green Dragons", "7 Red Dragons", "6 Gold Dragons", "5 Black Dragons" }));
             utopia.SelectedStrength = 0;
             Assert.That(utopia.Garrison, Is.EqualTo(new[] { "8 Green Dragons", "5 Red Dragons", "2 Gold Dragons", "1 Black Dragon" }));
@@ -165,9 +175,9 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes));
             bank.SelectedStrength = 0;
             Assert.That(bank.Tier, Is.EqualTo(1));
-            Assert.That(bank.RewardSummary, Does.StartWith("20k gold, "));
+            Assert.That(bank.RewardSummary, Does.StartWith("20k g, "));
             bank.Artifacts[0].ClearCommand.Execute(null);
-            Assert.That(bank.RewardSummary, Does.StartWith("20k gold, (empty), Angel Wings, "));
+            Assert.That(bank.RewardSummary, Does.StartWith("20k g, (empty), Angel Wings, "));
         }
     }
 }

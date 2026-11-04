@@ -250,6 +250,23 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
+        public void AMapWithoutMerchantsHasNoMerchantsNode()
+        {
+            var main = LoadUtopias("dragon_utopias_03_tier_3_before.GM2");
+            var map = main.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            Assert.That(map.Children.Select(n => n.Title), Is.EqualTo(new[] { "Creature banks" }));
+            Assert.That(map.Subtitle, Is.EqualTo("28 banks"));
+        }
+
+        [Test]
+        public void TheMapNodeSummarisesItsMerchantsAndCreatureBanks()
+        {
+            var main = LoadUtopias("dragon_utopias_01_first_cleared.GM2");
+            var map = main.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            Assert.That(map.Subtitle, Does.Match(@"^\d+ merchants?, \d+ banks$"));
+        }
+
+        [Test]
         public void AMapWithUtopiasButNoMerchantsStillHasTheMapAndCreatureBankNodes()
         {
             var main = LoadUtopias("dragon_utopias_03_tier_3_before.GM2");

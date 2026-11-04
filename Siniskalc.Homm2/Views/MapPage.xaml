@@ -105,10 +105,10 @@
         <ListBox Grid.Row="1" Style="{StaticResource TabStripStyle}" SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
             <wpf:NavButton Text="Shrines"/>
             <wpf:NavButton Text="Sphinxes"/>
-            <wpf:NavButton Text="Bytes" RequiresAdvancedMode="True"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
-        <!-- Bytes: the raw bytes of the record that is picked, with its own scrolling. -->
+        <!-- Hex: the raw bytes of the record that is picked, with its own scrolling. -->
         <DockPanel Grid.Row="2" Margin="8,8,8,0" Style="{StaticResource TabPanel2}">
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,0,0,8">
                 <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Record"/>
@@ -118,7 +118,7 @@
             <wpf:HexEditor x:Name="hexEditor"/>
         </DockPanel>
 
-        <!-- The pages of cards scroll, except the Bytes tab, which has its own scrolling. -->
+        <!-- The pages of cards scroll, except the Hex tab, which has its own scrolling. -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">

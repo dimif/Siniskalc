@@ -18,5 +18,7 @@
         IByteEditTarget ForDwelling(SaveDocumentHistory history, int dwellingIndex);
 
         IByteEditTarget ForCreatureBank(SaveDocumentHistory history, int index);
+
+        IByteEditTarget ForMerchant(SaveDocumentHistory history, int index);
     }
 }

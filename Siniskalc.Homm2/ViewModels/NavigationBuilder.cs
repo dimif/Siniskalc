@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm2.ViewModels
+namespace Siniskalc.Homm2.ViewModels
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -73,7 +73,7 @@
         protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
         {
             var document = game.History.Current;
-            var node = new NavNodeViewModel("Map", $"{document.Shrines().Count} shrines, {document.Sphinxes().Count} sphinxes", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            var node = new NavNodeViewModel("Map", MapViewModel.Summarize(document.Shrines().Count, document.Sphinxes().Count), PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
         }

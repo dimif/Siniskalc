@@ -62,12 +62,31 @@ namespace Siniskalc.Homm3.ViewModels
 
         public string Resources(CreatureBankKind kind, int strength, bool compact = false) =>
             string.Join(", ", CreatureBankPresets.Resources(kind, strength).Select((count, index) => (Count: count, Resource: (Resource)index)).Where(r => r.Count > 0)
-                .Select(r => $"{(compact && r.Resource == Resource.Gold ? $"{r.Count / 1000m:0.###}k" : r.Count.ToString("N0", CultureInfo.CurrentCulture))} {r.Resource.ToString().ToLowerInvariant()}"));
+                .Select(r => compact && r.Resource == Resource.Gold
+                    ? $"{r.Count / 1000m:0.###}k g"
+                    : $"{r.Count.ToString("N0", CultureInfo.CurrentCulture)} {r.Resource.ToString().ToLowerInvariant()}"));
 
         public string Summary(string group, int total, int defeated) => $"{total} {group}: {total - defeated} uncleared, {defeated} defeated";
 
         public string ArtifactSlot(int slot) => $"Artifact {slot + 1}";
 
-        public string MapSummary(int merchants, int banks) => $"{merchants} {(merchants == 1 ? "merchant" : "merchants")}, {banks} creature banks";
+        public string MapSummary(int merchants, int banks) => string.Join(
+            ", ",
+            new[]
+            {
+                merchants > 0 ? $"{merchants} {(merchants == 1 ? "merchant" : "merchants")}" : null,
+                banks > 0 ? $"{banks} creature {(banks == 1 ? "bank" : "banks")}" : null,
+            }.Where(part => part != null));
+
+        /// <summary>
+        /// The short count shown next to the Map node of the navigation tree; a part the map does not have is left out.
+        /// </summary>
+        public string MapNavSummary(int merchants, int banks) => string.Join(
+            ", ",
+            new[]
+            {
+                merchants > 0 ? $"{merchants} {(merchants == 1 ? "merchant" : "merchants")}" : null,
+                banks > 0 ? $"{banks} {(banks == 1 ? "bank" : "banks")}" : null,
+            }.Where(part => part != null));
     }
 }

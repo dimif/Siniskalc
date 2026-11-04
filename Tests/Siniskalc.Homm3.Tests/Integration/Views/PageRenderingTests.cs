@@ -125,15 +125,16 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 Assert.That(restore.IsEnabled, Is.False);
                 var firstCard = Descendants<Border>(page).Single(b => b.DataContext == model.VisibleBanks[0] && Equals(b.Tag, "CreatureBankCard"));
                 Assert.That(firstCard.ActualWidth, Is.EqualTo(overview.CardWidth));
-                Assert.That(firstCard.ActualHeight, Is.LessThan(240));
+                Assert.That(firstCard.ActualHeight, Is.LessThan(290));
                 var status = Descendants<TextBlock>(firstCard).Single(t => t.Text == "Uncleared");
                 Assert.That(Math.Abs(status.TranslatePoint(new Point(), firstCard).Y - restore.TranslatePoint(new Point(), firstCard).Y), Is.LessThan(10));
                 var strength = Descendants<ComboBox>(firstCard).Single();
                 var garrison = Descendants<TextBlock>(firstCard).Single(t => t.Text == "Garrison");
                 var rewards = Descendants<TextBlock>(firstCard).Single(t => t.Text == "Rewards");
                 var strengthHeading = Descendants<TextBlock>(firstCard).Single(t => t.Text == "Change guard strength and rewards");
-                Assert.That(strengthHeading.TranslatePoint(new Point(), firstCard).Y, Is.EqualTo(garrison.TranslatePoint(new Point(), firstCard).Y).Within(1));
-                Assert.That(strength.TranslatePoint(new Point(), firstCard).X, Is.GreaterThan(garrison.TranslatePoint(new Point(), firstCard).X + 150));
+                Assert.That(strengthHeading.TranslatePoint(new Point(), firstCard).Y, Is.GreaterThan(garrison.TranslatePoint(new Point(), firstCard).Y), "the strength sits under the garrison");
+                Assert.That(strength.TranslatePoint(new Point(), firstCard).X, Is.EqualTo(garrison.TranslatePoint(new Point(), firstCard).X).Within(1));
+                Assert.That(strength.ActualWidth, Is.GreaterThan(250), "the strength fills the column that holds it");
                 Assert.That(garrison.TranslatePoint(new Point(), firstCard).Y, Is.EqualTo(rewards.TranslatePoint(new Point(), firstCard).Y).Within(1));
                 Assert.That(strength.TranslatePoint(new Point(), firstCard).X, Is.LessThan(rewards.TranslatePoint(new Point(), firstCard).X));
                 Assert.That(strength.IsVisible, Is.True);
@@ -188,7 +189,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                     Assert.That(selected.IsSelected, Is.True);
                     var card = Descendants<Border>(selected).Single(b => Equals(b.Tag, "CreatureBankCard"));
                     Assert.That(card.BorderBrush, Is.EqualTo(page.FindResource("HighlightBrush")));
-                    var viewport = Descendants<ScrollViewer>(page).First();
+                    var viewport = Descendants<ScrollViewer>(page).First(s => s.Name == "cardsViewer");
                     var origin = card.TranslatePoint(new Point(), viewport);
                     Assert.That(origin.Y, Is.GreaterThanOrEqualTo(-1).And.LessThan(viewport.ActualHeight));
                     Assert.That(origin.Y + card.ActualHeight, Is.LessThanOrEqualTo(viewport.ActualHeight + 1));

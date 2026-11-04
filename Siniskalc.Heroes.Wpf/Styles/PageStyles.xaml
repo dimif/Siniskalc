@@ -366,11 +366,11 @@
                                 </TextBlock.Style>
                             </TextBlock>
                             <ContentPresenter Content="{TemplateBinding Toolbar}"/>
-                            <ContentPresenter Margin="6,0,0,2"/>
+                            <ContentPresenter Margin="0,0,0,2"/>
                             <ListBox x:Name="PART_List" ItemsSource="{TemplateBinding ItemsSource}" ItemTemplate="{TemplateBinding ItemTemplate}" ItemContainerStyle="{StaticResource ListCardRowStyle}"
                                      MaxHeight="{TemplateBinding ListMaxHeight}"
                                      SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                     BorderThickness="0" Padding="0" Margin="-1,0,0,0" Background="Transparent" HorizontalContentAlignment="Stretch"
+                                     BorderThickness="0" Padding="0" Margin="-7,0,0,0" Background="Transparent" HorizontalContentAlignment="Stretch"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </StackPanel>
                     </Border>

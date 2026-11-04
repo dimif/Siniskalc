@@ -53,5 +53,9 @@
             var session = new EditSession<CreatureBankChunk, Models.CreatureBankModel>(history, Homm3ChunkKinds.CreatureBanks, index);
             return new ChunkByteEditTarget<CreatureBankChunk, Models.CreatureBankModel>(session, this.bankRegions.GetRegions(session.Chunk));
         }
+
+        /// <inheritdoc/>
+        public IByteEditTarget ForMerchant(SaveDocumentHistory history, int index) =>
+            new ChunkByteEditTarget<RecordChunk, Models.MerchantStockModel>(history.CreateMerchantSession(index), []);
     }
 }

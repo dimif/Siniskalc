@@ -18,6 +18,21 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         private static Siniskalc.Homm3.Runtime.Game LoadDwellings() => SavedGames.Get(Path.Combine("TestData", "Hota", "Dwellings", "dwellings_01_tazar_flags_guardhouse.GM2"));
 
         [Test]
+        public void TheHexTabOfTheMapListsTheMerchantsBeforeTheBanksAndShowsTheBytesOfAMerchant()
+        {
+            var game = SavedGames.Get(Path.Combine("TestData", "Hota", "MerchantStock", "merchant_stock_00_baseline.GM2"));
+            using var page = new MapViewModel(game, TestServices.EffectLines, TestServices.BankText, TestServices.ByteEditTargets);
+            var merchants = game.History.Current.Merchants().Count;
+
+            Assert.That(merchants, Is.GreaterThan(0));
+            Assert.That(page.Records, Has.Count.EqualTo(merchants + page.Banks.Count));
+            Assert.That(page.Records.Take(merchants).Select(r => r.Name), Is.EqualTo(page.Merchants.Select(m => m.Name)));
+            page.SelectedRecord = page.Records[0];
+            using var target = page.CreateByteEditTarget()!;
+            Assert.That(target.GetBytes(), Is.EqualTo(game.History.Current.Merchants()[0].ToArray()));
+        }
+
+        [Test]
         public void TheBytesOfAMineAreNamedByTheirFieldsAndAnEditChangesTheMine()
         {
             var game = LoadMines();
@@ -53,9 +68,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var path = Path.Combine("TestData", "Hota", "DragonUtopias", "dragon_utopias_01_first_cleared.GM2");
             var game = SavedGames.Get(path);
             using var page = new MapViewModel(game, TestServices.EffectLines, TestServices.BankText, TestServices.ByteEditTargets);
-            Assert.That(page.CreateBankByteEditTarget(), Is.Null);
             page.SelectedBank = page.VisibleBanks[1];
-            using var target = page.CreateBankByteEditTarget()!;
+            using var target = page.CreateByteEditTarget()!;
             var original = target.GetBytes();
             Assert.That(original, Is.EqualTo(game.History.Current.CreatureBanks()[1].ToArray()));
             var notifications = 0;

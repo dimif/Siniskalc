@@ -7,7 +7,8 @@ namespace Siniskalc.Homm3.ViewModels
         public const int Merchants = 0;
         public const int BankDetails = 1;
         public const int DragonUtopias = BankDetails;
-        public const int CreatureBanks = 2;
+        public const int Hex = 2;
+        public const int CreatureBanks = BankDetails;
         public const int Overview = 3;
         public const int CyclopsStockpiles = 4;
         public const int DwarvenTreasuries = 5;

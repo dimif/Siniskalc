@@ -45,7 +45,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         public void ThePositionCardEditsTheFacingAndWritesOnlyTheByteOfTheFacing()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
             Assert.That(page.Position.Facing, Is.EqualTo(FacingDirection.West));
 
             page.Position.Facing = FacingDirection.South;

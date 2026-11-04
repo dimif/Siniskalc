@@ -38,7 +38,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Views
             }
 
             var changesBefore = game.History.GetPendingChanges().Count();
-            using var page = new PlayerViewModel(game, mine.Owner, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            using var page = new PlayerViewModel(game, mine.Owner, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
             var card = new OwnedMinesCard { DataContext = page };
             var window = new Window
             {

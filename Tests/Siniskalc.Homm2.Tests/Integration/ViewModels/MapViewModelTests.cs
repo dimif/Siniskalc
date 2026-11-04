@@ -15,21 +15,11 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         [Test]
         public void ThePageListsTheShrinesAndTheSphinxOfTheMap()
         {
-            var page = new MapViewModel(TestServices.LoadThreedom(71));
+            var page = new MapViewModel(TestServices.LoadThreedom(71), TestServices.ByteEditTargets, TestServices.MapText);
 
             Assert.That(page.Shrines, Has.Count.EqualTo(13));
             Assert.That(page.Sphinxes, Has.Count.EqualTo(1));
             Assert.That(page.MapSummary, Is.EqualTo("13 shrines, 1 sphinx"));
-        }
-
-        [TestCase(13, 1, "13 shrines, 1 sphinx")]
-        [TestCase(1, 2, "1 shrine, 2 sphinxes")]
-        [TestCase(0, 3, "3 sphinxes")]
-        [TestCase(4, 0, "4 shrines")]
-        [TestCase(0, 0, "")]
-        public void TheSummaryLeavesOutWhatTheMapDoesNotHave(int shrines, int sphinxes, string expected)
-        {
-            Assert.That(MapViewModel.Summarize(shrines, sphinxes), Is.EqualTo(expected));
         }
 
         [Test]
@@ -37,7 +27,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var game = TestServices.LoadThreedom(71);
             var document = game.History.Current;
-            var page = new MapViewModel(game, new ByteEditTargetFactory());
+            var page = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText);
 
             Assert.That(page.Records, Has.Count.EqualTo(document.Mines().Count + document.Shrines().Count + document.Sphinxes().Count + 3));
             Assert.That(page.Records.Select(r => r.Name), Does.Contain("Obelisks").And.Contain(document.Turn().GetName(0)).And.Contain(document.BuiltToday().GetName(0)));
@@ -49,18 +39,9 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void WithoutAFactoryThePageHasNoBytes()
-        {
-            var page = new MapViewModel(TestServices.LoadThreedom(71));
-
-            Assert.That(page.Records, Is.Empty);
-            Assert.That(page.CreateByteEditTarget(), Is.Null);
-        }
-
-        [Test]
         public void TheShrinesAreSortedByCircleLocationOrSpellFromTheHeadings()
         {
-            var page = new MapViewModel(TestServices.LoadThreedom(77));
+            var page = new MapViewModel(TestServices.LoadThreedom(77), TestServices.ByteEditTargets, TestServices.MapText);
 
             page.ShrineList.Columns["Name"].SortCommand.Execute(null);
             Assert.That(page.Shrines.Select(s => s.CircleNumber), Is.Ordered);
@@ -76,7 +57,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         public void ThePickedSpellOfAShrineIsTheOneItTeachesAndAHiddenShrineCannotBeChanged()
         {
             var game = TestServices.LoadThreedom(78);
-            var page = new MapViewModel(game);
+            var page = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText);
 
             var shield = page.Shrines.Single(s => s.PositionText == "at 45, 7");
             Assert.That(shield.SpellField.Selected, Is.EqualTo("Shield"));
@@ -92,7 +73,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         public void TheSphinxAnswersAreEditedOnePlaceAtATimeAndAnEmptiedPlaceTakesTheAnswerAway()
         {
             var game = TestServices.LoadThreedom(74);
-            var sphinx = new MapViewModel(game).Sphinxes.Single();
+            var sphinx = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText).Sphinxes.Single();
 
             Assert.That(sphinx.SolvedToggle.IsChecked, Is.True);
             Assert.That(sphinx.Answers.Select(a => a.Text).Take(3), Is.EqualTo(new[] { "darkness", "shadow", string.Empty }));

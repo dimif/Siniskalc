@@ -37,12 +37,15 @@ namespace Siniskalc.Homm2.ViewModels
         };
 
         private readonly BanishingTextProvider banishingText;
+        private readonly MapTextProvider mapText;
 
         /// <param name="banishingText">Gives the words for a player who owns no town.</param>
-        public NavigationBuilder(BanishingTextProvider banishingText)
+        /// <param name="mapText">Gives the words of the Map node.</param>
+        public NavigationBuilder(BanishingTextProvider banishingText, MapTextProvider mapText)
             : base(Kinds)
         {
             this.banishingText = banishingText;
+            this.mapText = mapText;
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace Siniskalc.Homm2.ViewModels
         protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
         {
             var document = game.History.Current;
-            var node = new NavNodeViewModel("Map", MapViewModel.Summarize(document.Shrines().Count, document.Sphinxes().Count), PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            var node = new NavNodeViewModel("Map", this.mapText.Summarize(document.Shrines().Count, document.Sphinxes().Count), PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
         }

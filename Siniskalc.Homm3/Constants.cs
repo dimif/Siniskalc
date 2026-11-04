@@ -238,11 +238,6 @@
         public static class Resources
         {
             /// <summary>
-            /// The least stock of a resource.
-            /// </summary>
-            public const long Min = 0;
-
-            /// <summary>
             /// The most gold a player can be given here (the same in every game of the series).
             /// </summary>
             public const long MaxGold = Heroes.Constants.Resources.MaxGold;
@@ -253,16 +248,6 @@
             public const long MaxOther = Heroes.Constants.Resources.MaxOther;
 
             /// <summary>
-            /// The step of the gold stepper.
-            /// </summary>
-            public const long GoldStep = 1000;
-
-            /// <summary>
-            /// The step of the stepper of a resource other than gold.
-            /// </summary>
-            public const long OtherStep = 1;
-
-            /// <summary>
             /// What the "all resources" and "rich" presets give.
             /// </summary>
             public const int AllResourcesPreset = 99;
@@ -271,26 +256,6 @@
             /// What the "rich" preset gives in gold.
             /// </summary>
             public const int RichGoldPreset = 1_000_000;
-
-            /// <summary>
-            /// What the "Res +100" and "Gold +100k" buttons add.
-            /// </summary>
-            public const int AllResourcesIncrease = 100;
-
-            /// <summary>
-            /// What the "Gold +100k" button adds.
-            /// </summary>
-            public const int GoldIncrease = 100_000;
-
-            /// <summary>
-            /// What the "+10" button of a resource and the "+10k" button of gold add.
-            /// </summary>
-            public const int OtherPreset = 10;
-
-            /// <summary>
-            /// What the "+10k" button of gold adds.
-            /// </summary>
-            public const int GoldPreset = 10_000;
         }
 
         /// <summary>

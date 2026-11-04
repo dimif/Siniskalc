@@ -41,7 +41,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         public void TheDestinationCardEditsTheTileAndWritesOnlyTheBytesOfTheDestination()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
             Assert.That(page.Destination.RemoveCommand.CanExecute(null), Is.False, "there is none to take away");
 
             page.Destination.X = 3;
@@ -58,7 +58,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         public void RemovingTheDestinationWritesTheNoneMarkerToTheSavegame()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
             page.Destination.X = 3;
             page.Destination.Y = 4;
 
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
         public void ADestinationWithOnlyOnePartSetIsKeptAsItWasTyped()
         {
             var game = TestServices.LoadMarkerFacing(91);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
 
             page.Destination.X = 5;
 

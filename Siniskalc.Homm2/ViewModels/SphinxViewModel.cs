@@ -122,7 +122,7 @@
                 ResourcePalette.Of(resource.ToString()),
                 0,
                 gold ? Constants.Player.MaxGold : Constants.Player.MaxOther,
-                gold ? Constants.Player.GoldStep : Constants.Player.OtherStep,
+                gold ? Heroes.Constants.Resources.GoldStep : Heroes.Constants.Resources.OtherStep,
                 () => this.session.Current.Reward[(int)resource],
                 () => this.session.Original.Reward[(int)resource],
                 amount => this.session.Update(sphinx => sphinx with { Reward = sphinx.Reward.Select((value, i) => i == (int)resource ? (int)amount : value).ToList() }));

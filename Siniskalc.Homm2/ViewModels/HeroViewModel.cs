@@ -21,7 +21,7 @@
     {
         private readonly Action<int> openCastle;
         private readonly IEditSession<HeroModel> session;
-        private readonly IByteEditTargetFactory? byteEditTargets;
+        private readonly IByteEditTargetFactory byteEditTargets;
         private readonly IReadOnlyList<VisitedPlaceRowViewModel> visitedPlaces;
         private readonly IReadOnlyList<ToggleRowViewModel> usedOnce;
         private readonly IReadOnlyList<ToggleRowViewModel> usedWeekly;
@@ -36,13 +36,13 @@
         /// <param name="heroId">The number of the hero.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number.</param>
         /// <param name="spellPoints">Works out the most spell points of the hero.</param>
-        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets = null)
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        public HeroViewModel(Game game, int heroId, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets)
             : this(game, game.History.CreateHeroSession(heroId), openCastle, spellPoints, byteEditTargets)
         {
         }
 
-        private HeroViewModel(Game game, IEditSession<HeroModel> session, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory? byteEditTargets)
+        private HeroViewModel(Game game, IEditSession<HeroModel> session, Action<int> openCastle, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets)
             : base("Hero", session)
         {
             var heroId = session.Index;
@@ -279,7 +279,7 @@
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
         /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
-        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForHero(this.Game.History, this.HeroId);
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets.ForHero(this.Game.History, this.HeroId);
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.

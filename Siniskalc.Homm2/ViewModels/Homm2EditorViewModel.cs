@@ -21,6 +21,7 @@
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
         private readonly MineGuardianTextProvider guardianText;
+        private readonly MapTextProvider mapText;
         private readonly IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints;
         private readonly Dictionary<int, PlayerViewModel> players = [];
         private readonly Dictionary<int, HeroViewModel> heroes = [];
@@ -39,13 +40,15 @@
         /// <param name="banishingText">The banishing text.</param>
         /// <param name="spellPoints">The spell points.</param>
         /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
-        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, MineGuardianTextProvider guardianText)
+        /// <param name="mapText">Words the map is shown with.</param>
+        public Homm2EditorViewModel(ISavegameService<Game> gameService, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, BanishingTextProvider banishingText, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, MineGuardianTextProvider guardianText, MapTextProvider mapText)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.byteEditTargets = byteEditTargets;
             this.banishingText = banishingText;
             this.spellPoints = spellPoints;
             this.guardianText = guardianText;
+            this.mapText = mapText;
         }
 
         /// <summary>
@@ -109,7 +112,7 @@
         /// </summary>
         public void ShowMap()
         {
-            this.map ??= new MapViewModel(this.Loaded(), this.byteEditTargets);
+            this.map ??= new MapViewModel(this.Loaded(), this.byteEditTargets, this.mapText);
             this.SetCurrentPage(this.map);
         }
 

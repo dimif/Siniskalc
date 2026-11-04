@@ -19,14 +19,14 @@
 
             foreach (var resource in Enum.GetValues<Resource>())
             {
-                WriteAmount(bytes, PlayerLayout.Resources + ((int)resource * 4), model.Resources[resource], Constants.Player.MinResource, Constants.Player.MaxResource, nameof(model.Resources));
+                WriteAmount(bytes, PlayerLayout.Resources + ((int)resource * 4), model.Resources[resource], Heroes.Constants.Resources.Min, Constants.Player.MaxResource, nameof(model.Resources));
                 if (resource != Resource.Gold)
                 {
-                    WriteAmount(bytes, PlayerLayout.Income + ((int)resource * 4), model.Income[resource], Constants.Player.MinResource, Constants.Player.MaxResource, nameof(model.Income));
+                    WriteAmount(bytes, PlayerLayout.Income + ((int)resource * 4), model.Income[resource], Heroes.Constants.Resources.Min, Constants.Player.MaxResource, nameof(model.Income));
                 }
             }
 
-            WriteAmount(bytes, PlayerLayout.GoldIncome, model.Income.Gold, Constants.Player.MinResource, Constants.Player.MaxResource, nameof(model.Income));
+            WriteAmount(bytes, PlayerLayout.GoldIncome, model.Income.Gold, Heroes.Constants.Resources.Min, Constants.Player.MaxResource, nameof(model.Income));
 
             bytes[PlayerLayout.DaysLeft] = Bytes.IdByte(model.DaysLeft, bytes[PlayerLayout.DaysLeft]);
             bytes[PlayerLayout.Tavern] = Bytes.IdByte(model.Tavern.First, bytes[PlayerLayout.Tavern]);

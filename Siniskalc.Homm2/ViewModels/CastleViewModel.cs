@@ -26,7 +26,7 @@
 
         private readonly Action<int> openHero;
         private readonly IEditSession<CastleModel> session;
-        private readonly IByteEditTargetFactory? byteEditTargets;
+        private readonly IByteEditTargetFactory byteEditTargets;
         private readonly IEditSession<BuiltTodayModel> builtToday;
         private readonly IReadOnlyList<ToggleRowViewModel> buildings;
         private readonly IReadOnlyList<DwellingRowViewModel> dwellings;
@@ -42,13 +42,13 @@
         /// <param name="game">The game.</param>
         /// <param name="castleIndex">The number of the castle.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
-        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory? byteEditTargets = null)
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        public CastleViewModel(Game game, int castleIndex, Action<int> openHero, IByteEditTargetFactory byteEditTargets)
             : this(game, game.History.CreateCastleSession(castleIndex), openHero, byteEditTargets)
         {
         }
 
-        private CastleViewModel(Game game, IEditSession<CastleModel> session, Action<int> openHero, IByteEditTargetFactory? byteEditTargets)
+        private CastleViewModel(Game game, IEditSession<CastleModel> session, Action<int> openHero, IByteEditTargetFactory byteEditTargets)
             : base("Castle", session)
         {
             var castleIndex = session.Index;
@@ -233,7 +233,7 @@
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
         /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
-        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForCastle(this.Game.History, this.CastleIndex);
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets.ForCastle(this.Game.History, this.CastleIndex);
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.

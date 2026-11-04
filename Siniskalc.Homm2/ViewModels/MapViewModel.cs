@@ -18,13 +18,17 @@ namespace Siniskalc.Homm2.ViewModels
     /// </summary>
     public sealed class MapViewModel : RecordsPageViewModelBase
     {
+        private readonly MapTextProvider mapText;
+
         private MapRecordViewModel? selectedRecord;
 
         /// <param name="game">The game the page shows.</param>
-        /// <param name="byteEditTargets">Makes the raw bytes of a record for the Bytes tab; none when <c>null</c>.</param>
-        public MapViewModel(Game game, IByteEditTargetFactory? byteEditTargets = null)
+        /// <param name="byteEditTargets">Makes the raw bytes of a record for the Bytes tab.</param>
+        /// <param name="mapText">Words the header of the map is shown with.</param>
+        public MapViewModel(Game game, IByteEditTargetFactory byteEditTargets, MapTextProvider mapText)
             : base("Map", game.History, Homm2ChunkKinds.Shrines, Homm2ChunkKinds.Sphinxes)
         {
+            this.mapText = mapText;
             var document = game.History.Current;
             var spellNames = game.Catalog.Spells.Where(s => s.IsAvailableIn(game.GameVersion)).OrderBy(s => s.Name).Select(s => s.Name).ToList();
             var shrines = Enumerable.Range(0, document.Shrines().Count).Select(i => new ShrineRowViewModel(game.Catalog, game.History.CreateShrineSession(i), spellNames)).ToList();
@@ -38,7 +42,7 @@ namespace Siniskalc.Homm2.ViewModels
                     ["Spell"] = s => s.SpellName,
                 });
             this.Sphinxes = Enumerable.Range(0, document.Sphinxes().Count).Select(i => new SphinxViewModel(game.Catalog, game.History.CreateSphinxSession(i), game.GameVersion)).ToList();
-            this.Records = byteEditTargets == null ? [] : RecordsOf(game.History, byteEditTargets);
+            this.Records = RecordsOf(game.History, byteEditTargets);
             this.selectedRecord = this.Records.FirstOrDefault();
             this.Refresh();
         }
@@ -61,21 +65,7 @@ namespace Siniskalc.Homm2.ViewModels
         /// <summary>
         /// Gets what the header says: how many shrines and sphinxes the map has.
         /// </summary>
-        public string MapSummary => Summarize(this.Shrines.Count, this.Sphinxes.Count);
-
-        /// <summary>
-        /// Says how many shrines and sphinxes a map has; a kind the map does not have is left out.
-        /// </summary>
-        /// <param name="shrines">The number of shrines.</param>
-        /// <param name="sphinxes">The number of sphinxes.</param>
-        /// <returns>The summary, such as "13 shrines, 1 sphinx".</returns>
-        public static string Summarize(int shrines, int sphinxes) => string.Join(
-            ", ",
-            new[]
-            {
-                shrines > 0 ? $"{shrines} {(shrines == 1 ? "shrine" : "shrines")}" : null,
-                sphinxes > 0 ? $"{sphinxes} {(sphinxes == 1 ? "sphinx" : "sphinxes")}" : null,
-            }.Where(part => part != null));
+        public string MapSummary => this.mapText.Summarize(this.Shrines.Count, this.Sphinxes.Count);
 
         /// <summary>
         /// Gets whether the map has a shrine.

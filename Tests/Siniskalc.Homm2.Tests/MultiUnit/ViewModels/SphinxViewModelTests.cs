@@ -61,8 +61,8 @@
 
             Assert.That(page.Reward.Select(r => r.Name), Is.EqualTo(new[] { "Gold", "Wood", "Ore", "Mercury", "Sulfur", "Crystal", "Gems" }));
             Assert.That(page.Reward.Select(r => r.Value), Is.EqualTo(new long[] { 7000, 10, 30, 20, 40, 50, 60 }));
-            Assert.That((page.Reward[0].Maximum, page.Reward[0].Step), Is.EqualTo((Constants.Player.MaxGold, Constants.Player.GoldStep)));
-            Assert.That((page.Reward[1].Maximum, page.Reward[1].Step), Is.EqualTo((Constants.Player.MaxOther, Constants.Player.OtherStep)));
+            Assert.That((page.Reward[0].Maximum, page.Reward[0].Step), Is.EqualTo((Constants.Player.MaxGold, Heroes.Constants.Resources.GoldStep)));
+            Assert.That((page.Reward[1].Maximum, page.Reward[1].Step), Is.EqualTo((Constants.Player.MaxOther, Heroes.Constants.Resources.OtherStep)));
         }
 
         [Test]

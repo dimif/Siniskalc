@@ -34,7 +34,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         public void TheFirstPlaceOfAKindIsTheSecondBitAndTheVisitedOnesOfAHeroAreTheOnesTheSaveSays()
         {
             var game = TestServices.LoadThreedom(71);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
 
             var forts = Row(page, "Forts");
             Assert.That(forts.Text, Is.EqualTo("2 of 5"));
@@ -53,7 +53,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         public void APlaceIsForgottenAndRememberedOnItsOwn()
         {
             var game = TestServices.LoadThreedom(71);
-            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, ColarBlau, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
             var forts = Row(page, "Forts");
 
             forts.Places[1].IsChecked = false;
@@ -75,7 +75,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(game.Places.Of(PlaceKind.Xanadu), Is.EqualTo(new[] { new MapPosition(37, 49) }), "found although Charity stands on it");
             Assert.That(game.History.Current.Heroes().GetModel(49).Visited.Xanadu, Is.EqualTo(2u));
             Assert.That(TestServices.LoadThreedom(81).History.Current.Heroes().GetModel(49).Visited.Xanadu, Is.EqualTo(0u));
-            Assert.That(Row(new HeroViewModel(game, 49, _ => { }, TestServices.SpellPoints), "Xanadu").Text, Is.EqualTo("1 of 1"));
+            Assert.That(Row(new HeroViewModel(game, 49, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets), "Xanadu").Text, Is.EqualTo("1 of 1"));
         }
 
         [Test]

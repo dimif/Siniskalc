@@ -61,6 +61,41 @@ namespace Siniskalc.Heroes
             /// The most of any other resource: the largest 16-bit unsigned number.
             /// </summary>
             public const long MaxOther = ushort.MaxValue;
+
+            /// <summary>
+            /// The least stock of a resource.
+            /// </summary>
+            public const long Min = 0;
+
+            /// <summary>
+            /// The step of the gold stepper.
+            /// </summary>
+            public const long GoldStep = 1000;
+
+            /// <summary>
+            /// The step of the stepper of a resource other than gold.
+            /// </summary>
+            public const long OtherStep = 1;
+
+            /// <summary>
+            /// What the "Res +100" button adds to each resource.
+            /// </summary>
+            public const int AllResourcesIncrease = 100;
+
+            /// <summary>
+            /// What the "Gold +100k" button adds to the gold.
+            /// </summary>
+            public const int GoldIncrease = 100_000;
+
+            /// <summary>
+            /// What the "+10" button of a resource other than gold adds.
+            /// </summary>
+            public const int OtherPreset = 10;
+
+            /// <summary>
+            /// What the "+10k" button of gold adds.
+            /// </summary>
+            public const int GoldPreset = 10_000;
         }
 
         /// <summary>

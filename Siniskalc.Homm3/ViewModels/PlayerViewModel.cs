@@ -20,15 +20,15 @@
     public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage
     {
         private static readonly ResourceLimits Limits = new(
-            Constants.Resources.Min,
+            Siniskalc.Heroes.Constants.Resources.Min,
             Constants.Resources.MaxGold,
             Constants.Resources.MaxOther,
-            Constants.Resources.GoldStep,
-            Constants.Resources.OtherStep,
-            Constants.Resources.AllResourcesIncrease,
-            Constants.Resources.GoldIncrease,
-            Constants.Resources.OtherPreset,
-            Constants.Resources.GoldPreset);
+            Siniskalc.Heroes.Constants.Resources.GoldStep,
+            Siniskalc.Heroes.Constants.Resources.OtherStep,
+            Siniskalc.Heroes.Constants.Resources.AllResourcesIncrease,
+            Siniskalc.Heroes.Constants.Resources.GoldIncrease,
+            Siniskalc.Heroes.Constants.Resources.OtherPreset,
+            Siniskalc.Heroes.Constants.Resources.GoldPreset);
 
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;

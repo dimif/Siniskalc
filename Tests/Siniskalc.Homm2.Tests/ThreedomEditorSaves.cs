@@ -54,24 +54,24 @@
 
         private static void ChangeShrines(Game game)
         {
-            var shrines = new MapViewModel(game).Shrines;
+            var shrines = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText).Shrines;
             shrines.Single(s => s.PositionText == "at 45, 7").SpellField.Selected = "Fireball";
             shrines.Single(s => s.PositionText == "at 22, 49").SpellField.Selected = "Mass Haste";
             shrines.Single(s => s.PositionText == "at 19, 16").SpellField.Selected = "Mass Bless";
         }
 
-        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game).Shrines.Where(s => new[] { "at 45, 7", "at 22, 49", "at 19, 16" }.Contains(s.PositionText)).Select(s => $"the shrine {s.PositionText} teaches {s.SpellField.Selected}"));
+        private static string ShrinesOf(Game game) => string.Join(", ", new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText).Shrines.Where(s => new[] { "at 45, 7", "at 22, 49", "at 19, 16" }.Contains(s.PositionText)).Select(s => $"the shrine {s.PositionText} teaches {s.SpellField.Selected}"));
 
         private static void ChangeSphinx(Game game)
         {
-            var sphinx = new MapViewModel(game).Sphinxes.Single();
+            var sphinx = new MapViewModel(game, TestServices.ByteEditTargets, TestServices.MapText).Sphinxes.Single();
             sphinx.SolvedToggle.IsChecked = false;
             sphinx.Answers[2].Text = "shade";
             sphinx.Reward.Single(r => r.Name == "Gold").Value = 5000;
             sphinx.Reward.Single(r => r.Name == "Gems").Value = 5;
         }
 
-        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }).Obelisks.VisitAllCommand.Execute(null);
+        private static void BlueVisitsAllObelisks(Game game) => new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets).Obelisks.VisitAllCommand.Execute(null);
 
         private static void ForgetOneFort(Game game)
         {
@@ -139,9 +139,9 @@
             return new EditedSave(name, baseSave, edit, check(game), game.GetBytesToSave());
         }
 
-        private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { });
+        private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { }, TestServices.ByteEditTargets);
 
-        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
+        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
 
         private static string BuildingsOf(Game game, string castle) =>
             string.Join(", ", Castle(game, castle).Buildings.Where(b => b.IsChecked).Select(b => b.Name));

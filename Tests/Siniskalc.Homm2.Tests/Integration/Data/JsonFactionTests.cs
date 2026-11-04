@@ -41,8 +41,8 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             Assert.That(castle.Garrison.Slots[0]!.Creature.Info.Special!.Single().Name, Is.EqualTo("Luminous (presentation only)"));
             Assert.That(game.GetBytesToSave(), Is.EqualTo(bytes), "Recognizing new JSON codes must not change any original byte.");
 
-            var castlePage = new CastleViewModel(game, castleIndex, _ => { });
-            var heroPage = new HeroViewModel(game, 0, _ => { }, module.MaxSpellPointsCalculator);
+            var castlePage = new CastleViewModel(game, castleIndex, _ => { }, TestServices.ByteEditTargets);
+            var heroPage = new HeroViewModel(game, 0, _ => { }, module.MaxSpellPointsCalculator, TestServices.ByteEditTargets);
             Assert.That(castlePage.Dwellings[5].Built.Choices, Is.EqualTo(new[] { "Not built", "Stargazer", "Astral Seer" }));
             Assert.That(castlePage.Buildings.Select(b => b.Name), Does.Contain("Astral Garden").And.Contain("Star Library"));
             Assert.That(heroPage.ArmyEditor.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Any(c => c.Name == "Astral Seer"), Is.True);
@@ -103,7 +103,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             var module = Module(new DefinitionFixtureReader());
             var (bytes, _, castleIndex) = SyntheticSave();
             var game = module.GameService.LoadGameFromBytes(bytes);
-            var viewModel = new CastleViewModel(game, castleIndex, _ => { }) { SelectedTab = 0 };
+            var viewModel = new CastleViewModel(game, castleIndex, _ => { }, TestServices.ByteEditTargets) { SelectedTab = 0 };
             var window = new Window { Content = new CastlePage(viewModel), Width = 1200, Height = 900 };
             window.Show();
             try

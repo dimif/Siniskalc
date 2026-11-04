@@ -45,6 +45,6 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(loaded.History.GetPendingChanges(), Is.Empty);
         }
 
-        private static CastleViewModel Xabran(Runtime.Game game) => new(game, game.History.Current.Castles().FindByName("Xabran"), _ => { });
+        private static CastleViewModel Xabran(Runtime.Game game) => new(game, game.History.Current.Castles().FindByName("Xabran"), _ => { }, TestServices.ByteEditTargets);
     }
 }

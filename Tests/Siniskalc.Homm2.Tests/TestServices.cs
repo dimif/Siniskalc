@@ -24,6 +24,10 @@ namespace Siniskalc.Homm2.Tests
 
         public static MineGuardianTextProvider MineGuardianText { get; } = new();
 
+        public static MapTextProvider MapText { get; } = new();
+
+        public static IByteEditTargetFactory ByteEditTargets { get; } = new ByteEditTargetFactory();
+
         public static IHeroDeserializer HeroDeserializer { get; } = new HeroDeserializer(TestCatalog.Standard, new CreatureCodes(TestCatalog.Standard));
 
         public static ISerializer<HeroChunk, HeroModel> HeroSerializer { get; } = new SafeHeroSerializer(TestCatalog.Standard);

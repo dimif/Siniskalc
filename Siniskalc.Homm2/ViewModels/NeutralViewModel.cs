@@ -17,7 +17,7 @@
         private readonly Game game;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
-        private readonly IByteEditTargetFactory? byteEditTargets;
+        private readonly IByteEditTargetFactory byteEditTargets;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NeutralViewModel"/> class.
@@ -26,8 +26,8 @@
         /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number.</param>
-        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public NeutralViewModel(Game game, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        public NeutralViewModel(Game game, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory byteEditTargets)
             : base(game.History, PlayerPalette.Of(PlayerColor.Neutral))
         {
             this.game = game;
@@ -48,7 +48,7 @@
 
         /// <inheritdoc/>
         public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
-            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.game.History, mine.Index) : null;
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets.ForMine(this.game.History, mine.Index) : null;
 
         /// <inheritdoc/>
         protected override IReadOnlyList<ILink> LoadHeroes() => OwnedLinks.Heroes(this.game.History.Current.Heroes(), PlayerColor.Neutral, this.openHero);

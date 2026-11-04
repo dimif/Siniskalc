@@ -18,22 +18,22 @@
     public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage, IOwnedMines
     {
         private static readonly ResourceLimits Limits = new(
-            Constants.Player.MinResource,
+            Siniskalc.Heroes.Constants.Resources.Min,
             Constants.Player.MaxGold,
             Constants.Player.MaxOther,
-            Constants.Player.GoldStep,
-            Constants.Player.OtherStep,
-            Constants.Player.AllResourcesIncrease,
-            Constants.Player.GoldIncrease,
-            Constants.Player.OtherPreset,
-            Constants.Player.GoldPreset);
+            Siniskalc.Heroes.Constants.Resources.GoldStep,
+            Siniskalc.Heroes.Constants.Resources.OtherStep,
+            Siniskalc.Heroes.Constants.Resources.AllResourcesIncrease,
+            Siniskalc.Heroes.Constants.Resources.GoldIncrease,
+            Siniskalc.Heroes.Constants.Resources.OtherPreset,
+            Siniskalc.Heroes.Constants.Resources.GoldPreset);
 
         private readonly BanishingTextProvider banishingText;
         private readonly Action<int> openHero;
         private readonly Action<int> openCastle;
         private readonly ResourcesEditorViewModel resources;
         private readonly PlayerEditSession session;
-        private readonly IByteEditTargetFactory? byteEditTargets;
+        private readonly IByteEditTargetFactory byteEditTargets;
         private IReadOnlyList<HeroLinkViewModel> heroes = [];
         private IReadOnlyList<CastleLinkViewModel> castles = [];
         private string banishing = string.Empty;
@@ -47,13 +47,13 @@
         /// <param name="guardianText">Words the read-only mine guardians are shown with.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
         /// <param name="openCastle">Opens the page of a castle, by its number.</param>
-        /// <param name="byteEditTargets">Makes the targets of the hex editor, or <see langword="null"/> for none.</param>
-        public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets = null)
+        /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
+        public PlayerViewModel(Game game, PlayerColor color, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory byteEditTargets)
             : this(game, color, game.History.CreatePlayerSession(color.Code), banishingText, guardianText, openHero, openCastle, byteEditTargets)
         {
         }
 
-        private PlayerViewModel(Game game, PlayerColor color, PlayerEditSession session, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory? byteEditTargets)
+        private PlayerViewModel(Game game, PlayerColor color, PlayerEditSession session, BanishingTextProvider banishingText, MineGuardianTextProvider guardianText, Action<int> openHero, Action<int> openCastle, IByteEditTargetFactory byteEditTargets)
             : base("Player", session)
         {
             this.byteEditTargets = byteEditTargets;
@@ -168,11 +168,11 @@
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
         /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
-        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets?.ForPlayer(this.session);
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets.ForPlayer(this.session);
 
         /// <inheritdoc/>
         public Siniskalc.Core.Data.IByteEditTarget? CreateMineByteEditTarget() =>
-            this.Mines.SelectedMine is { } mine ? this.byteEditTargets?.ForMine(this.session.History, mine.Index) : null;
+            this.Mines.SelectedMine is { } mine ? this.byteEditTargets.ForMine(this.session.History, mine.Index) : null;
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.

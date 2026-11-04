@@ -18,7 +18,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             var document = game.History.Current;
             var castles = document.Castles();
             var hero = document.Heroes().GetModels().First(h => !h.Owner.IsNeutral && castles.UsedIndexes().Any(i => castles.GetModel(i).Owner == h.Owner));
-            var page = new HeroViewModel(game, hero.PortraitId, _ => { }, TestServices.SpellPoints);
+            var page = new HeroViewModel(game, hero.PortraitId, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
             var send = page.Position.SendTo!;
             var target = send.Destinations.First(c => c.Kind == "Castle" && !c.IsOccupied);
             var castle = castles.UsedIndexes().Select(castles.GetModel).Single(c => c.Name == target.Name);
@@ -38,7 +38,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
             Assert.That(page.HasPendingChanges, Is.True);
 
             var neutral = document.Heroes().GetModels().First(h => h.Owner.IsNeutral);
-            Assert.That(new HeroViewModel(game, neutral.PortraitId, _ => { }, TestServices.SpellPoints).Position.SendTo!.HasDestinations, Is.False);
+            Assert.That(new HeroViewModel(game, neutral.PortraitId, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets).Position.SendTo!.HasDestinations, Is.False);
         }
     }
 }

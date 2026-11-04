@@ -19,6 +19,7 @@
     {
         private readonly BanishingTextProvider banishingText;
         private readonly MineGuardianTextProvider guardianText;
+        private readonly MapTextProvider mapText;
 
         /// <param name="backup">Keeps a copy of a savefile before it is replaced.</param>
         /// <param name="bytesPatcher">Applies the edits of a document to the bytes of a savefile.</param>
@@ -28,6 +29,7 @@
         {
             this.banishingText = banishingText;
             this.guardianText = new MineGuardianTextProvider();
+            this.mapText = new MapTextProvider();
             this.Catalogs = new GameCatalogs(definitions);
 
             var locator = new SaveLayoutLocator();
@@ -109,6 +111,6 @@
         /// Makes the editor of Heroes of Might and Magic II, with nothing loaded.
         /// </summary>
         /// <returns>The view model of the editor.</returns>
-        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText), this.banishingText, this.MaxSpellPointsCalculator, this.guardianText);
+        public Homm2EditorViewModel CreateEditor() => new(this.GameService, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.banishingText, this.mapText), this.banishingText, this.MaxSpellPointsCalculator, this.guardianText, this.mapText);
     }
 }

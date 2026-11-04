@@ -75,7 +75,7 @@
         public void TheTavernOfAPlayerIsEditedByPickingAHeroNobodyOwns()
         {
             var game = this.editor.CurrentGame!;
-            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
             var free = game.History.Current.Heroes().GetModels().First(h => h.Owner.IsNeutral && !game.History.Current.Players().GetModel(PlayerColor.Blue.Code).Tavern.Contains(h.PortraitId));
 
             Assert.That(blue.TavernPlaces.Select(p => p.Label), Is.EqualTo(new[] { "First hero", "Second hero" }));
@@ -91,8 +91,8 @@
         [Test]
         public void APlayerThatWasPutOutEarnsNothingWhateverTheIncomeTableHolds()
         {
-            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
-            var blue = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
+            var blue = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
 
             Assert.That(this.editor.CurrentGame!.History.Current.Players().GetModel(PlayerColor.Green.Code).Income.Ore, Is.EqualTo(1), "the save holds 1 ore");
             Assert.That(green.Resources.Select(r => r.Note), Is.All.Empty);
@@ -102,7 +102,7 @@
         [Test]
         public void APlayerThatWasPutOutReadsAsBanishedOnItsPageAndInTheTree()
         {
-            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            var green = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Green, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
             var node = this.editor.NavigationNodes[0].Children.Single(n => n.Kind == NavNodeKind.Player && n.Title == "Green");
 
             Assert.That(green.BanishingText, Is.EqualTo("Banished"));
@@ -115,7 +115,7 @@
             var game = this.editor.CurrentGame!;
             game.History.CreatePlayerSession(PlayerColor.Blue.Code).Update(p => p with { DaysLeft = 1 });
 
-            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            var blue = new PlayerViewModel(game, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
 
             Assert.That(blue.BanishingText, Is.EqualTo("No towns: 1 day left"));
         }
@@ -146,7 +146,7 @@
         [Test]
         public void TheQuickAddButtonsAddToTheResourcesAndStopAtTheLimit()
         {
-            var page = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+            var page = new PlayerViewModel(this.editor.CurrentGame!, PlayerColor.Blue, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
             var gold = page.Resources.Single(r => r.Name == "Gold").Value;
             var wood = page.Resources.Single(r => r.Name == "Wood").Value;
 
@@ -154,7 +154,7 @@
             page.SetAllResourcesCommand.Execute(null);
 
             Assert.That(page.Resources.Single(r => r.Name == "Gold").Value, Is.EqualTo(gold + 100_000));
-            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + Constants.Player.AllResourcesIncrease));
+            Assert.That(page.Resources.Single(r => r.Name == "Wood").Value, Is.EqualTo(wood + Heroes.Constants.Resources.AllResourcesIncrease));
         }
     }
 }

@@ -283,11 +283,11 @@
             return new EditedSave(name, Base, edit, check(game), game.GetBytesToSave());
         }
 
-        private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { });
+        private static CastleViewModel Castle(Game game, string name) => new(game, game.History.Current.Castles().FindByName(name), _ => { }, TestServices.ByteEditTargets);
 
-        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints);
+        private static HeroViewModel Hero(Game game, int id) => new(game, id, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets);
 
-        private static PlayerViewModel Player(Game game, PlayerColor color) => new(game, color, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { });
+        private static PlayerViewModel Player(Game game, PlayerColor color) => new(game, color, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
 
         private static string Towns(Game game, PlayerColor color)
         {

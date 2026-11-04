@@ -82,11 +82,11 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var others = player.Resources.Where(r => !r.IsGold).Select(r => r.Value).ToList();
 
             player.SetAllResourcesCommand.Execute(null);
-            Assert.That(player.Resources.Where(r => !r.IsGold).Select(r => r.Value), Is.EqualTo(others.Select(v => Math.Min(v + Constants.Resources.AllResourcesIncrease, Constants.Resources.MaxOther))));
+            Assert.That(player.Resources.Where(r => !r.IsGold).Select(r => r.Value), Is.EqualTo(others.Select(v => Math.Min(v + Heroes.Constants.Resources.AllResourcesIncrease, Constants.Resources.MaxOther))));
             Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(gold));
 
             player.SetRichCommand.Execute(null);
-            Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(Math.Min(gold + Constants.Resources.GoldIncrease, Constants.Resources.MaxGold)));
+            Assert.That(player.Resources.Single(r => r.IsGold).Value, Is.EqualTo(Math.Min(gold + Heroes.Constants.Resources.GoldIncrease, Constants.Resources.MaxGold)));
             Assert.That(player.ResetCommand.CanExecute(null), Is.True);
 
             player.ResetCommand.Execute(null);

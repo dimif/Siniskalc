@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.Tests.ViewModels
         private static MapPlaces Places() => new(new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>
         {
             [TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("LearningStone")] = [(1, new MapPosition(5, 6)), (3, new MapPosition(7, 8, 1))],
-        });
+        }, []);
 
         private static VisitedPlaceRowViewModel Stones(VisitedPlacesViewModel page) => page.PlacesVisited.Kinds.Single(k => k.Name == TestCatalog.For(GameVersion.HornOfTheAbyss).VisitablePlaces.ById("LearningStone").Name);
 

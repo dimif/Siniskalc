@@ -76,7 +76,7 @@
 
                 <!-- Mines -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
-                    <local:OwnedMinesCard Note="Who owns each mine this player owns."/>
+                    <heroes:OwnedMinesCard Note="Who owns each mine this player owns." SummaryHeading="Guard (read-only)"/>
                 </StackPanel>
 
                 <!-- Obelisks -->

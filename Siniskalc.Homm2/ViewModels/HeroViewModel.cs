@@ -408,14 +408,11 @@
             on => this.session.Update(h => h with { Effects = on ? h.Effects | effect : h.Effects & ~effect }),
             toolTip: toolTip + ". Not tried in the game.");
 
-        /// <remarks>
-        /// The first place of a kind on the map is bit 1 of the hero's set (bit 0 is not used).
-        /// </remarks>
         private VisitedPlaceRowViewModel Visited(Game game, PlaceKind kind, string name, string toolTip) =>
             VisitedPlaceRows.Create(
                 name,
                 toolTip,
-                game.Places.Of(kind).Select((position, index) => (index + 1, position)),
+                game.Places.Of(kind),
                 () => this.session.Current.Visited.Of(kind),
                 edit => this.session.Update(h => h with { Visited = h.Visited.With(kind, edit(h.Visited.Of(kind))) }));
 

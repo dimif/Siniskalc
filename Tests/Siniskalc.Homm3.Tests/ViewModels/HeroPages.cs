@@ -9,6 +9,6 @@ namespace Siniskalc.Homm3.Tests.ViewModels
     internal static class HeroPages
     {
         public static HeroViewModel Create(FakeHeroSession session) =>
-            new(session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(session.GameVersion), new Mock<IByteEditTargetFactory>().Object, openCastle: _ => { });
+            new(session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(session.GameVersion), new Mock<IByteEditTargetFactory>().Object, MapPlaces.None, openCastle: _ => { });
     }
 }

@@ -5,9 +5,9 @@ namespace Siniskalc.Homm2.Tests.Integration.Views
     using System.Windows.Media;
     using System.Windows.Threading;
     using Siniskalc.Heroes.Models;
+    using Siniskalc.Heroes.Wpf.Views;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.ViewModels;
-    using Siniskalc.Homm2.Views;
 
     /// <summary>
     /// The real mines card renders the saved guardians as text, not editable army controls.
@@ -39,7 +39,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Views
 
             var changesBefore = game.History.GetPendingChanges().Count();
             using var page = new PlayerViewModel(game, mine.Owner, TestServices.BanishingText, TestServices.MineGuardianText, _ => { }, _ => { }, TestServices.ByteEditTargets);
-            var card = new OwnedMinesCard { DataContext = page };
+            var card = new OwnedMinesCard { DataContext = page, SummaryHeading = "Guard (read-only)" };
             var window = new Window
             {
                 Content = card,

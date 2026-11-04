@@ -32,7 +32,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         {
             var used = other ?? this.session;
             this.byteEditTargets = new Mock<IByteEditTargetFactory>();
-            return new HeroViewModel(used, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(used.GameVersion), this.byteEditTargets.Object, openCastle: this.openedCastles.Add);
+            return new HeroViewModel(used, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(used.GameVersion), this.byteEditTargets.Object, MapPlaces.None, openCastle: this.openedCastles.Add);
         }
 
         [Test]

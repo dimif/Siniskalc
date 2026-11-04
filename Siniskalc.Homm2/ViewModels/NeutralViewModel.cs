@@ -12,7 +12,7 @@
     /// <summary>
     /// The page of what nobody owns: the heroes and towns that belong to no player, and the mines of the map nobody has flagged.
     /// </summary>
-    public sealed class NeutralViewModel : NeutralPageViewModelBase, IOwnedMines
+    public sealed class NeutralViewModel : NeutralPageViewModelBase, IOwnedMineList<MineRowViewModel>
     {
         private readonly Game game;
         private readonly Action<int> openHero;

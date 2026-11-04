@@ -23,6 +23,7 @@ A level a hero has not learned is `SkillLevel.None`, whatever the game stores.
 The colours the editor draws a player with are in `PlayerPalette`, by the name of the colour; they are the editor's colours and not what a savefile holds.
 `Siniskalc.Heroes` references nothing of a game and no UI (`HeroesLayeringTests`).
 The creature, spell and artifact tables remain game-specific: they differ in codes, sets or meaning. `MapPosition`, `HeroPosition` and `MapHeader` are shared values.
+`MapPlaces<TKind>` holds the places a hero can visit, by kind, each with its number (the bit of the hero's set of the kind); the game's loader numbers them as its savegame does (HoMM2's `MapPlacesReader` from 1 in the order of the map, keeping the first `Constants.Hero.MaxVisitedPlacesPerKind`; HoMM3's `MapPlacesLoader` from the numbers of the cells), and HoMM3's `MapPlaces` derives from it to add the merchants and the places heroes stand on.
 
 **`Siniskalc.Heroes.Wpf`** (net8.0-windows) is the look of the pages of a Heroes game, and knows no single game either.
 `Styles/PageStyles.xaml` has the tab panels (`TabPanel0` to `TabPanel7`, shown while the page's `SelectedTab` is their number), the "edited" mark and Reset pill, the empty note, the templates of a fact row and a link, and the styles of the blocks every page is made of:
@@ -251,7 +252,7 @@ Making the viewer editable would need a byte edit target for the bytes that no c
 
 The hex tabs and the Advanced menu are only shown in advanced mode (`ShellViewModel.IsAdvancedMode`).
 The Hex `NavButton` of each page binds its `Visibility` to it, and a `NavButton` that gets hidden while it is the selected tab selects the first tab.
-The Hex cards below a mine or a dwelling (`OwnedMinesCards`, `OwnedDwellingsCard`) do the same through `AdvancedModeVisibility.Apply`, which makes the binding once the card is loaded in a window (a binding to an ancestor made earlier reports an error).
+The Hex cards below a mine or a dwelling (the shared `OwnedMinesCard` of `Siniskalc.Heroes.Wpf`, whose data context is an `IOwnedMines` and which HoMM3 fills with the guard editor through `Detail`, and HoMM3's `OwnedDwellingsCard`) do the same through `AdvancedModeVisibility.Apply`, which makes the binding once the card is loaded in a window (a binding to an ancestor made earlier reports an error).
 
 ## Settings and backups
 

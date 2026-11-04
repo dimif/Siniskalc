@@ -15,7 +15,7 @@
     /// <summary>
     /// The pages of a player: the resources and what they earn each day, the heroes and the tavern, and the towns.
     /// </summary>
-    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage, IOwnedMines
+    public sealed class PlayerViewModel : SessionPageViewModelBase<PlayerModel>, IPlayerPage, IOwnedMineList<MineRowViewModel>
     {
         private static readonly ResourceLimits Limits = new(
             Siniskalc.Heroes.Constants.Resources.Min,

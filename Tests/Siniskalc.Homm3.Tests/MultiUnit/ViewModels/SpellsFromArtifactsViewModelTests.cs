@@ -23,7 +23,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         public void StartWithChristianWearingNothing()
         {
             this.session = new FakeHeroSession(HeroModels.Christian(new GrantedSpellsResolver(GameVersion.HornOfTheAbyss)));
-            this.page = new HeroViewModel(this.session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(this.session.GameVersion), new Mock<IByteEditTargetFactory>().Object, openCastle: _ => { });
+            this.page = new HeroViewModel(this.session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(this.session.GameVersion), new Mock<IByteEditTargetFactory>().Object, MapPlaces.None, openCastle: _ => { });
         }
 
         [TearDown]

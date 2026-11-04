@@ -134,7 +134,7 @@ namespace Siniskalc.Homm3.Tests
 
         public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateEditor();
 
-        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets);
+        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets, MapPlaces.None);
 
         public static CastleViewModel CreateCastleViewModel(CastleEditSession session) => new(session, Services.ByteEditTargets, Services.CastleBuildMessages, Services.EffectLines);
     }

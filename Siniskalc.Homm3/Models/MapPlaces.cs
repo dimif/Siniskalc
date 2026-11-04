@@ -6,28 +6,26 @@
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
-    /// Where the places of each kind a hero can visit are on the map, by their number among the places of the kind (the number of the bit a hero
-    /// sets when it visits one). A place that a hero stands on is not found, so a kind can have fewer than it has.
+    /// The shared <see cref="MapPlaces{TKind}"/> with what a map of Heroes III adds: its merchants, and the places a hero stands on. A place that a
+    /// hero stands on is not found, so a kind can have fewer than it has until <see cref="WithStanding"/> adds them.
     /// </summary>
-    public sealed class MapPlaces
+    public sealed class MapPlaces : MapPlaces<VisitedPlaceKind>
     {
-        private readonly IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MapPlaces"/> class.
         /// </summary>
         /// <param name="places">The places of each kind, with the number of each among the places of its kind.</param>
-        /// <param name="merchants">The merchants of the map, or <see langword="null"/> for none.</param>
-        public MapPlaces(IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places, IReadOnlyList<(int Number, MapPosition Position)>? merchants = null)
+        /// <param name="merchants">The merchants of the map, empty for none.</param>
+        public MapPlaces(IReadOnlyDictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>> places, IReadOnlyList<(int Number, MapPosition Position)> merchants)
+            : base(places)
         {
-            this.places = places;
-            this.Merchants = merchants ?? [];
+            this.Merchants = merchants;
         }
 
         /// <summary>
         /// Gets the places of a map in which none were found.
         /// </summary>
-        public static MapPlaces None { get; } = new(new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>());
+        public static new MapPlaces None { get; } = new(new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>(), []);
 
         /// <summary>
         /// Gets where the merchants of the map are, by their number among the merchants (the index of their stock). A merchant a hero stands on is not found.
@@ -42,7 +40,7 @@
         /// <returns>The new places; these are not changed.</returns>
         public MapPlaces WithStanding(IEnumerable<(VisitedPlaceKind Kind, int Number, MapPosition Position)> standing)
         {
-            var merged = new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>(this.places);
+            var merged = new Dictionary<VisitedPlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>(this.Places);
             foreach (var group in standing.GroupBy(s => s.Kind))
             {
                 var known = this.Of(group.Key).ToList();
@@ -56,10 +54,5 @@
 
             return new MapPlaces(merged, this.Merchants);
         }
-
-        /// <summary>
-        /// Returns the places of a kind, in the order of their number.
-        /// </summary>
-        public IReadOnlyList<(int Number, MapPosition Position)> Of(VisitedPlaceKind kind) => this.places.TryGetValue(kind, out var found) ? found : [];
     }
 }

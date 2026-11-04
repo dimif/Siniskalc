@@ -96,7 +96,7 @@
 
             if (!this.heroes.TryGetValue(heroIndex, out var hero))
             {
-                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints.Create(game.History.Current.GameVersion()), this.byteEditTargets, game.Map?.HasUnderground ?? true, this.ShowCastle, game.Places);
+                hero = new HeroViewModel(game.History.CreateHeroSession(heroIndex), this.effectLines, this.spellPoints.Create(game.History.Current.GameVersion()), this.byteEditTargets, game.Places, game.Map?.HasUnderground ?? true, this.ShowCastle);
                 this.heroes[heroIndex] = hero;
             }
 

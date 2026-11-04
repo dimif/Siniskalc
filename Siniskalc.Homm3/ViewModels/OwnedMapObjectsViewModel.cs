@@ -15,7 +15,7 @@
     /// The mines (with the guard of the one that is picked) and the dwellings of the map that one owner has, for the Mines and Dwellings tabs of
     /// that owner's page. A row leaves the lists when its owner is changed to another one, and joins the lists of the new owner.
     /// </summary>
-    public sealed class OwnedMapObjectsViewModel : AbstractViewModelBase
+    public sealed class OwnedMapObjectsViewModel : AbstractViewModelBase, IOwnedMineList<MineRowViewModel>
     {
         private readonly SaveDocumentHistory history;
         private readonly IByteEditTargetFactory byteEditTargets;
@@ -35,9 +35,7 @@
             this.byteEditTargets = byteEditTargets;
             var ownerName = OwnerNames<PlayerColor>.Of(owner);
             this.version = history.Current.GameVersion();
-            this.Mines = new MinesListViewModel<MineRowViewModel>(
-                Enumerable.Range(0, history.Current.Mines().Count).Select(i => new MineRowViewModel(history.CreateMineSession(i))).ToList(),
-                mine => mine.OwnerSort == ownerName);
+            this.Mines = OwnedMines.List(history.Current.Mines().Count, i => new MineRowViewModel(history.CreateMineSession(i)), owner);
             this.DwellingList = new SortableListViewModel<MapDwellingRowViewModel>(
                 Enumerable.Range(0, history.Current.Dwellings().Count).Select(i => new MapDwellingRowViewModel(history.CreateDwellingSession(i))).ToList(),
                 new Dictionary<string, Func<MapDwellingRowViewModel, IComparable>>
@@ -67,9 +65,7 @@
             };
         }
 
-        /// <summary>
-        /// Gets the mines of the owner with the headings that sort them, the mine whose guard is shown and how many there are.
-        /// </summary>
+        /// <inheritdoc/>
         public MinesListViewModel<MineRowViewModel> Mines { get; }
 
         /// <summary>
@@ -149,10 +145,7 @@
             this.RaiseAllPropertiesChanged();
         }
 
-        /// <summary>
-        /// Creates the raw bytes of the mine that is picked for the hex editor, or <c>null</c> when the owner has none. The caller owns the target and disposes it.
-        /// </summary>
-        /// <returns>The target, or <see langword="null"/> when no mine is picked.</returns>
+        /// <inheritdoc/>
         public IByteEditTarget? CreateMineByteEditTarget() =>
             this.Mines.SelectedMine is { } mine ? this.byteEditTargets.ForMine(this.history, mine.Index) : null;
 

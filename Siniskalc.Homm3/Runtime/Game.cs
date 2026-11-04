@@ -23,11 +23,11 @@
         /// <param name="history">The history of the savegame.</param>
         /// <param name="name">The name of the savegame, or <see langword="null"/> for none.</param>
         /// <param name="metadata">What the header of the savefile says.</param>
-        /// <param name="places">Where the places a hero can visit are, or <see langword="null"/> for none.</param>
-        public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata<PlayerColor> metadata, MapPlaces? places = null)
+        /// <param name="places">Where the places a hero can visit are, or <see cref="MapPlaces.None"/> for none.</param>
+        public Game(string? file, byte[] bytes, GameVersion gameVersion, SaveDocumentHistory history, string? name, SaveMetadata<PlayerColor> metadata, MapPlaces places)
             : base(file, bytes, history, name, metadata)
         {
-            this.Places = places ?? MapPlaces.None;
+            this.Places = places;
             this.GameVersion = gameVersion;
         }
 

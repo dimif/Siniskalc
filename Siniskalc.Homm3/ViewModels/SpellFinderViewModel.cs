@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
@@ -11,11 +12,11 @@
     /// It has no action button; each row has its own "learned" check box, and an "available" one that only shows what
     /// artifacts give the hero.
     /// </summary>
-    public sealed class SpellFinderViewModel : FinderViewModel<SpellRowViewModel>
+    public sealed class SpellFinderViewModel : SpellFinderViewModelBase<SpellRowViewModel>
     {
         /// <param name="rows">The spells, in the order they are listed.</param>
         public SpellFinderViewModel(IReadOnlyList<SpellRowViewModel> rows)
-            : base(rows, nameof(SpellRowViewModel.School), string.Empty, "spells", FinderColumns)
+            : base(rows, nameof(SpellRowViewModel.School), FinderColumns)
         {
             this.StartFiltering();
         }
@@ -27,30 +28,14 @@
         public override string SearchHint => "Type any of: a name, a school (fire, air, water, earth), a level (level 3) or adventure / combat";
 
         /// <inheritdoc/>
-        public override string Summary
-        {
-            get
-            {
-                var learned = this.Rows.Count(r => r.IsLearned);
-                var available = this.Rows.Count(r => r.IsAvailable);
-                var shown = this.Items.Count;
-                var showing = shown == this.Rows.Count ? string.Empty : $", showing {shown}";
-                return $"{learned} of {this.Rows.Count} learned, {available} available from artifacts{showing}";
-            }
-        }
-
-        /// <inheritdoc/>
-        public override bool AllowsMultiSelect => true;
-
-        /// <inheritdoc/>
-        public override string Footer => "Shift-click or Ctrl-click to select several spells, then tick or untick one of them to change them all.";
+        protected override string SummaryDetail => $", {this.Rows.Count(r => r.IsAvailable)} available from artifacts";
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
-            new("Spell", nameof(SpellRowViewModel.Name), new GridLength(1, GridUnitType.Star)),
-            new("Level", nameof(SpellRowViewModel.Level), new GridLength(60)),
-            new("Type", nameof(SpellRowViewModel.Kind), new GridLength(100), FinderColumnKind.MutedText),
-            new("Learned", nameof(SpellRowViewModel.IsLearned), new GridLength(90), FinderColumnKind.CheckBox),
+            SpellColumn,
+            LevelColumn,
+            TypeColumn,
+            LearnedColumn,
             new(
                 "Available",
                 nameof(SpellRowViewModel.IsAvailable),
@@ -64,11 +49,5 @@
                 FinderColumnKind.MutedText,
                 "What lets the hero cast the spell without having learned it"),
         ];
-
-        /// <inheritdoc/>
-        protected override bool Matches(SpellRowViewModel row)
-        {
-            return this.TextMatches(row.Name, row.School, $"Level {row.Level}", row.Kind);
-        }
     }
 }

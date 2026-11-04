@@ -30,7 +30,7 @@
         /// <summary>
         /// Initializes a new instance of HeroViewModel for the hero edited by <paramref name="session"/>.
         /// </summary>
-        public HeroViewModel(IHeroSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, bool hasUnderground = true, Action<int>? openCastle = null, MapPlaces? places = null)
+        public HeroViewModel(IHeroSession session, EffectLineProvider effectLines, IMaxSpellPointsCalculator<SecondarySkill, SecondarySkills> spellPoints, IByteEditTargetFactory byteEditTargets, MapPlaces places, bool hasUnderground = true, Action<int>? openCastle = null)
             : base(session.Current.Name, session)
         {
             this.session = session;
@@ -41,7 +41,7 @@
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo, () => this.session.SupportsMovedToday);
-            this.visitedPlaces = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
+            this.visitedPlaces = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.HeroModel.HeroClass.Catalog,
                 () => this.HeroModel.SecondarySkills,

@@ -13,6 +13,8 @@ namespace Siniskalc.Homm2.Tests.Data
     {
         private readonly MapPlacesReader reader = new(TestCatalog.Catalogs);
 
+        private static IEnumerable<MapPosition> Positions(MapPlaces<PlaceKind> places, PlaceKind kind) => places.Of(kind).Select(p => p.Position);
+
         [Test]
         public void ASavegameWithNoTableOfTilesHasNoPlaces()
         {
@@ -36,11 +38,11 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var places = this.reader.Read(save.Bytes, save.Layout);
 
-            Assert.That(places.Of(PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(1, 0), new MapPosition(4, 3) }));
-            Assert.That(places.Of(PlaceKind.Fort), Is.EqualTo(new[] { new MapPosition(2, 2) }));
-            Assert.That(places.Of(PlaceKind.WitchDoctorHut), Is.EqualTo(new[] { new MapPosition(5, 5) }));
-            Assert.That(places.Of(PlaceKind.MercenaryCamp), Is.EqualTo(new[] { new MapPosition(0, 4) }));
-            Assert.That(places.Of(PlaceKind.Xanadu), Is.EqualTo(new[] { new MapPosition(3, 1) }));
+            Assert.That(Positions(places, PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(1, 0), new MapPosition(4, 3) }));
+            Assert.That(Positions(places, PlaceKind.Fort), Is.EqualTo(new[] { new MapPosition(2, 2) }));
+            Assert.That(Positions(places, PlaceKind.WitchDoctorHut), Is.EqualTo(new[] { new MapPosition(5, 5) }));
+            Assert.That(Positions(places, PlaceKind.MercenaryCamp), Is.EqualTo(new[] { new MapPosition(0, 4) }));
+            Assert.That(Positions(places, PlaceKind.Xanadu), Is.EqualTo(new[] { new MapPosition(3, 1) }));
             Assert.That(places.Of(PlaceKind.StandingStones), Is.Empty);
         }
 
@@ -54,7 +56,34 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var places = this.reader.Read(save.Bytes, save.Layout);
 
-            Assert.That(places.Of(PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(0, 1), new MapPosition(3, 4), new MapPosition(5, 4) }));
+            Assert.That(Positions(places, PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(0, 1), new MapPosition(3, 4), new MapPosition(5, 4) }));
+        }
+
+        [Test]
+        public void ThePlacesOfAKindAreNumberedFromOneInTheOrderOfTheMap()
+        {
+            var save = new MapSavegame(6);
+            save.Object(5, 4, 0xBE);
+            save.Object(0, 1, 0xBE);
+
+            var places = this.reader.Read(save.Bytes, save.Layout);
+
+            Assert.That(places.Of(PlaceKind.Fort), Is.EqualTo(new[] { (1, new MapPosition(0, 1)), (2, new MapPosition(5, 4)) }), "the number is the bit of the hero's set, and bit 0 is not used");
+        }
+
+        [Test]
+        public void OnlyTheFirstPlacesOfAKindThatAHeroHasABitForAreListed()
+        {
+            var save = new MapSavegame(8);
+            for (var tile = 0; tile <= Constants.Hero.MaxVisitedPlacesPerKind; tile++)
+            {
+                save.Object(tile % 8, tile / 8, 0x8A);
+            }
+
+            var places = this.reader.Read(save.Bytes, save.Layout);
+
+            Assert.That(places.Of(PlaceKind.Gazebo).Select(p => p.Number), Is.EqualTo(Enumerable.Range(1, Constants.Hero.MaxVisitedPlacesPerKind)));
+            Assert.That(places.Of(PlaceKind.Gazebo)[^1].Position, Is.EqualTo(new MapPosition(6, 3)));
         }
 
         [Test]
@@ -71,7 +100,7 @@ namespace Siniskalc.Homm2.Tests.Data
             var places = this.reader.Read(save.Bytes, save.Layout);
 
             Assert.That(
-                places.Of(PlaceKind.StandingStones),
+                Positions(places, PlaceKind.StandingStones),
                 Is.EqualTo(new[] { new MapPosition(1, 1), new MapPosition(4, 3), new MapPosition(0, 4) }),
                 "the stone at the start of a row is a place of its own although the last tile of the row above holds the same object");
         }
@@ -84,7 +113,7 @@ namespace Siniskalc.Homm2.Tests.Data
 
             var places = this.reader.Read(save.Bytes, save.Layout);
 
-            Assert.That(places.Of(PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(2, 3) }));
+            Assert.That(Positions(places, PlaceKind.Gazebo), Is.EqualTo(new[] { new MapPosition(2, 3) }));
         }
 
         [Test]

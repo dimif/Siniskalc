@@ -11,6 +11,7 @@ using Siniskalc.Heroes.ViewModels;
 using Siniskalc.Heroes.Wpf.ViewModels;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
 using Siniskalc.Homm3.ViewModels;
 using Siniskalc.Homm3.Views;
@@ -105,7 +106,7 @@ internal sealed class JsonFactionTests
         var reloaded = services.GameService.LoadGameFromBytes(expected, "reloaded.GM1");
         Assert.That(reloaded.History.Current.Castles().GetModel(index).CreaturesWaiting(0), Is.EqualTo(17));
         using var heroPage = new HeroViewModel(game.History.CreateHeroSession(0), services.EffectLines,
-            services.SpellPoints.Create(GameVersion.HornOfTheAbyss), services.ByteEditTargets);
+            services.SpellPoints.Create(GameVersion.HornOfTheAbyss), services.ByteEditTargets, MapPlaces.None);
         var launcher = catalog.WarMachines.ById("FixtureLauncher");
         heroPage.GeneralInfoViewModel.WarMachineChoices.Single(c => c.Name == launcher.Name).IsChecked = true;
         var editedHero = game.History.Current.Heroes().GetModel(0);

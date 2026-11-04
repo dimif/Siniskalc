@@ -43,7 +43,7 @@
         /// <summary>
         /// Gets where the places a hero can visit once are on the map.
         /// </summary>
-        public MapPlaces Places { get; init; } = MapPlaces.None;
+        public MapPlaces<PlaceKind> Places { get; init; } = MapPlaces<PlaceKind>.None;
 
         /// <summary>
         /// Gets the version of the game the savegame was made with.

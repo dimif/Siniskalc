@@ -2,32 +2,21 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
-             xmlns:wpf="clr-namespace:Siniskalc.Wpf.Views;assembly=Siniskalc.Wpf"
-             xmlns:vm="clr-namespace:Siniskalc.Homm3.ViewModels"
              xmlns:local="clr-namespace:Siniskalc.Homm3.Views">
-    <!-- The mines of one owner, with the guard of the one picked. The DataContext is an OwnedMapObjectsViewModel. -->
-    <StackPanel>
-        <heroes:MinesCard DataContext="{Binding Mines}" Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True"/>
-        <local:ArmyEditor DataContext="{Binding GuardEditor}" ShowFinder="False">
-            <local:ArmyEditor.Style>
-                <Style TargetType="local:ArmyEditor">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </local:ArmyEditor.Style>
-        </local:ArmyEditor>
-        <Border x:Name="hexCard" Style="{StaticResource CardStyle}" HorizontalAlignment="Stretch">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Hex: the bytes of the mine that is picked"/>
-                <wpf:HexEditor Grid.Row="1" x:Name="hexEditor" KnownFieldsHeight="120"/>
-            </Grid>
-        </Border>
-    </StackPanel>
+    <!-- The mines of one owner, with the guard of the one picked between the list and its bytes. The DataContext is an OwnedMapObjectsViewModel. -->
+    <heroes:OwnedMinesCard Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True">
+        <heroes:OwnedMinesCard.Detail>
+            <local:ArmyEditor DataContext="{Binding GuardEditor}" ShowFinder="False">
+                <local:ArmyEditor.Style>
+                    <Style TargetType="local:ArmyEditor">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </local:ArmyEditor.Style>
+            </local:ArmyEditor>
+        </heroes:OwnedMinesCard.Detail>
+    </heroes:OwnedMinesCard>
 </UserControl>

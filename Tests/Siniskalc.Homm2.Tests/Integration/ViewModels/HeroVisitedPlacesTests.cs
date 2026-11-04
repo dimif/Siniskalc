@@ -22,12 +22,12 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var places = TestServices.LoadThreedom(71).Places;
 
-            Assert.That(places.Of(PlaceKind.Fort), Is.EqualTo(new[] { new MapPosition(1, 4), new MapPosition(29, 18), new MapPosition(64, 36), new MapPosition(51, 46), new MapPosition(9, 54) }));
+            Assert.That(places.Of(PlaceKind.Fort), Is.EqualTo(new[] { (1, new MapPosition(1, 4)), (2, new MapPosition(29, 18)), (3, new MapPosition(64, 36)), (4, new MapPosition(51, 46)), (5, new MapPosition(9, 54)) }));
             Assert.That(places.Of(PlaceKind.WitchDoctorHut), Has.Count.EqualTo(6));
             Assert.That(places.Of(PlaceKind.MercenaryCamp), Has.Count.EqualTo(4));
             Assert.That(places.Of(PlaceKind.Gazebo), Has.Count.EqualTo(5));
             Assert.That(places.Of(PlaceKind.StandingStones), Has.Count.EqualTo(7));
-            Assert.That(places.Of(PlaceKind.StandingStones)[0], Is.EqualTo(new MapPosition(5, 0)));
+            Assert.That(places.Of(PlaceKind.StandingStones)[0], Is.EqualTo((1, new MapPosition(5, 0))));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace Siniskalc.Homm2.Tests.Integration.ViewModels
         {
             var game = TestServices.LoadThreedom(82);
 
-            Assert.That(game.Places.Of(PlaceKind.Xanadu), Is.EqualTo(new[] { new MapPosition(37, 49) }), "found although Charity stands on it");
+            Assert.That(game.Places.Of(PlaceKind.Xanadu), Is.EqualTo(new[] { (1, new MapPosition(37, 49)) }), "found although Charity stands on it");
             Assert.That(game.History.Current.Heroes().GetModel(49).Visited.Xanadu, Is.EqualTo(2u));
             Assert.That(TestServices.LoadThreedom(81).History.Current.Heroes().GetModel(49).Visited.Xanadu, Is.EqualTo(0u));
             Assert.That(Row(new HeroViewModel(game, 49, _ => { }, TestServices.SpellPoints, TestServices.ByteEditTargets), "Xanadu").Text, Is.EqualTo("1 of 1"));

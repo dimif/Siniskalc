@@ -16,7 +16,7 @@
             var row = new SpellRowViewModel(TestCatalog.Standard.Spells["Fireball"], (_, _) => { });
 
             Assert.That((row.Name, row.Level, row.Kind, row.Magic, row.Cost, row.Spell), Is.EqualTo(("Fireball", 3, "Combat", "Elemental", 9, TestCatalog.Standard.Spells["Fireball"])));
-            Assert.That(row.Group, Is.Empty);
+            Assert.That(row.Group, Is.EqualTo("Elemental"));
         }
 
         [Test]

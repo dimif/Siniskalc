@@ -1,7 +1,6 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
     using System.Linq;
-    using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
@@ -24,16 +23,11 @@
         /// <returns>The list.</returns>
         public static MinesListViewModel<MineRowViewModel> Create(Game game, MineGuardianTextProvider guardianText, PlayerColor? owner = null)
         {
-            var rows = Enumerable.Range(0, game.History.Current.Mines().Count)
-                .Select(i => new MineRowViewModel(game.History.CreateMineSession(i), game.Catalog, MineOwnerToolTip, guardianText))
-                .ToList();
-            if (owner == null)
-            {
-                return new MinesListViewModel<MineRowViewModel>(rows);
-            }
-
-            var ownerName = OwnerNames<PlayerColor>.Of(owner);
-            return new MinesListViewModel<MineRowViewModel>(rows, mine => mine.OwnerSort == ownerName);
+            var count = game.History.Current.Mines().Count;
+            MineRowViewModel Row(int index) => new(game.History.CreateMineSession(index), game.Catalog, MineOwnerToolTip, guardianText);
+            return owner == null
+                ? new MinesListViewModel<MineRowViewModel>(Enumerable.Range(0, count).Select(Row).ToList())
+                : OwnedMines.List(count, Row, owner);
         }
     }
 }

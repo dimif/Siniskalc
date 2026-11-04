@@ -167,6 +167,12 @@ namespace Siniskalc.Homm2
             /// The step of the movement stepper of a hero.
             /// </summary>
             public const long MovementStep = 100;
+
+            /// <summary>
+            /// The most places of a kind a hero has a bit for: the set of a kind is a 32 bit number and its bit 0 is not used, so the first place of
+            /// a kind is bit 1 and a place after the 31st has none.
+            /// </summary>
+            public const int MaxVisitedPlacesPerKind = 31;
         }
 
         /// <summary>

@@ -1,8 +1,9 @@
 ﻿using Siniskalc.Heroes.Entities;
 using Siniskalc.Heroes.ViewModels;
+using Siniskalc.Heroes.Wpf.Tests.ViewModels;
 using Siniskalc.Heroes.Wpf.ViewModels;
 
-namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
+namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     /// <summary>
     /// The view-only creature finder of the View menu, which shows the byte code of each creature and searches by it.

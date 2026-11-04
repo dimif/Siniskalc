@@ -2,11 +2,10 @@
 {
     using System.Windows.Controls;
     using Siniskalc.Homm3.ViewModels;
-    using Siniskalc.Wpf.Views;
 
     /// <summary>
-    /// Shows the mines and the guard of the mine that is picked of one owner, and the bytes of that mine. All behaviour is in
-    /// <see cref="OwnedMapObjectsViewModel"/>; the control only binds to it and shows the bytes of the mine that is picked.
+    /// Shows the mines of one owner with the guard of the mine that is picked, and the bytes of that mine: the shared owned-mines card with the
+    /// guard editor of HoMM3 in it. All behaviour is in <see cref="OwnedMapObjectsViewModel"/>; the control only binds to it.
     /// </summary>
     public partial class OwnedMinesCards : UserControl
     {
@@ -16,14 +15,6 @@
         public OwnedMinesCards()
         {
             this.InitializeComponent();
-            AdvancedModeVisibility.Apply(this.hexCard);
-            _ = new SelectedRecordHexPresenter<OwnedMapObjectsViewModel>(
-                this,
-                this.hexCard,
-                this.hexEditor,
-                page => page.Mines,
-                page => page.Mines.SelectedMine?.Index,
-                page => page.CreateMineByteEditTarget());
         }
     }
 }

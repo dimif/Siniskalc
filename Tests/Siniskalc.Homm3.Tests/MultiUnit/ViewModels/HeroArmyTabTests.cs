@@ -27,7 +27,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         private HeroViewModel Page() =>
-            new(this.session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(this.session.GameVersion), new Mock<IByteEditTargetFactory>().Object, openCastle: _ => { });
+            new(this.session, new EffectLineProvider(), new SpellPointsCalculatorFactory().Create(this.session.GameVersion), new Mock<IByteEditTargetFactory>().Object, MapPlaces.None, openCastle: _ => { });
 
         [Test]
         public void AStackShowsItsAiAndFightValueForTheWholeStack()

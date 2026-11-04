@@ -6,6 +6,7 @@
     using System.Windows.Threading;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Homm2.Data;
+    using Siniskalc.Heroes.Wpf.ViewModels;
     using Siniskalc.Heroes.Wpf.Views;
     using Siniskalc.Homm2.ViewModels;
     using Siniskalc.Wpf.ViewModels;
@@ -64,6 +65,11 @@
                     Show(window);
                     AssertRendered(Find<Page>(window)!, "Blue");
                 }
+
+                ((PlayerViewModel)editor.CurrentPage!).SelectedTab = OwnerTabs.Mines;
+                Show(window);
+                var mineTexts = Descendants<TextBlock>(Find<Page>(window)!).Where(t => t.IsVisible).Select(t => t.Text).ToList();
+                Assert.That(mineTexts, Is.SupersetOf(new[] { "Mines", "Who owns each mine this player owns.", "Guard (read-only)" }), "the owned-mines card did not render");
 
                 ((PlayerViewModel)editor.CurrentPage!).SelectedTab = 0;
                 Show(window);

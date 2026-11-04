@@ -63,7 +63,7 @@
         {
             var hero = this.HeroWithRoom();
             this.editor.ShowHero(hero);
-            var army = ((HeroViewModel)this.editor.CurrentPage!).ArmyEditor;
+            var army = ((HeroViewModel)this.editor.CurrentPage!).ArmyViewModel;
             var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(hero).Army;
             var free = army.CreatureSlots.First(s => !s.HasCreature);
 
@@ -89,7 +89,7 @@
         {
             var hero = this.HeroWithRoom();
             this.editor.ShowHero(hero);
-            var slot = ((HeroViewModel)this.editor.CurrentPage!).ArmyEditor.CreatureSlots.First(s => !s.HasCreature);
+            var slot = ((HeroViewModel)this.editor.CurrentPage!).ArmyViewModel.CreatureSlots.First(s => !s.HasCreature);
 
             slot.SelectedCreature = "Peasant";
             Assert.That(this.editor.CurrentGame!.History.Current.Heroes().GetModel(hero).Army.Slots[slot.SlotNumber]!.Count, Is.EqualTo(1).Or.GreaterThan(0));
@@ -102,7 +102,7 @@
         public void TheSecondarySkillsOfAHeroAreEditedInSlotsAndInTheList()
         {
             this.editor.ShowHero(7);
-            var skills = ((HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
+            var skills = ((HeroViewModel)this.editor.CurrentPage!).SecondarySkillsViewModel;
             var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7).SecondarySkills;
             var before = model().SlotCount;
             Assert.That(skills.SlotSummary, Is.EqualTo($"{before} of 8 slots used"));
@@ -130,7 +130,7 @@
         public void ASkillCannotBeLearnedWhenAllEightSlotsAreTaken()
         {
             this.editor.ShowHero(7);
-            var skills = ((HeroViewModel)this.editor.CurrentPage!).SkillsEditor;
+            var skills = ((HeroViewModel)this.editor.CurrentPage!).SecondarySkillsViewModel;
             foreach (var row in skills.AllSkills.Where(r => r.LevelName == SkillLevelNames.None).Take(8))
             {
                 row.LevelName = SkillLevelNames.Basic;
@@ -144,7 +144,7 @@
         public void TheSpellBookAndTheSpellsOfAHeroAreEditedOnItsSpellsPage()
         {
             this.editor.ShowHero(7);
-            var spells = ((HeroViewModel)this.editor.CurrentPage!).SpellsEditor;
+            var spells = ((HeroViewModel)this.editor.CurrentPage!).SpellsViewModel;
             var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
             Assert.That(spells.HasSpellBook, Is.True, "Maximus bought the book in save 10");
 
@@ -167,7 +167,7 @@
         public void AnArtifactEquippedFromTheFinderGoesInTheFirstFreeSlotAndMovesItsSkillBonus()
         {
             this.editor.ShowHero(7);
-            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsViewModel;
             var before = this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
 
             artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == this.editor.CurrentGame!.Catalog.Artifacts["UltimateSwordOfDominion"]));
@@ -183,7 +183,7 @@
         public void ChoosingAnArtifactInASlotReplacesTheOneThereAndClearingTakesItOff()
         {
             this.editor.ShowHero(7);
-            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsViewModel;
             var model = () => this.editor.CurrentGame!.History.Current.Heroes().GetModel(7);
             var free = artifacts.Slots.First(s => !s.HasArtifact);
             var index = artifacts.Slots.ToList().IndexOf(free);
@@ -202,7 +202,7 @@
         public void TheFinderCannotEquipWhenEveryArtifactSlotIsTaken()
         {
             this.editor.ShowHero(7);
-            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsEditor;
+            var artifacts = ((HeroViewModel)this.editor.CurrentPage!).ArtifactsViewModel;
             while (artifacts.Slots.Any(s => !s.HasArtifact))
             {
                 artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().First(c => c.Artifact == this.editor.CurrentGame!.Catalog.Artifacts["AmmoCart"]));

@@ -177,9 +177,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             using var page = this.Page();
 
             Assert.That(page.GarrisonCastleName, Is.EqualTo("Gryphon Nest"));
-            Assert.That(page.OpenGarrisonCastleCommand.CanExecute(null), Is.True);
+            Assert.That(page.OpenCastleCommand.CanExecute(null), Is.True);
 
-            page.OpenGarrisonCastleCommand.Execute(null);
+            page.OpenCastleCommand.Execute(null);
 
             Assert.That(this.openedCastles, Is.EqualTo(new[] { 2 }));
         }
@@ -190,7 +190,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             using var page = this.Page();
 
             Assert.That(page.GarrisonCastleName, Is.Empty);
-            Assert.That(page.OpenGarrisonCastleCommand.CanExecute(null), Is.False);
+            Assert.That(page.OpenCastleCommand.CanExecute(null), Is.False);
         }
 
         [Test]

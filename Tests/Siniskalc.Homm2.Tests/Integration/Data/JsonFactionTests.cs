@@ -45,13 +45,13 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
             var heroPage = new HeroViewModel(game, 0, _ => { }, module.MaxSpellPointsCalculator, TestServices.ByteEditTargets);
             Assert.That(castlePage.Dwellings[5].Built.Choices, Is.EqualTo(new[] { "Not built", "Stargazer", "Astral Seer" }));
             Assert.That(castlePage.Buildings.Select(b => b.Name), Does.Contain("Astral Garden").And.Contain("Star Library"));
-            Assert.That(heroPage.ArmyEditor.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Any(c => c.Name == "Astral Seer"), Is.True);
+            Assert.That(heroPage.ArmyViewModel.Finder.Items.Cast<object>().OfType<CreatureChoiceViewModel>().Any(c => c.Name == "Astral Seer"), Is.True);
 
             castlePage.Buildings.Single(b => b.Name == "Star Library").IsChecked = true;
             castlePage.Dwellings[5].Built.Selected = "Astral Seer";
             castlePage.GarrisonEditor.SendToSlot(catalog.Creatures.Find(72)!, 1, 11);
-            heroPage.ArtifactsEditor.Finder.Choose(heroPage.ArtifactsEditor.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(a => a.Name == "Astrolabe"));
-            var spell = heroPage.SpellsEditor.Finder.Items.Cast<SpellRowViewModel>().Single(s => s.Name == "Star Ward");
+            heroPage.ArtifactsViewModel.Finder.Choose(heroPage.ArtifactsViewModel.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(a => a.Name == "Astrolabe"));
+            var spell = heroPage.SpellsViewModel.Finder.Items.Cast<SpellRowViewModel>().Single(s => s.Name == "Star Ward");
             Assert.That(spell.Magic, Is.EqualTo("Celestial"));
             spell.IsLearned = true;
             castlePage.GuildLevelField.Selected = "Level 4";

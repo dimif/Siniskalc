@@ -24,6 +24,7 @@
         private readonly IHeroSession session;
         private readonly bool hasUnderground;
         private readonly IByteEditTargetFactory byteEditTargets;
+        private readonly VisitedPlacesViewModel visitedPlaces;
         private object shownRevision;
 
         /// <summary>
@@ -35,12 +36,12 @@
             this.session = session;
             this.hasUnderground = hasUnderground;
             this.byteEditTargets = byteEditTargets;
-            this.OpenGarrisonCastleCommand = new DelegateCommand(
+            this.OpenCastleCommand = new DelegateCommand(
                 _ => openCastle?.Invoke(this.GarrisonCastleIndex),
                 _ => openCastle != null && this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo, () => this.session.SupportsMovedToday);
-            this.PlacesViewModel = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
+            this.visitedPlaces = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places ?? MapPlaces.None, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 this.HeroModel.HeroClass.Catalog,
                 () => this.HeroModel.SecondarySkills,
@@ -75,9 +76,9 @@
         public GeneralInfoPageViewModel GeneralInfoViewModel { get; }
 
         /// <summary>
-        /// Gets the places of the permanent bonuses the hero visited: the Places tab.
+        /// Gets the card of the places of the permanent bonuses the hero visited: the Places tab.
         /// </summary>
-        public VisitedPlacesViewModel PlacesViewModel { get; }
+        public VisitedPlacesCardViewModel PlacesVisited => this.visitedPlaces.PlacesVisited;
 
         /// <summary>
         /// Gets the cached creatures view model for this hero.
@@ -179,7 +180,7 @@
         /// <summary>
         /// Gets the command that opens the castle that holds this hero.
         /// </summary>
-        public ICommand OpenGarrisonCastleCommand { get; }
+        public ICommand OpenCastleCommand { get; }
 
         /// <summary>
         /// Gets the level and the experience of the hero.
@@ -370,7 +371,7 @@
             this.ArtifactsViewModel.Refresh(hero.EquippedArtifacts);
             this.BackpackViewModel.Refresh(hero.Backpack);
             this.GeneralInfoViewModel.Refresh();
-            this.PlacesViewModel.Refresh();
+            this.visitedPlaces.Refresh();
             this.ArmyViewModel.Refresh();
             this.SecondarySkillsViewModel.Refresh();
             this.SpellsViewModel.Refresh();

@@ -34,7 +34,7 @@
                         </Style>
                     </StackPanel.Style>
                     <TextBlock Text="· Garrisoned in " Foreground="{StaticResource MutedBrush}" FontSize="14" VerticalAlignment="Center"/>
-                    <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenGarrisonCastleCommand}" Content="{Binding GarrisonCastleName}"
+                    <Button Style="{StaticResource LinkButtonStyle}" Command="{Binding OpenCastleCommand}" Content="{Binding GarrisonCastleName}"
                             FontSize="14" ToolTip="Go to castle"/>
                 </StackPanel>
             </StackPanel>
@@ -87,7 +87,7 @@
             <Grid Style="{StaticResource TabPanel4}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <WrapPanel>
-                        <heroes:VisitedPlacesCard DataContext="{Binding PlacesViewModel.PlacesVisited}"/>
+                        <heroes:VisitedPlacesCard DataContext="{Binding PlacesVisited}"/>
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>

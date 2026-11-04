@@ -6,7 +6,7 @@
     using Siniskalc.Wpf.ViewModels;
 
     /// <summary>
-    /// A finder for the spells of Heroes of Might and Magic II: the search text is matched against the name. Each row has its own
+    /// A finder for the spells of Heroes of Might and Magic II: the search text is matched against the name, the level ("level 3"), the type (adventure or combat) and the magic (mind or elemental). Each row has its own
     /// "learned" check box.
     /// </summary>
     public sealed class SpellFinderViewModel : FinderViewModel<SpellRowViewModel>
@@ -17,6 +17,12 @@
         {
             this.StartFiltering();
         }
+
+        /// <inheritdoc/>
+        public override string SearchPlaceholder => "Search by name, level, type, magic...";
+
+        /// <inheritdoc/>
+        public override string SearchHint => "Type any of: a name, a level (level 3), adventure / combat or a kind of magic (for example mind)";
 
         /// <inheritdoc/>
         public override bool AllowsMultiSelect => true;

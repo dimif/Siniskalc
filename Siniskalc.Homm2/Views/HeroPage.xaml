@@ -90,17 +90,17 @@
 
                 <!-- Skills -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel1}">
-                    <heroes:SecondarySkillsView DataContext="{Binding SkillsEditor}"/>
+                    <heroes:SecondarySkillsView DataContext="{Binding SecondarySkillsViewModel}"/>
                 </StackPanel>
 
                 <!-- Creatures -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel2}">
-                    <heroes:ArmyEditorView DataContext="{Binding ArmyEditor}"/>
+                    <heroes:ArmyEditorView DataContext="{Binding ArmyViewModel}"/>
                 </StackPanel>
 
                 <!-- Spells -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
-                    <heroes:SpellsView DataContext="{Binding SpellsEditor}" Height="560"/>
+                    <heroes:SpellsView DataContext="{Binding SpellsViewModel}" Height="560"/>
                 </StackPanel>
 
                 <!-- Places -->
@@ -111,7 +111,7 @@
 
                 <!-- Artifacts -->
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel5}">
-                    <local:ArtifactsView DataContext="{Binding ArtifactsEditor}"/>
+                    <local:ArtifactsView DataContext="{Binding ArtifactsViewModel}"/>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

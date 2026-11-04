@@ -194,7 +194,7 @@
         {
             OverviewViewModel => this.Navigation.Overview,
             PlayerViewModel player => this.Navigation.PlayerTabNode(player.Color.Code, player.SelectedTab),
-            HeroViewModel hero => this.Navigation.HeroNode(hero.HeroId),
+            HeroViewModel hero => this.Navigation.HeroNode(hero.HeroIndex),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
             NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab),
             MapViewModel => this.Navigation.MapNode,

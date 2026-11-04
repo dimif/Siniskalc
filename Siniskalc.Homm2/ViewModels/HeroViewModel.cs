@@ -48,7 +48,7 @@
             var heroId = session.Index;
             this.byteEditTargets = byteEditTargets;
             this.Game = game;
-            this.HeroId = heroId;
+            this.HeroIndex = heroId;
             this.openCastle = openCastle;
             this.session = session;
             this.PrimarySkills = new PrimarySkillsCardViewModel(
@@ -67,22 +67,24 @@
             this.usedOnce = game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.Once).Select(e => this.Remembered(e.Name, e.Flag, e.Description)).ToList();
             this.usedWeekly = game.Catalog.VisitEffects.Where(e => e.Behaviour == VisitBehaviour.Weekly).Select(e => this.Remembered(e.Name, e.Flag, e.Description)).ToList();
             this.visitedPlaces = game.Catalog.Places.Select(place => this.Visited(game, place.Kind, place.Name, place.Description)).ToList();
-            this.ArmyEditor = new ArmyViewModel(
+            this.PlacesVisited = new VisitedPlacesCardViewModel("Visited once per hero", this.visitedPlaces, this.usedOnce);
+            this.PlacesUsedWeekly = new VisitedPlacesCardViewModel("Used once a week", [], this.usedWeekly);
+            this.ArmyViewModel = new ArmyViewModel(
                 game.Catalog,
                 game.GameVersion,
                 () => this.session.Current.Army,
                 edit => this.session.Update(h => h with { Army = edit(h.Army) }));
-            this.SkillsEditor = new SecondarySkillsViewModel(
+            this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
                 game.Catalog,
                 game.GameVersion,
                 () => this.session.Current.SecondarySkills,
                 edit => this.session.Update(h => h with { SecondarySkills = edit(h.SecondarySkills) }));
-            this.SpellsEditor = new SpellsViewModel(
+            this.SpellsViewModel = new SpellsViewModel(
                 game.Catalog,
                 game.GameVersion,
                 () => this.session.Current,
                 edit => this.session.Update(edit));
-            this.ArtifactsEditor = new ArtifactsViewModel(
+            this.ArtifactsViewModel = new ArtifactsViewModel(
                 game.Catalog,
                 game.GameVersion,
                 () => this.session.Current,
@@ -131,7 +133,7 @@
         /// <summary>
         /// Gets the number of the hero.
         /// </summary>
-        public int HeroId { get; }
+        public int HeroIndex { get; }
 
         /// <summary>
         /// Gets the field that sets the owner.
@@ -164,7 +166,7 @@
         /// <summary>
         /// Gets the level of the hero.
         /// </summary>
-        public int Level => this.hero.HeroLevel.Level;
+        public HeroLevel Level => this.hero.HeroLevel;
 
         /// <summary>
         /// Gets the owner as text.
@@ -179,7 +181,7 @@
         /// <summary>
         /// Gets the line under the name of the hero: its faction, its level and where it stands, with a dot between them, such as "Barbarian · level 1 · at 3, 4".
         /// </summary>
-        public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level}", this.PositionText }.Where(t => t.Length > 0));
+        public string SubtitleText => string.Join(" · ", new[] { this.FactionName, $"Level {this.Level.Level}", this.PositionText }.Where(t => t.Length > 0));
 
         /// <summary>
         /// Gets the name of the castle the hero is in, or nothing.
@@ -240,32 +242,32 @@
         /// <summary>
         /// Gets the shared card of the places that give something once to a hero.
         /// </summary>
-        public VisitedPlacesCardViewModel PlacesVisited => new("Visited once per hero", this.visitedPlaces, this.usedOnce);
+        public VisitedPlacesCardViewModel PlacesVisited { get; }
 
         /// <summary>
         /// Gets the card of the buildings that give something once a week: the game clears what they remember at the start of a week.
         /// </summary>
-        public VisitedPlacesCardViewModel PlacesUsedWeekly => new("Used once a week", [], this.usedWeekly);
+        public VisitedPlacesCardViewModel PlacesUsedWeekly { get; }
 
         /// <summary>
         /// Gets the secondary skills of the hero: the slots of the hero screen and the list of every skill.
         /// </summary>
-        public SecondarySkillsViewModel SkillsEditor { get; }
+        public SecondarySkillsViewModel SecondarySkillsViewModel { get; }
 
         /// <summary>
         /// Gets the army of the hero: its slots and the finder of creatures.
         /// </summary>
-        public ArmyViewModel ArmyEditor { get; }
+        public ArmyViewModel ArmyViewModel { get; }
 
         /// <summary>
         /// Gets the spells of the hero: the spell book and the list of every spell.
         /// </summary>
-        public SpellsViewModel SpellsEditor { get; }
+        public SpellsViewModel SpellsViewModel { get; }
 
         /// <summary>
         /// Gets the artifacts of the hero: its fourteen slots and the finder of artifacts.
         /// </summary>
-        public ArtifactsViewModel ArtifactsEditor { get; }
+        public ArtifactsViewModel ArtifactsViewModel { get; }
 
         /// <summary>
         /// Gets whether the hero has the spell book.
@@ -279,7 +281,7 @@
         /// editor was built without the means to make one, and the page has no hex tab.
         /// </summary>
         /// <returns>The target, or <see langword="null"/> when there is no hex editor.</returns>
-        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets.ForHero(this.Game.History, this.HeroId);
+        public Siniskalc.Core.Data.IByteEditTarget? CreateByteEditTarget() => this.byteEditTargets.ForHero(this.Game.History, this.HeroIndex);
 
         /// <summary>
         /// Reads what the page shows from the current document. Called by the page once it is built, and after every change.
@@ -297,7 +299,7 @@
         private void Read()
         {
             var document = this.Game.History.Current;
-            var hero = document.Heroes().GetModel(this.HeroId);
+            var hero = document.Heroes().GetModel(this.HeroIndex);
             this.hero = hero;
 
             this.PrimarySkills.Refresh();
@@ -318,13 +320,13 @@
             this.Position?.Refresh();
             this.Destination?.Refresh();
             this.OwnerField?.Refresh();
-            this.ArmyEditor?.Refresh();
-            this.SkillsEditor?.Refresh();
-            this.SpellsEditor?.Refresh();
+            this.ArmyViewModel?.Refresh();
+            this.SecondarySkillsViewModel?.Refresh();
+            this.SpellsViewModel?.Refresh();
 
-            this.ArtifactsEditor?.Refresh();
+            this.ArtifactsViewModel?.Refresh();
 
-            var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHeroId == this.HeroId);
+            var castle = document.Castles().GetModels().FirstOrDefault(c => c.IsUsed && c.VisitingHeroId == this.HeroIndex);
             this.castleIndex = castle?.Index ?? -1;
             this.castleName = castle?.Name ?? string.Empty;
         }
@@ -364,7 +366,7 @@
 
             var document = this.Game.History.Current;
             var castles = document.Castles();
-            var others = document.Heroes().GetModels().Where((h, index) => index != this.HeroId && !h.Owner.IsNeutral).ToList();
+            var others = document.Heroes().GetModels().Where((h, index) => index != this.HeroIndex && !h.Owner.IsNeutral).ToList();
             var mines = document.Mines();
             var castleDestinations = castles.UsedIndexes()
                 .Select(castles.GetModel)
@@ -372,7 +374,7 @@
                 .Select(c =>
                 {
                     var entrance = c.Position with { Y = c.Position.Y + 1 };
-                    var occupied = (c.VisitingHeroId is { } visiting && visiting != this.HeroId) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
+                    var occupied = (c.VisitingHeroId is { } visiting && visiting != this.HeroIndex) || others.Any(h => h.Position.X == entrance.X && h.Position.Y == entrance.Y);
                     return new MapDestination(c.Name, "Castle", entrance, MapLevelText.Place(entrance.X, entrance.Y), occupied, c.Faction.Name);
                 });
             var mineDestinations = Enumerable.Range(0, mines.Count)
@@ -424,7 +426,7 @@
             maximum,
             step,
             () => get(this.session.Current),
-            () => get(this.Game.History.Original.Heroes().GetModel(this.HeroId)),
+            () => get(this.Game.History.Original.Heroes().GetModel(this.HeroIndex)),
             value => this.session.Update(h => set(h, value)),
             note);
     }

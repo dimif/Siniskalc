@@ -70,6 +70,15 @@ namespace Siniskalc.Homm2.Tests.ViewModels
         }
 
         [Test]
+        public void TheSearchBoxNamesTheFieldsASearchMatches()
+        {
+            var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"])]);
+
+            Assert.That(finder.SearchPlaceholder, Is.EqualTo("Search by name, level, type, magic..."));
+            Assert.That(finder.SearchHint, Does.Contain("level 3").And.Contain("adventure / combat").And.Contain("magic"));
+        }
+
+        [Test]
         public void TheColumnsListTheSpellItsLevelTypeMagicCostAndWhetherItIsLearned()
         {
             var finder = new SpellFinderViewModel([Row(TestCatalog.Standard.Spells["Fireball"])]);

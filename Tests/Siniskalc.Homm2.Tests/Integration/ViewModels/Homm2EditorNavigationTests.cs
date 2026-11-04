@@ -115,7 +115,7 @@
             hero.IsSelected = true;
 
             var page = (HeroViewModel)this.editor.CurrentPage!;
-            Assert.That(page.HeroId, Is.EqualTo(hero.Index));
+            Assert.That(page.HeroIndex, Is.EqualTo(hero.Index));
             Assert.That(page.Name, Is.EqualTo(hero.Title));
         }
 
@@ -229,7 +229,7 @@
             player.Heroes[0].OpenCommand.Execute(null);
 
             var hero = (HeroViewModel)this.editor.CurrentPage!;
-            Assert.That(Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Hero && n.Index == hero.HeroId).IsSelected, Is.True);
+            Assert.That(Descendants(this.editor.NavigationNodes[0]).Single(n => n.Kind == NavNodeKind.Hero && n.Index == hero.HeroIndex).IsSelected, Is.True);
         }
 
         [Test]

@@ -150,7 +150,7 @@
 
         private static void BigStacks(Game game)
         {
-            var army = Hero(game, 1).ArmyEditor;
+            var army = Hero(game, 1).ArmyViewModel;
             foreach (var slot in army.CreatureSlots.Where(s => s.HasCreature))
             {
                 slot.ClearCommand.Execute(null);
@@ -172,7 +172,7 @@
 
         private static void FillMaximusWithArtifacts(Game game)
         {
-            var artifacts = Hero(game, 7).ArtifactsEditor;
+            var artifacts = Hero(game, 7).ArtifactsViewModel;
             foreach (var artifact in new[]
             {
                 TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"], TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"], TestCatalog.Standard.Artifacts["UltimateWandOfMagic"], TestCatalog.Standard.Artifacts["UltimateBookOfKnowledge"],
@@ -190,7 +190,7 @@
 
         private static void EquipAndTakeOff(Game game)
         {
-            var artifacts = Hero(game, 7).ArtifactsEditor;
+            var artifacts = Hero(game, 7).ArtifactsViewModel;
             artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == TestCatalog.Standard.Artifacts["UltimateCloakOfProtection"]));
             artifacts.Finder.Choose(artifacts.Finder.Items.Cast<ArtifactChoiceViewModel>().Single(c => c.Artifact == TestCatalog.Standard.Artifacts["UltimateSwordOfDominion"]));
             artifacts.Slots.Single(s => s.ArtifactName == "Ultimate Sword of Dominion").ClearCommand.Execute(null);
@@ -198,7 +198,7 @@
 
         private static void MaximusEightSkills(Game game)
         {
-            var skills = Hero(game, 7).SkillsEditor;
+            var skills = Hero(game, 7).SecondarySkillsViewModel;
             foreach (var row in skills.AllSkills.OrderByDescending(r => r.HasSkill))
             {
                 if (row.HasSkill || skills.Slots.Any(s => !s.IsFilled))
@@ -210,7 +210,7 @@
 
         private static void GallantBook(Game game)
         {
-            var spells = Hero(game, 1).SpellsEditor;
+            var spells = Hero(game, 1).SpellsViewModel;
             spells.HasSpellBook = true;
             spells.LearnAllCommand.Execute(null);
             spells.Finder.Filter = "fire";
@@ -234,7 +234,7 @@
 
         private static void GallantArmy(Game game)
         {
-            var army = Hero(game, 1).ArmyEditor;
+            var army = Hero(game, 1).ArmyViewModel;
             foreach (var slot in army.CreatureSlots.Where(s => s.HasCreature))
             {
                 slot.ClearCommand.Execute(null);

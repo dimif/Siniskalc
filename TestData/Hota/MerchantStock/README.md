@@ -57,10 +57,22 @@ Head of Legion. Its unique seven-uint32 sequence is at decompressed
 Save 07 clears the last slot; save 08 retains that empty slot. Neither
 changes any of the eight Black Market lists.
 
-Those are fixture observations, not a general town-stock locator. The editor
-does not expose this shared town stock yet. Neutral-town access, monthly
-refresh, other versions and the surrounding block format remain unverified.
+The stock starts **38 bytes after the saved date**: six bytes for uint16
+day/week/month, then a 32-byte zero block. `TownMerchantStockLocator` uses
+the uniquely marked date (`7F flag 02 flag` immediately before it), rejects
+truncated/ambiguous blocks and does not search for artifact values. Thus
+empty and unknown stock slots remain locatable. The stock moves to
+`0x7979D` in saves 09 and 10; the locator follows it.
+
+This structure matches 488 SoD/HotA saves in the current corpus, including
+these eleven controls. The five `empire_of_the_world` / `new_day` HotA saves
+have another date prefix and are deliberately refused for town stock.
+Genuine RoE, AB and Chronicles formats are not enabled. The editor does not
+expose this shared town stock yet. Neutral-town access, monthly refresh and
+the meaning of the surrounding fields remain unverified.
 
 `MerchantStockTests` checks the eight purchases, all fixture round trips,
 isolated edits with reload/undo/redo/revert, and the separate town-stock
 observations. `MapViewModelTests` checks all eight displayed locations.
+`TownMerchantStockLocatorTests` checks the moving offsets, expected stock,
+the complete save corpus, unknown/sold-out slots and rejected malformed blocks.

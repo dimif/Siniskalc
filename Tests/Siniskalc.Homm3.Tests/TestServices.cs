@@ -62,6 +62,8 @@ namespace Siniskalc.Homm3.Tests
 
         public static ISaveDocumentFactory DocumentFactory => Services.DocumentFactory;
 
+        public static ITownMerchantStockLocator TownMerchantStockLocator => Services.TownMerchantStockLocator;
+
         public static ICastleDeserializer CastleDeserializer => Services.CastleDeserializer;
 
         public static ISerializer<CastleChunk, CastleModel> CastleSerializer => Services.CastleSerializer;

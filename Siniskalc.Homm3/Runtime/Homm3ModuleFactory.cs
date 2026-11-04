@@ -38,6 +38,7 @@
             this.BanishingText = banishingText;
 
             var dateLocator = new GameDateLocator();
+            this.TownMerchantStockLocator = new TownMerchantStockLocator(dateLocator);
             var setupLocator = new PlayerControlLocator();
             var mapHeaderLocator = new MapHeaderLocator();
             var catalogs = new GameCatalogLoader(definitions).Load();
@@ -126,6 +127,9 @@
         /// Gets what makes the document of a savegame.
         /// </summary>
         public ISaveDocumentFactory DocumentFactory { get; }
+
+        /// <summary>Gets the locator of the stock shared by town Artifact Merchants.</summary>
+        public ITownMerchantStockLocator TownMerchantStockLocator { get; }
 
         /// <summary>
         /// Gets what reads a castle from its chunk.

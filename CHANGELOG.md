@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/); a release is made by
 
 ## [Unreleased]
 
+- **Located (HoMM3): shared town Artifact Merchant stock** follows the marked date block at date +38, verified across 488 SoD/HotA saves. The locator handles empty/unknown slots and refuses ambiguous, truncated or unsupported blocks, including five alternate-prefix HotA saves. Town-stock tabs/editing are not yet connected.
 - **Verified (HoMM3): all eight Black Markets' stocks and map anchors** against controlled Red/Blue purchases and their companion map. Eleven permanent save fixtures cover the 56 starting slots, isolated purchases and edits, reload, undo/redo, revert and unchanged saves. Town Artifact Merchants have separate shared stock; the Map page does not edit it yet.
 - **Fixed (HoMM2): reverting an individual artifact change also reconciles its primary-skill bonuses**, preserving other artifacts and independently edited skills.
 - **Fixed (HoMM3): cached player pages refresh their current-turn labels** after a turn change, undo and redo.

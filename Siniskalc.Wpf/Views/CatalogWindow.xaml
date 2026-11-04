@@ -1,0 +1,12 @@
+<Window x:Class="Siniskalc.Wpf.Views.CatalogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Siniskalc.Wpf.Views"
+        Height="700"
+        Width="1100"
+        WindowStartupLocation="CenterOwner">
+    <!-- A read-only list of what a game has, with the byte code of each. DataContext is an AbstractFinderViewModel with no action. -->
+    <Border Padding="12">
+        <local:FinderView ListMaxHeight="560"/>
+    </Border>
+</Window>

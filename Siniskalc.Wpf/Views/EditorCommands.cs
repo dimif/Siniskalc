@@ -40,6 +40,22 @@
             typeof(EditorCommands));
 
         /// <summary>
+        /// Shows every artifact of the game with its byte code, read only.
+        /// </summary>
+        public static readonly RoutedUICommand ViewArtifacts = new RoutedUICommand(
+            "View Artifacts",
+            nameof(ViewArtifacts),
+            typeof(EditorCommands));
+
+        /// <summary>
+        /// Shows every creature of the game with its byte code, read only.
+        /// </summary>
+        public static readonly RoutedUICommand ViewCreatures = new RoutedUICommand(
+            "View Creatures",
+            nameof(ViewCreatures),
+            typeof(EditorCommands));
+
+        /// <summary>
         /// Opens the page where problems are reported.
         /// </summary>
         public static readonly RoutedUICommand OpenIssues = new RoutedUICommand(

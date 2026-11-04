@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using Siniskalc.Core;
     using Siniskalc.Heroes.Entities;
 
     /// <summary>
@@ -27,6 +28,16 @@
         /// Gets the creature.
         /// </summary>
         public ICreature Creature { get; }
+
+        /// <summary>
+        /// Gets the byte that stands for the creature in a savefile.
+        /// </summary>
+        public byte CodeValue => this.Creature.Code;
+
+        /// <summary>
+        /// Gets the byte code in hex, such as "0x2A".
+        /// </summary>
+        public string Code => ByteCodeText.Format(this.Creature.Code);
 
         /// <summary>
         /// Gets the name of the creature.

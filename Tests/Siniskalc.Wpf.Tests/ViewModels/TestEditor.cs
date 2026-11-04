@@ -69,6 +69,10 @@
         /// <summary>Gives the page a node shows, when it is not the page of the same number (the Mines tab of a player, say).</summary>
         public Func<NavNodeViewModel, string>? PageOf { get; set; }
 
+        public override AbstractFinderViewModel CreateArtifactCatalog() => throw new NotSupportedException();
+
+        public override AbstractFinderViewModel CreateCreatureCatalog() => throw new NotSupportedException();
+
         protected override object? OverviewPage => this.Overview;
 
         public void Show(object? page) => this.SetCurrentPage(page is string text ? string.Intern(text) : page);

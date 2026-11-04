@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.ViewModels
 {
+    using Siniskalc.Core;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Homm2.Entities;
 
@@ -22,6 +23,16 @@
         /// Gets the artifact the choice stands for.
         /// </summary>
         public Artifact Artifact { get; }
+
+        /// <summary>
+        /// Gets the byte that stands for the artifact in a savefile.
+        /// </summary>
+        public byte CodeValue => this.Artifact.Code;
+
+        /// <summary>
+        /// Gets the byte code in hex, such as "0x2A".
+        /// </summary>
+        public string Code => ByteCodeText.Format(this.Artifact.Code);
 
         /// <summary>
         /// Gets the name of the artifact.

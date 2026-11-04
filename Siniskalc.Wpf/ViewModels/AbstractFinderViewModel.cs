@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Windows.Data;
     using System.Windows.Input;
+    using Siniskalc.Core;
 
     /// <summary>
     /// What every finder has: a list of rows grouped under headings, a search text that narrows it,
@@ -230,6 +231,19 @@
         {
             var words = this.filter.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             return words.All(word => fields.Any(f => f != null && f.Contains(word, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// Like <see cref="TextMatches(string?[])"/>, but a word also matches when it is the byte code of the row in hex or decimal
+        /// (see <see cref="ByteCodeText.Matches"/>).
+        /// </summary>
+        /// <returns><see langword="true"/> if every word of the search text is in one of the fields or is the code, or there is no search text.</returns>
+        /// <param name="code">The byte code of the row.</param>
+        /// <param name="fields">The texts of a row to look in; a <see langword="null"/> one is skipped.</param>
+        protected bool TextOrCodeMatches(byte code, params string?[] fields)
+        {
+            var words = this.filter.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            return words.All(word => ByteCodeText.Matches(code, word) || fields.Any(f => f != null && f.Contains(word, StringComparison.OrdinalIgnoreCase)));
         }
 
         /// <summary>

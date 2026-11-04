@@ -278,6 +278,18 @@
         public SaveHexDump CreateSaveHexDump() => this.editor.CreateSaveHexDump();
 
         /// <summary>
+        /// Makes a read-only finder of the artifacts of the open game, with their byte codes.
+        /// </summary>
+        /// <returns>The finder.</returns>
+        public AbstractFinderViewModel CreateArtifactCatalog() => this.editor.CreateArtifactCatalog();
+
+        /// <summary>
+        /// Makes a read-only finder of the creatures of the open game, with their byte codes.
+        /// </summary>
+        /// <returns>The finder.</returns>
+        public AbstractFinderViewModel CreateCreatureCatalog() => this.editor.CreateCreatureCatalog();
+
+        /// <summary>
         /// Goes back to the state before the last edit.
         /// </summary>
         public void Undo() => this.editor.Undo();

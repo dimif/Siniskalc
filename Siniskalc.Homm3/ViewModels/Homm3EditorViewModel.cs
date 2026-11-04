@@ -218,6 +218,14 @@
         }
 
         /// <inheritdoc/>
+        public override AbstractFinderViewModel CreateArtifactCatalog() =>
+            ArtifactFinderViewModel.ForCatalog(this.Loaded().History.Current.Catalog(), this.effectLines);
+
+        /// <inheritdoc/>
+        public override AbstractFinderViewModel CreateCreatureCatalog() =>
+            new CreatureFinderViewModel(this.Loaded().History.Current.Catalog().Creatures.All.Select(c => ((Heroes.Entities.ICreature)c, c.Info)));
+
+        /// <inheritdoc/>
         protected override object? PrepareGame(Game game) =>
             new OverviewViewModel(game, this.banishingText, this.ShowHero, index => this.ShowPlayer(index), this.ShowCastle);
 

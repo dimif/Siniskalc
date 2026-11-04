@@ -158,6 +158,22 @@
             this.files.Run(() => new SaveHexWindow(dump) { Owner = this }.Show(), "View save hex", "show the savefile bytes");
         }
 
+        private void ViewArtifactsCmdExecuted(object sender, ExecutedRoutedEventArgs e) =>
+            this.ShowCatalog("Artifacts", viewModel => viewModel.CreateArtifactCatalog());
+
+        private void ViewCreaturesCmdExecuted(object sender, ExecutedRoutedEventArgs e) =>
+            this.ShowCatalog("Creatures", viewModel => viewModel.CreateCreatureCatalog());
+
+        private void ShowCatalog(string what, Func<ShellViewModel, AbstractFinderViewModel> create)
+        {
+            if (this.ViewModel is not { IsGameLoaded: true } viewModel)
+            {
+                return;
+            }
+
+            this.files.Run(() => new CatalogWindow($"View {what}", create(viewModel)) { Owner = this }.Show(), $"View {what}", $"show the {what.ToLowerInvariant()}");
+        }
+
         private void LoadFromDumpCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.WithViewModel(this.files.LoadBytes);

@@ -146,6 +146,20 @@
         }
 
         /// <inheritdoc/>
+        public override AbstractFinderViewModel CreateArtifactCatalog()
+        {
+            var game = this.Loaded();
+            return ArtifactFinderViewModel.ForCatalog(game.Catalog, game.GameVersion);
+        }
+
+        /// <inheritdoc/>
+        public override AbstractFinderViewModel CreateCreatureCatalog()
+        {
+            var game = this.Loaded();
+            return new CreatureFinderViewModel(game.Catalog.Creatures.Where(c => c.IsAvailableIn(game.GameVersion)).Select(c => ((Heroes.Entities.ICreature)c, c.Info)));
+        }
+
+        /// <inheritdoc/>
         protected override object? PrepareGame(Game game) => new OverviewViewModel(game, this.banishingText, color => this.ShowPlayer(color), this.ShowHero, this.ShowCastle);
 
         /// <inheritdoc/>

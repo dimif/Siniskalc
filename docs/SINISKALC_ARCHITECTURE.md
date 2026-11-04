@@ -244,6 +244,8 @@ SaveHexDump (read only)      SaveRegionProvider  ->  HexViewer in SaveHexWindow 
 
 `SaveRegionProvider` places the regions of every chunk at its position in the savefile (`ByteRegion.Shifted`), and adds the savefile header, the map header, the setup of the players and the date, using the `Locate`/`FindOffset` methods of their locators.
 A hero with a biography has its header and biography in front of the chunk, so the fields of the chunk that fall in the header are left out and the header's own regions are used.
+The View menu's **View Artifacts** / **View Creatures** use `IObservableGameEditor.CreateArtifactCatalog` / `CreateCreatureCatalog` (each game's editor builds a code-showing, action-less finder: `ArtifactFinderViewModel.ForCatalog`, the catalog constructor of `CreatureFinderViewModel`) and `CatalogWindow` shows it; `ByteCodeText` (Core) formats a code and decides which search words match it.
+
 The viewer makes its lines when the grid asks for them (`HexRowList`), because a savefile is about a million bytes; the editor builds a `DataTable` and is for single chunks.
 Making the viewer editable would need a byte edit target for the bytes that no chunk covers, and undo for them.
 

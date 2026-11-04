@@ -76,6 +76,10 @@ namespace Siniskalc.Wpf.Tests.ViewModels
 
         public SaveHexDump CreateSaveHexDump() => throw new NotSupportedException();
 
+        public AbstractFinderViewModel CreateArtifactCatalog() => throw new NotSupportedException();
+
+        public AbstractFinderViewModel CreateCreatureCatalog() => throw new NotSupportedException();
+
         public void Undo() => this.Undone++;
 
         public void Redo()

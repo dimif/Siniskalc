@@ -20,17 +20,29 @@
         /// <param name="onChoose">Called with the artifact when the user picks one.</param>
         /// <param name="canChoose">Tells whether an artifact can be picked right now; the button is disabled when not. Always when omitted.</param>
         public ArtifactFinderViewModel(GameCatalog catalog, GameVersion gameVersion, string title, string actionLabel, Action<Artifact> onChoose, Func<bool>? canChoose = null)
-            : base(CreateRows(catalog, gameVersion), null, title, "artifacts", FinderColumns)
+            : this(catalog, gameVersion, title, showCodes: false)
         {
             this.SetAction(actionLabel, choice => onChoose(choice.Artifact), _ => canChoose?.Invoke() ?? true);
+        }
+
+        private ArtifactFinderViewModel(GameCatalog catalog, GameVersion gameVersion, string title, bool showCodes)
+            : base(CreateRows(catalog, gameVersion), null, title, "artifacts", showCodes ? CatalogColumns : FinderColumns)
+        {
+            this.ShowsCodes = showCodes;
             this.StartFiltering();
         }
 
-        /// <inheritdoc/>
-        public override string SearchPlaceholder => "Search by name or effect...";
+        /// <summary>
+        /// Gets whether the finder shows the byte code of each artifact and finds artifacts by it.
+        /// </summary>
+        public bool ShowsCodes { get; }
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type part of a name, or what it adds: attack, defense, spell power, knowledge";
+        public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code or effect..." : "Search by name or effect...";
+
+        /// <inheritdoc/>
+        public override string SearchHint => "Type part of a name, or what it adds: attack, defense, spell power, knowledge"
+            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -38,8 +50,24 @@
             new("Adds to the skills", nameof(ArtifactChoiceViewModel.Bonuses), new GridLength(2, GridUnitType.Star), FinderColumnKind.MutedText),
         ];
 
+        private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
+        [
+            new("Code", nameof(ArtifactChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the artifact in a savefile, in hex"),
+            .. FinderColumns,
+        ];
+
+        /// <summary>
+        /// Makes a finder that only looks artifacts up: it has no action, and shows the byte code of each, left of its name.
+        /// </summary>
+        /// <param name="catalog">The catalog of the game.</param>
+        /// <param name="gameVersion">The game version; artifacts from later versions are left out.</param>
+        /// <returns>The finder.</returns>
+        public static ArtifactFinderViewModel ForCatalog(GameCatalog catalog, GameVersion gameVersion) =>
+            new(catalog, gameVersion, string.Empty, showCodes: true);
+
         /// <inheritdoc/>
-        protected override bool Matches(ArtifactChoiceViewModel row) => this.TextMatches(row.Name, row.Bonuses);
+        protected override bool Matches(ArtifactChoiceViewModel row) =>
+            this.ShowsCodes ? this.TextOrCodeMatches(row.CodeValue, row.Name, row.Bonuses) : this.TextMatches(row.Name, row.Bonuses);
 
         private static List<ArtifactChoiceViewModel> CreateRows(GameCatalog catalog, GameVersion gameVersion) => catalog.Artifacts
             .Where(a => a.IsAvailableIn(gameVersion))

@@ -59,6 +59,12 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.ViewSaveHex}"
                 Executed="ViewSaveHexCmdExecuted"
                 CanExecute="GameLoadedCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.ViewArtifacts}"
+                Executed="ViewArtifactsCmdExecuted"
+                CanExecute="GameLoadedCanExecute"/>
+        <CommandBinding Command="{x:Static cmd:EditorCommands.ViewCreatures}"
+                Executed="ViewCreaturesCmdExecuted"
+                CanExecute="GameLoadedCanExecute"/>
         <CommandBinding Command="{x:Static ApplicationCommands.Help}"
                 Executed="HelpCmdExecuted"
                 CanExecute="AlwaysCanExecute"/>
@@ -155,6 +161,8 @@
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_Pending changes" IsCheckable="True" IsChecked="{Binding IsPendingChangesOpen, Mode=TwoWay}" IsEnabled="{Binding IsGameLoaded}"/>
+                <MenuItem Command="{x:Static cmd:EditorCommands.ViewArtifacts}"/>
+                <MenuItem Command="{x:Static cmd:EditorCommands.ViewCreatures}"/>
             </MenuItem>
             <MenuItem Header="_Settings..." Command="{x:Static cmd:EditorCommands.EditSettings}"
                       ToolTip="Saving, the advanced tools and the logging"/>

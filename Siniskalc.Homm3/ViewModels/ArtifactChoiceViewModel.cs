@@ -2,6 +2,7 @@
 {
     using System.Globalization;
     using System.Linq;
+    using Siniskalc.Core;
     using Siniskalc.Homm3.Entities;
 
     /// <summary>
@@ -28,6 +29,16 @@
         /// Gets the spell of a Spell Scroll row; null for every other artifact.
         /// </summary>
         public Spell? Spell { get; }
+
+        /// <summary>
+        /// Gets the byte that stands for the artifact in a savefile.
+        /// </summary>
+        public byte CodeValue => this.Artifact.Code;
+
+        /// <summary>
+        /// Gets the byte code in hex, such as "0x2A".
+        /// </summary>
+        public string Code => ByteCodeText.Format(this.Artifact.Code);
 
         /// <summary>
         /// Gets the name of the choice: the artifact, or the scroll with the name of its spell.

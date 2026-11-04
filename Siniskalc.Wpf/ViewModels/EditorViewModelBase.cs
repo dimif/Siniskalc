@@ -139,6 +139,12 @@
         }
 
         /// <inheritdoc/>
+        public abstract AbstractFinderViewModel CreateArtifactCatalog();
+
+        /// <inheritdoc/>
+        public abstract AbstractFinderViewModel CreateCreatureCatalog();
+
+        /// <inheritdoc/>
         public void Undo() => this.currentGame?.History.Undo();
 
         /// <inheritdoc/>

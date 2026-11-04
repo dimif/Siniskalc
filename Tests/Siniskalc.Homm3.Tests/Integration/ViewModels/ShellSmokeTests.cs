@@ -319,6 +319,45 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
+        public void TheArtifactAndCreatureCatalogWindowsListEveryRowWithoutBindingErrors()
+        {
+            var errors = new BindingErrorListener();
+            PresentationTraceSources.Refresh();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(errors);
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error;
+
+            try
+            {
+                EnsureApplication();
+
+                var viewModel = TestServices.CreateHomm3Editor();
+                viewModel.LoadGameFromBytes(TestServices.SavefileCodec.Read(SavePath), SavePath);
+
+                foreach (var finder in new[] { viewModel.CreateArtifactCatalog(), viewModel.CreateCreatureCatalog() })
+                {
+                    var window = new CatalogWindow("Catalog", finder);
+                    window.Show();
+                    try
+                    {
+                        Pump();
+                        Assert.That(finder.Items.Count, Is.GreaterThan(10));
+                        Assert.That(finder.Columns[0].Header, Is.EqualTo("Code"));
+                    }
+                    finally
+                    {
+                        window.Close();
+                    }
+                }
+            }
+            finally
+            {
+                PresentationTraceSources.DataBindingSource.Listeners.Remove(errors);
+            }
+
+            Assert.That(errors.Messages, Is.Empty, string.Join(Environment.NewLine, errors.Messages));
+        }
+
+        [Test]
         public void PagesOfAShadowOfDeathGameWithObelisksATavernAndHeroesInACastleLoadWithoutBindingErrors()
         {
             var errors = new BindingErrorListener();

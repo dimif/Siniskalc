@@ -60,6 +60,26 @@
         }
 
         /// <summary>
+        /// Initializes a finder that only looks creatures up: it has no action and no menu, and shows the byte code of each, left of its name.
+        /// </summary>
+        /// <param name="creatures">The creatures to list, each with its stats for the game version of the savegame.</param>
+        public CreatureFinderViewModel(IEnumerable<(ICreature Creature, CreatureInfo Info)> creatures)
+            : base(CreateRows(creatures), nameof(CreatureChoiceViewModel.Faction), string.Empty, "creatures", CatalogColumns)
+        {
+            this.slotCount = 0;
+            this.minAmount = 1;
+            this.maxAmount = 1;
+            this.hasFreeSlot = () => true;
+            this.ShowsCodes = true;
+            this.StartFiltering();
+        }
+
+        /// <summary>
+        /// Gets whether the finder shows the byte code of each creature and finds creatures by it.
+        /// </summary>
+        public bool ShowsCodes { get; }
+
+        /// <summary>
         /// Gets or sets how many creatures a new stack from the finder starts with.
         /// </summary>
         public int AddAmount
@@ -84,10 +104,11 @@
         public override string? RowToolTipPath => nameof(CreatureChoiceViewModel.Details);
 
         /// <inheritdoc/>
-        public override string SearchPlaceholder => "Search by name, level, town...";
+        public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code, level, town..." : "Search by name, level, town...";
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type any of: a name, a town (castle, knight...), a level (level 3) or basic / upgraded";
+        public override string SearchHint => "Type any of: a name, a town (castle, knight...), a level (level 3) or basic / upgraded"
+            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -101,6 +122,12 @@
             new("Cost", nameof(CreatureChoiceViewModel.Cost), new GridLength(52), FinderColumnKind.MutedText, "Gold cost of one creature"),
             new("Resources", nameof(CreatureChoiceViewModel.Resources), new GridLength(110), FinderColumnKind.MutedText, "What one creature costs besides gold"),
             new("Special", nameof(CreatureChoiceViewModel.Special), new GridLength(1, GridUnitType.Star), FinderColumnKind.MutedText, "What the creature can do beyond fighting; point at a row to read it in full"),
+        ];
+
+        private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
+        [
+            new("Code", nameof(CreatureChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the creature in a savefile, in hex"),
+            .. FinderColumns,
         ];
 
         /// <summary>
@@ -119,7 +146,9 @@
         }
 
         /// <inheritdoc/>
-        protected override bool Matches(CreatureChoiceViewModel choice) => this.TextMatches(choice.Name, choice.Faction, $"Level {choice.Level}", choice.Form);
+        protected override bool Matches(CreatureChoiceViewModel choice) => this.ShowsCodes
+            ? this.TextOrCodeMatches(choice.CodeValue, choice.Name, choice.Faction, $"Level {choice.Level}", choice.Form)
+            : this.TextMatches(choice.Name, choice.Faction, $"Level {choice.Level}", choice.Form);
 
         /// <summary>
         /// Lists creatures town by town, neutral ones last, and inside a town by level, the basic form before the upgraded one.

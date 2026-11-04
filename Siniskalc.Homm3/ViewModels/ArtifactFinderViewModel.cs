@@ -40,11 +40,31 @@
         /// <param name="includeScrolls">Lists one Spell Scroll row per spell instead of a single spell-less one.</param>
         /// <param name="rowFilter">Leaves out the artifacts it returns false for, e.g. those that do not fit a slot. All are listed when omitted.</param>
         public ArtifactFinderViewModel(EntityCatalog catalog, EffectLineProvider effectLines, string title, string actionLabel, Action<ArtifactChoiceViewModel> onChoose, Func<ArtifactChoiceViewModel, bool>? canChoose, bool includeScrolls, Func<Artifact, bool>? rowFilter = null)
-            : base(CreateRows(catalog, effectLines, includeScrolls, rowFilter), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", FinderColumns)
+            : this(catalog, effectLines, title, includeScrolls, rowFilter, showCodes: false)
         {
             this.SetAction(actionLabel, onChoose, canChoose);
+        }
+
+        private ArtifactFinderViewModel(EntityCatalog catalog, EffectLineProvider effectLines, string title, bool includeScrolls, Func<Artifact, bool>? rowFilter, bool showCodes)
+            : base(CreateRows(catalog, effectLines, includeScrolls, rowFilter), nameof(ArtifactChoiceViewModel.SlotName), title, "artifacts", showCodes ? CatalogColumns : FinderColumns)
+        {
+            this.ShowsCodes = showCodes;
             this.StartFiltering();
         }
+
+        /// <summary>
+        /// Gets whether the finder shows the byte code of each artifact and finds artifacts by it.
+        /// </summary>
+        public bool ShowsCodes { get; }
+
+        /// <summary>
+        /// Makes a finder that only looks artifacts up: it has no action, and shows the byte code of each, left of its name.
+        /// </summary>
+        /// <param name="catalog">The artifacts of the game version.</param>
+        /// <param name="effectLines">Words what the artifacts do.</param>
+        /// <returns>The finder.</returns>
+        public static ArtifactFinderViewModel ForCatalog(EntityCatalog catalog, EffectLineProvider effectLines) =>
+            new(catalog, effectLines, string.Empty, false, null, showCodes: true);
 
         /// <summary>
         /// Gets the artifacts, grouped by where they are worn and narrowed by the search text.
@@ -55,10 +75,11 @@
         public override string? RowToolTipPath => nameof(ArtifactChoiceViewModel.Effects);
 
         /// <inheritdoc/>
-        public override string SearchPlaceholder => "Search by name, slot, type, effect...";
+        public override string SearchPlaceholder => this.ShowsCodes ? "Search by name, code, slot, type, effect..." : "Search by name, slot, type, effect...";
 
         /// <inheritdoc/>
-        public override string SearchHint => "Type any of: a name, a slot (helm, ring, item...), a type (relic, major, minor, treasure, combined) or an effect";
+        public override string SearchHint => "Type any of: a name, a slot (helm, ring, item...), a type (relic, major, minor, treasure, combined) or an effect"
+            + (this.ShowsCodes ? ", or a byte code (2A, 0x2A or 42)" : string.Empty);
 
         private static IReadOnlyList<FinderColumn> FinderColumns { get; } =
         [
@@ -67,6 +88,12 @@
             new("Type", nameof(ArtifactChoiceViewModel.TypeName), new GridLength(64), FinderColumnKind.MutedText),
             new("Gold", nameof(ArtifactChoiceViewModel.Cost), new GridLength(64), FinderColumnKind.MutedText),
             new("Effects", nameof(ArtifactChoiceViewModel.Effects), new GridLength(5, GridUnitType.Star), FinderColumnKind.MutedText),
+        ];
+
+        private static IReadOnlyList<FinderColumn> CatalogColumns { get; } =
+        [
+            new("Code", nameof(ArtifactChoiceViewModel.Code), new GridLength(56), FinderColumnKind.MutedText, "The byte that stands for the artifact in a savefile, in hex"),
+            .. FinderColumns,
         ];
 
         /// <summary>
@@ -83,7 +110,8 @@
         /// <inheritdoc/>
         protected override bool Matches(ArtifactChoiceViewModel choice)
         {
-            return this.TextMatches(choice.Name, choice.SlotName, choice.TypeName, choice.IsCombined ? CombinedWord : null, choice.Effects);
+            var fields = new[] { choice.Name, choice.SlotName, choice.TypeName, choice.IsCombined ? CombinedWord : null, choice.Effects };
+            return this.ShowsCodes ? this.TextOrCodeMatches(choice.CodeValue, fields) : this.TextMatches(fields);
         }
 
         private static Action<ArtifactChoiceViewModel> OfArtifact(Action<Artifact> onChoose)

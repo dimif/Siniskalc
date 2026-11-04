@@ -1,4 +1,4 @@
-﻿namespace Siniskalc.Homm3.ViewModels
+namespace Siniskalc.Homm3.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -330,7 +330,7 @@
 
             this.GarrisonEditor?.Refresh();
             this.Merchant?.Refresh();
-            if (!this.HasArtifactMerchant && this.SelectedTab == 5)
+            if (!this.HasArtifactMerchant && this.SelectedTab == 4)
             {
                 this.SelectedTab = 0;
             }

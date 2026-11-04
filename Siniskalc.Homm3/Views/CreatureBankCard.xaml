@@ -52,13 +52,8 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
-                           Text="Changing strength does not reroll artifacts or reset a defeated bank."/>
                 <CheckBox Content="Upgraded centre stack" IsChecked="{Binding UpgradedCenter, Mode=TwoWay}"
-                          Margin="0,8,0,0" Visibility="{Binding HasCenterUpgrade, Converter={StaticResource BankBoolToVisibility}}"/>
-                <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,6,0,0"
-                           Visibility="{Binding HasUnknownOriginalGuards, Converter={StaticResource BankBoolToVisibility}}"
-                           Text="The defeated record no longer stores its original centre upgrade. Choose the guards for Reset above; the default is unupgraded."/>
+                          Margin="0,8,0,0" Visibility="{Binding HasCenterUpgrade, Converter={StaticResource BankBoolToVisibility}}"/>                
             </StackPanel>
             <StackPanel Grid.Column="1">
                 <TextBlock Text="Rewards" FontWeight="SemiBold"/>

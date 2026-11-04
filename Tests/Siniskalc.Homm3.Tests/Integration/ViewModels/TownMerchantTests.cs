@@ -123,7 +123,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             var session = game.History.CreateCastleSession(index);
             var merchantBuilding = session.Current.Buildings.Single(b => b.IsArtifactMerchant);
             using var page = TestServices.CreateCastleViewModel(session);
-            page.SelectedTab = 5;
+            page.SelectedTab = 4;
             page.Merchant!.Slots[0].ClearCommand.Execute(null);
             session.Update(c => CastleBuilder.Unbuild(c, merchantBuilding));
             Assert.That(page.HasArtifactMerchant, Is.False);

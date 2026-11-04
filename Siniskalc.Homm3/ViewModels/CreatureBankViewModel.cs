@@ -102,7 +102,14 @@ namespace Siniskalc.Homm3.ViewModels
         public int SelectedStrength
         {
             get => this.session.Current.Strength - Constants.CreatureBank.MinStrength;
-            set => this.session.Update(m => m with { Strength = value + Constants.CreatureBank.MinStrength });
+            set
+            {
+                // Choosing new guards for a defeated bank restores it, so the new guards can be fought.
+                var strength = value + Constants.CreatureBank.MinStrength;
+                this.session.Update(m => m.IsCleared
+                    ? m with { Strength = strength, IsCleared = false, UpgradedCenter = this.UpgradedCenter }
+                    : m with { Strength = strength });
+            }
         }
 
         public IReadOnlyList<ArtifactSlotViewModel> Artifacts { get; }

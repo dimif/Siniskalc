@@ -16,7 +16,7 @@
         <!-- The pages of cards scroll, except the hex tab, which has its own scrolling. -->
         <Style x:Key="CardsScrollerStyle" TargetType="ScrollViewer">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedTab}" Value="4">
+                <DataTrigger Binding="{Binding SelectedTab}" Value="5">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -196,12 +196,12 @@
             <wpf:NavButton Text="Garrison"/>
             <wpf:NavButton Text="Available creatures"/>
             <wpf:NavButton Text="Mage guild"/>
-            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
             <wpf:NavButton Text="Artifact merchant" Visibility="{Binding HasArtifactMerchant, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <wpf:NavButton Text="Hex" RequiresAdvancedMode="True"/>
         </ListBox>
 
         <!-- Hex -->
-        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel4}"/>
+        <wpf:HexEditor Grid.Row="2" x:Name="hexEditor" Margin="8,8,8,0" Style="{StaticResource TabPanel5}"/>
 
         <ScrollViewer Grid.Row="2" Style="{StaticResource CardsScrollerStyle}" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
             <Grid Margin="8,4,8,16">
@@ -257,7 +257,7 @@
                     </heroes:HeadedCard>
                 </WrapPanel>
 
-                <StackPanel Style="{StaticResource TabPanel5}">
+                <StackPanel Style="{StaticResource TabPanel4}">
                     <TextBlock Margin="0,0,0,8" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
                                Text="This stock is shared by all town Artifact Merchants, regardless of owner. Changes here affect every town, not the adventure-map Black Markets. Editor-written stock has not yet been tried in the game."/>
                     <Border Style="{StaticResource CardStyle}" Width="380" HorizontalAlignment="Left"

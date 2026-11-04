@@ -111,7 +111,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
-        public void EditingAClearedUtopiaDoesNotRestoreItUntilRequestedAndItsUndoLeavesMarketEditsAlone()
+        public void ChangingTheStrengthOfAClearedUtopiaRestoresItAndItsUndoLeavesMarketEditsAlone()
         {
             var game = SavedGames.Get(Path.Combine("TestData", "Hota", "DragonUtopias", "dragon_utopias_01_first_cleared.GM2"));
             using var page = new MapViewModel(game, TestServices.EffectLines, TestServices.BankText, TestServices.ByteEditTargets);
@@ -124,19 +124,19 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
             Assert.That(utopia.RewardSummary, Is.EqualTo("50k g, Admiral's Hat, Angel Wings, Angelic Alliance, Armageddon's Blade"));
             Assert.That(utopia.Garrison, Is.EqualTo(new[] { "8 Green Dragons", "7 Red Dragons", "6 Gold Dragons", "5 Black Dragons" }));
             utopia.SelectedStrength = 0;
+            Assert.That(utopia.IsCleared, Is.False, "choosing new guards restores the defeated bank");
+            Assert.That(utopia.Status, Is.EqualTo("Uncleared"));
             Assert.That(utopia.Garrison, Is.EqualTo(new[] { "8 Green Dragons", "5 Red Dragons", "2 Gold Dragons", "1 Black Dragon" }));
             Assert.That(utopia.ResourceReward, Is.EqualTo(TestServices.BankText.Resources(CreatureBankKind.DragonUtopia, 1)));
-            utopia.Artifacts[3].ClearCommand.Execute(null);
-            Assert.That(utopia.IsCleared, Is.True);
-            Assert.That(game.History.Current.CreatureBanks()[0].GetUInt32At(28), Is.Zero);
-            utopia.RestoreCommand.Execute(null);
-            Assert.That(utopia.IsCleared, Is.False);
-            Assert.That(utopia.Status, Is.EqualTo("Uncleared"));
             Assert.That(game.History.Current.CreatureBanks()[0].GetUInt32At(80), Is.EqualTo(20000));
             Assert.That(game.History.Current.CreatureBanks()[0].GetUInt32At(40), Is.EqualTo(1));
+            utopia.Artifacts[3].ClearCommand.Execute(null);
+            Assert.That(utopia.IsCleared, Is.False);
             Assert.That(utopia.Artifacts[3].HasArtifact, Is.False);
             game.History.Undo();
+            game.History.Undo();
             Assert.That(utopia.IsCleared, Is.True);
+            game.History.Redo();
             game.History.Redo();
             Assert.That(utopia.IsCleared, Is.False);
             page.Merchants[0].Slots[0].ClearCommand.Execute(null);

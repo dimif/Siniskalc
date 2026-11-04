@@ -216,7 +216,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
             try
             {
                 window.HeroFrame().Content = page;
-                model.SelectedTab = 5;
+                model.SelectedTab = 4;
                 Show(window);
                 var tab = Descendants<Siniskalc.Wpf.Views.NavButton>(page).Single(b => b.Text == "Artifact merchant");
                 Assert.That(tab.IsVisible, Is.True);
@@ -238,7 +238,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 game.History.Undo();
                 Show(window);
                 Assert.That(tab.IsVisible, Is.True);
-                model.SelectedTab = 5;
+                model.SelectedTab = 4;
                 Show(window);
                 Assert.That(model.Merchant.Slots[6].HasArtifact, Is.False);
             }
@@ -296,7 +296,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 castleNode.IsSelected = true;
                 Pump();
                 var castle = editor.CurrentPageOf<CastleViewModel>();
-                foreach (var tab in Enumerable.Range(0, 5))
+                foreach (var tab in new[] { 0, 1, 2, 3, 5 })
                 {
                     castle.SelectedTab = tab;
                     Show(window);

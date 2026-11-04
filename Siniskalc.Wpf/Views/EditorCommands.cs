@@ -18,9 +18,9 @@
         /// <summary>
         /// Opens the folder of the open savegame in the file manager.
         /// </summary>
-        public static readonly RoutedUICommand OpenFolder = new RoutedUICommand(
-            "Open folder...",
-            nameof(OpenFolder),
+        public static readonly RoutedUICommand GoToSaveFileFolder = new RoutedUICommand(
+            "Go to save file folder...",
+            nameof(GoToSaveFileFolder),
             typeof(EditorCommands));
 
         /// <summary>
@@ -43,7 +43,7 @@
         /// Shows every artifact of the game with its byte code, read only.
         /// </summary>
         public static readonly RoutedUICommand ViewArtifacts = new RoutedUICommand(
-            "View Artifacts",
+            "View Artifacts...",
             nameof(ViewArtifacts),
             typeof(EditorCommands));
 
@@ -51,7 +51,7 @@
         /// Shows every creature of the game with its byte code, read only.
         /// </summary>
         public static readonly RoutedUICommand ViewCreatures = new RoutedUICommand(
-            "View Creatures",
+            "View Creatures...",
             nameof(ViewCreatures),
             typeof(EditorCommands));
 

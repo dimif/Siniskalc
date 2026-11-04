@@ -101,7 +101,7 @@ The mine editor uses the individual army-slot pickers rather than a separate **F
 - **Edit > Undo** (Ctrl+Z) and **Redo** (Ctrl+Y) step through your edits.
 - **View > Pending changes** lists every value that differs from the file, before and after, each with an Undo button.
   Look at it before you save.
-- **View > View Artifacts** and **View > View Creatures** open a read-only list of every artifact or creature of the game, with the byte code the savefile uses (in hex, such as `0x2A`) left of the name. Search by name, effect, town or level as in the finders, or type a code (`2A`, `0x2A` or `42`) to find it. Nothing here changes the savegame. Both need a game to be open.
+- **View > View Artifacts...** and **View > View Creatures...** open a read-only list of every artifact or creature of the game, with the byte code the savefile uses (in hex, such as `0x2A`) left of the name. Search by name, effect, town or level as in the finders, or type a code (`2A`, `0x2A` or `42`) to find it. Nothing here changes the savegame. Both need a game to be open.
 - **Edit > Revert all changes** puts everything back to what the savegame had.
 
 ## Settings

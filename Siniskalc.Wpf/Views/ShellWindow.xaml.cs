@@ -130,11 +130,11 @@
             this.WithViewModel(this.files.Reload);
         }
 
-        private void OpenFolderCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void GoToSaveFileFolderCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (this.ViewModel?.File is { } file && Path.GetDirectoryName(Path.GetFullPath(file)) is { Length: > 0 } folder && !this.urlLauncher.TryOpenFolder(folder))
             {
-                this.messages.ShowInformation("Open folder", $"Could not open the folder of the savegame. It is at:\n{folder}");
+                this.messages.ShowInformation("Go to save file folder", $"Could not open the folder of the savegame. It is at:\n{folder}");
             }
         }
 

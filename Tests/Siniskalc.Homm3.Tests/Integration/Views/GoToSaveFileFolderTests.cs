@@ -14,12 +14,12 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
     [TestFixture]
     [Category(TestKinds.Integration)]
     [Apartment(ApartmentState.STA)]
-    internal sealed class OpenFolderTests
+    internal sealed class GoToSaveFileFolderTests
     {
         private static readonly string SavePath = Path.Combine("TestData", "Sod", "conflux_00_baseline.GM1");
 
         [Test]
-        public void TheToolbarHasAnOpenFolderButtonRightAfterReloadThatOpensTheFolderOfTheSavegame()
+        public void TheToolbarHasAGoToSaveFileFolderButtonRightAfterReloadThatOpensTheFolderOfTheSavegame()
         {
             TestApplication.Ensure();
             var launcher = new Mock<IUrlLauncher>();
@@ -34,9 +34,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 Pump();
                 var buttons = Descendants<Button>(window).Where(b => b.Command != null && System.Windows.Automation.AutomationProperties.GetName(b).Length > 0).ToList();
                 var names = buttons.Select(System.Windows.Automation.AutomationProperties.GetName).ToList();
-                Assert.That(names.IndexOf("Open folder"), Is.EqualTo(names.IndexOf("Reload") + 1));
+                Assert.That(names.IndexOf("Go to save file folder"), Is.EqualTo(names.IndexOf("Reload") + 1));
 
-                var button = buttons[names.IndexOf("Open folder")];
+                var button = buttons[names.IndexOf("Go to save file folder")];
                 Assert.That(button.IsEnabled, Is.False, "there is no folder before a savegame is open");
 
                 shell.LoadGame(SavePath);
@@ -54,7 +54,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
         }
 
         [Test]
-        public void OnlyTheNodeOfTheGameHasAMenuWithReloadSaveAndOpenFolder()
+        public void OnlyTheNodeOfTheGameHasAMenuWithReloadSaveAndGoToSaveFileFolder()
         {
             TestApplication.Ensure();
             var editor = TestServices.CreateHomm3Editor();
@@ -74,7 +74,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 Assert.That(game.ContextMenu!.Items.OfType<MenuItem>().Select(m => (m.Header, m.Command)), Is.EqualTo(new object[]
                 {
                     ("Reload save", EditorCommands.Reload),
-                    (EditorCommands.OpenFolder.Text, EditorCommands.OpenFolder),
+                    (EditorCommands.GoToSaveFileFolder.Text, EditorCommands.GoToSaveFileFolder),
                 }));
 
                 game.IsExpanded = true;

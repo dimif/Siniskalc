@@ -50,8 +50,8 @@
         <CommandBinding Command="{x:Static cmd:EditorCommands.Reload}"
                         Executed="ReloadCmdExecuted"
                         CanExecute="ReloadCmdCanExecute"/>
-        <CommandBinding Command="{x:Static cmd:EditorCommands.OpenFolder}"
-                        Executed="OpenFolderCmdExecuted"
+        <CommandBinding Command="{x:Static cmd:EditorCommands.GoToSaveFileFolder}"
+                        Executed="GoToSaveFileFolderCmdExecuted"
                         CanExecute="ReloadCmdCanExecute"/>
         <CommandBinding Command="{x:Static cmd:EditorCommands.DumpToFile}"
                 Executed="DumpToFileCmdExecuted"
@@ -112,7 +112,7 @@
                         <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static cmd:EditorCommands.OpenFolder}">
+                <MenuItem Command="{x:Static cmd:EditorCommands.GoToSaveFileFolder}">
                     <MenuItem.Icon>
                         <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png"/>
                     </MenuItem.Icon>
@@ -197,7 +197,7 @@
             <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.Reload}" AutomationProperties.Name="Reload" ToolTip="Reload">
                 <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png" Width="16" Height="16"/>
             </Button>
-            <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.OpenFolder}" AutomationProperties.Name="Open folder" ToolTip="Open the folder of the savegame">
+            <Button Style="{StaticResource AppToolBarButtonStyle}" Command="{x:Static cmd:EditorCommands.GoToSaveFileFolder}" AutomationProperties.Name="Go to save file folder" ToolTip="Go to the folder of the savegame">
                 <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png" Width="16" Height="16"/>
             </Button>
             <Separator Style="{StaticResource AppToolBarSeparatorStyle}"/>

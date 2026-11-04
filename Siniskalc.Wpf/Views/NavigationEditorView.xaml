@@ -53,7 +53,7 @@
                     <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/Refresh.png"/>
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{x:Static local:EditorCommands.OpenFolder}">
+            <MenuItem Command="{x:Static local:EditorCommands.GoToSaveFileFolder}">
                 <MenuItem.Icon>
                     <Image Source="/Siniskalc.Wpf;component/Resources/VS2026/OpenFolder.png"/>
                 </MenuItem.Icon>

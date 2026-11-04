@@ -84,6 +84,32 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
+        public void TheGarrisonEditedMarkFollowsTheSelectedMineAndItsUndoAndRedo()
+        {
+            var game = Load("mines_00_game_begin");
+            var page = Of(game, PlayerColor.Neutral);
+            var first = page.Mines.Rows.Single(m => m.PositionText == "at 1, 14, Surface");
+            var other = page.Mines.Rows.First(m => m != first);
+            page.Mines.SelectedMine = first;
+            var army = page.GuardEditor!;
+            Assert.That(army.HasPendingChanges, Is.False);
+            army.CreatureSlots[0].ClearCommand.Execute(null);
+            page.Refresh();
+            Assert.That(army.HasPendingChanges, Is.True);
+            page.Mines.SelectedMine = other;
+            Assert.That(page.GuardEditor, Is.SameAs(army));
+            Assert.That(army.HasPendingChanges, Is.False);
+            page.Mines.SelectedMine = first;
+            Assert.That(army.HasPendingChanges, Is.True);
+            game.History.Undo();
+            page.Refresh();
+            Assert.That(army.HasPendingChanges, Is.False);
+            game.History.Redo();
+            page.Refresh();
+            Assert.That(army.HasPendingChanges, Is.True);
+        }
+
+        [Test]
         public void TwoMinesOnTheSameTileOfTheTwoLevelsAreToldApartByTheirRowTheirGuardHeadingAndTheirChanges()
         {
             // The test map has its mines on the surface: the second record is moved under the first one, as the hex editor would do.

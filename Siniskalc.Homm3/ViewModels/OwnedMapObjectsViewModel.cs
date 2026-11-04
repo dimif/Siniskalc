@@ -56,6 +56,11 @@
                 {
                     this.guardEditor?.SetTitle(this.GuardHeading);
                     this.guardEditor?.Refresh();
+                    if (this.guardEditor != null)
+                    {
+                        this.guardEditor.HasPendingChanges = this.Mines.SelectedMine?.HasPendingChanges ?? false;
+                    }
+
                     this.RaisePropertyChanged(nameof(this.GuardEditor));
                     this.RaisePropertyChanged(nameof(this.GuardHeading));
                 }
@@ -125,6 +130,11 @@
         {
             this.Mines.Refresh();
             this.guardEditor?.Refresh();
+            if (this.guardEditor != null)
+            {
+                this.guardEditor.HasPendingChanges = this.Mines.SelectedMine?.HasPendingChanges ?? false;
+            }
+
             this.DwellingList.Sort();
             foreach (var row in this.Dwellings)
             {
@@ -175,6 +185,7 @@
                 () => this.Mines.SelectedMine?.Guard ?? new Army<Creature>(Constants.CreatureSlotCount),
                 edit => this.Mines.SelectedMine?.UpdateGuard(edit));
             editor.SetTitle(this.GuardHeading);
+            editor.HasPendingChanges = this.Mines.SelectedMine?.HasPendingChanges ?? false;
             return editor;
         }
     }

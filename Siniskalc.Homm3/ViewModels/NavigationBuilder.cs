@@ -40,15 +40,18 @@
             [NavNodeKind.Castle] = Homm3ChunkKinds.Castle,
             [NavNodeKind.Mine] = Homm3ChunkKinds.Mines,
             [NavNodeKind.Dwelling] = Homm3ChunkKinds.Dwellings,
+            [NavNodeKind.MapObject] = Homm3ChunkKinds.CreatureBanks,
         };
 
         private readonly BanishingTextProvider banishingText;
+        private readonly CreatureBankTextProvider bankText;
 
         /// <param name="banishingText">Words the countdown of a player with no town is shown with.</param>
-        public NavigationBuilder(BanishingTextProvider banishingText)
+        public NavigationBuilder(BanishingTextProvider banishingText, CreatureBankTextProvider bankText)
             : base(Kinds)
         {
             this.banishingText = banishingText;
+            this.bankText = bankText;
         }
 
         /// <summary>
@@ -72,20 +75,46 @@
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(index)));
             }
+
+            if (tree.MapNode is { } map)
+            {
+                var merchants = map.Children.Single(n => n.Tab == MapSections.Merchants);
+                merchants.HasChanges = game.History.GetPendingChanges().Any(c => c.Kind == Homm3ChunkKinds.Merchants);
+                map.HasChanges = map.Children.Any(n => n.HasChanges);
+                if (map.HasChanges && tree.Overview is { } overview)
+                {
+                    overview.HasChanges = true;
+                }
+            }
         }
 
         /// <inheritdoc/>
         protected override void AddExtraNodes(NavigationTree tree, Game game, NavNodeViewModel overview)
         {
             var merchants = game.History.Current.Merchants().Count;
-            if (merchants == 0)
+            var banks = game.History.Current.CreatureBanks().GetModels();
+            if (merchants == 0 && banks.Count == 0)
             {
                 return;
             }
 
-            var node = new NavNodeViewModel("Map", $"{merchants} {(merchants == 1 ? "merchant" : "merchants")}", PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
+            var node = new NavNodeViewModel("Map", string.Empty, PlayerPalette.NoPlayer, NavNodeKind.Map, onSelected: tree.OnSelected);
             tree.Register(node);
             overview.Children.Add(node);
+            node.Children.Add(new NavNodeViewModel("Merchants", merchants.ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, index: 0, tab: MapSections.Merchants, onSelected: tree.OnSelected));
+            var creatureBanks = new NavNodeViewModel("Creature banks", banks.Count.ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, tab: MapSections.CreatureBanks, onSelected: tree.OnSelected);
+            node.Children.Add(creatureBanks);
+            foreach (var group in banks.Select((model, index) => (Model: model, Index: index)).GroupBy(b => b.Model.Kind).OrderBy(g => g.Key))
+            {
+                var section = MapSections.ForBank(group.Key);
+                var bankGroup = new NavNodeViewModel(this.bankText.GroupName(group.Key), group.Count().ToString(), PlayerPalette.NoPlayer, NavNodeKind.MapSection, tab: section, onSelected: tree.OnSelected);
+                creatureBanks.Children.Add(bankGroup);
+                foreach (var (bank, index) in group)
+                {
+                    var entrance = bank.Position with { X = bank.Position.X - 1 };
+                    bankGroup.Children.Add(new NavNodeViewModel(MapLevelText.At(entrance, hasLevels: true), bank.Name, PlayerPalette.NoPlayer, NavNodeKind.MapObject, index, section, tree.OnSelected));
+                }
+            }
         }
 
         /// <inheritdoc/>

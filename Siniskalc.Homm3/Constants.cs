@@ -37,6 +37,18 @@
         /// </summary>
         public const int BackpackSlotSize = 8;
 
+        public static class CreatureBank
+        {
+            public const int ResourceCount = 7;
+            public const int CenterSlot = 2;
+            public const int MinStrength = 1;
+            public const int MaxStrength = 4;
+            public const int GoldStep = 10000;
+            public const int ArtifactSlots = 4;
+            public const int MaxBanks = 4096;
+            public const int MaxBankArtifacts = 64;
+        }
+
         public static class Catalog
         {
             /// <summary>

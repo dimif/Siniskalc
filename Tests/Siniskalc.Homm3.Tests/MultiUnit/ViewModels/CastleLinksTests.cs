@@ -70,7 +70,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
                 Kit<HeroOwnersModel>(),
                 Kit<TurnModel>(),
                 Mock.Of<IDocumentReconciler>(),
-                Mock.Of<ISavefileBytesPatcher>());
+                Mock.Of<ISavefileBytesPatcher>(),
+                Mock.Of<ICreatureBankLoader>(l => l.Load(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<IReadOnlyList<HeroChunk>>(), It.IsAny<int>()) == new List<CreatureBankChunk>()),
+                _ => new RecordKit<CreatureBankChunk, CreatureBankModel>(Mock.Of<IDeserializer<CreatureBankChunk, CreatureBankModel>>(), Mock.Of<ISerializer<CreatureBankChunk, CreatureBankModel>>(), Mock.Of<IDiffer<CreatureBankModel>>()));
             var chunks = this.castles.Keys.Select((name, i) => new CastleChunk(name, new byte[10], 1000 + (i * 100))).ToList();
 
             var document = factory.Create([], heroes, new HeroOffsets(GameVersion.ShadowOfDeath), null, chunks);

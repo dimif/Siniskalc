@@ -16,5 +16,7 @@
         IByteEditTarget ForMine(SaveDocumentHistory history, int mineIndex);
 
         IByteEditTarget ForDwelling(SaveDocumentHistory history, int dwellingIndex);
+
+        IByteEditTarget ForCreatureBank(SaveDocumentHistory history, int index);
     }
 }

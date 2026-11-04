@@ -48,6 +48,12 @@
     <None Include="..\..\TestData\Hota\MerchantStock\*.GM2" Link="TestData\Hota\MerchantStock\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\TestData\Hota\DragonUtopias\*.GM2" Link="TestData\Hota\DragonUtopias\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\TestData\Hota\CreatureBanks\*.GM1;..\..\TestData\Hota\CreatureBanks\*.GM2;..\..\TestData\Hota\CreatureBanks\*.h3m" Link="TestData\Hota\CreatureBanks\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\TestData\Hota\multi_merchants.GM1" Link="TestData\Hota\multi_merchants.GM1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

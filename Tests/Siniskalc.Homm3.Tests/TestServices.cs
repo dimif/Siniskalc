@@ -86,6 +86,8 @@ namespace Siniskalc.Homm3.Tests
 
         public static EffectLineProvider EffectLines => Services.EffectLines;
 
+        public static CreatureBankTextProvider BankText => Services.BankText;
+
         public static BanishingTextProvider BanishingText => Banishing;
 
         public static CastleBuildMessageProvider CastleBuildMessages => Services.CastleBuildMessages;

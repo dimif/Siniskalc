@@ -11,12 +11,21 @@
     /// </summary>
     public partial class ArmyEditorView : UserControl
     {
+        public static readonly DependencyProperty ShowFinderProperty = DependencyProperty.Register(
+            nameof(ShowFinder), typeof(bool), typeof(ArmyEditorView), new PropertyMetadata(true));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ArmyEditorView"/> class.
         /// </summary>
         public ArmyEditorView()
         {
             this.InitializeComponent();
+        }
+
+        public bool ShowFinder
+        {
+            get => (bool)this.GetValue(ShowFinderProperty);
+            set => this.SetValue(ShowFinderProperty, value);
         }
 
         // One way to upgrade changes the stack at once; several open a list of the creatures to choose from.

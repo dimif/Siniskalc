@@ -29,7 +29,7 @@
         /// <param name="inactivePlayers">Hidden player records retained for town ownership edits.</param>
         /// <param name="townMerchant">The stock shared by every town Artifact Merchant.</param>
         /// <returns>The document.</returns>
-        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher, PlayerChunkCollection inactivePlayers, RecordChunkCollection<RecordChunk, MerchantStockModel> townMerchant)
+        public static SaveDocument Create(byte[] originalBytes, HeroChunkCollection heroes, PlayerChunkCollection players, CastleChunkCollection castles, ObeliskChunkCollection<PlayerColor> obelisks, RecordChunkCollection<RecordChunk, MineModel> mines, RecordChunkCollection<RecordChunk, DwellingModel> dwellings, RecordChunkCollection<RecordChunk, MerchantStockModel> merchants, RecordChunkCollection<RecordChunk, HeroOwnersModel> heroOwners, RecordChunkCollection<RecordChunk, TurnModel> turn, IDocumentReconciler reconciler, ISavefileBytesPatcher patcher, PlayerChunkCollection inactivePlayers, RecordChunkCollection<RecordChunk, MerchantStockModel> townMerchant, RecordChunkCollection<CreatureBankChunk, CreatureBankModel> creatureBanks)
         {
             var collections = new Dictionary<ChunkKind, IChunkCollection>
             {
@@ -44,6 +44,7 @@
                 [Homm3ChunkKinds.Turn] = turn,
                 [Homm3ChunkKinds.InactivePlayer] = inactivePlayers,
                 [Homm3ChunkKinds.TownMerchant] = townMerchant,
+                [Homm3ChunkKinds.CreatureBanks] = creatureBanks,
             };
 
             return new SaveDocument(originalBytes, collections, patcher, reconciler);
@@ -107,6 +108,9 @@
         /// <param name="document">The document.</param>
         /// <returns>The shared stock collection.</returns>
         public static RecordChunkCollection<RecordChunk, MerchantStockModel> TownMerchant(this SaveDocument document) => (RecordChunkCollection<RecordChunk, MerchantStockModel>)document.GetCollection(Homm3ChunkKinds.TownMerchant);
+
+        public static RecordChunkCollection<CreatureBankChunk, CreatureBankModel> CreatureBanks(this SaveDocument document) =>
+            (RecordChunkCollection<CreatureBankChunk, CreatureBankModel>)document.GetCollection(Homm3ChunkKinds.CreatureBanks);
 
         /// <summary>
         /// Gets the table of who owns each hero (<see cref="HeroOwnersLayout"/>): one chunk, or none when the savefile has no table the editor knows.

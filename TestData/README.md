@@ -5,6 +5,7 @@ Real savegames (and a few raw chunks) that the tests read.
 
 Each folder has its own `README.md` that says what the saves hold and which tests use them.
 Add a row there for every save you add.
+The HoMM3 CreatureBanks series also retains its byte-identical `.h3m` companion map; it is not a second numbered save.
 
 ## Layout
 

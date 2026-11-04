@@ -272,10 +272,10 @@ From `TestData/Hota/Mines` (Red takes a mine a day, Blue takes it back the next 
 From the saves of `TestData/Hota/VisitedPlaces`: Tazar and Orrin visit, a turn apart, two places of each kind.
 
 - **A hero remembers the places of the permanent bonuses itself**, in its record, one 32 bit number for each kind of place. **Bit n is set when the hero visited the place whose number among the places of its kind is n** (hero +16, the number of the object among those of its type, is that number while the hero stands on it; +11 is the type). The two heroes have their own bits: Orrin gets the same bits a turn after Tazar. This is what Heroes II does too.
-- The bytes (lowest byte of the number) and the object types: **+79 learning stone (100)**, **+83 Marletto tower (23)**, **+87 garden of revelation (32)**, **+91 mercenary camp (51)**, **+95 star axis (61)**, **+99 tree of knowledge (102)**, **+103 library of enlightenment (41)**, **+107 arena (4)**, **+111 school of magic (47)**, **+115 school of war (107)**; +119 was not tried. In the Horn of the Abyss tail of the record: **+1098 colossus of the magi** and **+1114 gazebo** (both are objects of the type 144), and +1074, +1075 and +1081 changed for the dragon utopia (not yet understood).
+- The bytes (lowest byte of the number) and the object types: **+79 learning stone (100)**, **+83 Marletto tower (23)**, **+87 garden of revelation (32)**, **+91 mercenary camp (51)**, **+95 star axis (61)**, **+99 tree of knowledge (102)**, **+103 library of enlightenment (41)**, **+107 arena (4)**, **+111 school of magic (47)**, **+115 school of war (107)**; +119 was not tried. In the Horn of the Abyss tail of the record: **+1098 colossus of the magi** and **+1114 gazebo** (both are objects of the type 144). The older Utopia comparison's changes at +1074, +1075 and +1081 are combination-artifact reserved-slot counters, not established visit marks.
 - Where each place is: the cells of the map name the type, the place in the object list and the number among the type (as for the obelisks, `ObeliskBytesLoader`), so the number of a place gives its position.
 - **Adventure-map merchants are Black Markets**, including the object called an artifact merchant in the older fixture names. Visiting changes nothing in the hero or stock; purchasing writes `FFFFFFFF` to the chosen uint32 slot. `visited_places_27` to `29` contain two independent seven-slot lists, not one town list and one Black Market list. The counted format and the distinct shared town stock are described below.
-- **A dragon utopia (once per map)** is marked visited for the heroes of the player that won it and not for the others: Orrin (Blue) saw no change in the save after Tazar's win. Where that mark is kept is not found (the saves after it are 99 and 8,749 bytes longer).
+- **Dragon Utopia visit history:** the older Tazar/Orrin comparison suggested player-specific visit information, but did not locate it (the saves after it are 99 and 8,749 bytes longer). It does not establish a per-player layout. The bank's defeated guards and separate entrance state are now isolated and a reset is verified; see below. Other-player and next-day behavior remain to be tested.
 - Tree of knowledge: other bytes change too (+231 and +1141 for Tazar, +224 and +1134 for Orrin) and the level (+75) goes up by one: the payment each tree asks (gold, gems...) is not stored in the hero.
 
 ### Objects of the map: what the list of positions and the cells say
@@ -300,6 +300,60 @@ Town Artifact Merchants use a different stock list, not one of those eight Black
 `TownMerchantStockLocator` uses the injected date locator after the player table, requires that explicit prefix and room for all 28 stock bytes, and rejects competing marked dates. Unlike the display date reader, it **never uses an unmarked-date fallback**. It does not inspect artifact values, so sold-out stock and unknown codes still locate. `SavegameParser` adds one `TownMerchant` record, separate from the Black Markets, using the existing merchant reader/writer. Every town with its Artifact Merchant building built exposes that same stock; history, per-slot reverts and the explicit shared reset target it once, while a town reset only resets the town. Genuine RoE, AB and Chronicles are not enabled. Five HotA `empire_of_the_world` / `new_day` saves have another date prefix and are deliberately rejected; their town tabs show an unavailable notice. That alternate structure needs independent validation before editing. Editor-written town stock still needs an in-game check.
 
 The merchant baseline contains seven towns: four Red (including the misleadingly named `Neu_Tow`), two Neutral (`Neu_Dung`, `Neu_Fac`) and one Blue. The two neutral records contain `73` immediately after the Mage Guild level; four neutral SoD towns in `sod_game_00_baseline` contain `57` there. This byte's meaning is unknown and it is preserved, not required to be zero. Castle discovery starts after the located map header to avoid mistaking its title for a town, and retains the owner/faction/garrison/spell-count checks.
+
+## Dragon Utopias (Horn of the Abyss)
+
+The eight-Utopia control maps and clearing controls are documented in `TestData/Hota/DragonUtopias/README.md`. The top row has strengths 4, 3, 2, 1, left to right; the bottom row's random guards and artifacts are already rolled in the save. Bank order is (5,15), (11,15), (17,15), (23,15), (5,21), (11,21), (17,21), (23,21), surface, with entrances one tile west. Footprint/object order puts the top-right Utopia after the first two bottom-row ones: never use footprint order as bank order.
+
+The table has a uint16 count and variable-length creature-bank records. Offsets within each: seven int32 creature types at +0, seven uint32 counts at +28, seven resources at +56 (gold +80), reward creature type at +84 and its byte count at +88, uint16 artifact count at +89, and that many uint32 artifact IDs at +91. Utopias have no creature reward and four artifacts, hence 107 bytes. `visited_places_27_tazar_artifact_merchant` independently has a 41-bank table at `0x89E9A`: Utopias are indexes 2 and 3, preceded by two one-artifact crypts and followed by banks with creature rewards and differing artifact counts. A zero/one restriction on +88 would wrongly reject this table.
+
+The standard Green/Red/Gold/Black Dragon counts are 8/5/2/1 (20,000 gold), 8/6/3/2 (30,000), 8/6/4/3 (40,000) and 8/7/6/5 (50,000). Winning empties all seven guard slots (types `-1`, counts zero) but leaves gold and the four artifacts intact. The strongest control awards Admiral's Hat, Angel Wings, Angelic Alliance and Armageddon's Blade.
+
+The user also tested a partial defeat in-game and reported that the next visit has the original creature counts, not the surviving army. No paired saves were supplied for that observation, so it establishes the observed gameplay behavior, not which bytes change after an unsuccessful attack.
+
+**Weaker-tier victory controls:** `uto2_bef/win/stepoff`, `uto3_bef/win/stepoff` and `uto4_bef/win/stepoff` from the Creature Banks map are preserved as saves 03..11. They confirm strengths 3, 2 and 1 respectively, paying 40,000, 30,000 and 20,000 gold. The 28-bank table at `0x7EB9B..0x7F611` changes only the fought Utopia's guards; its resources and four artifact IDs, plus all 27 other records, are identical before and after each victory. Entrance states are `FC00201F` -> `FE00203F`, `FC00401F` -> `FE00403F`, and `FC00601F` -> `FE00603F`. The defeated state is in Marius's true header while he occupies the entrance and returns to the grid after stepping south. Thus the original guards and observed entrance bytes are established for all four tiers; the reset re-fights are documented below.
+
+**A proven reset needs both guards and entrance state.** Type-25 entrance cells hold a uint32 state at +6; bits 13..24 give the bank index. With a hero standing on the entrance, the grid holds the hero instead, and the state is in the hero's **true header +16**, with underlying object type at +11. Biographies move that header outside the main chunk; use `HeaderIndex` and the header helpers. The strongest control's victory changes `FC00001F` to `FE00003F`. Restoring guard bytes alone still gives "already defeated", even after walking away and back. A separate trial restoring both guards and `FC00001F` allowed another battle and all four artifacts plus 50,000 gold again, confirmed by the user and `dragon_utopias_02_first_cleared_again`.
+
+**All four tiers now have successful reset re-fights.** Saves 12..14 (`utopia_2_tier_3_reset_cleared`, `utopia_3_tier_2_reset_cleared`, `utopia_4_tier_1_reset_cleared`) confirm the weaker-tier trials. Each bank table and occupied hero header matches its first victory, with guards empty again and all other banks untouched. Red gains another 40,000, 30,000 and 20,000 gold respectively; artifact inventory comparisons check the four retained rewards were awarded again. These validate restoring original contents, not changing a preset or selecting new artifacts. No second step-off/reload was supplied.
+
+The editor resets mask `0200003F` to `0000001F`, preserving the bank index and other bits; a revert restores the original mask bits. Recognized entrance states and complete standard guard/gold records are required. Preset and artifact edits, other-player visits and next-day behavior have not yet been checked in-game; all four tier controls prove replay with their retained original rewards, not every custom reward or visit-history rule.
+
+## Other creature banks (Horn of the Abyss)
+
+`TestData/Hota/CreatureBanks/README.md` records the twenty controlled saves and byte-identical companion map supplied by the user. `CreatureBankDecodingTests` preserves the independent byte evidence; `CreatureBankTests` checks the generic editing path against it. These banks use the same counted variable-length table as Utopias. Each of the five kinds has seven guard slots (five occupied), seven resource amounts, no creature reward (`-1`/0) and no artifacts, hence a 91-byte record.
+
+The map-grid cell starts with **uint16 type 16 and uint16 subtype**, not uint32 type 16. The object index is at +4 and entrance state at +6. Subtypes 0, 1, 3, 4 and 5 identify the supported kinds below; subtype 2 is not established by these controls. The footprint ordinal is not the bank index: use `(state >> 13) & 0xFFF`. Saved definition IDs can disagree with the actual companion-map definition, so do not shift the object-position list to compensate.
+
+| Kind | Subtype | Base / upgraded creature codes | Five equal stack counts, tiers 1 to 4 | Retained resource rewards, tiers 1 to 4 |
+|---|---|---|---|---|
+| Cyclops Stockpile | 0 | 94 / 95 | 4, 6, 8, 10 | 4, 6, 8, 10 of each of the six non-gold resources; no gold |
+| Dwarven Treasury | 1 | 16 / 17 | 10, 15, 20, 30 | 2/3/5/10 crystal and 2500/4000/5000/7500 gold |
+| Imp Cache | 3 | 42 / 43 | 20, 30, 40, 60 | 2/3/4/6 mercury and 1000/1500/2000/3000 gold |
+| Medusa Stores | 4 | 76 / 77 | 4, 6, 8, 10 | 5/6/8/10 sulfur and 2000/3000/4000/5000 gold |
+| Naga Bank | 5 | 38 / 39 | 2, 3, 4, 6 | 8/12/16/24 gems and 4000/6000/8000/12000 gold |
+
+Slot 2 (zero-based) may be upgraded. The retained reward uniquely identifies the preset even after the guards are erased, but cannot recover that randomly selected upgrade. The editor therefore shows an explicit prospective reset choice (unupgraded by default), with an explanation on originally defeated cards. The choice alone is not written into an empty record.
+
+The controlled mixed table has 28 records at `0x7EB9B..0x7F611`: Utopias 0..7, Cyclops 8..11, Treasuries 12..15, Imps 16..19, Medusas 20..23 and Nagas 24..27. The whole table changes only in the defeated record's 56 guard bytes (20-25 actual byte changes); rewards and the other 27 records stay identical.
+
+### Controlled Cyclops victory and the other four verified resets
+
+| Kind | Strongest bank index | Entrance grid offset | Ready / cleared state | Re-fight fixture | Confirmed second reward |
+|---|---|---|---|---|---|
+| Cyclops | 8 | `0xA5B1` | `FC01001F` / `FE01003F` | `creature_banks_03_cyclops_stockpile_1_won_again.GM1` | +10 of every non-gold resource |
+| Treasury | 12 | `0xA6A7` | `FC01801F` / `FE01803F` | `creature_banks_07_dwarven_treasury_1_won_again.GM2` | +10 crystal, +7500 gold |
+| Imp | 16 | `0xB99B` | `FC02001F` / `FE02003F` | `creature_banks_11_imp_cache_1_won_again.GM1` | +6 mercury, +3000 gold |
+| Medusa | 20 | `0xBA5D` | `FC02801F` / `FE02803F` | `creature_banks_15_medusa_stores_1_won_again.GM2` | +10 sulfur, +5000 gold |
+| Naga | 24 | `0xBB31` | `FC03001F` / `FE03003F` | `creature_banks_19_naga_bank_1_won_again.GM2` | +24 gems, +12000 gold |
+
+The first fought Imp had an upgraded Familiar centre; the other four strongest controls had unupgraded guards. Each separate reset trial restored the exact pre-fight 56 guard bytes and four entrance-state bytes after the hero stepped off, preserving earned rewards and every other byte. The user re-fought all five successfully; second-victory tables and hero headers match their first victories. This verifies those exact original-content resets, not every custom tier/upgrade or colour. No second step-off/reload was supplied.
+
+An occupying hero changes the grid type to 34 while retaining the bank subtype at +2 and object at +4; +6 now holds the hero ID. The true hero header keeps underlying uint32 type 16 at +11, has-object 1 at +15 and bank state at +16. It does **not** contain the subtype. Surviving footprint cells still identify the bank kind. The common true header is `0x4AC51` in these controls; biographies require the existing header helpers, not a fixed hero-chunk offset.
+
+Join the occupied grid cell to the hero ID and surviving object's subtype/footprints, not by assuming one visit-tile offset for every sprite. The controlled Imp Cache visit is at its anchor `(2,27)`, whereas the other five modeled kinds are visited one tile left of their anchors.
+
+The observed transition is `FC00001F | index<<13` to `FE00003F | index<<13` (XOR `0x02000020`). Other corpus empties have additional low bits (`FE00041F`, `FE08805F`, `FE004C7F`, among others); their reset semantics are unproven. The five new kinds expose only the exact observed ready/cleared patterns and preserve unsupported instances without hiding other supported banks. Occupied non-Utopia reset writes follow the controlled header layout and are byte-tested, but have not been independently re-fought in-game. RoE/SoD bank layouts and arbitrary custom guards/rewards remain outside this evidence.
 
 ## Dwellings (Horn of the Abyss)
 

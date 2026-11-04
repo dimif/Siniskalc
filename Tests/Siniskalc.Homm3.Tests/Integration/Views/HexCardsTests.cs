@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Siniskalc.Homm3.Tests.ViewModels;
 using Siniskalc.Wpf.ViewModels;
+using Siniskalc.Homm3.ViewModels;
 
 namespace Siniskalc.Homm3.Tests.Integration.Views
 {
@@ -15,6 +16,64 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
     [Apartment(ApartmentState.STA)]
     internal sealed class HexCardsTests
     {
+        [TestCase(MapSections.DragonUtopias)]
+        [TestCase(MapSections.CyclopsStockpiles)]
+        [TestCase(MapSections.DwarvenTreasuries)]
+        [TestCase(MapSections.ImpCaches)]
+        [TestCase(MapSections.MedusaStores)]
+        [TestCase(MapSections.NagaBanks)]
+        public void EachBankHexViewFollowsSelectionAndReleasesItsBytesWhenHidden(int section)
+        {
+            TestApplication.Ensure();
+            var path = Path.Combine("TestData", "Hota", "CreatureBanks", "creature_banks_00_baseline.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            var shell = TestServices.CreateShell(editor);
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            var window = TestServices.CreateShellWindow(shell);
+            window.Show();
+            try
+            {
+                shell.IsAdvancedMode = true;
+                var location = editor.NavigationNodes.Descendants().First(n => n.Kind == NavNodeKind.MapObject && n.Tab == section);
+                location.IsSelected = true;
+                Pump();
+                window.UpdateLayout();
+                var page = (Page)window.HeroFrame().Content;
+                var hex = Find<Siniskalc.Wpf.Views.HexEditor>(page).Single(h => h.Name == "bankHexEditor");
+                var grid = Find<DataGrid>(hex).Single();
+                Assert.That(hex.IsVisible, Is.True);
+                Assert.That(grid.Items.Count, Is.GreaterThan(0));
+                var rows = grid.ItemsSource;
+                var model = editor.CurrentPageOf<MapViewModel>();
+                model.SelectedBank!.SelectedStrength = 0;
+                Pump();
+                Assert.That(grid.ItemsSource, Is.SameAs(rows), "an edit refreshes the same target rather than rebinding");
+                model.SelectedBank = model.VisibleBanks[1];
+                Pump();
+                Assert.That(grid.ItemsSource, Is.Not.Null.And.Not.SameAs(rows));
+                shell.IsAdvancedMode = false;
+                Pump();
+                Assert.That(grid.ItemsSource, Is.Null);
+                shell.IsAdvancedMode = true;
+                Pump();
+                Assert.That(grid.Items.Count, Is.GreaterThan(0));
+                model.SelectedBank = null;
+                Pump();
+                Assert.That(grid.ItemsSource, Is.Null);
+                model.SelectedBank = model.VisibleBanks[0];
+                Pump();
+                Assert.That(grid.Items.Count, Is.GreaterThan(0));
+                model.ShowSection(MapSections.Merchants);
+                Pump();
+                Assert.That(grid.ItemsSource, Is.Null);
+            }
+            finally
+            {
+                shell.IsAdvancedMode = false;
+                window.Close();
+            }
+        }
+
         [Test]
         public void TheHexCardOfAMineAndOfADwellingShowsEveryRowOfTheRecordWithoutScrolling()
         {

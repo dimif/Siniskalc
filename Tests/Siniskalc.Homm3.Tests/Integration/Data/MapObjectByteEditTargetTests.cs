@@ -48,6 +48,38 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [Test]
+        public void ThePickedUtopiasHexEditsItsRewardAndTracksModelEditsUndoAndDisposal()
+        {
+            var path = Path.Combine("TestData", "Hota", "DragonUtopias", "dragon_utopias_01_first_cleared.GM2");
+            var game = SavedGames.Get(path);
+            using var page = new MapViewModel(game, TestServices.EffectLines, TestServices.BankText, TestServices.ByteEditTargets);
+            Assert.That(page.CreateBankByteEditTarget(), Is.Null);
+            page.SelectedBank = page.VisibleBanks[1];
+            using var target = page.CreateBankByteEditTarget()!;
+            var original = target.GetBytes();
+            Assert.That(original, Is.EqualTo(game.History.Current.CreatureBanks()[1].ToArray()));
+            var notifications = 0;
+            target.Changed += (_, _) => notifications++;
+            var artifact = target.Regions.Single(r => r.Name == "Artifacts").Start;
+            target.Update(bytes =>
+            {
+                Array.Fill(bytes, byte.MaxValue, artifact, 4);
+                return bytes;
+            });
+            Assert.That(page.VisibleBanks[1].Artifacts[0].HasArtifact, Is.False);
+            Assert.That(target.GetBytes(), Is.EqualTo(original.Take(artifact).Concat(Enumerable.Repeat(byte.MaxValue, 4)).Concat(original.Skip(artifact + 4))));
+            game.History.Undo();
+            Assert.That(target.GetBytes(), Is.EqualTo(original));
+            Assert.That(notifications, Is.EqualTo(2));
+            page.VisibleBanks[1].SelectedStrength = 0;
+            Assert.That(BitConverter.ToInt32(target.GetBytes(), 80), Is.EqualTo(20000));
+            Assert.That(notifications, Is.EqualTo(3));
+            target.Dispose();
+            game.History.Undo();
+            Assert.That(notifications, Is.EqualTo(3));
+        }
+
+        [Test]
         public void AnOwnerPicksADwellingAndTheBytesAreThoseOfThePickedOne()
         {
             var game = LoadDwellings();

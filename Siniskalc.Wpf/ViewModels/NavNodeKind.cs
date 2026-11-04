@@ -40,5 +40,11 @@ namespace Siniskalc.Wpf.ViewModels
 
         /// <summary>A group inside the "Mines" or "Dwellings" group of an owner (the mines of one resource, the dwellings of one faction): it opens the owner's tab with that list.</summary>
         OwnerSubGroup,
+
+        /// <summary>A section of the map's objects, or a group of one object type.</summary>
+        MapSection,
+
+        /// <summary>An individual map object whose section shows a selectable list.</summary>
+        MapObject,
     }
 }

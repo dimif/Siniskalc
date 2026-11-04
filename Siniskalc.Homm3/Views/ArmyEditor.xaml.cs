@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Views
 {
+    using System.Windows;
     using System.Windows.Controls;
 
     /// <summary>
@@ -8,12 +9,21 @@
     /// </summary>
     public partial class ArmyEditor : UserControl
     {
+        public static readonly DependencyProperty ShowFinderProperty = DependencyProperty.Register(
+            nameof(ShowFinder), typeof(bool), typeof(ArmyEditor), new PropertyMetadata(true));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ArmyEditor"/> class.
         /// </summary>
         public ArmyEditor()
         {
             this.InitializeComponent();
+        }
+
+        public bool ShowFinder
+        {
+            get => (bool)this.GetValue(ShowFinderProperty);
+            set => this.SetValue(ShowFinderProperty, value);
         }
     }
 }

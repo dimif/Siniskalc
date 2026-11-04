@@ -12,6 +12,7 @@
         private readonly ICastleRegionProvider castleRegions;
         private readonly IMineRegionProvider mineRegions;
         private readonly IDwellingRegionProvider dwellingRegions;
+        private readonly CreatureBankRegionProvider bankRegions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ByteEditTargetFactory"/> class.
@@ -21,8 +22,9 @@
         /// <param name="castleRegions">The castle regions.</param>
         /// <param name="mineRegions">The mine regions.</param>
         /// <param name="dwellingRegions">The dwelling regions.</param>
-        public ByteEditTargetFactory(IHeroRegionProvider heroRegions, IPlayerRegionProvider playerRegions, ICastleRegionProvider castleRegions, IMineRegionProvider mineRegions, IDwellingRegionProvider dwellingRegions)
+        public ByteEditTargetFactory(IHeroRegionProvider heroRegions, IPlayerRegionProvider playerRegions, ICastleRegionProvider castleRegions, IMineRegionProvider mineRegions, IDwellingRegionProvider dwellingRegions, CreatureBankRegionProvider bankRegions)
         {
+            this.bankRegions = bankRegions;
             this.mineRegions = mineRegions;
             this.dwellingRegions = dwellingRegions;
             this.heroRegions = heroRegions;
@@ -44,5 +46,12 @@
 
         /// <inheritdoc/>
         public IByteEditTarget ForDwelling(SaveDocumentHistory history, int dwellingIndex) => new DwellingByteEditTarget(history, dwellingIndex, this.dwellingRegions);
+
+        /// <inheritdoc/>
+        public IByteEditTarget ForCreatureBank(SaveDocumentHistory history, int index)
+        {
+            var session = new EditSession<CreatureBankChunk, Models.CreatureBankModel>(history, Homm3ChunkKinds.CreatureBanks, index);
+            return new ChunkByteEditTarget<CreatureBankChunk, Models.CreatureBankModel>(session, this.bankRegions.GetRegions(session.Chunk));
+        }
     }
 }

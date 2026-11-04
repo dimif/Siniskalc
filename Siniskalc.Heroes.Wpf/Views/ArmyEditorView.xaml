@@ -10,6 +10,9 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Title}"/>
+                    <Border Style="{StaticResource EditedMarkStyle}" VerticalAlignment="Center" Margin="8,0,0,8">
+                        <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
+                    </Border>
                     <TextBlock Margin="16,0,0,8" Style="{StaticResource CardHeadingStyle}" FontWeight="Normal" Text="{Binding ArmySummary}"/>
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding CreatureSlots}">
@@ -99,7 +102,16 @@
         </Border>
 
         <!-- Look up a creature, and put it in the army. -->
-        <Border Style="{StaticResource CardStyle}">
+        <Border>
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ShowFinder, RelativeSource={RelativeSource AncestorType=local:ArmyEditorView}}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <StackPanel>
                 <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Find creatures"/>
                 <wpf:FinderView DataContext="{Binding Finder}">

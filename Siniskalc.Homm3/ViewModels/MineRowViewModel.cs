@@ -50,6 +50,8 @@
         /// </summary>
         public IArmy<Creature> Guard => this.Session.Current.Guard;
 
+        public bool HasPendingChanges => this.Session.IsDirty;
+
         /// <summary>
         /// Changes the creatures that guard the mine.
         /// </summary>

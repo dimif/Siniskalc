@@ -36,6 +36,8 @@
         private readonly RecordKit<RecordChunk, TurnModel> turn;
         private readonly IDocumentReconciler reconciler;
         private readonly ISavefileBytesPatcher patcher;
+        private readonly ICreatureBankLoader creatureBankLoader;
+        private readonly Func<Entities.EntityCatalog, RecordKit<CreatureBankChunk, CreatureBankModel>> creatureBanks;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveDocumentFactory"/> class.
@@ -82,7 +84,9 @@
             RecordKit<RecordChunk, HeroOwnersModel> heroOwners,
             RecordKit<RecordChunk, TurnModel> turn,
             IDocumentReconciler reconciler,
-            ISavefileBytesPatcher patcher)
+            ISavefileBytesPatcher patcher,
+            ICreatureBankLoader creatureBankLoader,
+            Func<Entities.EntityCatalog, RecordKit<CreatureBankChunk, CreatureBankModel>> creatureBanks)
         {
             this.versionEntities = versionEntities;
             this.heroDiffer = heroDiffer;
@@ -105,6 +109,8 @@
             this.turn = turn;
             this.reconciler = reconciler;
             this.patcher = patcher;
+            this.creatureBankLoader = creatureBankLoader;
+            this.creatureBanks = creatureBanks;
         }
 
         /// <inheritdoc/>
@@ -149,7 +155,9 @@
                 this.playerListsSerializer,
                 this.playerDiffer,
                 heroId => heroes.FindById(heroId)?.Name ?? $"Hero {heroId}");
-            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.reconciler, this.patcher, inactivePlayers, townMerchant);
+            var bankChunks = this.creatureBankLoader.Load(bytes, offsets.GameVersion, heroes.ToList(), heroes.Select(h => h.End).DefaultIfEmpty(0).Max());
+            var banks = new RecordChunkCollection<CreatureBankChunk, CreatureBankModel>(bankChunks, this.creatureBanks(entities.Catalog));
+            return Homm3SaveDocuments.Create(bytes, heroes, players, castles, obelisks, mines, dwellings, merchants, heroOwners, turn, this.reconciler, this.patcher, inactivePlayers, townMerchant, banks);
         }
     }
 }

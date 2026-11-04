@@ -177,13 +177,119 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         [Test]
         public void ChangingTheOwnerOfAMineChangesTheStructureKey()
         {
-            var builder = new NavigationBuilder(new BanishingTextProvider());
+            var builder = new NavigationBuilder(new BanishingTextProvider(), TestServices.BankText);
             var game = SavedGames.Get(SavePath);
             var before = builder.StructureKey(game);
 
             game.History.CreateMineSession(0).Update(m => m with { Owner = m.Owner == Siniskalc.Homm3.Entities.PlayerColor.Blue ? Siniskalc.Homm3.Entities.PlayerColor.Red : Siniskalc.Homm3.Entities.PlayerColor.Blue });
 
             Assert.That(builder.StructureKey(game), Is.Not.EqualTo(before));
+        }
+
+        [Test]
+        public void TheMapGroupsMerchantsAndCreatureBankTypesWithTheirIndividualLocations()
+        {
+            var main = LoadUtopias("dragon_utopias_01_first_cleared.GM2");
+            var map = main.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            Assert.That(map.Children.Select(n => n.Title), Is.EqualTo(new[] { "Merchants", "Creature banks" }));
+            var banks = map.Children.Single(n => n.Title == "Creature banks");
+            Assert.That(banks.Children.Select(n => n.Title), Is.EqualTo(new[] { "Dragon Utopias" }));
+            var utopias = banks.Children.Single(n => n.Tab == MapSections.DragonUtopias);
+            Assert.That(utopias.Title, Is.EqualTo("Dragon Utopias"));
+            Assert.That(utopias.Children, Has.Count.EqualTo(8));
+            Assert.That(utopias.Children.Select(n => n.Index), Is.EquivalentTo(Enumerable.Range(0, 8)));
+            Assert.That(utopias.Children.Select(n => n.Title), Has.All.Matches<string>(t => t.StartsWith("At ", StringComparison.Ordinal)));
+
+            utopias.IsSelected = true;
+            var page = main.CurrentPageOf<MapViewModel>();
+            Assert.That(page.SelectedTab, Is.EqualTo(MapSections.DragonUtopias));
+            Assert.That(page.SelectedBank, Is.Null);
+            Assert.That(page.BankSummary, Is.EqualTo("8 Dragon Utopias: 7 uncleared, 1 defeated"));
+            var location = utopias.Children.Last();
+            location.IsSelected = true;
+            Assert.That(page.SelectedBank?.Index, Is.EqualTo(location.Index));
+            Assert.That(page.SelectedTab, Is.EqualTo(MapSections.DragonUtopias));
+            utopias.IsSelected = false;
+            utopias.IsSelected = true;
+            Assert.That(page.SelectedBank, Is.Null);
+            banks.IsSelected = true;
+            Assert.That(page.SelectedTab, Is.EqualTo(MapSections.CreatureBanks));
+            map.Children.Single(n => n.Title == "Merchants").IsSelected = true;
+            Assert.That(page.SelectedTab, Is.EqualTo(MapSections.Merchants));
+            Assert.That(page.Merchants, Is.Not.Empty);
+        }
+
+        [Test]
+        public void TheMixedBankMapGroupsAllSixTypesAndPreservesLocationSelectionAndEditedMarksAcrossUndo()
+        {
+            var path = Path.Combine("TestData", "Hota", "CreatureBanks", "creature_banks_00_baseline.GM2");
+            var editor = TestServices.CreateHomm3Editor();
+            editor.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            var map = editor.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            var banks = map.Children.Single(n => n.Tab == MapSections.CreatureBanks);
+            Assert.That(banks.Children.Select(n => n.Title), Is.EqualTo(new[] { "Dragon Utopias", "Cyclops Stockpiles", "Dwarven Treasuries", "Imp Caches", "Medusa Stores", "Naga Banks" }));
+            Assert.That(banks.Children.SelectMany(n => n.Children).Select(n => n.Index), Is.EquivalentTo(Enumerable.Range(0, 28)));
+            foreach (var group in banks.Children)
+            {
+                group.IsSelected = true;
+                var page = editor.CurrentPageOf<MapViewModel>();
+                Assert.That(page.BankGroupName, Is.EqualTo(group.Title));
+                Assert.That(page.SelectedBank, Is.Null);
+                var location = group.Children.Last();
+                location.IsSelected = true;
+                Assert.That(page.SelectedBank!.Index, Is.EqualTo(location.Index));
+                page.SelectedBank.SelectedDefeat = 1;
+                Assert.That(location.HasChanges && group.HasChanges && banks.HasChanges && map.HasChanges, Is.True);
+                Assert.That(location.IsSelected, Is.True);
+                editor.Undo();
+                Assert.That(page.SelectedBank.Index, Is.EqualTo(location.Index));
+                Assert.That(page.SelectedBank.IsCleared, Is.False);
+                Assert.That(location.HasChanges || group.HasChanges || banks.HasChanges || map.HasChanges, Is.False);
+                Assert.That(location.IsSelected, Is.True);
+            }
+        }
+
+        [Test]
+        public void AMapWithUtopiasButNoMerchantsStillHasTheMapAndCreatureBankNodes()
+        {
+            var main = LoadUtopias("dragon_utopias_03_tier_3_before.GM2");
+            var map = main.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            map.IsSelected = true;
+            var page = main.CurrentPageOf<MapViewModel>();
+            Assert.That(page.Merchants, Is.Empty);
+            Assert.That(page.SelectedTab, Is.EqualTo(MapSections.Overview));
+            Assert.That(map.Children.Single(n => n.Title == "Creature banks").Children.Single(n => n.Tab == MapSections.DragonUtopias).Children, Has.Count.EqualTo(8));
+        }
+
+        [Test]
+        public void ResettingAUtopiaMarksItsLocationAndAncestorsAndUndoKeepsTheLocationSelected()
+        {
+            var main = LoadUtopias("dragon_utopias_01_first_cleared.GM2");
+            var map = main.NavigationNodes.Descendants().Single(n => n.Kind == NavNodeKind.Map);
+            var group = map.Children.Single(n => n.Title == "Creature banks").Children.Single(n => n.Tab == MapSections.DragonUtopias);
+            var location = group.Children[0];
+            location.IsSelected = true;
+            var page = main.CurrentPageOf<MapViewModel>();
+            page.SelectedBank!.RestoreCommand.Execute(null);
+            Assert.That(location.HasChanges && group.HasChanges && map.HasChanges, Is.True);
+            Assert.That(page.BankSummary, Is.EqualTo("8 Dragon Utopias: 8 uncleared, 0 defeated"));
+            main.Undo();
+            Assert.That(page.SelectedBank?.Index, Is.EqualTo(location.Index));
+            Assert.That(page.SelectedBank!.IsCleared, Is.True);
+            Assert.That(location.HasChanges || group.HasChanges || map.HasChanges, Is.False);
+            page.Merchants[0].Slots[0].ClearCommand.Execute(null);
+            Assert.That(map.Children.Single(n => n.Title == "Merchants").HasChanges && map.HasChanges, Is.True);
+            Assert.That(group.HasChanges, Is.False);
+            main.Undo();
+            Assert.That(map.HasChanges, Is.False);
+        }
+
+        private static Homm3EditorViewModel LoadUtopias(string filename)
+        {
+            var path = Path.Combine("TestData", "Hota", "DragonUtopias", filename);
+            var main = TestServices.CreateHomm3Editor();
+            main.LoadGameFromBytes(TestServices.SavefileCodec.Read(path), path);
+            return main;
         }
 
         private static int ResourceOrder(string resource) => (int)Enum.Parse<Siniskalc.Heroes.Entities.Resource>(resource);

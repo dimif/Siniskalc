@@ -57,5 +57,7 @@
 
         /// <summary>The single stock shared by every town Artifact Merchant.</summary>
         public static readonly ChunkKind TownMerchant = new("TownMerchant", 10);
+
+        public static readonly ChunkKind CreatureBanks = new("CreatureBanks", 11);
     }
 }

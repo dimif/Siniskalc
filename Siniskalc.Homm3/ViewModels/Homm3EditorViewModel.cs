@@ -19,6 +19,7 @@
     public sealed class Homm3EditorViewModel : EditorViewModelBase<Game>
     {
         private readonly EffectLineProvider effectLines;
+        private readonly CreatureBankTextProvider bankText;
         private readonly BanishingTextProvider banishingText;
         private readonly CastleBuildMessageProvider castleBuildMessages;
         private readonly ISpellPointsCalculatorFactory spellPoints;
@@ -42,10 +43,11 @@
         /// <param name="saveRegions">The save regions.</param>
         /// <param name="byteEditTargets">The byte edit targets.</param>
         /// <param name="navigationBuilder">The navigation builder.</param>
-        public Homm3EditorViewModel(ISavegameService<Game> gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder)
+        public Homm3EditorViewModel(ISavegameService<Game> gameService, EffectLineProvider effectLines, BanishingTextProvider banishingText, CastleBuildMessageProvider castleBuildMessages, ISpellPointsCalculatorFactory spellPoints, ISaveRegionProvider saveRegions, IByteEditTargetFactory byteEditTargets, INavigationBuilder<Game> navigationBuilder, CreatureBankTextProvider bankText)
             : base(gameService, saveRegions, navigationBuilder)
         {
             this.effectLines = effectLines;
+            this.bankText = bankText;
             this.banishingText = banishingText;
             this.castleBuildMessages = castleBuildMessages;
             this.spellPoints = spellPoints;
@@ -150,9 +152,10 @@
         /// <summary>
         /// Shows the page of what the map keeps that no player owns.
         /// </summary>
-        public void ShowMap()
+        public void ShowMap(int section = MapSections.Overview, int? bankIndex = null)
         {
-            this.map ??= new MapViewModel(this.Loaded(), this.effectLines);
+            this.map ??= new MapViewModel(this.Loaded(), this.effectLines, this.bankText, this.byteEditTargets);
+            this.map.ShowSection(section, bankIndex);
             this.SetCurrentPage(this.map);
         }
 
@@ -254,7 +257,7 @@
             HeroViewModel hero => this.Navigation.HeroNode(hero.Session.HeroIndex),
             CastleViewModel castle => this.Navigation.CastleNode(castle.CastleIndex),
             NeutralViewModel neutralPage => this.Navigation.NeutralTabNode(neutralPage.SelectedTab, neutralPage.OwnerIndex),
-            MapViewModel => this.Navigation.MapNode,
+            MapViewModel map => this.MapNodeOf(map),
             _ => null,
         };
 
@@ -297,7 +300,28 @@
                 case NavNodeKind.Map:
                     this.ShowMap();
                     break;
+                case NavNodeKind.MapSection:
+                    this.ShowMap(node.Tab);
+                    break;
+                case NavNodeKind.MapObject:
+                    this.ShowMap(node.Tab, node.Index);
+                    break;
             }
+        }
+
+        private NavNodeViewModel? MapNodeOf(MapViewModel page)
+        {
+            var mapNode = this.Navigation.MapNode;
+            if (page.SelectedTab == MapSections.Overview || mapNode == null)
+            {
+                return mapNode;
+            }
+
+            var section = mapNode.Children.Concat(mapNode.Children.SelectMany(n => n.Children))
+                .FirstOrDefault(n => n.Kind == NavNodeKind.MapSection && n.Tab == (page.SelectedTab == MapSections.BankDetails ? page.BankSection : page.SelectedTab));
+            return page.SelectedBank is { } selected
+                ? section?.Children.FirstOrDefault(n => n.Index == selected.Index) ?? section
+                : section;
         }
     }
 }

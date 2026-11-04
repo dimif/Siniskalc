@@ -2,10 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
+             xmlns:local="clr-namespace:Siniskalc.Homm3.Views"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignWidth="800">
     <!-- The army of a hero or the garrison of a castle. The DataContext is an ArmyViewModel; the view is the one every game uses. -->
-    <heroes:ArmyEditorView/>
+    <heroes:ArmyEditorView ShowFinder="{Binding ShowFinder, RelativeSource={RelativeSource AncestorType=local:ArmyEditor}}"/>
 </UserControl>

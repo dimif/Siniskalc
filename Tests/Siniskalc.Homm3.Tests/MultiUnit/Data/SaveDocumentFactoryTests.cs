@@ -54,7 +54,9 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
                 new RecordKit<RecordChunk, HeroOwnersModel>(Mock.Of<IDeserializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<ISerializer<RecordChunk, HeroOwnersModel>>(), Mock.Of<IDiffer<HeroOwnersModel>>()),
                 new RecordKit<RecordChunk, TurnModel>(Mock.Of<IDeserializer<RecordChunk, TurnModel>>(), Mock.Of<ISerializer<RecordChunk, TurnModel>>(), Mock.Of<IDiffer<TurnModel>>()),
                 Mock.Of<IDocumentReconciler>(),
-                Mock.Of<ISavefileBytesPatcher>());
+                Mock.Of<ISavefileBytesPatcher>(),
+                Mock.Of<ICreatureBankLoader>(l => l.Load(It.IsAny<byte[]>(), It.IsAny<GameVersion>(), It.IsAny<IReadOnlyList<HeroChunk>>(), It.IsAny<int>()) == new List<CreatureBankChunk>()),
+                _ => new RecordKit<CreatureBankChunk, CreatureBankModel>(Mock.Of<IDeserializer<CreatureBankChunk, CreatureBankModel>>(), Mock.Of<ISerializer<CreatureBankChunk, CreatureBankModel>>(), Mock.Of<IDiffer<CreatureBankModel>>()));
         }
 
         private static HeroChunk Hero(string name, byte id)
@@ -82,6 +84,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.Data
             Assert.That(document.Dwellings(), Is.Empty);
             Assert.That(document.Merchants(), Is.Empty);
             Assert.That(document.TownMerchant(), Is.Empty);
+            Assert.That(document.CreatureBanks(), Is.Empty);
             Assert.That(document.HeroOwners(), Is.Empty);
         }
 

@@ -156,9 +156,11 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var bytes = TestServices.SavefileCodec.Read(file);
             var table = new MapObjectTablesLocator().Locate(bytes, game.History.Current.Catalog().Version);
             int expected;
-            if (Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "MerchantStock"))
+            if (Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "MerchantStock")
+                || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "DragonUtopias")
+                || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "CreatureBanks"))
             {
-                Assert.That(table, Is.Null, "the MerchantStock companion map has no mine or dwelling definitions");
+                Assert.That(table, Is.Null, "the merchant/creature-bank companion maps have no mine or dwelling definitions");
                 Assert.That(game.History.Current.Mines(), Is.Empty);
                 expected = 0;
             }

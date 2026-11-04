@@ -44,6 +44,8 @@
         /// <returns>The session.</returns>
         public static EditSession<RecordChunk, MerchantStockModel> CreateMerchantSession(this SaveDocumentHistory history, int index) => new(history, Homm3ChunkKinds.Merchants, index);
 
+        public static IEditSession<CreatureBankModel> CreateCreatureBankSession(this SaveDocumentHistory history, int index) => new EditSession<CreatureBankChunk, CreatureBankModel>(history, Homm3ChunkKinds.CreatureBanks, index);
+
         /// <summary>
         /// Creates a view onto the dwelling at <paramref name="index"/>; its edits are pushed onto this history.
         /// </summary>

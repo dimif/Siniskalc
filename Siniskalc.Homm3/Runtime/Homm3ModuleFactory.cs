@@ -77,8 +77,10 @@
                 entities => new RecordKit<RecordChunk, MerchantStockModel>(new MerchantStockDeserializer(entities), new SafeMerchantStockSerializer(entities), new MerchantStockDiffer(Homm3ChunkKinds.TownMerchant)),
                 new RecordKit<RecordChunk, HeroOwnersModel>(new HeroOwnersDeserializer(), new SafeHeroOwnersSerializer(), new HeroOwnersDiffer()),
                 new RecordKit<RecordChunk, TurnModel>(new TurnDeserializer(), new SafeTurnSerializer(), new TurnDiffer()),
-                new PlayerListsReconciler(),
-                this.BytesPatcher);
+                new CreatureBankReconciler(new PlayerListsReconciler()),
+                this.BytesPatcher,
+                new CreatureBankLoader(),
+                entities => new RecordKit<CreatureBankChunk, CreatureBankModel>(new CreatureBankDeserializer(entities), new SafeCreatureBankSerializer(entities), new CreatureBankDiffer()));
 
             this.SavefileCodec = new GzipSavefileCodec();
             ISavegameService<Game> gameService = new SavegameService<Game>(
@@ -103,8 +105,9 @@
                 backup);
             this.GameService = decorateGameService(gameService);
             this.SaveRegionProvider = new SaveRegionProvider(mapHeaderLocator, setupLocator, dateLocator, this.HeroRegions, this.PlayerRegions, this.CastleRegions);
-            this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider());
+            this.ByteEditTargets = new ByteEditTargetFactory(this.HeroRegions, this.PlayerRegions, this.CastleRegions, new MineRegionProvider(), new DwellingRegionProvider(), new CreatureBankRegionProvider());
             this.EffectLines = new EffectLineProvider();
+            this.BankText = new CreatureBankTextProvider();
             this.CastleBuildMessages = new CastleBuildMessageProvider();
             this.SpellPoints = new SpellPointsCalculatorFactory();
             this.Module = new Homm3Module(this.CreateEditor);
@@ -188,6 +191,8 @@
         /// </summary>
         public EffectLineProvider EffectLines { get; }
 
+        public CreatureBankTextProvider BankText { get; }
+
         /// <summary>
         /// Gets the words of the countdown of a player who is losing or gaining a town.
         /// </summary>
@@ -207,6 +212,6 @@
         /// Makes the editor of Heroes of Might and Magic III, with nothing loaded.
         /// </summary>
         /// <returns>The view model of the editor.</returns>
-        public Homm3EditorViewModel CreateEditor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.BanishingText));
+        public Homm3EditorViewModel CreateEditor() => new(this.GameService, this.EffectLines, this.BanishingText, this.CastleBuildMessages, this.SpellPoints, this.SaveRegionProvider, this.ByteEditTargets, new NavigationBuilder(this.BanishingText, this.BankText), this.BankText);
     }
 }

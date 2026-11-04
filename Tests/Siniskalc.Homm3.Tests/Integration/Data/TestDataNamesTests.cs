@@ -32,7 +32,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         [Test]
         public void EverySavefileHasTheExtensionOfTheGameOrOfARawChunk()
         {
-            var bad = Files().Where(f => Path.GetExtension(f) is not (".GM1" or ".GM2" or ".GM3" or ".bin")).ToList();
+            var bad = Files().Where(f => Path.GetExtension(f) is not (".GM1" or ".GM2" or ".GM3" or ".bin")
+                && !(Path.GetExtension(f) == ".h3m" && Path.GetDirectoryName(f) == Path.Combine("TestData", "Hota", "CreatureBanks"))).ToList();
 
             Assert.That(bad, Is.Empty);
         }
@@ -50,7 +51,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         {
             var duplicates = Files()
                 .Select(f => (Folder: Path.GetDirectoryName(f), Match: Numbered().Match(Path.GetFileNameWithoutExtension(f)), File: f))
-                .Where(x => x.Match.Success)
+                .Where(x => x.Match.Success && Path.GetExtension(x.File) != ".h3m")
                 .GroupBy(x => (x.Folder, Series: x.Match.Groups["series"].Value, Number: x.Match.Groups["number"].Value, Branch: x.Match.Groups["branch"].Value))
                 .Where(g => g.Count() > 1)
                 .Select(g => string.Join(", ", g.Select(x => Path.GetFileName(x.File))))

@@ -49,14 +49,52 @@ Pages:
 - **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings**). It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
 - **Map**: what the map keeps that no player owns: the adventure-map Black Markets and supported creature banks (HoMM3), the shrines and sphinxes (HoMM2). HoMM3's town Artifact Merchants share separate stock that is not shown or edited here.
 - **Map navigation (HoMM3)**: **Map → Merchants** lists all located adventure-map Black Markets. **Map → Creature banks** groups **Dragon Utopias, Cyclops Stockpiles, Dwarven Treasuries, Imp Caches, Medusa Stores and Naga Banks**. Select a type for its summary and list, or a location below it to highlight that bank and scroll it into view. Types not yet supported are not listed.
-- **Creature-bank cards (HotA)**: all six types share the same overview and compact cards: tier, location, **Defeated/Undefeated**, guards and retained rewards. **Reset** restores the displayed guards and entrance for another battle without granting resources to the player. Changing strength also chooses that preset's resource reward, but does not automatically reset a defeated bank or reroll Utopia artifacts. All edits use normal history, pending changes and undo/redo.
-- **Upgraded centre**: the five non-Utopia kinds may upgrade their centre stack. An undefeated bank shows its actual choice. A defeated record has erased its guards, so the card explains that its original upgrade is unknown; choose **Upgraded centre stack** before Reset if wanted (the default is unupgraded). Choosing it on a defeated card alone writes nothing until Reset. Only the exact original strongest resets have been re-fought in game; arbitrary tier/upgrade changes and occupied non-Utopia resets remain unconfirmed in game. Unestablished entrance flags are left uneditable rather than guessed. No additional saves are required for these supported presets.
-- **Utopia overview**: the **Dragon Utopias** node shows a mines-style list above the detail cards: tier, entrance location, **Defeated/Undefeated**, and rewards (for example, **50k gold** followed by the four artifact names). Selecting **Undefeated** restores the guards and entrance for another battle, just like the card's **Reset**; selecting **Defeated** clears them without awarding the player anything. Both are undoable. Empty artifact slots show **(empty)**.
-- **Utopia bytes (Advanced mode)**: select a Utopia in the overview or navigation tree to show its hex editor below the overview. It edits that bank record, with labelled guard types/counts, resources and artifacts. The separate map entrance or occupying hero is not part of this byte view; a defeated-state change reconciles the entrance automatically. Turning Advanced mode off releases the byte editor.
-- **Other bank bytes (Advanced mode)**: the same hex view works for all supported banks, showing only their own record and fields. Selecting another type or location releases the old target. These five bank kinds have no artifact or creature reward; their resource rewards remain visible after defeat.
-- **Dragon Utopias (HotA)**: cards match the overview list's width and show the Utopia number and entrance coordinates in one heading, with **Defeated** or **Uncleared** beside **Reset**. Three aligned columns show **Garrison**, always-visible **Change guard strength and rewards** controls, and **Rewards**, keeping each card compact vertically. For a defeated bank, the garrison is what Reset will restore, not living guards. Its **Reset** re-arms it and permits another battle for its rewards; previously awarded gold and artifacts are not taken away. The four strength presets award 20,000–50,000 gold; changing strength leaves artifacts alone. Editing a defeated bank's contents does not restore it until you click its **Reset** or select **Undefeated** in the overview. Use Undo or the pending changes list to revert individual edits; the Map header's reset undoes unsaved map edits. Restoring original contents was confirmed in-game for all four tiers; edited presets, rewards and marking a previously undefeated bank as defeated remain unverified in-game. Other game versions or unsupported bank/entrance layouts show an unavailable notice.
+- **Creature banks (HotA)**: shared overviews and cards show guards, rewards and defeated state, with guard presets and a Reset for another battle. See [Creature banks](#creature-banks-horn-of-the-abyss) for the reset workflow and verification limits.
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
 - **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings. In HoMM3 a town with an Artifact Merchant built also has an **Artifact merchant** tab. Its seven slots are shared by every town and owner, separate from the Map page's Black Markets. Clear a slot to mark it sold. **Reset shared stock** restores that stock only; the town's **Reset** does not change it. Unsupported save layouts show an unavailable notice. Editor-written stock has not yet been checked in the game.
+
+## Creature banks (Horn of the Abyss)
+
+Open **Map → Creature banks** and choose a type. All six supported types use the same overview and detail cards.
+The overview lists tier, entrance location, **Defeated/Undefeated** and retained rewards. Pick a row or a location in the navigation tree to highlight its card and scroll it into view.
+Each card has its name and location beside **Defeated** or **Uncleared** and **Reset**, followed by three columns: **Garrison**, **Change guard strength and rewards**, and **Rewards**.
+
+| Bank | Guards | Rewards |
+|---|---|---|
+| Dragon Utopia | Green, Red, Gold and Black Dragons | 20,000–50,000 gold and four editable artifact slots |
+| Cyclops Stockpile | Cyclopes, optionally a Cyclops Kings centre | Each of the six non-gold resources |
+| Dwarven Treasury | Dwarves, optionally a Battle Dwarves centre | Crystal and gold |
+| Imp Cache | Imps, optionally a Familiars centre | Mercury and gold |
+| Medusa Stores | Medusas, optionally a Medusa Queens centre | Sulfur and gold |
+| Naga Bank | Nagas, optionally a Naga Queens centre | Gems and gold |
+
+### Resetting a defeated bank
+
+1. Select the bank and check the displayed **Garrison** and **Rewards**. On a defeated card, Garrison means the guards that Reset will restore, not surviving guards.
+2. Keep the current tier to retain its resource reward, or choose another of the four guard/reward presets. For a non-Utopia bank, choose **Upgraded centre stack** if wanted.
+3. Click the card's **Reset**, or select **Undefeated** in its overview row.
+4. Choose **File > Save**, then load the edited save in Heroes to fight the bank again.
+
+A defeated non-Utopia record has erased its original centre upgrade. The card explains this and defaults to unupgraded guards; choosing an upgrade while defeated alone writes nothing until Reset.
+Reset re-arms the bank and its entrance without granting rewards immediately or taking away anything already earned.
+Changing strength alone does not reset a defeated bank or reroll Utopia artifacts. Empty artifact slots show **(empty)**; overview rewards use compact gold amounts such as **50k gold**.
+Selecting **Defeated** clears the guards and updates the entrance without awarding anything.
+
+**The two Resets have different purposes:** a bank card's Reset prepares another battle; the Map header's Reset undoes unsaved merchant and bank edits.
+All edits support Undo, Redo and individual reverts through Pending changes. Changing a bank does not change the player's resources.
+
+**Verification limits:** original-content Utopia resets were confirmed in-game for all four tiers. The exact original strongest resets of the other five types were also successfully re-fought.
+Arbitrary tier/upgrade changes, edited rewards, marking an undefeated bank as defeated, and non-Utopia resets while a hero occupies the entrance still need in-game confirmation.
+Unknown entrance flags and unsupported layouts remain uneditable rather than guessed; bank editing is HotA-only.
+
+With **Advanced mode** on, selecting a bank shows a hex editor below the overview for that bank record's guards, resources and, for Utopias, artifacts.
+The separate entrance and occupying hero are not part of this byte view; changing defeated state through the normal controls updates the entrance automatically.
+Switching selection or turning Advanced mode off releases the byte editor without discarding edits.
+
+## Mine garrisons (HoMM3)
+
+Pick a mine on its owner's **Mines** tab to edit the guard. An **edited** label beside its garrison heading marks unsaved changes for that mine and updates on selection, Undo and Redo.
+The mine editor uses the individual army-slot pickers rather than a separate **Find creatures** card; hero and town army finders are unchanged.
 
 ## Undo, redo and pending changes
 

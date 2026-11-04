@@ -51,6 +51,8 @@ A non extensive list of entities extracted from the save files:
 
 **Map objects**
 * Mines, dwellings.
+* HoMM3 adventure-map Black Market stock under **Map > Merchants**.
+* HotA Dragon Utopias, Cyclops Stockpiles, Dwarven Treasuries, Imp Caches, Medusa Stores and Naga Banks under **Map > Creature banks**: guards, retained rewards, defeated state, guard presets, Reset and selected-record hex editing. Original-content resets have in-game evidence; custom presets and rewards remain unverified. See the [creature-bank guide](docs/USER_GUIDE.md#creature-banks-horn-of-the-abyss) for the limits and reset workflow.
 
 **Editing**
 * Pending-changes list showing every byte-level change before saving, undo, and revert all.

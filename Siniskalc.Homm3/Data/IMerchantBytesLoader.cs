@@ -9,7 +9,8 @@
     public interface IMerchantBytesLoader
     {
         /// <summary>
-        /// Returns the two lists (the artifact merchants, then the black market), or none when they are not found.
+        /// Returns one stock list per adventure-map Black Market, in type-7 object-number order, or none when they are not found.
+        /// The shared town Artifact Merchant stock is separate and is not loaded here.
         /// </summary>
         IReadOnlyList<RecordChunk> LoadMerchantChunks(byte[] bytes);
     }

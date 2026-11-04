@@ -6,7 +6,9 @@ namespace Siniskalc.Homm3.Data
     /// of each merchant of the map (the game calls every one of them a black market). A slot that was bought is 0xFFFFFFFF. The merchants
     /// are in the order of their number among the objects of the type 7, which the cells of the map give. Found in the saves of
     /// <c>TestData/Hota/VisitedPlaces</c>, in which Tazar and Orrin visited the two merchants of the map and bought from them, and in
-    /// <c>TestData/Hota/multi_merchants</c>, a map with four of them.
+    /// <c>TestData/Hota/multi_merchants</c>, a map with four of them. The eight purchase controls in
+    /// <c>TestData/Hota/MerchantStock</c> verify every list's identity and its map anchor. Town Artifact Merchants share separate stock,
+    /// which is not described by this layout.
     /// </summary>
     public static class MerchantLayout
     {

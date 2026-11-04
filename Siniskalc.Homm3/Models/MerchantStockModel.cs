@@ -8,7 +8,7 @@
     /// <summary>
     /// What a merchant has in store: seven slots, each an artifact or empty (what was bought).
     /// </summary>
-    /// <param name="Index">The place of the merchant among the merchants of the savegame: 0 the artifact merchants, 1 the black market.</param>
+    /// <param name="Index">The zero-based type-7 number of this adventure-map Black Market, also its stock-list index.</param>
     /// <param name="Name">What the merchant is called.</param>
     /// <param name="Slots">The seven slots, in the order of the shop; <c>null</c> for an empty one.</param>
     public sealed record MerchantStockModel(int Index, string Name, IReadOnlyList<Artifact?> Slots)

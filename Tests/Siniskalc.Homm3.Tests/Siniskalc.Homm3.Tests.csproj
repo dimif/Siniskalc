@@ -45,6 +45,9 @@
     <None Include="..\..\TestData\Hota\tan_not_parsing.GM1" Link="TestData\Hota\tan_not_parsing.GM1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\TestData\Hota\MerchantStock\*.GM2" Link="TestData\Hota\MerchantStock\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\TestData\Hota\multi_merchants.GM1" Link="TestData\Hota\multi_merchants.GM1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

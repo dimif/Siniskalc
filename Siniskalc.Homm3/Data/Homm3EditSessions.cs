@@ -36,7 +36,8 @@
         public static CastleEditSession CreateCastleSession(this SaveDocumentHistory history, int castleIndex) => new(history, castleIndex);
 
         /// <summary>
-        /// Creates a view onto the stock of the merchant at <paramref name="index"/> (0 the artifact merchants, 1 the black market); its edits are pushed onto this history.
+        /// Creates a view onto the Black Market stock at <paramref name="index"/> (the zero-based type-7 object number);
+        /// its edits are pushed onto this history.
         /// </summary>
         /// <param name="history">The history of the savegame.</param>
         /// <param name="index">The place in its list, from 0.</param>

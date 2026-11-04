@@ -95,7 +95,7 @@
         public static RecordChunkCollection<RecordChunk, DwellingModel> Dwellings(this SaveDocument document) => (RecordChunkCollection<RecordChunk, DwellingModel>)document.GetCollection(Homm3ChunkKinds.Dwellings);
 
         /// <summary>
-        /// Gets what the merchants have in store: the artifact merchants, then the black market.
+        /// Gets the adventure-map Black Markets' stocks in type-7 object-number order, not the shared town Artifact Merchant stock.
         /// </summary>
         /// <param name="document">The document of the savegame.</param>
         /// <returns>The collection of merchants.</returns>

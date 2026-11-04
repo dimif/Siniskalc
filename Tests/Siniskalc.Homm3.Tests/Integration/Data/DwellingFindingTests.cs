@@ -155,9 +155,20 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             var game = SavedGames.Get(file);
             var bytes = TestServices.SavefileCodec.Read(file);
             var table = new MapObjectTablesLocator().Locate(bytes, game.History.Current.Catalog().Version);
-            Assert.That(table, Is.Not.Null, "every map in this corpus has a nonempty owner/guard or generator table");
-            var expected = Enumerable.Range(0, table!.GeneratorCount)
-                .Count(i => bytes[table.GeneratorStart + (i * 75) + 1] == 17);
+            int expected;
+            if (Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "MerchantStock"))
+            {
+                Assert.That(table, Is.Null, "the MerchantStock companion map has no mine or dwelling definitions");
+                Assert.That(game.History.Current.Mines(), Is.Empty);
+                expected = 0;
+            }
+            else
+            {
+                Assert.That(table, Is.Not.Null, "the other maps in this corpus have a nonempty owner/guard or generator table");
+                expected = Enumerable.Range(0, table!.GeneratorCount)
+                    .Count(i => bytes[table.GeneratorStart + (i * 75) + 1] == 17);
+            }
+
             var dwellings = game.History.Current.Dwellings();
             Assert.That(dwellings, Has.Count.EqualTo(expected), "no validated single-creature dwelling is silently lost");
             foreach (var chunk in dwellings)

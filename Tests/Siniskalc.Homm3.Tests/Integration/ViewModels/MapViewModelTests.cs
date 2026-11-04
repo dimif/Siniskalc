@@ -34,6 +34,22 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         }
 
         [Test]
+        public void TheEightPurchaseVerifiedMarketsShowTheirMapAnchorsInStockOrder()
+        {
+            foreach (var path in Directory.GetFiles(Path.Combine("TestData", "Hota", "MerchantStock"), "*.GM2"))
+            {
+                var game = SavedGames.Get(path);
+                var page = new MapViewModel(game, TestServices.EffectLines);
+
+                Assert.That(game.Places.Merchants.Select(m => (m.Number, m.Position.X, m.Position.Y, m.Position.Level)), Is.EqualTo(
+                    Enumerable.Range(0, 8).Select(i => (i, 2 + (3 * i), 8, 0))), path);
+                Assert.That(page.Merchants.Select(m => m.Name), Is.EqualTo(Enumerable.Range(1, 8).Select(i => $"Black market {i}")), path);
+                Assert.That(page.Merchants.Select(m => m.Location), Is.EqualTo(Enumerable.Range(0, 8).Select(i => $"At {2 + (3 * i)}, 8")), path);
+                Assert.That(page.Merchants.Select(m => m.HasLocation), Has.All.True, path);
+            }
+        }
+
+        [Test]
         public void AMapWithFourBlackMarketsShowsTheStockAndTheTileOfEachAndEditsOnlyTheOnePicked()
         {
             var game = SavedGames.Get(Path.Combine("TestData", "Hota", "multi_merchants.GM1"));

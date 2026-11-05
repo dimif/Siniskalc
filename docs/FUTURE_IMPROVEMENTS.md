@@ -13,7 +13,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 1. **Editing the date.** Define the effects of moving time forward or backward before implementing it. At minimum, preserve consistency with HoMM2's "built today" set and HoMM3's current turn; establish how daily/weekly state should behave rather than assuming a date-byte edit is sufficient.
 2. **Swapping the garrisoned and the visiting hero of a castle** , and moving a hero in or out to allow changing ownership of a castle with a visitor and/or garrison.
 3. **Viewing and editing teams.** The team table of the header is found (Shadow of Death and Restoration of Erathia, HoTA pending) but not read. Reading it would also let the obelisk card mark a whole team at once.
-4. **Extract the Grail location:**
+4. **Extract the Grail location.** The save only shows whether the Grail has been dug up (see `KNOWLEDGE_BASE.md`); where the map hides it is not known.
 5. **Places a HoMM3 hero visited**, what is left: the **mineral spring** (a Horn of the Abyss object, type 144 subtype 4: +1 luck for the next battle and +600 movement points until the end of the day; where a hero keeps that it visited one is not known; probe: Tazar visits a mineral spring, then Orrin a turn later, and a save a day later).
 6. **HoMM3 Dwellings:** establish and expose editable guard/state data for neutral dwellings and generator types 18..20. Decode refugee-camp stock using `TestData/Hota/VisitedPlaces` save 30 and a new before/after-hire pair. Existing format evidence is in `KNOWLEDGE_BASE.md`.
 7. **Model creature stack luck and morale** They can differ from the hero morale.
@@ -30,7 +30,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 - **HoMM3 merchants locator:** Replace heuristic Black Market discovery with a structural locator that also finds nearly sold-out tables and preserves unknown artifact codes.
 - **Position versus entrance:** compare record coordinates with destination markers across mine/dwelling kinds before using them as exact "send to" destinations.
 - **A defeated hero and the tavern.** A defeated hero cannot be rehired by its owner; it will not appear in its tavern rotation until it has been hired by another player and defeated again. The tavern has a table about 250 bytes before the date that changes when a hero is defeated, and might be what models the behaviour.
-- **Banishing is partial.** The counter (player byte 22) is read and edited. The other bytes banishing changes are not decoded (the player's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record near the end of the save, header bytes near 1313, 1356 and 12492), so a banished player (0) is read-only and no one can be banished or revived by the editor.
+- **Banishing is partial.** The counter (player byte 22) is read and edited. The other bytes banishing changes are not decoded (the player's hero chunk gets owner `FF` and an emptied army, a counter and an 8-byte record near the end of the save, header bytes near 1313, 1356 and 12492), so a player whose countdown has reached 0 (banished) is read-only, and the editor can neither banish nor revive anyone.
 
 ## In-game verification of implemented edits
 

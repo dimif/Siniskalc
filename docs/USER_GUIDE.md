@@ -39,6 +39,7 @@ The portable ZIP does not register file associations with Windows.
    A dot next to a node in the tree means it has changes that are not saved.
 4. **File > Save** (Ctrl+S).
    **File > Reload** throws away every change and reads the file again.
+   **File > Go to save file folder...** opens the folder of the savegame in Explorer.
 
 Pages:
 
@@ -122,7 +123,7 @@ It is meant for bug reports, and nothing in it leaves your computer.
 
 - **Help > Show logs** opens the folder of the log files.
   There is one file for each day, `siniskalc-<date>.log`, and the last 7 days are kept.
-  The default folder is `%LOCALAPPDATA%\Siniskalc\logs` (on Linux and macOS, `~/.local/share/Siniskalc/logs`).
+  The default folder is `%LOCALAPPDATA%\Siniskalc\logs`.
 - **Settings... > Logging** sets the **Log level** and the **Log folder** (Browse... picks one, Use default empties the box).
   The level says how much is written: *Information* (the usual) lists what you opened and saved and anything unexpected; *Debug* and *Trace* add detail (for example, each value in a
   savegame that the editor did not know and read as a stand-in); *Warning*, *Error* and *Critical* write less. *Default* leaves the level to `serilog.json` (Information, as shipped).

@@ -3,6 +3,9 @@
 Open implementation work, in-game verification and focused savefile probes. Completed work and intentional design decisions do not belong here.
 What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`; what the savefiles showed is in `docs/KNOWLEDGE_BASE.md` (HoMM3 and HoMM2); what is shared between the games and what is kept apart is in `.claude/agents/game-reconciler.md`.
 
+# Bugs
+- No known ones at the moment.
+
 # Improvements
 
 ## Game Features
@@ -11,7 +14,7 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 2. **Swapping the garrisoned and the visiting hero** of a castle (and moving a hero in or out): changes the castle, two hero chunks and the player's list of heroes together, which no edit session does today. Giving a hero from a tavern to a player is refused with a message (the game refills the slot by a random draw), and so is anything that needs the owner of a garrisoned hero; see `docs/KNOWLEDGE_BASE.md`, "The table of hero owners".
 3. **Teams.** The team table of the header is found (Shadow of Death and Restoration of Erathia, not Horn of the Abyss) but not read. Reading it would let the obelisk card mark a whole team at once.
 4. **HoMM2 mine guardian editing.** The elemental and saved count are displayed read-only. Editing remains after establishing valid count bounds (including counts above 255) and deciding how to handle unverified partial losses; see `KNOWLEDGE_BASE.md`.
-5. **Dug tiles and the visited-object table:** compare saves before and after digging at incorrect and correct Grail locations to establish the tile-number encoding and table updates before exposing edits.
+5. **Extract the Grail location:**
 6. **Places a HoMM3 hero visited**, what is left: the **mineral spring** (a Horn of the Abyss object, type 144 subtype 4: +1 luck for the next battle and +600 movement points until the end of the day; where a hero keeps that it visited one is not known; probe: Tazar visits a mineral spring, then Orrin a turn later, and a save a day later).
 7. **HoMM3 Dwellings:** establish and expose editable guard/state data for neutral dwellings and generator types 18..20. Decode refugee-camp stock using `TestData/Hota/VisitedPlaces` save 30 and a new before/after-hire pair. Existing format evidence is in `KNOWLEDGE_BASE.md`.
 8. **Daily income (HoMM3)**: to include what `DailyIncome` leaves out, in this order:
@@ -29,7 +32,6 @@ What is already built is in `CHANGELOG.md` and `docs/SINISKALC_ARCHITECTURE.md`;
 
 - **HoMM3 weekly growth:** establish castle, horde-building and Grail contributions with controlled weekly transitions, then include them rather than showing only base creature growth.
 - **HoMM3 faerie ring, fountain and idol of fortune:** isolate each reward in before/after saves before enabling edits.
-- **HoMM2 guild restrictions:** establish which spells are valid at each guild level and apply those rules to the picker without discarding existing unexpected spells.
 - **HoMM3 visit history beyond the Utopia's defeated state:** compare the same Dragon Utopia with a second hero, another player and after a new day to distinguish any player-specific visit marks from the entrance state used by Restore. Locate the colossus and gazebo per-place marks with separate visits by two heroes and players.
 - **HoMM3 merchants:** validate the alternate date prefix of the five `empire_of_the_world` / `new_day` saves before enabling their town stock. Establish allowed artifact classes before tightening the picker. Replace heuristic Black Market discovery with a structural locator that also finds nearly sold-out tables and preserves unknown artifact codes.
 - **Position versus entrance:** compare record coordinates with destination markers across mine/dwelling kinds before using them as exact "send to" destinations.
@@ -57,7 +59,7 @@ Use controlled before/after saves with one action per comparison where possible.
 
 ### HoMM2
 
-- **The guardians of a mine:** spell codes, counts and clearing after an enemy capture are established (see `KNOWLEDGE_BASE.md`). Remaining probes: partial guardian losses if possible; count encoding above 255 before allowing such edits.
+- **Guardians of a mine:** spell codes, counts and clearing after an enemy capture have been established (see `KNOWLEDGE_BASE.md`). Needs figuring out: are partial guardian losses possible? What is the max value (seems to be 255).
 - **Town ownership flags:** locate the town's map flag and update it alongside an editor ownership change; currently it stays stale.
 - **Daemon cave, windmill and water mill:** isolate first use, repeat use and reset transitions to locate their state before enabling edits.
 

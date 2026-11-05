@@ -64,7 +64,7 @@ internal sealed class JsonFactionTests
             Assert.That(services.VersionEntities.For(GameVersion.ShadowOfDeath).Catalog.Factions.Find(12), Is.Null);
         });
 
-        using var page = new CastleViewModel(session, services.ByteEditTargets, services.CastleBuildMessages, services.EffectLines);
+        using var page = new CastleViewModel(session, services.ByteEditTargets, services.CastleBuildMessages, services.EffectLines, _ => { });
         page.GarrisonEditor.Finder.Filter = faction.Name;
         Assert.That(page.GarrisonEditor.Finder.Items.Cast<CreatureChoiceViewModel>().Select(c => c.Name),
             Is.EqualTo(new[] { scout.Name, catalog.Creatures.ById("FixtureGuard").Name }));
@@ -106,7 +106,7 @@ internal sealed class JsonFactionTests
         var reloaded = services.GameService.LoadGameFromBytes(expected, "reloaded.GM1");
         Assert.That(reloaded.History.Current.Castles().GetModel(index).CreaturesWaiting(0), Is.EqualTo(17));
         using var heroPage = new HeroViewModel(game.History.CreateHeroSession(0), services.EffectLines,
-            services.SpellPoints.Create(GameVersion.HornOfTheAbyss), services.ByteEditTargets, MapPlaces.None);
+            services.SpellPoints.Create(GameVersion.HornOfTheAbyss), services.ByteEditTargets, MapPlaces.None, _ => { });
         var launcher = catalog.WarMachines.ById("FixtureLauncher");
         heroPage.GeneralInfoViewModel.WarMachineChoices.Single(c => c.Name == launcher.Name).IsChecked = true;
         var editedHero = game.History.Current.Heroes().GetModel(0);

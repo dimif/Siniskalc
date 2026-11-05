@@ -44,7 +44,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var game = Load("Roe", "roe_61_inferno_garrison_and_visiting");
             var opened = new List<int>();
-            var overview = new OverviewViewModel(game, TestServices.BanishingText, opened.Add, _ => { });
+            var overview = new OverviewViewModel(game, TestServices.BanishingText, opened.Add, _ => { }, _ => { });
 
             var red = overview.Players.Single(p => p.Name == "Red");
 

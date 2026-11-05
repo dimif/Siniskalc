@@ -23,10 +23,10 @@
         /// <param name="getChoices">Gives the heroes to pick from, with nobody first, as the savefile stands now.</param>
         /// <param name="getHeroId">Gives the id of the hero that is in the place, or null.</param>
         /// <param name="setHeroId">Puts the hero with this id (or nobody) in the place.</param>
-        /// <param name="openHero">Opens the page of the hero with this id; the link does nothing without it or for a place that is empty.</param>
-        public TavernPlaceViewModel(string label, Func<IReadOnlyList<HeroChoiceViewModel>> getChoices, Func<int?> getHeroId, Action<int?> setHeroId, Action<int>? openHero = null)
+        /// <param name="openHero">Opens the page of the hero with this id; the link does nothing for a place that is empty.</param>
+        public TavernPlaceViewModel(string label, Func<IReadOnlyList<HeroChoiceViewModel>> getChoices, Func<int?> getHeroId, Action<int?> setHeroId, Action<int> openHero)
         {
-            this.OpenCommand = new DelegateCommand(_ => openHero?.Invoke(getHeroId()!.Value), _ => openHero != null && getHeroId() != null);
+            this.OpenCommand = new DelegateCommand(_ => openHero(getHeroId()!.Value), _ => getHeroId() != null);
             this.Label = label;
             this.getChoices = getChoices;
             this.getHeroId = getHeroId;
@@ -87,31 +87,30 @@
         /// <param name="getTavern">Gives the tavern of the player as the savefile stands now.</param>
         /// <param name="updateTavern">Changes the tavern of the player.</param>
         /// <param name="heroes">Gives the heroes of the savefile as it stands now.</param>
-        /// <param name="openHero">Opens the page of the hero at this index; the links do nothing without it.</param>
+        /// <param name="openHero">Opens the page of the hero at this index.</param>
         public static IReadOnlyList<TavernPlaceViewModel> ForTavern<TColor>(
             Func<TavernHeroes> getTavern,
             Action<Func<TavernHeroes, TavernHeroes>> updateTavern,
             Func<IHeroSummaries<TColor>> heroes,
-            Action<int>? openHero)
+            Action<int> openHero)
             where TColor : class, IPlayerColor
         {
-            Action<int>? openHeroById = openHero == null
-                ? null
-                : heroId =>
+            void OpenHeroById(int heroId)
+            {
+                var index = heroes().IndexOfId(heroId);
+                if (index >= 0)
                 {
-                    var index = heroes().IndexOfId(heroId);
-                    if (index >= 0)
-                    {
-                        openHero(index);
-                    }
-                };
+                    openHero(index);
+                }
+            }
+
             return Enumerable.Range(0, TavernHeroes.Places)
                 .Select(place => new TavernPlaceViewModel(
                     place == 0 ? "First hero" : "Second hero",
                     () => TavernChoices.For(getTavern(), place, heroes().GetSummaries()),
                     () => getTavern().Ids[place],
                     heroId => updateTavern(tavern => tavern.With(place, heroId)),
-                    openHeroById))
+                    OpenHeroById))
                 .ToList();
         }
 

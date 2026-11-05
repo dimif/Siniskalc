@@ -19,10 +19,10 @@
         /// </summary>
         /// <param name="document">The savefile.</param>
         /// <param name="owner">The colour whose castles are wanted.</param>
-        /// <param name="openCastle">Opens the page of the castle with a number; the links do nothing without it.</param>
+        /// <param name="openCastle">Opens the page of the castle with a number.</param>
         /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
         /// <returns>The links.</returns>
-        public static IReadOnlyList<CastleLinkViewModel> OwnedBy(SaveDocument document, PlayerColor owner, Action<int>? openCastle, Action<int>? openHero) =>
+        public static IReadOnlyList<CastleLinkViewModel> OwnedBy(SaveDocument document, PlayerColor owner, Action<int> openCastle, Action<int> openHero) =>
             OwnedLinks.Castles<CastleModel, PlayerColor, Creature, Faction>(
                 document.Castles().GetModels(),
                 document.Heroes(),

@@ -17,7 +17,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         {
             var path = Path.Combine("TestData", "Sod", "Hotseat", "hotseat_00_baseline_200_diff.GM2");
             var game = SavedGames.Get(path);
-            var overview = new OverviewViewModel(game, TestServices.BanishingText, _ => { }, _ => { });
+            var overview = TestServices.CreateOverviewViewModel(game);
 
             Assert.That(overview.HasOrderOfPlay, Is.True);
             var current = overview.OrderOfPlay.Where(i => i.IsCurrent).ToList();

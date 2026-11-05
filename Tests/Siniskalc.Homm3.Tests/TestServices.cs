@@ -4,6 +4,7 @@ using System.Text;
 using Siniskalc.Core.Data;
 using Siniskalc.Core.Runtime;
 using Siniskalc.Heroes.Models;
+using Siniskalc.Heroes.Runtime;
 using Siniskalc.Homm3.Data;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
@@ -134,8 +135,12 @@ namespace Siniskalc.Homm3.Tests
 
         public static Homm3EditorViewModel CreateHomm3Editor() => Services.CreateEditor();
 
-        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets, MapPlaces.None);
+        public static HeroViewModel CreateHeroViewModel(HeroEditSession session) => new(session, Services.EffectLines, Services.SpellPoints.Create(session.History.Current.GameVersion()), Services.ByteEditTargets, MapPlaces.None, _ => { });
 
-        public static CastleViewModel CreateCastleViewModel(CastleEditSession session) => new(session, Services.ByteEditTargets, Services.CastleBuildMessages, Services.EffectLines);
+        public static CastleViewModel CreateCastleViewModel(CastleEditSession session) => new(session, Services.ByteEditTargets, Services.CastleBuildMessages, Services.EffectLines, _ => { });
+
+        public static PlayerViewModel CreatePlayerViewModel(PlayerEditSession session, IGameInfo<Siniskalc.Homm3.Entities.PlayerColor> game) => new(session, Services.ByteEditTargets, Banishing, game, _ => { }, _ => { });
+
+        public static OverviewViewModel CreateOverviewViewModel(Game game) => new(game, Banishing, _ => { }, _ => { }, _ => { });
     }
 }

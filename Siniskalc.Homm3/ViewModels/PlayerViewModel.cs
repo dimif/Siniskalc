@@ -35,8 +35,8 @@
         private readonly IGameInfo<PlayerColor> game;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly BanishingTextProvider banishingText;
-        private readonly Action<int>? openHero;
-        private readonly Action<int>? openCastle;
+        private readonly Action<int> openHero;
+        private readonly Action<int> openCastle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerViewModel"/> class.
@@ -45,9 +45,9 @@
         /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
         /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
         /// <param name="game">The live control and current-turn information of the game.</param>
-        /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
-        /// <param name="openCastle">Opens the page of a castle, by its number; <see langword="null"/> for none.</param>
-        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, IGameInfo<PlayerColor> game, Action<int>? openHero = null, Action<int>? openCastle = null)
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        public PlayerViewModel(PlayerEditSession session, IByteEditTargetFactory byteEditTargets, BanishingTextProvider banishingText, IGameInfo<PlayerColor> game, Action<int> openHero, Action<int> openCastle)
             : base(session.Current.Color.ToString(), session)
         {
             this.session = session;

@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Entities;
@@ -66,18 +66,18 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
         }
 
         [Test]
-        public void WithoutAnOpenActionTheLinksDoNothing()
+        public void TheLinkOfEveryHeroCanBeOpened()
         {
-            var links = OwnedLinks.Heroes(Heroes(), TestColor.Red, null);
+            var links = OwnedLinks.Heroes(Heroes(), TestColor.Red, _ => { });
 
-            Assert.That(links.All(l => !l.OpenCommand.CanExecute(null)), Is.True);
+            Assert.That(links.All(l => l.OpenCommand.CanExecute(null)), Is.True);
         }
 
         [Test]
         public void TheCastlesOfAColourThatTheMapUsesAreListedByNameWithTheWordsOfTheGame()
         {
             var links = OwnedLinks.Castles<ICastleModel<TestColor, IGameEntity, IFaction>, TestColor, IGameEntity, IFaction>(
-                Castles(), Heroes(), TestColor.Red, _ => { }, null, castle => [castle.Name == "Anvil" ? "Castle" : "Town"], castle => castle.Name == "Anvil", _ => "Colossus");
+                Castles(), Heroes(), TestColor.Red, _ => { }, _ => { }, castle => [castle.Name == "Anvil" ? "Castle" : "Town"], castle => castle.Name == "Anvil", _ => "Colossus");
 
             Assert.That(links.Select(l => (l.Name, l.Status, l.IsCapital, l.GrailText)), Is.EqualTo(new[] { ("Anvil", "Castle · 0 dwellings", true, "Colossus"), ("Wesley", "Town · 0 dwellings", false, "Colossus") }));
             Assert.That(links[0].Heroes.Select(h => h.Name), Is.EqualTo(new[] { "Zed" }));
@@ -88,10 +88,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
         {
             var opened = new List<int>();
 
-            var links = OwnedLinks.Castles<ICastleModel<TestColor, IGameEntity, IFaction>, TestColor, IGameEntity, IFaction>(Castles(), Heroes(), TestColor.Red, opened.Add, null, _ => ["Town"]);
+            var links = OwnedLinks.Castles<ICastleModel<TestColor, IGameEntity, IFaction>, TestColor, IGameEntity, IFaction>(Castles(), Heroes(), TestColor.Red, opened.Add, _ => { }, _ => ["Town"]);
             links[0].OpenCommand.Execute(null);
 
             Assert.That(opened, Is.EqualTo(new[] { 2 }));
+            Assert.That(links.All(l => l.OpenCommand.CanExecute(null)), Is.True);
             Assert.That(links.Select(l => (l.IsCapital, l.HasGrail)), Has.All.EqualTo((false, false)));
         }
     }

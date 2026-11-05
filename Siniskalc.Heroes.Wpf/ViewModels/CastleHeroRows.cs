@@ -21,11 +21,11 @@
         /// <typeparam name="TFaction">The faction of the game.</typeparam>
         /// <param name="castle">The castle.</param>
         /// <param name="heroes">The heroes of the savefile, to find the name and the place of a hero by the id the castle holds.</param>
-        /// <param name="openHero">Opens the page of the hero at an index among the heroes; the links do nothing without it.</param>
+        /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
         public static IReadOnlyList<CastleHeroRowViewModel> For<TColor, TCreature, TFaction>(
             ICastleModel<TColor, TCreature, TFaction> castle,
             IHeroSummaries<TColor> heroes,
-            Action<int>? openHero)
+            Action<int> openHero)
             where TColor : class, IPlayerColor
             where TCreature : class, IGameEntity
             where TFaction : class, IFaction
@@ -45,7 +45,7 @@
                 // The castle holds the id of the hero, which is not necessarily its place among the heroes.
                 var hero = heroes.FindById(heroId.Value);
                 var index = hero?.Index ?? -1;
-                rows.Add(new CastleHeroRowViewModel(role.ToString(), hero?.Name ?? $"Unknown hero {heroId}", new DelegateCommand(_ => openHero?.Invoke(index), _ => index >= 0 && openHero != null)));
+                rows.Add(new CastleHeroRowViewModel(role.ToString(), hero?.Name ?? $"Unknown hero {heroId}", new DelegateCommand(_ => openHero(index), _ => index >= 0)));
             }
         }
     }

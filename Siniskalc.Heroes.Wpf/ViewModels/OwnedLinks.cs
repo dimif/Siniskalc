@@ -20,14 +20,14 @@
         /// <typeparam name="TColor">The colour of the game.</typeparam>
         /// <param name="heroes">The heroes of the savefile.</param>
         /// <param name="owner">The colour whose heroes are wanted.</param>
-        /// <param name="openHero">Opens the page of the hero at an index among the heroes; the links do nothing without it.</param>
+        /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
         /// <returns>The links.</returns>
-        public static IReadOnlyList<HeroLinkViewModel> Heroes<TColor>(IHeroSummaries<TColor> heroes, TColor owner, Action<int>? openHero)
+        public static IReadOnlyList<HeroLinkViewModel> Heroes<TColor>(IHeroSummaries<TColor> heroes, TColor owner, Action<int> openHero)
             where TColor : class, IPlayerColor =>
             heroes.GetSummaries()
                 .Where(s => s.Owner == owner)
                 .OrderBy(s => s.Name)
-                .Select(s => new HeroLinkViewModel(s.Index, s.Name, s.Description, new DelegateCommand(_ => openHero?.Invoke(s.Index), _ => openHero != null)))
+                .Select(s => new HeroLinkViewModel(s.Index, s.Name, s.Description, new DelegateCommand(_ => openHero(s.Index))))
                 .ToList();
 
         /// <summary>
@@ -41,7 +41,7 @@
         /// <param name="castles">The castles of the savefile, in their order; a castle is opened by its place in the list.</param>
         /// <param name="heroes">The heroes of the savefile, which a castle names by number.</param>
         /// <param name="owner">The colour whose castles are wanted.</param>
-        /// <param name="openCastle">Opens the page of the castle at an index; the links do nothing without it.</param>
+        /// <param name="openCastle">Opens the page of the castle at an index.</param>
         /// <param name="openHero">Opens the page of the hero at an index among the heroes.</param>
         /// <param name="settlement">What the game calls the settlement of a castle, such as "City" and "Citadel", or "Castle".</param>
         /// <param name="isCapital">Tells whether a castle is a capital, or <c>null</c> in a game that has none.</param>
@@ -50,8 +50,8 @@
             IReadOnlyList<TCastle> castles,
             IHeroSummaries<TColor> heroes,
             TColor owner,
-            Action<int>? openCastle,
-            Action<int>? openHero,
+            Action<int> openCastle,
+            Action<int> openHero,
             Func<TCastle, IEnumerable<string>> settlement,
             Func<TCastle, bool>? isCapital = null,
             Func<TCastle, string>? grailText = null)
@@ -65,7 +65,7 @@
                 .OrderBy(c => c.Castle.Name)
                 .Select(c => CastleLinkViewModel.For(
                     c.Castle,
-                    new DelegateCommand(_ => openCastle?.Invoke(c.Index), _ => openCastle != null),
+                    new DelegateCommand(_ => openCastle(c.Index)),
                     settlement(c.Castle),
                     isCapital?.Invoke(c.Castle) ?? false,
                     grailText?.Invoke(c.Castle) ?? string.Empty,

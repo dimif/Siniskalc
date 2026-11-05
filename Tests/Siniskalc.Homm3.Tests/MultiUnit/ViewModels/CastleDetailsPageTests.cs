@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
     internal sealed class CastleDetailsPageTests
     {
         private static CastleViewModel Page(CastleModel castle) =>
-            new(new FakeCastleSession(castle), new Mock<IByteEditTargetFactory>().Object, new CastleBuildMessageProvider(), new EffectLineProvider());
+            new(new FakeCastleSession(castle), new Mock<IByteEditTargetFactory>().Object, new CastleBuildMessageProvider(), new EffectLineProvider(), _ => { });
 
         private static BuildingRowViewModel Row(CastleViewModel page, string building) =>
             page.BuildingGroups.SelectMany(g => g.Rows).Single(r => r.Name == building);

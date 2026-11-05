@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Heroes.Data;
@@ -32,7 +32,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
         public void StartWithAnEmptyTavern() => this.tavern = TavernHeroes.Empty;
 
         private IReadOnlyList<TavernPlaceViewModel> Places(IHeroSummaries<TestColor> heroes, Action<int>? open = null) =>
-            TavernPlaceViewModel.ForTavern(() => this.tavern, edit => this.tavern = edit(this.tavern), () => heroes, open);
+            TavernPlaceViewModel.ForTavern(() => this.tavern, edit => this.tavern = edit(this.tavern), () => heroes, open ?? (_ => { }));
 
         [Test]
         public void ThereAreTwoPlacesLabelledFirstAndSecond()

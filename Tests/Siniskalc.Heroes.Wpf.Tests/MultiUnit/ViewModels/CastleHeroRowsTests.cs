@@ -1,4 +1,4 @@
-namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
+﻿namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
 {
     using Moq;
     using Siniskalc.Core.Entities;
@@ -65,11 +65,11 @@ namespace Siniskalc.Heroes.Wpf.Tests.MultiUnit.ViewModels
         }
 
         [Test]
-        public void WithoutAnOpenActionTheLinksDoNothing()
+        public void TheRowOfAHeroThatIsFoundCanBeOpened()
         {
-            var rows = CastleHeroRows.For(Castle(10, null), Heroes(), null);
+            var rows = CastleHeroRows.For(Castle(10, null), Heroes(), _ => { });
 
-            Assert.That(rows.Single().OpenCommand.CanExecute(null), Is.False);
+            Assert.That(rows.Single().OpenCommand.CanExecute(null), Is.True);
         }
     }
 }

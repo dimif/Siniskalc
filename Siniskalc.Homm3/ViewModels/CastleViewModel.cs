@@ -26,7 +26,7 @@ namespace Siniskalc.Homm3.ViewModels
         private readonly ICastleSession castleSession;
         private readonly IByteEditTargetFactory byteEditTargets;
         private readonly CastleBuildMessageProvider buildMessages;
-        private readonly Action<int>? openHero;
+        private readonly Action<int> openHero;
 
         private DwellingStockActions? dwellingActions;
 
@@ -37,8 +37,8 @@ namespace Siniskalc.Homm3.ViewModels
         /// <param name="byteEditTargets">Makes the targets of the hex editor.</param>
         /// <param name="buildMessages">Words why a building cannot be built.</param>
         /// <param name="effectLines">Words the effects of merchant artifacts.</param>
-        /// <param name="openHero">Opens the page of a hero, by its number; <see langword="null"/> for none.</param>
-        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, EffectLineProvider effectLines, Action<int>? openHero = null)
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        public CastleViewModel(ICastleSession session, IByteEditTargetFactory byteEditTargets, CastleBuildMessageProvider buildMessages, EffectLineProvider effectLines, Action<int> openHero)
             : base(session.Name, session)
         {
             this.castleSession = session;

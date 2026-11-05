@@ -24,7 +24,7 @@
         private readonly Game game;
         private readonly Action<int> openHero;
         private readonly Action<int> openPlayer;
-        private readonly Action<int>? openCastle;
+        private readonly Action<int> openCastle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OverviewViewModel"/> class.
@@ -33,8 +33,8 @@
         /// <param name="banishingText">Words the countdown of a player who is losing or gaining a town.</param>
         /// <param name="openHero">Opens the page of a hero, by its number.</param>
         /// <param name="openPlayer">Opens the page of a player, by its colour number.</param>
-        /// <param name="openCastle">Opens the page of a castle, by its number; <see langword="null"/> for none.</param>
-        public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int>? openCastle = null)
+        /// <param name="openCastle">Opens the page of a castle, by its number.</param>
+        public OverviewViewModel(Game game, BanishingTextProvider banishingText, Action<int> openHero, Action<int> openPlayer, Action<int> openCastle)
             : base(game, game, banishingText)
         {
             this.game = game;

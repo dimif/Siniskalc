@@ -57,7 +57,6 @@ Use controlled before/after saves with one action per comparison where possible.
 
 ### HoMM2
 
-- **Level and experience:** resolve the level-14 versus level-20 discrepancy at 50,000 experience using saves E30 to E32 and fresh in-game checks before changing the experience table.
 - **The guardians of a mine:** spell codes, counts and clearing after an enemy capture are established (see `KNOWLEDGE_BASE.md`). Remaining probes: partial guardian losses if possible; count encoding above 255 before allowing such edits.
 - **Town ownership flags:** locate the town's map flag and update it alongside an editor ownership change; currently it stays stale.
 - **Daemon cave, windmill and water mill:** isolate first use, repeat use and reset transitions to locate their state before enabling edits.

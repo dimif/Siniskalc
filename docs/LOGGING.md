@@ -116,10 +116,11 @@ The minimum level is Information as shipped (Debug while a debugger is attached)
   `Kind` (a chunk kind), `Index` (the place of a record among its kind), `Name`, `Local` (whether a change came from the target's own update),
   `Path` (the settings file or the log folder, where the path is the problem), `Folder`, `Url`, `Backup`, `BackupOnSave`, `AdvancedMode`,
   `Reason` (the user-facing reason of a refusal; the one place a message text may be an argument), `Title`, `What` (the name of an action),
-  `Value` (a raw value that is no known entity), `Difficulty`, `Date`, `DateOffset` (hex), `Level`, `Skill`, `Size` (a map size), `Player`, `Building`, `MaskOffset`, `FlagsOffset`, `DescriptionOffset`, `ChunkLength`, `Overlaps`,
+  `Value` (a raw value that is no known entity), `Difficulty`, `Date`, `DateOffset` (hex), `NextDateOffset` (hex), `Level`, `Skill`, `Size` (a map size), `Player`, `Building`, `MaskOffset`, `FlagsOffset`, `DescriptionOffset`, `ChunkLength`, `Overlaps`,
   `App`, `Os`, `Runtime`,
   `Control`, `Binding`, `Change`, `Changed`, `Undo`, `Redo`, `Source`, `ResourceName`, `HeaderLength`,
-  and the plural counts `Players`, `Heroes`, `Castles`, `Mines`, `Dwellings`, `Chunks`, `Slots`.
+  `Max` (a limit), `Generators` (records of a generator table), `Owners` (records of an owner table), `OwnerOffset`, `GeneratorOffset`,
+  and the plural counts `Players`, `Heroes`, `Castles`, `Mines`, `Dwellings`, `Chunks`, `Slots`, `Kinds`.
   `Count` is a count of records, `Length` is a count of bytes, `Index` is a position or a number of a copy.
   `Count` and `Length` print in decimal; only offsets and raw codes print in hex.
   A name means one thing in a template: two offsets get two names.

@@ -27,10 +27,15 @@
         public const int Dwellings = 3;
 
         /// <summary>
+        /// The heroes the game keeps out of play (shown by games that have some), after the others.
+        /// </summary>
+        public const int DisabledHeroes = 4;
+
+        /// <summary>
         /// Returns the number of the tab of the Neutral page that holds what the tab <paramref name="ownerTab"/> of a player's page holds.
         /// </summary>
         /// <returns>The number of the tab.</returns>
         /// <param name="ownerTab">The tab of a player's page (see <see cref="OwnerTabs"/>).</param>
-        public static int Of(int ownerTab) => ownerTab - OwnerTabs.Heroes;
+        public static int Of(int ownerTab) => ownerTab == OwnerTabs.DisabledHeroes ? DisabledHeroes : ownerTab - OwnerTabs.Heroes;
     }
 }

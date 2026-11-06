@@ -22,7 +22,7 @@
             : base(
                 session,
                 (mine, owner) => mine with { Owner = owner },
-                "Who owns the mine. The game works the income out at the start of the next day and draws the flag from the owner. Not tried in the game.",
+                "Who owns the mine. The game works the income out at the start of the next day and draws the flag from the owner.",
                 hasLevels: true)
         {
         }

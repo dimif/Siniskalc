@@ -30,6 +30,7 @@
         public CastleChunk Serialize(CastleChunk chunk, CastleModel model)
         {
             var bytes = chunk.ToArray();
+            var ownerChanged = Bytes.ReadColor(bytes[CastleLayout.Owner]) != model.Owner;
 
             bytes[CastleLayout.Owner] = Bytes.ColorByte(model.Owner, bytes[CastleLayout.Owner]);
             bytes[CastleLayout.Faction] = Bytes.FactionByte(model.Faction, bytes[CastleLayout.Faction]);
@@ -57,7 +58,30 @@
                 bytes[CastleLayout.GuildSpellCounts + level] = (byte)model.MageGuildSpellCounts[level];
             }
 
-            return chunk.WithBytes(bytes);
+            var written = chunk.WithBytes(bytes);
+
+            // The flags on the map show the owner: they follow it when it changes (an owner that is not changed leaves them as they are, so a flag the
+            // game drew in another colour stays so). A flag that already shows the new owner is left as it is.
+            if (ownerChanged)
+            {
+                for (var i = 0; i < chunk.Flags.Count; i++)
+                {
+                    var rightSide = (chunk.Flags[i].Bytes[1] & 1) == 1;
+                    var wanted = new[] { MapObjectLayout.FlagClass, CastleFlags.PictureOf(model.Owner, rightSide) };
+                    if (!chunk.Flags[i].Bytes.AsSpan().SequenceEqual(wanted))
+                    {
+                        written = written.WithFlag(i, wanted);
+                    }
+                }
+            }
+
+            // The table of the colour of each castle, which the minimap draws from, follows the owner the same way.
+            if (ownerChanged && chunk.OwnerMark is { } mark && mark.Bytes[0] != CastleFlags.MarkOf(model.Owner))
+            {
+                written = written.WithOwnerMark(CastleFlags.MarkOf(model.Owner));
+            }
+
+            return written;
         }
 
         // The creatures of a dwelling wait in the list of its own or in the one of its upgrade, whichever its level says. The count is written

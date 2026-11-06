@@ -4,6 +4,7 @@
     using Siniskalc.Homm2.Data;
     using Siniskalc.Homm2.Entities;
     using Siniskalc.Homm2.Runtime;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Who plays each colour and whose turn it is, read from the saves of <c>TestData/Homm2/HumanCpu</c>.
@@ -128,6 +129,44 @@
 
                 Assert.That(players.GetModels().Select(p => p.Color), Is.EqualTo(PlayerColor.All), path);
             }
+        }
+
+        private static string ThisFile([CallerFilePath] string file = "") => file;
+
+        /// <summary>
+        /// Writes C14TURN.GM2 into TestData/Homm2/out (not in the repository) if it is not there: human_cpu_18 (Green and Orange human, Green's turn,
+        /// day 1) with the turn given to Orange through the order of play, for the write test with the game. Run it by hand:
+        /// <c>dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheSaveWithTheTurnGivenToOrange</c>.
+        /// </summary>
+        [Test]
+        [Explicit("Writes TestData/Homm2/out for the write test with the game")]
+        [Category(TestKinds.Manual)]
+        public void WriteTheSaveWithTheTurnGivenToOrange()
+        {
+            var root = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(ThisFile())!, "..", "..", "..", ".."));
+            var folder = Path.Combine(root, "TestData", "Homm2", "out");
+            Directory.CreateDirectory(folder);
+            var path = Path.Combine(folder, "C14TURN.GM2");
+            if (File.Exists(path))
+            {
+                return;
+            }
+
+            var game = Load("human_cpu_18_green_orange_green_turn_day_1");
+            var overview = new Siniskalc.Homm2.ViewModels.OverviewViewModel(game, new Siniskalc.Heroes.Wpf.ViewModels.BanishingTextProvider(), _ => { }, _ => { }, _ => { });
+            overview.OrderOfPlay.Single(i => i.Name == "Orange").Command!.Execute(null);
+            File.WriteAllBytes(path, game.GetBytesToSave());
+            File.WriteAllLines(
+                Path.Combine(folder, $"README_EDITOR_turn_{DateTime.Now:yyyyMMdd_HHmmss}.md"),
+                [
+                    "# A save with the turn given through the order of play (HoMM2, base game)",
+                    string.Empty,
+                    "Made by `PlayerControlTests.WriteTheSaveWithTheTurnGivenToOrange` (not in the repository) from `human_cpu_18_green_orange_green_turn_day_1` (Green and Orange human, Green's turn, day 1).",
+                    string.Empty,
+                    "| Save | Edit | Look for | Test result |",
+                    "|---|---|---|---|",
+                    "| C14TURN.GM2 | The turn given to Orange with the Orange button of the order of play | The game opens on Orange's turn on day 1, not Green's. Pass Orange's turn: Green should play next. Tell me whether the game starts on Orange and what the turn order is afterwards. | |",
+                ]);
         }
 
         [Test]

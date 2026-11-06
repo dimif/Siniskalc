@@ -39,5 +39,10 @@
         /// The index of the hex tab.
         /// </summary>
         public const int Hex = 6;
+
+        /// <summary>
+        /// The heroes the game keeps out of play, a tab of the neutral page only.
+        /// </summary>
+        public const int DisabledHeroes = 7;
     }
 }

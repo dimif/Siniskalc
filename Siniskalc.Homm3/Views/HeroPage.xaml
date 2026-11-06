@@ -41,6 +41,19 @@
         </heroes:PageHeader>
         <heroes:OwnerPicker Margin="0,8,0,0"
                             PickerToolTip="Which player the hero belongs to. The hero is taken from the list of heroes of its old owner and added to the list of its new one; a neutral hero is taken off the map."/>
+        <Border Margin="0,6,0,0" Padding="8,4" CornerRadius="4" Background="{StaticResource AccentSoftBrush}" ToolTip="The game needs a valid map tile for the hero of a player">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasPositionWarning}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock TextWrapping="Wrap" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Text="{Binding PositionWarning}"/>
+        </Border>
         <TextBlock Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource AccentBrush}" Text="{Binding Notice}">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">

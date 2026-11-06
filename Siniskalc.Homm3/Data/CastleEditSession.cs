@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
@@ -30,6 +31,9 @@
 
         /// <inheritdoc/>
         public GameVersion GameVersion => this.History.Current.GameVersion();
+
+        /// <inheritdoc/>
+        public IReadOnlyList<PlayerColor> PlayersInGame => this.History.Current.Players().GetColors();
 
         /// <inheritdoc/>
         public IHeroSummaries<PlayerColor> Heroes => this.History.Current.Heroes();

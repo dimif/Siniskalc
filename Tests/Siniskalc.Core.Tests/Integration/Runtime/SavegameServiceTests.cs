@@ -1,17 +1,18 @@
-namespace Siniskalc.Core.Tests.Runtime
+namespace Siniskalc.Core.Tests.Integration.Runtime
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using Moq;
     using Siniskalc.Core.Runtime;
+    using Siniskalc.Core.Tests.Runtime;
 
     /// <summary>
     /// Tests loading, reloading and saving a game through the parser, the codec and the backup service, which are fakes that note what
-    /// was done and in which order.
+    /// was done and in which order. The service asks the disk whether the file it saves over exists, so the folder is a real one.
     /// </summary>
     [TestFixture]
-    [Category(TestKinds.Unit)]
+    [Category(TestKinds.Integration)]
     internal sealed class SavegameServiceTests
     {
         private readonly List<string> calls = [];

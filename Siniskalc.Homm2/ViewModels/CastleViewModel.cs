@@ -75,7 +75,7 @@
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames<PlayerColor>.Choices,
+                OwnerNames<PlayerColor>.ChoicesFor(game.History.Current.Players().GetColors(), this.session.Current.Owner),
                 () => OwnerNames<PlayerColor>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Who owns the castle. The castle is added to the list of castles of its new owner and taken from the old one.");
@@ -174,6 +174,11 @@
         /// Gets who owns the castle, as "Neutral" or the name of a colour.
         /// </summary>
         public string OwnerText => OwnerNames<PlayerColor>.Of(this.castle.Owner);
+
+        /// <summary>
+        /// Gets a value indicating whether the owner of the castle is not the one the savegame had.
+        /// </summary>
+        public bool OwnerChanged => this.session.Current.Owner != this.session.Original.Owner;
 
         /// <summary>
         /// Gets the position of the castle on the map as text.

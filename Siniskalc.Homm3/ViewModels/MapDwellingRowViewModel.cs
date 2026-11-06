@@ -28,7 +28,7 @@
                 OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Choices,
                 () => OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Of(this.session.Current.Owner),
                 name => this.session.Update(dwelling => dwelling with { Owner = OwnerNames<Siniskalc.Homm3.Entities.PlayerColor>.Parse(name) }),
-                toolTip: "Who owns the dwelling. Not tried in the game.");
+                toolTip: "Who owns the dwelling.");
         }
 
         /// <summary>

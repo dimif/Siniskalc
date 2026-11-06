@@ -14,7 +14,7 @@ Where the story branches it says so below.
 Save 28 does not exist, and `roe_68b_tazar_faerie` was made after `roe_68_tazar_obelisk`.
 
 Tests: `RoeCastleTests` (0-11), `RoeCastleBuildingsTests` (12-49), `RoeHeroTests` (0, 32-42, 49), `RoeBuildingEditsTests` (every building step, rebuilt in the editor and compared with the game), `RoeMapStateTests` (56-77: the raw bytes), `PlayerHeadTests` (heroes and tavern of Red: 55, 64-67, 76), `ObeliskVisitsTests` (obelisks: 0, 67-77) and the sleep flag, the Grail in the backpack and the heroes of a castle in `RoeHeroTests`/`RoeMapStateTests` (59, 61, 77).
-What was found is in `docs/KNOWLEDGE_BASE.md` ("Castles, Shadow of Death" and "Shadow of Death: map state").
+What was found is in `docs/KNOWLEDGE_BASE.md` ("Castles", "Heroes" and "Date and map objects").
 
 ## Castle buildings (all eight castles, one thing per save)
 

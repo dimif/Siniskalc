@@ -30,6 +30,16 @@ public sealed record VisitEffectDefinition
     public required int Luck { get; init; }
 
     /// <summary>
+    /// Gets the movement points the visit adds, to the points left and to the most of the day, until the end of the week.
+    /// </summary>
+    public required int Movement { get; init; }
+
+    /// <summary>
+    /// Gets the movement points of the visit in the versions where they differ from <see cref="Movement"/>.
+    /// </summary>
+    public System.Collections.Generic.Dictionary<GameVersion, int> VersionMovement { get; init; } = [];
+
+    /// <summary>
     /// Gets whether the editor lets you set the effect.
     /// </summary>
     public required bool Editable { get; init; }

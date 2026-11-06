@@ -221,14 +221,16 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 var tab = Descendants<Siniskalc.Wpf.Views.NavButton>(page).Single(b => b.Text == "Artifact merchant");
                 Assert.That(tab.IsVisible, Is.True);
                 var texts = Descendants<TextBlock>(page).Where(t => t.IsVisible).Select(t => t.Text).ToList();
-                Assert.That(texts, Does.Contain("Shared town stock").And.Contain("Stoic Watchman").And.Contain("Head of Legion"));
+                Assert.That(texts, Does.Contain("Artifact Merchant").And.Contain("Stoic Watchman").And.Contain("Head of Legion"));
                 Assert.That(texts, Is.SupersetOf(Enumerable.Range(1, 7).Select(i => $"Slot {i}")));
-                var reset = Descendants<Button>(page).Single(b => Equals(b.Content, "Reset shared stock"));
-                Assert.That(reset.IsVisible, Is.True);
+                var reset = Descendants<Button>(page).Single(b => Equals(b.Content, "Reset") && b.Command == model.Merchant!.ResetCommand);
+                Assert.That(reset.IsVisible, Is.False);
                 model.Merchant!.Slots[6].ClearCommand.Execute(null);
                 Show(window);
-                Assert.That(Descendants<TextBlock>(page).Where(t => t.IsVisible).Select(t => t.Text), Does.Contain("Shared stock has unsaved changes"));
+                Assert.That(reset.IsVisible, Is.True);
                 Assert.That(reset.Command.CanExecute(null), Is.True);
+                var merchantCard = (FrameworkElement)reset.Parent;
+                Assert.That(Descendants<TextBlock>(merchantCard).Count(t => t.IsVisible && t.Text == "edited"), Is.EqualTo(1));
 
                 var building = game.History.Current.Castles().GetModel(index).Buildings.Single(b => b.IsArtifactMerchant);
                 game.History.CreateCastleSession(index).Update(c => CastleBuilder.Unbuild(c, building));
@@ -288,7 +290,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                     AssertRendered((Page)frame.Content, "Christian");
                     if (tab == 2)
                     {
-                        Assert.That(Descendants<TextBlock>((Page)frame.Content).Any(t => t.IsVisible && t.Text == "Find creatures"), Is.True);
+                        Assert.That(Descendants<Siniskalc.Heroes.Wpf.Views.CreatureSlotPicker>((Page)frame.Content).Any(p => p.IsVisible), Is.True);
                     }
                 }
 
@@ -303,7 +305,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                     AssertRendered((Page)frame.Content, castleNode.Title);
                     if (tab == 1)
                     {
-                        Assert.That(Descendants<TextBlock>((Page)frame.Content).Any(t => t.IsVisible && t.Text == "Find creatures"), Is.True);
+                        Assert.That(Descendants<Siniskalc.Heroes.Wpf.Views.CreatureSlotPicker>((Page)frame.Content).Any(p => p.IsVisible), Is.True);
                     }
                 }
             }

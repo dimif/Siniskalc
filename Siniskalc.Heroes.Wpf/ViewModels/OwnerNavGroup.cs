@@ -26,6 +26,7 @@
         /// <param name="mines">The mines of the owner in groups (one per resource), or <c>null</c> for a game that shows none.</param>
         /// <param name="dwellings">The dwellings of the owner in groups (one per faction), or <c>null</c> for a game that shows none.</param>
         /// <param name="neutralPage">Whether the owner is what nobody owns and has a page of its own (<paramref name="playerIndex"/> is -1): its node and groups open that page.</param>
+        /// <param name="disabledHeroes">The heroes the game keeps out of play (disabled in the map editor), shown in a group of their own after the heroes, or <c>null</c>.</param>
         public static NavNodeViewModel Create(
             NavigationTree tree,
             string ownerName,
@@ -38,8 +39,10 @@
             Action<NavNodeViewModel, int>? markCastle = null,
             IReadOnlyList<NavGroup>? mines = null,
             IReadOnlyList<NavGroup>? dwellings = null,
-            bool neutralPage = false)
+            bool neutralPage = false,
+            IReadOnlyList<NavEntry>? disabledHeroes = null)
         {
+            disabledHeroes ??= [];
             mines = NonEmpty(mines);
             dwellings = NonEmpty(dwellings);
             var parts = new List<string>();
@@ -51,6 +54,11 @@
             if (heroes.Count > 0)
             {
                 parts.Add($"{heroes.Count} {(heroes.Count == 1 ? "hero" : "heroes")}");
+            }
+
+            if (disabledHeroes.Count > 0)
+            {
+                parts.Add($"{disabledHeroes.Count} disabled");
             }
 
             if (castles.Count > 0)
@@ -78,6 +86,11 @@
             if (heroes.Count > 0)
             {
                 node.Children.Add(Group(tree, "Heroes", OwnerTabs.Heroes, colorHex, playerIndex, neutralPage, owned, heroes, NavNodeKind.Hero, null));
+            }
+
+            if (disabledHeroes.Count > 0)
+            {
+                node.Children.Add(Group(tree, "Disabled heroes", OwnerTabs.DisabledHeroes, colorHex, playerIndex, neutralPage, owned, disabledHeroes, NavNodeKind.Hero, null));
             }
 
             if (castles.Count > 0)

@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class CastleGrailAndCapitolPillTests
+    internal sealed class CastlePillTests
     {
         private static Game Load(string folder, string save) => SavedGames.Get(Path.Combine("TestData", folder, save + ".GM1"));
 

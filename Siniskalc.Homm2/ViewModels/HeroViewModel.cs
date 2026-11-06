@@ -92,7 +92,7 @@
 
             this.OwnerField = new ChoiceFieldViewModel(
                 "Owner",
-                OwnerNames<PlayerColor>.Choices,
+                OwnerNames<PlayerColor>.ChoicesFor(game.History.Current.Players().GetColors(), this.session.Current.Owner),
                 () => OwnerNames<PlayerColor>.Of(this.session.Current.Owner),
                 this.ChangeOwner,
                 toolTip: "Which player the hero belongs to. The hero is added to the list of heroes of its new owner and taken from the old one; a neutral hero has no move to finish.");

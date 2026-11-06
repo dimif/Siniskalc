@@ -47,6 +47,7 @@
                 this.WithViewModel(shell => this.files.OpenRecent(shell, path));
                 this.RequeryCommands();
             };
+            HexEditor.SetExportFailedHandler(this, ex => this.files.ReportError("Export bytes", "export the bytes", ex));
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 

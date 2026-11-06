@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -25,6 +26,11 @@
         /// Gets the game version that wrote the savefile.
         /// </summary>
         GameVersion GameVersion { get; }
+
+        /// <summary>
+        /// Gets the colours of the players the savefile has, which the hero can be given to.
+        /// </summary>
+        IReadOnlyList<PlayerColor> PlayersInGame { get; }
 
         /// <summary>
         /// Gets whether the game version of the savefile stores that a hero was put to sleep.

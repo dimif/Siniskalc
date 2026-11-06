@@ -12,7 +12,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     /// </summary>
     [TestFixture]
     [Category(TestKinds.Integration)]
-    internal sealed class RampartAndBulwarkCastleTests
+    internal sealed class BulwarkCastleBuildingTests
     {
         private static CastleModel Castle(string save, string name)
         {

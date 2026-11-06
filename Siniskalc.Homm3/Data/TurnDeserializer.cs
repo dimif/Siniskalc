@@ -20,7 +20,7 @@
             var color = value is >= 0 and < Constants.Player.ColorCount ? PlayerColor.FromByte((byte)value) : PlayerColor.Neutral;
             if (color.IsNeutral)
             {
-                Logger.LogTrace("Current player {Value} is no colour, read as neutral and kept", value);
+                Logger.LogTrace("Current player {Value:X2} is no colour, read as neutral and kept", value);
             }
 
             return new TurnModel(chunk.Index, color);

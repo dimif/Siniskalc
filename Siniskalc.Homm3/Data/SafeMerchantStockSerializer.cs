@@ -1,7 +1,9 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
 
@@ -11,6 +13,8 @@
     /// </summary>
     public sealed class SafeMerchantStockSerializer(EntityCatalog catalog) : ISerializer<RecordChunk, MerchantStockModel>
     {
+        private static readonly ILogger<SafeMerchantStockSerializer> Logger = LogFactory.For<SafeMerchantStockSerializer>();
+
         /// <inheritdoc/>
         public RecordChunk Serialize(RecordChunk chunk, MerchantStockModel model)
         {
@@ -23,6 +27,11 @@
                 var interpreted = current == MerchantLayout.Empty ? null
                     : current <= byte.MaxValue && catalog.Artifacts.Find((byte)current) is { Wearable: true } known
                         ? known : catalog.FallbackArtifact;
+                if (current != MerchantLayout.Empty && interpreted == catalog.FallbackArtifact)
+                {
+                    Logger.LogTrace("Merchant slot {Slot} holds {Value:X}, which is no wearable artifact, and reads as {StandIn}", slot, current, catalog.FallbackArtifact.Id);
+                }
+
                 if (interpreted != model.Slots[slot])
                 {
                     ByteBufferHelper.WriteUInt32(bytes, at, model.Slots[slot] is { } artifact ? artifact.Code : MerchantLayout.Empty);

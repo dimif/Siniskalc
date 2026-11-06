@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
@@ -30,6 +31,9 @@
         /// Gets where the hero fields are in the chunk, for the savefile's game version.
         /// </summary>
         public HeroOffsets Offsets { get; }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<PlayerColor> PlayersInGame => this.History.Current.Players().GetColors();
 
         /// <inheritdoc/>
         public GameVersion GameVersion => this.History.Current.GameVersion();

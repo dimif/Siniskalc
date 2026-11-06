@@ -23,6 +23,19 @@
         public static IReadOnlyList<string> Choices { get; } = [Neutral.Name, .. AbstractEnumeration.GetAll<TColor>().Where(c => !c.IsNeutral).Select(c => c.Name)];
 
         /// <summary>
+        /// Returns the owners to pick from for one savefile: neutral first, then the colours of the players in the game, and the colour
+        /// <paramref name="current"/> when it is none of them (so what the savefile holds can always be shown).
+        /// </summary>
+        /// <param name="playersInGame">The colours of the players the savefile has.</param>
+        /// <param name="current">The present owner.</param>
+        /// <returns>The names, in the order of the colours.</returns>
+        public static IReadOnlyList<string> ChoicesFor(IEnumerable<TColor> playersInGame, TColor current)
+        {
+            var allowed = new HashSet<TColor>(playersInGame) { current };
+            return [Neutral.Name, .. AbstractEnumeration.GetAll<TColor>().Where(c => !c.IsNeutral && allowed.Contains(c)).Select(c => c.Name)];
+        }
+
+        /// <summary>
         /// Returns the name of an owner.
         /// </summary>
         /// <param name="owner">The owner.</param>

@@ -345,9 +345,11 @@ public static class CatalogValidator
             Check(
                 !string.IsNullOrWhiteSpace(e.Name) && !string.IsNullOrWhiteSpace(e.Description)
                 && e.Morale is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck
-                && e.Luck is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck,
+                && e.Luck is >= -Constants.Hero.MaxMoraleOrLuck and <= Constants.Hero.MaxMoraleOrLuck
+                && e.Movement >= 0
+                && e.VersionMovement.All(pair => Enum.IsDefined(pair.Key) && pair.Key != GameVersion.Unknown && pair.Value >= 0),
                 "visitEffects",
-                $"{e.Effect}: invalid name, description or morale/luck parameters.");
+                $"{e.Effect}: invalid name, description or morale/luck/movement parameters.");
         }
     }
 }

@@ -78,6 +78,7 @@
         {
             if (!File.Exists(path))
             {
+                Logger.LogDebug("Recent file {File} no longer exists and is taken off the list", Path.GetFileName(path));
                 this.messages.ShowWarning("Load Game Error", $"File no longer exists:\n{path}");
                 this.recentFiles.Remove(path);
                 return null;
@@ -137,7 +138,10 @@
         /// <returns>The path saved to, or <see langword="null"/> if the user cancelled or the save failed.</returns>
         public string? SaveAs(ShellViewModel shell)
         {
-            var path = this.dialogs.PickFileToSave(shell.SaveFilter);
+            var extension = shell.HasFile ? Path.GetExtension(shell.File) : string.Empty;
+            var path = extension.Length > 0
+                ? this.dialogs.PickFileToSave(shell.SaveFilter, Path.GetFileName(shell.File), extension)
+                : this.dialogs.PickFileToSave(shell.SaveFilter);
             if (path == null)
             {
                 return null;
@@ -180,6 +184,7 @@
             try
             {
                 await File.WriteAllBytesAsync(path, shell.GetBytesToSave());
+                Logger.LogInformation("Exported the bytes of the savegame to {File}", Path.GetFileName(path));
                 return path;
             }
             catch (Exception ex)
@@ -239,7 +244,13 @@
             return path;
         }
 
-        private void ReportError(string title, string what, Exception ex)
+        /// <summary>
+        /// Logs a failure and tells the user. Views that cannot log (the hex editor) hand their failures here.
+        /// </summary>
+        /// <param name="title">The title of the message.</param>
+        /// <param name="what">What was being done, for the message.</param>
+        /// <param name="ex">The failure.</param>
+        public void ReportError(string title, string what, Exception ex)
         {
             // The message of a savefile exception is already written for the user, and a refused savegame is not a failure of the editor.
             if (ex is SavefileException)

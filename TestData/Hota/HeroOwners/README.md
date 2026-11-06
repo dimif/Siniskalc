@@ -2,7 +2,7 @@
 
 Hotseat autosaves of the map `Island of HOTA tests 6p` (six players, month 4), in which heroes were defeated and hired between one save and the next.
 They show what the game changes when a hero changes hands: the hero's owner byte, the list of heroes of the player (bytes 0 to 9 of its record) and the table of hero owners in front of the date (`HeroOwnersLayout`).
-Used by `HeroOwnerEditsTests` (the editor's owner change replayed on each pair), `HeroOwnerPickerTests` and `HeroOwnersBytesLoaderTests`.
+Used by `PlayerListsReconcilerTests` (the editor's owner change replayed on each pair), `HeroOwnerPickerTests` and `HeroOwnersBytesLoaderTests`.
 Findings are in `docs/KNOWLEDGE_BASE.md` ("The table of hero owners").
 
 The names given by the game were `[hotseat] 412` and so on; the number of the game is in the table.

@@ -24,7 +24,7 @@ namespace Siniskalc.Homm2.Tests.Integration.Data
 
         private static IEnumerable<string> Folders() => Directory.GetDirectories(Path.Combine("TestData", "Homm2"), "*", SearchOption.AllDirectories).Where(d => !IsGenerated(d));
 
-        private static bool IsGenerated(string path) => path.Split(Path.DirectorySeparatorChar).Contains("out");
+        private static bool IsGenerated(string path) => path.Split(Path.DirectorySeparatorChar).Any(segment => segment is "out" or "out_tested");
 
         [Test]
         public void EverySavefileIsNamedInLowerCaseSnakeCase()

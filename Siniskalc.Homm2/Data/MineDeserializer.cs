@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm2.Data
 {
+    using System;
     using System.Linq;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
@@ -30,7 +31,13 @@
         public MineModel Deserialize(MapObjectChunk chunk)
         {
             using var subject = Logger.BeginSubject("Mine", chunk.Index.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            return new(chunk.Index, (MineKind)chunk.GetByteAt(1), chunk.Position!, Bytes.ReadColor(chunk.GetByteAt(0)), this.catalog)
+            var kind = (MineKind)chunk.GetByteAt(1);
+            if (!Enum.IsDefined(kind))
+            {
+                Logger.LogTrace("Mine kind {Code:X2} is unknown and is kept as it is", (byte)kind);
+            }
+
+            return new(chunk.Index, kind, chunk.Position!, Bytes.ReadColor(chunk.GetByteAt(0)), this.catalog)
             {
                 Guardian = this.ReadGuardian(chunk),
             };
@@ -56,7 +63,7 @@
             var creature = creatureId is null ? null : this.catalog.Creatures.FirstOrDefault(c => c.Id == creatureId);
             if (creature is null || count == 0)
             {
-                Logger.LogTrace("Mine guardian spell {SpellCode} and count {Count} are unrecognized and are kept for read-only display", spell, count);
+                Logger.LogTrace("Mine guardian spell {Code:X2} and count {Value:X2} are unrecognized and are kept for read-only display", spell, count);
                 return new(spell, count, null);
             }
 

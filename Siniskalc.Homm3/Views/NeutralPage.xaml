@@ -26,6 +26,7 @@
             <wpf:NavButton Text="Towns"/>
             <wpf:NavButton Text="Mines" Visibility="{Binding MapObjects.HasMines, Converter={StaticResource BoolToVisibilityTab}}"/>
             <wpf:NavButton Text="Dwellings" Visibility="{Binding MapObjects.HasDwellings, Converter={StaticResource BoolToVisibilityTab}}"/>
+            <wpf:NavButton Text="Disabled heroes" Visibility="{Binding HasDisabledHeroes, Converter={StaticResource BoolToVisibilityTab}}"/>
         </ListBox>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="8,8,8,0">
@@ -51,6 +52,12 @@
                 <StackPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel3}">
                     <local:OwnedDwellingsCard DataContext="{Binding MapObjects}"/>
                 </StackPanel>
+
+                <!-- Heroes the game keeps out of play: disabled in the map editor, or campaign heroes. -->
+                <WrapPanel Margin="-6,0,0,0" Style="{StaticResource TabPanel4}">
+                    <heroes:ItemsCard Heading="Disabled heroes" ItemsSource="{Binding DisabledHeroes}" ItemTemplate="{StaticResource LinkTemplate}"
+                                      HasItems="{Binding HasDisabledHeroes}" EmptyText="No hero is disabled"/>
+                </WrapPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

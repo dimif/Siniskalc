@@ -11,7 +11,7 @@
             <TextBlock Style="{StaticResource CardHeadingStyle}" Text="{Binding Title}"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,4" Visibility="{Binding HasClear, Converter={StaticResource BoolToVisibility}}">
                 <Button Style="{StaticResource PillButtonStyle}" Content="All none" Command="{Binding ClearCommand}"
-                        ToolTip="Take every bonus away: morale and luck back to 0 and no place visited. Not tried in the game."/>
+                        ToolTip="Take every bonus away: morale and luck back to 0 and no place visited."/>
             </StackPanel>
             <ItemsControl ItemsSource="{Binding Bonus}" ItemTemplate="{StaticResource AmountFieldTemplate}"/>
             <Expander Margin="0,6,0,2" IsExpanded="True">

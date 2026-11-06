@@ -341,6 +341,7 @@ ASALocalRun/
 healthchecksdb
 # Saves made by the write test with Heroes of Might and Magic II (`EditedSaves`, see "How HoMM2 was added" in docs/SINISKALC_ARCHITECTURE.md)
 TestData/Homm2/out/
+TestData/Homm2/out_tested/
 TestData/Homm3/out/
 
 # Claude Code: isolated checkouts and personal settings

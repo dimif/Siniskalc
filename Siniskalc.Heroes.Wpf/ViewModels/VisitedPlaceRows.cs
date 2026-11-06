@@ -34,7 +34,7 @@
                     $"At {MapLevelText.Place(place.Position.X, place.Position.Y)}",
                     () => (getMask() & (1u << place.Number)) != 0,
                     visited => editMask(mask => visited ? mask | (1u << place.Number) : mask & ~(1u << place.Number)),
-                    toolTip: "Tick it when the hero has visited this one: it gives nothing a second time. Not tried in the game."))
+                    toolTip: "Tick it when the hero has visited this one: it gives nothing a second time."))
                 .ToList();
             var allOnMap = found.Aggregate(0u, (mask, place) => mask | (1u << place.Number));
             return new VisitedPlaceRowViewModel(

@@ -69,7 +69,21 @@
         public static PlayerColor OwnerOf(int index) => index == -1 ? PlayerColor.Neutral : PlayerColor.FromByte((byte)(-2 - index));
 
         /// <inheritdoc/>
-        protected override IReadOnlyList<ILink> LoadHeroes() => OwnedLinks.Heroes(this.history.Current.Heroes(), this.owner, this.openHero);
+        protected override IReadOnlyList<ILink> LoadHeroes()
+        {
+            var disabled = this.DisabledIds();
+            return OwnedLinks.Heroes(this.history.Current.Heroes(), this.owner, this.openHero, h => !disabled.Contains(h.HeroId));
+        }
+
+        /// <inheritdoc/>
+        protected override IReadOnlyList<ILink> LoadDisabledHeroes()
+        {
+            var disabled = this.DisabledIds();
+            return OwnedLinks.Heroes(this.history.Current.Heroes(), this.owner, this.openHero, h => disabled.Contains(h.HeroId));
+        }
+
+        // Only what nobody owns can hold a hero the game keeps out of play.
+        private IReadOnlySet<int> DisabledIds() => this.owner.IsNeutral ? Data.DisabledHeroes.Of(this.history.Current) : new HashSet<int>();
 
         /// <inheritdoc/>
         protected override IReadOnlyList<ILink> LoadCastles() => CastleLinks.OwnedBy(this.history.Current, this.owner, this.openCastle, this.openHero);

@@ -32,6 +32,9 @@ namespace Siniskalc.Homm3.Tests.ViewModels
 
         public int HeroIndex { get; init; } = 3;
 
+        /// <summary>Gets the colours of the players of the savefile; every colour by default.</summary>
+        public IReadOnlyList<PlayerColor> PlayersInGame { get; init; } = Siniskalc.Core.Entities.AbstractEnumeration.GetAll<PlayerColor>().Where(c => !c.IsNeutral).ToList();
+
         public GameVersion GameVersion { get; init; } = GameVersion.HornOfTheAbyss;
 
         public bool SupportsAsleep { get; init; } = true;

@@ -125,6 +125,31 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
         }
 
         [Test]
+        public void AHeroOfAPlayerThatIsNotOnTheMapShowsAWarningAndANeutralHeroOrOneOnTheMapDoesNot()
+        {
+            this.session = new FakeHeroSession(HeroModels.Christian().WithOwner(PlayerColor.Neutral));
+            using var neutral = this.Page();
+            Assert.That(neutral.HasPositionWarning, Is.False, "a neutral hero is expected to be off the map");
+
+            neutral.SelectedOwner = "Red";
+            Assert.That(neutral.HasPositionWarning, Is.True);
+            Assert.That(neutral.PositionWarning, Does.Contain("not on the map"));
+
+            this.session.Update(h => h with { Position = new HeroPosition(5, 6, 0, Siniskalc.Heroes.Entities.FacingDirection.East) });
+            Assert.That(neutral.HasPositionWarning, Is.False);
+        }
+
+        [Test]
+        public void TheOwnersToPickFromAreNeutralAndTheOnlyPlayersOfTheGame()
+        {
+            this.session = new FakeHeroSession(HeroModels.Christian()) { PlayersInGame = [PlayerColor.Red, PlayerColor.Blue] };
+
+            using var page = this.Page();
+
+            Assert.That(page.OwnerChoices, Is.EqualTo(new[] { "Neutral", "Red", "Blue" }));
+        }
+
+        [Test]
         public void PickingAnOwnerGivesTheHeroToThePlayerThroughTheSession()
         {
             using var page = this.Page();

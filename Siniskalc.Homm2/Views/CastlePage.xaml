@@ -91,8 +91,20 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            <TextBlock Margin="0,4,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                       Text="The flag of the castle on the map, and what the new owner has seen of the map around it, are not changed: the game fixes the flag when someone visits, and the castle may show only in the list of castles of its owner until the map is explored."/>
+            <!-- Shown only while the owner of the castle is changed and not saved. -->
+            <TextBlock Margin="0,4,0,0" TextWrapping="Wrap"
+                       Text="Changing ownership does not update the shroud. If you assign to a human player a castle in a portion of the map they have yet to explore, the castle will remain hidden until the map is uncovered.">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource FieldNoteStyle}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding OwnerChanged}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
         </StackPanel>
 
         <!-- The pages of a castle, as tabs. -->
@@ -131,8 +143,6 @@
                             <ItemsControl ItemsSource="{Binding Dwellings}" ItemTemplate="{StaticResource DwellingBuiltTemplate}"/>
                         </heroes:HeadedCard>
                     </WrapPanel>
-                    <TextBlock Margin="0,8,0,0" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="The editor does not check what the game needs before a building can be built: a town needs its castle first. A dwelling that is upgraded shows the creature of its upgrade."/>
                 </StackPanel>
 
                 <!-- Garrison: the same army editor as the creatures of a hero. -->
@@ -155,9 +165,7 @@
                     <heroes:HeadedCard Heading="Mage guild" CardWidth="400">
                         <StackPanel>
                             <ContentControl Content="{Binding GuildLevelField}" ContentTemplate="{StaticResource ChoiceFieldTemplate}"/>
-                            <ItemsControl ItemsSource="{Binding GuildLevels}" ItemTemplate="{StaticResource GuildLevelTemplate}"/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                                       Text="The guild teaches the spells of the levels it has built: three at the first two levels, two at the next two and one at the last (one more with the Library of a Wizard)."/>
+                            <ItemsControl ItemsSource="{Binding GuildLevels}" ItemTemplate="{StaticResource GuildLevelTemplate}"/>                            
                         </StackPanel>
                     </heroes:HeadedCard>
                 </WrapPanel>

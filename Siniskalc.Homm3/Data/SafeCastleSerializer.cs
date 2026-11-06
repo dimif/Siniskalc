@@ -88,7 +88,7 @@
 
             if (skippedLevels > 0)
             {
-                Logger.LogWarning("Skipped writing {Count} Mage Guild levels because their spell lists did not match the known savefile slots", skippedLevels);
+                Logger.LogDebug("Skipped writing {Count} Mage Guild levels because their spell lists did not match the known savefile slots", skippedLevels);
             }
         }
 
@@ -174,7 +174,7 @@
             if (skipped > 0)
             {
                 using var subject = Logger.BeginSubject("Castle", castle.Name);
-                Logger.LogWarning("Skipped {Count} buildings whose codes do not fit the 64-bit masks", skipped);
+                Logger.LogDebug("Skipped {Count} buildings whose codes do not fit the 64-bit masks", skipped);
             }
 
             foreach (var (trigger, bit) in CastleLayout.CompanionBits(castle.Faction))

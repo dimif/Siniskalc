@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <Authors>Dimitri Fadda</Authors>
+    <Authors>@dimif</Authors>
   </PropertyGroup>
 
 </Project>

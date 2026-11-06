@@ -34,6 +34,16 @@
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
 
         /// <summary>
+        /// What to do when exporting the bytes fails (it logs the failure and tells the user). Set it once on the window: it is inherited by
+        /// every hex editor inside. A hex editor without one only tells the user.
+        /// </summary>
+        public static readonly DependencyProperty ExportFailedHandlerProperty = DependencyProperty.RegisterAttached(
+            "ExportFailedHandler",
+            typeof(Action<Exception>),
+            typeof(HexEditor),
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
+
+        /// <summary>
         /// The height of the list of known fields under the grid. It is tall for a chunk with many fields (a hero), and can be small where
         /// there are few (a mine).
         /// </summary>
@@ -107,6 +117,20 @@
         /// <param name="element">The element, such as a window.</param>
         /// <param name="value">The name of the file, or <see langword="null"/>.</param>
         public static void SetSourceFile(DependencyObject element, string? value) => element.SetValue(SourceFileProperty, value);
+
+        /// <summary>
+        /// Gets what an element does when exporting bytes fails, which it inherits from the element above it.
+        /// </summary>
+        /// <param name="element">The element, such as a window or a hex editor.</param>
+        /// <returns>The handler, or <see langword="null"/>.</returns>
+        public static Action<Exception>? GetExportFailedHandler(DependencyObject element) => (Action<Exception>?)element.GetValue(ExportFailedHandlerProperty);
+
+        /// <summary>
+        /// Sets what an element, and every hex editor inside it, does when exporting bytes fails.
+        /// </summary>
+        /// <param name="element">The element, such as a window.</param>
+        /// <param name="value">The handler, or <see langword="null"/>.</param>
+        public static void SetExportFailedHandler(DependencyObject element, Action<Exception>? value) => element.SetValue(ExportFailedHandlerProperty, value);
 
         /// <summary>
         /// Shows <paramref name="newTarget"/> and takes ownership of it: the target is disposed when another one is
@@ -583,7 +607,14 @@
             }
             catch (Exception ex)
             {
-                MessageBox.Show(owner, $"Failed to export the bytes: {ex.Message}", "Export bytes", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (GetExportFailedHandler(this) is { } handler)
+                {
+                    handler(ex);
+                }
+                else
+                {
+                    MessageBox.Show(owner, $"Failed to export the bytes: {ex.Message}", "Export bytes", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

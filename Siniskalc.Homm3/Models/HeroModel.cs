@@ -285,6 +285,34 @@
         public HeroModel WithMovementLeft(long movement) => this with { MovementPoints = this.MovementPoints with { Current = movement } };
 
         /// <summary>
+        /// Returns the hero as the game leaves it after it visited <paramref name="effect"/> (<paramref name="visited"/> is true), or as it was
+        /// before the visit. The bit that remembers the visit and what the visit gave (morale, luck, and the movement of the stables, to the
+        /// points left and to the most of the day) change together, so the hero is never left with the bit and not the bonus.
+        /// A hero that already is in the state asked for is returned as it is.
+        /// </summary>
+        /// <param name="effect">What the visit gives.</param>
+        /// <param name="visited">True for a hero that visited the building, false for one that did not.</param>
+        /// <returns>The new hero; this one is not changed.</returns>
+        public HeroModel WithVisitedBuilding(Data.VisitEffectDefinition effect, bool visited)
+        {
+            if (this.VisitEffects.HasFlag(effect.Effect) == visited)
+            {
+                return this;
+            }
+
+            var sign = visited ? 1 : -1;
+            return this with
+            {
+                VisitEffects = visited ? this.VisitEffects | effect.Effect : this.VisitEffects & ~effect.Effect,
+                MoraleBonus = RangeGuard.Clamp(this.MoraleBonus + (sign * effect.Morale), -Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck),
+                LuckBonus = RangeGuard.Clamp(this.LuckBonus + (sign * effect.Luck), -Constants.Hero.MaxMoraleOrLuck, Constants.Hero.MaxMoraleOrLuck),
+                MovementPoints = new MovementPoints(
+                    RangeGuard.Clamp(this.MovementPoints.Current + (sign * effect.Movement), Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints),
+                    RangeGuard.Clamp(this.MovementPoints.Max + (sign * effect.Movement), Constants.Hero.MinMovementPoints, Constants.Hero.MaxMovementPoints)),
+            };
+        }
+
+        /// <summary>
         /// Returns the hero with <paramref name="spellPoints"/> spell points.
         /// </summary>
         /// <param name="spellPoints">The spell points.</param>

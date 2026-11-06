@@ -132,5 +132,56 @@
             Assert.That(castles.GetModels().Where(c => c.IsUsed).Select(c => c.Name).Take(4), Is.EqualTo(new[] { "Willow", "Whiteshield", "Corackston", "Xabran" }));
             Assert.That(castles.GetOwners()[Xabran], Is.EqualTo(PlayerColor.Blue));
         }
+
+        [Test]
+        public void GivingACastleToAnotherPlayerRepaintsItsTwoFlagsOnTheMapAndUndoPutsThemBack()
+        {
+            var game = TestServices.LoadThreedom(82);
+            var index = game.History.Current.Castles().FindByName("Whiteshield");
+            var original = game.GetBytesToSave();
+            var layout = game.Layout;
+            var flags = CastleFlags.Find(original, layout, MapTileTable.FindStart(original, layout), 30, 16);
+            Assert.That(flags.Select(f => f.Bytes[1]), Is.EqualTo(new byte[] { 0, 1 }), "Blue's flags, on the tiles left and right of the castle");
+
+            game.History.CreateCastleSession(index).Update(c => c with { Owner = PlayerColor.Red });
+            var changed = game.GetBytesToSave();
+
+            Assert.That(flags.Select(f => changed[f.StartIndex + 1]), Is.EqualTo(new byte[] { 4, 5 }), "Red's flags");
+            Assert.That(flags.Select(f => changed[f.StartIndex]), Is.All.EqualTo(MapObjectLayout.FlagClass));
+            var reloaded = TestServices.Parser.Parse(changed, null);
+            Assert.That(reloaded.History.Current.Castles().GetModel(index).Owner, Is.EqualTo(PlayerColor.Red));
+            Assert.That(CastleFlags.Find(changed, reloaded.Layout, MapTileTable.FindStart(changed, reloaded.Layout), 30, 16).Select(f => f.Bytes[1]), Is.EqualTo(new byte[] { 4, 5 }));
+
+            Assert.That(changed[CastleFlags.OwnerTableStart(layout) + index], Is.EqualTo(2), "the table of the colour of each castle says Red");
+
+            game.History.Undo();
+
+            Assert.That(game.GetBytesToSave(), Is.EqualTo(original));
+        }
+
+        [TestCase(1)]
+        [TestCase(10)]
+        [TestCase(29)]
+        [TestCase(40)]
+        [TestCase(82)]
+        public void TheTableOfTheColourOfEachCastleAndTheFlagsOnTheMapAgreeWithTheOwnersOfThreedom(int save)
+        {
+            var game = TestServices.LoadThreedom(save);
+            var bytes = game.GetBytesToSave();
+            var tiles = MapTileTable.FindStart(bytes, game.Layout);
+            var castles = game.History.Current.Castles().GetModels();
+
+            for (var i = 0; i < castles.Count; i++)
+            {
+                if (!castles[i].IsUsed)
+                {
+                    continue;
+                }
+
+                Assert.That(bytes[CastleFlags.OwnerTableStart(game.Layout) + i], Is.EqualTo(CastleFlags.MarkOf(castles[i].Owner)), castles[i].Name);
+                var flags = CastleFlags.Find(bytes, game.Layout, tiles, castles[i].Position.X, castles[i].Position.Y);
+                Assert.That(flags.Select(f => f.Bytes[1]), Is.EqualTo(new[] { CastleFlags.PictureOf(castles[i].Owner, false), CastleFlags.PictureOf(castles[i].Owner, true) }), castles[i].Name);
+            }
+        }
     }
 }

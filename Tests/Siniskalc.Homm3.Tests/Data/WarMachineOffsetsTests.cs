@@ -22,7 +22,7 @@ namespace Siniskalc.Homm3.Tests.Data
         [Test]
         public void EveryWarMachineOfTheGameHasAPlace()
         {
-            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.All, Is.Not.Empty);
+            Assert.That(TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.All.Count(), Is.EqualTo(4));
             foreach (var machine in TestCatalog.For(GameVersion.HornOfTheAbyss).WarMachines.All)
             {
                 Assert.DoesNotThrow(() => WarMachineOffsets.For(machine), machine.Name);

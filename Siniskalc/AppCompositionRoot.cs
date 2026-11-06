@@ -100,7 +100,7 @@
                 "A savegame editor for Heroes of Might and Magic II & III.",
                 AppInfo.RepositoryUrl,
                 AppInfo.ReleasesUrl,
-                "Copyright (c) 2026 Dimitri Fadda. Released under the MIT License.",
+                "Copyright (c) 2026 @dimif. Released under the MIT License.",
                 [
                     "Heroes of Might and Magic is a trademark of Ubisoft. This project is not affiliated with or endorsed by Ubisoft.",
                     "The menu and toolbar icons are from the Microsoft Visual Studio Image Library and are not covered by the MIT License. See the README for the third-party notices.",

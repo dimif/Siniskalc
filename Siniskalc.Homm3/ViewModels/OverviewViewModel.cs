@@ -19,7 +19,7 @@
         /// <summary>
         /// The tooltip of the button that gives the turn to a human player.
         /// </summary>
-        public const string GiveTheTurnToolTip = "Give the turn to this player: the savegame then opens on this player's turn. Not tried in the game.";
+        public const string GiveTheTurnToolTip = "Give the turn to this player: the savegame then opens on this player's turn.";
 
         private readonly Game game;
         private readonly Action<int> openHero;

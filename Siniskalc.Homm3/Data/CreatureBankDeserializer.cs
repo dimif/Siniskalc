@@ -18,7 +18,7 @@ namespace Siniskalc.Homm3.Data
             var strength = CreatureBankPresets.FindStrength(chunk.Kind, resources);
             if (strength == null)
             {
-                Logger.LogTrace("Unknown bank resource preset; read as tier {StandIn}", Constants.CreatureBank.MinStrength);
+                Logger.LogTrace("Bank resource preset {Value} is unknown; read as tier {StandIn}", string.Join(',', resources), Constants.CreatureBank.MinStrength);
             }
 
             var artifacts = Enumerable.Range(0, chunk.Kind == CreatureBankKind.DragonUtopia ? Constants.CreatureBank.ArtifactSlots : 0).Select(slot =>

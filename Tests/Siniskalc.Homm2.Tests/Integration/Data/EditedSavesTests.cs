@@ -64,6 +64,15 @@
                 records.AddRange(Enumerable.Range(0, Constants.Table.HeroCount).Select(i => (layout.HeroStart(i), layout.HeroStart(i) + layout.HeroStride)));
                 records.AddRange(Enumerable.Range(0, Constants.Table.CastleSlotCount).Select(i => (layout.CastleStart(i), layout.CastleStart(i) + CastleLayout.RecordSize)));
 
+                // The flags of a castle on the map and the table of the colour of each castle follow its owner, so they are written with the castle.
+                records.Add((CastleFlags.OwnerTableStart(layout), CastleFlags.OwnerTableStart(layout) + Constants.Table.CastleSlotCount));
+                var original = File.ReadAllBytes(Saves.BrokenAllianceSave(save.BaseSave));
+                var tiles = MapTileTable.FindStart(original, layout);
+                records.AddRange(Enumerable.Range(0, Constants.Table.CastleSlotCount)
+                    .Where(i => original[layout.CastleStart(i) + CastleLayout.Name] != 0)
+                    .SelectMany(i => CastleFlags.Find(original, layout, tiles, original[layout.CastleStart(i) + CastleLayout.X], original[layout.CastleStart(i) + CastleLayout.Y]))
+                    .Select(f => (f.StartIndex, f.StartIndex + f.Bytes.Length)));
+
                 Assert.That(differences, Is.Not.Empty, save.Name);
                 Assert.That(differences.All(d => records.Any(r => d >= r.Start && d < r.End)), Is.True, save.Name);
             }

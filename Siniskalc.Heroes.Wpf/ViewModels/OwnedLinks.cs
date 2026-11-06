@@ -24,8 +24,21 @@
         /// <returns>The links.</returns>
         public static IReadOnlyList<HeroLinkViewModel> Heroes<TColor>(IHeroSummaries<TColor> heroes, TColor owner, Action<int> openHero)
             where TColor : class, IPlayerColor =>
+            Heroes(heroes, owner, openHero, _ => true);
+
+        /// <summary>
+        /// Returns a link to each hero <paramref name="owner"/> owns that <paramref name="include"/> accepts, ordered by name.
+        /// </summary>
+        /// <typeparam name="TColor">The colour of the game.</typeparam>
+        /// <param name="heroes">The heroes of the savefile.</param>
+        /// <param name="owner">The colour whose heroes are wanted.</param>
+        /// <param name="openHero">Opens the page of a hero, by its number.</param>
+        /// <param name="include">Tells whether a hero is wanted.</param>
+        /// <returns>The links.</returns>
+        public static IReadOnlyList<HeroLinkViewModel> Heroes<TColor>(IHeroSummaries<TColor> heroes, TColor owner, Action<int> openHero, Func<HeroSummary<TColor>, bool> include)
+            where TColor : class, IPlayerColor =>
             heroes.GetSummaries()
-                .Where(s => s.Owner == owner)
+                .Where(s => s.Owner == owner && include(s))
                 .OrderBy(s => s.Name)
                 .Select(s => new HeroLinkViewModel(s.Index, s.Name, s.Description, new DelegateCommand(_ => openHero(s.Index))))
                 .ToList();

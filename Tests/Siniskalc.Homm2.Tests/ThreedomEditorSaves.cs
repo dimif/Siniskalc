@@ -38,6 +38,14 @@
                     $"{ShrinesOf(game)}. Visit them with a hero that does not know the spell (Colar Blau, who has only Haste): the spell book gets the new one. Tell me what each teaches.", Latest),
                 Make("T09SPHNX", "The sphinx can be answered again, with the answer \"shade\", and gives 5,000 gold and 5 gems (from save 82)", ChangeSphinx, game =>
                     "The sphinx at 13, 31 asks its riddle again: answer \"shade\" (or \"darkness\" or \"shadow\") and Blue gets 5,000 gold and 5 gems. Tell me whether it asks, accepts the answers and gives the reward, and whether the sphinx is used up afterwards.", Latest),
+                Make("T10HEROW", "Charity (Blue's) is given to Green through the owner box (from save 82)", GiveCharityToGreen, game =>
+                    $"Charity belongs to Green: she is in Green's list of heroes and no longer in Blue's, and she stands where she stood ({PositionOf(game, Charity)}). Blue keeps Colar Blau only. Play Green's turn and move her: she should obey Green and stay in the game. Tell me what the kingdom summary and the hero list show.", Latest),
+                Make("T11CSTOW", "Whiteshield is given to Red through the owner box (from save 82)", GiveWhiteshieldToRed, game =>
+                    $"Whiteshield (30, 16) flies Red's flag and is in Red's list of castles, not in Blue's ({CastlesOf(game, "Red")}; Blue has {CastlesOf(game, "Blue")}). Open it: it should be Red's town, with its buildings and garrison as they were. Tell me what the castle screen and the lists show, and whether the garrison hero Blue had there is a problem.", Latest),
+                Make("T12CANBD", "Whiteshield may build today and Hillstone may not (from save 82)", ChangeCanBuild, game =>
+                    $"Whiteshield: {CanBuildOf(game, "Whiteshield")}; Hillstone: {CanBuildOf(game, "Hillstone")}. Open each castle: the build menu should be usable in Whiteshield and say that something was already built today in Hillstone. Tell me what you see, and whether the day's flag comes back next turn.", Latest),
+                Make("T13DESTN", "Charity is sent toward 39, 49 and Colar Blau's destination is taken away (from save 82)", ChangeDestinations, game =>
+                    $"Charity ({PositionOf(game, Charity)}) has her destination at {DestinationOf(game, Charity)} and Colar Blau ({PositionOf(game, ColarBlau)}) has none. In the game the path marker should be at the new tile for Charity and gone for Colar Blau. Tell me what the adventure map shows and whether the heroes move toward the destination.", Latest),
             ];
         }
 
@@ -131,6 +139,41 @@
             charity[0].Value = -3;
             charity[1].Value = -3;
         }
+
+        private static void GiveCharityToGreen(Game game) => Hero(game, Charity).OwnerField.Selected = "Green";
+
+        private static void GiveWhiteshieldToRed(Game game) => Castle(game, "Whiteshield").OwnerField.Selected = "Red";
+
+        private static void ChangeCanBuild(Game game)
+        {
+            Castle(game, "Whiteshield").CanBuildThisTurn.IsChecked = true;
+            Castle(game, "Hillstone").CanBuildThisTurn.IsChecked = false;
+        }
+
+        private static void ChangeDestinations(Game game)
+        {
+            var charity = Hero(game, Charity).Destination;
+            charity.X = 39;
+            charity.Y = 49;
+            var colar = Hero(game, ColarBlau).Destination;
+            if (colar.CanRemove)
+            {
+                colar.RemoveCommand.Execute(null);
+            }
+        }
+
+        private static string PositionOf(Game game, int id) => $"{Hero(game, id).Position.X}, {Hero(game, id).Position.Y}";
+
+        private static string DestinationOf(Game game, int id)
+        {
+            var destination = Hero(game, id).Destination;
+            return destination.X < 0 || destination.Y < 0 ? "none" : $"{destination.X}, {destination.Y}";
+        }
+
+        private static string CanBuildOf(Game game, string castle) => Castle(game, castle).CanBuildThisTurn.IsChecked ? "may build today" : "has built today";
+
+        private static string CastlesOf(Game game, string owner) =>
+            string.Join(", ", game.History.Current.Castles().GetModels().Where(c => c.IsUsed && c.Owner.Name == owner).Select(c => c.Name));
 
         private static EditedSave Make(string name, string edit, Action<Game> apply, Func<Game, string> check, int baseSave = Base)
         {

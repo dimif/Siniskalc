@@ -99,6 +99,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                     var grid = Find<DataGrid>((Page)frame.Content).First(g => g.IsVisible);
                     var scroll = Find<ScrollViewer>(grid).First();
                     var editorControl = Find<Siniskalc.Wpf.Views.HexEditor>((Page)frame.Content).First(h => h.IsVisible);
+                    // Windows keeps a window inside the screen, so on a small display (the 1024 pixels of a CI runner) the shell is narrower than its 1330 and the fields
+                    // flow into fewer columns. The card is checked at the width it has in the default shell.
+                    editorControl.Width = DefaultHexEditorWidth;
+                    window.UpdateLayout();
                     var fields = Find<ScrollViewer>(editorControl).First(v => v.Content is ItemsControl);
                     Assert.That(fields.ViewportHeight, Is.GreaterThanOrEqualTo(fields.ExtentHeight), $"the known fields of the {kind} need scrolling");
                     if (kind == NavNodeKind.Dwelling)
@@ -124,6 +128,10 @@ namespace Siniskalc.Homm3.Tests.Integration.Views
                 window.Close();
             }
         }
+
+        // Mirrors the width the hex editor card gets in the default shell (ShellWindow.xaml, Width="1330"). If the shell's default width or layout changes, re-measure it
+        // there: this test checks the card at this width, not at whatever the shell gives it.
+        private const double DefaultHexEditorWidth = 900;
 
         private static IEnumerable<T> Find<T>(DependencyObject root)
             where T : DependencyObject

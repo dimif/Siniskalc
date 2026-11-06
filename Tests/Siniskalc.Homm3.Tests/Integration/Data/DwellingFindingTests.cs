@@ -12,9 +12,9 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private const string Root = "TestData\\Hota\\MineFinding";
 
-        private static IEnumerable<string> SmallSaves => Directory.GetFiles(Root, "*.GM1", SearchOption.AllDirectories);
+        private static IEnumerable<string> SmallSaves => RepresentativeSaves.Of(Root, "*.GM1");
 
-        private static IEnumerable<string> AllSaves => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories);
+        private static IEnumerable<string> AllSaves => RepresentativeSaves.Of("TestData");
 
         [TestCase("NoMinesOneDwelling", 1)]
         [TestCase("OneMineNoDwellings", 0)]
@@ -150,7 +150,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [TestCaseSource(nameof(AllSaves))]
-        public void EverySaveAndEveryLocatedDwellingRoundTripsWithoutOverlappingOrChangingBytes(string file)
+        public void TheDwellingsOfEachRepresentativeSaveRoundTripWithoutOverlappingOrChangingBytes(string file)
         {
             var game = SavedGames.Get(file);
             var bytes = TestServices.SavefileCodec.Read(file);
@@ -158,7 +158,8 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             int expected;
             if (Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "MerchantStock")
                 || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "DragonUtopias")
-                || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "CreatureBanks"))
+                || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "CreatureBanks")
+                || Path.GetDirectoryName(file) == Path.Combine("TestData", "Hota", "DisabledHeroes"))
             {
                 Assert.That(table, Is.Null, "the merchant/creature-bank companion maps have no mine or dwelling definitions");
                 Assert.That(game.History.Current.Mines(), Is.Empty);

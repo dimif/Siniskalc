@@ -100,30 +100,5 @@
                 </ItemsControl>
             </StackPanel>
         </Border>
-
-        <!-- Look up a creature, and put it in the army. -->
-        <Border>
-            <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource CardStyle}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ShowFinder, RelativeSource={RelativeSource AncestorType=local:ArmyEditorView}}" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <StackPanel>
-                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Find creatures"/>
-                <wpf:FinderView DataContext="{Binding Finder}">
-                    <wpf:FinderView.ToolbarContent>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="New stack of" VerticalAlignment="Center" Margin="0,0,6,0" Style="{StaticResource MutedTextStyle}"/>
-                            <TextBox Width="64" Margin="0" HorizontalContentAlignment="Right"
-                                     Text="{Binding AddAmount, UpdateSourceTrigger=PropertyChanged}" ToolTip="How many creatures a stack you add starts with"/>
-                        </StackPanel>
-                    </wpf:FinderView.ToolbarContent>
-                </wpf:FinderView>
-            </StackPanel>
-        </Border>
     </StackPanel>
 </UserControl>

@@ -8,6 +8,7 @@
     using Siniskalc.Heroes.Models;
     using Siniskalc.Heroes.ViewModels;
     using Siniskalc.Heroes.Wpf.ViewModels;
+    using Siniskalc.Homm3.Data;
     using Siniskalc.Homm3.Entities;
     using Siniskalc.Homm3.Models;
     using Siniskalc.Wpf.ViewModels;
@@ -376,8 +377,8 @@
                     this.BonusRow("Luck", range, h => h.LuckBonus, (h, value) => h with { LuckBonus = value }),
                 ],
                 this.Hero.HeroClass.Catalog.MapMetadata.VisitEffects
-                    .Select(e => e.Editable ? this.Source(e.Effect, e.Morale, e.Luck, range, e.Description) : this.Shown(e.Effect, e.Description)).ToList(),
-                "What the buildings the hero visited gave. A battle takes most of it away; the stables last until the end of the week. Not tried in the game.");
+                    .Select(e => e.Editable ? this.Source(e, e.Description) : this.Shown(e.Effect, e.Description)).ToList(),
+                "What the buildings the hero visited gave. A battle takes most of it away; the stables last until the end of the week.");
         }
 
         private AmountRowViewModel BonusRow(string name, NumberRange range, Func<HeroModel, int> get, Func<HeroModel, int, HeroModel> set) => new(
@@ -391,16 +392,11 @@
             value => this.Update(h => set(h, (int)value)),
             () => "next battle only");
 
-        private ToggleRowViewModel Source(VisitedBuildingEffects effect, int morale, int luck, NumberRange range, string toolTip) => new(
-            this.Hero.HeroClass.Catalog.MapMetadata.EffectName(effect),
-            () => this.Hero.VisitEffects.HasFlag(effect),
-            on => this.Update(h => h with
-            {
-                VisitEffects = on ? h.VisitEffects | effect : h.VisitEffects & ~effect,
-                MoraleBonus = (int)Math.Clamp(h.MoraleBonus + (on ? morale : -morale), range.Minimum, range.Maximum),
-                LuckBonus = (int)Math.Clamp(h.LuckBonus + (on ? luck : -luck), range.Minimum, range.Maximum),
-            }),
-            toolTip: toolTip + (morale == 0 && luck == 0 ? ". Sets what the game remembers." : ". Sets what the game remembers and its morale or luck together.") + " Not tried in the game.");
+        private ToggleRowViewModel Source(VisitEffectDefinition effect, string toolTip) => new(
+            effect.Name,
+            () => this.Hero.VisitEffects.HasFlag(effect.Effect),
+            on => this.Update(h => h.WithVisitedBuilding(effect, on)),
+            toolTip: toolTip + (effect.Movement != 0 ? ". Sets what the game remembers and adds or takes away its movement points." : effect.Morale == 0 && effect.Luck == 0 ? ". Sets what the game remembers." : ". Sets what the game remembers and its morale or luck together."));
 
         private ToggleRowViewModel Shown(VisitedBuildingEffects effect, string toolTip) => new(
             this.Hero.HeroClass.Catalog.MapMetadata.EffectName(effect),

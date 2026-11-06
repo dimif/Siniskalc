@@ -1,4 +1,5 @@
 ﻿using Siniskalc.Homm3.Data;
+using Siniskalc.Heroes.Models;
 using Siniskalc.Homm3.Entities;
 using Siniskalc.Homm3.Models;
 using Siniskalc.Homm3.Runtime;
@@ -43,6 +44,52 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(Hero(7, "Sir Mullich").LuckBonus, Is.EqualTo(1));
             Assert.That(Hero(9, "Sir Mullich").MoraleBonus, Is.EqualTo(-1));
             Assert.That(Hero(9, "Sir Mullich").VisitEffects.HasFlag(VisitedBuildingEffects.Crypt), Is.True);
+        }
+
+        [Test]
+        public void TheStablesOfSodAddFourHundredToTheMostMovementOfTheDay()
+        {
+            var before = Hero(5, "Sir Mullich").MovementPoints;
+            var after = Hero(6, "Sir Mullich").MovementPoints;
+
+            Assert.That(after.Max - before.Max, Is.EqualTo(400));
+        }
+
+        [Test]
+        public void TheStablesOfHornOfTheAbyssAddThreeHundredToTheMostMovementOfTheDayAndToThePointsLeft()
+        {
+            var before = Session(SavedGames.Get(Path.Combine("TestData", "Hota", "Stables", "stables_00_baseline.GM2")), "Tazar").Current;
+            var after = Session(SavedGames.Get(Path.Combine("TestData", "Hota", "Stables", "stables_01_tazar_visits_stables.GM2")), "Tazar").Current;
+
+            Assert.That(before.MovementPoints, Is.EqualTo(new MovementPoints(3175, 2600)));
+            Assert.That(after.MovementPoints, Is.EqualTo(new MovementPoints(3390, 2900)));
+            Assert.That(after.VisitEffects & VisitedBuildingEffects.Stables, Is.EqualTo(VisitedBuildingEffects.Stables));
+
+            var stables = before.HeroClass.Catalog.MapMetadata.VisitEffects.Single(e => e.Effect == VisitedBuildingEffects.Stables);
+            Assert.That(stables.Movement, Is.EqualTo(300));
+            Assert.That(before.WithVisitedBuilding(stables, true).MovementPoints.Max, Is.EqualTo(after.MovementPoints.Max));
+        }
+
+        [Test]
+        public void TickingTheStablesAddsTheirMovementToThePointsLeftAndToTheMostOfTheDayAndUntickingTakesItAway()
+        {
+            var game = Load(5);
+            var session = Session(game, "Sir Mullich");
+            var original = session.Current;
+            var stables = original.HeroClass.Catalog.MapMetadata.VisitEffects.Single(e => e.Effect == VisitedBuildingEffects.Stables);
+
+            session.Update(h => h.WithVisitedBuilding(stables, true));
+
+            Assert.That(session.Current.VisitEffects.HasFlag(VisitedBuildingEffects.Stables), Is.True);
+            Assert.That(session.Current.MovementPoints.Max, Is.EqualTo(original.MovementPoints.Max + 400));
+            Assert.That(session.Current.MovementPoints.Current, Is.EqualTo(original.MovementPoints.Current + 400));
+
+            session.Update(h => h.WithVisitedBuilding(stables, true));
+            Assert.That(session.Current.MovementPoints.Max, Is.EqualTo(original.MovementPoints.Max + 400), "ticking it twice gives it once");
+
+            session.Update(h => h.WithVisitedBuilding(stables, false));
+            Assert.That(session.Current.MovementPoints, Is.EqualTo(original.MovementPoints));
+            Assert.That(session.Current.VisitEffects, Is.EqualTo(original.VisitEffects));
         }
 
         [Test]

@@ -1,4 +1,4 @@
-﻿using Siniskalc.Homm3.Entities;
+using Siniskalc.Homm3.Entities;
 namespace Siniskalc.Homm3.Tests.Runtime
 {
     using Siniskalc.Core.Runtime;
@@ -15,7 +15,7 @@ namespace Siniskalc.Homm3.Tests.Runtime
         [Test]
         public void HeroesOfMightAndMagicIIIAcceptsAnyName()
         {
-            IGameModule<Homm3EditorViewModel> module = new Homm3Module(() => TestServices.CreateHomm3Editor());
+            IGameModule<Homm3EditorViewModel> module = new Homm3Module(() => throw new InvalidOperationException("Validating a name makes no editor."));
 
             Assert.That(module.ValidateSavegameName("a very long name for a savegame.GM1"), Is.Null);
         }

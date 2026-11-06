@@ -38,7 +38,7 @@ namespace Siniskalc.Homm2.Tests.Entities
         {
             var plain = TestCatalog.Standard.Artifacts.Where(a => Expected.All(e => e.Code != a.Code)).ToList();
 
-            Assert.That(plain, Is.Not.Empty);
+            Assert.That(plain.Count, Is.EqualTo(62));
             Assert.That(plain.Select(ArtifactBonuses.Of), Is.All.EqualTo(PrimarySkillBonus.None));
         }
 

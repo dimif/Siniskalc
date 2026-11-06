@@ -2,9 +2,8 @@
 
 Siniskalc edits savegames of Heroes of Might and Magic III (Restoration of Erathia, Armageddon's Blade, Shadow of Death and Horn of the Abyss) and Heroes of Might and Magic II (The Succession Wars and The Price of Loyalty).
 Heroes Chronicles support is speculative and limited to heroes and towns.
-HoMM2 editing has savefile regression coverage but has not yet been verified in the game.
-It needs Windows; there is nothing to install, unzip a release and run `Siniskalc.exe`.
-Keep both shipped `GameData` folders beside the executable.
+
+It needs Windows and the .NET 8 runtime; there is nothing to install, unzip a release and run `Siniskalc.exe`.
 
 ## Standard game definitions
 
@@ -45,57 +44,24 @@ Pages:
 
 - **Game overview**: map and game setup read from the save (difficulty, date, who controls each player).
 - **Player**: the seven resources (tab **General**), the heroes in the tavern, and the obelisks the player has visited (on maps that have obelisks).
-  A player who owns no town has a "No towns: n days left" pill beside the name, in the overview and in the navigation tree, and a Banishing card on the General tab with the buttons 7 to 1 to change the days left. A player who has been banished stays in the game as he is and cannot be edited.
+  A player who owns no town has a "No towns: n days left" pill beside the name, in the overview and in the navigation tree, and a Banishing card on the General tab with the buttons 7 to 1 to change the days left. A player who has been banished stays in the game as they are and cannot be edited.
   Its **Mines** tab lists the mines the player owns (pick one to see and edit its guard, and change its owner) and its **Dwellings** tab (HoMM3) the dwellings it owns, with the creatures that can be hired there. A mine or dwelling given to another player moves to that player's tabs.
-- **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings**). It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
+- **Neutral**: the heroes and towns nobody owns, and the mines and dwellings nobody has flagged (tabs **Heroes**, **Towns**, **Mines**, **Dwellings** and, in HoMM3, **Disabled heroes**; a tab with nothing in it is not shown). In HoMM3 the heroes the game keeps out of play (disabled in the map editor, or campaign heroes) are in the **Disabled heroes** tab and the **Disabled heroes** group of the tree rather than among the heroes you can hire; they cannot be given to a player. It has no resources and no Hex tab: the bytes of a neutral hero or town are on its own page, and those of a mine or dwelling below its list.
 - **Map**: what the map keeps that no player owns: the adventure-map Black Markets and supported creature banks (HoMM3), the shrines and sphinxes (HoMM2). HoMM3's town Artifact Merchants share separate stock that is not shown or edited here.
 - **Map navigation (HoMM3)**: **Map → Merchants** lists all located adventure-map Black Markets. **Map → Creature banks** groups **Dragon Utopias, Cyclops Stockpiles, Dwarven Treasuries, Imp Caches, Medusa Stores and Naga Banks**. Select a type for its summary and list, or a location below it to highlight that bank and scroll it into view. Types not yet supported are not listed.
-- **Creature banks (HotA)**: shared overviews and cards show guards, rewards and defeated state, with guard presets and a Reset for another battle. See [Creature banks](#creature-banks-horn-of-the-abyss) for the reset workflow and verification limits.
+- **Creature banks (HotA)**: shared overviews and cards show guards, rewards and defeated state, with guard presets and a Reset for another battle.
 - **Hero**: primary and secondary skills, level, experience, class, spell points, movement, position, army, war machines, spell book, artifacts, backpack and biography.
-- **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings. In HoMM3 a town with an Artifact Merchant built also has an **Artifact merchant** tab. Its seven slots are shared by every town and owner, separate from the Map page's Black Markets. Clear a slot to mark it sold. **Reset shared stock** restores that stock only; the town's **Reset** does not change it. Unsupported save layouts show an unavailable notice. Editor-written stock has not yet been checked in the game.
+- **Town**: owner, faction, mage guild level, garrison, built and buildable structures, creatures in the dwellings. In HoMM3 a town with an Artifact Merchant built also has an **Artifact merchant** tab. Its seven slots are shared by every town and owner, separate from the Map page's Black Markets. Clear a slot to mark it sold. The card's **Reset** (shown with an **edited** mark while the stock has unsaved changes) restores that stock only; the town's own **Reset** does not change it. Unsupported save layouts show an unavailable notice.
 
-## Creature banks (Horn of the Abyss)
+Also on the pages:
 
-Open **Map → Creature banks** and choose a type. All six supported types use the same overview and detail cards.
-The overview lists tier, entrance location, **Defeated/Undefeated** and retained rewards. Pick a row or a location in the navigation tree to highlight its card and scroll it into view.
-Each card has its name and location beside **Defeated** or **Uncleared** and **Reset**, followed by three columns: **Garrison**, **Change guard strength and rewards**, and **Rewards**.
-
-| Bank | Guards | Rewards |
-|---|---|---|
-| Dragon Utopia | Green, Red, Gold and Black Dragons | 20,000–50,000 gold and four editable artifact slots |
-| Cyclops Stockpile | Cyclopes, optionally a Cyclops Kings centre | Each of the six non-gold resources |
-| Dwarven Treasury | Dwarves, optionally a Battle Dwarves centre | Crystal and gold |
-| Imp Cache | Imps, optionally a Familiars centre | Mercury and gold |
-| Medusa Stores | Medusas, optionally a Medusa Queens centre | Sulfur and gold |
-| Naga Bank | Nagas, optionally a Naga Queens centre | Gems and gold |
-
-### Resetting a defeated bank
-
-1. Select the bank and check the displayed **Garrison** and **Rewards**. On a defeated card, Garrison means the guards that Reset will restore, not surviving guards.
-2. Keep the current tier to retain its resource reward, or choose another of the four guard/reward presets. For a non-Utopia bank, choose **Upgraded centre stack** if wanted.
-3. Click the card's **Reset**, or select **Undefeated** in its overview row.
-4. Choose **File > Save**, then load the edited save in Heroes to fight the bank again.
-
-A defeated non-Utopia record has erased its original centre upgrade. The card explains this and defaults to unupgraded guards; choosing an upgrade while defeated alone writes nothing until Reset.
-Reset re-arms the bank and its entrance without granting rewards immediately or taking away anything already earned.
-Changing strength alone does not reset a defeated bank or reroll Utopia artifacts. Empty artifact slots show **(empty)**; overview rewards use compact gold amounts such as **50k gold**.
-Selecting **Defeated** clears the guards and updates the entrance without awarding anything.
-
-**The two Resets have different purposes:** a bank card's Reset prepares another battle; the Map header's Reset undoes unsaved merchant and bank edits.
-All edits support Undo, Redo and individual reverts through Pending changes. Changing a bank does not change the player's resources.
-
-**Verification limits:** original-content Utopia resets were confirmed in-game for all four tiers. The exact original strongest resets of the other five types were also successfully re-fought.
-Arbitrary tier/upgrade changes, edited rewards, marking an undefeated bank as defeated, and non-Utopia resets while a hero occupies the entrance still need in-game confirmation.
-Unknown entrance flags and unsupported layouts remain uneditable rather than guessed; bank editing is HotA-only.
-
-With **Advanced mode** on, selecting a bank shows a hex editor below the overview for that bank record's guards, resources and, for Utopias, artifacts.
-The separate entrance and occupying hero are not part of this byte view; changing defeated state through the normal controls updates the entrance automatically.
-Switching selection or turning Advanced mode off releases the byte editor without discarding edits.
-
-## Mine garrisons (HoMM3)
-
-Pick a mine on its owner's **Mines** tab to edit the guard. An **edited** label beside its garrison heading marks unsaved changes for that mine and updates on selection, Undo and Redo.
-The mine editor uses the individual army-slot pickers rather than a separate **Find creatures** card; hero and town army finders are unchanged.
+- **Overview, Order of play** (both games): lists the players in the order they play and highlights the one whose turn it is. Press another human player's button to give them the turn (a computer player cannot be given it); it is a pending change you can undo.
+- **Hero, destination and facing** (both games): the tile the hero is heading to and the direction it faces can be edited.
+- **Hero, places visited**: the places with a lasting bonus that the hero visited (HoMM3: learning stones, gardens of revelation and so on; HoMM2: forts, gazebos, witch doctor's huts and so on) can be forgotten or remembered one at a time, so the hero visits them again.
+- **Hero, next battle**: the morale and luck for the next battle, and the buildings visited today (HoMM3 watering hole, swan pond, crypt and stables; ticking the Stables adds their movement points).
+- **Hero, owner** (both games): giving a hero to a player keeps the players' lists in step. In HoMM3 a hero that is given to a player and has no tile on the map shows a warning in its header: set a position on the General tab before saving, or the game crashes.
+- **Castle, owner** (both games): the drop-down lists only Neutral and the players of the game. In HoMM2, changing the owner does not update the shroud: a castle given to a human player in a part of the map they have not explored stays hidden until the map is uncovered.
+- **Castle, Can build this turn** (HoMM2): the game's one-building-a-day flag.
 
 ## Undo, redo and pending changes
 
@@ -107,7 +73,7 @@ The mine editor uses the individual army-slot pickers rather than a separate **F
 
 ## Settings
 
-The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them. The first time the editor starts it writes `settings.json` with the defaults, and `serilog.json` (how and where the log is written: the template, the rolling interval and the days kept) beside it; both can be edited by hand.
+The settings are kept per user in `settings.json` in the `Siniskalc` folder of your AppData (`%APPDATA%\Siniskalc`), and are applied as soon as you change them (the logging choices wait for the next start). The first time the editor starts it writes `settings.json` with the defaults, and `serilog.json` (how and where the log is written: the template, the rolling interval and the days kept) beside it; both can be edited by hand.
 
 - **Settings... > Saving > Back up on save** (on by default): keeps a copy of the savegame before **Save** replaces it.
   See below.

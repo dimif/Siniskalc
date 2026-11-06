@@ -17,6 +17,8 @@
 
         private static string ThisFile([CallerFilePath] string file = "") => file;
 
+        private static int CountIn(string folder, string pattern) => Directory.Exists(folder) ? Directory.GetFiles(folder, pattern).Length : 0;
+
         private static Siniskalc.Homm2.Runtime.Game Open(string name) => TestServices.Parser.Parse(Built.Single(s => s.Name == name).Bytes, null);
 
         [Test]
@@ -95,6 +97,26 @@
             Assert.That(bonus.GetModel(49).NextBattle, Is.EqualTo(new Siniskalc.Homm2.Models.NextBattleBonus(-3, -3)));
         }
 
+        [Test]
+        public void TheOwnersTheBuildingFlagAndTheDestinationsAreChangedAsTheEditSays()
+        {
+            var green = Siniskalc.Homm2.Entities.PlayerColor.Green;
+            Assert.That(Open("T10HEROW").History.Current.Heroes().GetModel(49).Owner, Is.EqualTo(green));
+            Assert.That(Open("T10HEROW").History.Current.Heroes().GetModel(50).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.PlayerColor.Blue));
+
+            var castles = Open("T11CSTOW").History.Current.Castles();
+            Assert.That(castles.GetModel(castles.FindByName("Whiteshield")).Owner, Is.EqualTo(Siniskalc.Homm2.Entities.PlayerColor.Red));
+
+            var built = Open("T12CANBD").History.Current.BuiltToday();
+            var all = Open("T12CANBD").History.Current.Castles();
+            Assert.That(built.GetModel(0).Has(all.FindByName("Whiteshield")), Is.False, "Whiteshield may build today");
+            Assert.That(built.GetModel(0).Has(all.FindByName("Hillstone")), Is.True, "Hillstone has built today");
+
+            var heroes = Open("T13DESTN").History.Current.Heroes();
+            Assert.That(heroes.GetModel(49).Destination, Is.EqualTo(new Siniskalc.Heroes.Models.MapPosition(39, 49)));
+            Assert.That(heroes.GetModel(50).Destination, Is.EqualTo(Siniskalc.Heroes.Models.MapPosition.None));
+        }
+
         /// <summary>
         /// Writes the savegames of this set that are not in TestData/Homm2/out yet, and a README of their own for the ones it wrote.
         /// Run it by hand: <c>dotnet test Tests/Siniskalc.Homm2.Tests --filter Name=WriteTheThreedomSavesMadeWithTheEditor</c>.
@@ -122,7 +144,7 @@
             foreach (var save in ThreedomEditorSaves.Build())
             {
                 var path = Path.Combine(folder, save.Name + ".GX1");
-                if (File.Exists(path))
+                if (File.Exists(path) || File.Exists(Path.Combine(folder, "..", "out_tested", Path.GetFileName(path))))
                 {
                     continue;
                 }
@@ -137,7 +159,7 @@
                 File.WriteAllText(Path.Combine(folder, $"README_EDITOR_new_{DateTime.Now:yyyyMMdd_HHmmss}.md"), readme.ToString());
             }
 
-            Assert.That(Directory.GetFiles(folder, "T0*.GX1").Length, Is.GreaterThanOrEqualTo(Built.Count));
+            Assert.That(Directory.GetFiles(folder, "T*.GX1").Length + CountIn(Path.Combine(folder, "..", "out_tested"), "T*.GX1"), Is.GreaterThanOrEqualTo(Built.Count));
         }
     }
 }

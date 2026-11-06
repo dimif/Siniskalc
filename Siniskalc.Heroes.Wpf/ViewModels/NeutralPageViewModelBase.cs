@@ -44,13 +44,23 @@
         public bool HasHeroes => this.Heroes.Count > 0;
 
         /// <inheritdoc/>
+        public IReadOnlyList<ILink> DisabledHeroes { get; private set; } = [];
+
+        /// <summary>
+        /// Gets whether the game keeps heroes out of play here, which the page shows on a tab of their own.
+        /// </summary>
+        public bool HasDisabledHeroes => this.DisabledHeroes.Count > 0;
+
+        /// <summary>
+        /// Gets the towns nobody owns.
+        /// </summary>
         public IReadOnlyList<ILink> Castles { get; private set; } = [];
 
         /// <inheritdoc/>
         public bool HasCastles => this.Castles.Count > 0;
 
         /// <inheritdoc/>
-        public string Summary => string.Join(" · ", new[] { Count(this.Heroes.Count, "hero", "heroes"), Count(this.Castles.Count, "town", "towns"), this.ObjectsSummary }.Where(s => s.Length > 0));
+        public string Summary => string.Join(" · ", new[] { Count(this.Heroes.Count, "hero", "heroes"), this.DisabledHeroes.Count == 0 ? string.Empty : $"{this.DisabledHeroes.Count} disabled", Count(this.Castles.Count, "town", "towns"), this.ObjectsSummary }.Where(s => s.Length > 0));
 
         /// <summary>
         /// Gets what a game adds to the summary, such as "31 mines · 58 dwellings", or nothing.
@@ -66,6 +76,7 @@
         public void Refresh()
         {
             this.Heroes = this.LoadHeroes();
+            this.DisabledHeroes = this.LoadDisabledHeroes();
             this.Castles = this.LoadCastles();
             this.RefreshObjects();
             this.RaiseAllPropertiesChanged();
@@ -91,6 +102,12 @@
         /// </summary>
         /// <returns>The links to the towns.</returns>
         protected abstract IReadOnlyList<ILink> LoadCastles();
+
+        /// <summary>
+        /// Loads the heroes the game keeps out of play. None by default.
+        /// </summary>
+        /// <returns>The links.</returns>
+        protected virtual IReadOnlyList<ILink> LoadDisabledHeroes() => [];
 
         /// <summary>
         /// Shows what a game adds again, such as its mines and dwellings.

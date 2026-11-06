@@ -1,4 +1,4 @@
-# Editing game definitions
+# Game definitions
 
 The editor ships standard definitions for its supported HoMM2 and HoMM3 versions.
 Source files live in `Siniskalc.Homm2\GameData` and `Siniskalc.Homm3\GameData`; builds and publishes copy them to `GameData\Homm2` and `GameData\Homm3` beside the executable.
@@ -11,34 +11,31 @@ There are no custom profiles, override folders, live reload or in-app definition
 
 ## What belongs here
 
-Definitions supply creatures, abilities, artifacts and supported effects, factions, castle buildings, supported map-object metadata, spells, hero classes or hero/faction mappings, secondary skills, spell schools or spell types, and war machines where the game has them.
-Savegame instances (a particular hero, town or mine) still come from the savefile.
-Player colours and genuinely fixed encoding enums remain code.
-HoMM3 war machines are separate from artifacts: Catapult is not an artifact definition, and the editable Ballista, Ammo Cart, First Aid Tent and Cannon live in `warMachines.json`.
-HoMM2's Ammo Cart and Ballista of Quickness remain artifacts, as they are in that game.
+What the editor is meant to understand about the games:
 
-An entity's `id` is a stable, case-sensitive reference, not its name, list position or save code.
-Some fixed map-metadata records use an encoding enum (`kind` or `effect`) instead of an entity ID.
+- Definitions supply creatures, abilities, artifacts and supported effects, factions, castle buildings, supported map-object metadata, spells, hero classes or hero/faction mappings, secondary skills, spell schools or spell types, and war machines where the game has them.
+- Definitions must match-in game data, they're there exclusively to help the editor understand the game and build a user-friendly UI. **they are not a modding tool for either game**
+
+Notes:
+- Player colours and genuinely fixed encoding enums remain code.
+- HoMM3 war machines are separate from artifacts: Catapult is not an artifact definition, and the editable Ballista, Ammo Cart, First Aid Tent and Cannon live in `warMachines.json`.
+- HoMM2's Ammo Cart and Ballista of Quickness remain artifacts as there isn't a distinct concept of war machine in HoMM2.
+- An entity's `id` is a stable, case-sensitive reference, not its name, list position or save code.
+- Some fixed map-metadata records use an encoding enum (`kind` or `effect`) instead of an entity ID.
 Keep existing IDs when changing wording.
-JSON array order supplies the catalog's default order; there is no `order` property.
-Pages and finders may still sort or group by name, level or another displayed value.
+- JSON array order supplies the catalog's default order; there is no `order` property.
+- Pages and finders may still sort or group by name, level or another displayed value.
 `code` is a format-specific binary value.
-Do not reuse codes where a domain requires uniqueness.
-HoMM3 building codes are contextual to a faction, not globally unique.
-Do not infer mechanics from the display name: role and policy fields express the supported behaviour.
-Only exceptional roles need to be written. Artifacts use `spellBook` or `scroll` for their special encoding; ordinary artifacts omit `role`.
-HoMM3 skills may specify `morale`, `luck` or `spellPointMultiplier` to connect them to those mechanics; other skills omit it. HoMM2 skills have no role property.
-Fallback selection is editor business logic, never an entity property: unknown required entities use the entity with code 0, independent of order or display name.
-An unknown owner or faction still uses Neutral where the model represents no known affiliation, and a genuinely absent value remains absent.
-The well-known `Neutral` faction ID identifies the only neutral faction. There is no `neutral`/`isNeutral` flag, and renaming its display text does not change its behavior.
-Likewise, HoMM3's well-known `all` spell-school ID identifies the universal school; there is no authored `universal` flag.
-The `Ranged` ability stands alone in the ability list; no ability has an authored `isRanged` flag.
-
-Definitions are data, not scripts. They can choose existing effect implementations, their parameters, names and descriptions.
-They cannot introduce new binary layouts, enlarge fixed tables or masks, create a new effect implementation, or make the game executable understand new content.
-For example, HoMM2 still has 54 hero records, a table for 14 secondary skills with at most eight learned skills, spell codes 1 through 65 and five guild levels with four slots per level.
-HoMM3 spell and skill codes must fit their existing bitsets, and each faction's buildings must fit its existing mask.
-The loaders reject unrepresentable or ambiguous definitions rather than silently truncating them.
+- Do not reuse codes where a domain requires uniqueness.
+- HoMM3 building codes are contextual to a faction, not globally unique.
+- Do not infer mechanics from the display name: role and policy fields express the supported behaviour.
+- Only exceptional roles need to be written. Artifacts use `spellBook` or `scroll` for their special encoding; ordinary artifacts omit `role`.
+- HoMM3 skills may specify `morale`, `luck` or `spellPointMultiplier` to connect them to those mechanics; other skills omit it. HoMM2 skills have no role property.
+- Fallback selection is editor business logic, never an entity property: unknown required entities use the entity with code 0, independent of order or display name.
+- An unknown owner or faction still uses Neutral where the model represents no known affiliation, and a genuinely absent value remains absent.
+- The well-known `Neutral` faction ID identifies the only neutral faction. Do not add `neutral`/`isNeutral` flags to entities.
+- Likewise, HoMM3's well-known `all` spell-school ID identifies the universal school; there is no authored `universal` flag.
+- The `Ranged` ability stands alone in the ability list; no ability has an authored `isRanged` flag.
 
 ## HoMM2
 
@@ -160,7 +157,7 @@ Both `standard` directories use the same domain names:
 |---|---|
 | `mines.json` | Mine names and the resources they produce; HoMM3 also supplies daily production. |
 | `visitablePlaces.json` | Permanent visits remembered separately for individual places, with `name` and `description`. |
-| `visitEffects.json` | Visits remembered through hero flags, with `name`, `description`, morale and luck parameters. |
+| `visitEffects.json` | Visits remembered through hero flags, with `name`, `description`, morale, luck and movement parameters (`versionMovement` gives another movement in the versions named, as `versionInfo` does for creatures). |
 | `mapObjects.json` | Presentation metadata for other supported map objects. |
 
 Castle buildings remain in `buildings.json`; they are not adventure-map buildings.

@@ -18,6 +18,24 @@
       "luck": {
         "type": "integer"
       },
+      "movement": {
+        "type": "integer"
+      },
+      "versionMovement": {
+        "type": "object",
+        "propertyNames": {
+          "enum": [
+            "roe",
+            "ab",
+            "sod",
+            "chronicles",
+            "hota"
+          ]
+        },
+        "additionalProperties": {
+          "type": "integer"
+        }
+      },
       "editable": {
         "type": "boolean"
       }
@@ -28,6 +46,7 @@
       "description",
       "morale",
       "luck",
+      "movement",
       "editable"
     ],
     "additionalProperties": false

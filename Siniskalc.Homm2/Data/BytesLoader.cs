@@ -61,11 +61,19 @@
         /// <inheritdoc/>
         public IReadOnlyList<CastleChunk> LoadCastleChunks(byte[] bytes, SaveLayout layout)
         {
+            var tiles = MapTileTable.FindStart(bytes, layout);
+            var owners = CastleFlags.OwnerTableStart(layout);
             return Enumerable.Range(0, Constants.Table.CastleSlotCount)
                 .Select(i => new CastleChunk(
                     Bytes.ReadText(bytes, layout.CastleStart(i) + CastleLayout.Name, Constants.Castle.NameLength),
                     bytes.AsSpan(layout.CastleStart(i), CastleLayout.RecordSize).ToArray(),
-                    layout.CastleStart(i)))
+                    layout.CastleStart(i),
+                    Bytes.ReadText(bytes, layout.CastleStart(i) + CastleLayout.Name, Constants.Castle.NameLength).Length == 0
+                        ? []
+                        : CastleFlags.Find(bytes, layout, tiles, bytes[layout.CastleStart(i) + CastleLayout.X], bytes[layout.CastleStart(i) + CastleLayout.Y]),
+                    Bytes.ReadText(bytes, layout.CastleStart(i) + CastleLayout.Name, Constants.Castle.NameLength).Length == 0 || owners + i >= bytes.Length
+                        ? null
+                        : new MapObjectPart(owners + i, [bytes[owners + i]])))
                 .ToList()
                 .AsReadOnly();
         }

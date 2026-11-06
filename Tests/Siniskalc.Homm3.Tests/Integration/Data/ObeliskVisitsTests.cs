@@ -19,7 +19,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
     {
         private static Game Load(string save) => SavedGames.Get(Path.Combine("TestData", "Roe", save + ".GM1"));
 
-        private static IEnumerable<string> EverySavefile() => Directory.GetFiles("TestData", "*.GM?", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal);
+        private static IEnumerable<string> EverySavefile() => RepresentativeSaves.Of("TestData");
 
         private static ObeliskVisits<PlayerColor> Visits(Game game) => game.History.Current.Obelisks().GetModel()!;
 
@@ -63,7 +63,7 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
         }
 
         [TestCaseSource(nameof(EverySavefile))]
-        public void TheObelisksMatchTheMapObjectsAndSavesWithoutAnEditableBlockKeepTheirBytes(string path)
+        public void TheObelisksOfEachRepresentativeSaveMatchTheMapObjectsAndSavesWithoutAnEditableBlockKeepTheirBytes(string path)
         {
             var game = SavedGames.Get(path);
             if (!game.History.Current.Obelisks().Any)

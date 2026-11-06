@@ -8,5 +8,5 @@
              mc:Ignorable="d"
              d:DesignWidth="800">
     <!-- The army of a hero or the garrison of a castle. The DataContext is an ArmyViewModel; the view is the one every game uses. -->
-    <heroes:ArmyEditorView ShowFinder="{Binding ShowFinder, RelativeSource={RelativeSource AncestorType=local:ArmyEditor}}"/>
+    <heroes:ArmyEditorView/>
 </UserControl>

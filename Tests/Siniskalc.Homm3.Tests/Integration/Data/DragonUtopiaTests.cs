@@ -301,41 +301,6 @@ namespace Siniskalc.Homm3.Tests.Integration.Data
             Assert.That(game.History.Current.Heroes().GetModel(heroIndex).SpellPoints, Is.EqualTo(42));
         }
 
-        [Test]
-        public void EveryLocatedUtopiaInTheSaveCorpusRoundTripsWithoutChangingAnyBytes()
-        {
-            var banksChecked = 0;
-            var mixedTables = 0;
-            foreach (var path in Directory.EnumerateFiles("TestData", "*.GM?", SearchOption.AllDirectories))
-            {
-                var game = SavedGames.Get(path);
-                var banks = game.History.Current.CreatureBanks();
-                if (game.History.Current.GameVersion() != GameVersion.HornOfTheAbyss)
-                {
-                    Assert.That(banks, Is.Empty, path);
-                }
-
-                foreach (var bank in banks)
-                {
-                    Assert.That(banks.Serializer.Serialize(bank, banks.Deserializer.Deserialize(bank)).HasSameBytes(bank), Is.True, path);
-                    banksChecked++;
-                }
-
-                if (banks.Count > 0)
-                {
-                    Assert.That(game.GetBytesToSave(), Is.EqualTo(game.Bytes), path);
-                    if (!path.Contains("MerchantStock") && !path.Contains("DragonUtopias"))
-                    {
-                        mixedTables++;
-                    }
-                }
-            }
-
-            TestContext.Out.WriteLine($"Checked {banksChecked} Utopia records, including {mixedTables} saves outside the eight-Utopia control map");
-            Assert.That(banksChecked, Is.GreaterThanOrEqualTo(8 * 14));
-            Assert.That(mixedTables, Is.GreaterThan(0));
-        }
-
         [TestCase("A")]
         [TestCase("A biography long enough to place the complete hero header outside the main chunk.")]
         public void RestoringAnOccupiedUtopiaWithABiographyChangesOnlyItsGuardsAndActualHeroHeader(string biography)

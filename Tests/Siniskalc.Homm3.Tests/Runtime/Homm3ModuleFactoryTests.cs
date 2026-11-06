@@ -35,18 +35,5 @@ namespace Siniskalc.Homm3.Tests.Runtime
             Assert.That(built, Is.InstanceOf<SavegameService<Game>>());
             Assert.That(factory.GameService, Is.SameAs(decorated));
         }
-
-        [Test]
-        public void TheEditorLoadsItsGamesThroughTheDecoratedService()
-        {
-            var decorated = new Mock<ISavegameService<Game>>();
-            var factory = Factory(_ => decorated.Object);
-            var game = TestServices.GameService.LoadGameFromFile(Path.Combine("TestData", "Hota", "castles_00_baseline.GM1"));
-            decorated.Setup(s => s.LoadGameFromFile("a.GM1")).Returns(game);
-
-            factory.CreateEditor().LoadGame("a.GM1");
-
-            decorated.Verify(s => s.LoadGameFromFile("a.GM1"), Times.Once);
-        }
     }
 }

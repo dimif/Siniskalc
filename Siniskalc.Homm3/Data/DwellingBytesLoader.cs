@@ -29,6 +29,7 @@ namespace Siniskalc.Homm3.Data
             }
 
             var chunks = new List<RecordChunk>();
+            var unknownCreatures = 0;
             for (var index = 0; index < table.GeneratorCount; index++)
             {
                 var start = table.GeneratorStart + (index * DwellingLayout.RecordSize);
@@ -41,7 +42,8 @@ namespace Siniskalc.Homm3.Data
                 var creature = catalog.Creatures.Find(code);
                 if (creature is null)
                 {
-                    Logger.LogWarning("Unknown dwelling creature code {Code} at {Offset:X}; showing its code and preserving the record", code, start);
+                    unknownCreatures++;
+                    Logger.LogTrace("Dwelling creature code {Code:X2} at {Offset:X} is unknown; showing its code and preserving the record", code, start);
                 }
 
                 chunks.Add(new RecordChunk(
@@ -51,12 +53,12 @@ namespace Siniskalc.Homm3.Data
                     chunks.Count));
             }
 
-            if (chunks.Count < table.GeneratorCount)
+            if (unknownCreatures > 0)
             {
-                Logger.LogWarning("Skipped {Count} unsupported generator records at {Offset:X}; only type-17 dwellings are editable", table.GeneratorCount - chunks.Count, table.GeneratorStart);
+                Logger.LogWarning("Found {Count} dwellings of an unknown creature at {Offset:X}; showing their codes and preserving the records", unknownCreatures, table.GeneratorStart);
             }
 
-            Logger.LogDebug("Read {Count} dwellings from {Records} generator records at {Offset:X}", chunks.Count, table.GeneratorCount, table.GeneratorStart);
+            Logger.LogDebug("Read {Count} dwellings from {Generators} generator records at {Offset:X}; only type-17 dwellings are editable", chunks.Count, table.GeneratorCount, table.GeneratorStart);
             return chunks;
         }
     }

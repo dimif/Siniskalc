@@ -15,7 +15,7 @@ public sealed class EntityCatalog
     internal EntityCatalog(GameVersion version, CatalogDefinitions definitions)
     {
         this.Version = version;
-        this.MapMetadata = new MapMetadata(definitions.MapMetadata, definitions.Mines, definitions.VisitEffects);
+        this.MapMetadata = new MapMetadata(definitions.MapMetadata, definitions.Mines, definitions.VisitEffects, version);
         this.Factions = new(definitions.Factions.Select(d => new Faction(this, d)), version);
         this.Abilities = new(definitions.Abilities.Select(d => new CreatureAbility(this, d)), version);
         this.SpellSchools = new(definitions.SpellSchools.Select(d => new SpellSchool(this, d)), version);

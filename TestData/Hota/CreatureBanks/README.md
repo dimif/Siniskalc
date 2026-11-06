@@ -39,7 +39,7 @@ Cyclops records are indexes 8..11: five equal stacks of 10,8,6,4; only index 9 h
 Only index 8's guards change on victory; the reward bytes and other 27 records do not.
 The first entrance is at `0xA5B1`: ready `FC01001F`, cleared `FE01003F`.
 In the victory save it is hidden by hero type 34; the cleared state is in the hero's true header at
-`0x4AC51 + 16`. See `docs/KNOWLEDGE_BASE.md`, "Controlled Cyclops victory", for exact findings and limitations.
+`0x4AC51 + 16`. See `docs/KNOWLEDGE_BASE.md`, "Creature banks", for exact findings and limitations.
 
 The generated reset trial is deliberately **not a fixture**; its filename retains `_unverified` to identify the original trial.
 It is a separate copy of the stepped-off save with the first stockpile's original 56 guard bytes and

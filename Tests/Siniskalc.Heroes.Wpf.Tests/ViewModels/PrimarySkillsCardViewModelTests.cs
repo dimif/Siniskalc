@@ -67,7 +67,7 @@ namespace Siniskalc.Heroes.Wpf.Tests.ViewModels
 
             this.card.Refresh();
 
-            Assert.That(changed, Is.Not.Empty);
+            Assert.That(changed, Is.EqualTo(new[] { string.Empty }));
         }
     }
 }

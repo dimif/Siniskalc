@@ -120,6 +120,19 @@
         }
 
         [Test]
+        public void TheNoteAboutTheShroudIsShownOnlyWhileTheOwnerOfTheCastleIsChanged()
+        {
+            var page = this.harness.OpenCastleOf(PlayerColor.Red);
+            Assert.That(page.OwnerChanged, Is.False);
+
+            page.OwnerField.Selected = "Blue";
+            Assert.That(page.OwnerChanged, Is.True);
+
+            this.editor.Undo();
+            Assert.That(page.OwnerChanged, Is.False);
+        }
+
+        [Test]
         public void ResettingTheCastlePageGivesTheCastleBackToItsOwnerWithItsPlaceAndTheDaysLeft()
         {
             var page = this.harness.OpenCastleOf(PlayerColor.Red);

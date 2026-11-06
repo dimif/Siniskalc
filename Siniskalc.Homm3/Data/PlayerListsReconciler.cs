@@ -91,7 +91,7 @@
 
         // A hero that is garrisoned is in no list, and how the game keeps its owner is not known; a hero a tavern offers is replaced there by a
         // hero the game draws when it is hired, which the editor cannot do; a hero the game keeps out of play (the campaign heroes, the 41 of
-        // hero 3) is kept out for a reason that is not known.
+        // hero 3) is kept out: a hero disabled in the map editor has this entry (Adrienne, id 145, in a Horn of the Abyss save), so it is refused.
         private static void ThrowIfNotGivenAsTheGameWould(SaveDocument document, HeroModel hero)
         {
             if (document.Castles().FindByGarrisonedHero(hero.Id) >= 0)
@@ -114,7 +114,7 @@
             var owners = document.HeroOwners();
             if (owners.Count > 0 && owners.GetModel(0) is var table && table.Has(hero.Id) && table.Heroes[hero.Id].IsReserved)
             {
-                throw new GameRuleException($"{hero.Name} is kept out of play by the game, for a reason the editor does not know yet, so it is not given to a player.");
+                throw new GameRuleException($"{hero.Name} is kept out of play by the game (a hero disabled in the map editor, or a campaign hero), so it is not given to a player.");
             }
         }
 

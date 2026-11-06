@@ -81,7 +81,7 @@
                                         <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,4" Text="{Binding Location}"
                                                    Visibility="{Binding HasLocation, Converter={StaticResource BoolToVisibilityMap}}"/>
                                         <TextBlock Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap" Margin="0,0,0,6"
-                                                   Text="The seven artifacts in store. Clear a slot for an artifact that was sold. Not yet tried in the game."/>
+                                                   Text="The seven artifacts in store. Clear a slot for an artifact that was sold."/>
                                         <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
                                     </StackPanel>
                                 </Border>

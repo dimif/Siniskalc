@@ -38,7 +38,7 @@ namespace Siniskalc.Homm3.Data
                 }
             }
 
-            Logger.LogDebug("Read {Mines} mines from {Records} owner/guard records at {Offset:X}", chunks.Count, table.OwnerGuardCount, table.OwnerGuardStart);
+            Logger.LogDebug("Read {Mines} mines from {Owners} owner/guard records at {Offset:X}", chunks.Count, table.OwnerGuardCount, table.OwnerGuardStart);
             return chunks;
         }
     }

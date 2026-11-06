@@ -49,6 +49,7 @@ namespace Siniskalc.Homm3.ViewModels
                 ? new MerchantViewModel(stockSession, session.Current.Faction.Catalog, effectLines)
                 : null;
             this.Castle = this.Session.Current;
+            this.OwnerChoices = OwnerNames<PlayerColor>.ChoicesFor(session.PlayersInGame, this.Castle.Owner);
             this.Refresh();
 
             // The garrison is an army like a hero's, so it is edited with the same view model. While a hero is garrisoned its army takes
@@ -91,9 +92,10 @@ namespace Siniskalc.Homm3.ViewModels
         public string OwnerText => OwnerNames<PlayerColor>.Of(this.Castle.Owner);
 
         /// <summary>
-        /// Gets the owners to pick from: "Neutral" and the eight player colours.
+        /// Gets the owners to pick from: "Neutral" and the players of the game (and the present owner, when the savefile holds a colour that
+        /// has no player).
         /// </summary>
-        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
+        public IReadOnlyList<string> OwnerChoices { get; }
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. The days left of the players who lose and gain the castle change

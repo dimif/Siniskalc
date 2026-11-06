@@ -96,7 +96,7 @@ namespace Siniskalc.Homm2.Tests.ViewModels
             row.Refresh();
 
             Assert.That(raised, Is.EqualTo(new[] { string.Empty }));
-            Assert.That(fieldRaised, Is.Not.Empty);
+            Assert.That(fieldRaised, Is.EqualTo(new[] { string.Empty }));
             Assert.That((row.SpellName, row.SpellField.Selected), Is.EqualTo(("Haste", "Haste")));
         }
     }

@@ -27,6 +27,19 @@ namespace Siniskalc.Homm3.Tests.MultiUnit.ViewModels
             this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")));
         }
 
+        [Test]
+        public void TheOwnersToPickFromAreNeutralAndTheOnlyPlayersOfTheGame()
+        {
+            this.session = new FakeCastleSession(CastleModels.Village(TestCatalog.For(GameVersion.HornOfTheAbyss).Factions.ById("Rampart")))
+            {
+                PlayersInGame = [PlayerColor.Red, PlayerColor.Blue],
+            };
+
+            using var page = this.Page();
+
+            Assert.That(page.OwnerChoices, Is.EqualTo(new[] { "Neutral", "Red", "Blue" }));
+        }
+
         private CastleViewModel Page(FakeCastleSession? other = null)
         {
             this.byteEditTargets = new Mock<IByteEditTargetFactory>();

@@ -19,11 +19,12 @@ public sealed class MapMetadata
     /// <param name="definition">The definition.</param>
     /// <param name="mines">The mines.</param>
     /// <param name="visitEffects">The visit effects.</param>
-    internal MapMetadata(MapMetadataDefinition definition, MineDefinition[] mines, VisitEffectDefinition[] visitEffects)
+    /// <param name="version">The version of the game; a visit that gives another movement in it gives that.</param>
+    internal MapMetadata(MapMetadataDefinition definition, MineDefinition[] mines, VisitEffectDefinition[] visitEffects, GameVersion version)
     {
         this.mines = mines.ToFrozenDictionary(m => m.Kind);
         this.fallback = mines.Single(m => (int)m.Kind == 0);
-        this.VisitEffects = visitEffects.ToArray().AsReadOnly();
+        this.VisitEffects = visitEffects.Select(e => e with { Movement = e.VersionMovement.GetValueOrDefault(version, e.Movement) }).ToArray().AsReadOnly();
         this.MerchantName = definition.MerchantName;
         this.DwellingName = definition.DwellingName;
     }

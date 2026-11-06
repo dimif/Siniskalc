@@ -135,7 +135,7 @@ namespace Siniskalc.Homm3.Tests.Integration.ViewModels
         public void TheOwnerIsPickedFromTheListAndTheCastleMovesInTheTree()
         {
             var castle = this.Show("Still Water");
-            Assert.That(castle.OwnerChoices, Is.EqualTo(new[] { "Neutral", "Red", "Blue", "Tan", "Green", "Orange", "Purple", "Teal", "Pink" }));
+            Assert.That(castle.OwnerChoices, Is.EqualTo(new[] { "Neutral", "Red" }), "this savegame has one player, so the others are not offered");
             Assert.That(castle.SelectedOwner, Is.EqualTo("Red"));
 
             castle.SelectedOwner = "Blue";

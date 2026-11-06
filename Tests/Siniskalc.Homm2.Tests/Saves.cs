@@ -44,7 +44,7 @@ namespace Siniskalc.Homm2.Tests
         public static string Named(string folder, string name) =>
             Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2", folder), name + ".G??").Single();
 
-        public static IEnumerable<string> All() => Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2"), "*.G??", SearchOption.AllDirectories).OrderBy(f => f, System.StringComparer.Ordinal);
+        public static IEnumerable<string> All() => Directory.GetFiles(System.IO.Path.Combine("TestData", "Homm2"), "*.G??", SearchOption.AllDirectories).Where(f => !f.Replace(System.IO.Path.DirectorySeparatorChar, '/').Contains("/Homm2/out_tested/", System.StringComparison.OrdinalIgnoreCase)).OrderBy(f => f, System.StringComparer.Ordinal);
 
         public static IEnumerable<string> AllOfBrokenAlliance() => All().Where(f => f.Contains(BrokenAlliance));
 

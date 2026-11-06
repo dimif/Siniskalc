@@ -20,6 +20,8 @@
 
         private static string ThisFile([CallerFilePath] string file = "") => file;
 
+        private static int CountIn(string folder, string pattern) => Directory.Exists(folder) ? Directory.GetFiles(folder, pattern).Length : 0;
+
         private static EditedSave Named(string name) => Built.Single(s => s.Name == name);
 
         private static SaveDocumentOf Open(string name) => new(TestServices.Parser.Parse(Named(name).Bytes, null).History.Current);
@@ -44,6 +46,14 @@
             records.AddRange(Enumerable.Range(0, Constants.Table.PlayerCount).Select(i => (layout.PlayerStart(i), layout.PlayerStart(i) + PlayerLayout.RecordSize)));
             records.AddRange(Enumerable.Range(0, Constants.Table.HeroCount).Select(i => (layout.HeroStart(i), layout.HeroStart(i) + layout.HeroStride)));
             records.AddRange(Enumerable.Range(0, Constants.Table.CastleSlotCount).Select(i => (layout.CastleStart(i), layout.CastleStart(i) + CastleLayout.RecordSize)));
+
+            // The flags of a castle on the map and the table of the colour of each castle follow its owner, so they are written with the castle.
+            records.Add((CastleFlags.OwnerTableStart(layout), CastleFlags.OwnerTableStart(layout) + Constants.Table.CastleSlotCount));
+            var tiles = MapTileTable.FindStart(original, layout);
+            records.AddRange(Enumerable.Range(0, Constants.Table.CastleSlotCount)
+                .Where(i => original[layout.CastleStart(i) + CastleLayout.Name] != 0)
+                .SelectMany(i => CastleFlags.Find(original, layout, tiles, original[layout.CastleStart(i) + CastleLayout.X], original[layout.CastleStart(i) + CastleLayout.Y]))
+                .Select(f => (f.StartIndex, f.StartIndex + f.Bytes.Length)));
 
             foreach (var save in Built)
             {
@@ -188,7 +198,7 @@
             foreach (var save in EditorSaves.Build())
             {
                 var path = Path.Combine(folder, save.Name + EditedSaves.Extension);
-                if (File.Exists(path))
+                if (File.Exists(path) || File.Exists(Path.Combine(folder, "..", "out_tested", Path.GetFileName(path))))
                 {
                     continue;
                 }
@@ -203,7 +213,7 @@
                 File.WriteAllText(Path.Combine(folder, $"README_EDITOR_new_{DateTime.Now:yyyyMMdd_HHmmss}.md"), readme.ToString()); // never over a README that holds results
             }
 
-            Assert.That(Directory.GetFiles(folder, "*.GM1").Length, Is.GreaterThanOrEqualTo(EditorSaves.Build().Count));
+            Assert.That(Directory.GetFiles(folder, "*.GM1").Length + CountIn(Path.Combine(folder, "..", "out_tested"), "E*.GM1"), Is.GreaterThanOrEqualTo(EditorSaves.Build().Count));
         }
 
         private sealed record SaveDocumentOf(Siniskalc.Core.Data.SaveDocument Document);

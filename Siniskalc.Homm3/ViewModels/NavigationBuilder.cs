@@ -159,6 +159,12 @@
             }
 
             var castleModels = castles.ToDictionary(c => c.Index, c => c.Model);
+
+            // The heroes the game keeps out of play (disabled in the map editor, or campaign heroes) belong to nobody: they get a group of
+            // their own under Neutral instead of being mixed with the heroes that are free to hire.
+            var heroEntries = HeroEntriesOf(game.History.Current.Heroes(), owner);
+            var disabledIds = owner.IsNeutral ? DisabledHeroes.Of(game.History.Current) : new HashSet<int>();
+            var disabledIndexes = game.History.Current.Heroes().GetSummaries().Where(h => disabledIds.Contains(h.HeroId)).Select(h => h.Index).ToHashSet();
             var node = OwnerNavGroup.Create(
                 tree,
                 OwnerNames<PlayerColor>.Of(owner),
@@ -166,12 +172,13 @@
                 playerIndex,
                 !owner.IsNeutral,
                 string.Empty,
-                HeroEntriesOf(game.History.Current.Heroes(), owner),
+                heroEntries.Where(e => !disabledIndexes.Contains(e.Index)).ToList(),
                 castles.Select(c => new NavEntry(c.Index, c.Model.Name, c.Model.Faction.Name)).ToList(),
                 (castleNode, index) => this.MarkCastle(castleNode, game, castleModels[index]),
                 MineGroupsOf(game.History.Current.Mines().GetModels(), owner, hasLevels: true),
                 DwellingGroupsOf(game.History.Current.Dwellings().GetModels(), owner),
-                neutralPage: !hasPlayerPage);
+                neutralPage: !hasPlayerPage,
+                disabledHeroes: heroEntries.Where(e => disabledIndexes.Contains(e.Index)).ToList());
             if (hasPlayerPage)
             {
                 node.Notes = NotesOf(this.banishingText.Nav(game.History.Current.Players().GetModel(playerIndex)));

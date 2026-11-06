@@ -3,8 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
     using Siniskalc.Heroes.Models;
@@ -21,6 +23,8 @@
     /// </remarks>
     public sealed class SafeHeroSerializer : ISerializer<HeroChunk, HeroModel>
     {
+        private static readonly ILogger<SafeHeroSerializer> Logger = LogFactory.For<SafeHeroSerializer>();
+
         private readonly HeroOffsets heroOffsets;
         private readonly VersionSpecificEntitiesProvider entities;
 
@@ -220,6 +224,7 @@
                 var offset = this.heroOffsets[HeroOffsetName.Class];
                 if (this.entities.Catalog.HeroClasses.Find(buffer[offset]) == null && heroClass == this.entities.Catalog.FallbackHeroClass)
                 {
+                    Logger.LogTrace("Class byte {Code:X2} is kept while the hero stays {StandIn}", buffer[offset], heroClass.Id);
                     return;
                 }
 

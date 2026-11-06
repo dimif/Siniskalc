@@ -5,6 +5,7 @@
     using System.Linq;
     using Microsoft.Extensions.Logging;
     using Siniskalc.Core.Data;
+    using Siniskalc.Core.Entities;
     using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Heroes.Entities;
@@ -416,6 +417,12 @@
         public PlayerColor DeserializeOwner(HeroChunk chunk)
         {
             var playerByte = chunk.GetByteAt(this.heroOffsets[HeroOffsetName.Owner]);
+
+            if (playerByte != Constants.ByteOff && AbstractEnumeration.FromCode<PlayerColor>(playerByte) is null)
+            {
+                using var subject = Logger.BeginSubject("Hero", chunk.Name);
+                Logger.LogTrace("Owner byte {Code:X2} is no colour, read as neutral and kept", playerByte);
+            }
 
             return PlayerColor.FromByte(playerByte);
         }

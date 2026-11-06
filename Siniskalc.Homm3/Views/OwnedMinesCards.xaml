@@ -4,9 +4,9 @@
              xmlns:heroes="clr-namespace:Siniskalc.Heroes.Wpf.Views;assembly=Siniskalc.Heroes.Wpf"
              xmlns:local="clr-namespace:Siniskalc.Homm3.Views">
     <!-- The mines of one owner, with the guard of the one picked between the list and its bytes. The DataContext is an OwnedMapObjectsViewModel. -->
-    <heroes:OwnedMinesCard Note="Who owns each mine. Pick a mine to see its guard below. Not yet tried in the game." SummaryHeading="Guard" ShowLevel="True">
+    <heroes:OwnedMinesCard Note="Who owns each mine. Pick a mine to see its guard below." SummaryHeading="Guard" ShowLevel="True">
         <heroes:OwnedMinesCard.Detail>
-            <local:ArmyEditor DataContext="{Binding GuardEditor}" ShowFinder="False">
+            <local:ArmyEditor DataContext="{Binding GuardEditor}">
                 <local:ArmyEditor.Style>
                     <Style TargetType="local:ArmyEditor">
                         <Style.Triggers>

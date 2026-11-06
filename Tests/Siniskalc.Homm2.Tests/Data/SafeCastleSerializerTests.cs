@@ -256,5 +256,75 @@ namespace Siniskalc.Homm2.Tests.Data
             BitConverter.GetBytes(value).CopyTo(bytes, offset);
             return bytes;
         }
+
+        private CastleChunk WithFlags(CastleChunk chunk, byte leftPicture, byte rightPicture) =>
+            new(chunk.Name, chunk.ToArray(), chunk.StartIndex, [new MapObjectPart(100, [MapObjectLayout.FlagClass, leftPicture]), new MapObjectPart(200, [MapObjectLayout.FlagClass, rightPicture])]);
+
+        [Test]
+        public void ACastleGivenToAnotherPlayerGetsTheFlagsOfItsColourOnTheMap()
+        {
+            var chunk = this.WithFlags(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Blue }), 0, 1);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Red });
+
+            Assert.That(written.Flags.Select(f => f.Bytes), Is.EqualTo(new[] { new byte[] { MapObjectLayout.FlagClass, 4 }, new byte[] { MapObjectLayout.FlagClass, 5 } }));
+            Assert.That(written.Flags.Select(f => f.StartIndex), Is.EqualTo(new[] { 100, 200 }));
+            Assert.That(written.PatchParts.Skip(1).Select(p => (p.StartIndex, p.ToArray())), Is.EqualTo(new[] { (100, new byte[] { MapObjectLayout.FlagClass, 4 }), (200, new byte[] { MapObjectLayout.FlagClass, 5 }) }));
+        }
+
+        [Test]
+        public void ACastleGivenToNobodyGetsTheFlagsOfNeutralCastles()
+        {
+            var chunk = this.WithFlags(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Green }), 2, 3);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Neutral });
+
+            Assert.That(written.Flags.Select(f => f.Bytes[1]), Is.EqualTo(new byte[] { 12, 13 }));
+        }
+
+        [Test]
+        public void TheFlagsAreLeftAsTheyAreWhileTheOwnerIsNotChanged()
+        {
+            var chunk = this.WithFlags(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Blue }), 6, 7);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Blue });
+
+            Assert.That(written.Flags.Select(f => f.Bytes[1]), Is.EqualTo(new byte[] { 6, 7 }), "a flag the game drew in another colour stays so");
+        }
+
+        private CastleChunk WithOwnerMark(CastleChunk chunk, byte mark) =>
+            new(chunk.Name, chunk.ToArray(), chunk.StartIndex, null, new MapObjectPart(300, [mark]));
+
+        [Test]
+        public void ACastleGivenToAnotherPlayerHasItsColourInTheTableTheMinimapIsDrawnFrom()
+        {
+            var chunk = this.WithOwnerMark(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Blue }), 0);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Red });
+
+            Assert.That(written.OwnerMark!.Bytes, Is.EqualTo(new byte[] { 2 }));
+            Assert.That(written.OwnerMark.StartIndex, Is.EqualTo(300));
+            Assert.That(written.PatchParts.Last().ToArray(), Is.EqualTo(new byte[] { 2 }));
+        }
+
+        [Test]
+        public void ACastleGivenToNobodyHasFFInTheTableOfColours()
+        {
+            var chunk = this.WithOwnerMark(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Green }), 1);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Neutral });
+
+            Assert.That(written.OwnerMark!.Bytes, Is.EqualTo(new byte[] { 0xFF }));
+        }
+
+        [Test]
+        public void TheTableOfColoursIsLeftAsItIsWhileTheOwnerIsNotChanged()
+        {
+            var chunk = this.WithOwnerMark(this.Baseline(DifferSamples.Castle() with { Owner = PlayerColor.Blue }), 5);
+
+            var written = this.serializer.Serialize(chunk, DifferSamples.Castle() with { Owner = PlayerColor.Blue });
+
+            Assert.That(written.OwnerMark!.Bytes, Is.EqualTo(new byte[] { 5 }));
+        }
     }
 }

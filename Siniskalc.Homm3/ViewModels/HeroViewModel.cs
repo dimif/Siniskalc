@@ -40,6 +40,7 @@
                 _ => openCastle(this.GarrisonCastleIndex),
                 _ => this.GarrisonCastleIndex >= 0);
             this.shownRevision = session.Revision;
+            this.OwnerChoices = OwnerNames<PlayerColor>.ChoicesFor(session.PlayersInGame, this.HeroModel.Owner);
             this.GeneralInfoViewModel = new GeneralInfoPageViewModel(() => this.HeroModel, this.Update, spellPoints, session.GameVersion, hasUnderground, () => this.CanSleep, this.DestinationsToSendTo, () => this.session.SupportsMovedToday);
             this.visitedPlaces = new VisitedPlacesViewModel(() => this.HeroModel, this.Update, places, session.GameVersion);
             this.SecondarySkillsViewModel = new SecondarySkillsViewModel(
@@ -134,13 +135,27 @@
         /// <inheritdoc/>
         public string Name => this.HeroModel.Name;
 
+        /// <summary>
+        /// Gets a warning for a hero that belongs to a player but is not on the map (a hero that was neutral and was given to a player keeps no
+        /// tile), or nothing. The game crashes when a player's hero has no valid tile, so the position must be set on the General tab before saving.
+        /// </summary>
+        public string PositionWarning => !this.HeroModel.Owner.IsNeutral && (this.HeroModel.Position.X < 0 || this.HeroModel.Position.Y < 0)
+            ? "This hero is not on the map. Give it a position on the General tab before saving: the game crashes when a player's hero has no valid tile."
+            : string.Empty;
+
+        /// <summary>
+        /// Gets whether <see cref="PositionWarning"/> has something to say.
+        /// </summary>
+        public bool HasPositionWarning => this.PositionWarning.Length > 0;
+
         /// <inheritdoc/>
         public string ColorHex => PlayerPalette.Of(this.HeroModel.Owner);
 
         /// <summary>
-        /// Gets the owners to pick from: "Neutral" and the eight player colours.
+        /// Gets the owners to pick from: "Neutral" and the players of the game (and the present owner, when the savefile holds a colour that
+        /// has no player).
         /// </summary>
-        public IReadOnlyList<string> OwnerChoices { get; } = OwnerNames<PlayerColor>.Choices;
+        public IReadOnlyList<string> OwnerChoices { get; }
 
         /// <summary>
         /// Gets or sets the owner, as "Neutral" or the name of a player colour. The lists of heroes of the players and the table of hero owners

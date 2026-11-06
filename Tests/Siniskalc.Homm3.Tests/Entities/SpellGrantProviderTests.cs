@@ -48,7 +48,7 @@ namespace Siniskalc.Homm3.Tests.Entities
             var spells = grant.Resolve(GameVersion.ShadowOfDeath);
 
             Assert.That(grant.Description, Is.EqualTo("all level 3 spells"));
-            Assert.That(spells, Is.Not.Empty);
+            Assert.That(spells.Count(), Is.EqualTo(15));
             Assert.That(spells.Select(s => s.Level), Is.All.EqualTo(3));
         }
     }

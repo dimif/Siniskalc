@@ -224,7 +224,7 @@
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 // The editor that is shown tells the user why the file cannot be opened.
-                Logger.LogWarning(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
+                Logger.LogDebug(ex, "Could not read {File} to find its game", System.IO.Path.GetFileName(filePath));
                 return null;
             }
         }

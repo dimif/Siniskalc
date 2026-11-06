@@ -24,6 +24,14 @@ namespace Siniskalc.Heroes.Tests.Models
         }
 
         [Test]
+        public void TheChoicesOfOneGameAreNeutralAndItsPlayersAndTheOwnerThatIsNoPlayer()
+        {
+            Assert.That(OwnerNames<TestColor>.ChoicesFor([TestColor.Blue], TestColor.Blue), Is.EqualTo(new[] { "Neutral", "Blue" }));
+            Assert.That(OwnerNames<TestColor>.ChoicesFor([TestColor.Blue], TestColor.Neutral), Is.EqualTo(new[] { "Neutral", "Blue" }));
+            Assert.That(OwnerNames<TestColor>.ChoicesFor([TestColor.Blue], TestColor.Red), Is.EqualTo(new[] { "Neutral", "Red", "Blue" }));
+        }
+
+        [Test]
         public void TheChoicesAreNeutralAndEveryTestColor()
         {
             Assert.That(OwnerNames<TestColor>.Choices, Is.EqualTo(new[] { "Neutral", "Red", "Blue" }));

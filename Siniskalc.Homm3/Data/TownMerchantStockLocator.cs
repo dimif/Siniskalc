@@ -37,7 +37,7 @@ namespace Siniskalc.Homm3.Data
             var nextDate = dateLocator.FindOffset(bytes, version, date + 1);
             if (HasRecognizedPrefix(bytes, nextDate))
             {
-                Logger.LogWarning("Competing marked dates at {First:X} and {Second:X}; town merchant stock is not located", date, nextDate);
+                Logger.LogWarning("Competing marked dates at {DateOffset:X} and {NextDateOffset:X}; town merchant stock is not located", date, nextDate);
                 return -1;
             }
 

@@ -1,5 +1,6 @@
 ﻿namespace Siniskalc.Homm3.Data
 {
+    using System.Collections.Generic;
     using Siniskalc.Core.Data;
     using Siniskalc.Heroes.Data;
     using Siniskalc.Homm3.Entities;
@@ -20,6 +21,11 @@
         /// Gets the game version that wrote the savefile.
         /// </summary>
         GameVersion GameVersion { get; }
+
+        /// <summary>
+        /// Gets the colours of the players the savefile has, which the castle can be given to.
+        /// </summary>
+        IReadOnlyList<PlayerColor> PlayersInGame { get; }
 
         /// <summary>
         /// Gets the heroes of the savefile, to name the ones in the castle.

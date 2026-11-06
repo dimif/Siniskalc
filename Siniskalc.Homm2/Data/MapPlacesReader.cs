@@ -43,29 +43,34 @@
             var objects = MapTileTable.ObjectBytes(bytes, layout, tiles);
             var size = layout.Width;
             var result = new Dictionary<PlaceKind, IReadOnlyList<(int Number, MapPosition Position)>>();
+            var overfullKinds = 0;
             foreach (var place in this.catalogs.For(layout.Version).Places)
             {
                 var (kind, value) = (place.Kind, place.Code);
 
                 // The standing stones are two tiles wide: the place is the left one, so a tile with the same byte on its left is the other half.
                 var found = MapTileTable.Find(objects, size, value, kind == PlaceKind.StandingStones ? tile => tile % size == 0 || objects[tile - 1] != value : null);
-                result[kind] = Numbered(kind, found);
+                if (found.Count > Constants.Hero.MaxVisitedPlacesPerKind)
+                {
+                    overfullKinds++;
+                }
+
+                result[kind] = Numbered(found);
+            }
+
+            if (overfullKinds > 0)
+            {
+                Logger.LogWarning(
+                    "The map has {Kinds} kinds of place with more than the {Max} places a hero has a bit for; the others are not listed",
+                    overfullKinds,
+                    Constants.Hero.MaxVisitedPlacesPerKind);
             }
 
             return new MapPlaces<PlaceKind>(result);
         }
 
-        private static IReadOnlyList<(int Number, MapPosition Position)> Numbered(PlaceKind kind, IReadOnlyList<MapPosition> found)
+        private static IReadOnlyList<(int Number, MapPosition Position)> Numbered(IReadOnlyList<MapPosition> found)
         {
-            if (found.Count > Constants.Hero.MaxVisitedPlacesPerKind)
-            {
-                Logger.LogWarning(
-                    "The map has {Count} places of kind {Kind}, but a hero has a bit for only the first {Max}; the others are not listed",
-                    found.Count,
-                    kind,
-                    Constants.Hero.MaxVisitedPlacesPerKind);
-            }
-
             // The first place of a kind is bit 1 of the hero's set (bit 0 is not used).
             return found.Take(Constants.Hero.MaxVisitedPlacesPerKind).Select((position, index) => (index + 1, position)).ToList();
         }

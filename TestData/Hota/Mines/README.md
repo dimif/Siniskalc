@@ -5,7 +5,7 @@ Red's hero Tazar takes **one mine per day**; Blue's hero Orrin follows and **tak
 The first set (saves 01 to 09) takes the row of mines that is entered from the north, from the sulfur mine to the alchemist's lab; then the two abandoned mines. The second set (11 to 17) takes the other row in the reverse order, from the alchemist's lab to the sulfur mine; save 18 takes the first sulfur mine back.
 Where Tazar and Orrin stand in each save is the entrance of the mine just taken (Tazar) and of the one before (Orrin).
 
-Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_IMPROVEMENTS.md`, "Mines: the garrison"): a table of records of 62 bytes holds the owner (0xFF none, 0 Red, 1 Blue), the kind (as in Heroes II: 0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold) and the guard of every mine. Used by `MineTests`.
+Result (`docs/KNOWLEDGE_BASE.md`, `docs/FUTURE_WORK.md`, "Mines: the garrison"): a table of records of 62 bytes holds the owner (0xFF none, 0 Red, 1 Blue), the kind (as in Heroes II: 0 sawmill, 1 alchemist's lab, 2 ore, 3 sulfur, 4 crystal, 5 gems, 6 gold) and the guard of every mine. Used by `MineTests`.
 
 The HotA 32-bit count is 21: **19 mines and two kind-100 objects**. Besides the fourteen ordinary mines and two abandoned ones in the capture sequence, three neutral mines have record tiles (14,62), (2,69) and (66,61). Corrected records start at the owner byte, with kind at +1, abandoned at +2, guard types at +3, guard counts at +31 and coordinates at +59..61. The previous three-byte-backward alignment dropped the first mine and assigned the preceding record's coordinates to each mine. Capture rows now have record tiles matching the entrances listed below; this does not establish a general sprite/entrance rule.
 

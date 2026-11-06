@@ -1,9 +1,11 @@
 ﻿namespace Siniskalc.Heroes.Data
 {
     using System;
+    using Microsoft.Extensions.Logging;
     using Siniskalc.Core;
     using Siniskalc.Core.Data;
     using Siniskalc.Core.Entities;
+    using Siniskalc.Core.Runtime;
     using Siniskalc.Heroes.Models;
 
     /// <summary>
@@ -12,6 +14,8 @@
     /// </summary>
     public static class ArmyWriter
     {
+        private static readonly ILogger Logger = LogFactory.For(typeof(ArmyWriter));
+
         /// <summary>
         /// Writes <paramref name="army"/> into the tables of <paramref name="layout"/>.
         /// </summary>
@@ -29,7 +33,13 @@
                 var typeAt = layout.TypeAt(slot);
                 var countAt = layout.CountAt(slot);
                 var currentType = ReadNumber(bytes, typeAt, layout.TypeSize);
-                var current = currentType == layout.EmptyType ? null : codes.Find(currentType) ?? codes.Fallback;
+                var found = currentType == layout.EmptyType ? null : codes.Find(currentType);
+                if (currentType != layout.EmptyType && found is null)
+                {
+                    Logger.LogTrace("Creature {Code:X} in slot {Slot} is unknown and is kept until the slot changes", currentType, slot);
+                }
+
+                var current = currentType == layout.EmptyType ? null : found ?? codes.Fallback;
                 var wanted = army.Slots[slot];
 
                 if (wanted is null)

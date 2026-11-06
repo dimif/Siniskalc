@@ -259,19 +259,19 @@
 
                 <StackPanel Style="{StaticResource TabPanel4}">
                     <TextBlock Margin="0,0,0,8" Style="{StaticResource FieldNoteStyle}" TextWrapping="Wrap"
-                               Text="This stock is shared by all town Artifact Merchants, regardless of owner. Changes here affect every town, not the adventure-map Black Markets. Editor-written stock has not yet been tried in the game."/>
+                               Text="This stock is shared by all town Artifact Merchants, regardless of owner. Changes here affect every town, not the adventure-map Black Markets."/>
                     <Border Style="{StaticResource CardStyle}" Width="380" HorizontalAlignment="Left"
                             Visibility="{Binding HasMerchantStock, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel DataContext="{Binding Merchant}">
                             <DockPanel>
-                                <Button DockPanel.Dock="Right" Style="{StaticResource LinkButtonStyle}" Content="Reset shared stock"
+                                <Button DockPanel.Dock="Right" Style="{StaticResource ResetPillStyle}" Content="Reset" Margin="6,0,0,0" VerticalAlignment="Center"
                                         Command="{Binding ResetCommand}" ToolTip="Restore the shared town stock for every town; does not reset buildings or Black Markets"/>
-                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Shared town stock"/>
+                                <Border DockPanel.Dock="Right" Style="{StaticResource EditedMarkStyle}" Margin="12,0,0,0" VerticalAlignment="Center"
+                                        ToolTip="The shared stock has unsaved changes">
+                                    <TextBlock Text="edited" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
+                                </Border>
+                                <TextBlock Style="{StaticResource CardHeadingStyle}" Text="Artifact Merchant"/>
                             </DockPanel>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" Margin="0,0,0,6" TextWrapping="Wrap"
-                                       Text="Seven artifacts in store. Clear a slot to mark it sold. The town's Reset button does not reset this shared stock."/>
-                            <TextBlock Style="{StaticResource FieldNoteStyle}" Foreground="{StaticResource AccentBrush}" Text="Shared stock has unsaved changes"
-                                       Visibility="{Binding HasPendingChanges, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <ItemsControl ItemsSource="{Binding Slots}" ItemTemplate="{StaticResource ArtifactSlotRowTemplate}"/>
                         </StackPanel>
                     </Border>

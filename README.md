@@ -8,7 +8,7 @@ For HoMM3 it supports the following versions/expansions:
   - Armageddon's Blade
   - Shadow of Death 
   - and Horn of the Abyss (HotA) (v1.8.1)
-  - Heroes Chronicles. *Do note that this is entirely speculative and extracted from the work of Erki Suurjaak on h3sed, as I do not own a copy of the game, and only for a limited subset of entities (heroes and towns).*
+  - Heroes Chronicles. *Note that this is entirely speculative and extracted from the work of Erki Suurjaak on h3sed, and only works for a limited subset of entities (heroes and towns), as I do not own a copy of the game.*
 
 For HoMM2:
   - Base, AKA: The Succession Wars
